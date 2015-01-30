@@ -1,0 +1,220 @@
+<style>
+    .labelsAndValues-labelCell {
+        
+        background-color: #98B1CA;
+        padding-left: 5px;
+    }
+    
+    .labelsAndValues-valueCell {
+        
+        padding-left: 20px;
+        background-color: #FFFFFF;
+    }
+    
+    .workbench {
+        font-family: "Nanum Gothic Coding", Verdana,Arial,sans-serif;
+        font-size:10pt;
+        font-weight:normal;
+        overflow:auto;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        width: 100%;
+        height:100%;
+    }
+    
+    .workbench-frame {
+        position: relative;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        min-width:800px;
+        height:100%;
+        min-height:600px;
+        background-color:red;
+    }
+    
+    .workbench-toppane {
+        position: relative;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 56px; 
+        background: #414850;
+    }
+    
+    .workbench-toppane-gradation {
+        position: relative;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 4px; 
+        background: linear-gradient(#3e454c, #313437);
+    }
+    
+    .workbench-top-log-image {
+        width : 255px;
+        height : 60px;
+        background-image:url("styles/webida-images/deploy_title.png");
+        background-position:0 0;
+    }
+    
+    .workbench-leftpane {
+        position: relative;
+        left: 0px;
+        top: 0px;
+        width: 210px;
+        height: calc(100% - 60px);
+        background: #D0DDE9;
+    }
+    
+    .workspace-listbox-out{
+        position: relative;
+        left: 4px;
+        top: 4px;
+        height: calc(100% - 8px);
+        width: calc(100% - 8px);
+        border-radius: 5px;
+        background-color: #B3BAC2;
+    }
+    
+    .workspace-listbox-content-out{
+        position: relative;
+        left: 2px;
+        top: 2px;
+        height: calc(100% - 4px - 30px);
+        width: calc(100% - 4px);
+        background: #DADFE3;
+        border-radius: 5px;
+    }
+    
+    .workspace-listbox-content{
+        position: relative;
+        left: 2px;
+        top: 2px;
+        width: calc(100% - 4px);
+        height: calc(100% - 4px);
+        background: white;
+
+    }
+    
+    .workspace-listbox-title{
+        height: 30px;
+        text-indent: 18px;
+        line-height: 230%;
+        color:black;
+    }
+    
+    .deploy-title-item{
+        height: 25px;
+        background: white;
+        color: #414858;
+        text-indent: 15px;
+        line-height: 200%;
+        cursor:pointer;
+    }
+    
+    
+    .deploy-title-item-hover {
+        background: #96e2ff;
+    }
+    
+    .deploy-title-item-selected {
+        background: #bcedff;
+    }
+    .deploy-title-item-pushed {
+        
+        background: #bcedff;
+    }
+    
+    .workbench-rightpane {
+        position: absolute;
+        top:60px;
+        left: 210px;
+        width: calc(100% - 210px);
+        height: calc(100% - 61px); 
+    }
+    
+    .paas-logo-pane {
+        position: relative;
+        width: 100%;
+        min-width:590px;
+        height: 35px;
+        border-top: 1px solid #7b8693;
+        background-color: #6C7887;
+    }
+    
+    .paas-logo-pane-gradation {
+        position: relative;
+        width: 100%;
+        min-width:590px;
+        height: 4px;
+        background: linear-gradient(#6a7584, #5e6874);
+    }
+    
+    .paas-logo-image {
+        position: relative;
+        left: 15px;
+        top: 5px;
+        width: 117px;
+        height: 23px;
+    }
+    
+    .paas-select-combo {
+        position: absolute;
+        right: 8px;
+        top: 11px;
+        width: 122px;
+        display:none;
+    }
+    
+    .paas-stack-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background-color: #F5FAFE;
+    }
+    
+    .paas-content {
+        position: relative;
+        width: 100%;
+        height: calc(100% - 40px);
+        border-top: 1px solid #7b8693;
+        background-color: #6C7887;
+    }
+    
+</style>
+
+<div class="workbench">
+    <div class="workbench-frame">
+        <div class="workbench-toppane">
+            <div class="workbench-top-log-image">
+            </div>
+        </div>
+        <div class="workbench-toppane-gradation">
+        </div>
+        <div class="workbench-leftpane">
+            <div class="workspace-listbox-out">
+                <div id="workspace-list-title" class="workspace-listbox-title" title='Workspace name'> 
+                </div>
+                <div id="workspace-list-box-content-out" class="workspace-listbox-content-out">
+                    <div id="workspace-list-box" class="workspace-listbox-content" style="overflow:auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="workbench-rightpane">
+            <div id="paas-logo-pane" class="paas-logo-pane">
+                <div id="paas-logo-image" class="paas-logo-image">
+                </div>
+                <select data-dojo-type="dijit/form/ComboBox" id="paas-selet-combo" name="paas-selet-combo" class="paas-select-combo">
+                </select>
+            </div>
+            <div class="paas-logo-pane-gradation">
+            </div>
+            <div class ="paas-content">
+                <div id="paas-stack-container" class="paas-stack-container" data-dojo-type="dijit/layout/StackContainer"  >
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+{
+    "name": "workspace",
+    "description": "a plug-in to navigate workspace file system.",
+    "version": "0.1.0",
+    "requirement": "workbench",
+    "extensionPoints" : {
+        "workspace:menu" : "webida-lib/plugins/_extension-points/menu.json"
+    },
+    "extensions" : {
+        "workbench:views" : {
+            "location": "left",
+            "cellIndex" : 0
+        },
+
+        "workbench:preference-page" : [
+            {
+                "module": "webida-lib/plugins/workspace/preference-workspace",
+                "hierarchy": "workspace",
+                "name": "Workspace",
+                "handler": "view"
+            }
+        ]
+    }
+}

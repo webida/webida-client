@@ -1,0 +1,20 @@
+{
+    "template_id": "angularjs-mvc",
+    "title": "angularjs",
+    "screen_shot": ["res/angular-1.jpg",
+                    "res/angular-2.jpg"],
+    "description": "project/readme.md",
+    "version": "0.1",
+    "app_class": "html",
+    "app_main": "index.html",
+    "template model": [
+        {
+           "param": "project name (NOT USED YET)",
+           "value": "default1"
+        },
+        {
+           "param": "app id (NOT USED YET)",
+           "value": "default2"
+        }
+    ]
+}

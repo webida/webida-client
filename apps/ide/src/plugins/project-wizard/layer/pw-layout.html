@@ -1,0 +1,230 @@
+<style type='text/css'>
+    /* It's copied from sly.css because class selectors like '.frame' can effect globally. */
+
+    /* Frame */
+    .frame {
+        height: 250px;
+        line-height: 250px;
+        overflow: hidden;
+    }
+    .frame ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-size: 50px;
+    }
+    .frame ul li {
+        float: left;
+        width: 130px;
+        height: 130px;
+        margin: 0 20px 0 0;
+        padding: 0;
+        background-color: #aab6c2;
+        text-align: center;
+        cursor: pointer;
+        border: solid 1px #43494d;
+    }
+    
+    /* Scrollbar */
+    .scrollbar {
+        margin: 9px 0 0 0;
+        height: 6px;
+        line-height: 0;
+    }
+    .scrollbar .handle {
+        height: 100%;
+        background-color: #666e81;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .scrollbar .handle:hover {
+        height: 100%;
+        background-color: #484e5c;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .scrollbar .handle .mousearea {
+        position: absolute;
+        top: -9px;
+        left: 0;
+        width: 100%;
+        height: 20px;
+    }
+    
+    /* Effects */
+    .effects {
+        height: 130px;
+        line-height: 130px;
+        -webkit-perspective: 800px;
+        -ms-perspective: 800px;
+        perspective: 800px;
+        -webkit-perspective-origin: 50% 50%;
+        -ms-perspective-origin: 50% 50%;
+        perspective-origin: 50% 50%;
+        overflow-y: hidden;
+    }
+    .effects ul {
+        -webkit-transform-style: preserve-3d;
+        -ms-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+    }
+    .effects ul li {
+        position: relative;
+        -webkit-transform: scale(1);
+        -ms-transform:  scale(1);
+        transform:  scale(1);
+        -webkit-transition: -webkit-transform 300ms ease-out;
+        transition: transform 300ms ease-out;
+    }
+    .effects ul li.active {
+        z-index: 10;
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1);
+    }
+    .effects ul li.active ~ li {
+        -webkit-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1);
+    }
+</style>
+<div id="pwTab" data-dojo-type="dijit/layout/TabContainer" data-dojo-props='tabPosition: "left-h"' class="pwBody">
+    <!-- Quick Start -->
+    <div id="pwQuickStart" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "Quick Start", selected: true'>
+        <div id="pwQuickStartPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'">
+            <div>
+                <label>Name: </label>
+                <input id="pwQuickStartProjectName" placeHolder="" /><br />
+                <br />
+                <label>Type: </label>
+                <input type="radio" data-dojo-type="dijit/form/RadioButton" name="projectType" id="pwQuickStartProjectTypeWeb" checked value="Web"/> <label for="pwQuickStartProjectTypeWeb">Web</label>
+                <input type="radio" data-dojo-type="dijit/form/RadioButton" name="projectType" id="pwQuickStartProjectTypeService" value="Service" disabled/> <label for="pwQuickStartProjectTypeService">Service</label><br />
+                <br />
+
+                <fieldset class="group-border">
+                    <legend><strong>Options</strong></legend>
+                    <div>
+                        <input id="pwQuickStartOptCordova" data-dojo-type='dijit/form/CheckBox' checked />
+                        <label id="pwQuickStartOptCordovaLabel" for="pwQuickStartOptCordova">Enable Cordova support</label>
+                    </div>
+                </fieldset>
+
+                <br />
+                <br />
+
+                <div id="pwQuickStartGuide">
+                    Quick Guide
+                    <div id="pwQuickStartGuideCarousel" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="active item">
+                                    <img id="pwQuickStartGuideEmulate" src="plugins/project-wizard/images/qsEmulate.png" alt="" />
+                                    <img id="pwQuickStartGuideDevice" src="plugins/project-wizard/images/qsDevice.png" alt="" />
+                                <div class="carousel-caption">
+                                </div>
+                            </div>
+                            <div class="item">
+                                    <img id="pwQuickStartGuideTest" src="plugins/project-wizard/images/qsTest.png" alt="" />
+                            </div>
+                        </div>
+                        <a class="carousel-control left" href="#pwQuickStartGuideCarousel" data-slide="prev">
+                            <span class="fa fa-chevron-left"></span>
+                        </a>
+                        <a class="carousel-control right" href="#pwQuickStartGuideCarousel" data-slide="next">
+                            <span class="fa fa-chevron-right"></span>
+                        </a>
+                    </div>
+                    <button id="pwQuickStartGuideStart" class="pull-right" data-dojo-type="dijit/form/Button">Start tour</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Quick Start -->
+    <div id="pwProjectWizard" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "Project Wizard", selected: false'>
+        <div id='pwBasePane' data-dojo-type="dijit/layout/BorderContainer">
+            <!-- Top pane -->
+            <div id='labelTopPane' data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
+                <img src='plugins/project-wizard/images/wizard_title.png' alt='project wizard'>
+            </div> <!-- Top pane closed -->
+            
+            <!-- Left pane -->
+            <div id="pw-category-pane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'">
+                <div id="pw-category-label-pane">
+                    <label id="pw-category-label">Category</label>
+                </div>
+                <div id="pw-category-tree-pane">
+                    <div id="pw-category-tree" class="pw-pane" data-dojo-type="dijit/layout/ContentPane"></div>
+                </div>
+            </div>
+            <div id="pw-template-pane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'">
+                <div id="pw-template-label-pane">
+                    <label id="pw-template-label">Templates</label>
+                </div>
+                <div id="pw-template-tree-pane">
+                    <div id="pw-template-tree" class="pw-pane" data-dojo-type="dijit/layout/ContentPane"></div>
+                </div>
+            </div>
+            <!-- Left pane closed -->
+            
+            <!-- Center pane -->
+            <div id='pw-description-pane' data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="region:'center'">
+                <div id="pw-description-label-pane">
+                    <label id="pw-description-label">Description</label>
+                </div>
+                
+                <div id="pw-description-imageAndDesc-pane">
+                    <div id="pw-description-images-pane">
+                        <div id="pw-previewFrame" class="frame effects">
+                            <ul id="pw-descImagesPane">
+                                <li></li>
+                            </ul>
+                        </div>
+                        <div id="pw-previewImageScroll" class="scrollbar">
+                            <div class="handle">
+                                <div class="mousearea"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="pw-descDescPane" class="pw-pane">
+                    </div>
+                </div>
+            </div> <!-- Center pane closed -->
+            
+            <!-- Bottom pane -->
+            <div id="pw-bottomPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'bottom'">
+                <div id="pw-projectNameAndLocationPane">
+                    <label id="pw-projectNameLb">Name: </label>
+                    <input id="pw-projectNameIp" placeHolder="" />
+                    <label id="pw-projectTargetLocationLb">Location: </label>
+                    <input id="pw-projectTargetLocationIp" placeHolder="" disabled />
+                    <div id="pw-projectOptCordova">
+                        <!-- TODO: Enable after template modification and org migration -->
+                        <input id="pw-projectOptCordovaIp" type="checkbox" disabled />
+                        <label id="pw-projectOptCordovaLb" for="pw-projectOptCordova">Enable Cordova support</label>
+                    </div>
+                </div>
+            </div> <!-- Bottom pane closed -->
+            
+            <!-- preview popup -->
+            <div id="preview-popup">
+                <div class="popup-overlay">
+                    <!-- image pane -->
+                    <div class="preview-pane">
+                        <div class="preview-L-button-pane">
+                            <div class="preview-left-button"></div>
+                        </div>
+                        <div class="preview-image-pane">
+                            <div class="preview-image"></div>
+                        </div>
+                        <div class="preview-R-button-pane">
+                            <div class="preview-right-button"></div>
+                        </div>
+                    </div>
+                    <!-- close button -->
+                    <div class="dialog-close-button"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

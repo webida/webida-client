@@ -1,0 +1,30 @@
+{
+    "name": "preview",
+    "description": "Preview",
+    "version": "0.1.0",
+    "requirement": "workspace",
+    "extensions": {
+        "workbench:views" : {
+            "module" : "webida-lib/plugins/preview/preview-view",
+            "location": "bottom"
+        },
+
+        "workbench:preference-page" : [
+            {
+                "module": "webida-lib/plugins/preview/preview-pref-page",
+                "hierarchy": "preview",
+                "name": "Preview",
+                "handler": "view"
+            }
+        ],
+
+        "workspace:menu" : {
+            "location" : "/",
+            "module" : "webida-lib/plugins/preview/preview-menu-item",
+            "wholeItems" : {
+                "Preview" : [ "cmnd" ]
+            },
+            "getViableItems" : "getViableItemsForWorkspaceView"
+        }
+    }
+}

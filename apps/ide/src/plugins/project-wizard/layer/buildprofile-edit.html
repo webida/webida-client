@@ -1,0 +1,162 @@
+<style type='text/css'>
+    #platformTab {
+        width: 360px;
+        height: 260px; /* 380px */
+        padding: 10px;
+    }
+
+    .tblPlatform {
+        margin: 6px;
+    }
+
+    .tblPlatform td.sign .group-border {
+        margin-top: 6px;
+    }
+
+    .FormTable table col.ItemLabel {
+        width: 120px;
+    }
+</style>
+
+<div class="dialogMessage">
+    <div class="dialogMessage-inner">
+    </div>
+</div>
+
+<form id="editBuildProfileForm" data-dojo-type='dijit/form/Form' action=''>
+<label>Configuration: </label>
+<select id='editBuildProfileCombo' data-dojo-type='dijit/form/ComboBox'></select>
+    <button type="button" data-dojo-type='dijit/form/Button' id="editBuildProfileAdd">Add...</button> <button type="button" data-dojo-type='dijit/form/Button' id="editBuildProfileDelete">Delete</button><br />
+
+<br />
+<fieldset class="group-border">
+    <legend><strong>Information</strong></legend>
+    <div class="FormTable">
+        <input id="editInfoPlatformAndroid" type="radio" data-dojo-type="dijit/form/RadioButton" name="platform" checked value="android"/> <label for="editInfoPlatformAndroid">Android</label>
+        <input id="editInfoPlatformIOS" type="radio" data-dojo-type="dijit/form/RadioButton" name="platform" value="ios" disabled/> <label for="editInfoPlatformIOS">iOS</label><br />
+        <!-- It does not work for disabled button. -->
+        <div data-dojo-type="dijit/Tooltip" data-dojo-props="connectId: 'editInfoPlatformIOS', position: ['below']">
+            We do not currently support <b>iOS</b>.
+        </div>
+
+        <div id="platformTab" data-dojo-type="dijit/layout/TabContainer" data-dojo-props='tabPosition: "top"'>
+            <div id="platformAndroid" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "Android"'>
+                <table class="tblPlatform">
+                    <colgroup>
+                        <col class="ItemLabel" />
+                        <col />
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th scope="col">Label</th>
+                            <td>
+                                <input id="editInfoLabel" type="text" data-dojo-type="dijit/form/TextBox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Icon</th>
+                            <td>
+                                <!-- TODO: Upload... -->
+                                <input id="editInfoIcon" type="text" data-dojo-type="dijit/form/TextBox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Package name</th>
+                            <td>
+                                <input id="editInfoPackageName" type="text" data-dojo-type="dijit/form/TextBox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Min. SDK version</th>
+                            <td>
+                                <select id="editInfoMinSdkVersion" data-dojo-type="dijit/form/ComboBox"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Target SDK version</th>
+                            <td>
+                                <select id="editInfoTargetSdkVersion" data-dojo-type="dijit/form/ComboBox"></select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Version code</th>
+                            <td>
+                                <input id="editInfoVersionCode" type="text" data-dojo-type="dijit/form/TextBox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Version name</th>
+                            <td>
+                                <input id="editInfoVersionName" type="text" data-dojo-type="dijit/form/TextBox" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col">Type</th>
+                            <td>
+                                <input id="editInfoTypeDebug" type="radio" data-dojo-type="dijit/form/RadioButton" name="type" checked value="debug"/> <label for="editInfoDistDebug">Debug</label>
+                                <input id="editInfoTypeRelease" type="radio" data-dojo-type="dijit/form/RadioButton" name="type" value="release"/> <label for="editInfoDistRelease">Release</label><br />
+                            </td>
+                        </tr>
+                        <!--
+                        <tr>
+                            <td colspan="2" class="sign">
+                                <fieldset class="group-border">
+                                    <legend>Signing</legend>
+                                    <table>
+                                        <colgroup>
+                                            <col class="ItemLabel" />
+                                            <col />
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="col">Key</th>
+                                                <td>
+                                                    <select id="editInfoSignKey" data-dojo-type="dijit/form/ComboBox">
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Alias</th>
+                                                <td>
+                                                    <input id="editInfoSignAlias" type="text" data-dojo-type="dijit/form/TextBox" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Keystore file</th>
+                                                <td>
+                                                    <input id="editInfoSignKSFile" type="text" data-dojo-type="dijit/form/TextBox" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Key password</th>
+                                                <td>
+                                                    <input id="editInfoSignKeyPwd" type="password" data-dojo-type="dijit/form/TextBox" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Keystore password</th>
+                                                <td>
+                                                    <input id="editInfoSignKSPwd" type="password" data-dojo-type="dijit/form/TextBox" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </fieldset>
+                            </td>
+                        </tr>
+                        -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="platformIOS" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "iOS", disabled: "true"'>
+            </div>
+            <div id="platformPlugins" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "Plugins"' class="noGridHeader">
+                <div id="platformPluginsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <button type="button" data-dojo-type='dijit/form/Button' id="editBuildProfileApply" class="pull-right">Apply</button>
+</fieldset>
+</form>

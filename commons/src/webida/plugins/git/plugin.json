@@ -1,0 +1,134 @@
+{
+    "name": "git",
+    "description": "Git view",
+    "version": "0.1.0",
+    "requirement": "workspace",
+    "extensions": {
+
+        "workbench:menu" : {
+            "location" : "/&Git/",
+            "wholeItems" : {
+                "&Status": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt + S" }, "desc" : "git status" } } ],
+                "Show File History": [ "cmnd" ],
+                "Show Repository History": [ "cmnd" ],
+                "Blame" : [ "cmnd" ],
+                "Compar&e" : [ "cmnd" ],
+                "delim4" : "---",
+                "&Commit": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt + M" }, "desc" : "git commit" },
+                                       "procedural": true} ],
+                "Reset to Commit": [ "cmnd", {"procedural": true} ],
+                "Re&base": [ "cmnd", {"procedural": true} ],
+                "&Merge": [ "cmnd", {"procedural": true} ],
+                "B&ranches": [ "cmnd" ],
+                "delim2" : "---",
+                "&Add to Stage": [ "cmnd", {"procedural": true} ],
+                "Remove from Stage": [ "cmnd", {"procedural": true} ],
+                "Checkout from Stage": [ "cmnd", {"procedural": true} ],
+                "Untrack": [ "cmnd", {"procedural": true} ],
+                "delim1" : "---",
+                "Stash Changes": [ "cmnd", {"procedural": true} ],
+                "Unstash Changes": [ "cmnd", {"procedural": true} ],
+                "delim5" : "---",
+                "&Push": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Shift + Alt + P" }, "desc" : "git push" },
+                                     "procedural": true } ],
+                "&Fetch": [ "cmnd", {"procedural": true} ],
+                "P&ull": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Shift + Alt + U" }, "desc" : "git pull" },
+                                     "procedural": true} ],
+                "Update Submodules" : [ "cmnd" ],
+                "Remotes": [ "cmnd", {"procedural": true} ],
+                "delim6" : "---",
+                "Clone from URL" : [ "cmnd", {"procedural": true} ],
+                "New Repository" : [ "cmnd", {"procedural": true} ],
+                "delim3" : "---",
+                "Confi&gure": [ "cmnd", {"procedural": true} ]
+            },
+            "getViableItems" : "gitTopLevelMenuItems"
+        },
+
+        "workspace:menu" : {
+            "location" : "/",
+            "wholeItems" : {
+                "&Git" : {
+                    "&Status": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt + S" }, "desc" : "git status" } } ],
+                    "Show File History": [ "cmnd" ],
+                    "Show Repository History": [ "cmnd" ],
+                    "Blame" : [ "cmnd" ],
+                    "Compar&e" : [ "cmnd" ],
+                    "delim4" : "---",
+                    "&Commit": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt + M" }, "desc" : "git commit" },
+                                           "procedural": true} ],
+                    "Reset to Commit": [ "cmnd", {"procedural": true} ],
+                    "Re&base": [ "cmnd", {"procedural": true} ],
+                    "&Merge": [ "cmnd", {"procedural": true} ],
+                    "B&ranches": [ "cmnd" ],
+                    "delim2" : "---",
+                    "&Add to Stage": [ "cmnd", {"procedural": true} ],
+                    "Remove from Stage": [ "cmnd", {"procedural": true} ],
+                    "Checkout from Stage": [ "cmnd", {"procedural": true} ],
+                    "Untrack": [ "cmnd", {"procedural": true} ],
+                    "delim1" : "---",
+                    "Stash Changes": [ "cmnd", {"procedural": true} ],
+                    "Unstash Changes": [ "cmnd", {"procedural": true} ],
+                    "delim5" : "---",
+                    "&Push": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Shift + Alt + P" }, "desc" : "git push" },
+                                         "procedural": true } ],
+                    "&Fetch": [ "cmnd", {"procedural": true} ],
+                    "P&ull": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Shift + Alt + U" }, "desc" : "git pull" },
+                                         "procedural": true} ],
+                    "Update Submodules" : [ "cmnd" ],
+                    "Remotes": [ "cmnd", {"procedural": true} ],
+                    "delim6" : "---",
+                    "Clone from URL" : [ "cmnd", {"procedural": true} ],
+                    "New Repository" : [ "cmnd", {"procedural": true} ],
+                    "delim3" : "---",
+                    "Confi&gure": [ "cmnd", {"procedural": true} ]
+                }
+            },
+            "getViableItems" : "gitContextMenuItems"
+        },
+
+        "workbench:views" : {
+            "module" : "webida-lib/plugins/git/git-view",
+            "location": "bottom"
+        },
+
+        "workbench:preference-page" : [
+            {
+                "module": "webida-lib/plugins/git/preference-git",
+                "hierarchy": "git",
+                "name": "Git",
+                "handler": "view",
+                "visible": "false"
+            }
+        ]
+    },
+    "subscriptions" : {
+        "workspace.node.added": [
+            {
+                "handler": "detectGitRepo",
+                "module": "webida-lib/plugins/git/git-icon"
+            },
+            {
+                "handler": "detectNodeWithoutIcon",
+                "module": "webida-lib/plugins/git/git-icon"
+            }
+        ],
+        "workspace.node.deleted": {
+            "handler": "detectGitRepoDeletion",
+            "module": "webida-lib/plugins/git/git-icon"
+        },
+        "fs.cache.node.added": {
+            "handler": "handleNodeAddEventInGitRepo",
+            "module": "webida-lib/plugins/git/git-icon"
+        },
+        "fs.cache.node.deleted": {
+            "handler": "handleNodeDelEventInGitRepo",
+            "module": "webida-lib/plugins/git/git-icon"
+        },
+        "fs.cache.file.set": {
+            "handler": "handleFileSetEventInGitRepo",
+            "module": "webida-lib/plugins/git/git-icon"
+        }
+    }
+
+}

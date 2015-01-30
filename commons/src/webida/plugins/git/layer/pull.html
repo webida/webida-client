@@ -1,0 +1,52 @@
+<div style="width: 450px;padding-bottom: 5px;">
+    <div style="width: 120px; display:inline-block;">
+        <strong>Current branch:</strong>
+    </div>
+    <div style="display:inline-block;" id="GitPullBranchInfo"></div>
+</div>
+<div style="padding-bottom: 5px;">
+    <div style="width:120px;display:inline-block;">
+        <strong>
+            <label for="GitPullRemoteRepoSelect">Remote repository:</label>
+        </strong>
+    </div>
+    <select id="GitPullRemoteRepoSelect" style="width:359px" data-dojo-type="dijit/form/Select"></select>
+</div>
+<div style="padding-bottom:5px;">
+    <fieldset style="padding:5px;border:1px solid gray;">
+        <legend>
+            <strong>Target refs</strong>
+        </legend>
+        <div style="padding-bottom: 5px;">
+            <div style="width:135px;display:inline-block;">
+                <label for="GitPullRemoteBranchSelect">Source branch (remote):</label>
+            </div>
+            <select id="GitPullRemoteBranchSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox"></select>
+        </div>
+        <div style="width:135px;display:inline-block;">
+            <label for="GitPullLocalBranchSelect">Target branch (local):</label>
+        </div>
+        <select id="GitPullLocalBranchSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox"></select>
+    </fieldset>
+</div>
+<div>
+    <fieldset style="padding: 5px; border: 1px solid gray">
+        <legend>
+            <strong>Options (related to merging)</strong>
+        </legend>
+        <div>
+            <div style="width:160px;display:inline-block;">
+                <input id="GitPullNoCommitCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+                <label for="GitPullNoCommitCheckbox">No commit</label>
+            </div>
+            <div style="width:180px;display:inline-block;">
+                <input id="GitPullSquashCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+                <label for="GitPullSquashCheckbox">Squash commit</label>
+            </div>
+            <div style="display:inline-block;">
+                <input id="GitPullNoFFCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+                <label for="GitPullNoFFCheckbox">No fast forward</label>
+            </div>
+        </div>
+    </fieldset>
+</div>

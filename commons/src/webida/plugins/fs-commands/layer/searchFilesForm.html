@@ -1,0 +1,59 @@
+<div id='sfDojoWindow' data-dojo-type='dijit/layout/ContentPane' style='width:500px; padding-top: 0'>
+    <style type='text/css'>
+        .find_in_files_border {
+            border: 1px #797979 solid;
+            padding: 7px 10px;
+                        margin: 2px 0;
+                        border-radius: 5px;
+        }
+
+        .find_in_files_input {
+            width: 100%;
+        }
+
+        .desc {
+                margin-top: 5px;
+                margin-bottom: 15px;
+        }
+
+        .group_label {
+                font-weight: bold;
+                color: #494949;
+        }
+
+        .claro .buttons {
+                margin-right: 8px;
+        }
+
+        .claro .buttons > .dijitButtonNode {
+                padding: 4px 10px;
+        }
+
+    </style>
+    <form>
+        <p class="desc"> Fill in the following form to search files for a keyword. </p>
+
+        <label class="group_label"> Required fields </label>
+        <div class='find_in_files_border'>
+            <label> Keyword to find </label> <input id="sfDojoCheckBoxRegEx" data-dojo-type='dijit/form/CheckBox' style="margin-left: 200px" tabindex="2"/><label> as a regular expression </label>
+            <select id='sfDojoComboBoxPatternToFind' data-dojo-type='dijit/form/ComboBox' class='find_in_files_input' tabindex="1"></select>
+            <br> <br>
+            <label> Base directory to search </label> <br>
+            <select id='sfDojoComboBoxRecentFolders' data-dojo-type='dijit/form/ComboBox' style='width:407px' tabindex="3"></select>
+                        <button id='sfDojoFormBrowse' data-dojo-type='dijit/form/Button' type='button' style="margin-left: 4px" tabindex="4"> Browse </button>
+        </div>
+        <br>
+
+        <label class="group_label"> Optional fields </label>
+        <div class='find_in_files_border'>
+            <input id="sfDojoCheckBoxIgnoreCase" data-dojo-type='dijit/form/CheckBox' tabindex="5" /><label style="margin-right: 20px"> Ignore case</label>
+            <input id="sfDojoCheckBoxWholeWords" data-dojo-type='dijit/form/CheckBox' tabindex="6" /><label> Whole words only</label>
+            <br> <br>
+            <label> Excluded directories </label> <input id="sfDojoCheckBoxExcludeRegEx" data-dojo-type='dijit/form/CheckBox' style="margin-left: 120px" tabindex="2"/><label> as a regular expression </label>
+            <select id='sfDojoComboBoxFoldersToExclude' data-dojo-type='dijit/form/ComboBox' class='find_in_files_input' tabindex="7"></select>
+            <br> <br>
+            <label> Searched files </label> <input id="sfDojoCheckBoxFilesRegEx" data-dojo-type='dijit/form/CheckBox' style="margin-left: 152px" tabindex="2"/><label> as a regular expression </label>
+            <select id='sfDojoComboBoxFilesToInclude' data-dojo-type='dijit/form/ComboBox' class='find_in_files_input' tabindex="8"></select>
+        </div>
+    </form>
+</div>

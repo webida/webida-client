@@ -1,0 +1,10 @@
+.gv-menuitem {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+}
+
+.git-preference { background: url('../icons/gitview/git_preference.png') no-repeat; }
+.git-preference:hover { background: url('../icons/gitview/git_preference.png') -20px 0 no-repeat; }
+.git-preference.disabled, .git-preference.disabled:active { background: url('../icons/gitview/git_preference.png') -40px 0 no-repeat; }
+.git-preference:active { background: url('../icons/gitview/git_preference.png') -60px 0 no-repeat; }

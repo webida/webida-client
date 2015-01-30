@@ -1,0 +1,11 @@
+{
+    "name": "uid-menu-items",
+    "description": "menu items added to the small menu besides the user id on the menu bar",
+    "version": "0.1.0",
+    "extensions" : {
+        "workbench:uidMenu" : [
+            { "label": "Dashboard", "handler" : "openDashboard" },
+            { "label": "Sign Out", "handler" : "signOut" }
+        ]
+    }
+}

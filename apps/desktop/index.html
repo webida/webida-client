@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <!-- head -->
+    <head>
+        <title>Desktop</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- load css style -->
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="script/css/desktop.css">
+        <link rel="stylesheet" href="script/css/sly.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.min.css">
+
+        <!-- load javasccript -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+        <script src="script/js/config.js"></script>
+        <script src="script/lib/require.min.js" data-main="script/js/main.js"></script>
+        <link rel="shorcut icon" href="resource/webida_favicon_16.png" type="image/x-icon">
+        <link rel="icon" href="resource/webida_favicon_16.png" type="image/x-icon">
+    </head>
+
+    <!-- main -->
+    <body>
+        <div class="dimming hide"></div>
+        <div class="header">
+            <div class="pf-nav">
+                <span class="pf-img"></span>
+            </div>
+            <div class="pf-dlg hide">
+                <div class="pf-arrow"></div>
+                <div class="pf-content">
+                    <div class="pf-info">
+                        <div class="image"><div class="pf-edit hide">Edit</div></div>
+                        <div class="info">
+                            <div class="name" id="pf-info-name"></div>
+                            <div class="email" id="pf-info-email"></div>
+                            <button class="btn btn-block" type="button">Log out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container hide">
+            <div class="row workspace-widget">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Workspaces</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="wrap">
+                            <button class="prev"></button>
+                            <button class="next"></button>
+                            <div class="frame effects" id="project">
+                                <ul id="project-items" class="clearfix">
+                                </ul>
+                            </div>
+
+                            <div class="scrollbar">
+                                <div class="handle">
+                                    <div class="mousearea"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row app-widget">
+                <ul id="app-items">
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>

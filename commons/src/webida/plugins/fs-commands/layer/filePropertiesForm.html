@@ -1,0 +1,138 @@
+<div data-dojo-type='dijit/layout/ContentPane'>
+    <style type='text/css'>
+        .fpfCenterLayout > div > div {
+            font-family: 'Nanum Gothic Coding';
+            font-size: 10pt;
+        }
+
+        .fpfCenterLayout > div > div > label {
+            display:inline-block;
+            vertical-align:middle;
+        }
+
+        .loading {
+            position: absolute;
+            top: 2px;
+        }
+
+        .loading > div {
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        .opa {
+            opacity: 0.5;
+        }
+
+        .fpfKeyItems {
+            color: #408adb;
+            width: 140px;
+        }
+
+        .fpfValueItems {
+            color: #40464d;
+        }
+
+        .spinner {
+            height:8px;
+            width:8px;
+            margin:0px auto;
+            position:relative;
+            -webkit-animation: rotation .6s infinite linear;
+            -moz-animation: rotation .6s infinite linear;
+            -o-animation: rotation .6s infinite linear;
+            animation: rotation .6s infinite linear;
+            border-left:3px solid #9D9E95;
+            border-right:3px solid #9D9E95;
+            border-bottom:3px solid #9D9E95;
+            border-top:3px solid #2D2E28;
+            border-radius:100%;
+        }
+
+        @-webkit-keyframes rotation {
+            from {-webkit-transform: rotate(0deg);}
+            to {-webkit-transform: rotate(359deg);}
+        }
+
+        @-moz-keyframes rotation {
+            from {-moz-transform: rotate(0deg);}
+            to {-moz-transform: rotate(359deg);}
+        }
+
+        @-o-keyframes rotation {
+            from {-o-transform: rotate(0deg);}
+            to {-o-transform: rotate(359deg);}
+        }
+
+        @keyframes rotation {
+            from {transform: rotate(0deg);}
+            to {transform: rotate(359deg);}
+        }
+    </style>
+    <!-- center layout -->
+    <div class='fpfCenterLayout'>
+        <!-- loading message -->
+        <div class='loading'>
+            <span>Loading...</span>
+            <div class="spinner"></div>
+        </div>
+
+        <div class='fpfContentsPane opa' style='display:none;'>
+            <!-- name -->
+            <div class='SINGLE_FILE SINGLE_DIRECTORY'
+                 style='display:none;'>
+                <label class='fpfKeyItems'>Name:</label>
+                <label class='fpfValueItems' id='fpfName'></label>
+            </div>
+
+            <!-- type -->
+            <div class='SINGLE_FILE SINGLE_DIRECTORY MULTIPLE'
+                 style='display:none;'>
+                <label class='fpfKeyItems'>Type:</label>
+                <label class='fpfValueItems' id='fpfType'></label>
+            </div>
+
+            <!-- location -->
+            <div class='SINGLE_FILE SINGLE_DIRECTORY MULTIPLE'
+                 style='display:none;'>
+                <label class='fpfKeyItems'>Location:</label>
+                <label class='fpfValueItems' id='fpfLoc'></label>
+            </div>
+
+            <!-- size -->
+            <div class='SINGLE_FILE SINGLE_DIRECTORY MULTIPLE'
+                 style='display:none;'>
+                <label class='fpfKeyItems'>Size:</label>
+                <label class='fpfValueItems' id='fpfSize'></label>
+            </div>
+
+            <!-- sub file and directoy count -->
+            <div class='SINGLE_DIRECTORY MULTIPLE'
+                 style='display:none;'>
+                <label class='fpfKeyItems'>Contents:</label>
+                <label class='fpfValueItems' id='fpfContents'></label>
+            </div>
+
+            <!-- create date -->
+            <div class='SINGLE_FILE SINGLE_DIRECTORY'
+                 style='display:none;'>
+                <label class='fpfKeyItems'>Update (attributes):</label>
+                <label class='fpfValueItems' id='fpfCDate'></label>
+            </div>
+
+            <!-- modification date-->
+            <div class='SINGLE_FILE SINGLE_DIRECTORY'
+                 style='display:none;'>
+                <label class='fpfKeyItems'>Update (content):</label>
+                <label class='fpfValueItems' id='fpfMDate'></label>
+            </div>
+
+            <!-- modification date-->
+            <div class='SINGLE_FILE SINGLE_DIRECTORY'
+                 style='display:none;'>
+                <label class='fpfKeyItems'>Access:</label>
+                <label class='fpfValueItems' id='fpfADate'></label>
+            </div>
+        </div>
+    </div>
+</div> <!-- properties pane close -->

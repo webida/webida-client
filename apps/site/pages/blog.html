@@ -1,0 +1,63 @@
+<br />
+<div id="blog-contents"></div>
+<br /><br /><br /><br />
+
+<script>
+		$(function() {
+				require(["webida"], function(Webida) {
+						
+						Webida.auth.setAnonymousMode(true);
+						
+						var contents = $("#blog-contents");
+						contents.html("");
+						
+						var fs = Webida.fs.mount("wfs://webida/ly5gWpYqM");
+						var dir = "junsik/blog-pages";
+						
+						fs.list(dir, false, function(e, files) {
+								if (e) {
+										console.log("error: " + e);
+										
+								} else {
+										files.sort(sortByFilenameDesc);
+										
+										var len = files.length;
+										
+										for (var i = 0; i < len; i++) {
+												var file = files[i];
+												
+												writeBlogPost(fs, dir, file.name);
+										}
+								}
+						});
+						
+						function writeBlogPost(fs, dir, filename) {
+								var blog = $("<div class='blog-post'>");
+								blog.appendTo(contents);
+								
+								fs.readFile(dir + "/" + filename, function(e, data) {
+										if (e) {
+												console.log("error: " + e);
+												
+										} else {
+												var date = $("<div class='blog-post-date'>");
+												date.html("Posted on " + filename.substring(0, 10));
+												
+												blog.append(data);
+												date.insertAfter(blog.find("h2"));
+										}
+								});
+						}
+						
+						function sortByFilenameDesc(a, b) {
+								if (!a || !b)
+										return 0;
+								
+								var aName = a.name;
+								var bName = b.name;
+								
+								return ((aName > bName) ? -1 : ((aName < bName) ? 1 : 0));
+						}
+				});
+		});
+</script>

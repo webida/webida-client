@@ -1,0 +1,45 @@
+<div style="width: 450px;padding-bottom: 5px;">
+    <div style="width: 135px; display:inline-block;">
+        <strong>Current branch:</strong>
+    </div>
+    <div style="display:inline-block;" id="GitMergeBranchInfo"></div>
+</div>   
+<div style="padding-bottom: 5px;">
+    <div style="width:135px;display:inline-block;">
+        <strong>
+            <label for="GitMergeBranchSelect">Choose merge branch:</label>
+        </strong>
+    </div>
+    <div style="width:345px;display:inline-block;">
+        <select id="GitMergeBranchSelect" style="width: 100%" data-dojo-type="dijit/form/Select"></select>
+    </div>
+</div>
+<div>
+    <div style="width:135px;display:inline-block;">
+        <strong>
+            <label for="GitMergeMsgInput">Message:</label>
+        </strong>
+    </div>
+    <div style="width:345px;display:inline-block;">
+        <input type="text" id="GitMergeMsgInput" data-dojo-type="dijit/form/TextBox" data-dojo-props="placeHolder: 'Enter merge message'" style="width: 100%"/>
+    </div>
+</div>
+<fieldset style="padding: 5px; border: 1px solid gray">
+    <legend>
+        <strong>Options</strong>
+    </legend>
+    <div>
+        <div style="width:160px;display:inline-block;">
+            <input id="GitMergeNoCommitCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitMergeNoCommitCheckbox">No commit</label>
+        </div>
+        <div style="width:180px;display:inline-block;">
+            <input id="GitMergeSquashCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitMergeSquashCheckbox">Squash commit</label>
+        </div>
+        <div style="display:inline-block;">
+            <input id="GitMergeNoFFCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitMergeNoFFCheckbox">No Fast Forward</label>
+        </div>
+    </div>
+</fieldset>

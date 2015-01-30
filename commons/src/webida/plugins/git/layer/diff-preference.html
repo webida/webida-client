@@ -1,0 +1,20 @@
+<style>
+    .git-diff__preference-label {
+        margin-right: 10px;
+    }
+    .git-diff__preference-select {
+    }
+</style>
+
+<div>
+    <label class="git-diff__preference-label" for="GitDiffContextSelect">Lines of Context</label>
+    <select class="git-diff__preference-select" id="GitDiffContextSelect" data-dojo-type="dijit/form/Select">
+        <option value="3">3 lines</option>
+        <option value="10" selected="true">10 lines</option>
+        <option value="25">25 lines</option>
+        <option value="50">50 lines</option>
+        <option value="75">75 lines</option>
+        <option value="100">100 lines</option>
+        <option value="null">Whole File</option>
+    </select>
+</div>

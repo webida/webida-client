@@ -1,0 +1,33 @@
+<div style="width:500px;padding-bottom:5px;">
+    <fieldset style="padding:5px;border: 1px solid gray">
+        <legend><strong>User Information </strong></legend>
+        <div style="padding-bottom:5px;">
+            <div style="width:40px;display:inline-block;">
+                <label for="GitConfigUserName">Name:</label>
+            </div>
+            <div style="width:440px;display:inline-block;">
+                <input type="text" id="GitConfigUserName" data-dojo-type="dijit/form/TextBox" data-dojo-props="placeHolder: 'Enter your name'" style="width:100%" />
+            </div>
+        </div>
+        <div style="padding-bottom:5px;">
+            <div style="width:40px;display:inline-block;">
+                <label for="GitConfigUserEmail">Email:</label>
+            </div>
+            <div style="width:440px;display:inline-block;">
+                <input type="text" id="GitConfigUserEmail" data-dojo-type="dijit/form/TextBox" data-dojo-props="placeHolder: 'Enter your email'" style="width:100%" />
+            </div>
+        </div>
+        <div>
+            <input id="GitConfigGlobalChk" data-dojo-type="dijit/form/CheckBox" />
+            <label for="GitConfigGlobalChk">Global</label>
+        </div>
+    </fieldset>
+</div>
+<div>
+    <fieldset style="padding: 5px; border: 1px solid gray">
+        <legend>
+            <strong>Commit Template</strong>
+        </legend>
+        <div id="GitConfigCommitTemplate" data-dojo-type="dijit/form/SimpleTextarea" style="width:480px;height:130px;resize:none;overflow:auto"></div>
+    </fieldset>
+</div>

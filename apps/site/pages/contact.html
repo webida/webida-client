@@ -1,0 +1,38 @@
+<br />
+<div>
+		<h1>Contact us</h1>
+		<div>
+				Feel free to contact us at any time. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras gravida justo lectus, in imperdiet dolor tristique convallis. Sed tincidunt congue nisl et placerat. Donec volutpat ullamcorper libero et interdum. Quisque semper lorem et leo pharetra, et lobortis risus accumsan. Praesent a mollis risus. Aliquam venenatis interdum eleifend. Integer ac arcu semper, pulvinar ipsum ac, commodo felis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nunc sodales venenatis nisi. Proin tincidunt fringilla lacus a sagittis. Maecenas viverra metus augue.
+		</div>
+		
+		<div class="contact-form">
+				<dl>
+						<dt>Your name <span class="required">(required)</span></dt>
+						<dd><input type="text" name="name" id="contact-name"></dd>
+						
+						<dt>Your email address <span class="required">(required)</span></dt>
+						<dd><input type="text" name="email" id="contact-email"></dd>
+						
+						<dt>Comments <span class="required">(required)</span></dt>
+						<dd><textarea cols="80" rows="15" name="contents" id="contact-contents"></textarea></dd>
+				</dl>
+				<button class="btn btn-large btn-block btn-info submit">Send</button>
+		</div>
+</div>
+<br /><br /><br /><br />
+
+
+<script>
+		
+		require(["webida"], function(Webida) {
+				Webida.auth.getLoginStatus(function(err, user) {
+						if (err || !user) {
+								console.log(err, user);
+								
+						} else {
+								$("#contact-email").val(user.email);
+						}
+				});
+		});
+		
+</script>

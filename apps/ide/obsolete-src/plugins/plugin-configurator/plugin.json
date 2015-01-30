@@ -1,0 +1,17 @@
+{
+    "name": "plugin-configurator",
+    "description": "Plugin configurator UI manager of IDE, user can plugin setting",
+    "version": "0.1.0",
+    "deps": [
+        "workbench"
+    ],
+
+    "extensions": {
+        "workbench:menu" : {
+            "location" : "/&Help/",
+            "wholeItems" : {
+                "&Plug-in Configurator" : [ "cmnd" ]
+            }
+        }
+    }
+}

@@ -1,0 +1,109 @@
+body {
+    margin: 0px auto;
+    border: 1px solid black;
+}
+
+body > header {
+    border: 1px solid black;
+}
+
+header h1 {
+    font-size: 36px;
+    margin: 0px;
+}
+
+header h2 {
+    font-size: 18px;
+    margin: 0px;
+    color: #888;
+    font-style: italic;
+}
+
+nav {
+    border: 1px solid black;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0px;
+    display: block;
+    clear: right;
+    padding-left: 4px;
+    height: 24px;
+}
+
+nav ul li {
+    display: inline;
+    padding: 0px 20px 5px 10px;
+    height: 24px;
+    border-right: 1px solid #ccc;
+}
+
+nav ul li a {
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    color: red;
+}
+
+article {
+    border: 1px solid black;
+}
+
+article > header h1 {
+    font-size: 20px;
+    margin-left: 14px;
+}
+
+article > header h1 a {
+    color: #993333;
+}
+
+article > header h1 img {
+    vertical-align:middle;
+}
+
+article > section header h1 {
+    font-size: 16px;
+}
+
+article p {
+    clear: both;
+}
+
+aside {
+    position: absolute;
+    top: 210px;
+    right: 0px;
+    height: 312px;
+    z-index: 100;
+    background-color: white;
+    border: 1px solid black;
+}
+
+aside > header h1 {
+    font-size: 20px;
+    margin-left: 14px;
+}
+
+aside > header h1 a {
+    color: #993333;
+}
+
+aside > header h1 img {
+    vertical-align:middle;
+}
+
+aside > section header h1 {
+    font-size: 16px;
+}
+
+footer p {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 24px;
+}

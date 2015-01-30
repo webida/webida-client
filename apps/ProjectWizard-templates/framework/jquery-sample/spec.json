@@ -1,0 +1,21 @@
+{
+    "template_id": "jquery-sample",
+    "title": "jquery sample",
+    "screen_shot": ["res/jquery-sample-1.jpg",
+                    "res/jquery-sample-2.jpg",
+                    "res/jquery-sample-3.jpg"],
+    "description": "project/README.md",
+    "version": "0.1",
+    "app_class": "html",
+    "app_main": "index.html",
+    "template model": [
+        {
+           "param": "project name (NOT USED YET)",
+           "value": "default1"
+        },
+        {
+           "param": "app id (NOT USED YET)",
+           "value": "default2"
+        }
+    ]
+}

@@ -1,0 +1,471 @@
+@font-face {
+    font-family: 'Nanum Gothic Coding';
+    src: url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.woff');
+}
+
+.dimming {
+    height: 100%;
+    width: 100%;
+    position:fixed;
+    top: 0;
+    left: 0;
+    background-color: #c8cce8;
+    background-repeat: repeat;
+    opacity: 0.3;
+    filter: alpha(opacity=30);
+    z-index: 20;
+}
+
+body {
+    background: url('../../resource/background_image.jpg');
+    font-family: 'Nanum Gothic Coding';
+}
+
+.row {
+    margin: 0 auto 0 auto;
+}
+
+.header {
+    background: transparent;
+    height: 60px;
+    padding: 10px;
+}
+
+.pf-nav {
+    float: right;
+    cursor: pointer;
+}
+
+.pf-img {
+    width: 36px;
+    height: 36px;
+}
+
+.pf-img img {
+    border: 1px solid #55606e;
+}
+
+.workspace-widget {
+    padding-top:40px;
+    margin-bottom: 50px;
+    width: 684px;
+}
+
+.app-widget {
+    width: 684px;
+    margin: 0 auto 0 auto;
+}
+
+.app-widget ul {
+    list-style: none;
+    padding: 0;
+}
+
+.app-widget ul li {
+    margin: 0 0 0 96px;
+    float: left;
+    position: relative;
+    height: 106px;
+    width: 106px;
+    cursor: pointer;
+}
+
+.app-widget ul li div {
+    position: absolute;
+    top: 106px;
+    width: 100%;
+    color: #ddd;
+    text-align: center;
+}
+
+.workspace-widget .panel {
+    width: 684px;
+    height: 250px;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    margin-bottom: 0px;
+    border-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.05);
+    margin: 0 auto 0 auto;
+    box-shadow: 0 3px 4px rgba(0,0,0,.3);
+}
+
+.workspace-widget .panel-default > .panel-heading {
+    background-color: rgb(255,255,255);
+    background-color: rgba(255,255,255,0.15);
+    border: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.6);
+    padding: 8px 12px;
+}
+
+.workspace-widget .panel-title {
+    color: #C8DBEE;
+}
+
+.workspace-widget .panel-body {
+    padding: 12px 12px 0 12px;
+    position: relative;
+}
+
+.workspace-name {
+    border-radius: 4px 4px 0 0;
+    width: 100%;
+    height: 40px;
+    line-height: 42px;
+    font-size: 2em;
+    padding-left: 10px;
+    cursor: pointer;
+    color: #bbcfe5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: 0.5s;
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+}
+
+.workspace-name:hover {
+    background-color: #bbcfe5;
+    color: #000;
+    transition: 0.5s;
+}
+
+.project-container {
+    width: 100%;
+    height: 136px;
+    position: relative;
+}
+
+.project-name {
+    width: 180px;
+    height: 100%;
+    position: absolute;
+    top: 4px;
+}
+
+.project-nameitem {
+    width: 146px;
+    margin-left: 10px;
+    font-size: 12pt;
+    color: #6F8197;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-count {
+    position: absolute;
+    top: 4px;
+    right: 0;
+    height: 100%;
+    color: #00b4ff;
+    text-align: center;
+    font-size: 4em;
+    padding-right: 10px;
+    margin-top: -14px;
+}
+
+.dashboard {
+    background: url('../../resource/desktop_icons_devcenter.png');
+}
+.dashboard:hover {
+    background-position: -106px;
+}
+.dashboard:active {
+    background-position: -212px;
+}
+
+.document {
+    background: url('../../resource/desktop_icons_docs.png');
+}
+.document:hover {
+    background-position: -106px;;
+}
+.document:active {
+    background-position: -212px;
+}
+
+.settings {
+    background: url('../../resource/desktop_icons_setting.png');
+}
+.settings:hover {
+    background-position: -106px;
+}
+.settings:active {
+    background-position: -212px;
+}
+
+.modal-content {
+    width: 440px;
+    height: 100%;
+    background-color: #1e1e1e;
+}
+
+.modal-title {
+    line-height: 14px;
+}
+
+.modal-header {
+    font-size: 10pt;
+    padding: 10px 10px 2px 10px;
+    color: #ffffff;
+    background-color: #1e1e1e;
+    border-radius: 3px;
+    border: 0;
+}
+
+.modal-body {
+    padding: 10px;
+}
+
+.nav-tabs {
+    border: 0;
+}
+
+.nav-tabs>li>a, .nav-tabs>li>a:hover {
+    padding: 5px 35px;
+    font-size: 9pt;
+    background: linear-gradient(to bottom, #373737, #2c2c2c);
+    border: 1px solid #2c2c2c;
+    color: #666666;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover {
+    background: linear-gradient(to bottom, #4c4c4c, #434343);
+    border: 1px solid #2c2c2c;
+    color: #ffffff;
+}
+
+.tab-content {
+    padding: 1px;
+    background-color: #101010;
+    border: 1px solid #2c2c2c;
+}
+
+.tab-content .panel {
+    background-color: #27292c;
+    margin: 5px;
+    font-size: 10pt;
+    border: 0;
+}
+
+.tab-content .panel-default>.panel-heading {
+    background-color: #4a5a77;
+    font-size: 9pt;
+    color: #c8c8c8;
+    padding: 5px;
+    border: 0;
+}
+
+.tab-content .panel-body {
+    padding: 10px;
+}
+
+.tab-content label {
+    font-size: 10pt;
+    color: #4771a1;
+}
+
+.tab-content input {
+    font-size: 10pt;
+    color: #35AEFF;
+    background-color: #000000;
+    border: 1px solid #55606e;
+    width: 388px;
+    height: 22px;
+    border-radius: 3px;
+}
+
+/* adjustment for bootstrap.min.css */
+.tab-content input {
+    padding: 0px 12px;
+}
+
+.tab-content textarea {
+    font-size: 10pt;
+    color: #4771a1;
+    background-color: #000000;
+    border: 1px solid #55606e;
+    border-radius: 3px;
+    resize: none;
+}
+
+.tab-content button {
+    background-color: #36434e;
+    font-size: 10pt;
+    color: #bbcfe5;
+    width: 138px;
+    height: 24px;
+    line-height: 24px;
+    border-radius: 3px;
+    border: 0;
+    padding: 0;
+    outline: none;
+    margin-top: 6px;
+}
+
+.tab-content button:hover {
+    background-color: #3e5262;
+    color: #bbcfe5;
+}
+
+.tab-content button:active {
+    background-color: #26333e;
+    color: #bbcfe5;
+}
+
+.tab-content .form-group {
+    margin-bottom: 5px;
+}
+
+.delete .panel {
+    background-color: #2c2728;
+    margin: 5px;
+    font-size: 10pt;
+    border: 0;
+}
+
+.delete .panel-body {
+    padding: 10px;
+}
+
+.delete .panel-danger>.panel-heading {
+    background-color: #774a58;
+    font-size: 9pt;
+    color: #c8c8c8;
+    padding: 5px;
+    border: 0;
+}
+
+.delete .form-group {
+    color: #a1475e;
+}
+
+.delete button {
+    background-color: #613344;
+    font-size: 10pt;
+    color: #e5bbc7;
+    width: 154px;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 3px;
+    padding: 0;
+    border: 0;
+}
+
+.delete button:hover {
+    color: #e5bbc7;
+    background-color: #77334d;
+}
+
+.delete button:active {
+    color: #e5bbc7;
+    background-color: #4a2332;
+}
+
+.modal {
+    overflow: hidden;
+}
+
+.modal-dialog {
+    width: 440px;
+    padding-top: 155px;
+}
+
+.pf-content {
+    width: 280px;
+    height: 124px;
+    position: absolute;
+    color: white;
+    background-color: #1e1e1e;
+    top: 65px;
+    right: 11px;
+    border-radius: 3px;
+    padding: 15px;
+    z-index: 1000;
+    box-shadow: 0 3px 4px rgba(0,0,0,.4);
+}
+
+.pf-info {
+    position: relative;
+    width: 100%;
+    height: 90px;
+}
+
+.pf-info .image {
+    /* position: relative; */
+
+    width: 90px;
+    height: 90px;
+    background-color: #353c44;
+    float: left;
+    margin-right: 15px;
+}
+
+.pf-info .image .pf-edit {
+    position: absolute;
+    left: 5px;
+    bottom: 5px;
+    width: 80px;
+    height: 24px;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.5);
+    color: #fff;
+    border-radius: 12px;
+    text-align: center;
+    line-height: 24px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.pf-info .info {
+    float: left;
+    width: 144px;
+    height: 90px;
+    color: #587494;
+}
+
+.pf-info .info .name {
+    font-size: 12pt;
+    color: #fff;
+    font-weight: bold;
+}
+
+.pf-info .info .email {
+    font-size: 9pt;
+    word-wrap: break-word;
+}
+
+.pf-info button {
+    width: 144px;
+    height: 22px;
+    background-color: #613344;
+    color: #e5bbc7;
+    font-size: 10pt;
+    padding: 0;
+    bottom: 0;
+    border-radius: 3px;
+    position: absolute;
+}
+
+.pf-info button:hover {
+    background-color: #77334d;
+    color: #e5bbc7;
+}
+
+.pf-info button:active {
+    background-color: #4a2332;
+    color: #e5bbc7;
+}
+
+.pf-arrow {
+    background: url('../../resource/tooltip.png');
+    position: absolute;
+    width: 15px;
+    height: 13px;
+    top: 52px;
+    right: 22px;
+    z-index: 1000;
+}
+
+input[disabled] {
+    background-color: #000!important;
+}

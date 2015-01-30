@@ -1,0 +1,25 @@
+{
+    "name": "paas-template",
+    "description": "paas-template",
+    "version": "0.0.1",
+    "augments": [],
+    "extensionPoints" : {
+        "paas-template:views" : [
+            {"name" : "name", "type" : "String", 
+             "desc" : "paas name"},
+            {"name" : "logo", "type" : "String", 
+             "desc" : "paas logo"},
+            {"name" : "account", "type" : "function",
+              "desc": "account"},
+            {"name" : "showApps", "type" : "function",
+              "desc": "show apps"},
+            {"name" : "createApp", "type" : "function",
+              "desc": "create app"},
+            {"name" : "changeProject", "type" : "function",
+              "desc": "change project"}
+        ]
+    },
+    "extensions": {
+        "paas:tab" : {}
+	}
+}

@@ -1,0 +1,23 @@
+{
+    "template_id": "Google HTML5 Slide",
+    "title": "Google HTML5 Slide",
+    "screen_shot": ["res/googlehtml5-1.jpg",
+                    "res/googlehtml5-2.jpg",
+                    "res/googlehtml5-3.jpg",
+                    "res/googlehtml5-4.jpg"],
+    "description": "project/README.md",
+    "version": "0.1",
+    "app_class": "html",
+    "app_main": "index.html",
+    "template model": [
+        {
+           "param": "project name (NOT USED YET)",
+           "value": "default1"
+        },
+        {
+           "param": "app id (NOT USED YET)",
+           "value": "default2"
+        }
+
+    ]
+}

@@ -1,0 +1,60 @@
+<style>
+    .webida-app-progressbar {
+        border: 1px solid #6d757b;
+        width: 150px;
+        height: 8px;
+        border-radius: 10px;
+        background-image: -webkit-linear-gradient(top, #81878c 0%, #aab1b6 100%);
+        background-image: -moz-linear-gradient(top, #81878c 0%, #aab1b6 100%);
+        background-image: linear-gradient(to bottom, #81878c 0%, #aab1b6 100%);
+        overflow: hidden;
+    }
+    .webida-app-progressbar-bar {
+        overflow: hidden;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-image: -webkit-linear-gradient(top, #31d6ff 0%, #00bfee 65%, #2bd5ff 100%);
+        background-image: -moz-linear-gradient(top, #31d6ff 0%, #00bfee 65%, #2bd5ff 100%);
+        background-image: linear-gradient(to bottom, #31d6ff 0%, #00bfee 65%, #2bd5ff 100%);
+    }
+    .webida-app-progressbar-bar-tip {
+        width: 1px;
+        height: 100%;
+        position: absolute;
+        right: 0px;
+        background-color: rgb(255, 255, 255);
+        background-color: rgba(255, 255, 255, 0.20);
+    }
+    .webida-app-progressbar-bar-highlight {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background-image: -webkit-linear-gradient( -45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent );
+        background-image: -moz-linear-gradient( -45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent );
+        background-image: linear-gradient( -45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent );
+        background-size: 15px 15px;
+        -webkit-animation: progressbar-bar-loading-anim 4.5s linear infinite;
+        -moz-animation: progressbar-bar-loading-anim 4.5s linear infinite;
+        animation: progressbar-bar-loading-anim 4.5s linear infinite;
+    }
+
+    @-webkit-keyframes progressbar-bar-loading-anim {
+        to { background-position: 100% 0; }
+    }
+    @-moz-keyframes progressbar-bar-loading-anim {
+        to { background-position: 100% 0; }
+    }
+    @keyframes progressbar-bar-loading-anim {
+        to { background-position: 100% 0; }
+    }
+</style>
+
+<div class='webida-app-progressbar-bar'>
+    <div class='webida-app-progressbar-bar-highlight'>
+        <div class='webida-app-progressbar-bar-lodingbar'>
+        </div>
+    </div>
+    <div class='webida-app-progressbar-bar-tip'>
+    </div>
+</div>
