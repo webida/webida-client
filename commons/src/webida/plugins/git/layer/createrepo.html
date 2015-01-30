@@ -1,0 +1,89 @@
+<div style="width:450px;padding-bottom: 5px;">
+    <div style="width:60px;display:inline-block;">
+        <strong>Location:</strong>
+    </div>
+    <div style="width:385px;display:inline-block;">
+        <select id="GitCreateSelect" style="width:100%;" data-dojo-type="dijit/form/Select">
+            <option value="local" selected="true">in Current workspace</option>
+            <option value="github">in GitHub</option>
+        </select>
+    </div>
+</div>
+<!-- Local -->
+<div id="GitCreateLocal" style="width:450px;">
+    <fieldset style="padding: 5px; border: 1px solid gray">
+        <legend>
+            <strong>Options</strong>
+        </legend>
+        <div>
+            <div style="width:135px;display:inline-block;">
+                <input type="radio" id="GitCreateCurDirRadioBtn" data-dojo-type="dijit/form/RadioButton" checked />
+                <label for="GitCreateCurDirRadioBtn">Current directory:</label>
+            </div>
+            <div style="width:295px;display:inline-block;" id="GitCurrentDirectoryInfo"></div>
+        </div>
+        <div>
+            <div style="width:135px;display:inline-block;">
+                <input type="radio" id="GitCreateNewDirRadioBtn" data-dojo-type="dijit/form/RadioButton" />
+                <label for="GitCreateNewDirRadioBtn">Selected directory:</label>
+            </div>
+            <div style="width:295px;display:inline-block;">
+                <input type="text" id="GitCreateProjectName" data-dojo-type="dijit/form/TextBox" style="width:225px" data-dojo-props="disabled: true, placeHolder: 'Select directory location'"/>
+                <button id="GitFileDialogBtn" data-dojo-type="dijit/form/Button" data-dojo-props="disabled: true">
+                    <div>Browse</div>
+                </button>
+            </div>
+        </div>
+    </fieldset>
+</div>
+<!-- Github -->
+<div id="GitCreateGithub" style="display:none;width:450px;">
+    <fieldset style="padding: 5px; border: 1px solid gray">
+        <legend>
+            <strong>Options</strong>
+        </legend>
+        <div title="Required string" style="padding-bottom: 5px;">
+            <label style="width:75px;display:inline-block;" for="GitGithubName">Name:</label>
+            <input type="text" id="GitGithubName" data-dojo-type="dijit/form/TextBox" style="width:355px;display:inline-block;" data-dojo-props="placeHolder:'Required'" />
+        </div>
+        <div title="Optional string" style="padding-bottom: 5px;">
+            <label style="width:75px;display:inline-block;" for="GitGithubDescription">Description:</label>
+            <input type="text" id="GitGithubDescription" data-dojo-type="dijit/form/TextBox" style="width:355px;display:inline-block;" data-dojo-props="placeHolder:'Optional'" />
+        </div>
+        <div title="Optional boolean - true to create a private repository, false to create a public one. Creating private repositories requires a paid GitHub account. Default is false." style="padding-bottom: 5px;">
+            <label  style="width:75px;display:inline-block;" for="GitGithubPrivate">Private:</label>
+            <select name="private" id="GitGithubPrivate" data-dojo-type="dijit/form/Select" style="width:355px;display:inline-block;" >
+                <option value="true">True</option>
+                <option value="false" selected="selected">False</option>
+            </select>
+        </div>
+        <div title="Optional boolean - true to enable the wiki for this repository, false to disable it. Default is true." style="padding-bottom: 5px;">
+            <label style="width:75px;display:inline-block;" for="GitGithubWiki">Wiki:</label>
+            <select name="wiki" id="GitGithubWiki" data-dojo-type="dijit/form/Select"  style="width:355px;display:inline-block;" style="padding-bottom: 5px;">
+                <option value="true" selected="selected">True</option>
+                <option value="false">False</option>
+            </select>
+        </div>
+        <div title="Optional boolean - true to enable issues for this repository, false to disable them. Default is true." style="padding-bottom: 5px;">
+            <label style="width:75px;display:inline-block;" for="GitGithubIssue">Issue:</label>
+            <select name="issue" id="GitGithubIssue" data-dojo-type="dijit/form/Select" style="width:355px;display:inline-block;">
+                <option value="true" selected="selected">True</option>
+                <option value="false">False</option>
+            </select>
+        </div>
+        <div title="Optional boolean - true to enable downloads for this repository, false to disable them. Default is true." style="padding-bottom: 5px;">
+            <label style="width:75px;display:inline-block;" for="GitGithubDownload">Download:</label>
+            <select name="issue" id="GitGithubDownload" data-dojo-type="dijit/form/Select" style="width:355px;display:inline-block;">
+                <option value="true" selected="selected">True</option>
+                <option value="false">False</option>
+            </select>
+        </div>
+        <div title="Optional boolean - true to create an initial commit with empty README. Default is false." style="padding-bottom: 5px;">
+            <label style="width:75px;display:inline-block;" for="GitGithubAutoInit">Auto init:</label>
+            <select name="issue" id="GitGithubAutoInit" data-dojo-type="dijit/form/Select" style="width:355px;display:inline-block;">
+                <option value="true">True</option>
+                <option value="false" selected="selected">False</option>
+            </select>
+        </div>
+    </fieldset>
+</div>

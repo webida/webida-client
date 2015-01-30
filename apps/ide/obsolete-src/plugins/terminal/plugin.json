@@ -1,0 +1,22 @@
+{
+    "name": "terminal",
+    "description": "Terminal view",
+    "version": "0.1.0",
+    "deps": [
+        "workbench"
+    ],
+    "extensions": {
+
+        "workbench:menu" : {
+            "location" : "/&Add-on/",
+            "wholeItems" : {
+                "Terminal" : [ "cmnd", { "shortcut" : { "keys" : "Alt+T", "desc" : "terminal" },
+                                         "toolbar": { "icons" : { "normal": "./styles/webida-images/icons/title_icon_terminal_nml.png",
+                                                                  "hovered" : "./styles/webida-images/icons/title_icon_terminal_hover.png",
+                                                                  "clicked" : "./styles/webida-images/icons/title_icon_terminal_pushed.png" },
+                                                      "tooltip" : "Terminal"}
+                                       } ]
+            }
+        }
+	}
+}

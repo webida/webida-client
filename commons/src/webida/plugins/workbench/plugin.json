@@ -1,0 +1,107 @@
+{
+    "name": "workbench",
+    "description": "Main UI manager",
+    "version": "0.1.0",
+    "extensionPoints" : {
+
+        "workbench:preference-page" : [
+            {"name": "hierarchy", "type": "string"},
+            {"name": "name", "type": "string"},
+            {"name": "handler", "type": "function"}
+        ],
+
+        "workbench:views" : [
+            { "name": "location", "type": "string",
+              "desc": "Returns a string (currently, one of 'top', 'left', 'bottom', and 'center') that indicates the desired location in the workspace." },
+            { "name": "getView", "type": "function",
+              "desc": "Returns a view widget" },
+            { "name": "onViewAppended", "type": "function",
+              "desc": "A callback called when the view is appended to the workbench" }
+        ],
+
+        "workbench:panels" : [
+            { "name": "location", "type": "string",
+             "desc": "Returns a string (currently, one of 'top', and 'center') that indicates the desired location in the workspace." },
+            { "name": "getPanel", "type": "function",
+             "desc": "Returns a view widget" },
+            { "name": "onPanelAppended", "type": "function",
+             "desc": "A callback called when the view is appended to the workbench" }
+        ],
+
+        "workbench:menu" : "webida-lib/plugins/_extension-points/menu.json",
+
+        "workbench:shortcutList" : [
+            { "name" : "getEnclosingDOMElem", "type" : "function",
+              "desc" : "returns a DOM element whose subtree corresponds to the document area in which the shortcuts are handled" },
+            { "name" : "getShortcuts", "type" : "function",
+              "desc" : "returns an array of objects of type { keys: string, title: string, desc: string, viable: boolean } "}
+        ],
+
+        "workbench:uidMenu" : [
+            { "name" : "label", "type" : "string",
+             "desc": "Label for the menu item" },
+            { "name" : "handler", "type" : "function",
+             "desc": "Name of the handler function" }
+        ]
+    },
+    "extensions": {
+        "workbench:menu" : [
+            {
+                "location" : "/&File/",
+                "wholeItems" : {
+                    "Switc&h Workspace" : [ "cmnd", { "procedural": true } ],
+                    "Save Status" : [ "cmnd" ],
+                    "&Quit" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Ctrl+W" }, "desc" : "Quit" } } ]
+                },
+                "getViableItems" : "getWorkspaceSeletionItem"
+            },
+            {
+                "location" : "/&View/",
+                "wholeItems" : {
+                    "Select View from &List" : [ "cmnd", {
+                        "shortcut" : { "keys" : { "default" : "Alt+Shift+A" }, "desc" : "Show view" },
+                        "procedural" : true
+                    }],
+                    "delim1" : "---",
+                    "Toggle &Menu" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+Shift+M" }, "desc" : "Toggle menubar" } } ],
+                    "Toggle &Toolbar" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+Shift+T" }, "desc" : "Toggle toolbar" } } ],
+                    "Toggle &Full-Screen" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+F11" }, "desc" : "Toggle full-screen" } } ]
+                },
+                "getViableItems" : "getItemsUnderView"
+            },
+            {
+                "location" : "/&Help/",
+                "wholeItems" : {
+                    "&Shortcut List" : [ "cmnd",
+                                           {
+                                               "shortcut" : { "keys" : { "default" : "ctrl+shift+L" }, "desc" : "Shortcut keys" },
+                                               "toolbar": {
+                                                   "icons" : "./styles/webida-images/icons/toolbar_shortcuts.png",
+                                                   "tooltip" : "Shortcut list"
+                                               },
+                                               "procedural" : true
+                                           }],
+                    "&Command List" : [ "cmnd",
+                                          {
+                                              "shortcut" : { "keys" : { "default" : "Alt+C" }, "desc" : "The list of viable commands from which you can select one and run it" },
+                                              "toolbar": {
+                                                  "icons" : "./styles/webida-images/icons/toolbar_command.png",
+                                                  "tooltip" : "Command list"
+                                              },
+                                              "procedural" : true
+                                          }]
+                 },
+                "getViableItems" : "getShortcutsItems"
+            },
+            {
+                "location" : null,
+                "wholeItems" : {
+                    "Focus Menu Bar" : [ "cmnd",
+                                        { "shortcut" : { "keys" : { "default" : "F10" },
+                                                         "desc" : "Move focus to the menu bar" } } ]
+                },
+                "getViableItems" : "getBogusItems"
+            }
+        ]
+    }
+}

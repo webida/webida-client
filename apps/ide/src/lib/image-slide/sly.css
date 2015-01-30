@@ -1,0 +1,90 @@
+
+
+/* Frame */
+.frame {
+    height: 250px;
+    line-height: 250px;
+    overflow: hidden;
+}
+.frame ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-size: 50px;
+}
+.frame ul li {
+    float: left;
+    width: 130px;
+    height: 130px;
+    margin: 0 20px 0 0;
+    padding: 0;
+    background-color: #aab6c2;
+    text-align: center;
+    cursor: pointer;
+    border: solid 1px #43494d;
+}
+
+/* Scrollbar */
+.scrollbar {
+    margin: 9px 0 0 0;
+    height: 6px;
+    line-height: 0;
+}
+.scrollbar .handle {
+    height: 100%;
+    background-color: #666e81;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.scrollbar .handle:hover {
+    height: 100%;
+    background-color: #484e5c;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.scrollbar .handle .mousearea {
+    position: absolute;
+    top: -9px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+}
+
+/* Effects */
+.effects {
+    height: 130px;
+    line-height: 130px;
+    -webkit-perspective: 800px;
+    -ms-perspective: 800px;
+    perspective: 800px;
+    -webkit-perspective-origin: 50% 50%;
+    -ms-perspective-origin: 50% 50%;
+    perspective-origin: 50% 50%;
+    overflow-y: hidden;
+}
+.effects ul {
+    -webkit-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+.effects ul li {
+    position: relative;
+    -webkit-transform: scale(1);
+    -ms-transform:  scale(1);
+    transform:  scale(1);
+    -webkit-transition: -webkit-transform 300ms ease-out;
+    transition: transform 300ms ease-out;
+}
+.effects ul li.active {
+    z-index: 10;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+}
+.effects ul li.active ~ li {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+}
+

@@ -1,0 +1,12 @@
+{
+    "plugins" : [
+                    "plugins/paas",
+        			"plugins/paas-template",
+        			"plugins/paas-webida",
+        			"plugins/workbench",
+        			"plugins/workspace"
+                ],
+    "start-plugins" : [
+        			"plugins/workbench"
+    ]
+}

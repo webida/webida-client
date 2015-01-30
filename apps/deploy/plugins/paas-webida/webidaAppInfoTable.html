@@ -1,0 +1,444 @@
+<style>
+    .table-title {
+        position:relative;
+        width:100%;
+        min-width:568px;
+        height:30px;
+        background-color:#788899;
+    }
+    
+    .table-title-arrow {
+        position: absolute;
+        margin:10px;
+        width:9px;
+        height:9px;
+        background-image:url("styles/webida-images/icons/deploy_title_arrow.png");
+        background-position:0 9px;
+        cursor:pointer;
+    }
+    
+    .table-title-arrow-up {
+        background-position:9px 0;
+    }
+    
+    .table-title-name {
+        position: absolute;
+        margin:5px;
+        width:400px;
+        height:25px;
+        left:20px;
+        line-height: 180%;
+        color:#FFFFFF;
+        font-weight:bold;
+    }
+    
+    .table-title-setting {
+        position: absolute;
+        right:60px;
+        margin:5px;
+        width:20px;
+        height:20px;
+        background-image:url("styles/webida-images/icons/deploy_icon_checkfiles.png");
+        background-position:0 0;
+        cursor:pointer;
+    }
+    
+    .table-title-setting-hover {
+        background-position:40px 0;
+    }
+    
+    .table-title-setting-pushed {
+        background-position:20px 0;
+    }
+    
+    .table-title-setting-disabled {
+        display:none;
+    }
+    
+    .table-title-newsetting {
+        position: absolute;
+        right:30px;
+        margin:5px;
+        width:20px;
+        height:20px;
+        background-image:url("styles/webida-images/icons/deploy_icon_checkfiles.png");
+        background-position:0 0;
+        display:none;
+        cursor:pointer;
+    }
+    
+    .table-title-newsetting-hover {
+        background-position:40px 0;
+    }
+    
+    .table-title-newsetting-pushed {
+        background-position:20px 0;
+    }
+    
+    .table-title-newsetting-block {
+        display:block;
+    }
+    
+    .table-title-trash {
+        position: absolute;
+        right:30px;
+        margin:5px;
+        width:20px;
+        height:20px;
+        background-image:url("styles/webida-images/icons/deploy_icon_trash.png");
+        background-position:0 0;
+        cursor:pointer;
+    }
+    
+    .table-title-trash-hover {
+        background-position:40px 0;
+    }
+    
+    .table-title-trash-pushed {
+        background-position:20px 0;
+    }
+    
+    .table-title-trash-disabled {
+        display:none;
+    }
+    
+    .table-title-changeinfo {
+        position: absolute;
+        margin:5px;
+        right:0px;
+        width:20px;
+        height:20px;
+        background-image:url("styles/webida-images/icons/deploy_icon_changeinfo.png");
+        background-position:0 0;
+        cursor:pointer;
+    }
+    
+    .table-title-changeinfo-hover {
+        background-position:40px 0;
+    }
+    
+    .table-title-changeinfo-pushed {
+        background-position:20px 0;
+    }
+    
+    .table-title-changeinfo-disabled {
+        display:none;
+    }
+    
+    .table-title-cancel {
+        position: absolute;
+        margin:5px;
+        right:0px;
+        width:20px;
+        height:20px;
+        background-image:url("styles/webida-images/icons/deploy_icon_cancel.png");
+        background-position:0 0;
+        display:none;
+        cursor:pointer;
+    }
+    
+    .table-title-cancel-hover {
+        background-position:40px 0;
+    }
+    
+    .table-title-cancel-pushed {
+        background-position:20px 0;
+    }
+    
+    .table-title-cancel-block {
+        display:block;
+    }
+    
+    .table-title-newappcancel {
+        position: absolute;
+        margin:5px;
+        right:0px;
+        width:20px;
+        height:20px;
+        background-image:url("styles/webida-images/icons/deploy_icon_cancel.png");
+        background-position:0 0;
+        display:none;
+        cursor:pointer;
+    }
+    
+    .table-title-newappcancel-hover {
+        background-position:40px 0;
+    }
+    
+    .table-title-newappcancel-pushed {
+        background-position:20px 0;
+    }
+    
+    .table-title-newappcancel-block {
+        display:block;
+    }
+    
+    .table-content {
+        position:relative;
+        padding-top:8px;
+        padding-left:8px;
+        padding-right:8px;
+        width:calc(100% - 16px);
+        min-width:552px;
+        height:199px;
+        background-color:#CDD8E3;
+        font-family: "Nanum Gothic Coding", Verdana,Arial,sans-serif;
+        font-size:10pt;
+        font-weight:normal;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    }
+    
+    .table-content-toggled {
+        display:none;
+    }
+    
+    .table-content-table {
+        border-collapse:collapse;
+        border: #222930 1px;
+        width:100%;
+    }
+    
+    .table-content-table-label {
+        border-collapse:collapse;
+        border: #CDD8E3 1px solid;
+        background-color:#98B1CA;
+        width:80px;
+        height:31px;
+        color:#222930;
+        text-indent:0px;
+        line-height:250%;
+        text-align:center;
+        vertical-align:top;
+    }
+    
+    .table-content-table-value {
+        border-collapse:collapse;
+        border: #CDD8E3 1px solid;
+        background-color:#FFFFFF;
+        text-indent:5px;
+        line-height:100%;
+    }
+    
+    .table-content-table-inputbox {
+        border-width:0px;
+        color:#4F5B67;
+        line-height:100%;
+        margin:1px;
+    }
+    
+    .table-content-table-inputbox-edit {
+        border-width:1px;
+        border:1px inset;
+    }
+    
+    .table-content-table-inputbox-readonly {
+        border-width:0px;
+        color:#4F5B67;
+        line-height:100%;
+        margin:1px;
+    }
+    
+    .table-content-table-inputbox-label {
+        border-width:0px;
+        color:#4F5B67;
+        text-indent:10px;
+        line-height:100%;
+        margin:1px;
+    }
+    
+    .table-content-table-url {
+        border-width:0px;
+        text-indent:10px;
+        line-height:100%;
+        padding:1px;
+        margin:1px;
+    }
+    
+    .table-content-table-url {
+        border-width:0px;
+        text-indent:10px;
+        line-height:100%;
+        padding:1px;
+        margin:1px;
+        cursor:pointer;
+    }
+    
+    .table-action {
+        position:relative;
+        width:100%;
+        min-width:568px;
+        height:34px;
+        background-color:#CDD8E3;
+    }
+    
+    .table-action-progress {
+        position: absolute;
+        right:90px;
+        top:10px;
+        /*width:255px;*/
+        height:10px;
+        font-size:11px;
+        line-height:90%;
+        display:none;
+    }
+    
+    .table-action-deploy {
+        position: absolute;
+        right:40px;
+        margin:5px;
+        width:24px;
+        height:24px;
+        background-image:url("styles/webida-images/icons/deploy_icon_deploy.png");
+        background-position:0 0;
+        cursor:pointer;
+    }
+    
+    .table-action-deploy-hover {
+        background-position:24px 0;
+    }
+    
+    .table-action-deploy-pushed {
+        background-position:48px 0;
+    }
+    
+    .table-action-deploy-disabled {
+        display:none;
+    }
+    
+    .table-action-start {
+        position: absolute;
+        right:8px;
+        margin:5px;
+        width:24px;
+        height:24px;
+        background-image:url("styles/webida-images/icons/deploy_icon_start.png");
+        background-position:0 0;
+        display:none;
+        cursor:pointer;
+    }
+    
+    .table-action-start-hover {
+        background-position:24px 0;
+    }
+    
+    .table-action-start-pushed {
+        background-position:48px 0;
+    }
+    
+    .table-action-start-block {
+        display:block;
+    }
+    
+    .table-action-stop {
+        position: absolute;
+        right:8px;
+        margin:5px;
+        width:24px;
+        height:24px;
+        background-image:url("styles/webida-images/icons/deploy_icon_stop.png");
+        background-position:0 0;
+        display:none;
+        cursor:pointer;
+    }
+    
+    .table-action-stop-hover {
+        background-position:24px 0;
+    }
+    
+    .table-action-stop-pushed {
+        background-position:48px 0;
+    }
+    
+    .table-action-stop-block {
+        display:block;
+    }
+    
+    .table-action-save {
+        position: absolute;
+        right:8px;
+        margin:5px;
+        width:24px;
+        height:24px;
+        background-image:url("styles/webida-images/icons/deploy_icon_save.png");
+        background-position:0 0;
+        display:none;
+        cursor:pointer;
+    }
+    
+    .table-action-save-hover {
+        background-position:24px 0;
+    }
+    
+    .table-action-save-pushed {
+        background-position:48px 0;
+    }
+    
+    .table-action-save-block {
+        display:block;
+    }
+    
+    .table-action-newappsave {
+        position: absolute;
+        right:8px;
+        margin:5px;
+        width:24px;
+        height:24px;
+        background-image:url("styles/webida-images/icons/deploy_icon_save.png");
+        background-position:0 0;
+        display:none;
+        cursor:pointer;
+    }
+    
+    .table-action-newappsave-hover {
+        background-position:24px 0;
+    }
+    
+    .table-action-newappsave-pushed {
+        background-position:48px 0;
+    }
+    
+    .table-action-newappsave-block {
+        display:block;
+    }
+    
+    .deploy-block {
+        display:block;
+    }
+    
+    .deploy-none {
+        display:none;
+    }
+</style>
+<div style='width'>
+    <div class='table-title'>
+        <div class='table-title-arrow' title='Fold/Unfold'></div>
+        <div class='table-title-name'></div>
+        <div class='table-title-setting' title='Select files to deploy'></div>
+        <div class='table-title-newsetting' title='Select files to deploy'></div>
+        <div class='table-title-trash' title='Delete app'></div>
+        <div class='table-title-changeinfo' title='Edit app information'></div>
+        <div class='table-title-cancel' title='Cancel'></div>
+        <div class='table-title-newappcancel' title='Cancel'></div>
+    </div>
+    <div class='table-content'>
+
+        <TABLE class='table-content-table'> 
+            <TR><TH class='table-content-table-label'>Name</TH><TD width='209px' class='table-content-table-value'><input style='width:calc(100% - 15px)' class='table-content-table-inputbox' readonly/></TD><TH class='table-content-table-label'>Subdomain</TH><TD class='table-content-table-value'><label class='table-content-table-inputbox-label'></label><input style='width:calc(100% - 72px)' class='table-content-table-inputbox'  readonly/></TD></TR>
+            <!--<TR><TH class='table-content-table-label'>Type</TH><TD width='209px' class='table-content-table-value'><input style='width:calc(100% - 16px)' class='table-content-table-inputbox-readonly'  readonly/></TD><TH class='table-content-table-label'>Owner</TH><TD class='table-content-table-value'><input style='width:calc(100% - 16px)' class='table-content-table-inputbox-readonly'  readonly/></TD></TR> -->
+            <TR><TH class='table-content-table-label'>Status</TH><TD class='table-content-table-value' colspan=3><input style='width:454px' class='table-content-table-inputbox-readonly' readonly/></TD></TR>            
+            <TR><TH class='table-content-table-label'>URL</TH><TD class='table-content-table-value' colspan=3><a href='' target='_blank' class='table-content-table-url'></a></TD></TR>
+            <TR><TH class='table-content-table-label'>Desc.</TH><TD height='102px' class='table-content-table-value' colspan=3><textarea class='table-content-table-inputbox' style='height:79px; width:calc(100% - 15px);  resize:none;' cols='30' rows='30' readonly></textarea></TD></TR>
+        </TABLE>
+        
+    </div>
+    <div class='table-action'>
+        <div class='table-action-progress' data-dojo-type="dijit/ProgressBar" label=''></div>
+        <div class='table-action-deploy' title='Deploy app'></div>
+        <div class='table-action-start' title='Start app'></div>
+        <div class='table-action-stop' title='Stop app'></div>
+        <div class='table-action-save' title='Save'></div>
+        <div class='table-action-newappsave' title='Save'></div>
+    </div>
+</div>

@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>jQuery sample</title>
+
+        <link href="./css/smoothness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+        <script src="./js/jquery-1.9.1.js"></script>
+        <script src="./js/jquery-ui-1.10.3.custom.js"></script>
+
+        <!-- using CDN -->
+        <!--
+        <link href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+        <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        -->
+
+        <script>
+            $(function() {
+                $( "#mainTabs" ).tabs();
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Welcome to jQueryUI And JQuery Example!</h1>
+
+        <div id="mainTabs">
+            <ul>
+                <li><a href="#tab-jqueryUI">jQuery UI</a></li>
+                <li><a href="#tab-jquery">jQuery</a></li>
+            </ul>
+            
+            <!-- jQuery UI samples-->
+            <div id="tab-jqueryUI">
+
+                <script>
+                    $(function() {
+                        
+                        $( "#accordion" ).accordion();
+                        
+                        
+                        
+                        var availableTags = [
+                            "ActionScript",
+                            "AppleScript",
+                            "Asp",
+                            "BASIC",
+                            "C",
+                            "C++",
+                            "Clojure",
+                            "COBOL",
+                            "ColdFusion",
+                            "Erlang",
+                            "Fortran",
+                            "Groovy",
+                            "Haskell",
+                            "Java",
+                            "JavaScript",
+                            "Lisp",
+                            "Perl",
+                            "PHP",
+                            "Python",
+                            "Ruby",
+                            "Scala",
+                            "Scheme"
+                        ];
+                        $( "#autocomplete" ).autocomplete({
+                            source: availableTags
+                        });
+                        
+                        
+                        
+                        $( "#button" ).button();
+                        $( "#radioset" ).buttonset();
+                        
+                        
+                        
+                        $( "#tabs" ).tabs();
+                        
+                        
+                        
+                        $( "#dialog" ).dialog({
+                            autoOpen: false,
+                            width: 400,
+                            buttons: [
+                                {
+                                    text: "Ok",
+                                    click: function() {
+                                        $( this ).dialog( "close" );
+                                    }
+                                },
+                                {
+                                    text: "Cancel",
+                                    click: function() {
+                                        $( this ).dialog( "close" );
+                                    }
+                                }
+                            ]
+                        });
+                        
+                        // Link to open the dialog
+                        $( "#dialog-link" ).click(function( event ) {
+                            $( "#dialog" ).dialog( "open" );
+                            event.preventDefault();
+                        });
+                        
+                        
+                        
+                        $( "#datepicker" ).datepicker({
+                            inline: true
+                        });
+                        
+                        
+                        
+                        $( "#slider" ).slider({
+                            range: true,
+                            values: [ 17, 67 ]
+                        });
+                        
+                        
+                        
+                        $( "#progressbar" ).progressbar({
+                            value: 20
+                        });
+                        
+                        
+                        // Hover states on the static widgets
+                        $( "#dialog-link, #icons li" ).hover(
+                            function() {
+                                $( this ).addClass( "ui-state-hover" );
+                            },
+                            function() {
+                                $( this ).removeClass( "ui-state-hover" );
+                            }
+                        );
+                    });
+                </script>
+                <style>
+                    body{
+                        font: 62.5% "Trebuchet MS", sans-serif;
+                        margin: 50px;
+                    }
+                    .demoHeaders {
+                        margin-top: 2em;
+                    }
+                    .demoCodeAndRun {
+                        border: dotted 1px gray;
+                    }
+
+                    .demoBlock, .demoBlock2 {
+                        position: relative;
+                        background-color: #abc;
+                        left: 0px;
+                        width: 45px;
+                        height: 45px;
+                        margin: 5px;
+                    }
+
+                    #dialog-link {
+                        padding: .4em 1em .4em 20px;
+                        text-decoration: none;
+                        position: relative;
+                    }
+                    #dialog-link span.ui-icon {
+                        margin: 0 5px 0 0;
+                        position: absolute;
+                        left: .2em;
+                        top: 50%;
+                        margin-top: -8px;
+                    }
+                    #icons {
+                        margin: 0;
+                        padding: 0;
+                    }
+                    #icons li {
+                        margin: 2px;
+                        position: relative;
+                        padding: 4px 0;
+                        cursor: pointer;
+                        float: left;
+                        list-style: none;
+                    }
+                    #icons span.ui-icon {
+                        float: left;
+                        margin: 0 4px;
+                    }
+                    .fakewindowcontain .ui-widget-overlay {
+                        position: absolute;
+                    }
+                </style>
+                <h1>Welcome to jQuery UI!</h1>
+                
+                <div class="ui-widget">
+                    <p>This page demonstrates the widgets you downloaded using the theme you selected in the download builder. We've included and linked to minified versions of <a href="js/jquery-1.9.1.js">jQuery</a>, your personalized copy of <a href="js/jquery-ui-.custom.min.js">jQuery UI (js/jquery-ui-.custom.min.js)</a>, and <a href="css//jquery-ui-.custom.min.css">css//jquery-ui-.custom.min.css</a> which imports the entire jQuery UI CSS Framework. You can choose to link a subset of the CSS Framework depending on your needs. </p>
+                    <p>You've downloaded components and a theme that are compatible with jQuery 1.6+. Please make sure you are using jQuery 1.6+ in your production environment.</p>
+                </div>
+                
+                <h1>YOUR COMPONENTS:</h1>
+                
+                
+                <!-- Accordion -->
+                <h2 class="demoHeaders">Accordion</h2>
+                <div id="accordion">
+                    <h3>First</h3>
+                    <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
+                    <h3>Second</h3>
+                    <div>Phasellus mattis tincidunt nibh.</div>
+                    <h3>Third</h3>
+                    <div>Nam dui erat, auctor a, dignissim quis.</div>
+                </div>
+                
+                
+                
+                <!-- Autocomplete -->
+                <h2 class="demoHeaders">Autocomplete</h2>
+                <div>
+                    <input id="autocomplete" title="type &quot;a&quot;">
+                </div>
+                
+                
+                
+                <!-- Button -->
+                <h2 class="demoHeaders">Button</h2>
+                <button id="button">A button element</button>
+                <form style="margin-top: 1em;">
+                    <div id="radioset">
+                        <input type="radio" id="radio1" name="radio"><label for="radio1">Choice 1</label>
+                        <input type="radio" id="radio2" name="radio" checked="checked"><label for="radio2">Choice 2</label>
+                        <input type="radio" id="radio3" name="radio"><label for="radio3">Choice 3</label>
+                    </div>
+                </form>
+                
+                
+                
+                <!-- Tabs -->
+                <h2 class="demoHeaders">Tabs</h2>
+                <div id="tabs">
+                    <ul>
+                        <li><a href="#tabs-1">First</a></li>
+                        <li><a href="#tabs-2">Second</a></li>
+                        <li><a href="#tabs-3">Third</a></li>
+                    </ul>
+                    <div id="tabs-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+                    <div id="tabs-2">Phasellus mattis tincidunt nibh. Cras orci urna, blandit id, pretium vel, aliquet ornare, felis. Maecenas scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.</div>
+                    <div id="tabs-3">Nam dui erat, auctor a, dignissim quis, sollicitudin eu, felis. Pellentesque nisi urna, interdum eget, sagittis et, consequat vestibulum, lacus. Mauris porttitor ullamcorper augue.</div>
+                </div>
+                
+                
+                
+                <!-- Dialog NOTE: Dialog is not generated by UI in this demo so it can be visually styled in themeroller-->
+                <h2 class="demoHeaders">Dialog</h2>
+                <p><a href="#" id="dialog-link" class="ui-state-default ui-corner-all"><span class="ui-icon ui-icon-newwin"></span>Open Dialog</a></p>
+                
+                <h2 class="demoHeaders">Overlay and Shadow Classes <em>(not currently used in UI widgets)</em></h2>
+                <div style="position: relative; width: 96%; height: 200px; padding:1% 2%; overflow:hidden;" class="fakewindowcontain">
+                    <p>Lorem ipsum dolor sit amet,  Nulla nec tortor. Donec id elit quis purus consectetur consequat. </p><p>Nam congue semper tellus. Sed erat dolor, dapibus sit amet, venenatis ornare, ultrices ut, nisi. Aliquam ante. Suspendisse scelerisque dui nec velit. Duis augue augue, gravida euismod, vulputate ac, facilisis id, sem. Morbi in orci. </p><p>Nulla purus lacus, pulvinar vel, malesuada ac, mattis nec, quam. Nam molestie scelerisque quam. Nullam feugiat cursus lacus.orem ipsum dolor sit amet, consectetur adipiscing elit. Donec libero risus, commodo vitae, pharetra mollis, posuere eu, pede. Nulla nec tortor. Donec id elit quis purus consectetur consequat. </p><p>Nam congue semper tellus. Sed erat dolor, dapibus sit amet, venenatis ornare, ultrices ut, nisi. Aliquam ante. Suspendisse scelerisque dui nec velit. Duis augue augue, gravida euismod, vulputate ac, facilisis id, sem. Morbi in orci. Nulla purus lacus, pulvinar vel, malesuada ac, mattis nec, quam. Nam molestie scelerisque quam. </p><p>Nullam feugiat cursus lacus.orem ipsum dolor sit amet, consectetur adipiscing elit. Donec libero risus, commodo vitae, pharetra mollis, posuere eu, pede. Nulla nec tortor. Donec id elit quis purus consectetur consequat. Nam congue semper tellus. Sed erat dolor, dapibus sit amet, venenatis ornare, ultrices ut, nisi. Aliquam ante. </p><p>Suspendisse scelerisque dui nec velit. Duis augue augue, gravida euismod, vulputate ac, facilisis id, sem. Morbi in orci. Nulla purus lacus, pulvinar vel, malesuada ac, mattis nec, quam. Nam molestie scelerisque quam. Nullam feugiat cursus lacus.orem ipsum dolor sit amet, consectetur adipiscing elit. Donec libero risus, commodo vitae, pharetra mollis, posuere eu, pede. Nulla nec tortor. Donec id elit quis purus consectetur consequat. Nam congue semper tellus. Sed erat dolor, dapibus sit amet, venenatis ornare, ultrices ut, nisi. </p>
+                    
+                    <!-- ui-dialog -->
+                    <div class="ui-overlay"><div class="ui-widget-overlay"></div><div class="ui-widget-shadow ui-corner-all" style="width: 302px; height: 152px; position: absolute; left: 50px; top: 30px;"></div></div>
+                    <div style="position: absolute; width: 280px; height: 130px;left: 50px; top: 30px; padding: 10px;" class="ui-widget ui-widget-content ui-corner-all">
+                        <div class="ui-dialog-content ui-widget-content" style="background: none; border: 0;">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- ui-dialog -->
+                <div id="dialog" title="Dialog Title">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+                
+                
+                
+                <h2 class="demoHeaders">Framework Icons (content color preview)</h2>
+                <ul id="icons" class="ui-widget ui-helper-clearfix">
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-1-n"><span class="ui-icon ui-icon-carat-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-1-ne"><span class="ui-icon ui-icon-carat-1-ne"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-1-e"><span class="ui-icon ui-icon-carat-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-1-se"><span class="ui-icon ui-icon-carat-1-se"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-1-s"><span class="ui-icon ui-icon-carat-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-1-sw"><span class="ui-icon ui-icon-carat-1-sw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-1-w"><span class="ui-icon ui-icon-carat-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-1-nw"><span class="ui-icon ui-icon-carat-1-nw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-2-n-s"><span class="ui-icon ui-icon-carat-2-n-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-carat-2-e-w"><span class="ui-icon ui-icon-carat-2-e-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-1-n"><span class="ui-icon ui-icon-triangle-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-1-ne"><span class="ui-icon ui-icon-triangle-1-ne"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-1-e"><span class="ui-icon ui-icon-triangle-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-1-se"><span class="ui-icon ui-icon-triangle-1-se"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-1-s"><span class="ui-icon ui-icon-triangle-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-1-sw"><span class="ui-icon ui-icon-triangle-1-sw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-1-w"><span class="ui-icon ui-icon-triangle-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-1-nw"><span class="ui-icon ui-icon-triangle-1-nw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-2-n-s"><span class="ui-icon ui-icon-triangle-2-n-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-triangle-2-e-w"><span class="ui-icon ui-icon-triangle-2-e-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-1-n"><span class="ui-icon ui-icon-arrow-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-1-ne"><span class="ui-icon ui-icon-arrow-1-ne"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-1-e"><span class="ui-icon ui-icon-arrow-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-1-se"><span class="ui-icon ui-icon-arrow-1-se"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-1-s"><span class="ui-icon ui-icon-arrow-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-1-sw"><span class="ui-icon ui-icon-arrow-1-sw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-1-w"><span class="ui-icon ui-icon-arrow-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-1-nw"><span class="ui-icon ui-icon-arrow-1-nw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-2-n-s"><span class="ui-icon ui-icon-arrow-2-n-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-2-ne-sw"><span class="ui-icon ui-icon-arrow-2-ne-sw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-2-e-w"><span class="ui-icon ui-icon-arrow-2-e-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-2-se-nw"><span class="ui-icon ui-icon-arrow-2-se-nw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowstop-1-n"><span class="ui-icon ui-icon-arrowstop-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowstop-1-e"><span class="ui-icon ui-icon-arrowstop-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowstop-1-s"><span class="ui-icon ui-icon-arrowstop-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowstop-1-w"><span class="ui-icon ui-icon-arrowstop-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-1-n"><span class="ui-icon ui-icon-arrowthick-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-1-ne"><span class="ui-icon ui-icon-arrowthick-1-ne"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-1-e"><span class="ui-icon ui-icon-arrowthick-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-1-se"><span class="ui-icon ui-icon-arrowthick-1-se"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-1-s"><span class="ui-icon ui-icon-arrowthick-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-1-sw"><span class="ui-icon ui-icon-arrowthick-1-sw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-1-w"><span class="ui-icon ui-icon-arrowthick-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-1-nw"><span class="ui-icon ui-icon-arrowthick-1-nw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-2-n-s"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-2-ne-sw"><span class="ui-icon ui-icon-arrowthick-2-ne-sw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-2-e-w"><span class="ui-icon ui-icon-arrowthick-2-e-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthick-2-se-nw"><span class="ui-icon ui-icon-arrowthick-2-se-nw"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthickstop-1-n"><span class="ui-icon ui-icon-arrowthickstop-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthickstop-1-e"><span class="ui-icon ui-icon-arrowthickstop-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthickstop-1-s"><span class="ui-icon ui-icon-arrowthickstop-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowthickstop-1-w"><span class="ui-icon ui-icon-arrowthickstop-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowreturnthick-1-w"><span class="ui-icon ui-icon-arrowreturnthick-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowreturnthick-1-n"><span class="ui-icon ui-icon-arrowreturnthick-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowreturnthick-1-e"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowreturnthick-1-s"><span class="ui-icon ui-icon-arrowreturnthick-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowreturn-1-w"><span class="ui-icon ui-icon-arrowreturn-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowreturn-1-n"><span class="ui-icon ui-icon-arrowreturn-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowreturn-1-e"><span class="ui-icon ui-icon-arrowreturn-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowreturn-1-s"><span class="ui-icon ui-icon-arrowreturn-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowrefresh-1-w"><span class="ui-icon ui-icon-arrowrefresh-1-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowrefresh-1-n"><span class="ui-icon ui-icon-arrowrefresh-1-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowrefresh-1-e"><span class="ui-icon ui-icon-arrowrefresh-1-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrowrefresh-1-s"><span class="ui-icon ui-icon-arrowrefresh-1-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-4"><span class="ui-icon ui-icon-arrow-4"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-arrow-4-diag"><span class="ui-icon ui-icon-arrow-4-diag"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-extlink"><span class="ui-icon ui-icon-extlink"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-newwin"><span class="ui-icon ui-icon-newwin"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-refresh"><span class="ui-icon ui-icon-refresh"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-shuffle"><span class="ui-icon ui-icon-shuffle"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-transfer-e-w"><span class="ui-icon ui-icon-transfer-e-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-transferthick-e-w"><span class="ui-icon ui-icon-transferthick-e-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-folder-collapsed"><span class="ui-icon ui-icon-folder-collapsed"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-folder-open"><span class="ui-icon ui-icon-folder-open"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-document"><span class="ui-icon ui-icon-document"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-document-b"><span class="ui-icon ui-icon-document-b"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-note"><span class="ui-icon ui-icon-note"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-mail-closed"><span class="ui-icon ui-icon-mail-closed"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-mail-open"><span class="ui-icon ui-icon-mail-open"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-suitcase"><span class="ui-icon ui-icon-suitcase"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-comment"><span class="ui-icon ui-icon-comment"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-person"><span class="ui-icon ui-icon-person"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-print"><span class="ui-icon ui-icon-print"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-trash"><span class="ui-icon ui-icon-trash"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-locked"><span class="ui-icon ui-icon-locked"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-unlocked"><span class="ui-icon ui-icon-unlocked"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-bookmark"><span class="ui-icon ui-icon-bookmark"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-tag"><span class="ui-icon ui-icon-tag"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-home"><span class="ui-icon ui-icon-home"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-flag"><span class="ui-icon ui-icon-flag"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-calculator"><span class="ui-icon ui-icon-calculator"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-cart"><span class="ui-icon ui-icon-cart"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pencil"><span class="ui-icon ui-icon-pencil"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-clock"><span class="ui-icon ui-icon-clock"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-disk"><span class="ui-icon ui-icon-disk"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-calendar"><span class="ui-icon ui-icon-calendar"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-zoomin"><span class="ui-icon ui-icon-zoomin"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-zoomout"><span class="ui-icon ui-icon-zoomout"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-search"><span class="ui-icon ui-icon-search"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-wrench"><span class="ui-icon ui-icon-wrench"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-gear"><span class="ui-icon ui-icon-gear"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-heart"><span class="ui-icon ui-icon-heart"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-star"><span class="ui-icon ui-icon-star"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-link"><span class="ui-icon ui-icon-link"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-cancel"><span class="ui-icon ui-icon-cancel"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-plus"><span class="ui-icon ui-icon-plus"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-plusthick"><span class="ui-icon ui-icon-plusthick"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-minus"><span class="ui-icon ui-icon-minus"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-minusthick"><span class="ui-icon ui-icon-minusthick"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-close"><span class="ui-icon ui-icon-close"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-closethick"><span class="ui-icon ui-icon-closethick"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-key"><span class="ui-icon ui-icon-key"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-lightbulb"><span class="ui-icon ui-icon-lightbulb"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-scissors"><span class="ui-icon ui-icon-scissors"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-clipboard"><span class="ui-icon ui-icon-clipboard"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-copy"><span class="ui-icon ui-icon-copy"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-contact"><span class="ui-icon ui-icon-contact"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-image"><span class="ui-icon ui-icon-image"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-video"><span class="ui-icon ui-icon-video"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-script"><span class="ui-icon ui-icon-script"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-alert"><span class="ui-icon ui-icon-alert"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-info"><span class="ui-icon ui-icon-info"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-notice"><span class="ui-icon ui-icon-notice"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-help"><span class="ui-icon ui-icon-help"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-check"><span class="ui-icon ui-icon-check"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-bullet"><span class="ui-icon ui-icon-bullet"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-radio-off"><span class="ui-icon ui-icon-radio-off"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-radio-on"><span class="ui-icon ui-icon-radio-on"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pin-w"><span class="ui-icon ui-icon-pin-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pin-s"><span class="ui-icon ui-icon-pin-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-play"><span class="ui-icon ui-icon-play"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-pause"><span class="ui-icon ui-icon-pause"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-seek-next"><span class="ui-icon ui-icon-seek-next"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-seek-prev"><span class="ui-icon ui-icon-seek-prev"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-seek-end"><span class="ui-icon ui-icon-seek-end"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-seek-first"><span class="ui-icon ui-icon-seek-first"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-stop"><span class="ui-icon ui-icon-stop"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-eject"><span class="ui-icon ui-icon-eject"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-volume-off"><span class="ui-icon ui-icon-volume-off"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-volume-on"><span class="ui-icon ui-icon-volume-on"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-power"><span class="ui-icon ui-icon-power"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-signal-diag"><span class="ui-icon ui-icon-signal-diag"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-signal"><span class="ui-icon ui-icon-signal"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-battery-0"><span class="ui-icon ui-icon-battery-0"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-battery-1"><span class="ui-icon ui-icon-battery-1"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-battery-2"><span class="ui-icon ui-icon-battery-2"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-battery-3"><span class="ui-icon ui-icon-battery-3"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-plus"><span class="ui-icon ui-icon-circle-plus"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-minus"><span class="ui-icon ui-icon-circle-minus"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-close"><span class="ui-icon ui-icon-circle-close"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-triangle-e"><span class="ui-icon ui-icon-circle-triangle-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-triangle-s"><span class="ui-icon ui-icon-circle-triangle-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-triangle-w"><span class="ui-icon ui-icon-circle-triangle-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-triangle-n"><span class="ui-icon ui-icon-circle-triangle-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-arrow-e"><span class="ui-icon ui-icon-circle-arrow-e"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-arrow-s"><span class="ui-icon ui-icon-circle-arrow-s"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-arrow-w"><span class="ui-icon ui-icon-circle-arrow-w"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-arrow-n"><span class="ui-icon ui-icon-circle-arrow-n"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-zoomin"><span class="ui-icon ui-icon-circle-zoomin"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-zoomout"><span class="ui-icon ui-icon-circle-zoomout"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circle-check"><span class="ui-icon ui-icon-circle-check"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circlesmall-plus"><span class="ui-icon ui-icon-circlesmall-plus"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circlesmall-minus"><span class="ui-icon ui-icon-circlesmall-minus"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-circlesmall-close"><span class="ui-icon ui-icon-circlesmall-close"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-squaresmall-plus"><span class="ui-icon ui-icon-squaresmall-plus"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-squaresmall-minus"><span class="ui-icon ui-icon-squaresmall-minus"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-squaresmall-close"><span class="ui-icon ui-icon-squaresmall-close"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-grip-dotted-vertical"><span class="ui-icon ui-icon-grip-dotted-vertical"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-grip-dotted-horizontal"><span class="ui-icon ui-icon-grip-dotted-horizontal"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-grip-solid-vertical"><span class="ui-icon ui-icon-grip-solid-vertical"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-grip-solid-horizontal"><span class="ui-icon ui-icon-grip-solid-horizontal"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-gripsmall-diagonal-se"><span class="ui-icon ui-icon-gripsmall-diagonal-se"></span></li>
+                    <li class="ui-state-default ui-corner-all" title=".ui-icon-grip-diagonal-se"><span class="ui-icon ui-icon-grip-diagonal-se"></span></li>
+                </ul>
+                
+                
+                <!-- Slider -->
+                <h2 class="demoHeaders">Slider</h2>
+                <div id="slider"></div>
+                
+                
+                
+                <!-- Datepicker -->
+                <h2 class="demoHeaders">Datepicker</h2>
+                <div id="datepicker"></div>
+                
+                
+                
+                <!-- Progressbar -->
+                <h2 class="demoHeaders">Progressbar</h2>
+                <div id="progressbar"></div>
+                
+                
+                <!-- Highlight / Error -->
+                <h2 class="demoHeaders">Highlight / Error</h2>
+                <div class="ui-widget">
+                    <div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0 .7em;">
+                        <p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+                            <strong>Hey!</strong> Sample ui-state-highlight style.</p>
+                    </div>
+                </div>
+                <br>
+                <div class="ui-widget">
+                    <div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+                        <p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
+                            <strong>Alert:</strong> Sample ui-state-error style.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- jQuery samples-->
+            <div id="tab-jquery">
+                <!-- syntaxhighlighter -->
+                <script type="text/javascript" src="./lib/syntaxhighlighter/scripts/shCore.js"></script>
+                <script type="text/javascript" src="./lib/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                <link type="text/css" rel="stylesheet" href="./lib/syntaxhighlighter/styles/shCoreDefault.css"/>
+                <script type="text/javascript">SyntaxHighlighter.all();</script>
+
+                <h1>Welcome to jQuery!</h1>
+                <div class="ui-widget">
+                    <p>This page demonstrates the basicall jQuery skills</p>
+                    <p>You can learn to the jquery's skill</p>
+                </div>
+                <h1>EXAMPLES:</h1>
+
+                <h2 class="demoHeaders">jQuery Selectors</h2>
+                <div id="jQuery-Selectors">
+                    <p>jQuery selectors allow you to select and manipulate HTML element(s).</p>
+                    <p>jQuery selectors are used to "find" (or select) HTML elements based on their id, classes, types, attributes, values of attributes and much more. It's based on the existing CSS Selectors, and in addition, it has some own custom selectors.</p>
+                    <p>All selectors in jQuery start with the dollar sign and parentheses: $().</p>
+                    
+                    <h3>element selector</h3>
+                    <p>The jQuery element selector selects elements based on the element name.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-selector-element">
+                        <h2>This is a heading</h2>
+                        <p>This is a paragraph.</p>
+                        <p>This is another paragraph.</p>
+                        <button>Click me</button>
+                        
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-selector-element > button").click(function(){
+                                    $("#jq-demo-selector-element > p").toggle();
+                                });
+                            });
+                        </script>
+                        
+                        <pre class="brush: js">
+                            $(document).ready(function(){
+                                $("button").click(function(){
+                                    $("p").toggle();
+                                });
+                            });
+                        </pre>
+                    </div>
+                    
+                    <h3>id selector</h3>
+                    <p>The jQuery #id selector uses the id attribute of an HTML tag to find the specific element. An id should be unique within a page, so you should use the #id selector when you want to find a single, unique element.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-selector-id">
+                        <h2>This is a heading</h2>
+                        <p>This is a paragraph.</p>
+                        <p id="idSelectorTest">This is another paragraph.</p>
+                        <button id="idSelectorTestBt">Click me</button>
+
+                        <pre class="brush: js">
+                            <h2>This is a heading</h2>
+                            <p>This is a paragraph.</p>
+                            <p id="idSelectorTest">This is another paragraph.</p>
+                            <button>Click me</button>
+
+                            <script>
+                                $(document).ready(function(){
+                                    $("#idSelectorTestBt").click(function(){
+                                        $("#idSelectorTest").toggle();
+                                    });
+                                });
+                            </script>
+                        </pre>
+                    </div>
+                    
+                    <h3>class selector</h3>
+                    <p>The jQuery class selector finds elements with a specific class. To find elements with a specific class, write a period character, followed by the name of the class.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-selector-class">
+                        <h2 class="classSelectorTest">This is a heading</h2>
+                        <p>This is a paragraph.</p>
+                        <p class="classSelectorTest">This is another paragraph.</p>
+                        <button id="classSelectorBt">Click me</button>
+                        
+                        <pre class="brush: js">
+                            <h2 class="classSelectorTest">This is a heading</h2>
+                            <p>This is a paragraph.</p>
+                            <p class="classSelectorTest">This is another paragraph.</p>
+                            <button>Click me</button>
+
+                            <script>
+                                $(document).ready(function(){
+                                    $("#classSelectorBt").click(function(){
+                                        $(".classSelectorTest").toggle();
+                                    });
+                                });
+                            </script>
+                        </pre>
+                    </div>
+                </div>
+
+                <h2 class="demoHeaders">jQuery Events</h2>
+                <div id="jQuery-Event">
+                    <p>jQuery’s event system normalizes the event object according to W3C standards. The event object is guaranteed to be passed to the event handler. Most properties from the original event are copied over and normalized to the new event object.</p>
+                    <p>jQuery event methods trigger or attach a function to an event handler for the selected elements.</p>
+                    
+                    <h3>click()</h3>
+                    <p>The click() method attaches an event handler function to an HTML element. The function is executed when the user clicks on the HTML element.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-click">
+                        <p>If you click on me, hello popup.</p>
+                        
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-click > p").click(function(){
+                                    alert('Hello!');
+                                });
+                            });
+                        </script>
+                        
+                        <pre class="brush: js">
+                            $(document).ready(function(){
+                                $("p").click(function(){
+                                    alert('Hello!');
+                                });
+                            });
+                        </pre>
+                    </div>
+                    
+                    <h3>dblclick()</h3>
+                    <p>The dblclick() method attaches an event handler function to an HTML element. The function is executed when the user double-clicks on the HTML element.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-dbclick">
+                        <p>If you double click on me, hello popup.</p>
+                        
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-dbclick > p").dblclick(function(){
+                                    alert('Hello!');
+                                });
+                            });
+                        </script>
+                        
+                        <pre class="brush: js">
+                            $(document).ready(function(){
+                                $("p").dblclick(function(){
+                                    alert('Hello!');
+                                });
+                            });
+                        </pre>
+                    </div>
+                    
+                    <h3>hover()</h3>
+                    <p>The hover() method takes two functions and is a combination of the mouseenter() and mouseleave() methods. The first function is executed when the mouse enters the HTML element, and the second function is executed when the mouse leaves the HTML element.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-hover">
+                        <p>If you hover on me, text color changed.</p>
+                        
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-hover > p").hover(function(){
+                                    $(this).css('color', 'red');
+                                },function(){
+                                    $(this).css('color', '#222222');
+                                });
+                            });
+                        </script>
+                        
+                        <pre class="brush: js">
+                            $(document).ready(function(){
+                                $("p").hover(function(){
+                                    // enter
+                                    $(this).css('color', 'red');
+                                },function(){
+                                    // leave
+                                    $(this).css('color', '#222222');
+                                });
+                            });
+                        </pre>
+                    </div>
+                </div>
+                
+                <h2 class="demoHeaders">jQuery Effects</h2>
+                <p>The jQuery library provides several techniques for adding animation to a web page. These include simple, standard animations that are frequently used, and the ability to craft sophisticated custom effects.</p>
+                <div id="jQuery-Effects">
+                    <h3>hide() and show()</h3>
+                    <p>Display control the matched elements.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-showAndhide">
+                        <button id="jq-demo-effect-showr">Show</button>
+                        <button id="jq-demo-effect-hidr">Hide</button>
+                        <span>Hello,</span><span> Have a </span><span>nice</span><span> day</span>
+
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-effect-showr").click(function() {
+                                    $("#jq-demo-showAndhide > span").first().show( "fast", function showNext() {
+                                        $( this ).next( "span" ).show( "fast", showNext );
+                                    });
+                                });
+                                
+                                $("#jq-demo-effect-hidr").click(function() {
+                                    $("#jq-demo-showAndhide > span").hide( 1000 );
+                                });
+                                
+                                $("#jq-demo-showAndhide > span").hide();
+                                $("#jq-demo-showAndhide > span").css('color', 'brown');
+                            });
+                        </script>
+
+                        <pre class="brush: js">
+                            <button id="showr">Show</button>
+                            <button id="hidr">Hide</button>
+                            <div>Hello</div>
+                            <div>Have a</div>
+                            <div>nice</div>
+                            <div>day</div>
+
+                            <script>
+                                $( "#showr" ).click(function() {
+                                    $( "div" ).first().show( "fast", function showNext() {
+                                        $( this ).next( "div" ).show( "fast", showNext );
+                                    });
+                                });
+                                
+                                $( "#hidr" ).click(function() {
+                                    $( "div" ).hide( 1000 );
+                                });
+                            </script>
+                        </pre>
+                    </div>
+                    
+                    
+                    <h3>toggle()</h3>
+                    <p>jQuery toggle() toggles between hide() and show().</p>
+                    <div class="demoCodeAndRun" id="jq-demo-toggle">
+                        <button id="jq-demo-effect-toggle">Toggle</button>
+                        <span>Hello,</span><span> Have a </span><span>nice</span><span> day</span>
+                        
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-effect-toggle").click(function() {
+                                    $("#jq-demo-toggle > span").toggle();
+                                });
+                                $("#jq-demo-toggle > span").css('color', 'brown');
+                            });
+                        </script>
+                        
+                        <pre class="brush: js">
+                            <button id="toggle">Toggle</button>
+                            <div>Hello</div>
+                            <div>Have a</div>
+                            <div>nice</div>
+                            <div>day</div>
+                            
+                            <script>
+                                $("#toggle").click(function() {
+                                    $("div").toggle();
+                                });
+                            </script>
+                        </pre>
+                    </div>
+                    
+                    
+                    <h3>animate()</h3>
+                    <p>jQuery perform a custom animation of a set of CSS properties.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-animate">
+                        <div>
+                            <button id="jq-demo-effect-animate-left">&laquo;&laquo;</button>
+                            <button id="jq-dome-effect-animate-right">&raquo;&raquo;</button>
+                            <div class="demoBlock"></div>
+                        </div>
+                        
+                        <script>
+                            $(document).ready(function(){
+                                $('.demoBlock')[0].left = 0;
+                                $( "#jq-dome-effect-animate-right" ).click(function() {
+                                    var pWidth = $('.demoBlock').parent().width();
+                                    
+                                    if(pWidth > ($('.demoBlock')[0].left + 95)) {
+                                        $( ".demoBlock" ).animate({ "left": "+=50px" }, "slow" );
+                                        $('.demoBlock')[0].left += 50;
+                                    }
+                                });
+                                
+                                $( "#jq-demo-effect-animate-left" ).click(function(){
+                                    var pWidth = $('.demoBlock').parent().width();
+                                    
+                                    if(!(($('.demoBlock')[0].left - 50) < 0)) {
+                                        $( ".demoBlock" ).animate({ "left": "-=50px" }, "slow" );
+                                        $('.demoBlock')[0].left -= 50;
+                                    }
+                                });
+                            });
+                        </script>
+                        
+                        <pre class="brush: js">
+                            <button id="left">&laquo;</button>
+                            <button id="right">&raquo;</button>
+                            <div class="block"></div>
+                            
+                            <script>
+                                $( "#right" ).click(function() {
+                                    $( ".block" ).animate({ "left": "+=50px" }, "slow" );
+                                });
+                                
+                                $( "#left" ).click(function(){
+                                    $( ".block" ).animate({ "left": "-=50px" }, "slow" );
+                                });
+                            </script>
+                        </pre>
+                    </div>
+                </div>
+
+                <h2 class="demoHeaders">jQuery Manipulation</h2>
+                <p>All of the methods in this section manipulate the DOM in some manner. A few of them simply change one of the attributes of an element, while others set an element’s style properties. Still others modify entire elements themselves—inserting, copying, removing, and so on. All of these methods are referred to as “setters,” as they change the values of properties.</p>
+                <div id="jQuery-Manipulation">
+                    <h3>attr()</h3>
+                    <p>Get the value of an attribute for the first element in the set of matched elements or set one or more attributes for every matched element.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-attr">
+                        <div>
+                            <input id="jq-demo-attr-check1" type="checkbox" checked="checked">
+                            <label for="jq-demo-attr-check1">Check me</label>
+                            <p id="jq-demo-attr-p"></p>
+                        </div>
+
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-attr-check1")
+                                .change(function() {
+                                    var $input = $(this);
+                                    $("#jq-demo-attr-p").html(".attr( 'checked' ): <b>" + $input.attr( "checked" ) + "</b><br>" +
+                                                  ".prop( 'checked' ): <b>" + $input.prop( "checked" ) + "</b><br>" +
+                                                  ".is( ':checked' ): <b>" + $input.is( ":checked" ) + "</b>" );
+                                    $("#jq-demo-attr-p").find('b').css('color','blue');
+                                })
+                                .change();
+                                
+                                $("#jq-demo-attr-p").find('b').css('color','blue');
+                            });
+                        </script>
+
+                        <pre class="brush: js">
+                                <input id="check1" type="checkbox" checked="checked">
+                                <label for="check1">Check me</label>
+                                <p></p>
+
+                                $( "input" )
+                                .change(function() {
+                                    var $input = $( this );
+                                    $( "p" ).html( ".attr( 'checked' ): <b>" + $input.attr( "checked" ) + "</b><br>" +
+                                                  ".prop( 'checked' ): <b>" + $input.prop( "checked" ) + "</b><br>" +
+                                                  ".is( ':checked' ): <b>" + $input.is( ":checked" ) + "</b>" );
+                                })
+                                .change();
+                        </pre>
+
+                    </div>
+                    
+                    <h3>css()</h3>
+                    <p>Get the value of a style property for the first element in the set of matched elements or set one or more CSS properties for every matched element.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-css">
+                        <div> click block </div>
+                        <div style="display: inline-flex;">
+                            <div class="demoBlock2" style="background-color:blue;"></div>
+                            <div class="demoBlock2" style="background-color:rgb(15,99,30);"></div>
+                            <div class="demoBlock2" style="background-color:#123456;"></div>
+                            <div class="demoBlock2" style="background-color:#f11;"></div>
+                            <span id="jq-demo-css-result">&nbsp;</span>
+                        </div>
+                        
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-css > div > .demoBlock2").click(function() {
+                                    var color = $( this ).css( "background-color" );
+                                    $("#jq-demo-css-result").html( "That div is <span style='color:" +
+                                                        color + ";'>" + color + "</span>." );
+                                });
+                            });
+                        </script>
+
+                        <pre class="brush: js">
+                            <span id="result">&nbsp;</span>
+                            <div style="background-color:blue;"></div>
+                            <div style="background-color:rgb(15,99,30);"></div>
+                            <div style="background-color:#123456;"></div>
+                            <div style="background-color:#f11;"></div>
+
+                            <script>
+                                $( "div" ).click(function() {
+                                    var color = $( this ).css( "background-color" );
+                                    $( "#result" ).html( "That div is <span style='color:" +
+                                                        color + ";'>" + color + "</span>." );
+                                });
+                            </script>
+                        </pre>
+                    </div>
+                    
+                    <h3>append() and remove()</h3>
+                    <p>jQuery append(), Insert content, specified by the parameter, to the end of each element in the set of matched elements</p>
+                    <p>jQuery remove(), Remove the set of matched elements from the DOM.</p>
+                    <div class="demoCodeAndRun" id="jq-demo-appendAndRemove">
+                        <div>
+                            <button id="jq-demo-append-bt">Append list items</button>
+                            <button id="jq-demo-remove-bt">Remove list items</button>
+                            <ol id="jq-demo-appendAndRemove-ol">
+                                <li>List item 1</li>
+                                <li>List item 2</li>
+                                <li>List item 3</li>
+                            </ol>
+                        </div>
+                        
+                        <script>
+                            $(document).ready(function(){
+                                $("#jq-demo-append-bt").click(function(){
+                                    var $ol = $("#jq-demo-appendAndRemove-ol");
+                                    var cnt = $ol.find('li').length;
+                                    
+                                    if(cnt > 4) {
+                                        alert('max append five item in this sample');
+                                    } else {
+                                        $ol.append("<li>List item " + (cnt+1) + "</li>");
+                                    }
+                                });
+                                
+                                $("#jq-demo-remove-bt").click(function(){
+                                    var $ol = $("#jq-demo-appendAndRemove-ol");
+                                    var cnt = $ol.find('li').length;
+                                    
+                                    if(cnt < 2) {
+                                        alert('leave at least one item in this sample');
+                                    } else {
+                                        $ol.find('li:last').remove();
+                                    }
+                                });
+                            });
+                        </script>
+
+                        <pre class="brush: js">
+                            <ol>
+                                <li>List item 1</li>
+                                <li>List item 2</li>
+                                <li>List item 3</li>
+                            </ol>
+                            <button id="btn1">Append list items</button>
+                            <button id="btn2">Remove list items</button>
+
+                            <script>
+                            $(document).ready(function(){
+                                $("#btn1").click(function(){
+                                    $("ol").append("<li>Appended item</li>");
+                                });
+                                
+                                $("#btn2").click(function(){
+                                    $("ol").find('li:last').remove();
+                                });
+                            });
+                            </script>
+
+                        </pre>
+                    </div>
+
+                </div> <!-- jQuery-Manipulation -->
+                
+            </div>
+        </div> <!-- tabs -->
+
+    </body>
+</html>

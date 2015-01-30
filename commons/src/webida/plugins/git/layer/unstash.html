@@ -1,0 +1,39 @@
+<div style="width:480px;">
+    <div style="width: 100px; display: inline-block;">
+        <strong>Current branch:</strong>
+    </div>
+    <div style="display:inline-block;" id="GitUnStashBranchInfo"></div>
+</div>
+<div style="line-height: 30px;">
+    <strong>
+        <label for="GitUnStashListGrid">Stash lists</label>
+    </strong>
+    <button style="position: absolute; right: 61px;" id="GitUnStashDropBtn" data-dojo-type="dijit/form/Button" data-dojo-props="disabled: true">
+        <span style="width: 80px">Drop</span>
+    </button>
+    <button style="position: absolute; right: 6px;" id="GitUnStashClearBtn" data-dojo-type="dijit/form/Button">
+        <span style="width: 80px">Clear</span>
+    </button>
+</div>
+<div style="height: 280px;" id="GitUnStashListGrid"></div>
+<!-- option block -->
+<fieldset style="padding: 5px; border: 1px solid gray">
+    <legend>
+        <strong>Options</strong>
+    </legend>
+    <div>
+        <div style="display:inline-block;width:49%">
+            <input id="GitUnStashPopCheckbox" data-dojo-type="dijit/form/CheckBox" />
+            <label for="GitUnStashPopCheckbox">Pop stash</label>
+        </div>
+        <div style="display:inline-block;width:49%">
+            <input id="GitUnStashKeepCheckbox" data-dojo-type="dijit/form/CheckBox" />
+            <label for="GitUnStashKeepCheckbox">Keep index</label>
+        </div>
+        <div>
+            <input id="GitUnStashBranchCheckbox" data-dojo-type="dijit/form/CheckBox" />
+            <label for="GitUnStashBranchCheckbox">As a new branch:</label>
+            <input type="text" style="width: 345px;" id="GitUnStashBranchInput" data-dojo-type="dijit/form/TextBox" data-dojo-props="disabled: true, placeHolder: 'Enter branch name'" />
+        </div>
+    </div>
+</fieldset>

@@ -1,0 +1,78 @@
+<style>
+.git-clone__group {
+    padding-bottom: 5px;
+}
+.git-clone__label {
+    display: inline-block;
+    width: 110px;
+}
+.git-clone__label.http {
+    width: 65px;
+}
+.git-clone__input {
+    display: inline-block;
+}
+.git-clone__input.repo {
+    box-sizing: border-box;
+    width: 435px;
+}
+.git-clone__input.http {
+    width: 460px;
+}
+.git-clone__fieldset {
+    padding: 5px;
+    border: 1px solid gray;
+}
+</style>
+
+<div class="git-clone__group" style="width: 550px;">
+    <div style="padding-bottom:5px;">
+        <div class="git-clone__label">
+            <label for="GitCloneCurrentDirectory"><strong>Current directory:</strong></label>
+        </div>
+        <div class="git-clone__input repo" id="GitCloneCurrentDirectory"></div>
+    </div>
+    <div class="git-clone__group" style="">
+        <div class="git-clone__label">
+            <label for="GitURLInput"><strong>Repository URL:</strong></label>
+        </div>
+        <select id="GitURLInput" data-dojo-type="dijit/form/ComboBox" class="git-clone__input repo"></select>
+    </div>
+    <div>
+        <div class="git-clone__label">
+            <label for="GitTargetInput"><strong>Target directory:</strong></label>
+        </div>
+        <input type="text" id="GitTargetInput" data-dojo-type="dijit/form/TextBox" data-dojo-props="placeHolder: 'Enter project name'" class="git-clone__input repo"/>
+    </div>
+</div>
+<div class="git-clone__group">
+    <fieldset class="git-clone__fieldset">
+        <legend><strong>Options</strong></legend>
+        <div style="display: inline-block; width: 220px;">
+            <input id="GitCloneRecursiveCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitCloneRecursiveCheckbox">Clone submodules</label>
+        </div>
+        <div style="display: inline-block;">
+            <div style="display:inline-block;">
+                <input id="GitCloneDepthChk" data-dojo-type="dijit/form/CheckBox"/>
+                <label for="GitCloneDepthChk">Shallow clone:</label>
+            </div>
+            <input type="text" id="GitCloneDepthInput" data-dojo-type="dijit/form/TextBox" style="width: 199px;" data-dojo-props="placeHolder:'Enter depth',disabled:true"/>
+        </div>
+    </fieldset>
+</div>
+<div class="git-clone__group">
+    <fieldset class="git-clone__fieldset">
+        <legend>
+            <strong>Authentication for http(s)</strong>
+        </legend>
+        <div style="padding-bottom: 5px;">
+            <label class="git-clone__label http" for="GitInputUsername">User ID:</label>
+            <input type="text" id="GitInputUsername" data-dojo-type="dijit/form/TextBox" class="git-clone__input http" data-dojo-props="placeHolder:'Enter username',disabled:true"/>
+        </div>
+        <div>
+            <label class="git-clone__label http" for="GitInputPassword">Password:</label>
+            <input type="password" id="GitInputPassword" data-dojo-type="dijit/form/TextBox" class="git-clone__input http" data-dojo-props="placeHolder:'Enter password',disabled:true"/>
+        </div>
+    </fieldset>
+</div>

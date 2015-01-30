@@ -1,0 +1,71 @@
+<div style="width:450px;padding-bottom:5px;">
+    <div style="width: 60px; display:inline-block;">
+        <strong>
+            <label for="GitCreateTargetText">Name:</label>
+        </strong>
+    </div>
+    <input style="width:385px;display:inline-block;" type="text" id="GitCreateTargetText" data-dojo-type="dijit/form/TextBox" />
+</div>
+<div id="GitTargetInfoText"></div>
+<div id="GitTagMessage" style="display:none;padding-bottom:5px;">
+    <div style="width:60px; display:inline-block;">
+        <strong>
+            <label for="GitCreateTargetText">Message:</label>
+        </strong>
+    </div>
+    <input type="text" id="GitCreateTagMsgText" data-dojo-type="dijit/form/TextBox" style="width:385px;" data-dojo-props="placeHolder:'Enter tag message.'"/>
+</div>
+<div style="padding-bottom:5px;">
+    <fieldset style="padding: 5px; border: 1px solid gray">
+        <legend>
+            <strong>Start point</strong>
+        </legend>
+        <div style="padding-bottom:5px;">
+            <div>
+                <input id="GitCreateHEADRadioBtn" name="group2" data-dojo-type="dijit/form/RadioButton" data-dojo-props="checked: true"/>
+                <label for="GitCreateHEADRadioBtn">HEAD (Default)</label>
+            </div>
+        </div>
+        <div style="padding-bottom:5px;">
+            <div style="width:100px;display:inline-block;">
+                <input id="GitCreateBranchRadioBtn" name="group2" data-dojo-type="dijit/form/RadioButton"/>
+                <label for="GitCreateBranchRadioBtn">Branch:</label>
+            </div>
+            <select id="GitCreateBranchSelect" style="width:330px" data-dojo-type="dijit/form/Select" data-dojo-props="disabled:true"></select>
+        </div>
+        <div style="padding-bottom:5px;">
+            <div style="width:100px;display:inline-block;">
+                <input id="GitCreateTagRadioBtn" name="group2" data-dojo-type="dijit/form/RadioButton"/>
+                <label for="GitCreateTagRadioBtn">Tag:</label>
+            </div>
+            <select id="GitCreateTagsSelect" style="width:330px" data-dojo-type="dijit/form/Select" data-dojo-props="disabled:true"></select>
+        </div>
+        <div>
+            <div style="width:100px;display:inline-block;">
+                <input id="GitCreateIdRadioBtn" name="group2" data-dojo-type="dijit/form/RadioButton"/>
+                <label for="GitCreateIdRadioBtn">Commit-Id:</label>
+            </div>
+            <input type="text" id="GitCreateIdText" data-dojo-type="dijit/form/TextBox" style="width:330px;" data-dojo-props="placeHolder:'Enter commit-id.',disabled:true"/>
+            <!-- <button id="GitCommitInfoBtn" data-dojo-type="dijit/form/Button" data-dojo-props="disabled: true">
+                <div>Browse</div>
+            </button> -->
+        </div>
+    </fieldset>
+</div>
+<div>
+    <fieldset style="padding: 5px; border: 1px solid gray">
+        <legend>
+            <strong>Options</strong>
+        </legend>
+        <div>
+            <div style="width:49%;display:inline-block;">
+                <input id="GitCreateCheckoutChk" data-dojo-type="dijit/form/CheckBox"/>
+                <label for="GitCreateCheckoutChk">Checkout after create</label>
+            </div>
+            <div style="width:49%;display:inline-block;">
+                <input id="GitCreateForce" data-dojo-type="dijit/form/CheckBox"/>
+                <label for="GitCreateForce">Force</label>
+            </div>
+        </div>
+    </fieldset>
+</div>

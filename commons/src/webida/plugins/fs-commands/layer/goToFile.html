@@ -1,0 +1,111 @@
+<div id="FsCommandGotoFileContentPane"
+     data-dojo-type="dijit/layout/ContentPane"
+     style="width:500px">
+    <style type='text/css'>
+        .go_to_file_border {
+            border: 1px black solid;
+            padding: 2px;
+            padding-right: 4px;
+        }
+
+        #gotoFileTopLabelPane {
+            float:left;
+            width:100%;
+            padding-bottom: 2px;
+            padding-top: 2px;
+        }
+
+        #gotoFileTargetPane {
+            width: 100%;
+            padding-top: 4px;
+        }
+
+        #gotoFileTargetPane > label {
+            padding-right: 4px;
+        }
+
+        .go_to_file_input {
+            width: 100%;
+        }
+
+        .go_to_file_label_col1 {
+            float: left;
+        }
+        .go_to_file_label_col2 {
+            float: left;
+            margin-left: 5px;
+        }
+
+        .spinner {
+            height:8px;
+            width:8px;
+            margin:0px auto;
+            position:relative;
+            -webkit-animation: rotation .6s infinite linear;
+            -moz-animation: rotation .6s infinite linear;
+            -o-animation: rotation .6s infinite linear;
+            animation: rotation .6s infinite linear;
+            border-left:3px solid #9D9E95;
+            border-right:3px solid #9D9E95;
+            border-bottom:3px solid #9D9E95;
+            border-top:3px solid #2D2E28;
+            border-radius:100%;
+        }
+
+        @-webkit-keyframes rotation {
+            from {-webkit-transform: rotate(0deg);}
+            to {-webkit-transform: rotate(359deg);}
+        }
+
+        @-moz-keyframes rotation {
+            from {-moz-transform: rotate(0deg);}
+            to {-moz-transform: rotate(359deg);}
+        }
+
+        @-o-keyframes rotation {
+            from {-o-transform: rotate(0deg);}
+            to {-o-transform: rotate(359deg);}
+        }
+
+        @keyframes rotation {
+            from {transform: rotate(0deg);}
+            to {transform: rotate(359deg);}
+        }
+    </style>
+
+    <div class="go_to_file_border">
+        <div id="gotoFileTopLabelPane">
+            <div class="go_to_file_label_col1">
+                <label> Select a file to go :</label>
+            </div>
+            <div id="gotoFileLoadingPane">
+                <div id="gotoFileLoadingSpinner"
+                     class="go_to_file_label_col2 spinner"></div>
+                <div id="gotoFileLoadingLabel"
+                     class="go_to_file_label_col2">Loading...</div>
+            </div>
+        </div>
+
+        <select id='FsCommandFileToGoInput'
+                data-dojo-type='dijit/form/FilteringSelect'
+                class="go_to_file_input">
+        </select>
+
+        <div id="gotoFileTargetPane">
+            <label>Target :</label>
+            <span>
+                <input id="gotoFileTargetInputBox"
+                       type="text"
+                       data-dojo-type="dijit/form/TextBox"
+                       placeHolder="target location"
+                       style="width: 350px"
+                       readonly />
+            </span>
+            <span>
+                <button id="gotoFileTargetBrowseBt"
+                        data-dojo-type="dijit/form/Button"
+                        type="button">Browse...</button>
+            </span>
+        </div>
+    </div>
+</div>

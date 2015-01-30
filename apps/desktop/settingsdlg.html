@@ -1,0 +1,113 @@
+<!-- modal dialog -->
+<div class="modal fade account-dlg" id="account-dlg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            
+            <!-- modal header -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                Settings
+            </div>
+            
+            <!-- modal body -->
+            <div class="modal-body">
+                <ul id="setting-tab" class="nav nav-tabs">
+                    <li><a href="#profile" data-toggle="tab">Profile</a></li>
+                    <li><a href="#account" data-toggle="tab">Account</a></li>
+                    <!-- <li><a href="#sshkey" data-toggle="tab">SSH Key</a></li> -->
+                </ul>
+                
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="account">
+                        <!-- change password pannel -->
+                        <div class="account">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong>Change Password</strong>
+                                </div>
+                                <div class="panel-body">
+                                    <div id="change-pw">
+                                        <form role="form">
+                                            <div class="form-group">
+                                                <label for="account-old-pw">Old password</label>
+                                                <input type="password" class="form-control" id="account-old-pw" placeholder="Enter old password">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="account-new-pw">New password</label>
+                                                <input type="password" class="form-control" id="account-new-pw" placeholder="Enter new password">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="account-confirm-pw">Confirm new password</label>
+                                                <input type="password" class="form-control" id="account-confirm-pw" placeholder="Re-type new password">
+                                            </div>
+                                            <button id="account-update-btn" type="submit" class="btn btn-default">Update password</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- delete user account -->
+                        <div class="delete">
+                            <div class="panel panel-danger">
+                                <div class="panel-heading">
+                                    <strong>Delete Account</strong>
+                                </div>
+                                <div class="panel-body">
+                                    <div id="del-account">
+                                        <form role="form">
+                                            <div class="form-group">
+                                                Once you delete your account, there is no going back. Please be certain.
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="email" class="form-control" id="account-delete" placeholder="Enter your email address to delete">
+                                            </div>
+                                            <button id="account-del-btn" type="submit" class="btn btn-default">Delete your account</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="profile">
+                        <div class="profile">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <form role="form">
+                                        <div class="form-group">
+                                            <label for="pf-email">Email address</label>
+                                            <input type="email" class="form-control" id="pf-email" placeholder="Enter email" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pf-name">Nickname</label>
+                                            <input type="text" class="form-control pf-name" id="pf-name" placeholder="Enter name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pf-url">URL</label>
+                                            <input type="url" class="form-control" id="pf-url" placeholder="Enter URL">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pf-company">Company</label>
+                                            <input type="text" class="form-control" id="pf-company" placeholder="Enter company">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pf-location">Location</label>
+                                            <input type="text" class="form-control" id="pf-location" placeholder="Enter location">
+                                            
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pf-gravatar-email">Gravatar email</label>
+                                            <input type="email" class="form-control" id="pf-gravatar-email" placeholder="Enter gravatar email">
+                                        </div>
+                                        <button id="pf-confirm" type="submit" class="btn btn-default">Confirm</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

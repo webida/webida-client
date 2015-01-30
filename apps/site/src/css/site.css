@@ -1,0 +1,298 @@
+@font-face {
+    font-family: 'Nanum Gothic Coding';
+    src: url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.woff');
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+		color:    #aaa;
+}
+
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+		color:    #aaa;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+		color:    #aaa;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+		color:    #aaa;
+}
+
+.dimming {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+    background-repeat: repeat;
+    opacity: 0.5;
+    -moz-opacity: 0.50;
+    filter: alpha(opacity=50);
+    z-index: 20;
+}
+
+.block-dimming {
+		height: 100%;
+		width: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		background-color: rgba(255, 255, 255, 0.5);
+		background-repeat: repeat;
+		opacity: 0.5;
+		-moz-opacity: 0.50;
+		filter: alpha(opacity=50);
+		z-index: 20;
+}
+
+button:focus {
+		outline: none !important;
+}
+
+input:focus, textarea:focus {
+		outline: none;
+}
+
+.profile-dialog {
+		position: absolute;
+		z-index: 1000;
+}
+
+.profile-arrow {
+		position: relative;
+    background: url('../../resource/tooltip.png');
+    margin-left: 30px;
+    width: 15px;
+    height: 13px;
+}
+
+.profile-content {
+		position: relative;
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    padding: 14px 14px 12px;
+}
+
+.signup-text {
+    color: #ccc;
+    margin-left: 4px;
+    font-size: 11pt;
+}
+
+.signup-input {
+		width: 318px;
+		height: 30px;
+		margin-top: 7px;
+		margin-bottom: 10px;
+		font-size: 12pt;
+		color: #616161;
+		background-color: #fff;
+		border-radius: 4px;
+		border: solid 1px #000;
+		box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.4);
+		padding-left: 10px;
+}
+
+.email-sent-dialog {
+		position: fixed;
+		z-index: 1000;
+}
+
+.dialog-content {
+		position: relative;
+		background-color: #000;
+		border-radius: 5px;
+		padding: 14px 14px 12px;
+}
+
+.dialog-content div {
+		width: 500px;
+		color: #fff;
+		margin-bottom: 20px;
+}
+
+.dialog-content div strong {
+		color: #5cb85c;
+		font-size: 14pt;
+}
+
+body {
+		font-family: "Nanum Gothic Coding", "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+h1 a {
+		font-size: 36px;
+}
+
+.userbar {
+		position: relative;
+		min-height: 28px;
+		height: 28px;
+		overflow: hidden;
+		background-color: #5a5a5a;
+}
+
+.userbar ul {
+		float: right;
+}
+
+.userbar li {
+		float: left;
+		margin: 4px;
+}
+
+.userbar li button {
+		margin: 0;
+		padding: 0 10px;
+}
+
+.userbar .welcome {
+		color: #d5d5d5;
+		line-height: 24px;
+}
+
+.userbar .user-name {
+		color: #dbaa60;
+}
+
+.navbar {
+		border-radius: 0;
+		min-height: 70px;
+}
+
+.navbar-header a {
+		letter-spacing: -1px;
+}
+
+.navbar-nav {
+		float: right;
+}
+
+.navbar-brand {
+		font-size: 26pt;
+		line-height: 40px;
+		color: #ccc;
+}
+
+.navbar-brand:visited {
+		color: #ccc;
+}
+
+.navbar-nav > li > a {
+		line-height: 40px;
+		font-size: 12pt;
+}
+
+h1 {
+		margin-top: 20px;
+		margin-bottom: 24px;
+		letter-spacing: -1px;
+		font-weight: bold;
+		color: #4b4b4b;
+}
+
+.desc {
+		font-size: 12pt;
+		color: #494949;
+}
+
+div h4 {
+		margin-left: 50px;
+}
+
+div ul {
+		margin-left: 50px;
+}
+
+.features li {
+		margin-left: -20px;
+}
+
+.features li span{
+		font-size: 12pt;
+		font-weight: bold;
+		color: #494949;
+}
+
+.features li ul li {
+		margin: 6px 0 15px -15px;
+		color: #494949;
+		font-weight: normal;
+		list-style: square;
+}
+
+.blog-contents {
+		
+}
+
+.blog-post {
+		margin-bottom: 40px;
+		border: 1px solid #ccc;
+		padding: 0 25px 20px;
+		border-radius: 7px;
+}
+
+.blog-post > h2 {
+		color: #636363;
+}
+
+.blog-post-date {
+		color: #aaa;
+		margin-bottom: 30px;
+}
+
+.documents li {
+		margin-left: -20px;
+		margin-bottom: 10px;
+}
+
+.documents li a {
+		font-size: 14pt;
+}
+
+.documents li div {
+		margin-left: 30px;
+}
+
+.contact-form {
+		width: 60%;
+		border: 1px solid #eee;
+		border-radius: 7px;
+		background-color: #eee;
+		padding: 20px;
+		margin-top: 20px;
+}
+
+.contact-form dt {
+		color: #525252;
+}
+
+.contact-form dd {
+		margin-bottom: 12px;
+}
+
+.contact-form dd input {
+		width: 300px;
+		border-radius: 4px;
+		border: 1px solid #acacac;
+		padding-left: 10px;
+}
+
+.contact-form dd textarea {
+		width: 100%;
+		height: 80%;
+}
+
+.required {
+		font-style: italic;
+		font-size: 8pt;
+		color: #a0a0a0;
+		font-weight: normal;
+}
+
+.footer {
+		height: 60px;
+		background-color: #fff;
+}

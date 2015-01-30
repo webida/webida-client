@@ -1,0 +1,5 @@
+[
+    {"name": "Basic", "src": "basic"},
+    {"name": "Framework", "src": "framework"},
+    {"name": "Presentation", "src": "presentation"}
+]

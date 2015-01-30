@@ -1,0 +1,206 @@
+<div style='width:460px;height:200px;'>
+    <style>
+        #drop_pane {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            z-index: 5001;
+            background-color: #eee;
+        }
+
+        #info_pane {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            z-index: 5000;
+            background-color: #eee;
+        }
+
+        #pvDirectoryInfoPane {
+            width: 460px;
+            position: absolute;
+            bottom: 40px;
+            left: 0px;
+            width: 100%;
+            background-color: #eee;
+        }
+        #pvDirectoryInfoPane > label {
+            padding-left: 8px;
+        }
+
+        #drop_zone {
+            border:2px dashed #bbb;
+            border-radius:5px;
+            height: 150px;
+            width: 456px;
+            text-align:center;
+            font: bold 20pt 'Vollkorn';
+            color:#bbb
+        }
+
+        #drop_zone_text {
+            padding-top: 40px;
+        }
+
+        .drop-zone__button {
+            position: relative;
+            color: #333333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 4px 10px;
+            text-shadow: 0 1px 0 white;
+        }
+        .drop-zone__file {
+            display: none;
+        }
+
+        #pvDropBorderPane,
+        #pvInfoBorderPane {
+            height: 100%;
+            padding: 0;
+        }
+
+        #pvUploadFilesDropTopPane {
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+
+        #pvUploadFilesDropCenterPane {
+            padding-top: 0px;
+            padding-bottom: 4px;
+            overflow: hidden;
+        }
+
+        #pvUploadFilesInfoLeftPane {
+            width: 175px;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            padding-right: 4px;
+        }
+
+        #pvContentsSimpleInfoPane {
+            width: 100%;
+            padding-top: 4px;
+            padding-bottom: 4px;
+        }
+        #pvContentsWarningPane {
+            width: 100%;
+            padding-bottom: 4px;
+        }
+
+        #pvUploadFilesInfoCenterPane {
+            padding-top: 4px;
+            padding-bottom: 4px;
+            padding-left: 4px;
+        }
+
+        #pvSelectOrClearCheckBoxPane {
+            padding-bottom: 4px;
+        }
+
+        #pvListOfSelectedPane {
+            width: 100%;
+            height: 150px;
+            background-color: #ffffff;
+            overflow-y: scroll;
+        }
+
+        #pvListOfSelected {
+            padding-left: 20px;
+            margin-top: 1px;
+            margin-bottom: 1px;
+        }
+    </style>
+
+    <!-- drop pane -->
+    <div id="drop_pane">
+        <div data-dojo-type="dijit/layout/BorderContainer"
+             data-dojo-props="gutters:false, liveSplitters:false"
+             id="pvDropBorderPane">
+            <!-- top -->
+            <div data-dojo-type="dijit/layout/ContentPane"
+                 data-dojo-props="region:'top'"
+                 id="pvUploadFilesDropTopPane">
+                <label id="">
+                    Select files and/or directories to upload by dropping them to the following zone. </label>
+            </div>
+
+            <!-- center -->
+            <div data-dojo-type="dijit/layout/ContentPane"
+                 data-dojo-props="region:'center'"
+                 id="pvUploadFilesDropCenterPane">
+                <div id="drop_zone">
+                    <div id="drop_zone_text">
+                        Drop them here<br />
+                        or<br />
+                        <label class="drop-zone__button">Select files
+                        <input id="pvFileInputBox"
+                               class="drop-zone__file"
+                               type="file"
+                               multiple="" />
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- info pane -->
+    <div id="info_pane">
+        <div data-dojo-type="dijit/layout/BorderContainer"
+             data-dojo-props="gutters:false, liveSplitters:false"
+             id="pvInfoBorderPane">
+            <!-- left -->
+            <div data-dojo-type="dijit/layout/ContentPane"
+                 data-dojo-props="gutters:false, liveSplitters:false, region:'left'"
+                 id="pvUploadFilesInfoLeftPane">
+                <label> Selected files and directories: </label>
+                <div id="pvContentsSimpleInfoPane">
+                    <div id="pvContentsCnt"> -Files , Directories </div>
+                    <div id="pvContentsSize"> -Size </div>
+                </div>
+                <div id="pvContentsWarningPane">
+                </div>
+            </div>
+
+            <!-- center -->
+            <div data-dojo-type="dijit/layout/ContentPane"
+                 data-dojo-props="region:'center'"
+                 id="pvUploadFilesInfoCenterPane">
+                <!-- check box -->
+                <div id="pvSelectOrClearCheckBoxPane">
+                    <input id="pvSelectOrClearCheckBox"
+                           data-dojo-type="dijit/form/CheckBox"
+                           checked />
+                    <label id="pvSelectOrClearCheckBoxText"
+                           for="pvSelectOrClearCheckBox">Select/Clear All</label>
+                </div>
+                <!-- tree -->
+                <div id="pvListOfSelectedPane">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pvDirectoryInfoPane">
+        <label>Target directory:</label>
+        <input id="pvTargetInputBox"
+               type="text"
+               data-dojo-type="dijit/form/TextBox"
+               placeHolder="target location"
+               readonly />
+        <button id="pvTargetBrowseBt"
+                data-dojo-type="dijit/form/Button"
+                type="button">Browse...</button>
+    </div>
+
+    <fieldset id="pvFieldset3"  style='display: none;'>
+    </fieldset>
+
+</div>

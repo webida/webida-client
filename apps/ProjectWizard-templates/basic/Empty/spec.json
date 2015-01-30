@@ -1,0 +1,19 @@
+{
+    "template_id": "hello world",
+    "title": "hello world",
+    "screen_shot": ["res/helloworld-1.jpg"],
+    "description": "project/README.md",
+    "version": "0.1",
+    "app_class": "html",
+    "app_main": "index.html",
+    "template model": [
+        {
+           "param": "project name (NOT USED YET)",
+           "value": "default1"
+        },
+        {
+           "param": "app id (NOT USED YET)",
+           "value": "default2"
+        }
+    ]
+}

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <!-- head -->
+    <head>
+        <title>Development Center</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- load css style -->
+        <link rel="stylesheet" href="src/css/chart.css">
+        <link rel="stylesheet" href="src/css/common.css">
+        <link rel="stylesheet" href="src/css/toastr.css" type="text/css" />
+        <link rel="shorcut icon" href="resources/webida_favicon_16.png" type="image/x-icon">
+        <link rel="icon" href="resources/webida_favicon_16.png" type="image/x-icon">
+
+        <!-- load javasccript -->
+        <script src="lib/jquery-1.9.1.js"></script>
+
+        <script>
+            $.browser = {msie: (navigator.appName === "Microsoft Internet Explorer")};
+        </script>
+
+        <script src="lib/jquery.ba-hashchange.min.js"></script>
+        <script src="lib/jquery.easypiechart.min.js"></script>
+        <script src="src/js/config.js"></script>
+        <script src="lib/require.min.js" data-main="src/js/main.js"></script>
+    </head>
+
+    <!-- main -->
+    <body>
+        <!-- menu navigation -->
+        <div class="overlay"></div>
+
+        <div class="navigation">
+            <ul>
+                <li id="menu-logo"></li>
+                <li><a href="#workspace" class="menu-item workspace">Workspaces</a></li>
+                <li><a href="#settings" class="menu-item settings">Settings</a></li>
+                <li><a href="#applications" class="menu-item applications">Applications</a></li>
+                <!--<li id="menu-logout">Log out</li>-->
+            </ul>
+        </div>
+
+        <!-- content -->
+        <div class="section">
+            <!-- workspace -->
+            <div class="wrap active" id="area-workspace">
+
+                <div class="stats"></div>
+
+                <br class="clear" />
+
+                <div class="header">
+                    <div class="row">
+                        <div class="contents">
+                            <div class="col span1"></div>
+                            <div class="col span6">Name</div>
+                            <div class="col span6 centered">Created date</div>
+                            <div class="col span7">Description</div>
+                        </div>
+                        <div class="button-area span6 add-ws-button" title="Add new workspace">
+                            <span class="button-icon icon-add"></span><span>Add new workspace</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- workspace space -->
+                <div class="body"></div>
+
+            </div>
+
+            <!-- settings -->
+            <div class="wrap" id="area-settings">
+                <div class="panel max">
+                    <div class="panel-title">
+                        <label>Public SSH Key</label>
+                    </div>
+                    <div class="panel-body">
+                        <textarea cols="40" rows="8" id="public-ssh-key"></textarea>
+                        <button class="btn green generate-key"><span>Generate new key</span></button>
+                    </div>
+                </div>
+                <div class="panel max">
+                    <div class="panel-title">
+                        <label>GitHub Token</label>
+                    </div>
+                    <div class="panel-body">
+                        <input type="text" id="github-token" />
+                        <button class="btn green save-token"><span>Save token</span></button>
+                    </div>
+                </div>
+                <div class="panel max">
+                    <div class="panel-title">
+                        <label>Personal Tokens</label>
+                    </div>
+                    <div class="header">
+                        <div class="row">
+                            <div class="contents span13">
+                                <div class="col span10 centered" title="Token">Token</div>
+                                <div class="col span10 centered">Created date</div>
+                            </div>
+                            <div class="button-area span6 add-token-button" title="Add new personal token">
+                                <span class="button-icon icon-add"></span><span>Add new personal token</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="body" id="personal-token-list">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- applications -->
+            <div class="wrap" id="area-applications">
+
+                <div class="panel pull">
+                    <div class="panel-title">
+                        <label>Deploy list</label><br>
+                    </div>
+
+                    <div class="body">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="add-ws-dialog" class="dialog">
+            <div class="dialog-header">
+                <div class="dialog-title">Create Workspace</div>
+                <div class="dialog-close"></div>
+            </div>
+            <div class="dialog-body">
+                <div class="dialog-wrap">
+                    <ul>
+                        <li><label for="ws-name-input">Workspace name</label></li>
+                        <li><input type="text" id="ws-name-input" placeholder="Enter name for new workspace"></li>
+                        <li class="dialog_message" id="adddlg_message"></li>
+                        <li><label for="ws-desc-input">Description</label></li>
+                        <li><input type="text" id="ws-desc-input" placeholder="Enter workspace description"></li>
+                        <li><button class="btn green max submit"><span>Create</span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-ws-dialog" class="dialog">
+            <div class="dialog-header">
+                <div class="dialog-title">Edit Workspace</div>
+                <div class="dialog-close"></div>
+            </div>
+            <div class="dialog-body">
+                <div class="dialog-wrap">
+                    <ul>
+                        <li><label for="edit-ws-desc-input">Description</label></li>
+                        <li><input type="text" id="edit-ws-desc-input" placeholder="Enter workspace description"></li>
+                        <li><button class="btn green max submit"><span>Save</span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="remove-ws-dialog" class="dialog">
+            <div class="dialog-header">
+                <div class="dialog-title">Delete Workspace</div>
+                <div class="dialog-close"></div>
+            </div>
+            <div class="dialog-body">
+                <div class="dialog-wrap">
+                    <ul>
+                        <li><label for="ws-confirm-input">Workspace name</label></li>
+                        <li><input type="text" class="input" id="ws-confirm-input" placeholder="Enter the workspace name to delete"></li>
+                        <li><button class="btn red max submit"><span>I understand the consequences, delete this workspace!</span></button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="generate-confirm-dialog" class="dialog small">
+            <div class="dialog-header">
+                <div class="dialog-title">Generate New Key</div>
+                <div class="dialog-close"></div>
+            </div>
+            <div class="dialog-body">
+                <div class="dialog-wrap">
+                    <ul>
+                        <li><p>The previous public ssh key will be replaced with a new one! Are you sure to continue?</p></li>
+                        <li>
+                            <button class="btn red yes"><span>Yes</span></button>
+                            <button class="btn no"><span>No</span></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="remove-deploy-dialog" class="dialog small">
+            <div class="dialog-header">
+                <div class="dialog-title">Delete Deployed app</div>
+                <div class="dialog-close"></div>
+            </div>
+            <div class="dialog-body">
+                <div class="dialog-wrap">
+                    <ul>
+                        <li><p>Are you sure to delete this deployed app?</p></li>
+                        <li>
+                            <button class="btn red yes"><span>Yes</span></button>
+                            <button class="btn no"><span>No</span></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <footer></footer>
+
+    </body>
+</html>

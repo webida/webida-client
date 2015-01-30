@@ -1,0 +1,44 @@
+<style>
+    .gitrefinfo {
+        font-weight: bold;
+        background-color: #FFF8AA;
+        border: 1px solid #B9C006;
+        margin: 0 3px 0 3px;
+        padding: 0 2px 0 2px;
+    }
+    .dojoxGridScrollbox { overflow-x: hidden; }
+</style>
+
+<div style="width:650px;line-height:30px;">
+    <div style="width: 100px;display:inline-block;">
+        <strong>Current branch:</strong>
+    </div>
+    <div style="display:inline-block;" id="GitResetBranchInfo"></div>
+    <div style="position: absolute;right:10px;display:inline-block;">
+        <select name="gitcoloumn" id="GitResetSearchSelectColumn" data-dojo-type="dijit/form/Select" style="width:90px">
+            <option value="id" selected="selected">Commit-Id</option>
+            <option value="authorDate">Date</option>
+            <option value="author">Author</option>
+            <option value="message">Message</option>
+        </select>
+        <input type="text" id="GitResetSearchInput" data-dojo-type="dijit/form/TextBox" data-dojo-props="placeHolder: 'Filter'" style="width:150px"/>
+    </div>
+</div>
+<div id="GitResetCommitGrid" style="width:650px;height:400px;"></div>
+<fieldset style="padding: 5px; border: 1px solid gray">
+    <legend>
+        <strong>Options</strong>
+    </legend>
+    <div>
+        <input type="radio" id="GitResetTypeSoftRadioBtn" data-dojo-type="dijit/form/RadioButton" />
+        <label for="GitResetTypeSoftRadioBtn">Soft - Do not touch the index nor the working tree at all.</label>
+    </div>
+    <div>
+        <input type="radio" id="GitResetTypeMixedRadioBtn" data-dojo-type="dijit/form/RadioButton" checked />
+        <label for="GitResetTypeMixedRadioBtn">Mixed - Reset the index but not the working tree. (<strong>Default</strong>)</label>
+    </div>
+    <div>
+        <input type="radio" id="GitResetTypeHardRadioBtn" data-dojo-type="dijit/form/RadioButton" />
+        <label for="GitResetTypeHardRadioBtn">Hard - Reset the index and the working tree.</label>
+    </div>
+</fieldset>
