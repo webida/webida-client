@@ -1,0 +1,14 @@
+{
+    "name": "context-view",
+    "description": "Context View",
+    "version": "0.0.1",
+    "deps": [
+            "workbench"
+    ],
+    "extensions": {
+		"workbench:views" : {
+            "location": "bottom",
+            "cellIndex": 0
+        }
+    }
+}

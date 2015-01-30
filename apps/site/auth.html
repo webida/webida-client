@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="src/js/util.js"></script>
+        <script type="text/javascript">
+            if (location.hash.substr(1, 12) === "access_token") {
+                var targetOrigin = getLocationOrigin();
+                var accessToken = location.hash.substring(1);
+                if (!window.opener){
+                    window.parent.postMessage(accessToken, targetOrigin);
+                } else {
+                    window.opener.parent.postMessage(accessToken, targetOrigin);
+                    self.opener = self;
+                    window.close();
+                }
+            }
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

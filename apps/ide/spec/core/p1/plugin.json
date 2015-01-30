@@ -1,0 +1,8 @@
+{
+    "name": "../../spec/core/p1",
+    "description": "plugin system test, simple",
+    "version": "1.0.0",
+    "deps": [
+    ],
+    "main": "../../spec/core/p1/main"
+}

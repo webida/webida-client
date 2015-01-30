@@ -1,0 +1,64 @@
+
+.cm-s-webida-light.CodeMirror {
+    background: #ffffff; color: #000000;
+    border-top : 5px solid RGB(203,213,225);
+}
+
+.cm-s-webida-light div.CodeMirror-selected {background: #94bbeb !important;}
+.cm-s-webida-light .CodeMirror-gutters {background: #dedede; border-right: 0px;}
+.cm-s-webida-light .CodeMirror-linenumber {color: #495d65;}
+.cm-s-webida-light .CodeMirror-cursor {border-left: 1px solid #000000 !important;}
+
+.cm-s-webida-light span.cm-comment {color: #596789;}
+.cm-s-webida-light span.cm-atom {color: #c000ff;}
+.cm-s-webida-light span.cm-number {color: #5501ff;}
+
+.cm-s-webida-light span.cm-property, {color: #317b00}
+.cm-s-webida-light span.cm-operator, {color: #313131}
+.cm-s-webida-light span.cm-attribute {color: #c000ff;}
+.cm-s-webida-light span.cm-keyword {color: #c3003c;}
+.cm-s-webida-light span.cm-string {color: #844e00;}
+.cm-s-webida-light span.cm-string-2 {color: #962300;}
+
+.cm-s-webida-light span.cm-variable {color: #007384;}
+.cm-s-webida-light span.cm-variable-2 {color: #008752;}
+.cm-s-webida-light span.cm-variable-3 {color: #008752;}
+.cm-s-webida-light span.cm-def {color: #0078ff;}
+.cm-s-webida-light span.cm-error {background: #ca003e; color: #fee3e3;}
+.cm-s-webida-light span.cm-bracket {color: #000000;}
+.cm-s-webida-light span.cm-tag {color: #007eff;}
+.cm-s-webida-light span.cm-link {
+    text-decoration: inherit;
+    color: #0036ff;
+}
+.cm-s-webida-light span.cm-link-active {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.cm-s-webida-light div.CodeMirror-gutter {background: #dedede;}
+
+.cm-s-webida-light .CodeMirror-matchingbracket {
+    text-decoration: underline;
+    color: #000000 !important;
+}
+
+.cm-s-webida-light .CodeMirror-activeline-background {
+    background: #d5e9ff;
+}
+.cm-s-webida-light .CodeMirror-linenumber.CodeMirror-gutter-elt {
+    color: #495d65;
+}
+
+.cm-s-webida-light ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.cm-s-webida-light ::-webkit-scrollbar-thumb {
+    background: rgb(85,85,85);
+}
+
+.cm-s-webida-light .CodeMirror-highlighted {
+    background-color: #27a6ff;
+}

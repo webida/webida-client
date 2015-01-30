@@ -1,0 +1,73 @@
+<style>
+    .panel-default>.panel-heading {
+        background-color: #4a5a77;
+        border-radius: 3px 3px 0 0;
+    }
+
+    .panel-body {
+        background-color: #27292c;
+    }
+
+    .panel-body label {
+        color: #4771a1;
+    }
+
+    .panel-body input[type='text'] {
+        background-color: #000;
+        color: #4771a1;
+        border: 1px solid #55606e;
+    }
+
+    .panel-body button {
+        background-color: #36434e;
+        color: #bbcfe5;
+        border: 0;
+        border-radius: 3px;
+    }
+    .panel-body button:hover {
+        background-color: #3e5262;
+    }
+    .panel-body button:active {
+        background-color: #26333e;
+    }
+    .panel-body textarea {
+        font-size: 10pt;
+        color: #4771a1;
+        background-color: #000000;
+        border: 1px solid #55606e;
+        border-radius: 3px;
+        resize: none;
+    }
+</style>
+
+<!-- change password pannel -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>SSH Key</strong>
+    </div>
+    <div class="panel-body">
+        <div class="col-sm-9">
+            <div class="form-group">
+                <div class="form-group">
+                    <textarea id="gen-sshkey" class="form-control" rows="7"></textarea>
+                </div>
+            <button id="gen-key-btn" type="submit" class="btn btn-default">Generate Key</button>
+        </div>
+    </div>
+</div>
+
+<!-- change username pannel -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <strong>GitHub</strong>
+    </div>
+    <div class="panel-body">
+        <div class="col-sm-9">
+            <div class="form-group">
+                <label for="GitHub_TokenKey">Token Key</label>
+                <input type="text" class="form-control" id="GitHub_TokenKey" placeholder="Enter token key">
+            </div>
+            <button id="SaveGitHub" type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+    </div>
+</div>

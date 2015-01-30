@@ -1,0 +1,19 @@
+{
+    "template_id": "staticHTML",
+    "title": "empty with static HTML",
+    "screen_shot": "",
+    "description": "description.html",
+    "version": "0.1",
+    "app_class": "html",
+    "app_main": "index.html",
+    "template model": [
+        {
+           "param": "project name (NOT USED YET)",
+           "value": "default1"
+        },
+        {
+           "param": "app id (NOT USED YET)",
+           "value": "default2"
+        }
+    ]
+}

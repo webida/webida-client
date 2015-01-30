@@ -1,0 +1,170 @@
+{
+    "workbench:view": {
+        "locations": {
+            "right": {
+                "splitter": false,
+                "collapsed": true,
+                "size": "0px"
+            }
+        }
+    },
+    "workbench:menu" : {
+        "hierarchy": {
+            "&File" : {
+                "&New" : {
+                    "&Project" : [],
+                    "delim0": "---",
+                    "&File" : [],
+                    "&Directory" : []
+                },
+                "&Save" : [],
+                "Sav&e All" : [],
+                "&Close" : [],
+                "Cl&ose Others" : [],
+                "C&lose All" : [],
+                "delim0": "---",
+                "Open &File" : [],
+                "Duplica&te" : [],
+                "Ren&ame" : [],
+                "&Refresh" : [],
+                "delim1": "---",
+                "&Upload Files" : [],
+                "&Download Files" : [],
+                "delim2": "---",
+                "Recent Files" : [],
+                "delim3": "---",
+                "Switc&h Workspace" : [],
+                "Save Status" : [],
+                "&Quit" : []
+            },
+            "&Edit" : {
+                "&Undo" : [],
+                "&Redo" : [],
+                "delim0": "---",
+                "&Delete" : [],
+                "Select &All" : [],
+                "Select L&ine" : [],
+                "delim1": "---",
+                "Con&vert Line Endings" : [],
+                "&Line" : {
+                    "&Indent" : [],
+                    "&Dedent" : [],
+                    "Move Line U&p" : [],
+                    "Move Line Dow&n" : [],
+                    "D&elete Lines" : []
+                },
+                "&Source" : {
+                    "&Fold" : [],
+                    "delim0": "---",
+                    "&Beautify" : [],
+                    "B&eautify All" : [],
+                    "delim1": "---",
+                    "&Toggle Line Comments" : [],
+                    "Toggle Block Comment" : [],
+                    "&Rename Variables" : []
+                }
+            },
+            "F&ind" : {
+                "&Replace" : [],
+                "F&ind" : [],
+                "&Highlight to Find" : [],
+                "Find &Next" : [],
+                "Find &Previous" : [],
+                "delim0": "---",
+                "&Find in Files" : []
+            },
+            "&Navigate" : {
+                "Go to &File": [],
+                "&Go to Definition" : [],
+                "G&o to Line" : [],
+                "Go to &Matching Brace" : [],
+                "delim0": "---",
+                "&Navigate Editors" : {
+                    "&Ex-Selected Tab" : [],
+                    "&Previous Tab" : [],
+                    "&Next Tab" : [],
+                    "&Select Tab from List" : [],
+                    "Switch &Tab Container" : [],
+                    "Move Tab to &Other Container" : []
+                }
+            },
+            "&Project" : {
+                "&Run" : [],
+                "Debug" : [],
+                "delim0": "---",
+                "Run &with" : [],
+                "Run with Device" : [],
+                "delim1": "---",
+                "Debug with" : [],
+                "delim2": "---",
+                "&Project Wizard" : [],
+                "&Test" : [],
+                "delim3": "---",
+                "&Build" : [],
+                "Build Configurations" : [],
+                "Rebuild" : [],
+                "Clean" : [],
+                "delim4": "---",
+                "Generate Signed Package" : [],
+                "&Export" : [],
+                "delim5": "---",
+                "Deplo&y" : []
+            },
+            "&Git" : {
+                "&Status": [],
+                "Show File History": [],
+                "Show Repository History": [],
+                "Blame" : [],
+                "Compar&e" : [],
+                "delim0" : "---",
+                "&Commit": [],
+                "Reset to Commit": [],
+                "Re&base": [],
+                "&Merge": [],
+                "B&ranches": [],
+                "delim1" : "---",
+                "&Add to Stage": [],
+                "Remove from Stage": [],
+                "Checkout from Stage": [],
+                "Untrack": [],
+                "delim2" : "---",
+                "Stash Changes": [],
+                "Unstash Changes": [],
+                "delim3" : "---",
+                "&Push": [],
+                "&Fetch": [],
+                "P&ull": [],
+                "Update Submodules" : [],
+                "Remotes": [],
+                "delim4" : "---",
+                "Clone from URL" : [],
+                "New Repository" : [],
+                "delim5" : "---",
+                "Confi&gure": []
+            },
+            "&View" : {
+                "Spl&it Editors" : {
+                    "&Vertical" : [],
+                    "&Horizontal" : []
+                },
+                "delim0" : "---",
+                "Select View from &List" : [],
+                "delim1" : "---",
+                "Toggle &Menu" : [],
+                "Toggle &Toolbar" : [],
+                "Toggle &Full-Screen" : []
+            },
+            "&Help" : {
+                "Help Contents" :  {
+                    "IDE Reference Manual" : [],
+                    "API Documentation" : []
+                },
+                "&Shortcut List" : [],
+                "&Command List" : [],
+                "delim0" : "---",
+                "&Preferences" : [],
+                "&About" : []
+            }
+        }
+    }
+}

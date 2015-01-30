@@ -1,0 +1,21 @@
+<div id='cfgPRmRootPane' data-dojo-type='dijit/layout/ContentPane' style='width:400px; height:300px'>
+    <div id='cfgPRmBContainer' data-dojo-type='dijit/layout/BorderContainer' class='cfgBorderContainer'>
+        <!-- plugin add dialog setting area -->
+        <div id='cfgPRmSettingArea' data-dojo-type='dijit/layout/ContentPane'  data-dojo-props='region:"center"'>
+            <label>Third party plugins</label><br>
+            <div id='cfgTPListPane'>
+                <select id='cfgPRmPList' multiple='true' name='multiselect' data-dojo-type='dojox/form/CheckedMultiSelect' style='width: 360px; height: 170px'>
+                </select>
+            </div>
+            <div id='cfgPRmNotiPane' style='text-align:center'>
+                Third party plugins NOT exists
+            </div>
+        </div>
+
+        <!-- plugin add dialog button area-->
+        <div id='cfgPRmBtArea' data-dojo-type='dijit/layout/ContentPane'  data-dojo-props='region:"bottom"' style='text-align:rigth'>
+            <button id='cfgPRmOK' data-dojo-type='dijit/form/Button' type='button'> Ok </button>
+            <button id='cfgPRmCancel' data-dojo-type='dijit/form/Button' type='button'> Cancel </button>
+        </div>
+    </div>
+</div>

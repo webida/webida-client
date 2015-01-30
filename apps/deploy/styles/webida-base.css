@@ -1,0 +1,342 @@
+@font-face {
+    font-family: "Nanum Gothic Coding";
+    src: url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.body{
+    font-family: "Nanum Gothic Coding", Verdana,Arial,sans-serif;
+}
+
+#ide-workbench-top-panel {
+    /* background-image:url('webida-images/title_pattern.gif');
+    height:30px; */
+}
+
+.view-top-logo {
+    background-image: url('webida-images/webida_logo.png');
+    width: 38px;
+    height: 30px;
+    margin-right: 20px;
+    float: left;
+}
+
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-button {
+    width: 0px;
+    height: 0px;
+}
+
+::-webkit-scrollbar-track {
+    right:4px;
+    margin-right: 5px;
+    background:#eee;
+    border: 2px solid transparent;
+    background:transparent;
+    /*
+    x-shadow: 0px 0px 3px #dfdfdf inset;
+    border-radius:10px;
+    */
+}
+
+::-webkit-scrollbar-track-piece {
+    background: RGBA(0,0,0,0);
+    /*
+    x-shadow: 0px 0px 3px #dfdfdf inset;
+    border-radius:10px;
+    */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #a3b4c2;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #7d8b97;
+}
+
+#editor-tab .dijitTab .tabLabel {
+    outline-color: transparent;
+}
+.emphadize-view-title {
+    color: #DA0000;
+}
+
+.webida-tool-bar-icon {
+    width: 20px;
+    height: 20px;
+}
+.webida-tool-bar-icon-normal {
+    background-position: 0 0;
+}
+
+.webida-tool-bar-icon-hover {
+    background-position: -20px 0;
+}
+
+.webida-tool-bar-icon-disabled {
+    background-position: -40px 0;
+}
+
+.webida-tool-bar-icon-clicked {
+    background-position: -60px 0;
+}
+
+:focus {
+    outline-color:transparent;
+}
+
+/*console view*/
+.consoleViewContents {
+    border: 0px;
+    height: inherit;
+}
+.consoleViewContents .fileloc_link {
+    cursor: pointer;
+}
+.consoleViewContents .fileloc_link:hover {
+    color: rgb(49, 168, 214);
+    background-color: #EEEEEE;
+}
+.consoleViewContents .has_new_message {
+    color: red;
+}
+.consoleViewContents .console_error_message {
+    color: red;
+}
+
+.viewToolbarBackground {
+    background-image: -webkit-linear-gradient(top, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
+    background-image: -moz-linear-gradient(top, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
+    background-image: -o-linear-gradient(top, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
+    background-image: linear-gradient(to bottom, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
+    height: 28px;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+/*workbench style start*/
+.ide-workbench-middle-content {
+    height: -webkit-calc(100% - 83px);
+    height: -moz-calc(100% - 83px);
+    height: calc(100% - 83px);
+}
+
+.workbenchMenubarHide .ide-workbench-middle-content {
+    height: -webkit-calc(100% - 62px);
+    height: -moz-calc(100% - 62px);
+    height: calc(100% - 62px);
+}
+
+.workbenchToolbarHide .ide-workbench-middle-content {
+    height: -webkit-calc(100% - 53px);
+    height: -moz-calc(100% - 53px);
+    height: calc(100% - 53px);
+}
+
+.workbenchMenubarHide.workbenchToolbarHide .ide-workbench-middle-content {
+    height: -webkit-calc(100% - 32px);
+    height: -moz-calc(100% - 32px);
+    height: calc(100% - 32px);
+}
+
+.ide-workbench-menubar {
+    background-image: -webkit-linear-gradient(top, #363B42 1px, #414850 25px, #3E454C 0px, #313437 100%);
+    background-image: -moz-linear-gradient(top, #363B42 1px, #414850 25px, #3E454C 0px, #313437 100%);
+    background-image: -o-linear-gradient(top, #363B42 1px, #414850 25px, #3E454C 0px, #313437  00%);
+    background-image: linear-gradient(to bottom, #363B42 1px, #414850 25px, #3E454C 0px, #313437 100%);
+}
+
+.ide-workbench-menubar-dijit {
+    background-image: none;
+    background-color: transparent;
+    position: absolute;
+    left: 54px;
+    width: 415px;
+}
+
+.ide-workbench-toolbar {
+    height: 29px;
+    border-top: 1px solid #dee4e7;
+    background-image: -webkit-linear-gradient(top, #ced3d7 25px, #a7b1ba 100%);
+    background-image: -moz-linear-gradient(top, #ced3d7 25px, #a7b1ba 100%);
+    background-image: -o-linear-gradient(top, #ced3d7 25px, #a7b1ba 100%);
+    background-image: linear-gradient(to bottom, #ced3d7 25px, #a7b1ba 100%);
+}
+
+.workbenchMenubarHide .ide-workbench-menubar {
+    display: none;
+}
+
+.workbenchToolbarHide .ide-workbench-toolbar {
+    display: none;
+}
+
+.ide-workbench-top-logo {
+    position: absolute;
+    left: 12px;
+    top: 0px;
+    width: 40px;
+    height: 30px;
+    background-image: url('webida-images/title_emblem.png');
+}
+
+.ide-workbench-top-logo:hover{
+    background-position: -40px;
+}
+
+.ide-workbench-top-logo:active{
+    background-position: -80px;
+}
+
+/*menubar separator*/
+.top-level-menu-separator {
+    width: 100%;
+    height: 9px;
+    background-image: -webkit-linear-gradient(top, #414850 5px, #3E454C 0px, #313437 100%);
+    background-image: -moz-linear-gradient(top, #414850 5px, #3E454C 0px, #313437 100%);
+    background-image: -o-linear-gradient(top, #414850 5px, #3E454C 0px, #313437 100%);
+    background-image: linear-gradient(to bottom, #414850 5px, #3E454C 0px, #313437 100%);
+    background-position-y: 0px;
+    display: none;
+}
+
+.separator-collapse-btn {
+    width: 23px;
+    height: 7px;
+    top: 1px;
+    margin: auto;
+    background-image: url('webida-images/top_collapse_bt.png');
+
+}
+
+.separator-collapse-btn:hover {
+    background-position-y: -7px;
+}
+
+.separator-collapse-btn:active {
+    background-position-y: -14px
+}
+
+.workbenchMenubarHide .top-level-menu-separator {
+    display: block;
+}
+
+/*workbench style end*/
+
+
+/*view drag feedback style start*/
+
+.viewContainerEventElem {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 0;
+}
+
+.titleFeedbackContainer {
+    background-color: RGBA(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 100;
+}
+
+.viewContainerTitleFeedback {
+    background-color: RGBA(0, 128, 255, 0.7);
+    position: absolute;
+    width: 5px;
+    height: 100%;
+    border-radius: 2px;
+}
+
+.viewContaienrEventElem .contentFeedbackContainer {
+    background-color: RGBA(0, 0, 0, 0.5);
+}
+
+.viewContaienrEventElem .contentFeedbackContainer .viewContainerFeedbackCenter {
+    border-color: transparent;
+    background-color: RGBA(0, 128, 255, 0.7);
+}
+
+.contentFeedbackContainer {
+    /*background-color: RGBA(50, 50, 50, 0.7);*/
+    position: absolute;
+}
+
+.viewContainerFeedback {
+    border-color: transparent;
+    background-color: transparent;
+    border-style: solid;
+    position: absolute;
+    border-width:0;
+}
+
+.viewContainerFeedbackLeft{
+    border-left-color: RGBA(0, 128, 255, 0.3);
+}
+.viewContainerFeedbackTop{
+    border-top-color: RGBA(0, 128, 255, 0.3);
+}
+.viewContainerFeedbackRight {
+    border-right-color: RGBA(0, 128, 255, 0.3);
+}
+.viewContainerFeedbackBottom {
+    border-bottom-color: RGBA(0, 128, 255, 0.3);
+}
+
+.viewContainerFeedbackCenter {
+    background-color: RGBA(0, 128, 255, 0.3);
+    border-width: 0;
+}
+
+.viewContainerFeedbackCenter.activate {
+    background-color: RGBA(0, 128, 255, 0.7);
+}
+
+.viewContainerFeedbackLeft.activate{
+    border-left-color: RGBA(0, 128, 255, 0.7);
+}
+.viewContainerFeedbackTop.activate{
+    border-top-color: RGBA(0, 128, 255, 0.7);
+}
+.viewContainerFeedbackRight.activate{
+    border-right-color: RGBA(0, 128, 255, 0.7);
+}
+.viewContainerFeedbackBottom.activate{
+    border-bottom-color: RGBA(0, 128, 255, 0.7);
+}
+
+/*Console View Start*/
+
+.consoleViewContentContainer {
+    position: absolute;
+    top: 28px;
+    overflow: auto;
+    width: 100%;
+    height: calc(100% - 28px);
+    height: -webkit-calc(100% - 28px);
+}
+
+#Output .fileloc_link {
+    cursor: pointer;
+    color: #1C38AA;
+}
+
+#Output .fileloc_link:hover {
+    color: #57C25B;
+}
+
+#Output .has_new_message {
+    color: red;
+}
+
+#Output .console_error_message {
+    color: red;
+}

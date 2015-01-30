@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script type="text/javascript">
+            var hash = window.location.hash;
+            var reloadUrl;
+            if (hash && hash.length > 0 && hash[0] === '#') {
+                reloadUrl = hash.replace('#', '');
+                window.location.href = reloadUrl;
+            } else {
+                alert('Reload fail!');
+            }
+
+        </script>
+        <title>Run</title>
+    </head>
+    <body>
+        <h1>Reloading...</h1>
+    </body>
+</html>

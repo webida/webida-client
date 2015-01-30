@@ -1,0 +1,14 @@
+{
+    "name": "progress",
+    "description": "Progress",
+    "version": "0.0.2",
+    "deps": [
+            "workbench"
+    ],
+    "extensions": {
+		"workbench:views" : {
+            "location": "bottom",
+            "cellIndex": 0
+        }
+    }
+}

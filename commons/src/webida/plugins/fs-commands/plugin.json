@@ -1,0 +1,127 @@
+{
+    "name": "fs-commands",
+    "description": "commands on files and folders in the workspace",
+    "version": "0.1.0",
+    "requirement": "workspace",
+    "extensions": {
+
+        "workbench:menu" : [
+            {
+                "location" : "/&File/",
+                "wholeItems" : {
+                    "&Refresh" : [ "cmnd" ],
+                    "Open &File" : [ "cmnd" ],
+                    "&New" : {
+                        "&File" : [ "cmnd",
+                                   {
+                                       "toolbar": {
+                                           "icons" : "./styles/webida-images/icons/toolbar_file.png",
+                                           "tooltip" : "New File",
+                                           "enabledOn":"toolbar.newfile.enable",
+                                           "disabledOn":"toolbar.newfile.disable"
+                                       },
+                                       "procedural" : true
+                                   }],
+                        "&Directory" : [ "cmnd", { "procedural" : true }]
+                    },
+                    "Duplica&te" : [ "cmnd" ],
+                    "Ren&ame" : [ "cmnd" ],
+                    "delim1" : "---",
+                    "&Upload Files" : [ "cmnd", { "procedural" : true }],
+                    "&Download Files" : [ "cmnd" ]
+                },
+                "getViableItems" : "getViableItemsForWorkbenchAtFile"
+            },
+            {
+                "location" : "/F&ind/",
+                "wholeItems" : {
+                    "&Find in Files" : [ "cmnd",
+                                        {
+                                            "shortcut" : { "keys" : { "default" : "Shift+Alt+F" }, "desc": "Find a keyword in a directory" },
+                                            "toolbar": {
+                                                "icons" : "./styles/webida-images/icons/toolbar_findfiles.png",
+                                                "tooltip" : "Find in Files",
+                                                "enabledOn":"toolbar.findinfiles.enable",
+                                                "disabledOn":"toolbar.findinfiles.disable"
+                                            },
+                                            "procedural" : true
+                                        }]
+                },
+                "getViableItems" : "getViableItemsForWorkbenchAtFind"
+            },
+            {
+                "location" : "/&Navigate/",
+                "wholeItems" : {
+                    "Go to &File": [ "cmnd",
+                                    {
+                                        "shortcut" : { "keys" : { "default" : "Alt+G" }, "desc" : "Find and open a file in a directory" },
+                                        "toolbar": {
+                                            "icons" : "./styles/webida-images/icons/toolbar_gotofile.png",
+                                            "tooltip" : "Go to File",
+                                            "enabledOn":"toolbar.gotofile.enable",
+                                            "disabledOn":"toolbar.gotofile.disable"
+                                        },
+                                        "procedural" : true
+                                    }]
+                },
+                "getViableItems" : "getViableItemsForWorkbenchAtNavigate"
+            }
+        ],
+
+        "workspace:menu" : [
+            {
+                "location" : "/",
+                "wholeItems" : {
+                    "Refres&h": [ "cmnd", { "shortcut" : { "keys" : { "default" : "alt+F5" },
+                                                           "desc" : "Refresh selected files or directories" } } ],
+                    "Properti&es": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+Enter" },
+                                                              "desc" : "Properties" }
+                                             }],
+                    "delim0" : "---",
+                    "Open" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Enter" },
+                                                        "desc" : "Open files or exapnd/collapse directories" }
+                                             }],
+                    "delim1" : "---",
+                    "New" : {
+                        "&File" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Insert" },
+                                                             "desc" : "Create an empty file under the selected directory" },
+                                             "procedural" : true
+                                            }],
+                        "&Directory" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "shift+Insert" },
+                                                                  "desc" : "Create an empty directory under the selected directory" },
+                                                  "procedural" : true
+                                                 }]
+                    },
+                    "Dup&licate" : [ "cmnd" ],
+                    "&Copy" : [ "cmnd", { "shortcut" : { "keys": { "default" : "Ctrl+C" },
+                                                         "desc": "Copy selected files and directories",
+                                                        "keepDefault": true } } ],
+                    "Cu&t" : [ "cmnd", { "shortcut" : { "keys": { "default" : "Ctrl+X" },
+                                                        "desc": "Cut selected files and directories",
+                                                       "keepDefault": true } } ],
+                    "&Paste" : [ "cmnd", { "shortcut" : { "keys": { "default" : "Ctrl+V" },
+                                                          "desc": "Paste copied or cut files and directories",
+                                                         "keepDefault": true } } ],
+                    "&Delete" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Delete" },
+                                                           "desc" : "Delete selected files or directories" },
+                                           "procedural": true } ],
+                    "Ren&ame" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "F2" },
+                                                           "desc" : "Rename a selected file or directory" } } ],
+                    "delim3" : "---",
+                    "&Find in Files": [ "cmnd", { "shortcut" : { "keys" : { "default" : "shift+alt+F" },
+                                                                 "desc" : "Find a keyword in selected directory" },
+                                                 "procedural" : true
+                                                }],
+                    "Go to File" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+G" },
+                                                              "desc" : "Find and open a file in selected directory" },
+                                              "procedural" : true
+                                             }],
+                    "delim4" : "---",
+                    "Dow&nload" : [ "cmnd" ],
+                    "&Upload Files": [ "cmnd", { "procedural" : true }]
+                },
+                "getViableItems" : "getViableItemsForWorkspaceView"
+            }
+        ]
+    }
+}

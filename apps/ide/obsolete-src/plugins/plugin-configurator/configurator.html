@@ -1,0 +1,71 @@
+<div id='cfgRootPane' data-dojo-type='dijit/layout/ContentPane' style='width:900px; height:600px'>
+    <style type='text/css'>
+        .cfgBorderContainer {
+            width: 100%;
+            height: 100%;
+        }
+        .cfgTabContainer {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <div id='cfgDefaultInfoBContainer' data-dojo-type='dijit/layout/BorderContainer' class='cfgBorderContainer'>
+        <!-- tree area -->
+        <div id='cfgTreePane' data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"left"' style='width:400px'>
+            <div id='cfgTreeInfoInBContainer' data-dojo-type='dijit/layout/BorderContainer' class='cfgBorderContainer'>
+                <!-- tree -->
+                <div id='cfgTreeArea' data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"center"'>
+                </div>
+
+                <!-- add new plugin-->
+                <div id='cfgPluginAddAndRemoveArea' data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"bottom"' style='text-align:right'>
+                    <button id='cfgPluginAdd' data-dojo-type='dijit/form/Button' type='button'> Add </button>
+                    <button id='cfgPluginRm' data-dojo-type='dijit/form/Button' type='button'> Remove </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- tab area -->
+        <div id='cfgTabArea' data-dojo-type='dijit/layout/ContentPane' data-dojo-props='region:"center"'>
+
+            <div id='cfgTabContainer' data-dojo-type="dijit/layout/TabContainer" class='cfgTabContainer'>
+                <!-- tab info -->
+                <div id='cfgInfoTabPane' data-dojo-type='dijit/layout/ContentPane'>
+                </div>
+
+                <!-- tab setting -->
+                <div id='cfgSettingTabPane' data-dojo-type='dijit/layout/ContentPane'>
+
+                    <!-- setting area -->
+                    <lebel>Setting</lebel>
+                    <ul>
+                        <li>
+                            <label>Ignore Plugin</label>
+                            <input id='cfgIgBt'
+                                   data-dojo-type='dijit/form/CheckBox'
+                                   data-dojo-props='disabled: true' />
+                        </li>
+                        <li>
+                            <label>Start  Plugin</label>
+                            <input id='cfgStBt'
+                                   data-dojo-type='dijit/form/CheckBox'
+                                   data-dojo-props='disabled: true' />
+                        </li>
+                    </ul>
+                    <!-- setting area end -->
+
+                </div>
+            </div>
+        </div> <!-- tab area close -->
+
+        <!-- configurator dialog button area-->
+        <div id='cfgDilaogBtArea' data-dojo-type='dijit/layout/ContentPane'  data-dojo-props='region:"bottom"' style='text-align:center'>
+            <button id='cfgOK' data-dojo-type='dijit/form/Button' type='button'> Ok </button>
+            <button id='cfgCancel' data-dojo-type='dijit/form/Button' type='button'> Cancel </button>
+        </div>
+
+    </div> <!-- default border close -->
+
+
+</div>

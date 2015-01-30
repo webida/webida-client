@@ -1,0 +1,8 @@
+[
+    { "name" : "location", "type" : "string", 
+      "desc": "the path of the internal node of a menu hierarchy to which new menu items are to be added" },
+    { "name" : "wholeItems", "type" : "object", 
+      "desc": "the new menu items to add" },
+    { "name" : "getViableItems", "type" : "function", 
+      "desc": "the name of the function which returns menu items which are viable in the current context" }
+]

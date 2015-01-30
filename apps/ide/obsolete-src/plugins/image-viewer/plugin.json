@@ -1,0 +1,21 @@
+{
+    "name": "image-viewer",
+    "description": "Image Viewer",
+    "version": "0.1.0",
+    "deps": [
+        "editors"
+    ],
+    "extensions" : {
+        "editors:editor" : {
+            "name" : "Image Viewer",
+            "fileValueRequired" : false,
+            "fileExtensions" : [
+                "jpg",
+                "jpeg",
+                "png",
+                "bmp",
+                "gif"
+            ]
+        }
+	}
+}

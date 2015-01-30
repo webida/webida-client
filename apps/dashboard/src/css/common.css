@@ -1,0 +1,589 @@
+/*
+* Style twaks
+* --------------------------------------------------
+*/
+
+@font-face {
+    font-family: 'Nanum Gothic Coding';
+    src: url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.woff') format('woff'), url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.ttf') format('truetype');
+}
+
+body {
+    font-family: 'Nanum Gothic Coding';
+    background: url('../../resources/background_image.jpg');
+    margin: 0;
+    padding: 0;
+    color: #fff;
+}
+
+footer {
+    height: 160px;
+}
+
+.overlay {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #333;
+    background-repeat: repeat;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+    z-index: 20;
+    display: none;
+}
+
+/* navigation */
+.navigation {
+    max-width: 1280px;
+    min-width: 640px;
+    height: 50px;
+    margin: 0 auto;
+}
+
+.navigation > ul {
+    position: relative;
+    padding: 0;
+}
+
+.navigation > ul li {
+    float: left;
+    list-style: none;
+    height: 50px;
+    line-height: 50px;
+    font-size: 25px;
+    margin-left: 50px;
+}
+
+.navigation > ul li a {
+    color: #6085AF;
+    text-decoration: none;
+}
+
+.navigation > ul a:hover {
+    color: #fff;
+}
+
+.navigation > ul > li:nth-child(1) {
+    margin-left: 0;
+    cursor: pointer;
+    width: 50px;
+    background: url('../../resources/dev_center_logo.png') 0 0 no-repeat;
+}
+
+.navigation > ul > li:nth-child(1):hover {
+    background: url('../../resources/dev_center_logo.png') -50px 0 no-repeat;
+}
+
+.navigation > ul > li:nth-child(1):active {
+    background: url('../../resources/dev_center_logo.png') -100px 0 no-repeat;
+}
+
+/* worksapce */
+.wrap {
+    display: none;
+    max-width: 1280px;
+    min-width: 800px;
+    margin: 20px auto;
+}
+
+.header, .body {
+    width: 100%;
+    position: relative;
+}
+
+.row {
+    display: block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: 4px;
+}
+
+.contents {
+    width: 58%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    float: left;
+}
+
+.body .contents {
+    color: #bbb;
+}
+
+.body > .row > .clickable-contents:hover {
+    color: #06AFFF;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.button-area {
+    width: 25%;
+    float: left;
+    border-left: 5px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
+    position: relative;
+    height: 100%;
+    overflow:hidden;
+}
+
+div.add-ws-button {
+    padding-right:10px;
+}
+
+.col {
+    float: left;
+    height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+.arrow {
+    width: 8px;
+    height: 16px;
+    top: 17px;
+    left: 15px;
+    position: absolute;
+    background: url('../../resources/widget_arrow_right.png') 0 0 no-repeat;
+    transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+.arrow.selected {
+    transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+}
+
+.project:after {
+    content: url('../../resources/webida_favicon_16.png');
+    display: inline-block;
+    line-height: 100%;
+    width: 16px;
+    margin-left: 1px;
+    vertical-align: middle;
+}
+
+.button-area:hover {
+    color: #06AFFF;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.button-area > .button-icon {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 30px;
+    margin-right: 10px;
+    margin-bottom: 2px;
+}
+
+.button-area > .icon-add {
+    background: url('../../resources/dev_center_icon_add.png') 0 0 no-repeat;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.button-area:hover > .icon-add {
+    background: url('../../resources/dev_center_icon_add.png') -24px 0 no-repeat;
+}
+
+.button-area > .icon-launch {
+    background: url('../../resources/dev_center_icon_ide.png') 0 0 no-repeat;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.button-area:hover > .icon-launch {
+    background: url('../../resources/dev_center_icon_ide.png') -24px 0 no-repeat;
+}
+
+.button-area > .icon-edit {
+    background: url('../../resources/dev_center_icon_edit.png') 0 0 no-repeat;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.button-area:hover > .icon-edit {
+    background: url('../../resources/dev_center_icon_edit.png') -24px 0 no-repeat;
+}
+
+.button-area > .icon-delete {
+    background: url('../../resources/dev_center_icon_delete.png') 0 0 no-repeat;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.button-area:hover > .icon-delete {
+    background: url('../../resources/dev_center_icon_delete.png') -24px 0 no-repeat;
+}
+
+div.delete-button:hover {
+    color: red;
+}
+
+.project-pane .contents {
+    display: block;
+    height: 50px;
+    margin-bottom: 3px;
+    line-height: 50px;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #a5c7d6;
+    height: 100%;
+    float: left;
+}
+
+/*
+.project-pane .wp:hover {
+cursor: pointer;
+background-color: rgba(0, 0, 0, 0.3);
+}
+*/
+
+.app-row {
+    display: block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+        margin-top : 5px;
+}
+
+.app-col-header {
+    height: 100%;
+    width: 13%;
+    background-color: rgba(0, 0, 0, 0.2);
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    text-indent: 5px;
+}
+.app-col-body {
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    text-indent: 10px;
+}
+
+.app-contents {
+    width:68%;
+    height:100%;
+    float: left;
+    position: relative;
+}
+
+.body > .app-row > .app-url:hover {
+    color: #06AFFF;
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.app-fold {
+    display: none;
+    width:100%;
+    height:100%;
+    position: relative;
+}
+
+.project-info {
+    margin-left: 60px;
+    float: left;
+    background: rgba(1, 1, 1, 0.1);
+}
+
+.active {
+    display: block;
+}
+
+.dialog {
+    width: 600px;
+    background-color: #101010;
+    position: fixed;
+    z-index: 500;
+    top: 20px;
+    top: calc(50% - 200px);
+    left:20px;
+    left: calc(50% - 300px);
+    font-size: 11pt;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    display: none;
+}
+
+.dialog-header {
+    border-radius: 4px 4px 0 0;
+    background-color: #4a75ac;
+    position: relative;
+    padding: 6px 10px;
+}
+
+.dialog.small {
+    width: 400px;
+}
+
+.dialog-close {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    height: 16px;
+    width: 16px;
+    background: url('../../resources/dialog_close.png') 0 0 no-repeat;
+}
+
+.dialog-close:hover {
+    background: url('../../resources/dialog_close.png') -16px 0 no-repeat;
+    cursor: pointer;
+}
+
+.dialog-close:active {
+    background: url('../../resources/dialog_close.png') -32px 0 no-repeat;
+}
+
+.dialog-body {
+    padding: 8px 10px;
+    background-color: #fff;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.dialog-body ul {
+    padding: 0;
+    margin: 0;
+}
+
+.dialog-body ul li {
+    list-style: none;
+    width: 100%;
+    margin: 2px 0 2px 0;
+}
+
+.dialog-body p {
+    color: #000;
+}
+
+.dialog-wrap {
+    padding: 5px 10px;
+}
+
+.removedlg_warning_text {
+    color: #a1475e;
+}
+
+label {
+    font-size: 12pt;
+    color: #6d9dd4;
+    font-weight: bold;
+}
+
+input[type="text"] {
+    font-size: 14pt;
+    color: #000;
+    background-color: #e2e2e2;
+    border: 1px solid #55606e;
+    border-radius: 3px;
+    width: 100%;
+    height: 40px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-left: 8px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background-color: rgba(0, 0, 0, 0.4);
+    line-height: 22px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    padding: 7px 20px;
+    margin: 6px 10px 0 0;
+    outline: 0;
+}
+
+.btn.green {
+    background-color: rgb(61, 146, 68);
+}
+
+.btn.green:hover {
+    background-color: rgb(84, 180, 92);
+}
+
+.btn.green:hover > span {
+    color: #fff;
+}
+
+.btn.red {
+    background-color: rgb(214, 75, 62);
+}
+
+.btn.red:hover {
+    background-color: rgb(248, 97, 83);
+}
+
+.btn.red:hover > span {
+    color: #fff;
+}
+
+.btn.max {
+    width: 100%;
+}
+
+.btn span {
+    font-size: 12pt;
+    color: #ddd;
+}
+
+.options .btn {
+    float: right;
+}
+
+.btn > .btn-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    margin-top: 2px;
+    float: left;
+}
+
+.btn > .icon-run {
+    background: url('../../resources/runconfig_icon_run.png') -20px 0 no-repeat;
+}
+
+.btn:hover > .icon-run {
+    background: url('../../resources/runconfig_icon_run.png') -20px 0 no-repeat;
+}
+
+.btn:hover {
+    cursor: pointer;
+    outline: 0;
+}
+
+.btn:hover > span {
+    color: #06AFFF;
+}
+
+.btn-warning {
+    color: #e5bbc7;
+    background-color: #613344;
+}
+
+.btn-warning:hover {
+    color: #e5bbc7;
+    background-color: #77334d;
+}
+
+.btn-warning:active{
+    background-color: #4a2332;
+    color: #e5bbc7;
+}
+
+.info {
+    text-align: center;
+    color: #999;
+}
+
+.span1 { width: 5%; }
+.span2 { width: 10%; }
+.span3 { width: 15%; }
+.span4 { width: 20%; }
+.span5 { width: 25%; }
+.span6 { width: 30%; }
+.span7 { width: 35%; }
+.span8 { width: 40%; }
+.span9 { width: 45%; }
+.span10 { width: 50%; }
+.span11 { width: 55%; }
+.span12 { width: 60%; }
+.span13 { width: 65%; }
+.span14 { width: 70%; }
+.span15 { width: 75%; }
+.span16 { width: 80%; }
+
+.clear {
+    clear: both;
+}
+
+.centered {
+    text-align: center;
+}
+
+.na {
+    color: #86949e;
+}
+
+.selected {
+    color: #fff !important;
+}
+
+.panel {
+    width: 200px;
+    height: auto;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 14px;
+    padding: 10px 20px;
+    text-align: center;
+    float: left;
+    margin: 0 20px 20px 0;
+}
+
+.stats .panel {
+    height: 200px;
+}
+
+.panel h2 {
+    height: 15px;
+    line-height: 25px;
+}
+
+.panel .value {
+    font-size: 70pt;
+}
+
+.panel.max {
+    width: 90%;
+    text-align: left;
+    padding: 15px 25px;
+}
+
+.panel.pull {
+    width: 90%;
+    text-align: left;
+    padding: 15px 25px;
+}
+
+.panel textarea {
+    display: block;
+    width: 700px;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.panel input[type="text"] {
+    width: 700px;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.panel-title {
+    height: 30px;
+    line-height: 20px;
+}
+
+.quota {
+    height:20px;
+}

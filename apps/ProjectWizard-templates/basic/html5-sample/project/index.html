@@ -1,0 +1,1251 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>HTML5 sample</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="./lib/bootstrap/bootstrap.css" rel="stylesheet">
+        <link href="./lib/bootstrap/bootstrap-responsive.css" rel="stylesheet">
+
+        <!-- syntaxhighlighter core CSS -->
+        <link type="text/css" rel="stylesheet" href="./lib/syntaxhighlighter/styles/shCoreDefault.css"/>
+
+        <!-- syntaxhighlighter -->
+        <script type="text/javascript" src="./lib/syntaxhighlighter/scripts/shCore.js"></script>
+        <script type="text/javascript" src="./lib/syntaxhighlighter/scripts/shBrushJScript.js"></script>
+        <script type="text/javascript" src="./lib/syntaxhighlighter/scripts/shBrushXml.js"></script>
+        <script type="text/javascript">SyntaxHighlighter.all();</script>
+        
+        <!-- video -->
+        <!-- CDN
+        <link href="//vjs.zencdn.net/4.2/video-js.css" rel="stylesheet">
+        <script src="//vjs.zencdn.net/4.2/video.js"></script>
+        -->
+
+        <link href="./lib/video/video-js.css" rel="stylesheet">
+        <script src="./lib/video/video.js"></script>
+
+
+        <!-- custom CSS -->
+        <link href="./css/style.css" rel="stylesheet">
+
+        <!-- jQuery -->
+        <script src="./lib/jquery/jquery-1.9.1.js"></script>
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+    </head>
+
+    <body data-spy="scroll" data-target="#side-nav">
+        <div class="container">
+            <div class="header">
+                <h2 class="text-muted">HTML5 features sample</h2>
+            </div>
+            
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div id="side-nav" class="span3" style="height: 150px; margin-top: 20px;">
+                        <ul class="nav nav-list bs-docs-sidenav affix">
+                            <li class="active"><a href="#html5-video-demo"><i class=""></i>Video</a></li>
+                            <li class=""><a href="#html5-form-demo"><i class=""></i>Forms</a></li>
+                            <li class=""><a href="#html5-canvas-demo"><i class=""></i>Canvas</a></li>
+                            <li class=""><a href="#html5-element-style-demo"><i class=""></i>Element Style</a></li>
+                            <li class=""><a href="#html5-web-storage-demo"><i class=""></i>Web Storage</a></li>
+                            <li class=""><a href="#html5-web-worker-demo"><i class=""></i>Web Worker</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="span9">
+                        <ul class="nav nav-list bs-docs-sidenav" style="margin-top: 20px;" id="top-nav">
+                            <li class=""><a href="#html5-video-demo"><i class=""></i>Video</a></li>
+                            <li class=""><a href="#html5-form-demo"><i class=""></i>Forms</a></li>
+                            <li class=""><a href="#html5-canvas-demo"><i class=""></i>Canvas</a></li>
+                            <li class=""><a href="#html5-element-style-demo"><i class=""></i>Element Style</a></li>
+                            <li class=""><a href="#html5-web-storage-demo"><i class=""></i>Web Storage</a></li>
+                            <li class=""><a href="#html5-web-worker-demo"><i class=""></i>Web Worker</a></li>
+                        </ul>
+                        <script>
+                            $(document).ready(function(){
+                                $('#top-nav').hide();
+                                
+                                $(window).on('resize', function() {
+                                    var w = $(window).width();
+                                    if( w < 751 ) {
+                                        $('#side-nav').hide();
+                                        $('#top-nav').show();
+                                    } else if ( w > 750 ) {
+                                        $('#side-nav').show();
+                                        $('#top-nav').hide();
+                                    }
+                                });
+                            });
+                        </script>
+                        
+                        
+                        <section id="html5-video-demo">
+                            <div class="page-header">
+                                <h3>HTML5 Video Demo</h3>
+                                <p>Until now, there has not been a standard for showing a video/movie on a web page. Today, most videos are shown through a plug-in (like flash). However, different browsers may have different plug-ins. HTML5 defines a new element which specifies a standard way to embed a video/movie on a web page: the 'video' element.<a href="http://www.w3.org/html/wg/drafts/html/master/embedded-content-0.html#the-video-element">w3c video spec</a>
+                                </p>
+                            </div>
+                            
+                            <h4>Video Example</h4>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <video id="example_video_1" class="video-js vjs-default-skin html5example"
+                                       width="640" height="264"
+                                       poster="http://video-js.zencoder.com/oceans-clip.png"
+                                       data-setup='{ "controls": true, "autoplay": false, "preload": "auto" }'>
+                                    <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' />
+                                    <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm; codecs="vp8, vorbis"' />
+                                    <source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg; codecs="theora, vorbis"' />
+                                    Your browser does not support the video tag.
+                                </video>
+                                <script>
+                                    $(document).ready(function(){
+                                        var $fr = $("#example_video_1");
+                                        $fr.css('width', $fr.parent().width() + 'px');
+                                    
+                                        $(window).on('resize', function() {
+                                            $fr.css('width', $fr.parent().width() + 'px');
+                                        });
+                                    });
+                                </script>
+                            </div>
+                            
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <video id="example_video_1" class="video-js vjs-default-skin"
+                                       width="640" height="264"
+                                       poster="http://video-js.zencoder.com/oceans-clip.png"
+                                       data-setup='{ "controls": true, "autoplay": false, "preload": "auto" }'>
+                                    <source src="http://video-js.zencoder.com/oceans-clip.mp4"/>
+                                    <source src="http://video-js.zencoder.com/oceans-clip.webm"/>
+                                    <source src="http://video-js.zencoder.com/oceans-clip.ogv"/>
+                                    Your browser does not support the video tag.
+                                </video>
+                            ]]>
+                            </script>
+                        </section> <!-- html5 video demo section -->
+                        
+                        
+                        <section id="html5-form-demo">
+                            <div class="page-header">
+                                <h3>HTML5 Forms Demo</h3>
+                                <p>HTML5 includes many new features to make web forms a lot easier to write, and a lot more powerful and consistent across the Web.</p>
+                            </div>
+                            
+                            <h4>New form controls</h4>
+                            <p>As forms are the main tool for data input in Web applications, and the data we want to collect has become more complex, it has been necessary to create an input element with more capabilities, to collect this data with more semantics and better definition, and allow for easier, more effective error mnagement and validation.</p>
+                            <code>&lt;input type="number"/&gt;</code>
+                            <p>The number type is used for input fields that should contain a numeric value.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <input type="number" min="0" max="5" value="0">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <input type="number" min="-5" max="5" value="0">
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <code>&lt;input type="range"/&gt;</code>
+                            <p>The range type is used for input fields that should contain a value from a range of numbers.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <input type="range" min="1" max="10" value="0">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <input type="range" min="1" max="10" value="0">
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <code>&lt;input type="date"/&gt;</code>
+                            <p>The date type allows the user to select a date.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <input type="date">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <input type="date">
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <code>&lt;input type="time"/&gt;</code>
+                            <p>The time type allows the user to select a time.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <input type="time">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <input type="time">
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <code>&lt;input type="color"/&gt;</code>
+                            <p>The color type is used for input fields that should contain a color.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <input type="color">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <input type="color">
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <code>&lt;input type="search"/&gt;</code>
+                            <p>The search type is used for search fields (a search field behaves like a regular text field).</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <input type="search">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <input type="search">
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <h4>New form attributes</h4>
+                            <p>HTML5 defines a series of new attributes for form controls that help simplify some common tasks and further specify the expected values for certain entry fields.</p>
+                            <code>placeholder</code>
+                            <p>The placeholder attribute specifies a short hint that describes the expected value of an input field.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <input type="text" placeholder="placeholder test">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <input type="text" placeholder="placeholder test">
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <code>autofocus</code>
+                            <p>The autofocus attribute is a boolean attribute. When present, it specifies that an &lt;input&gt; element should automatically get focus when the page loads.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <button id="html5-autofocus-demo-bt">click then focus</button>
+                                <script>
+                                    $(document).ready(function(){
+                                        $("#html5-autofocus-demo-bt").click(function(){
+                                            $("#html5-autofocus-demo-input").focus();
+                                        });
+                                    });
+                                </script>
+                                <input id="html5-autofocus-demo-input" type="text" placeholder="autofocus test">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <input type="text" placeholder="autofocus test" autofocus>
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <code>min and max</code>
+                            <p>The min and max attributes specify the minimum and maximum value for an &lt;input&gt; element.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                Enter a date before 1980-01-01:
+                                <input type="date" max="1979-12-31">
+                                <br>
+                                Enter a date after 2000-01-01:
+                                <input type="date" min="2000-01-02">
+                                <br>
+                                Quantity (between 1 and 5):
+                                <input type="number" min="1" max="5">
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                Enter a date before 1980-01-01:
+                                <input type="date" max="1979-12-31">
+                                
+                                Enter a date after 2000-01-01:
+                                <input type="date" min="2000-01-02">
+                                
+                                Quantity (between 1 and 5):
+                                <input type="number" min="1" max="5">
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <h4>New output mechanisms</h4>
+                            <p>Beyond the new form controls that users can interact with, HTML5 defines a series of new elements specifically meant to display and visualise information to the user.</p>
+                            <code>&lt;output&gt;</code>
+                            <p>The &lt;output&gt; element represents the result of a calculation (like one performed by a script).</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <form oninput="demoX.value=parseInt(demoNum1.value)+parseInt(demoNum2.value)">
+                                    <input type="number" id="demoNum1" value="0" min="0" max="100"/>
+                                    +
+                                    <input type="number" id="demoNum2" value="0" min="0" max="100"/> =
+                                    <output name="demoX" for="demoNum1 demoNum2">0</output>
+                                </form>
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <form oninput="demoX.value=parseInt(demoNum1.value)+parseInt(demoNum2.value)">
+                                    <input type="number" id="demoNum1" value="0" min="0" max="100"/>
+                                    +
+                                    <input type="number" id="demoNum2" value="0" min="0" max="100"/> =
+                                    <output name="demoX" for="demoNum1 demoNum2">0</output>
+                                </form>
+                            ]]>
+                            </script>
+                            <br>
+                            
+                            <code>&lt;progress&gt;</code>
+                            <p>The &lt;progress&gt; tag represents the progress of a task.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <button id="html5-progress-demo-startbt">click progress start</button>
+                                <button id="html5-progress-demo-resetbt">click progress reset</button>
+                                <script>
+                                    $(document).ready(function(){
+                                        $("#html5-progress-demo-startbt").click(function(){
+                                            function increase() {
+                                                var $pg = $("#html5-progress-demo-pg");
+                                                var current = $pg.attr('value');
+    
+                                                if (parseInt(current) < 100) {
+                                                    $pg.attr('value', parseInt(current)+5);
+                                                    var timeoutID = setTimeout(increase, 1000);
+                                                    $pg.attr('tID', timeoutID);
+                                                }
+                                            };
+                                            increase();
+                                        });
+    
+                                        $("#html5-progress-demo-resetbt").click(function(){
+                                            var $pg = $("#html5-progress-demo-pg");
+                                            var timeoutID = $pg.attr('tID');
+                                            
+                                            if (timeoutID) {
+                                                clearTimeout(timeoutID);
+                                            }
+                                            $pg.attr('value', 0);
+                                        });
+                                    });
+                                </script>
+                                <progress id="html5-progress-demo-pg" value="0" max="100"></progress>
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <button id="html5-progress-demo-startbt">click progress start</button>
+                                <button id="html5-progress-demo-resetbt">click progress reset</button>
+                                &lt;script&gt;
+                                    $(document).ready(function(){
+                                        $("#html5-progress-demo-startbt").click(function(){
+                                            function increase() {
+                                                var $pg = $("#html5-progress-demo-pg");
+                                                var current = $pg.attr('value');
+    
+                                                if (parseInt(current) < 100) {
+                                                    $pg.attr('value', parseInt(current)+5);
+                                                    var timeoutID = setTimeout(increase, 1000);
+                                                    $pg.attr('tID', timeoutID);
+                                                }
+                                            };
+                                            increase();
+                                        });
+    
+                                        $("#html5-progress-demo-resetbt").click(function(){
+                                            var $pg = $("#html5-progress-demo-pg");
+                                            var timeoutID = $pg.attr('tID');
+                                            
+                                            if (timeoutID) {
+                                                clearTimeout(timeoutID);
+                                            }
+                                            $pg.attr('value', 0);
+                                        });
+                                    });
+                                &lt;/script&gt;
+                                <progress id="html5-progress-demo-pg" value="0" max="100"></progress>
+                            ]]>
+                            </script>
+                            <br>
+                        </section> <!-- html5 form demo section -->
+                        
+                        
+                        <section id="html5-canvas-demo">
+                            <div class="page-header">
+                                <h3>HTML5 Canvas Demo</h3>
+                                <p>The HTML5 &lt;canvas&gt; element is used to draw graphics, on the fly, via scripting (usually JavaScript). The &lt;canvas&gt; element is only a container for graphics. You must use a script to actually draw the graphics. Canvas has several methods for drawing paths, boxes, circles, text, and adding images.</p>
+                            </div>
+                            
+                            <h4>Canvas - Coordinates</h4>
+                            <p>The canvas is a two-dimensional grid. The upper-left corner of the canvas has coordinate (0,0)</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example" style="heigth:150px;">
+                                <div style="width:230px;height:20px;text-align:center;clear:both;">X</div>
+                                <div style="width:20px;padding-top:40px;float:left;">Y</div>
+                                <canvas id="html5-canvas-coordinates" style="width:199px; height:99px; border:1px solid #c3c3c3;">
+                                </canvas>
+                                <script>
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById('html5-canvas-coordinates');
+                                        //var context = canvas.getContext('2d');
+                                        
+                                        canvas.addEventListener('mousemove', function(e) {
+                                            var x = e.offsetX;
+                                            var y = e.offsetY;
+                                            document.getElementById("xycoordinates").innerHTML="Coordinates: (" + x + "," + y + ")";
+                                        }, false);
+    
+                                        canvas.addEventListener('mouseleave', function(e) {
+                                            var x = e.offsetX;
+                                            var y = e.offsetY;
+                                            document.getElementById("xycoordinates").innerHTML="Coordinates: (null,null)";
+                                        }, false);
+                                    });
+                                </script>
+                                <div id="xycoordinates">Coordinates: (null,null)</div>
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <canvas id="html5-canvas-coordinates"
+                                        style="width:199px; height:99px; border:1px solid #c3c3c3;">
+                                </canvas>
+                                <script>
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById('html5-canvas-coordinates');
+                                        //var context = canvas.getContext('2d');
+                                        
+                                        canvas.addEventListener('mousemove', function(e) {
+                                            var x = e.offsetX;
+                                            var y = e.offsetY;
+                                            document.getElementById("xycoordinates").innerHTML=
+                                                    "Coordinates: (" + x + "," + y + ")";
+                                        }, false);
+    
+                                        canvas.addEventListener('mouseleave', function(e) {
+                                            var x = e.offsetX;
+                                            var y = e.offsetY;
+                                            document.getElementById("xycoordinates").innerHTML=
+                                                    "Coordinates: (null,null)";
+                                        }, false);
+                                    });
+                                &lt;/script&gt;
+                                <div id="xycoordinates">Coordinates: (null,null)</div>
+                            ]]>
+                            </script>
+                            <br>
+    
+                            <h4>Canvas - Paths</h4>
+                            <p>To draw straight lines on a canvas</p>
+                            <ul>
+                                <li>moveTo(x,y) defines the starting point of the line</li>
+                                <li>lineTo(x,y) defines the ending point of the line</li>
+                            </ul>
+                            <p>To draw a circle on a canvas</p>
+                            <ul>
+                                <li>arc(x,y,r,start,stop)</li>
+                            </ul>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <canvas id="html5-canvas-paths" width="200" height="100" style="border:1px solid #d3d3d3;">
+                                    Your browser does not support the HTML5 canvas tag.</canvas>
+                                <canvas id="html5-canvas-arc" width="200" height="100" style="border:1px solid #d3d3d3;">
+                                    Your browser does not support the HTML5 canvas tag.</canvas>
+                                <script>
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById("html5-canvas-paths");
+                                        var ctx = canvas.getContext("2d");
+                                        ctx.moveTo(0,0);
+                                        ctx.lineTo(200,100);
+                                        ctx.stroke();
+    
+                                        var canvas2 = document.getElementById("html5-canvas-arc");
+                                        var ctx2 = canvas2.getContext("2d");
+                                        ctx2.beginPath();
+                                        ctx2.arc(95,50,40,0,2*Math.PI);
+                                        ctx2.stroke();
+                                    });
+                                </script>
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                &lt;canvas id="html5-canvas-paths" width="200" height="100" style="border:1px solid #d3d3d3;"&gt;
+                                        Your browser does not support the HTML5 canvas tag.&lt;/canvas&gt;
+                                &lt;canvas id="html5-canvas-arc" width="200" height="100" style="border:1px solid #d3d3d3;"&gt;
+                                        Your browser does not support the HTML5 canvas tag.&lt;/canvas&gt;
+                            
+                                &lt;script&gt;
+                                    var canvas = document.getElementById("html5-canvas-paths");
+                                    var ctx = canvas.getContext("2d");
+                                    ctx.moveTo(0,0);
+                                    ctx.lineTo(200,100);
+                                    ctx.stroke();
+        
+                                    var canvas2 = document.getElementById("html5-canvas-arc");
+                                    var ctx2 = canvas2.getContext("2d");
+                                    ctx2.beginPath();
+                                    ctx2.arc(95,50,40,0,2*Math.PI);
+                                    ctx2.stroke();
+                                &lt;/script&gt;
+                            ]]>
+                            </script>
+                            <br>
+    
+                            <h4>Canvas - Text</h4>
+                            <p>To draw text on a canvas</p>
+                            <ul>
+                                <li>font - defines the font properties for text</li>
+                                <li>fillText(text,x,y) - Draws "filled" text on the canvas</li>
+                                <li>strokeText(text,x,y) - Draws text on the canvas (no fill)</li>
+                            </ul>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <canvas id="html5-canvas-text" width="200" height="100" style="border:1px solid #d3d3d3;">
+                                    Your browser does not support the HTML5 canvas tag.</canvas>
+                                <script>
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById("html5-canvas-text");
+                                        var ctx = canvas.getContext("2d");
+                                        ctx.font="30px Arial";
+                                        ctx.fillText("Hello HTML5",10,50);
+                                    });
+                                </script>
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                &lt;canvas id="html5-canvas-text" width="200" height="100" style="border:1px solid #d3d3d3;"&gt;
+                                    Your browser does not support the HTML5 canvas tag.&lt;/canvas&gt;
+                                &lt;script&gt;
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById("html5-canvas-text");
+                                        var ctx = canvas.getContext("2d");
+                                        ctx.font="30px Arial";
+                                        ctx.fillText("Hello HTML5",10,50);
+                                    });
+                                &lt;/script&gt;
+                            ]]>
+                            </script>
+                            <br>
+    
+                            <h4>Canvas - Gradients</h4>
+                            <p>Gradients can be used to fill rectangles, circles, lines, text, etc. Shapes on the canvas are not limited to solid colors.</p>
+                            <ul>
+                                <li>createLinearGradient(x,y,x1,y1) - Creates a linear gradient</li>
+                                <li>createRadialGradient(x,y,r,x1,y1,r1) - Creates a radial/circular gradient</li>
+                            </ul>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <canvas id="html5-canvas-LiearGradients" width="200" height="100" style="border:1px solid #d3d3d3;">
+                                    Your browser does not support the HTML5 canvas tag.</canvas>
+                                <canvas id="html5-canvas-RadialGradient" width="200" height="100" style="border:1px solid #d3d3d3;">
+                                    Your browser does not support the HTML5 canvas tag.</canvas>
+                                <script>
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById("html5-canvas-LiearGradients");
+                                        var ctx = canvas.getContext("2d");
+    
+                                        // Create gradient
+                                        var grd=ctx.createLinearGradient(0,0,200,0);
+                                        grd.addColorStop(0,"blue");
+                                        grd.addColorStop(1,"white");
+                                        
+                                        // Fill with gradient
+                                        ctx.fillStyle=grd;
+                                        ctx.fillRect(10,10,150,80);
+    
+                                        var c=document.getElementById("html5-canvas-RadialGradient");
+                                        var ctx=c.getContext("2d");
+                                        
+                                        // Create gradient
+                                        var grd=ctx.createRadialGradient(75,50,5,90,60,100);
+                                        grd.addColorStop(0,"green");
+                                        grd.addColorStop(1,"white");
+                                        
+                                        // Fill with gradient
+                                        ctx.fillStyle=grd;
+                                        ctx.fillRect(10,10,150,80);
+                                    });
+                                </script>
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                &lt;canvas id="html5-canvas-LiearGradients" width="200" height="100"
+                                        style="border:1px solid #d3d3d3;"&gt;
+                                    Your browser does not support the HTML5 canvas tag.&lt;/canvas&gt;
+                                &lt;canvas id="html5-canvas-RadialGradient" width="200" height="100"
+                                        style="border:1px solid #d3d3d3;"&gt;
+                                    Your browser does not support the HTML5 canvas tag.&lt;/canvas&gt;
+                                &lt;script&gt;
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById("html5-canvas-LiearGradients");
+                                        var ctx = canvas.getContext("2d");
+    
+                                        // Create gradient
+                                        var grd=ctx.createLinearGradient(0,0,200,0);
+                                        grd.addColorStop(0,"blue");
+                                        grd.addColorStop(1,"white");
+                                        
+                                        // Fill with gradient
+                                        ctx.fillStyle=grd;
+                                        ctx.fillRect(10,10,150,80);
+    
+                                        var c=document.getElementById("html5-canvas-RadialGradient");
+                                        var ctx=c.getContext("2d");
+                                        
+                                        // Create gradient
+                                        var grd=ctx.createRadialGradient(75,50,5,90,60,100);
+                                        grd.addColorStop(0,"green");
+                                        grd.addColorStop(1,"white");
+                                        
+                                        // Fill with gradient
+                                        ctx.fillStyle=grd;
+                                        ctx.fillRect(10,10,150,80);
+                                    });
+                                &lt;/script&gt;
+                            ]]>
+                            </script>
+                            <br>
+    
+                            <h4>Canvas - Images</h4>
+                            <p>To draw an image on a canvas.</p>
+                            <ul>
+                                <li>drawImage(image,x,y)</li>
+                            </ul>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <canvas id="html5-canvas-images" width="200" height="100" style="border:1px solid #d3d3d3;">
+                                    Your browser does not support the HTML5 canvas tag.</canvas>
+                                
+                                <script>
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById("html5-canvas-images");
+                                        var ctx = canvas.getContext("2d");
+                                        
+                                        var img = new Image();
+                                        img.onload = function(){
+                                            var width = Math.round(img.width / 2);
+                                            var height = Math.round(img.height / 2);
+                                            canvas.width = width;
+                                            canvas.height = height;
+                                            ctx.drawImage(img, 0, 0, width, height);
+                                        };
+                                        img.src = "img/webida_logo.jpg";
+                                    });
+                                </script>
+                            </div>
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                &lt;canvas id="html5-canvas-images" width="200" height="100" style="border:1px solid #d3d3d3;"&gt;
+                                    Your browser does not support the HTML5 canvas tag.&lt;/canvas&gt;
+                                
+                                &lt;script&gt;
+                                    $(document).ready(function(){
+                                        var canvas = document.getElementById("html5-canvas-images");
+                                        var ctx = canvas.getContext("2d");
+                                        
+                                        var img = new Image();
+                                        img.onload = function(){
+                                            var width = Math.round(img.width / 2);
+                                            var height = Math.round(img.height / 2);
+                                            canvas.width = width;
+                                            canvas.height = height;
+                                            ctx.drawImage(img, 0, 0, width, height);
+                                        };
+                                        img.src = "img/webida_logo.jpg";
+                                    });
+                                &lt;/script&gt;
+                            ]]>
+                            </script>
+                            <br>
+                        </section> <!-- html5 canvas demo section -->
+                        
+                        
+                        <section id="html5-element-style-demo">
+                            <div class="page-header">
+                                <h3>HTML5 Element Style Demo</h3>
+                                <p>A semantic element clearly describes its meaning to both the browser and the developer. Examples of non-semantic elements: &lt;div&gt; and &lt;span&gt; - Tells nothing about its content. Examples of semantic elements: &lt;form&gt;, &lt;table&gt;, and &lt;img&gt; - Clearly defines its content.</p>
+                                </div>
+                            
+                            <h4>Semantic Elements</h4>
+                            <p>Many of existing web sites today contains HTML code like this: &lt;div id="nav"&gt;, &lt;div class="header"&gt;, or &lt;div id="footer"&gt;, to indicate navigation links, header, and footer. HTML5 offers new semantic elements to clearly define different parts of a web page.</p>
+                            
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <iframe id="html5-element-demo-iframe" src="./html5semantic.html">
+                                    <p>Your browser does not support iframes.</p>
+                                </iframe>
+                                
+                                <script>
+                                    $(document).ready(function(){
+                                        var $fr = $("#html5-element-demo-iframe");
+                                        $fr.css('width', $fr.parent().width() + 'px');
+                                        
+                                        $(window).on('resize', function() {
+                                            $fr.css('width', $fr.parent().width() + 'px');
+                                        });
+                                    });
+                                </script>
+                            </div>
+                            
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: xml">
+                            <![CDATA[
+                                <header>
+                                    <h1>Header in h1</h1>
+                                    <h2>Subheader in h2</h2>
+                                </header>
+                            
+                                <nav>
+                                    <ul>
+                                        <li><a href="#">Menu Option 1</a></li>
+                                        <li><a href="#">Menu Option 2</a></li>
+                                        <li><a href="#">Menu Option 3</a></li>
+                                    </ul>
+                                </nav>
+    
+                                <article>
+                                    <header>
+                                        <h1>Article #1</h1>
+                                    </header>
+                                    <section>
+                                        This is the first article.  This is <mark>highlighted</mark>.
+                                    </section>
+                                </article>
+    
+                                <article>
+                                    <header>
+                                        <h1>Article #2</h1>
+                                    </header>
+                                    <section>
+                                        This is the second article.
+                                    </section>
+                                </article>
+    
+                                <article>
+                                    <header>
+                                        <h1>Article #3</h1>
+                                    </header>
+                                    <section>
+                                        <h1>Level 1</h1>
+                                        <section>
+                                            <h1>Level 2</h1>
+                                            <section>
+                                                <h1>Level 3</h1>
+                                            </section>
+                                        </section>
+                                    </section>
+    
+                                    <section>
+                                        <h1>Chapter 1</h1>
+                                        <p>chapter 1 content</p>
+                                    </section>
+                    
+                                    <section>
+                                        <h1>Chapter 2</h1>
+                                        <p>chapter 2 content</p>
+                                    </section>
+                                </article>
+    
+                                <article>
+                                    <header>
+                                        <h1>Article #4</h1>
+                                        <p>another article header</p>
+                                    </header>
+                                    <p>another article!</p>
+                                </article>
+    
+                                <aside>
+                                    <header>
+                                        <h1>aside</h1>
+                                    </header>
+                                    <section>
+                                        <h1>Links</h1>
+                                        <ul>
+                                            <li><a href="#">Link 1</a></li>
+                                            <li><a href="#">Link 2</a></li>
+                                            <li><a href="#">Link 3</a></li>
+                                        </ul>
+                                    </section>
+                                    <section>
+                                        <h1>Links</h1>
+                                        <ul>
+                                            <li><a href="#">Link 1</a></li>
+                                            <li><a href="#">Link 2</a></li>
+                                            <li><a href="#">Link 3</a></li>
+                                        </ul>
+                                    </section>
+                                </aside>
+    
+                                <footer>
+                                   <p>Footer - Copyright © 2013 Example Inc.</p>
+                                </footer>
+                            ]]>
+                            </script>
+                        </section> <!-- html5 element style section -->
+                        
+                        
+                        <section id="html5-web-storage-demo">
+                            <div class="page-header">
+                                <h3>HTML5 web storage Demo</h3>
+                                <p> With HTML5, web pages can store data locally within the user's browser. Earlier, this was done with cookies. However, Web Storage is more secure and faster. The data is not included with every server request, but used ONLY when asked for. It is also possible to store large amounts of data, without affecting the website's performance. The data is stored in key/value pairs, and a web page can only access data stored by itself.
+                                </p>
+                            </div>
+                            
+                            <h4>localStorage</h4>
+                            <p>The localStorage object stores the data with no expiration date. The data will not be deleted when the browser is closed, and will be available the next day, week, or year.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <div>
+                                    <button id="html5-web-localStorage-savebt">save in storage</button>
+                                    <button id="html5-web-localStorage-loadbt">load in storage</button>
+                                    <button id="html5-web-localStorage-clearbt">clear storage</button>
+                                    <p>data result, 'load in storage button' click then data result reload</p>
+                                    <ul id="html5-web-localStorage-result">
+                                    </ul>
+                                </div>
+                                <script>
+                                    $(document).ready(function(){
+                                        function resetResult(data) {
+                                            $('#html5-web-localStorage-result').children().remove();
+                                            if (data) {
+                                                data.forEach(function(d, i) {
+                                                    $('#html5-web-localStorage-result').append('<li>' + d + '</li>');
+                                                });
+                                            }
+                                        }
+                                        
+                                        if(typeof(Storage)) {
+                                            $('#html5-web-localStorage-savebt').on('click', function() {
+                                                var data = prompt("input your data >");
+    
+                                                if(data) {
+                                                    var oldData = localStorage.customData;
+                                                    if(oldData) {
+                                                        oldData = JSON.parse(localStorage.customData);
+                                                        oldData.push(data);
+                                                        localStorage.customData = JSON.stringify(oldData);
+                                                    } else {
+                                                        oldData = [data];
+                                                        localStorage.customData = JSON.stringify([data]);
+                                                    }
+                                                } else {
+                                                    alert('do not input data...');
+                                                }
+                                            });
+                                            
+                                            $('#html5-web-localStorage-loadbt').on('click', function() {
+                                                var data = localStorage.customData;
+                                                if(data) {
+                                                    data = JSON.parse(localStorage.customData);
+                                                    
+                                                    resetResult(data);
+                                                } else {
+                                                    alert('do not input data...');
+                                                }
+                                            });
+                                            
+                                            $('#html5-web-localStorage-clearbt').on('click', function() {
+                                                resetResult();
+                                                delete localStorage['customData'];
+                                                alert('success clear');
+                                            });
+                                        } else {
+                                            $('#html5-web-localStorage-result').append('<li>Sorry, your browser does not support web storage...</li>');
+                                        }
+                                    });
+                                </script>
+                            </div>
+                            
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <div>
+                                    <button id="html5-web-localStorage-savebt">save in storage</button>
+                                    <button id="html5-web-localStorage-loadbt">load in storage</button>
+                                    <button id="html5-web-localStorage-clearbt">clear storage</button>
+                                    <p>data result, 'load in storage button' click then data result reload</p>
+                                    <ul id="html5-web-localStorage-result">
+                                </ul>
+                                </div>
+                                &lt;script&gt;
+                                    $(document).ready(function(){
+                                        function resetResult(data) {
+                                            $('#html5-web-localStorage-result').children().remove();
+                                            if (data) {
+                                                data.forEach(function(d, i) {
+                                                    $('#html5-web-localStorage-result').append('<li>' + d + '</li>');
+                                                });
+                                            }
+                                        }
+                                        
+                                        if(typeof(Storage)) {
+                                            $('#html5-web-localStorage-savebt').on('click', function() {
+                                                var data = prompt("input your data >");
+    
+                                                if(data) {
+                                                    var oldData = localStorage.customData;
+                                                    if(oldData) {
+                                                        oldData = JSON.parse(localStorage.customData);
+                                                        oldData.push(data);
+                                                        localStorage.customData = JSON.stringify(oldData);
+                                                    } else {
+                                                        oldData = [data];
+                                                        localStorage.customData = JSON.stringify([data]);
+                                                    }
+                                                } else {
+                                                    alert('do not input data...');
+                                                }
+                                            });
+                                            
+                                            $('#html5-web-localStorage-loadbt').on('click', function() {
+                                                var data = localStorage.customData;
+                                                if(data) {
+                                                    data = JSON.parse(localStorage.customData);
+                                                    
+                                                    resetResult(data);
+                                                } else {
+                                                    alert('do not input data...');
+                                                }
+                                            });
+                                            
+                                            $('#html5-web-localStorage-clearbt').on('click', function() {
+                                                resetResult();
+                                                delete localStorage['customData'];
+                                                alert('success clear');
+                                            });
+                                        } else {
+                                            $('#html5-web-localStorage-result').
+                                            append('<li>Sorry, your browser does not support web storage...</li>');
+                                        }
+                                    });
+                                &lt;/script&gt;
+                            ]]>
+                            </script>
+                            
+                            <h4>sessionStorage</h4>
+                            <p>The sessionStorage object is equal to the localStorage object, except that it stores the data for only one session. The data is deleted when the user closes the browser window.</p>
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <div>
+                                    <button id="html5-web-sessionStorage-savebt">save in storage</button>
+                                    <button id="html5-web-sessionStorage-loadbt">load in storage</button>
+                                    <button id="html5-web-sessionStorage-clearbt">clear storage</button>
+                                    <p>data result, 'load in storage button' click then data result reload</p>
+                                    <ul id="html5-web-sessionStorage-result">
+                                    </ul>
+                                </div>
+                                <script>
+                                    $(document).ready(function(){
+                                        function resetResult(data) {
+                                            $('#html5-web-sessionStorage-result').children().remove();
+                                            if (data) {
+                                                data.forEach(function(d, i) {
+                                                    $('#html5-web-sessionStorage-result').append('<li>' + d + '</li>');
+                                                });
+                                            }
+                                        }
+                                        
+                                        if(typeof(Storage)) {
+                                            $('#html5-web-sessionStorage-savebt').on('click', function() {
+                                                var data = prompt("input your data >");
+                                                
+                                                if(data) {
+                                                    var oldData = sessionStorage.getItem('customData');
+                                                    
+                                                    if(oldData) {
+                                                        oldData = JSON.parse(sessionStorage.getItem('customData'));
+                                                        oldData.push(data);
+    
+                                                        sessionStorage.setItem('customData', JSON.stringify(oldData));
+                                                    } else {
+                                                        oldData = [data];
+                                                        sessionStorage.setItem('customData', JSON.stringify([data]));
+                                                    }
+                                                } else {
+                                                    alert('do not input data...');
+                                                }
+                                            });
+                                            
+                                            $('#html5-web-sessionStorage-loadbt').on('click', function() {
+                                                var data = sessionStorage.getItem('customData');
+                                                if(data) {
+                                                    data = JSON.parse(sessionStorage.getItem('customData'));
+                                                    
+                                                    resetResult(data);
+                                                } else {
+                                                    alert('do not input data...');
+                                                }
+                                            });
+                                            
+                                            $('#html5-web-sessionStorage-clearbt').on('click', function() {
+                                                resetResult();
+                                                sessionStorage.clear();
+                                                alert('success clear');
+                                            });
+                                        } else {
+                                            $('#html5-web-sessionStorage-result').append('<li>Sorry, your browser does not support web storage...</li>');
+                                        }
+                                    });
+                                </script>
+                            </div>
+                            
+                            <!-- example code -->
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <div>
+                                    <button id="html5-web-sessionStorage-savebt">save in storage</button>
+                                    <button id="html5-web-sessionStorage-loadbt">load in storage</button>
+                                    <button id="html5-web-sessionStorage-clearbt">clear storage</button>
+                                    <p>data result, 'load in storage button' click then data result reload</p>
+                                    <ul id="html5-web-sessionStorage-result">
+                                    </ul>
+                                </div>
+                                &lt;script&gt;
+                                    $(document).ready(function(){
+                                        function resetResult(data) {
+                                            $('#html5-web-sessionStorage-result').children().remove();
+                                            if (data) {
+                                                data.forEach(function(d, i) {
+                                                    $('#html5-web-sessionStorage-result').append('<li>' + d + '</li>');
+                                                });
+                                            }
+                                        }
+                                        
+                                        if(typeof(Storage)) {
+                                            $('#html5-web-sessionStorage-savebt').on('click', function() {
+                                                var data = prompt("input your data >");
+                                                
+                                                if(data) {
+                                                    var oldData = sessionStorage.getItem('customData');
+                                                    
+                                                    if(oldData) {
+                                                        oldData = JSON.parse(sessionStorage.getItem('customData'));
+                                                        oldData.push(data);
+    
+                                                        sessionStorage.setItem('customData', JSON.stringify(oldData));
+                                                    } else {
+                                                        oldData = [data];
+                                                        sessionStorage.setItem('customData', JSON.stringify([data]));
+                                                    }
+                                                } else {
+                                                    alert('do not input data...');
+                                                }
+                                            });
+                                            
+                                            $('#html5-web-sessionStorage-loadbt').on('click', function() {
+                                                var data = sessionStorage.getItem('customData');
+                                                if(data) {
+                                                    data = JSON.parse(sessionStorage.getItem('customData'));
+                                                    
+                                                    resetResult(data);
+                                                } else {
+                                                    alert('do not input data...');
+                                                }
+                                            });
+                                            
+                                            $('#html5-web-sessionStorage-clearbt').on('click', function() {
+                                                resetResult();
+                                                sessionStorage.clear();
+                                                alert('success clear');
+                                            });
+                                        } else {
+                                            $('#html5-web-sessionStorage-result').
+                                            append('<li>Sorry, your browser does not support web storage...</li>');
+                                        }
+                                    });
+                                &lt;/script&gt;
+                            ]]>
+                            </script>
+                        </section> <!-- html5 element style section -->
+                        
+                        
+                        <section id="html5-web-worker-demo">
+                            <div class="page-header">
+                                <h3>HTML5 Element web worker Demo</h3>
+                                <p>When executing scripts in an HTML page, the page becomes unresponsive until the script is finished. A web worker is a JavaScript that runs in the background, independently of other scripts, without affecting the performance of the page. You can continue to do whatever you want: clicking, selecting things, etc., while the web worker runs in the background.</p>
+                            </div>
+                            
+                            <h4>Web Worker</h4>
+                            <p>A web worker is a JavaScript running in the background, without affecting the performance of the page.</p>
+                            
+                            <!-- example run area -->
+                            <div class="bs-docs-example">
+                                <p>current time: <output id="html5-web-worker-result"></output></p>
+                                <button id="html5-web-webworker-start">start worker</button>
+                                <button id="html5-web-webworker-stop">stop worker</button>
+    
+                                <script>
+                                    var demoWorker = null;
+    
+                                    $(document).ready(function(){
+                                        $('#html5-web-webworker-start').on('click', function() {
+                                            if(typeof(Worker)) {
+                                                if(!demoWorker) {
+                                                    demoWorker = new Worker("./js/demoWorkers.js");
+                                                }
+                                                demoWorker.onmessage = function (event) {
+                                                    if(event && event.data) {
+                                                        var timeObj = event.data;
+                                                        $("#html5-web-worker-result").
+                                                        text(timeObj.ampm +
+                                                             ' ' +
+                                                             timeObj.hour +
+                                                             ':' +
+                                                             timeObj.min +
+                                                             ':' +
+                                                             timeObj.sec
+                                                            );
+                                                    } else {
+                                                        $("#html5-web-worker-result").
+                                                        text("web worker's message error...");
+                                                    }
+                                                };
+                                            } else {
+                                                $("#html5-web-worker-result").
+                                                text("Sorry, your browser does not support Web Workers...");
+                                            }
+                                        });
+                                        
+                                        $('#html5-web-webworker-stop').on('click', function() {
+                                            if (demoWorker) {
+                                                demoWorker.terminate();
+                                                demoWorker = null;
+                                            }
+                                        });
+                                    });
+                                </script>
+                                </div>
+                            <!-- example code -->
+                            <p>worker file code</p>
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                /*
+                                 * demo watch
+                                 */
+                                function demoTime() {
+                                    var date = new Date();
+                                    
+                                    var ampm;
+                                    var hour = date.getHours();
+                                    if(hour > 12 && hour < 24) {
+                                        ampm = 'pm';
+                                        hour = hour - 12;
+                                    } else {
+                                        ampm = 'am';
+                                        if(hour === 24) {
+                                            hour = 12;
+                                        }
+                                    }
+                                
+                                    var min = date.getMinutes();
+                                    var sec = date.getSeconds();
+                                
+                                    var data = {
+                                        ampm: ampm,
+                                        hour: hour,
+                                        min: min,
+                                        sec: sec
+                                    };
+                                    postMessage(data);
+                                    
+                                    console.log('demoworker....');
+                                    setTimeout(demoTime, 500);
+                                }
+                                
+                                demoTime();
+                            ]]>
+                            </script>
+                            <p>worker file using code</p>
+                            <script type="syntaxhighlighter" class="brush: js">
+                            <![CDATA[
+                                <p>current time: <output id="html5-web-worker-result"></output></p>
+                                <button id="html5-web-webworker-start">start worker</button>
+                                <button id="html5-web-webworker-stop">stop worker</button>
+    
+                                &lt;script&gt;
+                                    var demoWorker = null;
+    
+                                    $(document).ready(function(){
+                                        $('#html5-web-webworker-start').on('click', function() {
+                                            if(typeof(Worker)) {
+                                                if(!demoWorker) {
+                                                    demoWorker = new Worker("./js/demoWorkers.js");
+                                                }
+                                                demoWorker.onmessage = function (event) {
+                                                    if(event && event.data) {
+                                                        var timeObj = event.data;
+                                                        $("#html5-web-worker-result").
+                                                        text(timeObj.ampm +
+                                                             ' ' +
+                                                             timeObj.hour +
+                                                             ':' +
+                                                             timeObj.min +
+                                                             ':' +
+                                                             timeObj.sec
+                                                            );
+                                                    } else {
+                                                        $("#html5-web-worker-result").
+                                                        text("web worker's message error...");
+                                                    }
+                                                };
+                                            } else {
+                                                $("#html5-web-worker-result").
+                                                text("Sorry, your browser does not support Web Workers...");
+                                            }
+                                        });
+                                        
+                                        $('#html5-web-webworker-stop').on('click', function() {
+                                            if (demoWorker) {
+                                                demoWorker.terminate();
+                                                demoWorker = null;
+                                            }
+                                        });
+                                    });
+                                &lt;/script&gt;
+                            ]]>
+                            </script>
+                        </section> <!-- html5 element style section -->
+                    </div> <!-- <div class="span9"> close -->
+
+                </div> <!-- <div class="row"> close -->
+            </div> <!-- container close -->
+            
+            <div class="footer">
+                <p>&copy; Company 2013</p>
+            </div>
+            
+        </div> <!-- /container -->
+        
+        
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <script src="./lib/bootstrap/bootstrap.min.js"></script>
+    </body>
+</html>

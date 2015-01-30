@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript">
+            var webidaHost = decodeURIComponent(
+                document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
+            );
+            // var src = '//library.' + webidaHost + '/webida/util/browserUtil.global.js';
+						var src = '../../commons/src/webida/util/browserUtil.global.js';
+            var head = document.getElementsByTagName('head').item(0);
+            var script = document.createElement('script');
+            script.setAttribute('type', 'text/javascript');
+            script.setAttribute('src', src);
+            head.appendChild(script);
+
+            script.onload = function () {
+                //console.log('auth.html access token', location.hash, location);
+                if (location.hash.substr(1, 12) === "access_token") {
+                    var targetOrigin = BrowserUtil.getLocationOrigin();
+                    var accessToken = location.hash.substring(1);
+                    if (!window.opener) {
+                        window.parent.postMessage(accessToken, targetOrigin);
+                    } else {
+                        window.opener.parent.postMessage(accessToken, targetOrigin);
+                        self.opener = self;
+                        window.close();
+                    }
+                } else {
+                    console.error('location.hash.substr(1, 12) not existed', location.hash, location);
+                }
+            }
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

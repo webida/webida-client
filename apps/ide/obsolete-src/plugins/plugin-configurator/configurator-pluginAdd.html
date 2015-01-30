@@ -1,0 +1,18 @@
+<div id='cfgPAddRootPane' data-dojo-type='dijit/layout/ContentPane' style='width:400px; height:130px'>
+    <div id='cfgPAddBContainer' data-dojo-type='dijit/layout/BorderContainer' class='cfgBorderContainer'>
+        <!-- plugin add dialog setting area -->
+        <div id='cfgPAddSettingArea' data-dojo-type='dijit/layout/ContentPane'  data-dojo-props='region:"center"' style='text-align:rigth'>
+            <label for='cfgPathTextBox'>plugin path : </label>
+            <input id='cfgPathTextBox' type='text' data-dojo-type='dijit/form/ValidationTextBox'/>
+            <br>
+            <input id='cfgIgCheckBox' data-dojo-type='dijit/form/CheckBox' /><label> ignore</label>
+            <input id='cfgStCheckBox' data-dojo-type='dijit/form/CheckBox' /><label> start</label>
+        </div>
+
+        <!-- plugin add dialog button area-->
+        <div id='cfgPAddBtArea' data-dojo-type='dijit/layout/ContentPane'  data-dojo-props='region:"bottom"' style='text-align:rigth'>
+            <button id='cfgPAddOK' data-dojo-type='dijit/form/Button' type='button'> Ok </button>
+            <button id='cfgPAddCancel' data-dojo-type='dijit/form/Button' type='button'> Cancel </button>
+        </div>
+    </div>
+</div>
