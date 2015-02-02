@@ -26,7 +26,7 @@ module.exports = function (grunt) {
                 ignores: ['**/**/*.min.js','**/*.min.js', 'Gruntfile.js']
             },
             files: {
-                src: ['**/*.js', '*.js','!**/lib/**/*.js', '!**/lib/*.js','!node_modules/**']
+                src: ['**/*.js', '!**/lib/**/*.js', '!**/lib/*.js','!node_modules/**']
             }
         },
         copy: {
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: './',
-                        src: ['*.js', '**/*.js', '!src/lib/**', '!node_modules/**', '!deploy/**'],
+                        src: ['**/*.js', '**/lib/**', '!node_modules/**', '!deploy/**'],
                         dest: 'deploy/',
                         rename: function (dest, src) {
                             return dest + src.substring(0, src.lastIndexOf('.js')) + '.uncompressed.js';
@@ -71,7 +71,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'deploy/',
-                        src: ['*.js', '**/*.js', '!node_modules/*.js', '!node_modules/**/*.js', '!src/lib/**/*.js', '!src/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js'],
+                        src: ['**/*.js', '!node_modules/*.js', '!node_modules/**/*.js', '!**/lib/**/*.js', '!&&/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js'],
                         dest: 'deploy/'
                     }
                 ]
@@ -86,7 +86,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'deploy/',
-                        src: ['*.js', '**/*.js', '!node_modules/**/*.js', '!node_modules/*.js', '!src/lib/**/*.js', '!src/lib/*.js'],
+                        src: ['**/*.js', '!node_modules/**/*.js', '!node_modules/*.js', '!**/lib/**/*.js', '!**/lib/*.js'],
                         dest: 'deploy/'
                     }
                 ]
@@ -134,7 +134,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', ['clean:all', 'copy:all', 'copy:uncompressed', 'clean:unnecessary', 'uglify:debug', 'fix_source_maps']);
-    grunt.registerTask('release', ['clean:all', 'copy:all', 'clean:unnecessary', 'uglify:release']);
+    grunt.registerTask('release', ['clean:all', 'copy:all', 'clean:unnecessary'/*, 'uglify:release'*/]);
     grunt.registerTask('convention', ['jshint']);
 };
 
