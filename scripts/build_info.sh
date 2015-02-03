@@ -32,7 +32,7 @@ echo "    \"buildnumber\" :\"$2\"," >> $mvfile
 echo "    \"buildtag\" :\"$3\"," >> $mvfile
 
 awk '{
-if ($0 ~/build/){ # || $0 ~/{/ || $0 ~/}/) {
+if ($0 ~/buildid/ || $0 ~/buildnumber/ || $0 ~/buildtag/){ # || $0 ~/{/ || $0 ~/}/) {
 } else {
 print $0
 }
