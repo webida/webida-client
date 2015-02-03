@@ -36,8 +36,8 @@ if ($0 ~/build/ || $0 ~/{/ || $0 ~/}/) {
 } else {
 print $0
 }
-}' ../src/$file >> $mvfile
+}' ../$file >> $mvfile
 
 echo "}" >> $mvfile
 
-mv $mvfile ../src/$file
+mv $mvfile ../$file
