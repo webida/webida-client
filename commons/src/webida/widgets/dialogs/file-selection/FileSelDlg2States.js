@@ -286,8 +286,8 @@ define(['dijit/Dialog',
             checkOptions(ops);
 
             this.open = function (callback) {
-                require(['//library.' + webidaHost +
-                         '/webida/widgets/dialogs/buttoned-dialog/ButtonedDialog.js'], function (ButtonedDialog) {
+                require(['webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'],
+                        function (ButtonedDialog) {
                     var isOk;
                     var idPostfix = '-2s-' + serialNo;
                     serialNo++;
