@@ -18,12 +18,15 @@ define([
     'lodash',
     'services/FS',
     'services/App',
-    'q'
-], function (_, FS, App, Q) {
+    'q',
+    'async',
+    'webida'
+], function (_, FS, App, Q, async, webida) {
     'use strict';
     /* global topic: true */
-    
-    var workspaceList = null;
+    var WORKSPACE_PATH = '/';
+
+    var workspaceList = null;       // workspaceList cache
     var isLoaded = false;
     var isLoading = false;
     var fsid;
@@ -34,126 +37,68 @@ define([
     };
     
     $.extend(WorkspaceManager.prototype, {
-        
         loadWorkspaces: function (doReload) {
-            
             var _this = this;
             var defer = Q.defer();
             
-            isLoaded = !!doReload ? false : isLoaded;
+            isLoaded = doReload ? false : isLoaded;
             
-            if (!isLoading && !isLoaded) {
+            if (!isLoaded) {
                 isLoading = true;
-                
-                FS.exists(WS_INFO_PATH).then(function () {
-                    _loadWorkspaces();
-                    
-                }).fail(function () {
-                    _this._createWorkspaceInfo()
-                    .then($.proxy(_loadWorkspaces, _this));
-                });
-            }
-            
-            /* jshint loopfunc: true,forin: false */
-            function _loadWorkspaces() {					
-                Q.all([FS.readFile(WS_INFO_PATH), App.getMyAppInfo()]).spread(function (data, appInfo) {
-                    
-                    var deployList = {};
-                    var len = appInfo.length;
-                    
-                    for (var i = 0; i < len; i++) {
-                        var info = appInfo[i];
-                        
-                        if (info.srcurl) {
-                            var tokens = info.srcurl.split('/');
-                            var total = tokens.length;
-                            
-                            if (total >= 2) {
-                                var id = '/' + tokens[total - 2] + '/' + tokens[total - 1] + '/';
-                                deployList[id] = appInfo;
-                            }
-                        }
-                    }
-                    
-                    workspaceList = [];
-                    var list = JSON.parse(data);
-                    var dList = [];
-                      
-                    for (var key in list) {
-                        (function () {
-                            var ws = list[key];
-                            var d = Q.defer();
 
-                            _this.getProjects(ws.path, deployList).then(
-                                function (projectList) {
-                                    ws.projects = projectList;
-
-                                    d.resolve();
-
-                                }).fail(function (e) {
-                                console.log('fail: ', e);
-                                ws.projects = [];
-
-                                d.reject(e);
-                            });
-                            workspaceList.push(ws);
-                            dList.push(d.promise);
-                        }());
-                    }
-                   
-
-                    Q.all(dList).then(function () {
+                async.parallel({
+                    workspaceList: _this.getWorkspaces,
+                    appList: webida.app.getMyAppInfo
+                }, function(err, results){
+                    isLoading = false;
+                    if(err){
+                        console.log('Workspaces Load error: ', err);
+                        defer.reject(err);
+                    } else {
                         isLoaded = true;
-                        isLoading = false;
-                        
-                    }).fail(function () {
-                        _this._createWorkspaceInfo(list)
-                        .then($.proxy(_loadWorkspaces, _this));
-                    });
-                    
-                }).fail(function (e) {
-                    console.log('readFile error: ', e);
-                    defer.reject(e);
+                        // Load all project list
+                        async.every(results.workspaceList, function(workspace, next){
+                            _this.getProjects(WORKSPACE_PATH + workspace.name, results.appList).then(function(projects){
+                                workspace.projects = projects;
+                                next(true);
+                            }).fail(function(err){
+                                console.log('Projects load error: ', err);
+                                next(false);
+                            });
+                        }, function(result){
+                            if(result) {
+                                workspaceList = results.workspaceList;
+                                defer.resolve(workspaceList);
+                            } else {
+                                defer.reject('Projects load error');
+                            }
+                        });
+                    }
                 });
+            } else {
+                defer.resolve(workspaceList);
             }
-            /* jshint loopfunc: false,forin: true */
-            
-            function checkIsLoaded() {
-                if (isLoaded) {
-                    defer.resolve(workspaceList);
-                    
-                } else {
-                    setTimeout(function () {
-                        checkIsLoaded();
-                    }, 500);
-                }
-            }
-            
-            checkIsLoaded();
             
             return defer.promise;
         },
         
-        getWorkspaces: function (doReload) {
-            var _this = this;
-            var defer = Q.defer();
-            
-            _this.loadWorkspaces(doReload).then(function () {
-                workspaceList.sort(function (a, b) {
-                    if (a.name > b.name) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                });
-                
-                defer.resolve(workspaceList);
-                
-            }).fail(function (e) {
-                defer.reject(e);
+        getWorkspaces: function (callback/*doReload*/) {
+            FS.list(WORKSPACE_PATH, function (err, data) {
+                if(err){
+                    callback(err);
+                } else {
+                    var workspaces = _.chain(data).filter(function (file) {
+                        if (!file.name.match(/^\./) && file.isDirectory) {
+                            // TODO it must have '.workspace' directory
+                            return true;
+                        }
+                    }).value();
+                    workspaces.sort(function(a,b){
+                        return (a.name > b.name) ? 1 : -1;
+                    });
+                    callback(null, workspaces);
+                }
             });
-            
-            return defer.promise;
         },
         
         getProjects: function (wsPath, deployList) {
@@ -161,7 +106,6 @@ define([
             var projectList = [];
             
             FS.list(wsPath, false).then(function (data) {
-                
                 var list = _.chain(data).filter(function (file) {
                     if (!file.name.match('^.workspace$') && 
                         !file.name.match('^.git$') &&
@@ -174,34 +118,36 @@ define([
                 
                 _.forEach(list, function (dir) {
                     var d = Q.defer();
-                    var filename = wsPath + '/' + dir.name + '/.project/project.json';
-                    
-                    FS.readFile(filename).then(function (file) {
-                        var project = JSON.parse(file);
-                        project.isProject = true;
-                        projectList.push(project);
-                        
-                        var tokens = filename.split('/');
-                        var url = ['/', tokens[1], '/', tokens[2], '/'].join('');
-                        
-                        if (deployList[url]) {
-                            project.isDeployed = true;
-                        }
-                        
-                        d.resolve();
-                        
-                    }).fail(function () {
-                        var project = {
+                    dList.push(d.promise);
+
+                    var fileName = wsPath + '/' + dir.name + '/.project/project.json';
+                    FS.exists(fileName).then(function(){
+                        FS.readFile(fileName).then(function (file) {
+                            var project = JSON.parse(file);
+                            project.isProject = true;
+                            projectList.push(project);
+
+                            var tokens = fileName.split('/');
+                            var url = ['/', tokens[1], '/', tokens[2], '/'].join('');
+
+                            if (deployList[url]) {
+                                project.isDeployed = true;
+                            }
+                            d.resolve();
+                        }).fail(function () {
+                            projectList.push({
+                                name: dir.name,
+                                isProject: false
+                            });
+                            d.resolve();
+                        });
+                    }).fail(function(){
+                        projectList.push({
                             name: dir.name,
                             isProject: false
-                        };
-                        
-                        projectList.push(project);
-                        
+                        });
                         d.resolve();
                     });
-                    
-                    dList.push(d.promise);
                 });
                 
                 Q.allSettled(dList).then(function () {
@@ -212,7 +158,6 @@ define([
                             return -1;
                         }
                     });
-                    
                     defer.resolve(projectList);
                 });
                 

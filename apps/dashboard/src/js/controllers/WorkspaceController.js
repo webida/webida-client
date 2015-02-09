@@ -48,7 +48,7 @@ define([
             var loading = $('<div class="row info">Loading workspaces...</div>');
             body.append(loading);
 
-            WorkspaceManager.getWorkspaces(doReload).then(function (list) {
+            WorkspaceManager.loadWorkspaces(doReload).then(function (list) {
                 loading.remove();
 
                 if (list.length === 0) {
@@ -138,7 +138,7 @@ define([
             var prjPane = wsRow.next();
             prjPane.show();
 
-            WorkspaceManager.getWorkspaces().then(function (list) {
+            WorkspaceManager.loadWorkspaces().then(function (list) {
                 _.forEach(list, function (ws) {
                     if (ws.name === wsName) {
                         prjPane.html('');
@@ -172,7 +172,7 @@ define([
                                     e.stopPropagation();
                                     e.preventDefault();
 
-                                    var projPath = ws.path + '/' + proj.name;
+                                    var projPath = '/' /* FIXME WorkspaceManager.WORKSPACE_PATH */ + ws.name + '/' + proj.name;
 
                                     _this.runProject(proj, projPath);
                                 });
@@ -187,7 +187,7 @@ define([
                             delay += 30;
                         });
 
-                        if (ws.projects.length === 0) {
+                        if (!ws.projects || ws.projects.length === 0) {
                             var none = 
                                 '<div class="row"><div class="contents span15 info">No projects found</div></div>';
                             prjPane.html(none);

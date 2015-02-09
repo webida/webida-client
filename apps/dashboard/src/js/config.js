@@ -25,7 +25,7 @@ var webida = '../../commons/src/webida/webida-0.3';
 var require = {
     baseUrl: '.',
     paths: {
-        webida:						webida,
+        webida:	webida,
         controllers: 'src/js/controllers',
         services: 'src/js/services',
         lodash: 'lib/lodash.min',
@@ -38,7 +38,8 @@ var require = {
         // menus list
         common: 'src/js/common',
         'app-config': 'src/js/app-config',
-        q: 'lib/q'
+        q: 'lib/q',
+        async: 'lib/async'
     }
 };
 
