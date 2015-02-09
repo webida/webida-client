@@ -62,9 +62,9 @@ function initServers(webidaHost/*, webidaLibPath, otherLibPath*/) {
         baseUrl: '..',
         paths: {
             // 'other-lib': '//library3.' + webidaHost,
-            'other-lib': '../../../externals/src',
+            'other-lib': '../../../../../externals/src',
             // 'webida-lib': '//library.' + webidaHost + '/webida',
-            'webida-lib': '../../../commons/src/webida',
+            'webida-lib': '../../../../../commons/src/webida',
             text: 'lib/text',
             tern: 'lib/ternjs',
             acorn: 'lib/acorn'
