@@ -17,7 +17,7 @@
 define([], function () {
     'use strict';
     return {
-        clientId: 'QIAhrL8Oo92WXfZk'
+        clientId: 'clientid4EGKa5Wm'
         //clientId: 'chq3bn16d0000a2g075lhftay'
     };
 });

@@ -17,6 +17,6 @@
 define([], function () {
     'use strict';
     return {
-        clientId: 'E9CXCte9dnUU1GID'
+        clientId: 'clientid4EGKa5Wm'
     };
 });

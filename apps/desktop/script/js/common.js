@@ -33,7 +33,7 @@ define([
         console.log('getFS');
         async.waterfall([
             function (next) {
-                var CLIENT_ID = 'chnllw4zm0000fng0zy9wob5m';
+                var CLIENT_ID = 'clientid4EGKa5Wm';
                 
                 webida.auth.initAuth(CLIENT_ID);
                 next();
