@@ -2708,7 +2708,7 @@ var ENV_TYPE;
     * @memberOf module:webida.AppService
     */
     mod.AppService.prototype.launchApp = function (domain, newWindowFlag, queryString, newWindowOptions) {
-        var addr = domain + '.' + mod.app.getHost();
+        var addr = (domain ? domain + '.' : '') + mod.app.getHost();
         var url = window.location.protocol + '//' + addr + '/';
 
         //Add query string
