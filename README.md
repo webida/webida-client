@@ -13,10 +13,10 @@ Web based IDE
 $ mongo
 > use webida_auth
 > db.tokens.find({uid: 100000}, {token: 1, _id: 0})
-{ "token" : "thisIsATokenString" }
+{ "token" : "thisIsATokenString" }  # this is the $TOKEN
 ```
 
 ```
 $cd webida-client
-$tar czpf - * | curl -k -X POST -F content=@- "http://webida.mine/webida/api/app/deploy?appid=webida&access_token=thisIsATokenString"
+$tar czpf - * | curl -k -X POST -F content=@- "http://webida.mine/webida/api/app/deploy?appid=webida&access_token=$TOKEN"
 ```
