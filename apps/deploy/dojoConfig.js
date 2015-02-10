@@ -27,8 +27,10 @@ var dojoConfig = {
         'lib' : 'lib',
         'core' : 'core',
         'plugins' : 'plugins',
-        'webida-lib': '//library.' + webidaHost + '/src/webida',
-        'other-lib': '//library3.' + webidaHost + '/src',
+        //'webida-lib': '//library.' + webidaHost + '/src/webida',
+        //'other-lib': '//library3.' + webidaHost + '/src',
+        'webida-lib': '../../commons/src/webida',
+        'other-lib': '../../externals/src'
     },
     aliases: [
         ['text', 'dojo/text'], 
