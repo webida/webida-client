@@ -18,5 +18,5 @@ $ mongo
 
 ```
 $cd webida-client
-$tar czpf - * | curl -k -X POST -F content=@- "http://webida.mine/webida/api/app/deploy?appid=webida&access_token=$TOKEN"
+$tar czpf - * | curl -k -X POST -F content=@- "http://webida.mine/webida/api/app/deploy?appid=webida-client&access_token=$TOKEN"
 ```
