@@ -43,7 +43,7 @@ $(function () {
 
     require([
         'webida',
-        'app-config'
+        'webida-lib/app-config'
     ], function (webida, AppConfig) {
 
         var href = window.location.href;
@@ -61,7 +61,7 @@ $(function () {
 
         url = url.replace('//auth.html', '/auth.html');
 
-        webida.auth.initAuth(AppConfig.clientId, url);
+        webida.auth.initAuth(AppConfig.clientId.dashboard, url);
 
         webida.auth.getMyInfo(function () {
             $(window).on('hashchange', function () {

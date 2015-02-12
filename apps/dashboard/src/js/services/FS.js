@@ -16,7 +16,8 @@
 
 define([
     'webida',
-    'q'
+    'q',
+    'webida-lib/app-config'
 ], function (webida, Q) {
     'use strict';
     var FS = function () {};

@@ -27,8 +27,8 @@
         <script>
             'use strict';
 
-            require(['webida-lib/app'], function (ide) {
-                ide.startup('clientid4EGKa5Wm');
+            require(['webida-lib/app', 'webida-lib/app-config'], function (ide, AppConfig) {
+                ide.startup(AppConfig.clientId);
             });
         </script>
     </head>

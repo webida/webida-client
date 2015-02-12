@@ -18,7 +18,8 @@ define([
     'lodash',
     'services/ApplicationManager',
     'toastr',
-    'q'
+    'q',
+    'webida-lib/app-config'
 ], function (_, ApplicationManager, toastr, Q) {
     'use strict';
     

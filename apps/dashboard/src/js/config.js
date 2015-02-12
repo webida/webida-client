@@ -37,9 +37,9 @@ var require = {
         moment: 'lib/moment.min',
         // menus list
         common: 'src/js/common',
-        'app-config': 'src/js/app-config',
         q: 'lib/q',
-        async: 'lib/async'
+        async: 'lib/async',
+        'webida-lib': '../../commons/src/webida'
     }
 };
 

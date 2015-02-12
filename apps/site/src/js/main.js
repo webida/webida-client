@@ -17,7 +17,7 @@
 define([
     'webida',
     'toastr',
-    './app-config'
+    'webida-lib/app-config'
 ], function (Webida, toastr, AppConfig) {
     'use strict';
 
@@ -39,7 +39,7 @@ define([
     function getRedirectUrl() {
         /* global URI:true */
         var cur = new URI(location.href);
-        var authRel = new URI('index.html');
+        var authRel = new URI('auth.html');
         var redirectUrl = authRel.absoluteTo(cur);
         redirectUrl.query('');
         return redirectUrl.toString();
@@ -50,7 +50,7 @@ define([
 				window.open('../desktop/', 'desktop', '');
     }
 
-    Webida.auth.initAuth(AppConfig.clientId, getRedirectUrl());
+    Webida.auth.initAuth(AppConfig.clientId.webida, getRedirectUrl());
 
     $(document).ready(function () {
         //var emailSendBtn = $('.email_send');
@@ -77,7 +77,7 @@ define([
             var reUrl = getRedirectUrl();
             var url = Webida.conf.authApiBaseUrl + '/authorize?response_type=token' +
                 '&redirect_uri=' + encodeURIComponent(reUrl) +
-                '&client_id=' + AppConfig.clientId +
+                '&client_id=' + AppConfig.clientId.webida +
                 '&skip_decision=false&type=web_server';
 
             location.href = url;

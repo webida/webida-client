@@ -17,7 +17,8 @@
 define([
     'async',
     'path',
-    'text!menus/settings/index.html'
+    'text!menus/settings/index.html',
+    'webida-lib/app-config'
 ], function (async, path, settingsView) {
     'use strict';
     

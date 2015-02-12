@@ -17,8 +17,9 @@
 define([
     'webida',
     'async',
-    'text!settingsdlg.html'
-], function (webida, async, settingsDlg) {
+    'text!settingsdlg.html',
+    'webida-lib/app-config'
+], function (webida, async, settingsDlg, AppConfig) {
     'use strict';
     
     /* global webidaFs:true */
@@ -33,9 +34,9 @@ define([
         console.log('getFS');
         async.waterfall([
             function (next) {
-                var CLIENT_ID = 'clientid4EGKa5Wm';
+                //var CLIENT_ID = 'ci60g08h60000uum1rixrzhsj';
                 
-                webida.auth.initAuth(CLIENT_ID);
+                webida.auth.initAuth(AppConfig.clientId.desktop);
                 next();
             },
             function (next) {

@@ -31,6 +31,7 @@ var require = {
     */
     paths: {
         webida: webida,
-        toastr: 'src/lib/toastr/toastr'
+        toastr: 'src/lib/toastr/toastr',
+        'webida-lib': '../../commons/src/webida'
     }
 };

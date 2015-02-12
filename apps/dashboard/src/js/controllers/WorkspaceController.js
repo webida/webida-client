@@ -20,7 +20,8 @@ define([
     'services/WorkspaceManager',
     'toastr',
     'webida',
-    'q'
+    'q',
+    'webida-lib/app-config'
 ], function (_, moment, WorkspaceManager, toastr, webida, Q) {
     'use strict';
     var WorkspaceController = function () {};

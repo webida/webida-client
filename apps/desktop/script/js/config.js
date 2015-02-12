@@ -34,6 +34,7 @@ var require = {
         md5: 'script/lib/md5',
         sly: 'script/lib/sly.min',
         toastr: 'script/lib/toastr/toastr',
-        text: 'script/lib/text'
+        text: 'script/lib/text',
+        'webida-lib': '../../commons/src/webida'
     }
 };

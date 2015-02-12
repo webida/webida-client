@@ -16,7 +16,7 @@
 
 define(['webida-lib/webida-0.3', 'underscore',
         'plugin-manager', 'toastr', 'dijit/Tooltip',
-       'core/app-config'],
+       'webida-lib/app-config'],
 function (webida, _, pm, toastr, Tooltip, appConfig) {
     'use strict';
 
@@ -78,7 +78,7 @@ function (webida, _, pm, toastr, Tooltip, appConfig) {
 
     var deploy = {
         openDeploy : function (appPath, projectPath, redirectUrl) {
-            webida.auth.initAuth(appConfig.clientId, redirectUrl);
+            webida.auth.initAuth(appConfig.clientId.deploy, redirectUrl);
             
             init(projectPath, function (err) {
                 if (err) {

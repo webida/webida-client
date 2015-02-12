@@ -17,7 +17,8 @@
 define([
     'services/FS',
     'services/App',
-    'q'
+    'q',
+    'webida-lib/app-config'
 ], function (FS, App, Q) {
     'use strict';
     var ApplicationManager = function () {
