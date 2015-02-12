@@ -250,28 +250,30 @@ define([
             FS.createDirectory(name, false).then(function () {
                 FS.createDirectory(WS_META_PATH)
                     .then($.proxy(FS.writeFile, FS, WS_META_FILE, ''))
-                    .then($.proxy(FS.readFile, FS, WS_INFO_PATH))
-                    .then(function (info) {
-                        info = JSON.parse(info);
-                        var d = Q.defer();
-
-                        FS.stat([name]).then(function (data) {
-                            data[0].birth = new Date().toJSON();
-                            data[0].desc = desc;
-
-                            info[name] = data[0];
-
-                            d.resolve(info);
-                        });
-
-                        return d.promise;
-
-                    }).then(function (info) {
-                        FS.writeFile(WS_INFO_PATH, JSON.stringify(info)).then(function () {
-                            defer.resolve();
-                        });
-
-                    }).fail(function (e) {
+                    .then(function(){ d.resolve(); })
+                    //.then($.proxy(FS.readFile, FS, WS_INFO_PATH))
+                    //.then(function (info) {
+                    //    info = JSON.parse(info);
+                    //    var d = Q.defer();
+                    //
+                    //    FS.stat([name]).then(function (data) {
+                    //        data[0].birth = new Date().toJSON();
+                    //        data[0].desc = desc;
+                    //
+                    //        info[name] = data[0];
+                    //
+                    //        d.resolve(info);
+                    //    });
+                    //
+                    //    return d.promise;
+                    //
+                    //}).then(function (info) {
+                    //    FS.writeFile(WS_INFO_PATH, JSON.stringify(info)).then(function () {
+                    //        defer.resolve();
+                    //    });
+                    //
+                    //})
+                    .fail(function (e) {
                         FS.delete(name, true);
                         defer.reject(e);
                     });
