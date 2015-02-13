@@ -19,8 +19,7 @@ define([
     'moment',
     'services/SettingsManager',
     'toastr',
-    'q',
-    'webida-lib/app-config'
+    'q'
 ], function (_, moment, SettingsManager, toastr, Q) {
     'use strict';
     var SettingsController = function () {};

@@ -126,6 +126,7 @@ footer {
     position: relative;
     height: 100%;
     overflow:hidden;
+    text-align: center;
 }
 
 div.add-ws-button {
@@ -151,6 +152,7 @@ div.add-ws-button {
     transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;
     -webkit-transition: all 0.3s ease;
+    margin-left: 15px;
 }
 
 .arrow.selected {
@@ -499,7 +501,7 @@ input[type="text"] {
 
 .span1 { width: 5%; }
 .span2 { width: 10%; }
-.span3 { width: 15%; }
+.span3 { width: 15.2%; }
 .span4 { width: 20%; }
 .span5 { width: 25%; }
 .span6 { width: 30%; }

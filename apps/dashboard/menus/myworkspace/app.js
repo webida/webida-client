@@ -19,8 +19,7 @@ define([
     'async',
     'moment',
     'path',
-    'text!menus/myworkspace/index.html',
-    'webida-lib/app-config'
+    'text!menus/myworkspace/index.html'
 ], function (_, async, moment, path, myworkspaceView) {
     'use strict';
 
