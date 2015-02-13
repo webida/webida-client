@@ -15,10 +15,10 @@
  */
 
 define([
+    'webida-lib/app-config',
     'webida',
-    'async',
-    'webida-lib/app-config'
-], function (webida, async, AppConfig) {
+    'async'
+], function (AppConfig, webida, async) {
     'use strict';
     
     var exports = {};
@@ -26,9 +26,7 @@ define([
     exports.getFS = function (cb) {
         async.waterfall([
             function (next) {
-                //var CLIENT_ID = 'E9CXCte9dnUU1GID';
                 var redirectURL = window.location.href.replace('index.html', 'auth.html');
-                
                 webida.auth.initAuth(AppConfig.clientId.dashboard, redirectURL);
                 next();
             },

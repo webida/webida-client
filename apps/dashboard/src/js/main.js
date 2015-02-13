@@ -42,9 +42,9 @@ $(function () {
     });
 
     require([
-        'webida',
-        'webida-lib/app-config'
-    ], function (webida, AppConfig) {
+        'webida-lib/app-config',
+        'webida'
+    ], function (AppConfig, webida) {
 
         var href = window.location.href;
         var url = href;

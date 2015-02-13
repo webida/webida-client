@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['path', 'webida-lib/app-config'], function (path) {
+define(['path'], function (path) {
     'use strict';
 
     /* global webidaAuth, webidaHost:true */

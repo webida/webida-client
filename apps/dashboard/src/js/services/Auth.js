@@ -16,8 +16,7 @@
 
 define([
     'webida',
-    'q',
-    'webida-lib/app-config'
+    'q'
 ], function (webida, Q) {
     'use strict';
     var Auth = function () {};

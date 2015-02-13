@@ -168,10 +168,6 @@ define([
             return defer.promise;
         },
 
-        getProjectInfo: function (/* path */) {
-
-        },
-
         getWorkspacePath: function (wsName) {
             if (fsid) {
                 return fsid + '/' + wsName;
@@ -251,71 +247,22 @@ define([
                 FS.createDirectory(WS_META_PATH)
                     .then($.proxy(FS.writeFile, FS, WS_META_FILE, ''))
                     .then(function(){ d.resolve(); })
-                    //.then($.proxy(FS.readFile, FS, WS_INFO_PATH))
-                    //.then(function (info) {
-                    //    info = JSON.parse(info);
-                    //    var d = Q.defer();
-                    //
-                    //    FS.stat([name]).then(function (data) {
-                    //        data[0].birth = new Date().toJSON();
-                    //        data[0].desc = desc;
-                    //
-                    //        info[name] = data[0];
-                    //
-                    //        d.resolve(info);
-                    //    });
-                    //
-                    //    return d.promise;
-                    //
-                    //}).then(function (info) {
-                    //    FS.writeFile(WS_INFO_PATH, JSON.stringify(info)).then(function () {
-                    //        defer.resolve();
-                    //    });
-                    //
-                    //})
                     .fail(function (e) {
                         FS.delete(name, true);
                         defer.reject(e);
                     });
-
             }).fail(function (e) {
                 defer.reject(e);
             });
-
             return defer.promise;
         },
 
         removeWorkspace: function (name) {
-            //var WS_META_PATH = name + '/.workspace';
-            //var WS_META_FILE = WS_META_PATH + '/workspace.json';
-            var defer = Q.defer();
-
-            FS.delete(name, true)
-                .then($.proxy(FS.readFile, FS, WS_INFO_PATH))
-                .then(function (info) {
-                    info = JSON.parse(info);
-
-                    if (info[name]) {
-                        delete info[name];
-                    }
-
-                    return info;
-
-                }).then(function (info) {
-                    FS.writeFile(WS_INFO_PATH, JSON.stringify(info)).then(function () {
-                        defer.resolve();
-                    });
-
-                }).fail(function (e) {
-                    defer.reject(e);
-                });
-
-            return defer.promise;
+            return FS.delete(name, true);
         },
 
         editWorkspace: function (name, desc) {
-            //var WS_META_PATH = name + '/.workspace';
-            //var WS_META_FILE = WS_META_PATH + '/workspace.json';
+            // TODO should make the way to save description or some other workspace's information.
             var defer = Q.defer();
             var obj;
 
@@ -332,75 +279,6 @@ define([
                 });
             }).fail(function () {
                 defer.resolve();
-            });
-
-
-
-            return defer.promise;
-        },
-
-        _createWorkspaceInfo: function (oldInfo) {
-            var defer = Q.defer();
-
-            if (!oldInfo) {
-                oldInfo = {};
-            }
-
-            FS.list('/', false).then(function (data) {
-                var wsList = _.chain(data).filter(function (fileObj) {
-                    if (!fileObj.name.match(/^\./) && fileObj.isDirectory) {
-                        return true;
-                    }
-
-                }).map(function (fileObj) {
-                    return '/' + fileObj.name;
-                }).value();
-
-                if (wsList.length === 0) {
-                    FS.exists(WS_PROFILE_PATH).then(function () {
-
-                    }, function () {
-                        //FS.createDirectory(dir, true);
-                        FS.createDirectory(WS_PROFILE_PATH, true);
-                    })
-                        .then($.proxy(FS.writeFile, FS, WS_INFO_PATH, '{}'))
-                        .then(function () {
-                            defer.resolve();
-
-                        }).fail(function (e) {
-                            defer.reject(e);
-                        });
-
-                } else {
-                    FS.stat(wsList).then(function (stats) {
-                        var wsObj = {};
-
-                        _.forEach(stats, function (fileObj) {
-                            var name = fileObj.name;
-
-                            if (oldInfo[name]) {
-                                fileObj.birth = oldInfo[name].birth;
-                                fileObj.desc = oldInfo[name].desc;
-
-                            } else {
-                                fileObj.birth = '';
-                                fileObj.desc = '';
-                            }
-
-                            wsObj[name] = fileObj;
-                        });
-
-                        FS.writeFile(WS_INFO_PATH, JSON.stringify(wsObj)).then(function () {
-                            defer.resolve();
-                        });
-
-                    }).fail(function (e) {
-                        defer.reject(e);
-                    });
-                }
-
-            }).fail(function (e) {
-                defer.reject(e);
             });
 
             return defer.promise;

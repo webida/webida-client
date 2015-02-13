@@ -20,8 +20,7 @@ define([
     'services/WorkspaceManager',
     'toastr',
     'webida',
-    'q',
-    'webida-lib/app-config'
+    'q'
 ], function (_, moment, WorkspaceManager, toastr, webida, Q) {
     'use strict';
     var WorkspaceController = function () {};
@@ -70,18 +69,18 @@ define([
                     var template =
                         '<div class="row closed" data-id="' + id + '">' +
                         '    <div class="contents clickable-contents" data-ws="' + ws.name + '">' +
-                        '        <div class="col span1"><span class="arrow"></span></div>' +
-                        '        <div class="col span6" title=' + ws.name + '>' + ws.name + '</div>' +
-                        '        <div class="col span6 centered">' + birth + '</div>' +
-                        '        <div class="col span7" title=' + desc + '>' + desc + '</div>' +
+                        '        <div class="col span2"><span class="arrow"></span></div>' +
+                        '        <div class="col span12" title=' + ws.name + '>' + ws.name + '</div>' +
+                        //'        <div class="col span6 centered">' + birth + '</div>' +
+                        //'        <div class="col span7" title=' + desc + '>' + desc + '</div>' +
                         '    </div>' +
-                        '    <div class="button-area span2 launch-button centered" data-ws="' + ws.name + '" title="Open">' +
+                        '    <div class="button-area span3 launch-button centered" data-ws="' + ws.name + '" title="Open">' +
                         '        Open' +
                         '    </div>' +
-                        '<div class="button-area span2 edit-button" data-ws="' + ws.name + '" data-desc="' + desc + '" title="Edit">' +
-                        '        <span class="button-icon icon-edit"></span><span>Edit</span>' +
-                        '    </div>' +
-                        '    <div class="button-area span2 delete-button" data-ws="' + ws.name + '" title="Delete">' +
+                        //'   <div class="button-area span2 edit-button" data-ws="' + ws.name + '" data-desc="' + desc + '" title="Edit">' +
+                        //'        <span class="button-icon icon-edit"></span><span>Edit</span>' +
+                        //'    </div>' +
+                        '    <div class="button-area span3 delete-button" data-ws="' + ws.name + '" title="Delete">' +
                         '        <span class="button-icon icon-delete"></span><span>Delete</span>' +
                         '    </div>' +
                         '</div>' +
