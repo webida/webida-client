@@ -4,10 +4,8 @@ Web based IDE
 
 ## Installation Guide
 
-1. Check out and install [webida-server](https://github.com/webida/webida-server)
-2. You can find `$TOKEN` at the server's initial DB data.
-3. Check out this repository.
-4. Send deploy request to the webida-server with `$TOKEN`
+* Check out and install [webida-server](https://github.com/webida/webida-server)
+* You can find `$TOKEN` at the server's initial DB data.
 
 ```
 $ mongo
@@ -16,7 +14,16 @@ $ mongo
 { "token" : "thisIsATokenString" }  # this is the $TOKEN
 ```
 
+* Check out this repository.
+* Send deploy request to the webida-server with `$TOKEN`
+
 ```
 $cd webida-client
-$tar czpf - * | curl -k -X POST -F content=@- "http://webida.mine/webida/api/app/deploy?appid=webida-client&access_token=$TOKEN"
+$tar czpf - * | curl -k -X POST -F content=@- "http://webida.mine:5001/webida/api/app/deploy?appid=webida-client&access_token=$TOKEN"
+```
+
+* You can access client app with below address.
+
+```
+http://webida.mine:5001/
 ```
