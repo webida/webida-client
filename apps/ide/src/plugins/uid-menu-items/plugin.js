@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ define(['webida-lib/webida-0.3', 'other-lib/toastr/toastr'], function (webida, t
     /* global webidaHost: true */
 
     function openDashboard() {
-        location.href = '//dashboard.' + webidaHost;
+        location.href = '/apps/dashboard/';
             // webidaHost is defined in dojoConfig.js
     }
 
@@ -29,7 +29,7 @@ define(['webida-lib/webida-0.3', 'other-lib/toastr/toastr'], function (webida, t
                 toastr.error('Could not sign out.');
                 console.log('logout error: ' + e);
             } else {
-                location.href = '//' + webidaHost; // webidaHost is defined in dojoConfig.js
+                window.location.replace('/'); // webidaHost is defined in dojoConfig.js
             }
         });
     }

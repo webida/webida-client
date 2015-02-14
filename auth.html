@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="./externals/src/require.min.js"></script>
+    <script src="./commons/src/webida/util/browserUtil.global.js"></script>
+    <script>
+        require(['./commons/src/webida/app-config'], function(config) {
+            var hash = parseHash();
+            sendMessage(hash.access_token);
+            route(hash.state, config.appRoute);
+        });
+
+        function parseHash(){
+            var result = {};
+            if(location.hash) {
+                var tokens = location.hash.substring(1).split('&');
+                for(var i=0; i<tokens.length; i++){
+                    var kv = tokens[i].split('=');
+                    result[kv[0]] = (kv.length > 1) ? decodeURIComponent(kv[1]) : '';
+                }
+            }
+            return result;
+        }
+
+        function sendMessage(accessToken){
+            var targetOrigin = BrowserUtil.getLocationOrigin();
+            if (!window.opener) {
+                window.parent.postMessage(accessToken, targetOrigin);
+            } else {
+                window.opener.parent.postMessage(accessToken, targetOrigin);
+                self.opener = self;
+                window.close();
+            }
+        }
+
+        function route(state, appRoute){
+            if(state && appRoute[state]){
+                window.location.replace(appRoute[state]);
+            }
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>

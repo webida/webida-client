@@ -190,7 +190,7 @@ define(['webida-lib/util/browserInfo',
      * @callback open_workspace
      * @returns {undefined}
      */
-    function startup(clientID, options) {
+    function startup(clientID, redirectUrl, options) {
         function proceed() {
             var currentURI = URI(window.location.href);
             var workspaceInfo = currentURI.search(true).workspace;
@@ -206,7 +206,7 @@ define(['webida-lib/util/browserInfo',
                 });
             } else {
                 var appPathname = currentURI.segment(-1, '').pathname();
-                webida.auth.initAuth(clientID, null, null, function () {
+                webida.auth.initAuth(clientID, redirectUrl, null, function () {
                     init(appPathname, workspaceInfo, options);
                 });
             }
@@ -500,7 +500,7 @@ define(['webida-lib/util/browserInfo',
                         topicusernotify: null
                     };
 
-                    var host = window.location.protocol + '//conn.' + webidaHost;
+                    var host = window.location.protocol + '//' +  webida.connServer; // + '//conn.' + webidaHost;
                     try {
                         msgAgent.init(data.uid, webida.auth.getTokenObj().data,
                                       host, callbacks, loginCB);

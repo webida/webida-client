@@ -27,8 +27,8 @@
         <script>
             'use strict';
 
-            require(['webida-lib/app', 'webida-lib/app-config'], function (ide, AppConfig) {
-                ide.startup(AppConfig.clientId.devenv);
+            require(['webida-lib/app-config', 'webida-lib/app'], function (AppConfig, ide) {
+                ide.startup(AppConfig.clientId, AppConfig.redirectUrl);
             });
         </script>
     </head>

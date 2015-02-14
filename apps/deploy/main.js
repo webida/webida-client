@@ -33,9 +33,9 @@ require(['other-lib/URIjs/URI', 'core/deploy'], function (URI, deploy) {
     var appPath = uri.segment(-1, '').pathname();
     var projectPath = uri.search(true).project; 
     if (projectPath) { 
-        var redirectUrl = window.location.origin + window.location.pathname;
-        redirectUrl = redirectUrl.replace(/index.html/g, 'auth.html');
-        deploy.openDeploy(appPath, projectPath, redirectUrl);
+        //var redirectUrl = window.location.origin + window.location.pathname;
+        //redirectUrl = redirectUrl.replace(/index.html/g, 'auth.html');
+        deploy.openDeploy(appPath, projectPath);
     } else { 
         alert('Error: Project specification is invalid');
     } 

@@ -88,7 +88,7 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
                 if (err) {
                     alert('Failed to logout');
                 } else {
-                    location.href = '//' + webidaHost;
+                    location.href = '/';
                 }
             });
         });

@@ -26,8 +26,8 @@ define([
     exports.getFS = function (cb) {
         async.waterfall([
             function (next) {
-                var redirectURL = window.location.href.replace('index.html', 'auth.html');
-                webida.auth.initAuth(AppConfig.clientId.dashboard, redirectURL);
+                //var redirectURL = window.location.href.replace('index.html', 'auth.html');
+                webida.auth.initAuth(AppConfig.clientId, AppConfig.redirectUrl);
                 next();
             },
             function (next) {

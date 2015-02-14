@@ -15,10 +15,10 @@
  */
 
 define([
+    'webida-lib/app-config',
     'webida',
-    'toastr',
-    'webida-lib/app-config'
-], function (Webida, toastr, AppConfig) {
+    'toastr'
+], function (AppConfig, Webida, toastr) {
     'use strict';
 
     toastr.options = {
@@ -50,7 +50,7 @@ define([
 				window.open('../desktop/', 'desktop', '');
     }
 
-    Webida.auth.initAuth(AppConfig.clientId.webida, getRedirectUrl());
+    Webida.auth.initAuth(AppConfig.clientId, AppConfig.redirectUrl);
 
     $(document).ready(function () {
         //var emailSendBtn = $('.email_send');
@@ -65,7 +65,7 @@ define([
 
             } else {
                 // location.replace('//desktop.' + Webida.conf.webidaHost);
-								location.replace('../desktop/');
+				location.replace('../desktop/');
             }
         });
 
@@ -74,11 +74,11 @@ define([
         });
 
         $('button.login').click(function () {
-            var reUrl = getRedirectUrl();
+            //var reUrl = getRedirectUrl();
             var url = Webida.conf.authApiBaseUrl + '/authorize?response_type=token' +
-                '&redirect_uri=' + encodeURIComponent(reUrl) +
-                '&client_id=' + AppConfig.clientId.webida +
-                '&skip_decision=false&type=web_server';
+                '&redirect_uri=' + encodeURIComponent(AppConfig.redirectUrl) +
+                '&client_id=' + AppConfig.clientId +
+                '&skip_decision=false&type=web_server&state=site';
 
             location.href = url;
         });

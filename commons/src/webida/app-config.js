@@ -17,28 +17,29 @@
 define([], function () {
     'use strict';
 
-    var protocol = window.location.protocol + "//";
-    var domainSplit = window.location.hostname.split('.');
-    var domain = (domainSplit.length < 3) ? window.location.hostname :  window.location.hostname.substring(domainSplit[0].length + 1);
+    var protocol = window.location.protocol + '//';
+    var serverDomain = 'webida.mine'; //server domain name
 
-    window.WEBIDA_HOST_URL = protocol + domain;
-    window.WEBIDA_FS_SERVER_URL = protocol + 'fs.' + domain;
-    window.WEBIDA_AUTH_SERVER_URL = protocol + 'auth.' + domain;
-    window.WEBIDA_APP_SERVER_URL = protocol + 'app.' + domain;
-    window.WEBIDA_BUILD_SERVER_URL = protocol + 'build.' + domain;
-    window.WEBIDA_DB_SERVER_URL = protocol + 'db.' + domain;
-    window.WEBIDA_NTF_SERVER_URL = protocol + 'ntf.' + domain;
-    window.WEBIDA_CORS_SERVER_URL = protocol + 'cors.' + domain;
+    window.WEBIDA_HOST_URL = serverDomain;
+    window.WEBIDA_FS_SERVER_URL = protocol + serverDomain + ':5003';
+    window.WEBIDA_AUTH_SERVER_URL = protocol + serverDomain + ':5002';
+    window.WEBIDA_APP_SERVER_URL = protocol +  serverDomain + ':5001';
+    window.WEBIDA_BUILD_SERVER_URL = protocol  + serverDomain + ':5004';
+    window.WEBIDA_DB_SERVER_URL = protocol +  serverDomain + ':5006';
+    window.WEBIDA_NTF_SERVER_URL = protocol +  serverDomain + ':5011';
+    window.WEBIDA_CORS_SERVER_URL = protocol + serverDomain;
+    window.WEBIDA_CONN_SERVER_URL = protocol + serverDomain + ':5010';
 
     return {
-        clientId: {
-            webida: 'WEBIDA_CLIENT_ID_TO_BE_SET',
-            desktop: 'DESKTOP_CLIENT_ID_TO_BE_SET',
-            devenv: 'DEVENV_CLIENT_ID_TO_BE_SET',
-            dashboard: 'DASHBOARD_CLIENT_ID_TO_BE_SET',
-            deploy: 'DEPLOY_CLIENT_ID_TO_BE_SET',
-            default: 'CLIENT_ID_TO_BE_SET'
-        }
-
+        clientId: 'CLIENT_ID_TO_BE_SET',
+        appRoute: {
+            site: 'apps/desktop/index.html'/*,
+            desktop: 'apps/desktop/index.html',
+            ide: 'apps/ide/src/index.html',
+            dashboard: 'apps/dashboard/index.html',
+            deploy: 'apps/deploy/index.html',
+            default: 'apps/site/index.html'*/
+        },
+        redirectUrl: protocol + window.location.hostname + '/auth.html'
     };
 });

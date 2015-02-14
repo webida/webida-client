@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-define(['webida-lib/webida-0.3', 'underscore',
-        'plugin-manager', 'toastr', 'dijit/Tooltip',
-       'webida-lib/app-config'],
-function (webida, _, pm, toastr, Tooltip, appConfig) {
+define(['webida-lib/app-config', 'webida-lib/webida-0.3', 'underscore',
+        'plugin-manager', 'toastr', 'dijit/Tooltip'],
+function (appConfig, webida, _, pm, toastr, Tooltip) {
     'use strict';
 
     var fsidWorkspaceProjectName = null;		//ex> 'fePfnAiSb/Deploy/deployApp/'
@@ -77,8 +76,8 @@ function (webida, _, pm, toastr, Tooltip, appConfig) {
     }
 
     var deploy = {
-        openDeploy : function (appPath, projectPath, redirectUrl) {
-            webida.auth.initAuth(appConfig.clientId.deploy, redirectUrl);
+        openDeploy : function (appPath, projectPath) {
+            webida.auth.initAuth(appConfig.clientId, appConfig.redirectUrl);
             
             init(projectPath, function (err) {
                 if (err) {
