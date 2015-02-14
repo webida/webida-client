@@ -15,11 +15,11 @@
  */
 
 define([
+    'webida-lib/app-config',
     'webida',
     'async',
-    'text!settingsdlg.html',
-    'webida-lib/app-config'
-], function (webida, async, settingsDlg, AppConfig) {
+    'text!settingsdlg.html'
+], function (AppConfig, webida, async, settingsDlg) {
     'use strict';
     
     /* global webidaFs:true */
@@ -36,7 +36,7 @@ define([
             function (next) {
                 //var CLIENT_ID = 'ci60g08h60000uum1rixrzhsj';
                 
-                webida.auth.initAuth(AppConfig.clientId.desktop);
+                webida.auth.initAuth(AppConfig.clientId, AppConfig.redirectUrl);
                 next();
             },
             function (next) {

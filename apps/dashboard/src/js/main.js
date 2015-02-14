@@ -61,7 +61,7 @@ $(function () {
 
         url = url.replace('//auth.html', '/auth.html');
 
-        webida.auth.initAuth(AppConfig.clientId.dashboard, url);
+        webida.auth.initAuth(AppConfig.clientId, AppConfig.redirectUrl);
 
         webida.auth.getMyInfo(function () {
             $(window).on('hashchange', function () {

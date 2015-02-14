@@ -91,6 +91,8 @@ var ENV_TYPE;
         readCookie('webida.ntfHostUrl') || 'https://ntf.webida.org';
     var corsServer = (typeof window !== 'undefined' && window.WEBIDA_CORS_SERVER_URL) ||
         readCookie('webida.corsHostUrl') || 'https://cors.webida.org';
+    var connServer = (typeof window !== 'undefined' && window.WEBIDA_CONN_SERVER_URL) ||
+        readCookie('webida.connHostUrl') || 'https://conn.webida.org';
     /**
      * webida config object
      * @name conf
@@ -111,7 +113,8 @@ var ENV_TYPE;
         dbApiBaseUrl: dbServer + '/webida/api/db',
         buildApiBaseUrl: buildServer + '/webida/api/build',
         aclApiBaseUrl: authServer + '/webida/api/acl',
-        groupApiBaseUrl: authServer + '/webida/api/group'
+        groupApiBaseUrl: authServer + '/webida/api/group',
+        connServer: connServer
     };
 
     /**
@@ -266,16 +269,16 @@ var ENV_TYPE;
     mod.TokenGenerator.prototype.generateNewToken = function (cb) {
         function receiveMsg(event) {
             //console.log('receiveMsg', event.data);
-
-            var regex = /([^&=]+)=([^&]*)/g, m;
-            while ((m = regex.exec(event.data))) {
-                if (m[1] === 'access_token') {
-                    window.removeEventListener('message', receiveMsg);
-                    alreadyRequested = false;
-                    cb(m[2]);	// m[2] is the token
-                    break;
-                }
-            }
+            cb(event.data);
+            //var regex = /([^&=]+)=([^&]*)/g, m;
+            //while ((m = regex.exec(event.data))) {
+            //    if (m[1] === 'access_token') {
+            //        window.removeEventListener('message', receiveMsg);
+            //        alreadyRequested = false;
+            //        cb(m[2]);	// m[2] is the token
+            //        break;
+            //    }
+            //}
 
         }
 
