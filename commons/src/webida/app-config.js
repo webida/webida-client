@@ -20,7 +20,7 @@ define([], function () {
     var protocol = window.location.protocol + '//';
     var serverDomain = 'webida.mine'; //server domain name
 
-    window.WEBIDA_HOST_URL = serverDomain;
+    window.WEBIDA_HOST_URL = serverDomain + ':5001';
     window.WEBIDA_FS_SERVER_URL = protocol + serverDomain + ':5003';
     window.WEBIDA_AUTH_SERVER_URL = protocol + serverDomain + ':5002';
     window.WEBIDA_APP_SERVER_URL = protocol +  serverDomain + ':5001';
@@ -40,6 +40,6 @@ define([], function () {
             deploy: 'apps/deploy/index.html',
             default: 'apps/site/index.html'*/
         },
-        redirectUrl: protocol + window.location.hostname + '/auth.html'
+        redirectUrl: protocol + window.WEBIDA_HOST_URL + '/auth.html'
     };
 });
