@@ -4,11 +4,11 @@ Web based IDE
 
 ## Installation Guide
 
-Check out and install [webida-server](https://github.com/webida/webida-server)
+Checkout and install [webida-server](https://github.com/webida/webida-server)
 
 Then, checkout this repository.
 
-And Send deploy request to the webida-server with access_token(`$TOKEN`).
+And send deploy request to the webida-server with access_token(`$TOKEN`).
 
 ```
 $cd webida-client
