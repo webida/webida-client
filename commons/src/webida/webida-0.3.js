@@ -1147,7 +1147,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/archive/' + self.fsid,
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1178,7 +1178,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/archive/' + self.fsid,
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1250,7 +1250,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/copy/' + self.fsid + '/',
                 type: 'POST',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1288,7 +1288,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/directory/' + self.fsid + '/' + path,
                 type: 'POST',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1382,7 +1382,7 @@ var ENV_TYPE;
                         callback(data.reason);
                     }
                 },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1548,7 +1548,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/file/' + self.fsid + '/' + path,
                 type: 'DELETE',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1579,7 +1579,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/rename/' + self.fsid + '/',
                 type: 'POST',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1811,7 +1811,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/mobile/ks/' + self.fsid + '/' + filename,
                 type: 'POST',
                 data: fd,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1835,14 +1835,14 @@ var ENV_TYPE;
 
             var data  = {
                 alias: alias,
-                filename: filename,
+                filename: filename
             };
 
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/mobile/ks/' + self.fsid,
                 type: 'DELETE',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1866,7 +1866,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/mobile/ks/' + self.fsid,
                 type: 'GET',
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2711,31 +2711,47 @@ var ENV_TYPE;
     * @memberOf module:webida.AppService
     */
     mod.AppService.prototype.launchApp = function (domain, newWindowFlag, queryString, newWindowOptions) {
-        var addr = (domain ? domain + '.' : '') + mod.app.getHost();
-        var url = window.location.protocol + '//' + addr + '/';
-
-        //Add query string
-        if (queryString) {
-            url = url + queryString;
-        }
-
-        if (newWindowFlag) {
-            if (!newWindowOptions) {
-                return window.open(url);
-            } else if (newWindowOptions) {
-                var name = newWindowOptions.name ? newWindowOptions.name : '_blank';
-                var specs = newWindowOptions.specs ? newWindowOptions.specs : '';
-                var replace = newWindowOptions.replace;
-
-                if (replace) {
-                    return window.open(url, name, specs, replace);
-                } else {
-                    return window.open(url, name, specs);
+        ajaxCall({
+            url: mod.conf.appApiBaseUrl + '/deploytype',
+            data: { domain: domain },
+            callback: function(err, deployType){
+                if(err){
+                    // run as deployType is 'domain'
+                    deployType = 'domain';
                 }
+                var addr = mod.app.getHost();
+                if(deployType === 'domain') {
+                    addr = (domain ? domain + '.' : '') + addr;
+                } else {
+                    addr = addr + '/-/' + domain;
+                }
+                var url = window.location.protocol + '//' + addr + '/';
+
+                //Add query string
+                if (queryString) {
+                    url = url + queryString;
+                }
+
+                if (newWindowFlag) {
+                    if (!newWindowOptions) {
+                        return window.open(url);
+                    } else if (newWindowOptions) {
+                        var name = newWindowOptions.name ? newWindowOptions.name : '_blank';
+                        var specs = newWindowOptions.specs ? newWindowOptions.specs : '';
+                        var replace = newWindowOptions.replace;
+
+                        if (replace) {
+                            return window.open(url, name, specs, replace);
+                        } else {
+                            return window.open(url, name, specs);
+                        }
+                    }
+                } else {
+                    return window.location.assign(url);
+                }
+
             }
-        } else {
-            return window.location.assign(url);
-        }
+        });
     };
 
     /**
@@ -2751,7 +2767,7 @@ var ENV_TYPE;
         function restApi() {
             ajaxCall({
                 url: mod.conf.authApiBaseUrl + '/logout/',
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3693,7 +3709,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/addusertogroup/',
                 data: { uid: uid, gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3716,7 +3732,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/addusertogroup/',
                 data: { uid: uidArr.join(';'), gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3739,7 +3755,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/removeuserfromgroup/',
                 data: { uid: uid, gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3762,7 +3778,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/removeuserfromgroup/',
                 data: { uid: uidArr.join(';'), gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3850,7 +3866,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/setgroupmembers/',
                 data: { gid: gid, uid: uidArr.join(';') },
-                callback: callback,
+                callback: callback
             });
         }
 
