@@ -55,7 +55,7 @@ define([
                     //var d = Q.defer();
                     //var id = _.uniqueId();
                     var desc = deploy.desc ? deploy.desc : '';
-                    var url = 'https://' + deploy.domain + '.' + host;
+                    var url = ApplicationManager.getDeployedAppUrl(deploy.domain);//'https://' + deploy.domain + '.' + host;
                     var ws = '';
                     var pj = '';
                      

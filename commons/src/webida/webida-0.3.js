@@ -93,6 +93,11 @@ var ENV_TYPE;
         readCookie('webida.corsHostUrl') || 'https://cors.webida.org';
     var connServer = (typeof window !== 'undefined' && window.WEBIDA_CONN_SERVER_URL) ||
         readCookie('webida.connHostUrl') || 'https://conn.webida.org';
+
+    var deploy = {
+        type: readCookie('webida.deploy.type') || 'domain',
+        pathPrefix: readCookie('webida.deploy.pathPrefix') || '-'
+    };
     /**
      * webida config object
      * @name conf
@@ -114,7 +119,8 @@ var ENV_TYPE;
         buildApiBaseUrl: buildServer + '/webida/api/build',
         aclApiBaseUrl: authServer + '/webida/api/acl',
         groupApiBaseUrl: authServer + '/webida/api/group',
-        connServer: connServer
+        connServer: connServer,
+        deploy: deploy
     };
 
     /**
@@ -1147,7 +1153,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/archive/' + self.fsid,
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1178,7 +1184,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/archive/' + self.fsid,
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1250,7 +1256,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/copy/' + self.fsid + '/',
                 type: 'POST',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1288,7 +1294,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/directory/' + self.fsid + '/' + path,
                 type: 'POST',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1382,7 +1388,7 @@ var ENV_TYPE;
                         callback(data.reason);
                     }
                 },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1548,7 +1554,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/file/' + self.fsid + '/' + path,
                 type: 'DELETE',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1579,7 +1585,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/rename/' + self.fsid + '/',
                 type: 'POST',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1811,7 +1817,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/mobile/ks/' + self.fsid + '/' + filename,
                 type: 'POST',
                 data: fd,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1835,14 +1841,14 @@ var ENV_TYPE;
 
             var data  = {
                 alias: alias,
-                filename: filename,
+                filename: filename
             };
 
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/mobile/ks/' + self.fsid,
                 type: 'DELETE',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1866,7 +1872,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/mobile/ks/' + self.fsid,
                 type: 'GET',
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2697,6 +2703,34 @@ var ENV_TYPE;
     };
 
     /**
+     * Get the deployed App's url.
+     *
+     * @method getDeployedAppUrl
+     * @param {module:webida.domain} domain - Application domain
+     * @param {string} queryString - Application launch option. This string is added in tartget url.
+     * @returns {string} accessible url
+     * @memberOf module:webida.AppService
+     */
+    mod.AppService.prototype.getDeployedAppUrl = function(domain, queryString) {
+        var deployConf = mod.conf.deploy;
+
+        var addr = mod.app.getHost();
+        if(deployConf.type === 'domain' || domain === '') {
+            // When system deployType is 'domain' or this app is a system client app(domain is empty).
+            addr = (domain ? domain + '.' : '') + addr;
+        } else {
+            addr = addr + '/' + deployConf.pathPrefix + '/' + domain;
+        }
+        var url = window.location.protocol + '//' + addr + '/';
+
+        //Add query string
+        if (queryString) {
+            url = url + queryString;
+        }
+        return url;
+    };
+
+    /**
     * Launch application.
     *
     * @method launchApp
@@ -2711,13 +2745,7 @@ var ENV_TYPE;
     * @memberOf module:webida.AppService
     */
     mod.AppService.prototype.launchApp = function (domain, newWindowFlag, queryString, newWindowOptions) {
-        var addr = (domain ? domain + '.' : '') + mod.app.getHost();
-        var url = window.location.protocol + '//' + addr + '/';
-
-        //Add query string
-        if (queryString) {
-            url = url + queryString;
-        }
+        var url = mod.app.getDeployedAppUrl(domain, queryString);
 
         if (newWindowFlag) {
             if (!newWindowOptions) {
@@ -2751,7 +2779,7 @@ var ENV_TYPE;
         function restApi() {
             ajaxCall({
                 url: mod.conf.authApiBaseUrl + '/logout/',
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3693,7 +3721,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/addusertogroup/',
                 data: { uid: uid, gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3716,7 +3744,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/addusertogroup/',
                 data: { uid: uidArr.join(';'), gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3739,7 +3767,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/removeuserfromgroup/',
                 data: { uid: uid, gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3762,7 +3790,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/removeuserfromgroup/',
                 data: { uid: uidArr.join(';'), gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3850,7 +3878,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/setgroupmembers/',
                 data: { gid: gid, uid: uidArr.join(';') },
-                callback: callback,
+                callback: callback
             });
         }
 
