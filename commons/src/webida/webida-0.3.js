@@ -93,6 +93,11 @@ var ENV_TYPE;
         readCookie('webida.corsHostUrl') || 'https://cors.webida.org';
     var connServer = (typeof window !== 'undefined' && window.WEBIDA_CONN_SERVER_URL) ||
         readCookie('webida.connHostUrl') || 'https://conn.webida.org';
+
+    var deploy = {
+        type: readCookie('webida.deploy.type') || 'domain',
+        pathPrefix: readCookie('webida.deploy.pathPrefix') || '-'
+    };
     /**
      * webida config object
      * @name conf
@@ -114,7 +119,8 @@ var ENV_TYPE;
         buildApiBaseUrl: buildServer + '/webida/api/build',
         aclApiBaseUrl: authServer + '/webida/api/acl',
         groupApiBaseUrl: authServer + '/webida/api/group',
-        connServer: connServer
+        connServer: connServer,
+        deploy: deploy
     };
 
     /**
@@ -2697,6 +2703,34 @@ var ENV_TYPE;
     };
 
     /**
+     * Get the deployed App's url.
+     *
+     * @method getDeployedAppUrl
+     * @param {module:webida.domain} domain - Application domain
+     * @param {string} queryString - Application launch option. This string is added in tartget url.
+     * @returns {string} accessible url
+     * @memberOf module:webida.AppService
+     */
+    mod.AppService.prototype.getDeployedAppUrl = function(domain, queryString) {
+        var deployConf = mod.conf.deploy;
+
+        var addr = mod.app.getHost();
+        if(deployConf.type === 'domain' || domain === '') {
+            // When system deployType is 'domain' or this app is a system client app(domain is empty).
+            addr = (domain ? domain + '.' : '') + addr;
+        } else {
+            addr = addr + '/' + deployConf.pathPrefix + '/' + domain;
+        }
+        var url = window.location.protocol + '//' + addr + '/';
+
+        //Add query string
+        if (queryString) {
+            url = url + queryString;
+        }
+        return url;
+    };
+
+    /**
     * Launch application.
     *
     * @method launchApp
@@ -2711,47 +2745,25 @@ var ENV_TYPE;
     * @memberOf module:webida.AppService
     */
     mod.AppService.prototype.launchApp = function (domain, newWindowFlag, queryString, newWindowOptions) {
-        ajaxCall({
-            url: mod.conf.appApiBaseUrl + '/deploytype',
-            data: { domain: domain },
-            callback: function(err, deployType){
-                if(err){
-                    // run as deployType is 'domain'
-                    deployType = 'domain';
-                }
-                var addr = mod.app.getHost();
-                if(deployType === 'domain') {
-                    addr = (domain ? domain + '.' : '') + addr;
+        var url = mod.app.getDeployedAppUrl(domain, queryString);
+
+        if (newWindowFlag) {
+            if (!newWindowOptions) {
+                return window.open(url);
+            } else if (newWindowOptions) {
+                var name = newWindowOptions.name ? newWindowOptions.name : '_blank';
+                var specs = newWindowOptions.specs ? newWindowOptions.specs : '';
+                var replace = newWindowOptions.replace;
+
+                if (replace) {
+                    return window.open(url, name, specs, replace);
                 } else {
-                    addr = addr + '/-/' + domain;
+                    return window.open(url, name, specs);
                 }
-                var url = window.location.protocol + '//' + addr + '/';
-
-                //Add query string
-                if (queryString) {
-                    url = url + queryString;
-                }
-
-                if (newWindowFlag) {
-                    if (!newWindowOptions) {
-                        return window.open(url);
-                    } else if (newWindowOptions) {
-                        var name = newWindowOptions.name ? newWindowOptions.name : '_blank';
-                        var specs = newWindowOptions.specs ? newWindowOptions.specs : '';
-                        var replace = newWindowOptions.replace;
-
-                        if (replace) {
-                            return window.open(url, name, specs, replace);
-                        } else {
-                            return window.open(url, name, specs);
-                        }
-                    }
-                } else {
-                    return window.location.assign(url);
-                }
-
             }
-        });
+        } else {
+            return window.location.assign(url);
+        }
     };
 
     /**

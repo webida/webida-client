@@ -1080,8 +1080,9 @@ define([
 
         showStartStopButtonByStatus(parent);
 
-        var hostName = webida.app.getHost();
-        var urlStr = STR_HTTPS + appInfo.domain + STR_DOT + hostName;
+        var urlStr = webida.app.getDeployedAppUrl(appInfo.domain);
+        //var hostName = webida.app.getHost();
+        //var urlStr = STR_HTTPS + appInfo.domain + STR_DOT + hostName;
 
         icon = $(parent).find('.table-content-table-url');
         icon.html(urlStr);
