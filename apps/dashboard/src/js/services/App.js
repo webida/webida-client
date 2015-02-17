@@ -54,6 +54,9 @@ define([
                 }
             });
             return defer.promise;
+        },
+        getDeployedAppUrl: function(domain){
+            return webida.app.getDeployedAppUrl(domain);
         }
     });
     

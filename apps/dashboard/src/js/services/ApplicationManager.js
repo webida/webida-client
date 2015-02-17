@@ -63,6 +63,9 @@ define([
             
             return defer.promise;
             
+        },
+        getDeployedAppUrl: function(domain){
+            return App.getDeployedAppUrl(domain);
         }
         
     });
