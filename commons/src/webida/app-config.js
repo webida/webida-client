@@ -17,18 +17,9 @@
 define([], function () {
     'use strict';
 
-    var protocol = window.location.protocol + '//';
-    var serverDomain = 'webida.mine'; //server domain name
-
-    window.WEBIDA_HOST_URL = serverDomain + ':5001';
-    window.WEBIDA_FS_SERVER_URL = protocol + serverDomain + ':5003';
-    window.WEBIDA_AUTH_SERVER_URL = protocol + serverDomain + ':5002';
-    window.WEBIDA_APP_SERVER_URL = protocol +  serverDomain + ':5001';
-    window.WEBIDA_BUILD_SERVER_URL = protocol  + serverDomain + ':5004';
-    window.WEBIDA_DB_SERVER_URL = protocol +  serverDomain + ':5006';
-    window.WEBIDA_NTF_SERVER_URL = protocol +  serverDomain + ':5011';
-    window.WEBIDA_CORS_SERVER_URL = protocol + serverDomain;
-    window.WEBIDA_CONN_SERVER_URL = protocol + serverDomain + ':5010';
+    var serverDomain = decodeURIComponent(
+        document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
+    );
 
     return {
         clientId: 'CLIENT_ID_TO_BE_SET',
@@ -40,6 +31,6 @@ define([], function () {
             deploy: 'apps/deploy/index.html',
             default: 'apps/site/index.html'*/
         },
-        redirectUrl: protocol + window.WEBIDA_HOST_URL + '/auth.html'
+        redirectUrl: window.location.protocol + '//' + serverDomain + '/auth.html'
     };
 });
