@@ -71,14 +71,14 @@ define([
 //                         '<div class='panel pull'>' +
                          '    <div class="app-row" data-ws="' + deploy.appid + '">' +
                          '        <div class="app-contents app-url">' +
-                         '            <div class="app-col-header span1"><span class="arrow"></span></div>' +
-                         '            <div class="app-col-header span3">URL</div>' +
-                         '            <div class="app-col-body span16" title=' + url + '>' + url + '</div>' +
+                         '            <div class="app-col-header span2"><span class="arrow"></span></div>' +
+                         '            <div class="app-col-header span2">URL</div>' +
+                         '            <div class="app-col-body span16" title="' + url + '">' + url + '</div>' +
                          '        </div>' +
-                         '        <div class="button-area span2 launch-button centered" data-ws="' + deploy.domain + '" title="Open">' +
+                         '        <div class="button-area span3 launch-button centered" data-ws="' + deploy.domain + '" title="Open">' +
                          '            Open' +
                          '        </div>' +
-                         '        <div class="button-area span2 delete-button" data-ws="' + deploy.appid + '" title="Delete">' +
+                         '        <div class="button-area span3 delete-button" data-ws="' + deploy.appid + '" title="Delete">' +
                          '            <span class="button-icon icon-delete"></span><span>Delete</span>' +
                          '        </div>' +
                          '    </div>' +
@@ -86,7 +86,7 @@ define([
                          '        <div class="app-row">' +
                          '            <div class="app-contents ">' +
                          '                <div class="app-col-body span1"></div>' +
-                         '                <div class="app-col-header span3">src</div>' +
+                         '                <div class="app-col-header span2">Src</div>' +
                          '                <div class="app-col-body span8" title=' + src + '>' + src + '</div>' +
                          '                <div class="app-col-header  span3">Status</div>' +
                          '                <div class="app-col-body span5" title=' + deploy.status + '>' + deploy.status + '</div>' +
@@ -95,7 +95,7 @@ define([
                          '        <div class="app-row">' +
                          '            <div class="app-contents app-url">' +
                          '                <div class="app-col-body span1"></div>' +
-                         '                <div class="app-col-header  span3">Desc.</div>' +
+                         '                <div class="app-col-header  span2">Desc.</div>' +
                          '                <div class="app-col-body span16" title=' + desc + '>' + desc + '</div>' +
                          '            </div>' +
                          '        </div>' +
