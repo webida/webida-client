@@ -246,7 +246,7 @@ define([
             FS.createDirectory(name, false).then(function () {
                 FS.createDirectory(WS_META_PATH)
                     .then($.proxy(FS.writeFile, FS, WS_META_FILE, ''))
-                    .then(function(){ d.resolve(); })
+                    .then(function(){ defer.resolve(); })
                     .fail(function (e) {
                         FS.delete(name, true);
                         defer.reject(e);
