@@ -21,12 +21,19 @@ module.exports = function (grunt) {
        // Therefore, users of jshint must install these plugins by using npm install ...
        jshint : {
             options: {
-                jshintrc: ".jshintrc",
-                reporter: require('jshint-stylish'),
-                ignores: ['**/**/*.min.js','**/*.min.js', 'Gruntfile.js']
+                jshintrc: "apps/ide/.jshintrc",
+                reporter: require('jshint-stylish')
             },
             files: {
-                src: ['**/*.js', '!**/lib/**/*.js', '!**/lib/*.js','!node_modules/**']
+                expand: true,
+                cwd: './',
+                ext: ['.min.js', '_min.js', '.bak.js', '_bak.js'],
+                src: ['apps/dashboard/src/**/*.js', 'apps/dashboard/menus/**/*.js',  // dashboard
+                      'apps/deploy/*.js', 'apps/deploy/core/*.js', 'apps/deploy/plugins/**/*.js',  //deploy
+                      'apps/desktop/script/js/*.js',  // desktop
+                      'apps/ide/*.js', 'apps/ide/obsolete-src/**/*.js', 'apps/ide/src/**/*.js',  //ide
+                      'apps/site/src/js/*.js',   //site
+                      'commons/**/*.js', '!**/lib/**']   // common
             }
         },
         copy: {
