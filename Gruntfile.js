@@ -19,21 +19,22 @@ module.exports = function (grunt) {
        // for jshint check based on .jshintrc
        // package.json doesn't have jshint-stylish and grunt-contrib-jshint plugins.
        // Therefore, users of jshint must install these plugins by using npm install ...
-       jshint : {
+        jshint : {
             options: {
-                jshintrc: "apps/ide/.jshintrc",
+                jshintrc: '.jshintrc',
                 reporter: require('jshint-stylish')
             },
             files: {
                 expand: true,
                 cwd: './',
-                ext: ['.min.js', '_min.js', '.bak.js', '_bak.js'],
-                src: ['apps/dashboard/src/**/*.js', 'apps/dashboard/menus/**/*.js',  // dashboard
-                      'apps/deploy/*.js', 'apps/deploy/core/*.js', 'apps/deploy/plugins/**/*.js',  //deploy
-                      'apps/desktop/script/js/*.js',  // desktop
-                      'apps/ide/*.js', 'apps/ide/obsolete-src/**/*.js', 'apps/ide/src/**/*.js',  //ide
-                      'apps/site/src/js/*.js',   //site
-                      'commons/**/*.js', '!**/lib/**']   // common
+                src: ['apps/dashboard/**/*.js',  // dashboard
+                      'apps/deploy/**/*.js',  //deploy
+                      'apps/desktop/**/*.js', // desktop
+                      'apps/ide/**/*.js',     // ide 
+                      'apps/site/**/*.js',   //site
+                      'commons/**/*.js',     // commons
+                      '!**/lib/**', '!**/custom-lib/**', '!**/Gruntfile.js',  // ignore lib and Gruntfile
+                      '!**/*.min.js', '!**/*.back.js']   // ignore min/back.js files
             }
         },
         copy: {
