@@ -23,10 +23,11 @@ var dojoConfig = {
     baseUrl: '.',
     parseOnLoad: false,
     packages: [
+
+
+
         { name: 'xstyle', location: '//library3.' + webidaHost + '/xstyle' },
         { name: 'put-selector', location: '//library3.' + webidaHost + '/put-selector' }
-
-
     ],
     locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : "en-us",
     paths: {
