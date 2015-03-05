@@ -275,6 +275,8 @@ var ENV_TYPE;
     mod.TokenGenerator.prototype.generateNewToken = function (cb) {
         function receiveMsg(event) {
             //console.log('receiveMsg', event.data);
+            window.removeEventListener('message', receiveMsg);
+            alreadyRequested = false;
             cb(event.data);
             //var regex = /([^&=]+)=([^&]*)/g, m;
             //while ((m = regex.exec(event.data))) {
