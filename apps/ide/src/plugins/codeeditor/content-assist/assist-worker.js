@@ -62,7 +62,7 @@ function initServers(webidaHost/*, webidaLibPath, otherLibPath*/) {
         baseUrl: '..',
         paths: {
             // 'other-lib': '//library3.' + webidaHost,
-            'other-lib': '../../../../../externals/src',
+            'other-lib': '../../../../../external/src',
             // 'webida-lib': '//library.' + webidaHost + '/webida',
             'webida-lib': '../../../../../common/src/webida',
             text: 'lib/text',
