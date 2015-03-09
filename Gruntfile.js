@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,9 +30,9 @@ module.exports = function (grunt) {
                 src: ['apps/dashboard/**/*.js',  // dashboard
                       'apps/deploy/**/*.js',  //deploy
                       'apps/desktop/**/*.js', // desktop
-                      'apps/ide/**/*.js',     // ide 
+                      'apps/ide/**/*.js',     // ide
                       'apps/site/**/*.js',   //site
-                      'commons/**/*.js',     // commons
+                      'common/**/*.js',     // common
                       '!**/lib/**', '!**/custom-lib/**', '!**/Gruntfile.js',  // ignore lib and Gruntfile
                       '!**/*.min.js', '!**/*.back.js']   // ignore min/back.js files
             }
