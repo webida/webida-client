@@ -34,7 +34,7 @@ var dojoConfig = {
         // 'webida-lib': '//library.' + webidaHost + '/webida',
         // 'other-lib': '//library3.' + webidaHost,
         'webida-lib': '../../../common/src/webida',
-        'other-lib': '../../../externals/src',
+        'other-lib': '../../../external/src',
         'lib' : 'lib',
         'plugins' : 'plugins'
     },
