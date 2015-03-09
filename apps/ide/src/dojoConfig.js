@@ -33,8 +33,8 @@ var dojoConfig = {
     paths: {
         // 'webida-lib': '//library.' + webidaHost + '/webida',
         // 'other-lib': '//library3.' + webidaHost,
-        'webida-lib': '../../../commons/src/webida',
-        'other-lib': '../../../externals/src',
+        'webida-lib': '../../../common/src/webida',
+        'other-lib': '../../../external/src',
         'lib' : 'lib',
         'plugins' : 'plugins'
     },
