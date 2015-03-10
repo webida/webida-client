@@ -49,7 +49,7 @@ define(['require'], function (require) {
 
     function showAbout() {
         require(['text!./about.html',
-                 'text!../../../package.json',
+                 'text!/package.json',
                  'webida-lib/plugins/workbench/plugin',
                  'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'],
                 function (aboutHtml, text, workbench, ButtonedDialog) {
