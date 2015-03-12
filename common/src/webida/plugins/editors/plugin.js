@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,7 +59,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         };
 
         File.prototype.isModified = function () {
-            //console.log('hina temp: value = <' + value + '>');
             if (this.editorModule) {
                 var val = this.editorModule.getValue(this);
                 return  val !== undefined && val !== this.savedValue;	// TODO: remove the first clause
@@ -431,7 +430,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         });
 
         topic.subscribe('workspace.nodes.deleting', function (paths) {
-            console.log('hina temp: handling workspace.nodes.deleted');
             multipleDeletions.push(paths);
             setTimeout(function () {
                 var i = multipleDeletions.indexOf(paths);
@@ -561,7 +559,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     file.toAskAndReload = false;
                     _.defer(askAndReload.bind(null, file));
                 }
-                //console.log('hina temp: topic editors.selected for ' + file.path);
                 topic.publish('editors.selected', file.path, file);
             } else {
                 topic.publish('editors.nofile.current');
@@ -922,9 +919,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     file.pendingCreator = function (c) {
 
                         function createEditor(file, editorModule, view, callback) {
-                            console.warn('hina temp: ' + view.getContent());
-                            console.warn('hina temp: ' + view.contentPane.domNode.compareDocumentPosition(
-                                document.getElementsByTagName('body')[0]));
                             editorModule.create(file, file.savedValue, view.getContent(), function (file, instance) {
                                 file.editor = instance;
                                 if (editorModule.addChangeListener) {

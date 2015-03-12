@@ -28,6 +28,8 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
     // utility functions
     //---------------------------
 
+    var doNothing = function () {};
+
     function isValidAbsPath(path) {
         return (path.indexOf('/') === 0) && (path.indexOf('//') < 0);
     }
@@ -185,7 +187,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                         }
                     }
 
-                    cb = cb || function () {};
+                    cb = cb || doNothing;
                     node.refreshHierarchy(level, cb);
 
                 } else {
