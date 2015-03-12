@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 define(['other-lib/underscore/lodash.min',
         'other-lib/toastr/toastr'],
 function (_, toastr) {
@@ -29,19 +13,16 @@ function (_, toastr) {
     function loadCSSList(items, done) {
         function checkDone(doneItems) {
             return function () {
-                // console.log('done', doneItems);
                 _.each(doneItems, function (newDone) {
-                    // console.log(newDone);
                     if (_.contains(loadedItems, newDone)) {
                         toastr.error('Not good ' + newDone + ' in ' + loadedItems);
-                    }
-                    if (! _.contains(loadedItems, newDone)) {
+                    } else {
                         loadedItems.push(newDone);
                     }
                 });
                 _.each(doneItems, function (newDone) {
                     _.each(deferredDones[newDone], function (listener) {
-                        if (! _.contains(processedDones, listener.id)) {
+                        if (!_.contains(processedDones, listener.id)) {
                             var containsAll = _.every(listener.neededs, function (x) {
                                 return _.contains(loadedItems, x);
                             });
@@ -56,32 +37,32 @@ function (_, toastr) {
         }
 
         function setOnLoadToCssTag(head, link, onload) {
-            var sheet, cssRules;
-            if ('sheet' in link) {
-                sheet = 'sheet';
-                cssRules = 'cssRules';
-            }
-            else {
-                sheet = 'styleSheet';
-                cssRules = 'rules';
-            }
             var failedCounter = 0;
             var intervalId = setInterval(function () {
                 try {
-                    if (link[sheet] && link[sheet][cssRules].length !== undefined) {
+                    var sheet;
+                    if ('sheet' in link) {
+                        sheet = 'sheet';
+                    } else {
+                        sheet = 'styleSheet';
+                    }
+
+                    if (link[sheet]) {
                         clearInterval(intervalId);
-                        console.log('loaded a css ' + link.href);
+                        console.log('loaded a CSS ' + link.href);
                         onload(true);
                     } else {
                         failedCounter++;
                         if (failedCounter > 1500) {
                             clearInterval(intervalId);
                             head.removeChild(link);
-                            console.error('Faile: css ' + link.href);
+                            console.error('Failed to load a CSS ' + link.href);
                             onload(false);
                         }
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.error('exception while checking the load of a CSS file ' + link.href + ': ' + e);
+                }
             }, 10);
         }
 
@@ -109,18 +90,15 @@ function (_, toastr) {
         });
         if (toLoad.length > 0) {
             loadingItems = loadingItems.concat(toLoad);
-            if (toLoad.length > 0) {
-                _.each(toLoad, function (x) {
-                    var cssTag = document.createElement('link');
-                    cssTag.setAttribute('rel', 'stylesheet');
-                    cssTag.setAttribute('type', 'text/css');
-                    cssTag.setAttribute('href', x);
-                    //console.log('starting to load a css', x);
-                    var head = document.getElementsByTagName('head')[0];
-                    setOnLoadToCssTag(head, cssTag, checkDone([x]));
-                    head.appendChild(cssTag);
-                });
-            }
+            _.each(toLoad, function (x) {
+                var cssTag = document.createElement('link');
+                cssTag.setAttribute('rel', 'stylesheet');
+                cssTag.setAttribute('type', 'text/css');
+                cssTag.setAttribute('href', x);
+                var head = document.getElementsByTagName('head')[0];
+                setOnLoadToCssTag(head, cssTag, checkDone([x]));
+                head.appendChild(cssTag);
+            });
         } else {
             // Nothing to load more
             done();
