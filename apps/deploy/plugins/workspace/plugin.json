@@ -1,10 +1,10 @@
 {
-    "name": "workspace",
+    "name": "webida.deploy.workspace",
     "description": "paas",
     "version": "0.0.1",
     "augments": [],
     "extensionPoints" : {
-        "workspace:changeproject" : [
+        "webida.deploy.workspace:changeproject" : [
             {"name" : "beforeChange", "type" : "function",
              "desc": "unsaved check, if callback return false do not call changeProjectPath"},
             {"name" : "changeProjectPath", "type" : "function",
@@ -12,6 +12,6 @@
         ]
     },
     "extensions": {
-        "workbench:onstart" : {}
-	}
+        "webida.deploy.workbench:onstart" : {}
+    }
 }

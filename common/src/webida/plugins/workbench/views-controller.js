@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -116,7 +116,7 @@ define([
 
         initialize : function (elem) {
             var _self = this;
-            var _settings = pm.getAppConfig('workbench')['workbench:view'];
+            var _settings = pm.getAppConfig('webida.common.workbench')['webida.common.workbench:views'];
             var _containerOptions = {
                 design: 'sidebar', // headline or sidebar (default: sidebar)
                 liveSplitters: false // default false
@@ -641,7 +641,7 @@ define([
                     console.error('getMyInfo error: ' + e);
                 } else {
                     var menu = new DropDownMenu({ style: 'display: none;' });
-                    var exts = pm.getExtensions('workbench:uidMenu') || [];
+                    var exts = pm.getExtensions('webida.common.workbench:uidMenu') || [];
                     exts.forEach(function (ext) {
                         var menuItem = new MenuItem({
                             label: ext.label,

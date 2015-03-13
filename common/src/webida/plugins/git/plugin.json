@@ -1,11 +1,11 @@
 {
-    "name": "git",
+    "name": "webida.common.git",
     "description": "Git view",
     "version": "0.1.0",
-    "requirement": "workspace",
+    "requirement": "webida.common.workspace",
     "extensions": {
 
-        "workbench:menu" : {
+        "webida.common.workbench:menu" : {
             "location" : "/&Git/",
             "wholeItems" : {
                 "&Status": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt + S" }, "desc" : "git status" } } ],
@@ -45,7 +45,7 @@
             "getViableItems" : "gitTopLevelMenuItems"
         },
 
-        "workspace:menu" : {
+        "webida.common.workspace:menu" : {
             "location" : "/",
             "wholeItems" : {
                 "&Git" : {
@@ -87,12 +87,12 @@
             "getViableItems" : "gitContextMenuItems"
         },
 
-        "workbench:views" : {
+        "webida.common.workbench:views" : {
             "module" : "webida-lib/plugins/git/git-view",
             "location": "bottom"
         },
 
-        "workbench:preference-page" : [
+        "webida.common.workbench:preference-page" : [
             {
                 "module": "webida-lib/plugins/git/preference-git",
                 "hierarchy": "git",

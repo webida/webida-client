@@ -1,5 +1,5 @@
 {
-    "workspace:menu" : {
+    "webida.common.workspace:menu" : {
         "hierarchy": {
 
             "Preview" : [ "cmnd" ],

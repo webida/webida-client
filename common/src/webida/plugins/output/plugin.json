@@ -1,10 +1,10 @@
 {
-    "name": "output",
+    "name": "webida.common.output",
     "description": "Outputs texst messages for users",
     "version": "0.0.1",
-    "requirement": "workbench",
+    "requirement": "webida.common.workbench",
     "extensions": {
-        "workbench:views" : {
+        "webida.common.workbench:views" : {
             "location": "bottom"
         }
     }

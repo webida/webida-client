@@ -1,5 +1,5 @@
 {
-    "workbench:view": {
+    "webida.common.workbench:views": {
         "locations": {
             "right": {
                 "splitter": false,
@@ -8,7 +8,7 @@
             }
         }
     },
-    "workbench:menu" : {
+    "webida.common.workbench:menu" : {
         "hierarchy": {
             "&File" : {
                 "&New" : {

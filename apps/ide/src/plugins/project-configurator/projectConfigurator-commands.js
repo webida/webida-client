@@ -50,8 +50,8 @@ define([
 
     var liveReloadHandleList = [];
     var EXTENSION_POINTS = {
-        RUN_CONFIGURATION_TYPE: 'project-configurator:run-configuration-type',
-        RUN_CONFIGURATION: 'project-configurator:run-configuration'
+        RUN_CONFIGURATION_TYPE: 'webida.ide.project-configurator:run-configuration-type',
+        RUN_CONFIGURATION: 'webida.ide.project-configurator:run-configuration'
     };
     var extpoint = (function () {
         var confTypes = pm.getExtensions(EXTENSION_POINTS.RUN_CONFIGURATION_TYPE);
