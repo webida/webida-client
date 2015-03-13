@@ -1,11 +1,11 @@
 {
-    "name": "fs-commands",
+    "name": "webida.common.fs-commands",
     "description": "commands on files and folders in the workspace",
     "version": "0.1.0",
-    "requirement": "workspace",
+    "requirement": "webida.common.workspace",
     "extensions": {
 
-        "workbench:menu" : [
+        "webida.common.workbench:menu" : [
             {
                 "location" : "/&File/",
                 "wholeItems" : {
@@ -68,7 +68,7 @@
             }
         ],
 
-        "workspace:menu" : [
+        "webida.common.workspace:menu" : [
             {
                 "location" : "/",
                 "wholeItems" : {

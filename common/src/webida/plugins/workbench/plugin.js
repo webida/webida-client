@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -87,12 +87,12 @@ function (_, require,
     time2 = timedLogger.log('(c) in initialization of workbench module', time2);
 
 
-    // extensions of workbench:menu
-    var exts = pm.getExtensions('workbench:menu');
-    var menuConfig = pm.getAppConfig('workbench')['workbench:menu'];
+    // extensions of webida.common.workbench:menu
+    var exts = pm.getExtensions('webida.common.workbench:menu');
+    var menuConfig = pm.getAppConfig('webida.common.workbench')['webida.common.workbench:menu'];
     var predefinedHierarchy = menuConfig ? menuConfig.hierarchy : {};
     var menuItemTree = new MenuItemTree(predefinedHierarchy, exts, topElem, 'workbench',
-                                       pm.getAppConfig('workbench').menuSystem);
+                                       pm.getAppConfig('webida.common.workbench').menuSystem);
 
     time2 = timedLogger.log('(d) in initialization of workbench module', time2);
 
@@ -132,15 +132,15 @@ function (_, require,
         }
     }
 
-    var panels = pm.getExtensions('workbench:panels');
-    var views = pm.getExtensions('workbench:views');
+    var panels = pm.getExtensions('webida.common.workbench:panels');
+    var views = pm.getExtensions('webida.common.workbench:views');
     regionsToInitialize = panels.length + views.length;
 
     var locations0 = ['top', 'center'];
     //console.log('panels', panels);
     panels.forEach(function (ext) {
         if (locations0.indexOf(ext.location) < 0) {
-            console.error('Error: Illegal extension to "workbench:panels" is ignored');
+            console.error('Error: Illegal extension to "webida.common.workbench:panels" is ignored');
             return;
         }
 
@@ -171,7 +171,7 @@ function (_, require,
 
                 //console.log('onPanelAppended done');
             } else {
-                console.error('Error: Illegal return value from an extension to "workbench:panels"');
+                console.error('Error: Illegal return value from an extension to "webida.common.workbench:panels"');
             }
         });
 
@@ -179,11 +179,11 @@ function (_, require,
 
     time2 = timedLogger.log('(f) in initialization of workbench module', time2);
 
-    // extensions of workbench:views
+    // extensions of webida.common.workbench:views
     var locations1 = ['top', 'left', 'right', 'bottom', 'center'];
     views.forEach(function (ext) {
         if (locations1.indexOf(ext.location) < 0) {
-            console.error('Error: Illegal extension to "workbench:views" is ignored');
+            console.error('Error: Illegal extension to "webida.common.workbench:views" is ignored');
             return;
         }
 
@@ -217,7 +217,7 @@ function (_, require,
 
                 //console.log('onViewAppended');
             } else {
-                console.error('Error: Illegal return value from an extension to "workbench:views"');
+                console.error('Error: Illegal return value from an extension to "webida.common.workbench:views"');
             }
         });
 
@@ -281,8 +281,8 @@ function (_, require,
                         wholeAccum[pluginName] = menuItemTrees[pluginName].getWholeItems();
                     });
 
-                    // collect shortcuts registered via workbench:shortcutList
-                    exts = pm.getExtensions('workbench:shortcutList');
+                    // collect shortcuts registered via webida.common.workbench:shortcutList
+                    exts = pm.getExtensions('webida.common.workbench:shortcutList');
                     var additionalShortcuts = {};
                     collectAdditionalShortcuts(0);
 
@@ -312,8 +312,8 @@ function (_, require,
 
     time2 = timedLogger.log('(h) in initialization of workbench module', time2);
 
-    // add bubble event handler to the extensions of workbench:shortcutList
-    exts = pm.getExtensions('workbench:shortcutList');
+    // add bubble event handler to the extensions of webida.common.workbench:shortcutList
+    exts = pm.getExtensions('webida.common.workbench:shortcutList');
     exts.forEach(function (ext) {
         require([ext.module], function (mod) {
             if (typeof mod[ext.getEnclosingDOMElem] === 'function') {
@@ -349,7 +349,7 @@ function (_, require,
                 var predefinedHierarchy = menuConfig ? menuConfig.hierarchy : {};
                 var menuItemTree =
                     new MenuItemTree(predefinedHierarchy, menuExts, elem, pluginName,
-                                     pm.getAppConfig('workbench').menuSystem); // TODO: temporary
+                                     pm.getAppConfig('webida.common.workbench').menuSystem); // TODO: temporary
                 if (menuItemTree instanceof Error) {
                     alert('Failed to initialize the context menu of ' +
                           pluginName +  ': ' + menuItemTree.message);

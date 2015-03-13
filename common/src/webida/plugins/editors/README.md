@@ -1,10 +1,10 @@
 editors plugin
 =============
 
-`editors` module exports general editor operations. It provides `editors:editor` extension point which is extended by other plugins that implement editor details. Specific editor is used based on the file extensions or mime types.
+`editors` module exports general editor operations. It provides `webida.common.editors:editor` extension point which is extended by other plugins that implement editor details. Specific editor is used based on the file extensions or mime types.
 
 ## Extension Points
-### editors:editor
+### webida.common.editors:editor
 This can be extended for detailed detailed editor implementations
 
 * name: string
@@ -20,7 +20,7 @@ This can be extended for detailed detailed editor implementations
 * unhandledMimeTypes: array
     * ..
 
-### editors:menu
+### webida.common.editors:menu
 This can be extended for populate editor menu items
 
 * location: string

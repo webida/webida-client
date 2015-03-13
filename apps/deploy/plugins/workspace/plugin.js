@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,25 +30,25 @@ define([
     'use strict';
     var titlePane = null;
     var oldSelected = null;
-    
+
     var GET_PROJECT_FAIL_TOASTR = 'Failed to get the project list.';
     var NO_PROJECT_TOASTR = 'No projects in workspace.';
-    
+
     function cbChangeProject(path) {
-        var exts = pm.getExtensions('workspace:changeproject');
+        var exts = pm.getExtensions('webida.deploy.workspace:changeproject');
         exts.forEach(function (ext) {
             require([ext.module], function (module) {
                 module[ext.changeProjectPath](path);
             });
         });
     }
-    
+
     function addProject(name, selected) {
         var item = {
             path: null,
             elem: null
         };
-        
+
         //this.itemList.push(item);
         var path = deploy.getFsidWorkspaceName() + '/' + name;
         item.path = path;
@@ -56,21 +56,21 @@ define([
         item.elem.attr('title', 'Project name : ' + name);
         item.elem.text(name);
         $('#workspace-list-box').append(item.elem);
-        
+
         item.elem.bind('mousedown', function () {
             item.elem.addClass('deploy-title-item-pushed');
         });
-        
+
         item.elem.bind('click', function () {
             if (oldSelected === item.elem) {
                 return;
             }
-            var exts = pm.getExtensions('workspace:changeproject');
+            var exts = pm.getExtensions('webida.deploy.workspace:changeproject');
             var cnt = exts.length;
-            
+
             function async() {
                 var deffered = new Deferred();
-                
+
                 exts.forEach(function (ext) {
                     require([ext.module], function (module) {
                         module[ext.beforeChange](function (ret) {
@@ -78,10 +78,10 @@ define([
                         });
                     });
                 });
-                
+
                 return deffered.promise;
             }
-            
+
             var checksum = 0;
             var checkres = true;
             async()
@@ -111,26 +111,26 @@ define([
                 }
             );
         });
-        
+
         item.elem.bind('mouseup', function () {
             item.elem.removeClass('deploy-title-item-pushed');
         });
-        
-        
-        
+
+
+
         item.elem.bind('mouseover', function () {
             item.elem.addClass('deploy-title-item-hover');
         });
-        
+
         item.elem.bind('mouseout', function () {
             item.elem.removeClass('deploy-title-item-hover');
             item.elem.removeClass('deploy-title-item-pushed');
             //item.elem.attr('title' , '');
             //item.elem.removeAttr('title');
         });
-        
-        
-        
+
+
+
         if (selected) {
             if (oldSelected) {
                 oldSelected.removeClass('deploy-title-item-selected');
@@ -139,9 +139,9 @@ define([
             item.elem.addClass('deploy-title-item-selected');
             oldSelected = item.elem;
         }
-        
+
     }
-    
+
     function cbGetProject(err, lists) {
         if (err) {
             console.log('failed to get project list.');
@@ -153,21 +153,21 @@ define([
             }
 
             var projectName = deploy.getProjectName();
-            
+
             lists.sort(function (a, b) {
                 if (a.name > b.name) {
                     return 1;
                 }
-                
+
                 if (a.name < b.name) {
                     return -1;
                 }
-                
+
                 return 0;
             });
-            
+
             var list;
-            
+
             for (var i = 0; i < lists.length; i++) {
                 list = lists[i];
                 if (list.isDirectory === true) {
@@ -182,7 +182,7 @@ define([
             }
         }
     }
-    
+
     function init() {
         titlePane = reg.byId('workspace-TitlePane');
         var workspaceName = deploy.getWorkspaceName();
@@ -196,13 +196,13 @@ define([
         elem.text(workspaceName);
         root.list('/' + workspaceName, cbGetProject);
     }
-    
-    
+
+
     var workspace = {
         onStart: function () {
             init();
         }
     };
-    
+
     return workspace;
 });

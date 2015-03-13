@@ -1,10 +1,10 @@
 {
-    "name": "help",
+    "name": "webida.ide.help",
     "description": "About",
     "version": "0.2",
-    "requirement": "workbench",
+    "requirement": "webida.common.workbench",
     "extensions": {
-        "workbench:menu": {
+        "webida.common.workbench:menu": {
             "location" : "/&Help/",
             "wholeItems" : {
                 "Help Contents" : {

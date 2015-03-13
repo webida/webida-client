@@ -1,18 +1,18 @@
 {
-    "name": "workspace",
+    "name": "webida.common.workspace",
     "description": "a plug-in to navigate workspace file system.",
     "version": "0.1.0",
-    "requirement": "workbench",
+    "requirement": "webida.common.workbench",
     "extensionPoints" : {
-        "workspace:menu" : "webida-lib/plugins/_extension-points/menu.json"
+        "webida.common.workspace:menu" : "webida-lib/plugins/_extension-points/menu.json"
     },
     "extensions" : {
-        "workbench:views" : {
+        "webida.common.workbench:views" : {
             "location": "left",
             "cellIndex" : 0
         },
 
-        "workbench:preference-page" : [
+        "webida.common.workbench:preference-page" : [
             {
                 "module": "webida-lib/plugins/workspace/preference-workspace",
                 "hierarchy": "workspace",

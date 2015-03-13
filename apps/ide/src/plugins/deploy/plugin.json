@@ -1,11 +1,11 @@
 {
-    "name": "deploy",
+    "name": "webida.ide.deploy",
     "description": "Deploy function",
     "version": "0.1.0",
-    "requirement": "workspace & project-configurator",
+    "requirement": "webida.common.workspace & webida.ide.project-configurator",
     "extensions": {
 
-        "workbench:menu" : {
+        "webida.common.workbench:menu" : {
             "location" : "/&Project/",
             "wholeItems" : {
                 "Deplo&y" : [ "cmnd",
@@ -23,7 +23,7 @@
             "getViableItems": "getViableItemsForWorkbench"
         },
 
-        "workspace:menu" : {
+        "webida.common.workspace:menu" : {
             "location" : "/",
             "wholeItems" : {
                 "Deplo&y" : [ "cmnd",

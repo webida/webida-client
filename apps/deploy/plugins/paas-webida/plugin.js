@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,14 +45,14 @@ define([
     var projectPath = null;
     var createButton = null;
     var noAppLabel = null;
-    
+
     var STR_HTTPS = 'https://';
     var STR_DOT = '.';
     var STR_ARCHIVE_PATH = '/.project/deploy.zip';
     var STR_API_CALL_FAIL = 'Failed to call Webida API.';
-    var CONTENT_NO_DEPLOYED_APP_INFORMATION = 
+    var CONTENT_NO_DEPLOYED_APP_INFORMATION =
         'This project has no deployed apps. Please click the \'Create New Deploy\' button.';
-    
+
     var CREATE_NEW_APP_ENTER_NAME_DOMAIN_TOASTR = 'Enter a name and a domain.';
     var EDIT_APP_SUCCESS_TOASTR = 'Successfully edited the app information.';
     var EDIT_APP_CANCEL_TOASTR = 'Canceled editing the app information.';
@@ -78,20 +78,20 @@ define([
     var CHECK_DOMAIN_GET_FAIL_TOOLTIP = 'Failed to receive a deploy domain.';
     var CHECK_NAME_NO_DOMAIN_TOOLTIP = 'Enter a deploy project domain postfix.';
     var SHOW_STATUS_ERROR = 'Unknown app status';
-    
+
     String.prototype.format = function () {
         var args = arguments;
         return this.replace(/\{(\d+)\}/g, function ($0, $1) {
             return args[$1] !== void 0 ? args[$1] : $0;
         });
     };
-    
+
     function isDuplicateDeployName(parent, name) {
         var oldName = $(parent).find('.table-title-name');
         if (name === $(oldName[0]).text()) {
             return false;
         }
-        
+
         var domNode = showAppPane.domNode;
         var names  = $(domNode).find('.table-title-name');
         for (var i = 0; i < names.length; i++) {
@@ -101,48 +101,48 @@ define([
         }
         return false;
     }
-    
+
     function checkName(parent, nameBox) {
         var inputVal = nameBox.value;
         if (!inputVal) {
             return CHECK_NAME_NO_NAME_TOOLTIP;
         }
-        
+
         var blankPattern = /[\s]/g;
         if (blankPattern.test(inputVal) === true) {
             return CHECK_NAME_CONTAIN_SPACE_TOOLTIP;
         }
-        
+
         if (nameBox.oldValue === inputVal) {
             return CHECK_AVAILABLE;
         }
-        
+
         if (isDuplicateDeployName(parent, inputVal) === true) {
             return CHECK_NAME_ALREADY_EXIST_TOOLTIP;
         }
-        
+
         return CHECK_AVAILABLE;
     }
-    
+
     function checkDomain(parent, domainBox, cb) {
         var domain = getDomain(parent);
         var ret = '';
-        
+
         if (!domain) {
             cb(CHECK_DOMAIN_GET_FAIL_TOOLTIP);
             return;
         }
-        
+
         if (!domainBox.value) {
             cb(CHECK_NAME_NO_DOMAIN_TOOLTIP);
             return;
         }
-        
+
         if (domainBox.value === domainBox.oldValue) {
             cb(CHECK_AVAILABLE);
             return;
         }
-        
+
         webida.app.isValidDomain(domain, function (err, result) {
             if (err) {
                 console.log('webida.app.isValidDomain : ' + err);
@@ -158,7 +158,7 @@ define([
             cb(ret);
         });
     }
-    
+
     function _removeProjectPath(list) {
         if (!list || list.length < 1) {
             return null;
@@ -226,7 +226,7 @@ define([
     function _writeObjectFromFile(path, selectiveObject, cb) {
         var fsMount = deploy.getMount();
         var jsonText = JSON.stringify(selectiveObject);
-        
+
         fsMount.writeFile(path, jsonText, function (err) {
             if (err) {
                 console.log(path + '/.project/deploy.json' + ' save fail' + 'fsMount.writeFile : ' + err);
@@ -237,11 +237,11 @@ define([
             }
         });
     }
-    
+
     function setProjectExcludeListToFile(selectiveObject, cb) {
         var fsMount = deploy.getMount();
         var path = getProjectRootPathFromFullPath(projectPath);
-        
+
         fsMount.exists(path + '/.project', function (err, exist) {
             if (err) {
                 console.log('fsMount.exists : ' + err);
@@ -267,13 +267,13 @@ define([
             }
         });
     }
-    
+
     function setExcludeList(appID, list, cb) {
         var obj = {
             'appID': appID,
             'excululist': list
         };
-        
+
         getProjectExcludeListFromFile(function (err, selectiveObject) {
             if (err) {
                 console.log('getProjectExcludeListFromFile : ' + err);
@@ -296,12 +296,12 @@ define([
                     }
                     selectiveObject.list.push(obj);
                 }
-                
+
                 setProjectExcludeListToFile(selectiveObject, cb);
             }
         });
     }
-    
+
     function _readObjectFromFile(path, cb) {
         var fsMount = deploy.getMount();
         var selectiveObject = null;
@@ -372,7 +372,7 @@ define([
             }
         });
     }
-    
+
     function deleteSelectiveSettingInfo(appID, cb) {
         getProjectExcludeListFromFile(function (err, selectiveObject) {
             if (err) {
@@ -411,7 +411,7 @@ define([
         }
         var domain  = $(parent).find('.table-content-table-inputbox');
         var appID = $(domain[0]).attr('appID');
-        
+
         return appID;
     }
 
@@ -469,7 +469,7 @@ define([
         addActionEvent(child, 'table-action-stop', stopApp);
         addActionEvent(child, 'table-action-save', changeInfoDone);
     }
-    
+
     function getDomain(parent) {
         var username = deploy.getUserName();
         var icon  = $(parent).find('.table-content-table-inputbox');
@@ -488,22 +488,22 @@ define([
             desc: icon[2].value,
             owner: username
         };
-        
+
         var checkStr = checkName(parent, icon[0]);
         if (checkStr !== CHECK_AVAILABLE) {
             toastr.warning(checkStr);
             return;
         }
-        
+
         checkDomain(parent, icon[1], function (result) {
             if (result !== CHECK_AVAILABLE) {
                 toastr.warning(result);
                 return;
             } else {
-                
+
                 webida.app.createApp(
                     appinfo.domain, appinfo.apptype, appinfo.name, appinfo.desc, function (err, appID) {
-                    
+
                     if (err) {
                         console.log('webida.app.createApp : ' + err);
                         toastr.error(STR_API_CALL_FAIL);
@@ -515,7 +515,7 @@ define([
                         icon  = $(parent).find('.table-content-table-inputbox');
                         $(icon[0]).attr('appID', appID);
                         var excludeList = parent.selectiveSetting;
-                        
+
                         deployApp(parent, excludeList, function (err) {
                             if (err) {
                                 console.log('deployApp : ' + err);
@@ -565,13 +565,13 @@ define([
             var ret = checkName(parent, inputBoxs[0]);
             if (ret) {
                 Tooltip.show(ret, inputBoxs[0]);
-            } 
+            }
         });
-        
+
         $(inputBoxs[0]).bind('focusout', function () {
             Tooltip.hide(inputBoxs[0]);
         });
-        
+
         $(inputBoxs[1]).bind('input', function () {
             checkDomain(parent, inputBoxs[1], function (ret) {
                 if (ret) {
@@ -579,11 +579,11 @@ define([
                 }
             });
         });
-        
+
         $(inputBoxs[1]).bind('focusout', function () {
             Tooltip.hide(inputBoxs[1]);
         });
-        
+
         icon = $(parent).find('.table-action-deploy');
         $(icon).addClass('table-action-deploy-disabled');
 
@@ -593,10 +593,10 @@ define([
 
         icon = $(parent).find('.table-title-newappcancel');
         $(icon).addClass('table-title-newappcancel-block');
-        
+
         icon = $(parent).find('.table-title-newsetting');
         $(icon).addClass('table-title-newsetting-block');
-        
+
         icon = $(parent).find('.table-action-newappsave');
         $(icon).addClass('deploy-block');
     }
@@ -621,7 +621,7 @@ define([
         });
 
         createButton.set('disabled', true);
-        
+
         toastr.info(CREATE_NEW_APP_ENTER_NAME_DOMAIN_TOASTR);
     }
 
@@ -631,7 +631,7 @@ define([
             onClick: createNewApp,
             style: 'position:absolute; right:5px; text-indent: 0px; top:8px'
         });
-        
+
         noAppLabel = new ContentPane({
             style: 'text-indent:20px; line-height:100%; background-color:#F5FAFF',
             content: CONTENT_NO_DEPLOYED_APP_INFORMATION
@@ -650,7 +650,7 @@ define([
             alert('Failed to save app information');
             return;
         }
-        
+
         webida.app.getAppInfo(appID, function (err, appInfo) {
             if (err) {
                 console.log('webida.app.getAppInfo : ' + err);
@@ -659,9 +659,9 @@ define([
                 showAppPane.removeChild(app);
             } else {
                 if (!appInfo.srcurl) {
-                    webida.app.setAppInfo(appID, appInfo.domain, appInfo.apptype, appInfo.name, appInfo.desc, srcUrl, 
+                    webida.app.setAppInfo(appID, appInfo.domain, appInfo.apptype, appInfo.name, appInfo.desc, srcUrl,
                                           function (err) {
-                        
+
                         if (err) {
                             console.log('webida.app.setAppInfo : ' + err);
                             toastr.error(STR_API_CALL_FAIL);
@@ -725,23 +725,23 @@ define([
             toastr.warning(checkStr);
             return;
         }
-        
+
         checkDomain(parent, icon[1], function (result) {
             if (result !== CHECK_AVAILABLE) {
                 toastr.warning(result);
                 return;
             } else {
                 var appID = getAppID(parent);
-                
+
                 var newDomainPostfix = icon[1].value;
                 var name = icon[0].value;
                 var desc = icon[2].value;
                 var type = 'html'; // FIXME
-                
+
                 icon  = $(parent).find('.table-content-table-inputbox-label');
                 var newDomain = icon.text() + newDomainPostfix;
                 var srcUrl = getSrcUrl();
-                
+
                 webida.app.setAppInfo(appID, newDomain, type, name, desc, srcUrl, function (err) {
                     if (err) {
                         console.log('webida.app.setAppInfo : ' + err);
@@ -778,23 +778,23 @@ define([
 
         $(inputBoxs).addClass('table-content-table-inputbox-edit');
         $(inputBoxs).removeAttr('readonly');
-        
+
         //$(icon).bind('input', function () {
         //    var saveButton = $(parent).find('.table-action-save');
         //    checkNameAndDomain(parent, saveButton);
         //});
-        
+
         $(inputBoxs[0]).bind('input', function () {
             var ret = checkName(parent, inputBoxs[0]);
             if (ret) {
                 Tooltip.show(ret, inputBoxs[0]);
-            } 
+            }
         });
-        
+
         $(inputBoxs[0]).bind('focusout', function () {
             Tooltip.hide(inputBoxs[0]);
         });
-        
+
         $(inputBoxs[1]).bind('input', function () {
             checkDomain(parent, inputBoxs[1], function (ret) {
                 if (ret) {
@@ -802,11 +802,11 @@ define([
                 }
             });
         });
-        
+
         $(inputBoxs[1]).bind('focusout', function () {
             Tooltip.hide(inputBoxs[1]);
         });
-        
+
         icon = $(parent).find('.table-action-deploy');
         $(icon).addClass('table-action-deploy-disabled');
 
@@ -822,7 +822,7 @@ define([
 
     function selectiveSetting(parent) {
         var appID = getAppID(parent);
-        
+
         getExcludeList(appID, function (err, excludeList) {
             if (err) {
                 console.log('getExcludeList : ' + err);
@@ -850,11 +850,11 @@ define([
             });
         });
     }
-    
+
     function selectiveSettingNewApp(parent) {
         var oldSettings = parent.selectiveSetting;
         var rootPath = getProjectRootPathFromFullPath(projectPath);
-        
+
         var dlg = new FileDialog({
             mount : deploy.getMount(),
             root: rootPath,
@@ -862,7 +862,7 @@ define([
             title: SELECTIVE_SETTING_TITLE_DIALOG,
             dirOnly: false
         });
-        
+
         dlg.open(function (selected) {
             if (selected) {
                 parent.selectiveSetting = selected;
@@ -872,7 +872,7 @@ define([
             }
         });
     }
-    
+
     function deleteApp(parent) {
         PopupDialog.yesno({
             title: DELETE_APP_TITLE_DIALOG,
@@ -896,31 +896,31 @@ define([
                     }
                     toastr.success(DELETE_APP_SUCCESS_TOASTR);
                 }
-                
+
             });
         }, function () {
             toastr.info(DELETE_APP_CANCEL_TOASTR);
             return;
         });
     }
-    
+
     function setProgressInfo(parent, bShow, label, value, bIndeterminate) {
         var icon = $(parent).find('.table-action-progress');
         $(icon).addClass('deploy-block');
         var progress = reg.byId(icon[0].id);
-        
+
         if (label) {
             progress.set('label', label);
         }
-        
+
         if (bIndeterminate  === true || bIndeterminate === false) {
             progress.set('indeterminate', bIndeterminate);
         }
-        
+
         if (value) {
             progress.set('value', value);
         }
-        
+
         if (bShow === true) {
             $(icon).addClass('deploy-block');
         } else {
@@ -945,7 +945,7 @@ define([
                         path += '/www';
                         console.log('MobileNature', path);
                     }
-                    
+
                     webida.app.deployApp(appID, path, 'url', function (err) {
                         if (err) {
                             console.log('webida.app.deployApp : ' + err);
@@ -989,7 +989,7 @@ define([
 
     function deployApp(parent, excludeList, cb) {
         var appID = getAppID(parent);
-        
+
         if (!excludeList) {
             getExcludeList(appID, function (err, list) {
                 if (list) {
@@ -1056,7 +1056,7 @@ define([
     function addAppInfoText(parent, appInfo) {
         var titleName = $(parent).find('.table-title-name');
         titleName.html(appInfo.name);
-        
+
         var icon = $(parent).find('.table-content-table-inputbox');
         var domainprefixLabel = $(parent).find('.table-content-table-inputbox-label');
 
@@ -1134,7 +1134,7 @@ define([
                     createButton.set('disabled', false);
                 }
             }
-            
+
             var findApp = null;
             var children = showAppPane.getChildren();
             if (children) {
@@ -1163,14 +1163,14 @@ define([
             }
         }
     }
-    
+
     function existUnsaved() {
         if (createButton) {
             if (createButton.get('disabled') === true) {
                 return true;
             }
         }
-        
+
         if (showAppPane) {
             var domNode = showAppPane.domNode;
             var editableInputbox  = $(domNode).find('.table-content-table-inputbox-edit');
@@ -1178,7 +1178,7 @@ define([
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -1198,7 +1198,7 @@ define([
                 cb(true);
             }
         },
-        // for workbench:views extension point
+        // for webida.deploy.workbench:views extension point
         account: function () {
             return false;
         },

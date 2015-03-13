@@ -1420,7 +1420,7 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
     }
 
     var workspaceView = {
-        // for workbench:views extension point
+        // for webida.common.workbench:views extension point
         getView: function () {
             if (!view) {
                 view = new View('workspaceView', 'Workspace');
@@ -1429,7 +1429,7 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
             return view;
         },
 
-        // for workbench:views extension point
+        // for webida.common.workbench:views extension point
         onViewAppended: function () {
             function _loadCss(url) {
                 var link = document.createElement('link');

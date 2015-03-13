@@ -1,15 +1,15 @@
 {
-    "name": "paas",
+    "name": "webida.deploy.paas",
     "description": "paas",
     "version": "0.0.1",
     "augments": [],
     "extensionPoints" : {
-        "paas:tab" : [
+        "webida.deploy.paas:tab" : [
             {"name" : "getTab", "type" : "function",
               "desc": "Return tab widgets, parameter - callback function"}
         ]
     },
     "extensions": {
-        "workbench:onstart" : {}
-	}
+        "webida.deploy.workbench:onstart" : {}
+    }
 }

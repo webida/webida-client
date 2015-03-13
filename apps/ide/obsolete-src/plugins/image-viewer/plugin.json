@@ -6,7 +6,7 @@
         "editors"
     ],
     "extensions" : {
-        "editors:editor" : {
+        "webida.common.editors:editor" : {
             "name" : "Image Viewer",
             "fileValueRequired" : false,
             "fileExtensions" : [
@@ -17,5 +17,5 @@
                 "gif"
             ]
         }
-	}
+    }
 }
