@@ -1,13 +1,13 @@
 {
-    "name": "paas-template",
+    "name": "webida.deploy.paas-template",
     "description": "paas-template",
     "version": "0.0.1",
     "augments": [],
     "extensionPoints" : {
-        "paas-template:views" : [
-            {"name" : "name", "type" : "String", 
+        "webida.deploy.paas-template:views" : [
+            {"name" : "name", "type" : "String",
              "desc" : "paas name"},
-            {"name" : "logo", "type" : "String", 
+            {"name" : "logo", "type" : "String",
              "desc" : "paas logo"},
             {"name" : "account", "type" : "function",
               "desc": "account"},
@@ -20,6 +20,6 @@
         ]
     },
     "extensions": {
-        "paas:tab" : {}
-	}
+        "webida.deploy.paas:tab" : {}
+    }
 }

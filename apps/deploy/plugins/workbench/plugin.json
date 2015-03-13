@@ -1,10 +1,10 @@
 {
-    "name": "workbench",
+    "name": "webida.deploy.workbench",
     "description": "Main UI manager of Deploy App",
     "version": "0.0.1",
     "augments": [],
     "extensionPoints" : {
-        "workbench:onstart" : [
+        "webida.deploy.workbench:onstart" : [
             {"name" : "onStart", "type" : "function",
               "desc": "paas"}
         ]

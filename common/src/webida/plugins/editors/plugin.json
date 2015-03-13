@@ -1,10 +1,10 @@
 {
-    "name": "editors",
+    "name": "webida.common.editors",
     "description": "Editor Manager",
     "version": "0.1.0",
-    "requirement": "workbench",
+    "requirement": "webida.common.workbench",
     "extensionPoints" : {
-        "editors:editor" : [
+        "webida.common.editors:editor" : [
             { "name" : "name", "type" : "string" },
             { "name" : "fileValueRequired", "type" : "bool" },
             { "name" : "handledFileExt", "type" : "array" },
@@ -12,22 +12,22 @@
             { "name" : "unhandledFileExt", "type" : "array" },
             { "name" : "unhandledMimeTypes", "type" : "array" }
         ],
-        "editors:menu" : "webida-lib/plugins/_extension-points/menu.json"
+        "webida.common.editors:menu" : "webida-lib/plugins/_extension-points/menu.json"
     },
     "extensions" : {
 
-        "workbench:panels" : {
+        "webida.common.workbench:panels" : {
             "module": "webida-lib/plugins/editors/workbench-panels",
             "location": "center"
         },
 
-        "workbench:shortcutList" : {
+        "webida.common.workbench:shortcutList" : {
             "module": "webida-lib/plugins/editors/workbench-shortcutList",
             "getEnclosingDOMElem": "getEnclosingDOMElem",
             "getShortcuts": "getShortcuts"
         },
 
-        "workbench:menu" : [
+        "webida.common.workbench:menu" : [
             {
                 "module": "webida-lib/plugins/editors/viable-menu-items",
                 "location" : "/&File/",
@@ -151,7 +151,7 @@
 
         ],
 
-        "editors:menu" : {
+        "webida.common.editors:menu" : {
             "module": "webida-lib/plugins/editors/viable-menu-items",
             "location" : "/",
             "wholeItems" : {

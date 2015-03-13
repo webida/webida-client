@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,7 @@ define(['plugin-manager', // pm
     'dojo/domReady!'
 ], function (pm, parser, reg, ContentPane) {
     'use strict';
-    
+
     function account(tab, fAccount) {
         var pane = new ContentPane({
             style: 'width:100%; padding:0px'
@@ -30,7 +30,7 @@ define(['plugin-manager', // pm
             tab.addChild(pane);
         }
     }
-    
+
     function showApps(tab, fShowApps) {
         var pane = new ContentPane({
             style: 'width:100%; background-color: white; padding:0px;' +
@@ -52,19 +52,19 @@ define(['plugin-manager', // pm
         fCreate(pane);
         tab.addChild(pane);
     }
-    
+
     /*function changeProject(projectPath) {
-        var exts = pm.getExtensions('paas-template:views');
+        var exts = pm.getExtensions('webida.deploy.paas-template:views');
             exts.forEach(function (ext) {
                 require([ext.module], function (module) {
                     module[ext.changeProject](projectPath);
                 });
-            });   
+            });
     }*/
 
     var paas = {
         init: function (cb) {
-            var exts = pm.getExtensions('paas-template:views');
+            var exts = pm.getExtensions('webida.deploy.paas-template:views');
             exts.forEach(function (ext) {
                 require([ext.module], function (module) {
                     var tab = new ContentPane({
@@ -76,12 +76,12 @@ define(['plugin-manager', // pm
                         cb(tab);
 
                         account(tab, module[ext.account]);
-                        
+
                         createApp(tab, module[ext.createApp]);
 
                         showApps(tab, module[ext.showApps]);
-                        
-                       
+
+
                     }
                 });
             });
@@ -91,7 +91,7 @@ define(['plugin-manager', // pm
 
 
     var paastemplate = {
-        // for workbench:views extension point
+        // for webida.deploy.workbench:views extension point
         getTab: function (cb) {
             paas.init(cb);
         }/*,

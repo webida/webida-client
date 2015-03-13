@@ -1,12 +1,12 @@
 {
-    "name": "project-wizard",
+    "name": "webida.ide.project-wizard",
     "description": "Project Wizard (Create Project in this Workspace)",
     "version": "0.1.1",
     "auther": "Hyun-Goo Kang",
-    "requirement": "workspace",
+    "requirement": "webida.common.workspace",
     "extensions": {
 
-        "workbench:menu" : [
+        "webida.common.workbench:menu" : [
             {
                 "location" : "/&Project/",
                 "wholeItems" : {
@@ -56,7 +56,7 @@
             }
         ],
 
-        "workspace:menu" : [
+        "webida.common.workspace:menu" : [
             {
                 "location" : "/New/",
                 "wholeItems" : {
@@ -69,13 +69,13 @@
             }
         ],
 
-        "project-configurator:run-configuration-type" : [
+        "webida.ide.project-configurator:run-configuration-type" : [
             {
                 "id" : "org.webida.run.mobile",
                 "name" : "Run As Mobile Application"
             }
         ],
-        "project-configurator:run-configuration" : [
+        "webida.ide.project-configurator:run-configuration" : [
             {
                 "module" : "plugins/project-wizard/run-commands",
                 "id" : "org.webida.run.mobile.device.delegate",

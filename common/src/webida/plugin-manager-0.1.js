@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -69,7 +69,7 @@ function (webida, _, URI, all, request, topic) {
                     throw new Error();
                 }
 
-                var matches = manifest.name.match(/(\w|-)+/g);
+                var matches = manifest.name.match(/(\w|-|\.)+/g);
                 if (matches === null || matches.length > 1) {
                     alert('Error: The name property in plugin.json in ' + locs[i] +
                           ' must consist of alphanumeric characters, underscores, and dashes, ' +
@@ -132,8 +132,8 @@ function (webida, _, URI, all, request, topic) {
                 }
                 var plugin = wholePlugins[next];
                 if (plugin.manifest.requirement) {
-                    plugin.manifest.requirement.forEach(function (assumed) {
-                        checkCycleInRequirement(assumed, seed);
+                    plugin.manifest.requirement.forEach(function (required) {
+                        checkCycleInRequirement(required, seed);
                     });
                 }
             };
@@ -144,7 +144,7 @@ function (webida, _, URI, all, request, topic) {
                             checkCycleInRequirement(name, manifest.name);
                         } else {
                             alert('Error: Plugin ' + manifest.name +
-                                  ' assumes an unknown plugin ' + name + '. Aborting');
+                                  ' requires an unknown plugin ' + name + '. Aborting');
                             throw new Error();
                         }
                     });
@@ -162,13 +162,13 @@ function (webida, _, URI, all, request, topic) {
             });
 
             // update inactive flag of plugins -
-            //   inactive a plugin whose assumed are all inactive.
+            //   inactive a plugin whose required are all inactive.
             var changed;
             var updateInactiveFlag = function (manifest) {
                 var plugin = wholePlugins[manifest.name];
                 if (!plugin.inactive && manifest.requirement) {
-                    var toInactivate = manifest.requirement.every(function (assumed) {
-                        return assumed.some(function (a) {
+                    var toInactivate = manifest.requirement.every(function (required) {
+                        return required.some(function (a) {
                             return wholePlugins[a].inactive;
                         });
                     });

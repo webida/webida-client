@@ -2,10 +2,10 @@
     "name": "codeeditor",
     "description": "Code editor",
     "version": "0.1.0",
-    "requirement": "editors",
+    "requirement": "webida.common.editors",
     "extensions" : {
 
-        "editors:editor" : {
+        "webida.common.editors:editor" : {
             "name" : "Code editor",
             "fileValueRequired" : true,
             "handledFileExt" : [ ".*" ],
@@ -14,7 +14,7 @@
             "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
         },
 
-        "workbench:preference-page" : [
+        "webida.common.workbench:preference-page" : [
             {
                 "module": "plugins/codeeditor/preference-appearance",
                 "hierarchy": "editor",

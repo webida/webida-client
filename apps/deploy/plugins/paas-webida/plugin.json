@@ -1,12 +1,12 @@
 {
-    "name": "paas-webida",
+    "name": "webida.deploy.paas-webida",
     "description": "webida",
     "version": "0.0.1",
     "augments": [],
     "extensions": {
-        "paas-template:views" : 
+        "webida.deploy.paas-template:views" :
             {"name" : "webida", "logo" : "styles/webida-images/deploy_title_webida.png"}
         ,
-        "workspace:changeproject" : {}
-	}
+        "webida.deploy.workspace:changeproject" : {}
+    }
 }

@@ -1,15 +1,15 @@
 {
-    "name": "project-configurator",
+    "name": "webida.ide.project-configurator",
     "description": "Project configurator, user can project setting",
     "version": "0.1.0",
-    "requirement": "workspace",
+    "requirement": "webida.common.workspace",
 
     "extensionPoints" : {
-        "project-configurator:run-configuration-type" : [
+        "webida.ide.project-configurator:run-configuration-type" : [
             { "name": "id", "type": "string" },
             { "name": "name", "type": "string" }
         ],
-        "project-configurator:run-configuration" : [
+        "webida.ide.project-configurator:run-configuration" : [
             { "name": "id", "type": "string" },
             { "name": "name", "type": "string" },
             { "name": "type", "type": "string" },
@@ -18,7 +18,7 @@
     },
 
     "extensions": {
-        "workbench:menu" : {
+        "webida.common.workbench:menu" : {
             "location" : "/&Project/",
             "wholeItems" : {
 
@@ -36,7 +36,7 @@
             "getViableItems" : "getViableItemsForWorkbench"
         },
 
-        "workspace:menu" : {
+        "webida.common.workspace:menu" : {
             "location" : "/",
             "wholeItems" : {
                 "&Run" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+R" }, "desc" : "Run current project" } } ],
