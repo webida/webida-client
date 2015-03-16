@@ -32,7 +32,6 @@ define(['webida-lib/util/browserInfo',
        function (brInfo, loadingScreen, webida, msgAgent, _, toastr, pm,
                   FSCache, URI, PopupDialog, topic, lang) {
     'use strict';
-    /* global webidaHost: true */
     /* global timedLogger: true */
 
     var exports = {};
@@ -500,10 +499,9 @@ define(['webida-lib/util/browserInfo',
                         topicusernotify: null
                     };
 
-                    var host = window.location.protocol + '//' +  webida.connServer; // + '//conn.' + webidaHost;
                     try {
                         msgAgent.init(data.uid, webida.auth.getTokenObj().data,
-                                      host, callbacks, loginCB);
+                            webida.conf.connServer, callbacks, loginCB);
                     } catch (e) {
                         console.error('Failed to initialize message agent', e);
                     }
