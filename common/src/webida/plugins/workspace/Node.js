@@ -643,6 +643,8 @@ define(['require',
         var dirsSkipped, dirsMerged, dirsRenamed, dirsNoConflict;
         var nodeToSelectSet = false;
 
+        var deferred = new Deferred();
+        
         function printResults(completed) {
             function printInner(type, skipped, overwritten, merged, renamed, noConflict) {
                 topic.publish('#REQUEST.log', '	' + type + ' created' +
@@ -670,6 +672,8 @@ define(['require',
             printInner('files', filesSkipped, filesOverwritten, 0, filesRenamed, filesNoConflict);
             topic.publish('#REQUEST.log', '	--------------------------------------------------');
             topic.publish('#REQUEST.log', '');
+            
+            deferred.resolve(completed);
         }
 
         function produceFileName(file, target) {
@@ -1069,8 +1073,13 @@ define(['require',
                 uploadEntries(this, items, printResults.bind(null, true));
             } else {
                 toastr.error('Cannot upload something that is neither a directory nor a file');
+                deferred.resolve(false);
             }
-        }
+        } else { 
+            deferred.resolve(false);
+        } 
+        
+        return deferred;
     };
 
 
