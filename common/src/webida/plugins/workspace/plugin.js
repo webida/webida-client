@@ -1028,6 +1028,11 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
         }
     }
 
+    function upload(path, files) {
+        var targetNode = getNode(path);
+        return targetNode.upload(files);
+    }
+    
     function initializeSyncEditorFocus() {
         topic.subscribe('editors.selected', function (path) {
             if (syncingWithEditor) {
@@ -1487,7 +1492,8 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
 
         selectNode: selectNode,
 
-        expandAncestors: expandAncestors
+        expandAncestors: expandAncestors, 
+        upload: upload
     };
 
     timedLogger.log('initialized workspace plugin\'s module', time);
