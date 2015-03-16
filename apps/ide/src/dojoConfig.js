@@ -17,22 +17,21 @@
 var webidaHost = decodeURIComponent(
     document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
 );
+// TODO sholud find a neat way
+var connHostUrl = decodeURIComponent(
+    document.cookie.replace(/(?:(?:^|.*;\s*)webida\.connHostUrl\s*\=\s*([^;]*).*$)|^.*$/, '$1')
+);
 
 var dojoConfig = {
     async: true,
     baseUrl: '.',
     parseOnLoad: false,
     packages: [
-
-
-
-        { name: 'xstyle', location: '//library3.' + webidaHost + '/xstyle' },
-        { name: 'put-selector', location: '//library3.' + webidaHost + '/put-selector' }
+        { name: 'xstyle', location: '../../../external/src/xstyle' },
+        { name: 'put-selector', location: '../../../external/put-selector' }
     ],
-    locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : "en-us",
+    locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {
-        // 'webida-lib': '//library.' + webidaHost + '/webida',
-        // 'other-lib': '//library3.' + webidaHost,
         'webida-lib': '../../../common/src/webida',
         'other-lib': '../../../external/src',
         'lib' : 'lib',
