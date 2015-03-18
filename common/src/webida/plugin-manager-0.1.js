@@ -132,7 +132,7 @@ function (webida, _, URI, all, request, topic) {
                 }
                 var plugin = wholePlugins[next];
                 if (plugin.manifest.requirement) {
-                    plugin.manifest.requirement.forEach(function (required) {
+                    _.flatten(plugin.manifest.requirement).forEach(function (required) {
                         checkCycleInRequirement(required, seed);
                     });
                 }
