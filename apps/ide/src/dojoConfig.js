@@ -28,7 +28,7 @@ var dojoConfig = {
     parseOnLoad: false,
     packages: [
         { name: 'xstyle', location: '../../../external/src/xstyle' },
-        { name: 'put-selector', location: '../../../external/put-selector' }
+        { name: 'put-selector', location: '../../../external/src/put-selector' }
     ],
     locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {
