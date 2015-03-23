@@ -61,6 +61,10 @@ define([], function () {
                 name: 'Use soft tabs',
                 'default': false
             });
+            fieldCreator.addField('codeeditor:indentOnPaste', 'checkbox', {
+                name: 'Indent lines on paste',
+                'default': false
+            });
         }
     };
 });

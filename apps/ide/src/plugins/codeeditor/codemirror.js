@@ -492,6 +492,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         setOption('tabSize', this.options.tabSize);
         setOption('indentUnit', this.options.indentUnit);
         setOption('indentWithTabs', this.options.indentWithTabs);
+        setOption('indentOnPaste', this.options.indentOnPaste);
         setOption('extraKeys', this.options.extraKeys);
         setOption('lineWrapping', this.options.lineWrapping);
 
@@ -528,9 +529,9 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         });
 
-        // indent on paste
+        // conditionally indent on paste
         self.editor.on('change', function (cm, e) {
-            if (e.origin === 'paste' && e.text.length > 1) {
+            if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
                 for (var i = 0; i <= e.text.length; i++) {
                     cm.indentLine(e.from.line + i);
                 }
@@ -1331,6 +1332,14 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             this.options.indentUnit = indentUnit;
             if (this.editor) {
                 this.editor.setOption('indentUnit', indentUnit);
+            }
+        }
+    };
+    CodeEditor.prototype.setIndentOnPaste = function (indentOnPaste) {
+        if (indentOnPaste !== undefined) {
+            this.options.indentOnPaste = indentOnPaste;
+            if (this.editor) {
+                this.editor.setOption('indentOnPaste', indentOnPaste);
             }
         }
     };
