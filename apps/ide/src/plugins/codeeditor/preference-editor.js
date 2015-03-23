@@ -63,7 +63,7 @@ define([], function () {
             });
             fieldCreator.addField('codeeditor:indentOnPaste', 'checkbox', {
                 name: 'Indent lines on paste',
-                'default': false
+                'default': true
             });
         }
     };
