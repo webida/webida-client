@@ -174,6 +174,7 @@ function (ide, _) {
             instance.setIndentWithTabs(config.indentWithTabs);
             instance.setIndentUnit(config.indentUnit);
             instance.setTabSize(config.tabSize);
+            instance.setIndentOnPaste(config.indentOnPaste);
             instance.setTrimTrailingWhitespaces(config.trimTrailingWhitespaces);
             instance.setInsertFinalNewLine(config.insertFinalNewLine);
         }
