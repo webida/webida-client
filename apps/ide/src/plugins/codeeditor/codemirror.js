@@ -189,7 +189,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
                 return undefined;
             }
         }
-        if (cm.__instance.useSoftTabs) {
+        if (!cm.__instance.options.indentWithTabs) {
             codemirror.commands.insertSoftTab(cm);
         } else {
             return codemirror.Pass;
@@ -1308,9 +1308,6 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         }
     };
 
-    CodeEditor.prototype.setUseSoftTabs = function (softTabs) {
-        this.useSoftTabs = softTabs;
-    };
     CodeEditor.prototype.setTabSize = function (tabSize) {
         if (tabSize !== undefined) {
             this.options.tabSize = tabSize;

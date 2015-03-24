@@ -57,10 +57,6 @@ define([], function () {
                 name: 'Use indents with tabs',
                 'default': false
             });
-            fieldCreator.addField('codeeditor:softtabs', 'checkbox', {
-                name: 'Use soft tabs',
-                'default': false
-            });
             fieldCreator.addField('codeeditor:indentOnPaste', 'checkbox', {
                 name: 'Indent lines on paste',
                 'default': true
