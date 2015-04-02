@@ -33,6 +33,7 @@ define(['require',
     './lib/jsdifflib/diffview',
     './lib/jsdifflib/difflib',
     'webida-lib/plugins/workbench/plugin',
+    'webida-lib/util/arrays/BubblingArray', 
     'other-lib/toastr/toastr',
     'popup-dialog',
     'dijit/registry',
@@ -70,6 +71,7 @@ define(['require',
               diffview,
               difflib,
               workbench,
+              BubblingArray, 
               toastr,
               PopupDialog,
               registry,
@@ -86,6 +88,26 @@ define(['require',
     'use strict';
 
     var fsCache = ide.getFSCache();   // ide.getMount();
+    var globalStatus = ide.registerStatusContributorAndGetLastStatus('git-commands', function () { 
+        return globalStatus;
+    }) || { 
+        pushHistory: { }
+    };
+    Object.keys(globalStatus).forEach(function (kind) { 
+        switch (kind) { 
+            case 'pushHistory': 
+                Object.keys(globalStatus.pushHistory).forEach(function (repoPath) { 
+                    var history = globalStatus.pushHistory[repoPath];
+                    history.repos = new BubblingArray().importFromPlainArray(history.repos);
+                    history.dests = new BubblingArray().importFromPlainArray(history.dests);
+                });
+                break;
+            default: 
+                throw new Error('assertion fail: unreachable'); 
+                
+        }
+    });
+        
     var HELP_KEY_SETTING = 'Verify your \'Public SSH Key\' setting in Development Center.';
     var COMMIT_TEMPLATE_PATH = '/.gitmessage';
 
@@ -1367,14 +1389,15 @@ define(['require',
             });
             pushDialog.setContentArea(pushView);
 
-            var remoteBranchSelect = registry.byId('GitPushRemoteBranchSelect');
+            var remoteRepoSelect = registry.byId('GitPushRemoteRepoSelect');
             var pushDestInput = registry.byId('GitPushDestInput');
             var pushButton = registry.byId('GitPushBtn');
             var tagChkBtn = registry.byId('GitPushTagsChk');
 
             function pushToRemoteEvent(path) {
-                var selectRepo = remoteBranchSelect.get('value');
+                var selectRepo = remoteRepoSelect.get('value');
                 var toBranch = pushDestInput.get('value');
+                
                 var jobId = workbench.addJob('git push : ' + GIT_DIR, 'Processing...');
                 var cmd = ['push'];
 
@@ -1387,6 +1410,10 @@ define(['require',
                 var uptodate = false;
 
                 if (selectRepo !== undefined && toBranch !== undefined) {
+                    var history = globalStatus.pushHistory[GIT_DIR];
+                    history.repos.put(selectRepo);
+                    history.dests.put(toBranch);
+                    
                     git.exec(path, cmd, function (err, stdout, stderr) {
                         if (err) {
                             toastr.error('For more details, refer to the Git view.', 'Git Push Error');
@@ -1547,25 +1574,40 @@ define(['require',
                         if (err) {
                             next(err);
                         } else {
-                            var localBranch = git.parseBranch(data)
+                             
+                            var history = globalStatus.pushHistory[GIT_DIR];
+                            if (!history) {
+                                history = globalStatus.pushHistory[GIT_DIR] = {
+                                    repos: new BubblingArray(),
+                                    dests: new BubblingArray()
+                                };
+                            }
+                             
+                            var localBranches = git.parseBranch(data)
                             .filter(function (branch) {
                                 var m = branch.name.match(/remotes\//);
-                                if (!m && branch.name.length) {
-                                    return branch;
-                                }
+                                return (!m && branch.name.length);
                             }).map(function (data) {
-                                data.name = 'refs/heads/' + data.name;
-                                return data;
+                                return 'refs/heads/' + data.name;
+                            });
+                           
+                            var branches = new BubblingArray().importFromPlainArray(localBranches);
+                            for (var i = history.dests.length - 1; i > -1; i--) { 
+                                branches.put(history.dests[i]);
+                            } 
+                            branches = branches.map(function (br) { 
+                                return { name: br };
                             });
 
                             pushDestInput.set({
-                                store: new Observable(new Memory({ data: localBranch })),
+                                store: new Observable(new Memory({ data: branches })),
                                 searchAttr: 'name',
                                 placeHolder: 'Select or enter a local branch',
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
-                                searchDelay: 500
+                                searchDelay: 500, 
+                                value: branches[0].name
                             });
 
                             next();
@@ -1578,16 +1620,27 @@ define(['require',
                         if (err) {
                             next(err);
                         } else {
-                            var remote = _.compact(remoteReuslt.split('\n')).map(function (line) {
+                            var history = globalStatus.pushHistory[GIT_DIR];
+                            var remotes = _.compact(remoteReuslt.split('\n')).map(function (line) {
+                                return line.trim();
+                            })
+                            remotes = new BubblingArray().importFromPlainArray(remotes);
+                            for (var i = history.repos.length - 1; i >= 0; i--) { 
+                                if (remotes.indexOf(history.repos[i]) >= 0) { 
+                                    remotes.put(history.repos[i]);
+                                }
+                            } 
+                            var value = remotes[0] || ''; 
+                            remotes = remotes.map(function (remote) {
                                 return {
-                                    label: line,
-                                    value: line.trim()
+                                    label: remote, 
+                                    value: remote
                                 };
                             });
 
-                            remoteBranchSelect.set({
-                                options: remote,
-                                value: 'origin'
+                            remoteRepoSelect.set({
+                                options: remotes,
+                                value: value
                             });
 
                             next();
@@ -1600,13 +1653,6 @@ define(['require',
                 } else {
                     pushDialog.show();
                 }
-            });
-
-            dojo.connect(remoteBranchSelect, 'onChange', function (repo) {
-                var curBranch = $('#GitPushBranchInfo').text();
-                var local = 'refs/heads/' + curBranch;
-
-                pushDestInput.set('value', local);
             });
 
             dojo.connect(pushDestInput, 'onKeyUp', function (event) {
