@@ -360,6 +360,15 @@ define(['other-lib/underscore/lodash.min',
                 instance.markClean();
             }
         },
+        
+        isClean: function (file) {
+            var instance = instances[file.__elemId];
+            if (instance) {
+                return instance.isClean();
+            } else {
+                return true;
+            }
+        },
 
         setMode: setMode
     };
