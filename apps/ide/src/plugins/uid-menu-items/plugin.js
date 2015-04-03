@@ -16,7 +16,6 @@
 
 define(['webida-lib/webida-0.3', 'other-lib/toastr/toastr'], function (webida, toastr) {
     'use strict';
-    /* global webidaHost: true */
 
     function openDashboard() {
         location.href = '/apps/dashboard/';

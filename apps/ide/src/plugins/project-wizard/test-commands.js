@@ -186,7 +186,7 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv, projectConfigur
 
             Clipboard.destroy();
             // init ZeroClipboard
-            new Clipboard('.js-zeroclipboard', url);
+            new Clipboard('.js-zeroclipboard', url); //jshint ignore:line
 
             var cbResolutions = self.$resolutions;
             cbResolutions.multiselect('setOptions', {
@@ -232,11 +232,13 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv, projectConfigur
         }
 
         require(['plugins/project-wizard/lib/frames'], function (Frames) {
+            /* jshint -W031 */
             new Frames({
                 'url': url,
                 target: '#testFrames',
                 frames: selectedFrames
             });
+             /* jshint +W031 */
         });
     }
 

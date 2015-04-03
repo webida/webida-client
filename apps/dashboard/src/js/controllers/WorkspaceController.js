@@ -62,8 +62,8 @@ define([
 
                 _.forEach(list, function (ws) {
                     var id = _.uniqueId();
-                    var birth = ws.birth ? moment(ws.birth).fromNow() : '';
-                    var desc = ws.desc ? ws.desc : '';
+                    //var birth = ws.birth ? moment(ws.birth).fromNow() : '';
+                    //var desc = ws.desc ? ws.desc : '';
 
                     /* jshint maxlen:200 */
                     var template =
@@ -172,7 +172,8 @@ define([
                                     e.stopPropagation();
                                     e.preventDefault();
 
-                                    var projPath = '/' /* FIXME WorkspaceManager.WORKSPACE_PATH */ + ws.name + '/' + proj.name;
+                                    var projPath = '/' /* FIXME WorkspaceManager.WORKSPACE_PATH */ + 
+                                        ws.name + '/' + proj.name;
 
                                     _this.runProject(proj, projPath);
                                 });
@@ -363,7 +364,7 @@ define([
 
         launchIDE: function (path) {
             // webida.app.launchApp('devenv', true, '?workspace=' + path);
-						window.open("../ide/src/?workspace=" + path);
+            window.open('../ide/src/?workspace=' + path);
         },
 
         runProject: function (proj, projPath) {

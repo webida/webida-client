@@ -52,7 +52,7 @@ function send(data, c) {
     postMessage(data);
 }
 
-function initServers(webidaHost/*, webidaLibPath, otherLibPath*/) {
+function initServers(/*webidaHost, webidaLibPath, otherLibPath*/) {
     if (servers) {
         consoleLike.error('unexpected: servers are already set');
         return;

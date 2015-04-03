@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* exported dojoConfig */
+/* exported dojoConfig, webidaHost */
 
 var webidaHost =
     decodeURIComponent(document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1'));

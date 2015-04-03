@@ -43,7 +43,7 @@ define([
             
             ApplicationManager.loadMyApps().then(function (list) {
                 loading.remove();
-                var host = ApplicationManager.getDeployHost();
+                // var host = ApplicationManager.getDeployHost(); 
                 if (!list || list.length === 0) {
                     var noapp = $('<div class="row info">There are no apps.</div>');
                     body.append(noapp);
@@ -55,7 +55,8 @@ define([
                     //var d = Q.defer();
                     //var id = _.uniqueId();
                     var desc = deploy.desc ? deploy.desc : '';
-                    var url = ApplicationManager.getDeployedAppUrl(deploy.domain);//'https://' + deploy.domain + '.' + host;
+                    //'https://' + deploy.domain + '.' + host;
+                    var url = ApplicationManager.getDeployedAppUrl(deploy.domain);
                     var ws = '';
                     var pj = '';
                      

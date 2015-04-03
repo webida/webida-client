@@ -31,7 +31,7 @@ define([
     var isLoading = false;
     var fsid;
 
-    /* global WS_INFO_PATH, WS_PROFILE_PATH: true */
+    /* global WS_INFO_PATH */
     var WorkspaceManager = function () {
         this.loadWorkspaces();
     };
@@ -49,24 +49,24 @@ define([
                 async.parallel({
                     workspaceList: _this.getWorkspaces,
                     appList: webida.app.getMyAppInfo
-                }, function(err, results){
+                }, function (err, results) {
                     isLoading = false;
-                    if(err){
+                    if (err) {
                         console.log('Workspaces Load error: ', err);
                         defer.reject(err);
                     } else {
                         isLoaded = true;
                         // Load all project list
-                        async.every(results.workspaceList, function(workspace, next){
-                            _this.getProjects(WORKSPACE_PATH + workspace.name, results.appList).then(function(projects){
+                        async.every(results.workspaceList, function (workspace, next) {
+                            _this.getProjects(WORKSPACE_PATH + workspace.name, results.appList).then(function (projects) { // jshint ignore:line
                                 workspace.projects = projects;
                                 next(true);
-                            }).fail(function(err){
+                            }).fail(function (err) {
                                 console.log('Projects load error: ', err);
                                 next(false);
                             });
-                        }, function(result){
-                            if(result) {
+                        }, function (result) {
+                            if (result) {
                                 workspaceList = results.workspaceList;
                                 defer.resolve(workspaceList);
                             } else {
@@ -84,7 +84,7 @@ define([
 
         getWorkspaces: function (callback/*doReload*/) {
             FS.list(WORKSPACE_PATH, function (err, data) {
-                if(err){
+                if (err) {
                     callback(err);
                 } else {
                     var workspaces = _.chain(data).filter(function (file) {
@@ -93,7 +93,7 @@ define([
                             return true;
                         }
                     }).value();
-                    workspaces.sort(function(a,b){
+                    workspaces.sort(function (a, b) {
                         return (a.name > b.name) ? 1 : -1;
                     });
                     callback(null, workspaces);
@@ -121,7 +121,7 @@ define([
                     dList.push(d.promise);
 
                     var fileName = wsPath + '/' + dir.name + '/.project/project.json';
-                    FS.exists(fileName).then(function(){
+                    FS.exists(fileName).then(function () {
                         FS.readFile(fileName).then(function (file) {
                             var project = JSON.parse(file);
                             project.isProject = true;
@@ -141,7 +141,7 @@ define([
                             });
                             d.resolve();
                         });
-                    }).fail(function(){
+                    }).fail(function () {
                         projectList.push({
                             name: dir.name,
                             isProject: false
@@ -237,8 +237,9 @@ define([
 
             return r;
         },
-
-        createWorkspace: function (name, desc) {
+   
+        createWorkspace: function (name/*, desc*/) { 
+            // TODO should save desc when createWorkspace. Later, use desc parameter.
             var WS_META_PATH = name + '/.workspace';
             var WS_META_FILE = WS_META_PATH + '/workspace.json';
             var defer = Q.defer();
@@ -246,7 +247,7 @@ define([
             FS.createDirectory(name, false).then(function () {
                 FS.createDirectory(WS_META_PATH)
                     .then($.proxy(FS.writeFile, FS, WS_META_FILE, ''))
-                    .then(function(){ defer.resolve(); })
+                    .then(function () {defer.resolve(); })
                     .fail(function (e) {
                         FS.delete(name, true);
                         defer.reject(e);
@@ -256,7 +257,7 @@ define([
             });
             return defer.promise;
         },
-
+        
         removeWorkspace: function (name) {
             return FS.delete(name, true);
         },
