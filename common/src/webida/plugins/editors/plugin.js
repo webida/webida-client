@@ -57,11 +57,15 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             this.editor = null;
             this.savedValue = null;
         };
-
+           
         File.prototype.isModified = function () {
             if (this.editorModule) {
                 var val = this.editorModule.getValue(this);
-                return  val !== undefined && val !== this.savedValue;	// TODO: remove the first clause
+                var modifiedInEditor = false;
+                if (this.editorModule.isClean) {
+                    modifiedInEditor = !this.editorModule.isClean(this);
+                }
+                return  val !== undefined && val !== this.savedValue && modifiedInEditor;	// TODO: remove the first clause
             } else {
                 return false;	// not yet even initialized.
             }
