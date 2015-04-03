@@ -276,7 +276,7 @@ function (webida, _, URI, all, request, topic) {
                     });
 
                     wholeEP[epId] = epProps;
-                    wholeEP[epId]['__plugin__'] = epId.split(':')[0];
+                    wholeEP[epId]['__plugin__'] = epId.split(':')[0]; // jshint ignore:line
                     wholeExt[epId] = [];
                 });
             }).then(function () {
@@ -315,7 +315,7 @@ function (webida, _, URI, all, request, topic) {
                                                 ext.module = plugin.manifest.module;	// default of extension's module
                                             }
 
-                                            ext['__plugin__'] = plugin;
+                                            ext['__plugin__'] = plugin;   // jshint ignore:line
                                             wholeExt[epId].push(ext);
                                         });
 

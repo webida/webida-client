@@ -46,7 +46,7 @@ define([
     var createButton = null;
     var noAppLabel = null;
 
-    var STR_HTTPS = 'https://';
+    //var STR_HTTPS = 'https://';
     var STR_DOT = '.';
     var STR_ARCHIVE_PATH = '/.project/deploy.zip';
     var STR_API_CALL_FAIL = 'Failed to call Webida API.';

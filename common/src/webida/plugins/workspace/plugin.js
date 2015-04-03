@@ -621,7 +621,7 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
                         dt.dropEffect = 'move';
                     }
 
-                    // NOTE: fall-through is meant
+                    /*falls through*/
                 case 'outerToInner':
                     if (c === 'outerToInner') {
                         dt.dropEffect = 'copy';

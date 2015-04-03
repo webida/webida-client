@@ -294,7 +294,7 @@ function (webida, ide,
                                         var o = JSON.parse(content);
                                         o.path = fileStatPath;
                                         var node = {
-                                            id: o.template_id,
+                                            id: o.template_id, // jshint ignore:line
                                             name: o.title,
                                             type: 'T',
                                             template: o,
@@ -439,6 +439,7 @@ function (webida, ide,
             var template = treeItem.template;
             console.log('resetAllDescriptions', template.path);
             var imgsPath = [];
+            /* jshint camelcase: false */
             if (template.screen_shot) {
                 if (_.isString(template.screen_shot)) {
                     imgsPath.push(Util.concatWFSPath([webida.conf.fsServer,
@@ -461,6 +462,7 @@ function (webida, ide,
                 imgsPath.push('');
                 createImagesElem(imgsPath);
             }
+            /* jshint camelcase: true */
 
             if (template.description) {
                 var ext = template.description.substring(
@@ -487,9 +489,11 @@ function (webida, ide,
                         $('#pw-descDescPane').empty().append(desc);
 
                         var anchors = $('#pw-descDescPane a');
+                        /* jshint -W107 */
                         _.each(anchors, function (anchor) {
                             anchor.href = 'javascript:open("' + anchor.href + '")';
                         });
+                        /* jshint +W107 */
                     }
                 });
             }
@@ -628,8 +632,10 @@ function (webida, ide,
             function createDefaultProjectConf() {
                 var name = projectName ? projectName : item.name;
                 var desc = '';
+                 /* jshint camelcase: false */
                 var type = item.template.app_class;
                 var path = item.template.app_main;
+                /* jshint camelcase: true */
                 var pConfText = createProjectConf(name, desc, type, path, options);
                 var pcPath = Util.concatWFSPath([destSelect, projectName, '.project']).replace(destFS, '');
 

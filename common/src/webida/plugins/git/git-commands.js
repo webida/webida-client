@@ -18,7 +18,7 @@
  * webida - git handle plugin
  *
  */
-
+/* jshint ignore:start */
 define(['require',
     'other-lib/underscore/lodash.min',
     'webida-lib/webida-0.3',

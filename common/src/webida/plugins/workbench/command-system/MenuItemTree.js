@@ -776,6 +776,7 @@ function (require, Deferred, when, all, _, prefStore, keyCode, toastr) {
                 }
 
                 self.getViableItems(function (viableItems) {
+                    /* jshint unused:false */
                     var scItem, viableSCItem,
                         viableSCItems = shortcutItems.filter(function (scItem) {
                         return getSubitem(viableItems, scItem.path);
@@ -803,6 +804,7 @@ function (require, Deferred, when, all, _, prefStore, keyCode, toastr) {
                                      '" in the current context of ' + pluginName + '.');
                     }
                 });
+                 /* jshint unused:true */
             }
 
         });
