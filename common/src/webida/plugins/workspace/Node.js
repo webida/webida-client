@@ -424,10 +424,11 @@ define(['require',
                                     selectNewNode(newFile);
                                     nodeToSelectSet = true;
                                 }
-
+                                
                                 switch (policy) {
                                 case 'overwrite':
-                                    selectAfterWork();	// fall-through is meant
+                                    selectAfterWork();
+                                    /*falls through*/
                                 case 'rename':
                                 case 'none':
                                     break;
@@ -1323,7 +1324,8 @@ define(['require',
         }).on('keydown', function (evt) {
             switch (evt.keyCode) {
             case keys.ENTER:
-                checkAndRename($input[0].value, true); // fall-through is meant
+                checkAndRename($input[0].value, true);
+                /*falls through*/
             case keys.ESCAPE:
                 $input.remove();
                 setFocus(self);

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* jshint ignore: start */
 ({
     appDir: './',
     baseUrl: 'src',
@@ -32,3 +33,4 @@
     optimize: 'none',
     optimizeCss: 'none',
 })
+/* jshint ignore:end */

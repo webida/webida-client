@@ -240,7 +240,7 @@ define(['other-lib/underscore/lodash.min',
             }
         },
 
-        hide: function (file) { },
+        hide: function (/*file*/) { },
 
         destroy: function (file) {
             // console.log('destroy', file.name);

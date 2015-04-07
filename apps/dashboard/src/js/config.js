@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* exported require, WS_INFO_PATH */
+/* exported require, WS_INFO_PATH, webidaHost */
 /* jshint -W079 */
 
 var webidaHost =

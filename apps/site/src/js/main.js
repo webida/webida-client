@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 define([
     'webida-lib/app-config',
     'webida',
@@ -36,18 +37,19 @@ define([
         hideMethod: 'fadeOut'
     };
 
+    /* jshint ignore:start */
     function getRedirectUrl() {
-        /* global URI:true */
         var cur = new URI(location.href);
         var authRel = new URI('auth.html');
         var redirectUrl = authRel.absoluteTo(cur);
         redirectUrl.query('');
         return redirectUrl.toString();
     }
+    /* jshint ignore:end */
 
     function openDesktop() {
         // Webida.app.launchApp('desktop', true, null, {name: 'desktop'});
-				window.open('../desktop/', 'desktop', '');
+        window.open('../desktop/', 'desktop', '');
     }
 
     Webida.auth.initAuth(AppConfig.clientId, AppConfig.redirectUrl);

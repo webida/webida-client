@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* global AsyncSpec */
 require(['core/fs'], function (FS) {
     'use strict';
 

@@ -81,7 +81,7 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
         });
         
         // make webidaAuth, webidaHost, webidaFs, webidaApp to global for jshintrc 
-        /* global webidaAuth, webidaHost, webidaFs, webidaApp:true */
+        /* global webidaAuth, webidaHost, webidaFs:true */
 
         logout.click(function () {
             webidaAuth.logout(function (err) {
