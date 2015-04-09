@@ -2,8 +2,9 @@
     "name": "webida.common.fs-commands",
     "description": "commands on files and folders in the workspace",
     "version": "0.1.0",
-    "requirement": "webida.common.workspace",
-    "extensions": {
+    "requirement": "webida.common.workspace & webida.common.editors",
+    
+     "extensions": {
 
         "webida.common.workbench:menu" : [
             {
@@ -81,6 +82,7 @@
                     "Open" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Enter" },
                                                         "desc" : "Open files or exapnd/collapse directories" }
                                              }],
+                    "Open with": ["enum"],
                     "delim1" : "---",
                     "New" : {
                         "&File" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Insert" },
