@@ -20,6 +20,7 @@
  */
 
 define(['require',
+        './plugin',                                 //fh        
         'other-lib/underscore/lodash.min',          // _
         'webida-lib/app',                           // ide
         'webida-lib/util/path',                           // pathUtil
@@ -47,7 +48,7 @@ define(['require',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
         ],
-function (require, _,
+function (require, fh, _,
           ide,
            pathUtil,
           async,
@@ -542,6 +543,23 @@ function (require, _,
             }
         }
     }
+    
+    function handleOpenWith(selectionIndex) {
+        var paths = wv.getSelectedPaths();
+        if (paths && paths.length > 0) {
+            if (!pathUtil.isDirPath(paths[0])) {
+                paths.forEach(function (path) {
+                    if (pathUtil.isDirPath(path)) {
+                        console.error('assertion fail: "' + path + '" must be a file');
+                    } else {
+                        var editorNames = fh.getOpenWithEditorsArray(); 
+                        var options = {editorName: editorNames[selectionIndex]};
+                        topic.publish('#REQUEST.openFile', path, options);
+                    }
+                });
+            }
+        }
+    }
 
     function handleDelete() {
         wv.removeInteractively();
@@ -907,6 +925,7 @@ function (require, _,
         findInCurDir: findInCurDir,
         handleEdit: handleEdit,
         handleOpen: handleOpen,
+        handleOpenWith: handleOpenWith,
         handleNewFile: handleNewFile,
         handleNewFolder: handleNewFolder,
         handlePaste: handlePaste,

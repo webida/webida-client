@@ -20,11 +20,14 @@
  */
 
 define(['webida-lib/plugins/workspace/plugin',            // wv
+        'webida-lib/plugin-manager-0.1',            //pm
+        'webida-lib/plugins/editors/plugin',        //editors
+        'other-lib/underscore/lodash.min',           //_
         'dojo/topic',                               // topic
         'webida-lib/util/path',                                     // pathUtil
         'other-lib/toastr/toastr'                                    // Toastr
         ],
-function (wv, topic, pathUtil, toastr)
+function (wv, pm, editors, _, topic, pathUtil, toastr)
 {
     'use strict';
 
@@ -38,6 +41,11 @@ function (wv, topic, pathUtil, toastr)
     var EVT_TOOLBAR_NEWFILE_DISABLE = 'toolbar.newfile.disable';
     var EVT_NODE_ALL_DESELECTED = 'workspace.node.alldeselected';
     var EVT_NODE_SELECTED = 'workspace.node.selected';
+    var editorExtensions = pm.getExtensions('webida.common.editors:editor');
+    var editorNames = [];
+    var openWithEditorNames = [];
+   
+    
 
     function init() {
         if (bInit === false) {
@@ -67,6 +75,11 @@ function (wv, topic, pathUtil, toastr)
                 topic.publish(EVT_TOOLBAR_GOTOFILE_DISABLE);
                 topic.publish(EVT_TOOLBAR_FINDINFILES_DISABLE);
                 topic.publish(EVT_TOOLBAR_NEWFILE_DISABLE);
+            }
+            
+            //Init 
+            for (var i = 0; i < editorExtensions.length; i++) {
+                editorNames.push(editorExtensions[i].name);                
             }
         }
     }
@@ -144,8 +157,41 @@ function (wv, topic, pathUtil, toastr)
 
             return null;
         },
+        
+        getOpenWithEditorsArray : function () {
+            return openWithEditorNames;            
+        },
 
-        getViableItemsForWorkspaceView : function () {
+        getViableItemsForWorkspaceView : function () {           
+            var paths = wv.getSelectedPaths();
+            var i = 0;
+            
+            // processing for open with
+            openWithEditorNames = [];
+            if (paths && paths.length > 0 && paths.every(function (n) { return !pathUtil.isDirPath(n); })) {
+                var availableEditorExtensions = editors.getAvailableEditorExtensions(paths[0]);
+                for (i = 0; i < paths.length; i++) {
+                    if (i > 0) {
+                        if (availableEditorExtensions) {
+                            var availableEditorExtensions2 = editors.getAvailableEditorExtensions(paths[i]);
+                            if (availableEditorExtensions2) {
+                                availableEditorExtensions = _.intersection(availableEditorExtensions, availableEditorExtensions2);
+                            } else {
+                                availableEditorExtensions = null;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                    
+                if (availableEditorExtensions) {
+                    for (i = 0; i < availableEditorExtensions.length; i++) {
+                        openWithEditorNames.push(availableEditorExtensions[i].name);
+                    }                                            
+                }                                
+            }
+            
             var candidateItemSets = [
                 // Open
                 {
@@ -156,6 +202,17 @@ function (wv, topic, pathUtil, toastr)
                     },
                     items: {
                         'Open': [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleOpen' ]
+                    }
+                },
+                
+                // Open with
+                {
+                    isApplicableTo: function (paths) {
+                        return paths.length > 0 &&
+                            paths.every(function (n) { return !pathUtil.isDirPath(n); });
+                    },
+                    items: {
+                        'Open with': [ 'enum', 'webida-lib/plugins/fs-commands/fs-commands', 'handleOpenWith', openWithEditorNames ]                       
                     }
                 },
 
@@ -297,14 +354,19 @@ function (wv, topic, pathUtil, toastr)
                 });
             }
 
-            var paths = wv.getSelectedPaths();
             if (paths && paths.length > 0) {
                 var items = {};
                 var iEnd = candidateItemSets.length;
-                for (var i = 0; i < iEnd; i++) {
+                for (i = 0; i < iEnd; i++) {
                     var candidateItemSet = candidateItemSets[i];
                     if (candidateItemSet.isApplicableTo(paths)) {
-                        accumulateItems(items, candidateItemSet.items);
+                        if (candidateItemSet.items['Open with']) {
+                            if (openWithEditorNames.length > 0) {
+                                accumulateItems(items, candidateItemSet.items);
+                            }
+                        } else {                            
+                            accumulateItems(items, candidateItemSet.items);
+                        }
                     }
                 }
 
