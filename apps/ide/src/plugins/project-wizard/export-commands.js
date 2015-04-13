@@ -609,7 +609,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                     });
 
                     var $dropdown = $('#' + dropdownId);
-                    new DropDown($dropdown);
+                    new DropDown($dropdown);  //jshint ignore: line
                 }
             } else {
                 $BuildTable.find('#' + id).remove();

@@ -240,7 +240,7 @@ define(['other-lib/underscore/lodash.min',
             }
         },
 
-        hide: function (file) { },
+        hide: function (/*file*/) { },
 
         destroy: function (file) {
             // console.log('destroy', file.name);
@@ -358,6 +358,15 @@ define(['other-lib/underscore/lodash.min',
             var instance = instances[file.__elemId];
             if (instance) {
                 instance.markClean();
+            }
+        },
+        
+        isClean: function (file) {
+            var instance = instances[file.__elemId];
+            if (instance) {
+                return instance.isClean();
+            } else {
+                return true;
             }
         },
 

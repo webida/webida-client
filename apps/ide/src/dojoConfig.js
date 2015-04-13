@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* exported webidaHost, connHostUrl, dojoConfig */
 var webidaHost = decodeURIComponent(
     document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
 );
@@ -40,6 +41,7 @@ var dojoConfig = {
     aliases: [
         ['text', 'dojo/text'],
         ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
-        ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js'] 		// TODO: remove this.
+        // TODO: remove this.
+        ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']
     ]
 };

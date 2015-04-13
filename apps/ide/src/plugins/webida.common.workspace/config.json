@@ -19,6 +19,7 @@
             "&Delete" : [],
             "Ren&ame" : [],
             "Open" : [],
+            "Open with" : ["enum"],
             "Refres&h": [],
             "Properti&es": [],
 

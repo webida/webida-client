@@ -55,6 +55,7 @@ function (RestrictedArray, declare) {
                 var elem = arr[i];
                 this.put(elem);
             }
+            return this;
         }
     });
 

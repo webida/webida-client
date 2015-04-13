@@ -57,11 +57,15 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             this.editor = null;
             this.savedValue = null;
         };
-
+           
         File.prototype.isModified = function () {
             if (this.editorModule) {
                 var val = this.editorModule.getValue(this);
-                return  val !== undefined && val !== this.savedValue;	// TODO: remove the first clause
+                var modifiedInEditor = false;
+                if (this.editorModule.isClean) {
+                    modifiedInEditor = !this.editorModule.isClean(this);
+                }
+                return  val !== undefined && val !== this.savedValue && modifiedInEditor;	// TODO: remove the first clause
             } else {
                 return false;	// not yet even initialized.
             }
@@ -658,49 +662,53 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         }
     };
 
-    editors.openFile = function (path, options, callback) {
-        function getAvailableEditorExtensions(thisFileExt, editorName) {
-            var thisMimeType = extToMime[thisFileExt];
+    editors.getAvailableEditorExtensions = function (path, editorName) {
+        var thisFileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
+        var thisMimeType = extToMime[thisFileExt];
 
-            var viable1 = editors.editorExtensions.filter(function (extension) {
-                return extension.handledFileExt.some(function (fileExtension) {
-                    return thisFileExt.match('^' + fileExtension + '$');
-                });
+        var viable1 = editors.editorExtensions.filter(function (extension) {
+            return extension.handledFileExt.some(function (fileExtension) {
+                return thisFileExt.match('^' + fileExtension + '$');
             });
-            var viable2 = editors.editorExtensions.filter(function (extension) {
-                return extension.handledMimeTypes.some(function (fileMimeType) {
-                    return thisMimeType && thisMimeType.match('^' + fileMimeType + '$');
-                });
+        });
+        var viable2 = editors.editorExtensions.filter(function (extension) {
+            return extension.handledMimeTypes.some(function (fileMimeType) {
+                return thisMimeType && thisMimeType.match('^' + fileMimeType + '$');
             });
-            var unviable1 = editors.editorExtensions.filter(function (extension) {
-                return extension.unhandledFileExt.some(function (fileExtension) {
-                    return thisFileExt.match('^' + fileExtension + '$');
-                });
+        });
+        var unviable1 = editors.editorExtensions.filter(function (extension) {
+            return extension.unhandledFileExt.some(function (fileExtension) {
+                return thisFileExt.match('^' + fileExtension + '$');
             });
-            var unviable2 = editors.editorExtensions.filter(function (extension) {
-                return extension.unhandledMimeTypes.some(function (fileMimeType) {
-                    return thisMimeType && thisMimeType.match('^' + fileMimeType + '$');
-                });
+        });
+        var unviable2 = editors.editorExtensions.filter(function (extension) {
+            return extension.unhandledMimeTypes.some(function (fileMimeType) {
+                return thisMimeType && thisMimeType.match('^' + fileMimeType + '$');
             });
+        });
 
-            var editorExtensions = _.union(viable1, viable2);
-            editorExtensions = _.difference(editorExtensions, unviable1, unviable2);
+        var editorExtensions = _.union(viable1, viable2);
+        editorExtensions = _.difference(editorExtensions, unviable1, unviable2);
 
-            if (editorExtensions.length === 0) {
-                return null;
-            } else {
-                if (editorName) {
-                    var exts2 = _.filter(editorExtensions, function (ext) {
-                        return (ext.name === editorName);
-                    });
-                    if (exts2.length > 0) {
-                        return exts2;
-                    }
+        if (editorExtensions.length === 0) {
+            return null;
+        } else {
+            if (editorName) {
+                var exts2 = _.filter(editorExtensions, function (ext) {
+                    return (ext.name === editorName);
+                });
+                if (exts2.length > 0) {
+                    return exts2;
+                } else {
+                    return null;
                 }
-                return editorExtensions;
             }
+            return editorExtensions;
         }
+    };
 
+    
+    editors.openFile = function (path, options, callback) {
         options = options || {};
 
         if (editors.currentFile && editors.currentFile.path === path) {
@@ -716,7 +724,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         } else {
             var file = editors.files[path];
             var fileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
-            var extensions = getAvailableEditorExtensions(fileExt, options.editorName);
+            var extensions = editors.getAvailableEditorExtensions(path, options.editorName);
+            
             options.extension = extensions && extensions[0];
 
             if (!options.extension) {

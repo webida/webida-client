@@ -420,10 +420,13 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                                 'text!plugins/project-wizard/layer/debug-weinre-browser-remote.html', function () {
             Util.getAliasPathForIndexFile(pathUtil.detachSlash(self.projectPath), function (url) {
                 $('#txtBrowserRemote').attr('value', url);
+                /* jshint -W107 */
                 var targetBookmarklet = 'javascript:(function(e){e.setAttribute("src","' +
                     Constants.getDebugTargetUrl(projectInfo.uuid) +
                     '");document.getElementsByTagName("body")[0].appendChild(e);})' +
                     '(document.createElement("script"));void(0);';
+                 /* jshint +W107 */
+                
                 // TODO: This tip using CORS does not work in Firefox. It just works in Chrome.
                 //targetBookmarklet += 'window.WeinreServerURL="' + WEINRE_TARGET_HOST + '";void(0);';
                 $('#targetBookmarklet').attr('href', targetBookmarklet);

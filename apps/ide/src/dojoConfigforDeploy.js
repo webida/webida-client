@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* exported dojoConfig */
 var webidaHost = decodeURIComponent(
     document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
 );
@@ -29,7 +30,7 @@ var dojoConfig = {
         { name: 'xstyle', location: '//library3.' + webidaHost + '/xstyle' },
         { name: 'put-selector', location: '//library3.' + webidaHost + '/put-selector' }
     ],
-    locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : "en-us",
+    locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {
         'webida-lib': '//library.' + webidaHost + '/webida',
         'other-lib': '//library3.' + webidaHost,
@@ -41,6 +42,7 @@ var dojoConfig = {
     aliases: [
         ['text', 'dojo/text'],
         ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
-        ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']		// TODO: remove this.
+        // TODO: remove this.
+        ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']		
     ]
 };

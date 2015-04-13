@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
+/* exported profile */
 var profile = (function () {
+    'use strict';
     return {
-        basePath: "./",
-        releaseDir: "dojo-built",
-        action: "release",
-        packages:[{
-            name: "dojo",
-            location: "dojo-release-1.9.1-src/dojo"
+        basePath: './',
+        releaseDir: 'dojo-built',
+        action: 'release',
+        packages: [{
+            name: 'dojo',
+            location: 'dojo-release-1.9.1-src/dojo'
         }, {
-            name: "dijit",
-            location: "dojo-release-1.9.1-src/dijit"
+            name: 'dijit',
+            location: 'dojo-release-1.9.1-src/dijit'
         }, {
-            name: "dojox",
-            location: "dojo-release-1.9.1-src/dojox"
+            name: 'dojox',
+            location: 'dojo-release-1.9.1-src/dojox'
         }],
         layers: {
-            "dojo/dojo": {
+            'dojo/dojo': {
                 include: [
                     'dojo/_base/lang',
                     'dojo/aspect',
@@ -57,7 +59,7 @@ var profile = (function () {
                     'dojo/window'
                 ],
             },
-            "dijit/dijit": {
+            'dijit/dijit': {
                 include: [
                     'dijit/Dialog',
                     'dijit/focus',
@@ -95,7 +97,7 @@ var profile = (function () {
                     'dijit/popup'
                 ]
             },
-            "dojox/dojox": {
+            'dojox/dojox': {
                 include: [
                     'dojox/layout/ExpandoPane',
                     'dojox/layout/ToggleSplitter',
@@ -106,6 +108,6 @@ var profile = (function () {
                     'dojox/grid/enhanced/plugins/Pagination',
                 ]
             }
-       }
+        }
     };
 })();
