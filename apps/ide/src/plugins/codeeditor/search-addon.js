@@ -82,7 +82,7 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
                     backgroundColor: 'transparent',
                     marginLeft: '6px',
                     fontFamily: 'Nanum Gothic Coding',
-                    fontSize: '9px'
+                    fontSize: '12px'
                 });
                 return box;
             }
