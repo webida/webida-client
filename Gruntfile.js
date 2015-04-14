@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+'user strict';
 module.exports = function (grunt) {
     grunt.initConfig({
        // for jshint check based on .jshintrc
@@ -34,7 +35,10 @@ module.exports = function (grunt) {
                       'apps/site/**/*.js',   //site
                       'common/**/*.js',     // common
                       '!**/lib/**', '!**/custom-lib/**', '!**/Gruntfile.js',  // ignore lib and Gruntfile
-                      '!**/*.min.js', '!**/*.back.js']   // ignore min/back.js files
+                      '!**/*.min.js', '!**/*.back.js',    // ignore min/back.js files
+                      '!**/ProjectWizard-templates/**',
+                      '!apps/ide/obsolete-src/**',
+                      '!apps/ide/r.js']
             }
         },
         copy: {

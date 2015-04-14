@@ -15,7 +15,6 @@
         "grunt-dom-munger": "~3.4.0",
         "jshint-stylish": "^1.0.0",
         "grunt-contrib-clean": "~0.4.0",
-        "grunt-contrib-jshint": "^0.10.0",
         "grunt-prettify": "~0.3.4"
     },
     "scripts": {
