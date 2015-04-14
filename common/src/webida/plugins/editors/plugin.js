@@ -707,6 +707,21 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         }
     };
 
+    function checkFileNameHandleExtension(path){
+        var fileName = pathUtil.getFileName(path);
+        console.info(fileName);
+        var extensions = pm.getExtensions('webida.common.editors:editor');
+        console.info(extensions);
+        if(extensions instanceof Array && extensions.length){
+            for(var i=0; i<extensions.length ; i++){
+                if(extensions[i].handledFileNames instanceof Array && 
+                   extensions[i].handledFileNames.indexOf(fileName) >= 0){
+                    return extensions[i];
+                }
+            }
+        }
+        return null;
+    }
     
     editors.openFile = function (path, options, callback) {
         options = options || {};
@@ -724,9 +739,17 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         } else {
             var file = editors.files[path];
             var fileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
-            var extensions = editors.getAvailableEditorExtensions(path, options.editorName);
             
-            options.extension = extensions && extensions[0];
+            var fileNameHandleExtension = checkFileNameHandleExtension(path);
+            console.info(fileNameHandleExtension);
+            //for handledFileNames
+            if(fileNameHandleExtension){
+                options.extension = fileNameHandleExtension;
+            //for handledFileNames or handledMimeTypes
+            }else{
+                var extensions = editors.getAvailableEditorExtensions(path, options.editorName);
+                options.extension = extensions && extensions[0];
+            }
 
             if (!options.extension) {
                 toastr.error('No editors found for the file extension "' + fileExt + '"');
@@ -812,6 +835,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             }
         }
 
+        console.info(extension.module);
+        
         require([extension.module], function (editorModule) {
             function _findViewIndexUsingSibling(viewContainer, file, siblings) {
                 var previousSiblings = [];
