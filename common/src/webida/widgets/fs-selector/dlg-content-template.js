@@ -26,7 +26,7 @@ define([], function () {
         '        } ' +
         '        .selDirSelectedExpanded' +
         '        { ' +
-        '            background-image: url("//library.<%webida-host%>/webida/' +
+        '            background-image: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folderopen.png");' +
         '            background-position: 0, 0;' +
         '            background-repeat: no-repeat;' +
@@ -35,7 +35,7 @@ define([], function () {
         '        }' +
         '        .selDirDeselectedExpanded' +
         '        { ' +
-        '            background-image: url("//library.<%webida-host%>/webida/' +
+        '            background-image: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folderopen.png");' +
         '            background-position: -32px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -44,7 +44,7 @@ define([], function () {
         '        }' +
         '        .selDirPartialExpanded' +
         '        { ' +
-        '            background-image: url("//library.<%webida-host%>/webida/' +
+        '            background-image: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folderopen.png");' +
         '            background-position: -16px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -53,7 +53,7 @@ define([], function () {
         '        }' +
         '        .selDirSelectedCollapsed' +
         '        { ' +
-        '            background-image: url("//library.<%webida-host%>/webida/' +
+        '            background-image: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folder.png");' +
         '            background-position: 0, 0;' +
         '            background-repeat: no-repeat;' +
@@ -62,7 +62,7 @@ define([], function () {
         '        }' +
         '        .selDirDeselectedCollapsed' +
         '        { ' +
-        '            background-image: url("//library.<%webida-host%>/webida/' +
+        '            background-image: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folder.png");' +
         '            background-position: -32px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -71,7 +71,7 @@ define([], function () {
         '        }' +
         '        .selDirPartialCollapsed' +
         '        { ' +
-        '            background-image: url("//library.<%webida-host%>/webida/' +
+        '            background-image: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folder.png");' +
         '            background-position: -16px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -80,7 +80,7 @@ define([], function () {
         '        }' +
         '        .selFileSelected' +
         '        { ' +
-        '            background-image: url("//library.<%webida-host%>/webida/' +
+        '            background-image: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_file.png");' +
         '            background-position: 0, 0;' +
         '            background-repeat: no-repeat;' +
@@ -89,7 +89,7 @@ define([], function () {
         '        }' +
         '        .selFileDeselected' +
         '        { ' +
-        '            background-image: url("//library.<%webida-host%>/webida/' +
+        '            background-image: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_file.png");' +
         '            background-position: -16px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -97,7 +97,7 @@ define([], function () {
         '            height: 16px;' +
         '        }' +
         '        .fileIcon' +
-        '        { background: url("//library.<%webida-host%>/webida/' +
+        '        { background: url("//<%webida-host%>/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/fileIcon.png") no-repeat; width: 16px; height: 16px; }' +
         '    </style> ' +
         '    <div class="dijitDialogPaneContentArea">' +
