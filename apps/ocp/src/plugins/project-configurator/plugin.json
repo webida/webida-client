@@ -1,0 +1,55 @@
+{
+    "name": "webida.ide.project-configurator",
+    "description": "Project configurator, user can project setting",
+    "version": "0.1.0",
+    "requirement": "webida.common.workspace",
+
+    "extensionPoints" : {
+        "webida.ide.project-configurator:run-configuration-type" : [
+            { "name": "id", "type": "string" },
+            { "name": "name", "type": "string" }
+        ],
+        "webida.ide.project-configurator:run-configuration" : [
+            { "name": "id", "type": "string" },
+            { "name": "name", "type": "string" },
+            { "name": "type", "type": "string" },
+            { "name": "handler", "type": "function" }
+        ]
+    },
+
+    "extensions": {
+        "webida.common.workbench:menu" : {
+            "location" : "/&Project/",
+            "wholeItems" : {
+
+                "&Run" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+R" }, "desc" : "Run recent project" } } ],
+                "Run &with" : [ "enum",
+                               {
+                                   "toolbar": {
+                                       "icons" : "./styles/webida-images/icons/toolbar_runhistory.png",
+                                       "tooltip" : "Run with",
+                                       "enabledOn":"toolbar.runas.enable",
+                                       "disabledOn":"toolbar.runas.disable"
+                                   }
+                               }]
+            },
+            "getViableItems" : "getViableItemsForWorkbench"
+        },
+
+        "webida.common.workspace:menu" : {
+            "location" : "/",
+            "wholeItems" : {
+                "&Run" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+R" }, "desc" : "Run current project" } } ],
+                "Run &with" : ["enum"]
+            },
+            "getViableItems" : "getViableItemsForWorkspaceView"
+        }
+    },
+
+    "subscriptions": {
+        "#REQUEST.tellAppEntryHTMLs": {
+            "module": "plugins/project-configurator/projectConfigurator",
+            "handler": "getProjectRootHtml"
+        }
+    }
+}

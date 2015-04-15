@@ -1,0 +1,25 @@
+{
+    "name": "webida.ide.preference",
+    "description": "Preference menu item",
+    "version": "0.1",
+    "requirement": "webida.common.workbench",
+    "extensions": {
+        "webida.common.workbench:menu":             {
+            "location" : "/&Help/",
+            "wholeItems" : {
+                "&Preferences" : [ "cmnd", {
+                    "shortcut" : {
+                        "keys" : { "default" : "Alt + P" }, "desc" : "preferences"
+                    },
+                    "toolbar": {
+                        "icons" : "./styles/webida-images/icons/toolbar_preference.png",
+                        "tooltip" : "Preferences"
+                    },
+                    "procedural": true
+                }]
+            },
+            "module": "webida-lib/plugins/workbench/preference-system/viables"
+        }
+    }
+}
+

@@ -1,0 +1,44 @@
+{
+    "name": "webida.ide.deploy",
+    "description": "Deploy function",
+    "version": "0.1.0",
+    "requirement": "webida.common.workspace & webida.ide.project-configurator",
+    "extensions": {
+
+        "webida.common.workbench:menu" : {
+            "location" : "/&Project/",
+            "wholeItems" : {
+                "Deplo&y" : [ "cmnd",
+                             {
+                                 "shortcut" : { "keys" : { "default" : "Shift+Alt+D" }, "desc" : "deploy" },
+                                 "toolbar": {
+                                     "icons" : "./styles/webida-images/icons/toolbar_deployhistory.png",
+                                     "tooltip" : "Deploy",
+                                     "enabledOn":"toolbar.deploy.enable",
+                                     "disabledOn":"toolbar.deploy.disable"
+                                 },
+                                 "procedural" : true
+                             }]
+            },
+            "getViableItems": "getViableItemsForWorkbench"
+        },
+
+        "webida.common.workspace:menu" : {
+            "location" : "/",
+            "wholeItems" : {
+                "Deplo&y" : [ "cmnd",
+                             {
+                                 "shortcut" : { "keys" : { "default" : "Shift+Alt+D" }, "desc" : "deploy" },
+                                 "procedural" : true
+                             }
+                            ]
+            },
+            "getViableItems": "getViableItemsForWorkspace"
+        }
+    },
+    "subscriptions": {
+        "workbench.context.changed": {
+            "handler": "onContextChanged"
+        }
+    }
+}

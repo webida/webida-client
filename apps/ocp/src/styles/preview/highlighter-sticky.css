@@ -1,0 +1,61 @@
+div.highlighter__sticky {
+    background-color: #FAFAFA;
+    border: 1px solid #CCCCCC;
+    color: #202020;
+    white-space: pre-wrap;
+    cursor: pointer;
+    font-size: small;
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: none;
+    opacity: 0.85;
+}
+
+div.highlighter__sticky * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+div.highlighter__sticky .highlighter__sticky-header {
+    height: 10px;
+    background-image: url('sticky_header.png');
+    cursor: move;
+}
+
+div.highlighter__sticky textarea {
+    display: block; /* to prevent textarea bottom margin */
+    width: 100%;
+    font-size: small;
+    font-family: gothic;
+}
+
+div.highlighter__sticky .highlighter__sticky-footer {
+    height: 16px;
+}
+
+div.highlighter__sticky input {
+    height: 14px;
+    margin: 1px;
+    border: 1px solid #CCCCCC;
+}
+
+div.highlighter__sticky input:focus {
+    outline: none;
+    border: 1px solid dodgerblue;
+}
+
+div.highlighter__sticky div.highlighter__sticky-footer {
+    cursor: se-resize;
+    background-image: url('sticky_resizer.png');
+    background-position: right bottom;
+    background-repeat: no-repeat;
+}
+
+div.highlighter__sticky-relative {
+    margin: 16px 10px;
+}
+
+div.highlighter__sticky-relative .highlighter__sticky-header {
+    cursor: default;
+}

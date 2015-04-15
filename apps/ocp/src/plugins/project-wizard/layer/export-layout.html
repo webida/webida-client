@@ -1,0 +1,309 @@
+<style type='text/css'>
+    #exportTab {
+        width: 95%;
+        height: 90%;
+    }
+
+    #exportTab * {
+        box-sizing: border-box;
+    }
+
+    #exportExportMW, #exportExportMA {
+        width: 95%;
+    }
+</style>
+<style>
+    .BuildHeader {
+        border-top: 1px solid #E5E5E5;
+        margin-bottom: 14px;
+        margin-top: 14px;
+        padding: 10px 0 0;
+        position: relative;
+        width: 100%;
+    }
+    .BuildHeader a {
+        color: #111111;
+    }
+    .BuildTable table col.ItemCheck {
+        width: 22px;
+    }
+    .BuildTable table col.ItemTitle {
+        width: 160px;
+    }
+    .BuildTable table col.ItemPlatform {
+        width: 160px;
+    }
+    .BuildTable table col.ItemBuild {
+        width: 320px;
+    }
+    .BuildTable table thead tr th {
+        background-color: #F0F0F0;
+        border-bottom: 1px solid #C2C2C2;
+        border-left: 1px solid #D5D5D5;
+        border-top: 1px solid #C2C2C2;
+        color: #666666;
+        font-weight: bold;
+        margin: 0;
+        padding: 0;
+        text-align: left;
+    }
+    .BuildTable table thead tr th span {
+        border-left: 1px solid #FFFFFF;
+        border-top: 1px solid #FFFFFF;
+        display: block;
+        padding: 4px 7px 3px;
+    }
+    .BuildTable table thead tr th:first-child {
+        border-left: 0 none;
+    }
+    .BuildTable table thead tr th:first-child span {
+        border-left: 0 none;
+    }
+    .BuildTable table tbody tr td {
+        border-bottom: 1px solid #E5E5E5;
+        line-height: 18px;
+        margin: 0;
+        padding: 8px 0 6px;
+        text-align: left;
+    }
+    .BuildTable table tbody tr td a {
+        color: #111111;
+        line-height: 18px;
+    }
+    /*
+    .BuildTable table tbody tr td * {
+        padding: 0 9px;
+    }
+    */
+    .BuildTable table tbody tr td {
+        border-bottom: 1px solid #E5E5E5;
+        line-height: 18px;
+        margin: 0;
+        padding: 8px 0 6px;
+        text-align: left;
+    }
+
+    .BuildTable .msg {
+        display: none;
+        margin-top: 8px;
+        padding: 8px;
+        position: relative;
+        font-size: 90%;
+        width: 280px;
+        max-height: 100px;
+        overflow-y: scroll;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: pre-wrap;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+
+    .msg.error {
+        color: #d9534f;
+    }
+    .msg.info {
+        color: #428bca;
+    }
+
+    .BuildTable div.pkg-download-pane {
+        text-align: center;
+    }
+    .BuildTable button.pkg-download {
+        width: 140px;
+    }
+
+    .build__platform {
+        padding: 0 9px;
+    }
+    .build__platform.large {
+        font-size: 180%;
+        margin-right: 6px;
+    }
+    .build__platform.large + span {
+        text-transform: uppercase;
+        font-size: 120%;
+        font-weight: bold;
+    }
+    .pkg-download.large {
+        font-weight: normal;
+        position: relative;
+        padding: 7px 8px;
+
+        background-color: #0c9db7;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        color: #fff;
+        text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.36);
+        border-radius: 3px;
+        box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset;
+        margin: 2px;
+    }
+    .pkg-download.profile {
+        margin: 1em 0 0.5em 0;
+        position: relative;
+        border-bottom: 1px solid #e5e5e5;
+        width: 48%;
+        font-weight: bold;
+    }
+    .pkg-download.large.to-device {
+        width: 32px;
+        background-color: #428bca;
+    }
+</style>
+<style type='text/css'>
+    #chk-dropdown {
+        width: 140px;
+    }
+
+    .g__dropdown-build {
+        background: none repeat scroll 0 0 #FFFFFF;
+        cursor: pointer;
+        margin: 0;
+        outline: medium none;
+        padding: 10px;
+        position: relative;
+        width: 120px;
+
+        border: 1px solid #ccc;
+        display: inline-block;
+    }
+    .g__dropdown-build:after {
+        /* border-color: rgba(0, 0, 0, 0) #9BC7DE; */
+        border-color: rgba(0, 0, 0, 0) gray;
+        border-style: solid;
+        border-width: 6px 0 6px 6px;
+        content: "";
+        height: 0;
+        margin-top: -6px;
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        width: 0;
+
+        padding: 0;
+    }
+    .g__dropdown-build .dropdown {
+        background: none repeat scroll 0 0 #FFFFFF;
+        font-weight: normal;
+        left: 0;
+        list-style: none outside none;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+
+        border: 1px solid gray;
+        margin: 0;
+        padding: 0;
+        z-index: 9999;
+    }
+    .g__dropdown-build .dropdown li a {
+        display: block;
+        padding: 6px 6px;
+        text-decoration: none;
+    }
+    .g__dropdown-build .dropdown li:hover a {
+        background: none repeat scroll 0 0 #ccc;
+    }
+    .g__dropdown-build.active .dropdown {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .g__dropdown-build.active:after {
+        border-color: gray rgba(0, 0, 0, 0);
+        border-width: 6px 6px 0;
+        margin-top: -3px;
+    }
+    .no-opacity .g__dropdown-build .dropdown, .no-pointerevents .g__dropdown-build .dropdown {
+        display: none;
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .no-opacity .g__dropdown-build.active .dropdown, .no-pointerevents .g__dropdown-build.active .dropdown {
+        display: block;
+    }
+</style>
+
+<div class="toolbar-panel">
+</div>
+<div class="content-panel">
+    <div class="page-header">
+        <h1 id="exportAppTitle"></h1>
+    </div>
+
+    <div id="exportTab" data-dojo-type="dijit/layout/TabContainer" data-dojo-props='tabPosition: "left-h"'>
+        <div id="exportExport" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "Export", selected: true'>
+            <div id="exportExportPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'">
+                <div>
+                    <label class="tab-header">Export</label>
+                    <div class="separator"></div>
+
+                    <fieldset id="exportExportMW" class="group-border inner">
+                        <legend>Export as Mobile Web</legend>
+                        <p>You can download your project sources (HTML/CSS/JavaScript) as zip or deploy.</p>
+                        <button type="button" class="btn btn-info" id="exportExportMWDownload">Download</button> <button type="button" class="btn btn-info" id="exportExportMWDeploy">Deploy</button>
+                    </fieldset>
+
+                    <br />
+                    <fieldset id="exportExportMA" class="group-border inner">
+                        <legend>Export as Mobile App</legend>
+                        <p>You can build your project into native mobile application.</p>
+                        <label>Build Configuration: </label>
+                        <select id="exportBuildProfilesCombo" multiple="multiple">
+                        </select>
+                        <button id='exportBuildProfilesEdit' type='button' data-dojo-type='dijit/form/Button'>Edit</button>
+
+                        <br />
+                        <div>
+                            <div class="BuildHeader">
+                                <input type="checkbox" id="exportBuildAllChk" />
+                                <!--
+                                <button id="exportBuildAllBtn" class="btn" disabled>Build selected</button>
+                                -->
+                                <div id="chk-dropdown" class="g__dropdown-build">
+                                    <span>Build selected</span>
+                                    <ul class="dropdown">
+                                    <li><a href="#" id="chk-dropdown-build">Build selected</a></li>
+                                    <li><a href="#" id="chk-dropdown-rebuild">Rebuild selected</a></li>
+                                    <li><a href="#" id="chk-dropdown-clean">Clean selected</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="exportBuildTargets" class="BuildTable">
+                                <table>
+                                    <colgroup>
+                                        <col class="ItemCheck" />
+                                        <col class="ItemTitle" />
+                                        <col class="ItemPlatform" />
+                                        <col class="ItemBuild" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th class="ItemCheck" scope="col"></th>
+                                            <th class="ItemTitle" scope="col"><span>Configuration</span></th>
+                                            <th class="Itemplatform" scope="col"><span>Platform</span></th>
+                                            <th class="ItemBuild" scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <div id="exportInstall" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "Install"'>
+            <div id='exportInstallPane' data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'">
+                <div>
+                    <label class="tab-header">Install</label>
+                    <div class="separator"></div>
+
+                    <div id="exportInstallDownload"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+{
+    "plugins" : [
+        "webida-lib/plugins/output",
+        "webida-lib/plugins/workspace",
+        "webida-lib/plugins/workbench"
+    ],
+    "start-plugins" : [
+        "webida-lib/plugins/workbench"
+    ]
+}
