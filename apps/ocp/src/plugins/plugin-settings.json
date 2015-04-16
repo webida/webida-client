@@ -1,10 +1,10 @@
 {
     "plugins" : [
-        "webida-lib/plugins/output",
-        "webida-lib/plugins/workspace",
-        "webida-lib/plugins/workbench"
+        "plugins/uid-menu-items",
+        "plugins/output",
+        "plugins/workbench"
     ],
     "start-plugins" : [
-        "webida-lib/plugins/workbench"
+        "plugins/workbench"
     ]
 }

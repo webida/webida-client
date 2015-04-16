@@ -22,15 +22,12 @@
  * @since: 2013.09.26
  *
  */
-
 define([
-    // 'webida-lib/webida-0.3',
     'other-lib/underscore/lodash.min',
-    // 'other-lib/URIjs/URI',
     'dojo/promise/all',
     'dojo/request',
     'dojo/topic'
-], function( /*webida,*/ _, /*URI,*/ all, request, topic) {
+], function(_, all, request, topic) {
     'use strict';
 
     var wholePlugins = {}; // including disabled ones.
@@ -42,7 +39,6 @@ define([
     var appConfigs = {};
 
     function preparePlugins(locs, disabledLocs, startLocs, nextJob) {
-    // function preparePlugins(appPath, locs, disabledLocs, startLocs, nextJob) {
         var dependency = locs.map(function(loc) {
             return 'dojo/text!' + loc + '/plugin.json';
         });
@@ -553,47 +549,12 @@ define([
                         var startPlugins = _.union(appPluginSettings['start-plugins'] || []);
 
                         preparePlugins(plugins, disabledPlugins, startPlugins, nextJob);
-                        // readUserPluginSettings();
                     } else {
                         alert('Failed to parse the app plugin settings file ' + appPluginSettings);
                     }
 
                 });
             }
-
-            // read PLUGIN_SETTINGS_FILE in <ws>, set pluginDirs, plugins and disabledPlugins,
-            // and update startPlugins
-            // function readUserPluginSettings 
-            //     var settingsFile = ws + '/.workspace/plugin-settings.json';
-            //     mount.readFile(settingsFile, function(err, text) {
-            //         if (err) {
-            //             console.log('Unable to read user plugin settings (' + err + ')');
-            //             userPluginSettings = {};
-            //         } else {
-            //             var o;
-            //             try {
-            //                 o = JSON.parse(text);
-            //             } catch (e) {}
-            //             if (o) {
-            //                 userPluginSettings = trimPluginSettings(o);
-            //             } else {
-            //                 console.log('Failed to parse user plugin settings (disabled)');
-            //             }
-            //         }
-
-            //         // merge settings and prepare plugins
-            //         var plugins = _.union(appPluginSettings.plugins || [], userPluginSettings.plugins || []);
-            //         var disabledPlugins = _.union(appPluginSettings['disabled-plugins'] || [], userPluginSettings['disabled-plugins'] || []);
-            //         var startPlugins = _.union(appPluginSettings['start-plugins'] || [], userPluginSettings['start-plugins'] || []);
-
-            //         preparePlugins(appPath, plugins, disabledPlugins, startPlugins, nextJob);
-                    
-            //     });() {
-            // }
-
-            // fsid = workspace.substring(0, workspace.indexOf('/'));
-            // ws = workspace.substr(workspace.indexOf('/'));
-            // mount = webida.fs.mountByFSID(fsid);
 
             readAppPluginSettings();
         },

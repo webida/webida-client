@@ -13,16 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/* exported webidaHost, connHostUrl, dojoConfig */
-var webidaHost = decodeURIComponent(
-    document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-);
-// TODO sholud find a neat way
-var connHostUrl = decodeURIComponent(
-    document.cookie.replace(/(?:(?:^|.*;\s*)webida\.connHostUrl\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-);
-
 var dojoConfig = {
     async: true,
     baseUrl: '.',
@@ -39,7 +29,8 @@ var dojoConfig = {
         'webida-lib': '../../../common/src/webida',
         'other-lib': '../../../external/src',
         'lib' : 'lib',
-        'plugins' : 'plugins'
+        'plugins' : 'plugins',
+        'widgets': 'widgets'
     },
     aliases: [
         ['text', 'dojo/text'],

@@ -1,0 +1,61 @@
+<style>
+    .viewToolbarTopElem {
+        position: relative;
+    }    
+    .viewToolbarContent {
+        position: absolute;
+        overflow: hidden;
+        left: 0;
+        top: 0;
+    	width: 100%;
+        height: 100%;
+    }
+                
+    .viewToolbarTopElem.showNaviBtn .viewToolbarContent {    
+        width: calc(100% - 24px);
+        left: 12px;
+    }
+    
+    .viewToolbarBtn {
+        position: absolute;
+        border-radius: 3px;
+        height:100%;
+        width:10px;
+        z-index:10;
+        display: none;
+        background-color: #FFFFFF;        
+        background-repeat: no-repeat;                
+        background-position-y: 6px;
+        background-position-x: -2px;
+    }
+        
+    .viewToolbarBtnLeft {
+        left : 0;        
+        background-image : url('$CD/images/direction_previous.png');                
+    }
+    .viewToolbarBtnRight {
+        right: 0;        
+        background-image : url('$CD/images/direction_next.png');
+    }  
+    
+    .viewToolbarTopElem.showNaviBtn .viewToolbarBtn {
+        display: block;
+    }
+    
+    .viewToolbarBtnLeft .hide {
+        display:none;
+    }
+    
+    .viewToolbarBtnRight .hide {
+        display:none;
+    }
+    
+</style>
+    
+<div class='viewToolbarBtn viewToolbarBtnLeft'>        
+</div>
+<div class='viewToolbarBtn viewToolbarBtnRight'>        
+</div>    
+<div class='viewToolbarContent'>        
+</div>
+    

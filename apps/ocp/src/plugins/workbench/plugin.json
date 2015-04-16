@@ -1,0 +1,72 @@
+{
+    "name": "webida.common.workbench",
+    "description": "Main UI manager",
+    "version": "0.1.0",
+    "extensionPoints" : {
+        "webida.common.workbench:preference-page" : [
+            {"name": "hierarchy", "type": "string"},
+            {"name": "name", "type": "string"},
+            {"name": "handler", "type": "function"}
+        ],
+        "webida.common.workbench:views" : [
+            { "name": "location", "type": "string",
+              "desc": "Returns a string (currently, one of 'top', 'left', 'bottom', and 'center') that indicates the desired location in the workspace." },
+            { "name": "getView", "type": "function",
+              "desc": "Returns a view widget" },
+            { "name": "onViewAppended", "type": "function",
+              "desc": "A callback called when the view is appended to the workbench" }
+        ],
+
+        "webida.common.workbench:panels" : [
+            { "name": "location", "type": "string",
+             "desc": "Returns a string (currently, one of 'top', and 'center') that indicates the desired location in the workspace." },
+            { "name": "getPanel", "type": "function",
+             "desc": "Returns a view widget" },
+            { "name": "onPanelAppended", "type": "function",
+             "desc": "A callback called when the view is appended to the workbench" }
+        ],
+
+        "webida.common.workbench:menu" : "src/plugins/_extension-points/menu.json",
+
+        "webida.common.workbench:uidMenu" : [
+            { "name" : "label", "type" : "string",
+             "desc": "Label for the menu item" },
+            { "name" : "handler", "type" : "function",
+             "desc": "Name of the handler function" }
+        ]
+    },
+    "extensions": {
+        "webida.common.workbench:menu" : [
+            {
+                "location" : "/&File/",
+                "wholeItems" : {
+                    "&Quit" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Ctrl+W" }, "desc" : "Quit" } } ]
+                },
+                "getViableItems" : "getWorkspaceSeletionItem"
+            },
+            {
+                "location" : "/&View/",
+                "wholeItems" : {
+                    "Select View from &List" : [ "cmnd", {
+                        "shortcut" : { "keys" : { "default" : "Alt+Shift+A" }, "desc" : "Show view" },
+                        "procedural" : true
+                    }],
+                    "delim1" : "---",
+                    "Toggle &Menu" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+Shift+M" }, "desc" : "Toggle menubar" } } ],
+                    "Toggle &Toolbar" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+Shift+T" }, "desc" : "Toggle toolbar" } } ],
+                    "Toggle &Full-Screen" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+F11" }, "desc" : "Toggle full-screen" } } ]
+                },
+                "getViableItems" : "getItemsUnderView"
+            },
+            {
+                "location" : null,
+                "wholeItems" : {
+                    "Focus Menu Bar" : [ "cmnd",
+                                        { "shortcut" : { "keys" : { "default" : "F10" },
+                                                         "desc" : "Move focus to the menu bar" } } ]
+                },
+                "getViableItems" : "getBogusItems"
+            }
+        ]
+    }
+}
