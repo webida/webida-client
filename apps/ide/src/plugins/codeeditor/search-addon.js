@@ -62,6 +62,7 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
                 searchDlg.remove();
                 $(wrapper).css({ top: '0px' });
                 cm.off('focus', closeDialog);
+                clearSearch(cm);
             }
 
             function makeInputBox(parent, title, cssOpt) {
