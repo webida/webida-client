@@ -294,7 +294,7 @@ define(['./plugin',
                         var foldings = file.editor ? file.editor.getFoldings() : [];
                                 // temporary solution
                                 // TODO: see why file.editor sometimes is null.
-                        tabs.push([cursor.col, cursor.row, file.path, foldings]);
+                        tabs.push([cursor.col, cursor.row, file.path, foldings, file.editorName]);
                         console.log('--* path : ' + file.path);
                     }
                     selfile = editors.getFileByViewId(vc.getSelectedView().getId());
@@ -392,6 +392,7 @@ define(['./plugin',
                         }
                         opt.cellIndex = i;
                         opt.siblingList = siblingList;
+                        opt.editorName = tab[4];
                         pos = {};
                         pos.col = tab[0];
                         pos.row = tab[1];

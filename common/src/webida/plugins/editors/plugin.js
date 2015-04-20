@@ -55,6 +55,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             this.name = pathUtil.getFileName(path);
             this.tabTitle = this.name;
             this.editor = null;
+            this.editorName = null;
             this.savedValue = null;
         };
            
@@ -707,15 +708,15 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         }
     };
 
-    function checkFileNameHandleExtension(path){
+    function checkFileNameHandleExtension(path) {
         var fileName = pathUtil.getFileName(path);
         console.info(fileName);
         var extensions = pm.getExtensions('webida.common.editors:editor');
         console.info(extensions);
-        if(extensions instanceof Array && extensions.length){
-            for(var i=0; i<extensions.length ; i++){
-                if(extensions[i].handledFileNames instanceof Array && 
-                   extensions[i].handledFileNames.indexOf(fileName) >= 0){
+        if (extensions instanceof Array && extensions.length) {
+            for (var i = 0; i < extensions.length ; i++) {
+                if (extensions[i].handledFileNames instanceof Array && 
+                   extensions[i].handledFileNames.indexOf(fileName) >= 0) {
                     return extensions[i];
                 }
             }
@@ -743,10 +744,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             var fileNameHandleExtension = checkFileNameHandleExtension(path);
             console.info(fileNameHandleExtension);
             //for handledFileNames
-            if(fileNameHandleExtension){
+            if (!options.editorName && fileNameHandleExtension) {
                 options.extension = fileNameHandleExtension;
             //for handledFileNames or handledMimeTypes
-            }else{
+            } else {
                 var extensions = editors.getAvailableEditorExtensions(path, options.editorName);
                 options.extension = extensions && extensions[0];
             }
@@ -760,6 +761,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
             if (!file) {
                 file = new File(path);
+                file.editorName = options.extension.name;
                 editors.files[path] = file;
             }
 
