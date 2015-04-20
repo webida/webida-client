@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,7 @@ define(['webida-lib/app',
         'dojox/grid/enhanced/plugins/IndirectSelection',
         'dijit/registry',
         'webida-lib/plugins/workspace/plugin',
-        'plugins/project-configurator/projectConfigurator',
+        'plugins/webida.ide.project-management.run/run-configuration-manager',      //FIXME remove
         'text!./layer/debug-layout.html',
         './export-commands',
         './constants',
@@ -63,7 +63,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
 
     RunCommand.DebugTypes = {
         DEVICE: 'device',
-        DEVICE_WEINRE: 'deviceWEINRE',
+        DEVICE_WEINRE: 'deviceWEINRE'
         /*
         BROWSER: 'browser',
         BROWSER_REMOTE: 'browserRemote'
@@ -123,10 +123,10 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
 
     RunCommand.prototype._getProjectPath = function (projectInfo) {
         if (projectInfo) {
-            return projectConfigurator.getProjectRootPath(wv.getRootPath() + projectInfo.name);
+            return pathUtil.getProjectRootPath(wv.getRootPath() + projectInfo.name);
         } else {
             var curDir = wv.getSelectedPath();
-            return projectConfigurator.getProjectRootPath(curDir);
+            return pathUtil.getProjectRootPath(curDir);
         }
     };
 
@@ -426,7 +426,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                     '");document.getElementsByTagName("body")[0].appendChild(e);})' +
                     '(document.createElement("script"));void(0);';
                  /* jshint +W107 */
-                
+
                 // TODO: This tip using CORS does not work in Firefox. It just works in Chrome.
                 //targetBookmarklet += 'window.WeinreServerURL="' + WEINRE_TARGET_HOST + '";void(0);';
                 $('#targetBookmarklet').attr('href', targetBookmarklet);
@@ -512,11 +512,11 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
 
     RunCommand.prototype._addConfiguration = function (projectPath, name, type, options) {
         var projectName = pathUtil.getName(projectPath);
-        Util.getProjectConfiguration(projectName, function (obj) {
-            if (obj !== null) {
-                var projectInfo = obj;
-                Util.addRunConfiguration(projectInfo.run, name, '', true, true);
-                var result = $.grep(projectInfo.run.list, function (e) {
+        Util.getRunConfiguration(projectName, function (runConf) {
+            if (runConf !== null) {
+                var runConfs = runConf;
+                Util.addRunConfiguration(projectName, runConfs, name, '', true, true);
+                var result = $.grep(runConfs.list, function (e) {
                     return e.name === name;
                 });
                 if (result[0]) {
@@ -527,7 +527,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                             listItem[idx] = value;
                         });
                     }
-                    Util.saveProject(projectInfo, function (err) {
+                    Util.saveProjectRun(projectName, runConfs, function (err) {
                         if (err) {
                             console.log(err);
                         }
