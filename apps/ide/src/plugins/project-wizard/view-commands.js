@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,9 +20,9 @@ define(['dojo/topic',
         'webida-lib/widgets/views/viewmanager',
         'webida-lib/widgets/views/viewToolbar',
         'webida-lib/plugins/workspace/plugin',
-        'plugins/project-configurator/projectConfigurator',
+        'webida-lib/util/path'
        ],
-function (topic, workbench, View, vm, ViewToolbar, wv, projectConfigurator) {
+function (topic, workbench, View, vm, ViewToolbar, wv, pathUtil) {
     'use strict';
 
     function ViewCommand(id) {
@@ -79,7 +79,7 @@ function (topic, workbench, View, vm, ViewToolbar, wv, projectConfigurator) {
 
         this.addHandle(topic.subscribe('workspace.node.selected', function (selectedPath) {
             console.log('workspace.node.selected', selectedPath || null);
-            var selectedProjectPath = projectConfigurator.getProjectRootPath(selectedPath);
+            var selectedProjectPath = pathUtil.getProjectRootPath(selectedPath);
             if (!selectedProjectPath) {
                 return;
             }
