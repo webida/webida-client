@@ -40,9 +40,7 @@ function (wv, pm, editors, _, topic, pathUtil, toastr)
     var EVT_TOOLBAR_NEWFILE_ENABLE = 'toolbar.newfile.enable';
     var EVT_TOOLBAR_NEWFILE_DISABLE = 'toolbar.newfile.disable';
     var EVT_NODE_ALL_DESELECTED = 'workspace.node.alldeselected';
-    var EVT_NODE_SELECTED = 'workspace.node.selected';
-    var editorExtensions = pm.getExtensions('webida.common.editors:editor');
-    var editorNames = [];
+    var EVT_NODE_SELECTED = 'workspace.node.selected'; 
     var openWithEditorNames = [];
    
     
@@ -77,10 +75,6 @@ function (wv, pm, editors, _, topic, pathUtil, toastr)
                 topic.publish(EVT_TOOLBAR_NEWFILE_DISABLE);
             }
             
-            //Init 
-            for (var i = 0; i < editorExtensions.length; i++) {
-                editorNames.push(editorExtensions[i].name);                
-            }
         }
     }
     init();
