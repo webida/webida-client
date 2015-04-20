@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,12 +28,12 @@ define(['webida-lib/app',            // ide
         'webida-lib/webida-0.3',     // webida
         'webida-lib/util/path',     // webida
         'webida-lib/plugins/workbench/plugin',
-        'plugins/project-configurator/projectConfigurator',
+        'plugins/webida.ide.project-management.run/run-configuration-manager',     //FIXME remove
         'webida-lib/plugins/workspace/plugin',
         'dojo/topic',
         './lib/util'
        ],
-function (ide, webida, pathUtil, workbench, projectConfigurator, wv, topic, Util) {
+function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, Util) {
     'use strict';
 
     function isRunnableProjectPath(projectLevelPath) {
@@ -46,7 +46,7 @@ function (ide, webida, pathUtil, workbench, projectConfigurator, wv, topic, Util
             return false;
         }
         // no project.json
-        if (!projectConfigurator.getConfigurationObjectByProjectName(projectName)) {
+        if (!runConfigurationManager.getByProjectName(projectName)) {
             return false;
         }
 
@@ -54,7 +54,7 @@ function (ide, webida, pathUtil, workbench, projectConfigurator, wv, topic, Util
     }
 
     function isRunnablePath(path) {
-        var projectPath = projectConfigurator.getProjectRootPath(path);
+        var projectPath = pathUtil.getProjectRootPath(path);
         return isRunnableProjectPath(projectPath);
     }
 
@@ -72,8 +72,7 @@ function (ide, webida, pathUtil, workbench, projectConfigurator, wv, topic, Util
                 '&Export' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'doExport' ]
             };
             var itemsContext = {
-                'Debug' : [ 'cmnd', 'plugins/project-configurator/projectConfigurator-commands',
-                           'workbenchDebugBinded' ],
+                'Debug' : [ 'cmnd', 'plugins/webida.ide.project-management.run/commands', 'workbenchDebugBinded' ],
                 'Run with Device' : [ 'cmnd', 'plugins/project-wizard/run-commands', 'runDevice' ],
                 'Debug with' : [ 'cmnd', 'plugins/project-wizard/run-commands', 'debugWith' ]
             };

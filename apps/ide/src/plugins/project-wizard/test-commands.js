@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,6 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/webida-0.3'),
         'dojo/Deferred',
         'dojo/topic',
         'webida-lib/plugins/workspace/plugin',
-        'plugins/project-configurator/projectConfigurator',
         'lib/test/bootstrap/bootstrap.custom',
         'lib/test/bootstrap/bootstrap-multiselect',
         'text!./layer/test-layout.html',
@@ -46,7 +45,7 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/webida-0.3'),
         './lib/clipboard',
         './lib/util'
        ],
-function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv, projectConfigurator,
+function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
     bootstrap, bootstrapMultiselect, tplLayout, tplToolbar, frames,
     Messages, ViewCommand, Clipboard, Util) {
     'use strict';
@@ -102,7 +101,7 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv, projectConfigur
         console.log('init');
         var self = this;
 
-        this.setProjectPath(projectConfigurator.getProjectRootPath(wv.getSelectedPath()));
+        this.setProjectPath(pathUtil.getProjectRootPath(wv.getSelectedPath()));
         var projectPath = this.getProjectPath();
         if (!projectPath) {
             console.log(Messages.NO_PROJECT);
@@ -172,7 +171,7 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv, projectConfigur
         console.log('refresh');
         var self = this;
         var deferred = new Deferred();
-        this.setProjectPath(projectConfigurator.getProjectRootPath(wv.getSelectedPath()));
+        this.setProjectPath(pathUtil.getProjectRootPath(wv.getSelectedPath()));
         var projectPath = this.getProjectPath();
         if (!projectPath) {
             console.log(Messages.NO_PROJECT);
