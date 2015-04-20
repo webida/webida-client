@@ -30,10 +30,10 @@ define(['webida-lib/app',
 ], function (ide, pathutil, topic, workspace, async, _, toastr) {
     'use strict';
 
-    var WORKSPACE_DIR_NAME = ide.getPath();
+    var PATH_WORKSPACE = ide.getPath();
     var WORKSPACE_INFO_DIR_NAME = '.workspace';
     var RUN_CONFIG_FILE_NAME = 'workspace.json';
-    var PATH_RUN_CONFIG = WORKSPACE_DIR_NAME + '/' + WORKSPACE_INFO_DIR_NAME + '/' + RUN_CONFIG_FILE_NAME;
+    var PATH_RUN_CONFIG = PATH_WORKSPACE + '/' + WORKSPACE_INFO_DIR_NAME + '/' + RUN_CONFIG_FILE_NAME;
 
     var topics = {
         RUN_AS_DISABLED: 'toolbar.runas.disable',
@@ -44,6 +44,7 @@ define(['webida-lib/app',
 
     var runConfigurations = {};
     var runConfigurationsByProject = {};
+    var allProjects = [];
 
     /**
      * load run configurations of all project from workspace.json file
@@ -79,7 +80,7 @@ define(['webida-lib/app',
         }
 
         function getAllProjects(next) {
-            fsMount.list(WORKSPACE_DIR_NAME, function (err, files) {
+            fsMount.list(PATH_WORKSPACE, function (err, files) {
                 if (err) {
                     console.error('loadRunConfigurations:list:' + ide.getPath(), err);
                     next(err);
@@ -103,6 +104,7 @@ define(['webida-lib/app',
                     if(!_.isEmpty(projects)){
                         runConfigurationsByProject = _.groupBy(runConfigurations, 'project');
                         _.each(projects, function(project){
+                            allProjects.push(projects.name);
                             if(!runConfigurationsByProject[project.name]){
                                 runConfigurationsByProject[project.name] = [];
                             }
@@ -139,11 +141,18 @@ define(['webida-lib/app',
     }
 
     function _getPathInfo(path){
-        var splitedPath = pathutil.detachSlash(path).split('/');
         var result = {};
+        if(!path){
+            return result;
+        }
+        if(path.charAt(0) === '/'){
+            path = path.substring(1);
+        }
+        var splitedPath = pathutil.detachSlash(path).split('/');
+
         if(splitedPath.length > 0) {
             result.name = splitedPath[splitedPath.length - 1];
-            var distanceFromWorkspace = splitedPath.length - splitedPath.indexOf(WORKSPACE_DIR_NAME);
+            var distanceFromWorkspace = splitedPath.length - splitedPath.indexOf(PATH_WORKSPACE);
             if (distanceFromWorkspace <= splitedPath.length) {
                 result.isInWorkspace = true;
                 if(distanceFromWorkspace === 1){
@@ -155,7 +164,7 @@ define(['webida-lib/app',
                 } else if(distanceFromWorkspace === 3 && path.indexOf(PATH_RUN_CONFIG) > -1){
                     result.type = 'runConfig';
                 } else {
-                    result.projectName = splitedPath[splitedPath.indexOf(WORKSPACE_DIR_NAME) + 1];
+                    result.projectName = splitedPath[splitedPath.indexOf(PATH_WORKSPACE) + 1];
                 }
             } else {
                 result.isInWorkspace = false;
@@ -164,7 +173,7 @@ define(['webida-lib/app',
         return result;
     }
 
-    var actions = {
+    var projectActions = {
         replaceProject: function(oldProjectName, newProjectName){
             // change runConfigurations object
             _.each(_.where(runConfigurations, {project: oldProjectName}), function(runConf){
@@ -172,23 +181,23 @@ define(['webida-lib/app',
             });
             // change runConfigurationsByProject object
             runConfigurationsByProject[newProjectName] = runConfigurationsByProject[oldProjectName];
+            allProjects[allProjects.indexOf(oldProjectName)] = newProjectName;
             delete runConfigurationsByProject[oldProjectName];
         },
         addNewProject: function(projectName){
             // change runConfigurationsByProject object
             runConfigurationsByProject[projectName] = [];
-            //topic.publish(topics.RUN_AS_ENABLED);
+            allProjects.push(projectName);
         },
         deleteProject: function(projectName){
             // change runConfigurations object
-            _.each(_.where(runConfigurations, {project: projectName}), function(runConf, name){
-                delete runConfigurations[name];
+            var runConfs = runConfigurationsByProject[projectName];
+            _.each(runConfs, function(runConf){
+                delete runConfigurations[runConf.name];
             });
             // change runConfigurationsByProject object
             delete runConfigurationsByProject[projectName];
-            if(_.isEmpty(runConfigurations)){
-                //topic.publish(topics.RUN_AS_DISABLED);
-            }
+            allProjects.splice(allProjects.indexOf(projectName), 1);
         }
     };
 
@@ -199,7 +208,7 @@ define(['webida-lib/app',
             var destPathInfo = _getPathInfo(dest);
             if(srcPathInfo.type === 'project' && destPathInfo.type === 'project'){
                 // ignore the case of nested projects
-                actions.replaceProject(srcPathInfo.name, destPathInfo.name);
+                projectActions.replaceProject(srcPathInfo.name, destPathInfo.name);
             } else if(srcPathInfo.type === 'workspaceInfo' || srcPathInfo.type === 'runConfig'){
                 loadRunConfigurations();
             }
@@ -215,7 +224,7 @@ define(['webida-lib/app',
 
         topic.subscribe('projectWizard.created', function (targetDir, projectName) {
             console.log('projectWizard.created', arguments);
-            actions.addNewProject(projectName);
+            projectActions.addNewProject(projectName);
         });
 
         topic.subscribe('fs.cache.node.added', function (fsURL, targetDir, name, type, created) {
@@ -226,7 +235,7 @@ define(['webida-lib/app',
             var targetPathInfo = _getPathInfo(targetDir);
             if(targetPathInfo.type === 'workspace'){
                 // new added dir is a project
-                actions.addNewProject(name);
+                projectActions.addNewProject(name);
             }
         });
 
@@ -237,7 +246,7 @@ define(['webida-lib/app',
             }
             var targetPathInfo = _getPathInfo(targetDir);
             if (targetPathInfo.type === 'project') {
-                actions.deleteProject(name);
+                projectActions.deleteProject(name);
             } else if (targetPathInfo.type === 'workspaceInfo' || targetPathInfo.type === 'runConfig') {
                 loadRunConfigurations();
             }
@@ -289,12 +298,20 @@ define(['webida-lib/app',
             }
         };
         this.save = function(runConfiguration){
+
             delete runConfiguration.unsaved;
-            _.each(runConfigurations, function(runConf, name){
+            runConfigurations[runConfiguration.name] = runConfiguration;
+
+            var unsyncedItems = [];
+            _.map(runConfigurations, function(runConf, name){
                 if(runConf.name !== name){
-                    runConfigurations[runConf.name] = runConf;
-                    delete runConfigurations[name];
+                    unsyncedItems.push({oldName: name, newName: runConf.name});
                 }
+            });
+
+            _.each(unsyncedItems, function(item){
+                runConfigurations[item.newName] = runConfigurations[item.oldName];
+                delete runConfigurations[item.oldName];
             });
 
             runConfigurationsByProject = _.extend(runConfigurationsByProject, _.groupBy(runConfigurations, 'project'));
@@ -322,6 +339,7 @@ define(['webida-lib/app',
                 });
                 delete runConfigurations[runConfigurationName];
             }
+            flushRunConfigurations();
         };
         this.setLatestRun = function(runConfigurationName) {
             if(runConfigurations[runConfigurationName]){
@@ -342,7 +360,7 @@ define(['webida-lib/app',
                 var htmlPaths = [];
                 _.each(runConfs, function(runConf){
                     if(!runConf.type && pathutil.isHtml(runConf.path)){
-                        htmlPaths.push(pathutil.combine(WORKSPACE_DIR_NAME + '/' + pathInfo.projectName, runConf.path));
+                        htmlPaths.push(pathutil.combine(PATH_WORKSPACE + '/' + pathInfo.projectName, runConf.path));
                     }
                 });
                 callback(htmlPaths);
