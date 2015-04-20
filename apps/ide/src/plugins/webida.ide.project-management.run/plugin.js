@@ -92,9 +92,9 @@ define([
             allRunConfigurations.sort(function(a, b){
                 if(a.project === b.project){
                     if(a.latestRun){
-                        return 1;
-                    } else if (b.latestRun){
                         return -1;
+                    } else if (b.latestRun){
+                        return 1;
                     } else {
                         if (a.name > b.name) {
                             return 1;
@@ -102,18 +102,19 @@ define([
                             return -1;
                         }
                     }
-                }
-                if (a.project === contextProjectName) {
-                    return -1;
-                }
-                if (b.project === contextProjectName) {
-                    return 1;
+                } else {
+                    if (a.project === contextProjectName) {
+                        return -1;
+                    }
+                    if (b.project === contextProjectName) {
+                        return 1;
+                    }
                 }
             });
         }
 
         _.each(allRunConfigurations, function(run){
-            var menuName = run.project + ' : ' + run.name + ((run.selected) ? ' [latest run]' : '');
+            var menuName = run.project + ' : ' + run.name + ((run.latestRun) ? ' [latest run]' : '');
             contextMenuItems.push(menuName);
         });
         if(!_.isEmpty(allRunConfigurations)) {
@@ -203,59 +204,12 @@ define([
         });
     }
 
-    function getRunConfigurationByName(projectProperty, name) {
-        if (!projectProperty || !name) {
-            return null;
-        }
-
-        var runObj = projectProperty.run;
-        if (!runObj) {
-            return null;
-        }
-
-        var runObjList = runObj.list;
-        if (!runObjList) {
-            return null;
-        }
-
-        for (var i = 0; i < runObjList.length; i++) {
-            if (runObjList[i].name === name) {
-                return runObjList[i];
-            }
-        }
-        return null;
-    }
-    function _runBinded(projectProperty, mode) {
-        var runConf;
-
-        if (!projectProperty.run || !projectProperty.run.list || projectProperty.run.list.length === 0) {
+    function _runBinded(runConf/*, mode*/) {
+        if (!runConf) {
             toastr.info('Cannot find a run configuration. Add a new one.');
             openRunConfigurationDialog();
-        } else if (projectProperty.run.list.length === 1) {
-            runConf = getRunConfigurationByName(projectProperty,
-                projectProperty.run.list[0].name);
-            if (runConf) {
-                projectProperty.run.selectedId = runConf.name;
-                delegator.run(runConf);
-                //runProject(projectProperty, runConf);
-            } else {
-                toastr.warning('Cannot find a run configuration. Add a new one.');
-                openRunConfigurationDialog();
-            }
-            return;
-        } else if (!projectProperty.run.selectedId) {
-            toastr.warning('Cannot find the latest run. Choose a run configuration and click run button');
-            openRunConfigurationDialog();
-        } else {
-            runConf = getRunConfigurationByName(projectProperty,
-                projectProperty.run.selectedId);
-            if (runConf) {
-                delegator.run(runConf);//runProject(projectProperty, runConf, mode);
-            } else {
-                toastr.warning('Cannot find the latest run. Choose a run configuration and click run button');
-                openRunConfigurationDialog(projectProperty);
-            }
         }
+        delegator.run(runConf);
     }
 
     module.workspaceRunBinded = function () {
@@ -270,15 +224,12 @@ define([
         }
         var nodeSplit = selectedPath.split('/');
         var projectName = nodeSplit[2];
-        var projectProperty = runConfigurationManager.getByProjectName(projectName);
-        if (!projectProperty) {
-            runConfigurationManager.createProjectProperty(
-                workspace.getRootPath() + projectName + '/', function () {
-                    projectProperty = runConfigurationManager.getByProjectName(projectName);
-                    _runBinded(projectProperty);
-                });
+        var runConfigurations = runConfigurationManager.getByProjectName(projectName);
+        if (_.isEmpty(runConfigurations)) {
+            openRunConfigurationDialog();
         } else {
-            _runBinded(projectProperty);
+            var latestRuns = _.where(runConfigurations, {latestRun: true});
+            _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0]);
         }
     };
 
@@ -334,7 +285,6 @@ define([
             openRunConfigurationDialog();
         } else {
             var runStirngSplit = runString.split(' : ');
-            var projectName = runStirngSplit[0];
             var runConfName = runStirngSplit[1];
 
             var runConfNameSplit = runConfName.split(' [');
@@ -373,7 +323,8 @@ define([
     module.runObjectChanged = function(action, runObject) {
         console.log('webida.ide.project-management.run:configuration.changed', action, runObject);
         if(action === 'save'){
-            runConfigurationManager.save(runObject);
+            delegator.saveConf(runObject);
+            //runConfigurationManager.save(runObject);
             refreshRunConfigurationTree();
         }
     };

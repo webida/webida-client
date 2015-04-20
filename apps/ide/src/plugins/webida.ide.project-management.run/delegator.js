@@ -65,9 +65,16 @@ define([
      * Default new or load delegator
      * @type {Function}
      */
-    defaultDelegator.newConf = defaultDelegator.loadConf = function ($parent, newRunConf, callback){
+    defaultDelegator.newConf = function ($parent, newRunConf, callback){
         // draw ui
         newRunConf.path = '';   // initialize path value
+        require(['plugins/webida.ide.project-management.run/view-controller'], function(viewController){
+            viewController.loadConf($parent, newRunConf, callback);
+        });
+    };
+
+    defaultDelegator.loadConf = function ($parent, newRunConf, callback){
+        // draw ui
         require(['plugins/webida.ide.project-management.run/view-controller'], function(viewController){
             viewController.loadConf($parent, newRunConf, callback);
         });
@@ -255,10 +262,9 @@ define([
         });
     };
 
-    module.saveConf = function(runObjectName, callback){
+    module.saveConf = function(runConf, callback){
         console.log('saveConf', arguments);
-        var conf = runConfigurationManager.getByName(runObjectName);
-        Delegator.get(conf.type).saveConf(conf, function(err, runConf){
+        Delegator.get(runConf.type).saveConf(runConf, function(err, runConf){
             if(err){
                 toastr.error(err);
             } else {

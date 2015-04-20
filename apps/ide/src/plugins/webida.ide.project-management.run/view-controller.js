@@ -103,7 +103,7 @@ define([
             _.each(runByType[type.id], function(runObj){
                 var $runItemElem = $('<li></li>');
                 var $runItemLink = $('<a href data-run-id="' + runObj.name + '" data-type-id="' + type.id + '">' +
-                    runObj.name + '</a>');
+                    runObj.name + (runObj.unsaved ? ' *' : '') + '</a>');
                 $runItemElem.append($runItemLink);
                 if(selected.runConf && runObj.name === selected.runConf.name){
                     $runItemLink.addClass('selected');
@@ -129,14 +129,20 @@ define([
                 $(this).addClass('selected');
             });
         });
+
+        if(!selected.runConf || selected.runConf.unsaved) {
+            ui.btns.runButton.setDisabled(true);
+        } else {
+            ui.btns.runButton.setDisabled(false);
+        }
     };
 
     module.openWindow = function(defaultRun){
         selected.runConf = defaultRun || _.first(_.toArray(runConfManager.getAll()));
         ui.dialog = new ButtonedDialog({
             buttons: [
-                {caption: 'Run', methodOnClick: 'runConf'},
-                {caption: 'OK', methodOnClick: 'okOnRunConf'}
+                {id: 'dialogRunButton', caption: 'Run', methodOnClick: 'runConf'},
+                {id: 'dialogOkButton', caption: 'OK', methodOnClick: 'okOnRunConf'}
             ],
             methodOnEnter: null,
             okOnRunConf: function () {
@@ -174,12 +180,29 @@ define([
 
                 ui.btns.createNewButton = registry.byId('run-configuration-crete-button');
                 dojo.connect(ui.btns.createNewButton, 'onClick', function () {
-                    delegator.newConf(ui.content, selected.type, undefined, function(error, newConf){
-                        if(!error){
-                            selected.runConf = newConf;
-                            module.refreshTree();
-                        }
-                    });
+                    var runConfs = runConfManager.getAll();
+                    var unsaved = _.where(runConfs, {unsaved: true});
+                    if(!_.isEmpty(unsaved)){
+                        PopupDialog.yesno({
+                            title: 'Run Configuration',
+                            message: 'You will may lose unsaved data. Are you sure to continue?',
+                            type: 'info'
+                        }).then(function () {
+                            delegator.newConf(ui.content, selected.type, undefined, function(error, newConf){
+                                if(!error){
+                                    selected.runConf = newConf;
+                                    module.refreshTree();
+                                }
+                            });
+                        });
+                    } else {
+                        delegator.newConf(ui.content, selected.type, undefined, function(error, newConf){
+                            if(!error){
+                                selected.runConf = newConf;
+                                module.refreshTree();
+                            }
+                        });
+                    }
                 });
 
                 ui.btns.deleteButton = registry.byId('run-configuration-delete-button');
@@ -205,6 +228,11 @@ define([
 
                     }
                 });
+
+                ui.btns.runButton = registry.byId('dialogRunButton');
+                if(!selected.runConf || selected.runConf.unsaved) {
+                    ui.btns.runButton.setDisabled(true);
+                }
             }
         });
         ui.dialog.set('doLayout', true);
