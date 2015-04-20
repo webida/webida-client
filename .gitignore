@@ -1,4 +1,4 @@
 .project
 node_modules
-apps/ocp/src/lib
+apps/seed/src/lib
 

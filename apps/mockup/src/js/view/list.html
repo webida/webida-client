@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Message Format List</title>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//cdn.datatables.net/1.10.6/css/jquery.dataTables.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h2>Message Format List</h2>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<input id="btnAdd" class="btn btn-primary" type="button" value="Add">
+				</div>
+			</div>
+			<div class="row">
+				<table id="example" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Position</th>
+							<th>Office</th>
+							<th>Age</th>
+							<th>Start date</th>
+							<th>Salary</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		
+		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				$('#example').dataTable({
+					'info': false,
+					'searching': false,
+					'lengthChange': false,
+					'ajax': '../model.json',
+					'order': []
+				});
+
+				 $('#example tbody').on('click', 'tr', function () {
+					window.location.href = 'details.html';
+				});
+
+				$('#btnAdd').click(function () {
+					window.location.href = 'registration.html';
+				});
+			});
+		</script>
+	</body>
+</html>
