@@ -144,34 +144,41 @@ define([
         if(type) {
             var actions = _.where(runConfActions, {type: type});
             var runners = _.where(runConfRunner, {type: type});
-            if(!_.isEmpty(actions)){
-                _.each(defaultDelegator, function(value, delegator){
-                    var module = (delegator === 'run') ? runners[0].module : actions[0].module;
-                    var delegatorName = (delegator === 'run') ? runners[0].run : actions[0][delegator];
-                    if(delegatorName){
-                        allActions[delegator] = function(){
-                            var args = arguments;
-                            require([module], function (module) {
-                                if(module[delegatorName]){
-                                    module[delegatorName].apply(module, args);
-                                } else {
-                                    if(args.length > 0) {
-                                        var callback = args[args.length - 1];
-                                        callback(delegator + ' hasn\'t be implemented at run configurator type(' +
-                                            type + ')');
-                                    }
-                                    console.log(delegator + ' hasn\'t be implemented at run configurator type(' +
+
+            _.each(_.keys(defaultDelegator), function(delegatorType){
+                var module, delegatorMethodName;
+                if(delegatorType === 'run' && !_.isEmpty(runners)){
+                    module = runners[0].module;
+                    delegatorMethodName = runners[0].run;
+                } else if(delegatorType !== 'run' && !_.isEmpty(actions)){
+                    module = actions[0].module;
+                    delegatorMethodName = actions[0][delegatorType];
+                }
+
+                if(module && delegatorMethodName){
+                    allActions[delegatorType] = function(){
+                        var args = arguments;
+                        require([module], function (module) {
+                            if(module[delegatorMethodName]){
+                                module[delegatorMethodName].apply(module, args);
+                            } else {
+                                if(args.length > 0) {
+                                    var callback = args[args.length - 1];
+                                    callback(delegatorType + ' hasn\'t be implemented at run configurator type(' +
                                         type + ')');
                                 }
-                            });
-                        };
-                    } else {
-                        allActions[delegator] = function(){
-                            console.log(delegator + ' hasn\'t be implemented at run configurator type(' + type + ')');
-                        };
-                    }
-                });
-            }
+                                console.error(delegatorType + ' hasn\'t be implemented at run configurator type(' +
+                                    type + ')');
+                            }
+                        });
+                    };
+                }
+                //else {
+                //    allActions[delegatorType] = function(){
+                //        console.log(delegatorType + ' hasn\'t be implemented at run configurator type(' + type + ')');
+                //    };
+                //}
+            });
             _.extend(this, allActions);
         } else {
             _.extend(this, defaultDelegator);
@@ -207,18 +214,26 @@ define([
         return result;
     }
 
-    module.run = function(runObject, callback) {
+    module.run = function(runConf, callback) {
         console.log('run', arguments);
-        Delegator.get(runObject.type).run(runObject, function(err){
-            if(err) {
-                toastr.error(err);
-            } else {
-                runConfigurationManager.setLatestRun(runObject.name);
+        if(!_.isFunction(Delegator.get(runConf.type).run)) {
+            var err = 'run function hasn\'t be implemented for the run configurator type(' + runConf.type + ')';
+            toastr.error(err);
+            if (callback) {
+                callback(err);
             }
-            if(callback){
-                callback(err, runObject);
-            }
-        });
+        } else {
+            Delegator.get(runConf.type).run(runConf, function (err) {
+                if (err) {
+                    toastr.error(err);
+                } else {
+                    runConfigurationManager.setLatestRun(runConf.name);
+                }
+                if (callback) {
+                    callback(err, runConf);
+                }
+            });
+        }
     };
 
     /**
@@ -230,66 +245,98 @@ define([
     module.newConf = function($parent, type, project, callback) {
         console.log('newConf', arguments);
         $parent.empty();
-        var runObject = {
+        var runConf = {
             type: type,
             name: _makeConfigurationName(),
             project: project,
             unsaved: true
         };
-
-        Delegator.get(type).newConf($parent, runObject, function(err){
-            if(err){
-                toastr.error(err);
-            } else {
-                runConfigurationManager.add(runObject);
+        if(!_.isFunction(Delegator.get(type).newConf)) {
+            console.warn('newConf function hasn\'t be implemented for the run configurator type(' + type + ')');
+            runConfigurationManager.add(runConf);
+            if (callback) {
+                callback(null, runConf);
             }
-            if(callback){
-                callback(err, runObject);
-            }
-        });
+        } else {
+            Delegator.get(type).newConf($parent, runConf, function (err) {
+                if (err) {
+                    toastr.error(err);
+                } else {
+                    runConfigurationManager.add(runConf);
+                }
+                if (callback) {
+                    callback(err, runConf);
+                }
+            });
+        }
     };
 
-    module.loadConf = function($parent, runObject, callback){
+    module.loadConf = function($parent, runConf, callback){
         console.log('loadConf', arguments);
         $parent.empty();
-        Delegator.get(runObject.type).loadConf($parent, runObject, function(err){
-            if(err){
-                toastr.error(err);
+        if(!_.isFunction(Delegator.get(runConf.type).loadConf)) {
+            console.warn('loadConf function hasn\'t be implemented for the run configurator type(' +
+                runConf.type + ')');
+            if (callback) {
+                callback(null, runConf);
             }
-            if(callback){
-                callback(err, runObject);
-            }
-        });
+        } else {
+            Delegator.get(runConf.type).loadConf($parent, runConf, function (err) {
+                if (err) {
+                    toastr.error(err);
+                }
+                if (callback) {
+                    callback(err, runConf);
+                }
+            });
+        }
     };
 
     module.saveConf = function(runConf, callback){
         console.log('saveConf', arguments);
-        Delegator.get(runConf.type).saveConf(runConf, function(err, runConf){
-            if(err){
-                toastr.error(err);
-            } else {
-                runConfigurationManager.save(runConf);
+        if(!_.isFunction(Delegator.get(runConf.type).loadConf)) {
+            console.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
+            runConfigurationManager.save(runConf);
+            if (callback) {
+                callback(null, runConf);
             }
-            if(callback){
-                callback(err, runConf);
-            }
-        });
+        } else {
+            Delegator.get(runConf.type).saveConf(runConf, function (err, runConf) {
+                if (err) {
+                    toastr.error(err);
+                } else {
+                    runConfigurationManager.save(runConf);
+                }
+                if (callback) {
+                    callback(err, runConf);
+                }
+            });
+        }
     };
 
-    module.deleteConf = function($parent, runObjectName, callback){
+    module.deleteConf = function($parent, runConfName, callback){
         console.log('deleteConf', arguments);
-        var conf = runConfigurationManager.getByName(runObjectName);
-        Delegator.get(conf.type).deleteConf(runObjectName, function(err){
-            if(err){
-                toastr.error(err);
-            } else {
-                runConfigurationManager.delete(runObjectName);
-                $parent.empty();
+        var runConf = runConfigurationManager.getByName(runConfName);
+        if(!_.isFunction(Delegator.get(runConf.type).deleteConf)) {
+            console.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
+            runConfigurationManager.delete(runConfName);
+            $parent.empty();
+            if (callback) {
+                callback(null, runConfName);
             }
-            if(callback){
-                callback(err, runObjectName);
-            }
-        });
+        } else {
+            Delegator.get(runConf.type).deleteConf(runConfName, function (err) {
+                if (err) {
+                    toastr.error(err);
+                } else {
+                    runConfigurationManager.delete(runConfName);
+                    $parent.empty();
+                }
+                if (callback) {
+                    callback(err, runConfName);
+                }
+            });
+        }
     };
 
     return module;

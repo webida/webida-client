@@ -7,7 +7,8 @@
     "extensionPoints" : {
         "webida.ide.project-management.run:type" : [
             { "name": "id", "type": "string" },
-            { "name": "name", "type": "string" }
+            { "name": "name", "type": "string" },
+            { "name": "hidden", "type": "boolean"}
         ],
         "webida.ide.project-management.run:configuration" : [
             { "name": "type", "type": "string", "desc": "run type id" },

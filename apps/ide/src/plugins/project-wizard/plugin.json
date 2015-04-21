@@ -72,16 +72,17 @@
         "webida.ide.project-configurator:run-configuration-type" : [
             {
                 "id" : "org.webida.run.mobile",
-                "name" : "Run As Mobile Application"
+                "name" : "Run As Mobile Application",
+                "hidden" : true
             }
         ],
-        "webida.ide.project-configurator:run-configuration" : [
+        "webida.ide.project-management.run:runner" : [
             {
+                "type" : "org.webida.run.mobile",
                 "module" : "plugins/project-wizard/run-commands",
                 "id" : "org.webida.run.mobile.device.delegate",
                 "name" : "Run with Device",
-                "type" : "org.webida.run.mobile",
-                "handler" : "run"
+                "run" : "run"
             }
         ]
     }
