@@ -38,8 +38,8 @@ define([
     var liveReloadHandleList = [];
 
     var extensionPoints = {
-        RUN_CONFIGURATION_TYPE: 'webida.ide.project-configurator:run-configuration-type',
-        RUN_CONFIGURATION: 'webida.ide.project-configurator:run-configuration',
+        RUN_CONFIGURATION_TYPE: 'webida.ide.project-management.run:type',
+        RUN_CONFIGURATION: 'webida.ide.project-management.run:configuration',
         RUN_CONFIGURATION_RUNNER: 'webida.ide.project-management.run:runner'
     };
     var runConfActions = pluginManager.getExtensions(extensionPoints.RUN_CONFIGURATION);
@@ -305,7 +305,13 @@ define([
                 if (err) {
                     toastr.error(err);
                 } else {
-                    runConfigurationManager.save(runConf);
+                    // validation for mandatory properties (name, project)
+                    if(runConf.name && runConf.project) {
+                        runConfigurationManager.save(runConf);
+                    } else {
+                        callback('You should fill the mandatory fields (run configuration name and target project)',
+                            runConf);
+                    }
                 }
                 if (callback) {
                     callback(err, runConf);

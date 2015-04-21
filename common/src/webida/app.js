@@ -651,15 +651,21 @@ define(['webida-lib/util/browserInfo',
     function getWorkspaceInfo(callback){
         var fsCache = getFSCache();
         var workspacePath = getPath();
+        var result = {
+            name: workspacePath.substring(1)
+        };
         if(fsCache && workspacePath){
             fsCache.list(workspacePath, function (err, files) {
                 if (err) {
                     callback(err);
                 } else {
-                    files = _.filter(files, function(file){
+                    result.projects = _.filter(files, function(file){
                         return file.isDirectory && file.name.charAt(0) !== '.';
                     });
-                    callback(null, files);
+                    result.projects = result.projects.map(function(project){
+                       return project.name;
+                    });
+                    callback(null, result);
                 }
             });
         } else {
@@ -722,7 +728,7 @@ define(['webida-lib/util/browserInfo',
     exports.saveStatus = saveStatus;
 
    /**
-    * A function that
+    * A function that get workspace information and its project list
     * @type {getWorkspaceInfo}
     */
     exports.getWorkspaceInfo = getWorkspaceInfo;
