@@ -45,8 +45,8 @@ define([
     var module = {};
 
     var extensionPoints = {
-        RUN_CONFIGURATION_TYPE: 'webida.ide.project-configurator:run-configuration-type',
-        RUN_CONFIGURATION: 'webida.ide.project-configurator:run-configuration',
+        RUN_CONFIGURATION_TYPE: 'webida.ide.project-management.run:type',
+        RUN_CONFIGURATION: 'webida.ide.project-management.run:configuration',
         RUN_CONFIGURATION_RUNNER: 'webida.ide.project-management.run:runner'
     };
 
@@ -510,16 +510,22 @@ define([
 
         ui.content.append(child);
 
-        ui.forms.select = new Select({ //FIXME get project list with utils
-            options: runConfManager.getProjects().map(function(project){
-                return {
-                    label: project,
-                    value: project
-                };
-            })
-        }, 'run-configuration-project');
-        ui.forms.select.startup();
-        ui.forms.select.set('value', runConf.project);
+        var projects = [];
+        ide.getWorkspaceInfo(function(err, workspaceInfo){
+            if(err){
+                toastr.error('failed to get project list');
+            } else {
+                projects = workspaceInfo.projects.map(function(project){
+                    return {
+                        value: project,
+                        label: project
+                    };
+                });
+                ui.forms.select = new Select({ options: projects }, 'run-configuration-project');
+                ui.forms.select.startup();
+                ui.forms.select.set('value', runConf.project);
+            }
+        });
 
         if(callback) {
             callback();
