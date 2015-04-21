@@ -648,6 +648,25 @@ define(['webida-lib/util/browserInfo',
         window.location.reload();
     }
 
+    function getWorkspaceInfo(callback){
+        var fsCache = getFSCache();
+        var workspacePath = getPath();
+        if(fsCache && workspacePath){
+            fsCache.list(workspacePath, function (err, files) {
+                if (err) {
+                    callback(err);
+                } else {
+                    files = _.filter(files, function(file){
+                        return file.isDirectory && file.name.charAt(0) !== '.';
+                    });
+                    callback(null, files);
+                }
+            });
+        } else {
+            callback('Cannot find workspace info.');
+        }
+    }
+
     /**
      * A function that boots Webida App with given workspace
      * @type {open_workspace}
@@ -701,6 +720,12 @@ define(['webida-lib/util/browserInfo',
      * A function that quits the App. TODO: document
      */
     exports.saveStatus = saveStatus;
+
+   /**
+    * A function that
+    * @type {getWorkspaceInfo}
+    */
+    exports.getWorkspaceInfo = getWorkspaceInfo;
 
     return exports;
 });
