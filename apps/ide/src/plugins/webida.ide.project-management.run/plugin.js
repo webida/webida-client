@@ -320,11 +320,10 @@ define([
         _runListBinded(index);
     };
 
-    module.runObjectChanged = function(action, runObject) {
-        console.log('webida.ide.project-management.run:configuration.changed', action, runObject);
+    module.runObjectChanged = function(action, runConf) {
+        console.log('webida.ide.project-management.run:configuration.changed', action, runConf);
         if(action === 'save'){
-            delegator.saveConf(runObject);
-            //runConfigurationManager.save(runObject);
+            runConfigurationManager.save(runConf);
             refreshRunConfigurationTree();
         }
     };
