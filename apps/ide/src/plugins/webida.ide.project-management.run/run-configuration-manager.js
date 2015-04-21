@@ -35,10 +35,10 @@ define(['webida-lib/app',
     var RUN_CONFIG_FILE_NAME = 'workspace.json';
     var PATH_RUN_CONFIG = PATH_WORKSPACE + '/' + WORKSPACE_INFO_DIR_NAME + '/' + RUN_CONFIG_FILE_NAME;
 
-    var topics = {
-        RUN_AS_DISABLED: 'toolbar.runas.disable',
-        RUN_AS_ENABLED: 'toolbar.runas.enable'
-    };
+    //var topics = {
+    //    RUN_AS_DISABLED: 'toolbar.runas.disable',
+    //    RUN_AS_ENABLED: 'toolbar.runas.enable'
+    //};
 
     var fsMount = ide.getFSCache();
 
@@ -68,33 +68,21 @@ define(['webida-lib/app',
                             var workspaceObj = JSON.parse(content);
                             if (workspaceObj.run && Object.getOwnPropertyNames(workspaceObj.run).length > 0) {
                                 next(null, workspaceObj.run);
+                            } else {
+                                next(null, {});
                             }
+                        }else{
+                            next(null, {});
                         }
-                        next(null, {});
                     });
                 } else {
-                    //topic.publish(topics.RUN_AS_DISABLED);
                     next(null, {});
                 }
             });
         }
 
-        function getAllProjects(next) {
-            fsMount.list(PATH_WORKSPACE, function (err, files) {
-                if (err) {
-                    console.error('loadRunConfigurations:list:' + ide.getPath(), err);
-                    next(err);
-                } else {
-                    files = _.filter(files, function(file){
-                        return file.isDirectory && file.name.charAt(0) !== '.';
-                    });
-                    next(null, files);
-                }
-            });
-        }
-
         async.parallel(
-            [readRunConfigurationFile, getAllProjects],
+            [readRunConfigurationFile, ide.getWorkspaceInfo],
             function (err, results) {
                 if(err){
                     toastr.error(err);
@@ -148,11 +136,12 @@ define(['webida-lib/app',
         if(path.charAt(0) === '/'){
             path = path.substring(1);
         }
+        var workspaceName = PATH_WORKSPACE.substring(1);
         var splitedPath = pathutil.detachSlash(path).split('/');
 
         if(splitedPath.length > 0) {
             result.name = splitedPath[splitedPath.length - 1];
-            var distanceFromWorkspace = splitedPath.length - splitedPath.indexOf(PATH_WORKSPACE);
+            var distanceFromWorkspace = splitedPath.length - splitedPath.indexOf(workspaceName);
             if (distanceFromWorkspace <= splitedPath.length) {
                 result.isInWorkspace = true;
                 if(distanceFromWorkspace === 1){
@@ -161,10 +150,11 @@ define(['webida-lib/app',
                     result.type = 'project';
                 } else if (distanceFromWorkspace === 2 && result.name === WORKSPACE_INFO_DIR_NAME) {
                     result.type = 'workspaceInfo';
-                } else if(distanceFromWorkspace === 3 && path.indexOf(PATH_RUN_CONFIG) > -1){
+                } else if(distanceFromWorkspace === 3 && result.name === RUN_CONFIG_FILE_NAME &&
+                    splitedPath[splitedPath.indexOf(workspaceName) + 1] === WORKSPACE_INFO_DIR_NAME){
                     result.type = 'runConfig';
                 } else {
-                    result.projectName = splitedPath[splitedPath.indexOf(PATH_WORKSPACE) + 1];
+                    result.projectName = splitedPath[splitedPath.indexOf(workspaceName) + 1];
                 }
             } else {
                 result.isInWorkspace = false;
@@ -183,10 +173,13 @@ define(['webida-lib/app',
             runConfigurationsByProject[newProjectName] = runConfigurationsByProject[oldProjectName];
             allProjects[allProjects.indexOf(oldProjectName)] = newProjectName;
             delete runConfigurationsByProject[oldProjectName];
+            flushRunConfigurations();
         },
         addNewProject: function(projectName){
             // change runConfigurationsByProject object
-            runConfigurationsByProject[projectName] = [];
+            if(!runConfigurationsByProject[projectName]) {
+                runConfigurationsByProject[projectName] = [];
+            }
             allProjects.push(projectName);
         },
         deleteProject: function(projectName){
@@ -198,6 +191,7 @@ define(['webida-lib/app',
             // change runConfigurationsByProject object
             delete runConfigurationsByProject[projectName];
             allProjects.splice(allProjects.indexOf(projectName), 1);
+            flushRunConfigurations();
         }
     };
 
@@ -214,7 +208,7 @@ define(['webida-lib/app',
             }
         });
 
-        topic.subscribe('fs.cache.file.set', function (fsURL, target, type, maybeModified) {
+        topic.subscribe('fs.cache.file.set', function (fsURL, target/*, type, maybeModified*/) {
             console.log('fs.cache.file.set', arguments);
             var targetPathInfo = _getPathInfo(target);
             if(targetPathInfo.type === 'runConfig'){
@@ -245,7 +239,7 @@ define(['webida-lib/app',
                 return;
             }
             var targetPathInfo = _getPathInfo(targetDir);
-            if (targetPathInfo.type === 'project') {
+            if (targetPathInfo.type === 'workspace') {
                 projectActions.deleteProject(name);
             } else if (targetPathInfo.type === 'workspaceInfo' || targetPathInfo.type === 'runConfig') {
                 loadRunConfigurations();
