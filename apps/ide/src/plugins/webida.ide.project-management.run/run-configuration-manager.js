@@ -111,12 +111,12 @@ define(['webida-lib/app',
      * flush updated run configurations to workspace.json file
      */
     function flushRunConfigurations(callback){
-        var content = JSON.stringify({run: runConfigurations});
         _.each(runConfigurations, function(runConf){
             if(runConf.unsaved){
                 delete runConfigurations[runConf.name];
             }
         });
+        var content = JSON.stringify({run: runConfigurations});
         fsMount.writeFile(PATH_RUN_CONFIG, content, function(err){
             if(err){
                 toastr.error(err);
