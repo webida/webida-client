@@ -37,7 +37,8 @@ define(['webida-lib/app',
         'webida-lib/plugins/workspace/plugin',
         'popup-dialog'
        ],
-function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg, projectConfigurator, runConfiguration, wv, PopupDialog) {
+function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg,
+          projectConfigurator, runConfiguration, wv, PopupDialog) {
     'use strict';
 
     // constructor
@@ -385,6 +386,8 @@ function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg, projectCon
         var listItem = {};
         listItem.name = name + '_run';
         listItem.path = path;
+        listItem.type = '';
+        listItem.project = name;
         run.list = [];
         run.list.push(listItem);
         run.selectedId = listItem.name;

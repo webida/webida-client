@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,13 +44,14 @@ define(['webida-lib/webida-0.3',
         'dijit/tree/ObjectStoreModel',
         './constants',
         './build/buildProfile',
-        './lib/util'
+        './lib/util',
+        'dojo/topic'
        ],
 function (webida, ide,
           toastr, _, Markdown, sly,
           aspect, Deferred, dom, on, ready, Memory, Observable,
           Dialog, TabContainer, ContentPane, reg, Tree, ObjectStoreModel,
-          Constants, BuildProfile, Util
+          Constants, BuildProfile, Util, topic
          )
 {
     'use strict';
@@ -199,9 +200,7 @@ function (webida, ide,
             conf.natures.push(NATURE_ID);
         }
 
-        var str = JSON.stringify(conf);
-        //console.log('project.json', str);
-        return str;
+        return conf;
     }
 
     function initPreviewImage() {
@@ -548,7 +547,7 @@ function (webida, ide,
                 id: 'templateTree',
                 model: templateModel,
                 showRoot: false,
-                visited: false,
+                visited: false
                 /*
                 onClick: function (treeItem) {
                     // resetAllDescriptions(tree_item);
@@ -636,7 +635,8 @@ function (webida, ide,
                 var type = item.template.app_class;
                 var path = item.template.app_main;
                 /* jshint camelcase: true */
-                var pConfText = createProjectConf(name, desc, type, path, options);
+                var pConf = createProjectConf(name, desc, type, path, options);
+                var pConfText = JSON.stringify(pConf);
                 var pcPath = Util.concatWFSPath([destSelect, projectName, '.project']).replace(destFS, '');
 
                 mountDest.createDirectory(pcPath,
@@ -650,6 +650,8 @@ function (webida, ide,
                         //onCloseProject();
                     }));
                 }));
+
+                topic.publish('webida.ide.project-management.run:configuration.changed', 'save', pConf.run.list[0]);
             }
 
             function copy() {
