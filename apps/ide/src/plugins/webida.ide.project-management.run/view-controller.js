@@ -51,9 +51,12 @@ define([
     };
 
     function _getAllTypes(){
+        var types = pluginManager.getExtensions(extensionPoints.RUN_CONFIGURATION_TYPE);
+        var availableTypesInUI = _.filter(types, function(type){
+            return !type.hidden;
+        });
         // add default type
-        return [{id:'', name: 'General Web Application'}]
-            .concat(pluginManager.getExtensions(extensionPoints.RUN_CONFIGURATION_TYPE));
+        return [{id:'', name: 'General Web Application'}].concat(availableTypesInUI);
     }
 
     var selected = {
@@ -81,12 +84,12 @@ define([
         }
     };
 
-    var css = {
-        classes: {
-            DISPLAY_NONE: 'rcw-display-none',
-            DISPLAY_BLOCK: 'rcw-display-block'
-        }
-    };
+    //var css = {
+    //    classes: {
+    //        DISPLAY_NONE: 'rcw-display-none',
+    //        DISPLAY_BLOCK: 'rcw-display-block'
+    //    }
+    //};
 
     module.refreshTree = function(){
         ui.tree = $('#run-configuration-list-tree').empty();

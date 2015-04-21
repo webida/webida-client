@@ -72,7 +72,8 @@
         "webida.ide.project-configurator:run-configuration-type" : [
             {
                 "id" : "org.webida.run.mobile",
-                "name" : "Run As Mobile Application"
+                "name" : "Run As Mobile Application",
+                "hidden" : true
             }
         ],
         "webida.ide.project-management.run:runner" : [
