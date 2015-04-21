@@ -88,13 +88,12 @@ define(['webida-lib/app',
                     toastr.error(err);
                 } else {
                     runConfigurations = results[0];
-                    var projects = results[1];
-                    if(!_.isEmpty(projects)){
+                    allProjects = results[1].projects;
+                    if(!_.isEmpty(allProjects)){
                         runConfigurationsByProject = _.groupBy(runConfigurations, 'project');
-                        _.each(projects, function(project){
-                            allProjects.push(projects.name);
-                            if(!runConfigurationsByProject[project.name]){
-                                runConfigurationsByProject[project.name] = [];
+                        _.each(allProjects, function(project){
+                            if(!runConfigurationsByProject[project]){
+                                runConfigurationsByProject[project] = [];
                             }
                         });
                     }
@@ -359,9 +358,6 @@ define(['webida-lib/app',
                 });
                 callback(htmlPaths);
             }
-        };
-        this.getProjects = function(){  // FIXME temporary
-            return _.keys(runConfigurationsByProject);
         };
     }
 
