@@ -130,10 +130,12 @@ define([
             });
         });
 
-        if(!selected.runConf || selected.runConf.unsaved) {
-            ui.btns.runButton.setDisabled(true);
-        } else {
-            ui.btns.runButton.setDisabled(false);
+        if(ui.btns.runButton) {
+            if (!selected.runConf || selected.runConf.unsaved) {
+                ui.btns.runButton.setDisabled(true);
+            } else {
+                ui.btns.runButton.setDisabled(false);
+            }
         }
     };
 
