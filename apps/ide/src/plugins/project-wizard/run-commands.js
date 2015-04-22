@@ -37,7 +37,6 @@ define(['webida-lib/app',
         'dojox/grid/enhanced/plugins/IndirectSelection',
         'dijit/registry',
         'webida-lib/plugins/workspace/plugin',
-        'plugins/webida.ide.project-management.run/run-configuration-manager',      //FIXME remove
         'text!./layer/debug-layout.html',
         './export-commands',
         './constants',
@@ -47,7 +46,7 @@ define(['webida-lib/app',
        ],
 function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
            ObjectStore, Memory, EnhancedGrid, IndirectSelection, reg,
-           wv, projectConfigurator, tplLayout, exportViewCommand, Constants, Launcher, ViewCommand, Util) {
+           wv, tplLayout, exportViewCommand, Constants, Launcher, ViewCommand, Util) {
     'use strict';
 
     function RunCommand() {
@@ -56,6 +55,11 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
     }
 
     var NAME = 'Mobile Application';
+
+    RunCommand.Modes = {
+        DEBUG_MODE: 'debug',
+        RUN_MODE: 'run'
+    };
 
     RunCommand.ConfigurationTypes = {
         MOBILE: 'org.webida.run.mobile'
@@ -105,20 +109,27 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
     RunCommand.prototype.constructor = RunCommand;
 
     // Called from project-configurator plugin
-    RunCommand.prototype.run = function (projectProperty, mode, runObject) {
-        console.log('run (mode: ' + mode + ')');
-        if (mode === projectConfigurator.RUN_MODE) {
-            switch (runObject[RunCommand.RunOptions.TYPE]) {
-            case RunCommand.RunTypes.DEVICE :
-                this.runDevice(projectProperty, runObject[RunCommand.Options.DEVICE]);
-                break;
-            case RunCommand.RunTypes.BROWSER_RIPPLE :
-                this.runRipple(projectProperty, runObject[RunCommand.RunOptions.PROFILE]);
-                break;
+    RunCommand.prototype.run = function (runObject, callback, mode) {
+        mode = (mode) ? mode :  RunCommand.Modes.RUN_MODE;
+        ide.getProjectInfo(runObject.project, function(err, projectProperty){
+            if(err){
+                callback(err);
+            } else {
+                if (mode ===  RunCommand.Modes.RUN_MODE) {
+                    switch (runObject[RunCommand.RunOptions.TYPE]) {
+                        case RunCommand.RunTypes.DEVICE :
+                            this.runDevice(projectProperty, runObject[RunCommand.Options.DEVICE]);
+                            break;
+                        case RunCommand.RunTypes.BROWSER_RIPPLE :
+                            this.runRipple(projectProperty, runObject[RunCommand.RunOptions.PROFILE]);
+                            break;
+                    }
+                } else if (mode ===  RunCommand.Modes.DEBUG_MODE) {
+                    this.debugWith(runObject[RunCommand.DebugOptions.TYPE], runObject[RunCommand.Options.DEVICE]);
+                }
+                callback(null, runObject);
             }
-        } else if (mode === projectConfigurator.DEBUG_MODE) {
-            this.debugWith(runObject[RunCommand.DebugOptions.TYPE], runObject[RunCommand.Options.DEVICE]);
-        }
+        });
     };
 
     RunCommand.prototype._getProjectPath = function (projectInfo) {
@@ -489,7 +500,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                         indirectSelection: {
                             width: '20px'
                         }
-                    },
+                    }
                     //onRowDblClick: function (test) { }
                 }, dojo.query('#debugGrid')[0]);
                 this.grid.startup();
@@ -501,7 +512,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                     this.selected = items[0].id;
                 }
                 dlg.hide();
-            },
+            }
         });
         dlg.set('doLayout', false);
         dlg.setContentArea(tplLayout);
