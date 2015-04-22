@@ -673,6 +673,88 @@ define(['webida-lib/util/browserInfo',
         }
     }
 
+
+    function _checkProjectInfoDir(projectName, callback){
+        var fsCache = getFSCache();
+        var projectPath = getPath() + '/' + projectName;
+        var projectInfoDir = projectPath + '/.project';
+        fsCache.exists(projectPath, function (err, exist) {
+            if(err){
+                return callback(err);
+            } else {
+                if(exist){
+                    fsCache.exist(projectInfoDir, function(err, exist){
+                        if(err) {
+                            return callback(err);
+                        } else {
+                            if(exist){
+                                return callback();
+                            } else {
+                                fsCache.createDirectory(projectInfoDir, function (err) {
+                                    return callback(err);
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    return callback(projectName + ' is not valid project name.');
+                }
+            }
+        });
+    }
+
+    function _addProjectInfo(projectName, callback){
+        var fsCache = getFSCache();
+        var projectInfoPath = getPath() + '/' + projectName + '/.project/project.json';
+        _checkProjectInfoDir(projectName, function(err){
+            if(err){
+                return callback(err);
+            } else {
+                //make project.json file
+                var projectInfo = {
+                    'name': projectName,
+                    'description': '',
+                    'created': new Date().toGMTString(),
+                    'type': '',
+                    'path': projectInfoPath,
+                    'isProject' : true
+                };
+
+                fsCache.writeFile(projectInfoPath, JSON.stringify(projectInfo), function (err) {
+                    if(err){
+                        return callback(err);
+                    } else {
+                        return callback(null, projectInfo);
+                    }
+                });
+            }
+        });
+    }
+
+    function getProjectInfo(projectName, callback){
+        var fsCache = getFSCache();
+        var projectInfoPath = getPath() + '/' + projectName + '/.project/project.json';
+        fsCache.exists(projectInfoPath, function (err, exist) {
+            if(err){
+                return callback(err);
+            } else {
+                if(exist){
+                    fsCache.readFile(projectInfoPath, function (err, content) {
+                        if(err){
+                            return callback(err);
+                        } else {
+                            return callback(null, JSON.parse(content));
+                        }
+                    });
+                } else {
+                    _addProjectInfo(projectName, function(err, projectInfo){
+                        return callback(err, projectInfo);
+                    });
+                }
+            }
+        });
+    }
+
     /**
      * A function that boots Webida App with given workspace
      * @type {open_workspace}
@@ -732,6 +814,12 @@ define(['webida-lib/util/browserInfo',
     * @type {getWorkspaceInfo}
     */
     exports.getWorkspaceInfo = getWorkspaceInfo;
+
+   /**
+    * A function that get project information by project name
+    * @type {getProjectInfo}
+    */
+    exports.getProjectInfo = getProjectInfo;
 
     return exports;
 });

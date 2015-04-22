@@ -267,11 +267,12 @@ define([
         }
 
         var projectName = parseProjectNameFromPath(contextPath);
-        var runConf = runConfigurationManager.getByProjectName(projectName);
-        if (!runConf) {
+        var runConfigurations = runConfigurationManager.getByProjectName(projectName);
+        if (_.isEmpty(runConfigurations)) {
             openRunConfigurationDialog();
         } else {
-            _runBinded(runConf, mode);
+            var latestRuns = _.where(runConfigurations, {latestRun: true});
+            _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0]);
         }
     };
 
