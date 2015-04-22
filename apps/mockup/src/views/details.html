@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.css">
-		<link rel="stylesheet" href="../../css/app.css">
+		<link rel="stylesheet" href="../css/app.css">
 	</head>
 	<body>
 		<div class="container">
@@ -42,39 +42,11 @@
 							</div>
 							<div class="form-group">
 								<label for="deviceDesc">Description</label>
-								<textarea class="form-control" id="deviceDesc" row="2" readonly>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore alias ducimus temporibus cum ipsam, consequuntur, exercitationem repellat molestias corporis! Numquam itaque et aliquam, illum quam autem facere nemo officia sequi.</textarea>
+								<textarea class="form-control" id="deviceDesc" row="2" readonly></textarea>
 							</div>
 							<div class="form-group">
 								<label for="msgFormat">Format [ReadOnly]</label>
-								<div><textarea id="msgFormat" name="msgFormat">
-{
-  "@context": {
-    "name": "http://schema.org/name",
-    "description": "http://schema.org/description",
-    "image": {
-      "@id": "http://schema.org/image",
-      "@type": "@id"
-    },
-    "geo": "http://schema.org/geo",
-    "latitude": {
-      "@id": "http://schema.org/latitude",
-      "@type": "xsd:float"
-    },
-    "longitude": {
-      "@id": "http://schema.org/longitude",
-      "@type": "xsd:float"
-    },
-    "xsd": "http://www.w3.org/2001/XMLSchema#"
-  },
-  "name": "The Empire State Building",
-  "description": "The Empire State Building is a 102-story landmark in New York City.",
-  "image": "http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg",
-  "geo": {
-    "latitude": "40.75",
-    "longitude": "73.98"
-  }
-}
-								</textarea></div>
+								<div><textarea id="msgFormat" name="msgFormat"></textarea></div>
 							</form>
 						</div>
 					</div>
@@ -82,16 +54,39 @@
 				</div>
 			</div>
 		</div>
-		
 		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.js"></script>
-		<script src="../../lib/codemirror/mode/javascript.js"></script>
+		<script src="../lib/codemirror/mode/javascript.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
+		<script src="../lib/common.js"></script>
 		<script>
 			$(document).ready(function() {
+				var url = window.location.href;
+				var messageCode = url.substr(url.indexOf('?')+1);
+
+				var msgName = $('#msgName')[0];
+				var msgVer = $('#msgVer')[0];
+				var deviceModel = $('#deviceModel')[0];
+				var deviceDesc = $('#deviceDesc')[0];
+				var msgFormat = $('#msgFormat')[0];
+
+				MessageService.test(function (err, data) {
+					var jsonData = JSON.parse(data);
+					
+					jsonData.forEach(function (data) {
+						if (data.messageCode === messageCode) {
+							msgName.value = data.messageName;
+							msgVer.value = data.formatVersion;
+							deviceModel.value = data.deviceModel;
+							deviceDesc.value = data.description;
+							editor.setValue(data.format);
+						}
+					});
+				});
+
 				var editor = CodeMirror.fromTextArea(document.getElementById('msgFormat'), {
 					lineNumbers: true,
 					readOnly: true,
@@ -102,7 +97,7 @@
 				});
 
 				$('#btnShowlists').click(function () {
-					window.location.href = 'list.html';
+					window.location.href = 'lists.html';
 				});
 
 				$('#btnToggle').click(function () {
@@ -118,7 +113,7 @@
 
 						self.value = 'Save changes';
 					} else if (self.value === 'Save changes') {
-						window.location.href = 'list.html';
+						window.location.href = 'lists.html';
 					}
 				});
 			});
