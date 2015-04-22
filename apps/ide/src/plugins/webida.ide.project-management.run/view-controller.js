@@ -35,7 +35,8 @@ define([
     'text!./run-configuration.html',
     'text!./default-run-configuration.html',
     'other-lib/underscore/lodash.min',
-    'other-lib/toastr/toastr'
+    'other-lib/toastr/toastr',
+    'xstyle/css!./style.css'
 ], function(ide, workbench, workspace, pluginManager, runConfManager, delegator, topic, Memory, Observable, registry,
             ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
             windowTemplate, contentTemplate, _, toastr){
@@ -128,8 +129,9 @@ define([
                 } else {
                     selected.type = typeId;
                 }
-                ui.tree.find('li a').removeClass('selected');
-                $(this).addClass('selected');
+                ui.tree.find('.selected').removeClass('selected');
+                ui.tree.find('[data-run-id="' + runName + '"]').addClass('selected');
+                ui.tree.find('[data-type-id="' + typeId + '"]:not([data-run-id])').addClass('selected');
             });
         });
 
@@ -183,7 +185,7 @@ define([
                     addRunToListPane(selected.runConf);
                 }
 
-                ui.btns.createNewButton = registry.byId('run-configuration-crete-button');
+                ui.btns.createNewButton = registry.byId('run-configuration-create-button');
                 dojo.connect(ui.btns.createNewButton, 'onClick', function () {
                     var runConfs = runConfManager.getAll();
                     var unsaved = _.where(runConfs, {unsaved: true});
@@ -445,8 +447,11 @@ define([
         if(registry.byId('run-configuration-project')) {
             registry.byId('run-configuration-project').destroyRecursive();
         }
+        if(registry.byId('rcw-action-save')) {
+            registry.byId('rcw-action-save').destroyRecursive();
+        }
         var markup = new ContentPane({
-            style: 'text-indent:20px; line-height:100%',
+           /* style: 'text-indent:20px; line-height:100%',*/
             content: contentTemplate
         });
 
@@ -478,8 +483,8 @@ define([
             deleteButtonClicked(runConf, markup);
         });
 
-        ui.btns.saveButton = $(child).find('.rcw-action-save');
-        addButtonCssClass(ui.btns.saveButton, '24');
+        /*ui.btns.saveButton = $(child).find('.rcw-action-save');
+        addButtonCssClass(ui.btns.saveButton, '24');*/
 
         ui.btns.pathButton = $(child).find('.rcw-action-path');
         addButtonCssClass(ui.btns.pathButton, '20');
@@ -500,9 +505,14 @@ define([
             ui.forms.checkBoxes[0].checked = false;
         }
 
-        ui.btns.saveButton.bind('mouseup', function () {
+        ui.btns.saveButton = registry.byId('rcw-action-save');
+        dojo.connect(ui.btns.saveButton, 'onClick', function () {
             saveButtonClicked(title);
         });
+
+        //ui.btns.saveButton.bind('mouseup', function () {
+        //    saveButtonClicked(title);
+        //});
 
         ui.btns.pathButton.bind('mouseup', function () {
             pathButtonClicked();

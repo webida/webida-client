@@ -158,9 +158,9 @@ define([
                 if(module && delegatorMethodName){
                     allActions[delegatorType] = function(){
                         var args = arguments;
-                        require([module], function (module) {
-                            if(module[delegatorMethodName]){
-                                module[delegatorMethodName].apply(module, args);
+                        require([module], function (md) {
+                            if(md[delegatorMethodName]){
+                                md[delegatorMethodName].apply(md, args);
                             } else {
                                 if(args.length > 0) {
                                     var callback = args[args.length - 1];
