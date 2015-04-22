@@ -15,41 +15,5 @@
             { "name": "type", "type": "string" },
             { "name": "handler", "type": "function" }
         ]
-    },
-
-    "extensions": {
-        "webida.common.workbench:menu" : {
-            "location" : "/&Project/",
-            "wholeItems" : {
-
-                "&Run" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+R" }, "desc" : "Run recent project" } } ],
-                "Run &with" : [ "enum",
-                               {
-                                   "toolbar": {
-                                       "icons" : "./styles/webida-images/icons/toolbar_runhistory.png",
-                                       "tooltip" : "Run with",
-                                       "enabledOn":"toolbar.runas.enable",
-                                       "disabledOn":"toolbar.runas.disable"
-                                   }
-                               }]
-            },
-            "getViableItems" : "getViableItemsForWorkbench"
-        },
-
-        "webida.common.workspace:menu" : {
-            "location" : "/",
-            "wholeItems" : {
-                "&Run" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+R" }, "desc" : "Run current project" } } ],
-                "Run &with" : ["enum"]
-            },
-            "getViableItems" : "getViableItemsForWorkspaceView"
-        }
-    },
-
-    "subscriptions": {
-        "#REQUEST.tellAppEntryHTMLs": {
-            "module": "plugins/project-configurator/projectConfigurator",
-            "handler": "getProjectRootHtml"
-        }
     }
 }
