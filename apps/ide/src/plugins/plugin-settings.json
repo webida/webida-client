@@ -5,6 +5,7 @@
         "plugins/help",
         "plugins/preference",
         "plugins/project-configurator",
+        "plugins/webida.ide.project-management.run",
         "plugins/project-wizard",
         "plugins/uid-menu-items",
         "webida-lib/plugins/editors",
