@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Message Format Registration</title>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h2>Service Registration</h2>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<input id="btnRegister" class="btn btn-primary" type="button" value="Register">
+				</div>
+			</div>
+			<div class="row" role="tabpanel">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#format" aria-controls="format" role="tab" data-toggle="tab">Script Service</a></li>
+					<li role="presentation"><a href="#history" aria-controls="history" role="tab" data-toggle="tab">History</a></li>
+				</ul>
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="format">
+						<form>
+							<div class="form-group">
+								<label for="serviceName">Service Name</label>
+								<input type="text" class="form-control" id="msgName">
+							</div>
+							<div class="form-group">
+								<label for="serviceDesc">Description</label>
+								<input type="text" class="form-control" id="msgVer">
+							</div>
+							<div class="form-group">
+								<label for="messageCD">Message Code</label>
+								<input type="text" class="form-control" id="deviceModel">
+							</div>
+							<div class="form-group">
+								<label for="serviceType">Service Type</label>
+								<textarea class="form-control" id="deviceDesc" row="2"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="serviceSource">Srouce</label>
+								<textarea id="serviceSource"></textarea>
+							</form>
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="history"></div>
+				</div>
+			</div>
+			<div class="row">
+			</div>
+		</div>
+		
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.js"></script>
+		<script src="../../lib/codemirror/mode/javascript.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				var editor = CodeMirror.fromTextArea(document.getElementById('serviceSource'), {
+					lineNumbers: true,
+					readOnly: false,
+					theme: 'monokai',
+					mode: 'text/x-java',
+					styleActiveLine: true,
+					scrollbarStyle: 'simple'
+				});
+			});
+
+			$('#btnRegister').click(function() {
+				window.location.href = './ServiceList.html';
+			})
+		</script>
+	</body>
+</html>

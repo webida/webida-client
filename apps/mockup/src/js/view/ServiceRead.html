@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Service Details</title>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h2>Service Details</h2>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<input id="btnShowlists" class="btn btn-primary" type="button" value="Show lists">
+					<input id="btnToggle" class="btn btn-primary" type="button" value="Modify">
+				</div>
+			</div>
+			<div class="row" role="tabpanel">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#format" aria-controls="format" role="tab" data-toggle="tab">Foramt</a></li>
+					<li role="presentation"><a href="#history" aria-controls="history" role="tab" data-toggle="tab">History</a></li>
+				</ul>
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="format">
+						<form>
+							<div class="form-group">
+								<label for="serviceName">Service Name</label>
+								<input type="text" class="form-control" id="msgName" readonly>
+							</div>
+							<div class="form-group">
+								<label for="serviceDesc">Description</label>
+								<input type="text" class="form-control" id="msgVer" readonly>
+							</div>
+							<div class="form-group">
+								<label for="messageCD">Message Code</label>
+								<input type="text" class="form-control" id="deviceModel" readonly>
+							</div>
+							<div class="form-group">
+								<label for="serviceType">Service Type</label>
+								<textarea class="form-control" id="deviceDesc" row="2" readonly>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore alias ducimus temporibus cum ipsam, consequuntur, exercitationem repellat molestias corporis! Numquam itaque et aliquam, illum quam autem facere nemo officia sequi.</textarea>
+							</div>
+							<div class="form-group">
+								<label for="serviceSource">Source [ReadOnly]</label>
+								<div><textarea id="msgFormat" name="msgFormat">
+{
+  "@context": {
+    "name": "http://schema.org/name",
+    "description": "http://schema.org/description",
+    "image": {
+      "@id": "http://schema.org/image",
+      "@type": "@id"
+    },
+    "geo": "http://schema.org/geo",
+    "latitude": {
+      "@id": "http://schema.org/latitude",
+      "@type": "xsd:float"
+    },
+    "longitude": {
+      "@id": "http://schema.org/longitude",
+      "@type": "xsd:float"
+    },
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "name": "The Empire State Building",
+  "description": "The Empire State Building is a 102-story landmark in New York City.",
+  "image": "http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg",
+  "geo": {
+    "latitude": "40.75",
+    "longitude": "73.98"
+  }
+}
+								</textarea></div>
+							</form>
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="history"></div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.js"></script>
+		<script src="../../lib/codemirror/mode/javascript.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				var editor = CodeMirror.fromTextArea(document.getElementById('msgFormat'), {
+					lineNumbers: true,
+					readOnly: true,
+					theme: 'monokai',
+					mode: 'application/ld+json',
+					styleActiveLine: true,
+					scrollbarStyle: 'simple'
+				});
+
+				$('#btnShowlists').click(function () {
+					window.location.href = './ServiceList.html';
+				});
+
+				$('#btnToggle').click(function () {
+					var self = $(this)[0];
+
+					if (self.value === 'Modify') {
+						var oldDatas = $('[readonly]');
+						oldDatas.each(function(i, node) {
+							$(node).attr('readonly', false);
+						});
+
+						editor.setOption('readOnly', false);
+
+						self.value = 'Save changes';
+					} else if (self.value === 'Save changes') {
+						window.location.href = 'ServiceList.html';
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
