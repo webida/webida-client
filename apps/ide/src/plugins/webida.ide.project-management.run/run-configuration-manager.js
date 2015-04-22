@@ -253,8 +253,6 @@ define(['webida-lib/app',
 
     function RunConfigurationManager(){
         var self = this;
-        this.DEBUG_MODE = 'debug'; //FIXME remove (ref. project-wizard/run-commands.js)
-        this.RUN_MODE = 'run'; //FIXME remove (ref. project-wizard/run-commands.js)
 
         this.flushRunConfigurations = flushRunConfigurations;
         this.getByPath = function(path) {
