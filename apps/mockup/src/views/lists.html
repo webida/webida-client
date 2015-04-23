@@ -12,8 +12,8 @@
 				<h2>Message Format List</h2>
 			</div>
 			<div class="row">
-				<div class="pull-right">
-					<input id="btnAdd" class="btn btn-primary" type="button" value="Add">
+				<div>
+					<input id="btnAdd" class="btn btn-primary pull-right" type="button" value="Add">
 				</div>
 			</div>
 			<div class="row">
@@ -35,22 +35,23 @@
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<script src="//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-		<script src="../lib/common.js"></script>
+		<script src="../lib/services.js"></script>
 		<script>
 			$(document).ready(function() {
-				$.ajax({
-					url: '../test/model.json',
-					method: 'GET',
-					success: function (data) {
+				var MsgFmt = Services.MsgFmt;
+				
+				MsgFmt.lists({ limit: 10000 }, function (err, data) {
+					if (err) {
+						console.error(err);
+					} else {
 						$('#example').dataTable({
 							'info': false,
 							'searching': false,
 							'lengthChange': false,
-							// 'ajax': '../test/model.json',
-							'data': JSON.parse(data),
-							'order': [],
+							'data': data.list,
+							'order': [ [ 3 , 'desc' ] ],
 							'columns': [
-								{ 'data': 'deviceModel' },
+								{ 'data': 'thingModel' },
 								{ 'data': 'messageName' },
 								{ 'data': 'formatVersion' },
 								{ 'data': 'regDate' }
@@ -67,20 +68,17 @@
 								}
 							]
 						});
-					},
-					error: function (xhr, res, error) {
-						console.error(xhr, res, error);
+
+						$('#example tbody').on('click', 'tr', function () {
+							var messageCode = $(this).data('id');
+							window.location.href = 'details.html?' + messageCode;
+						});
 					}
-				}).done(function () {
-					MessageService.lists({ }, function (err, data) {
+				});
 
-					});
 
-					$('#example tbody').on('click', 'tr', function () {
-						var messageCode = $(this).data('id');
-
-						window.location.href = 'details.html?' + messageCode;
-					});
+				$('#btnAdd').on('click', function () {
+					window.location.href = 'registration.html';
 				});
 			});
 		</script>

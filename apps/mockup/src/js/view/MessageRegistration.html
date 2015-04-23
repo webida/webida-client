@@ -2,22 +2,21 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Message Format Details</title>
+		<title>Message Format Registration</title>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.css">
-		<link rel="stylesheet" href="../css/app.css">
+		<link rel="stylesheet" href="../../css/app.css">
 	</head>
 	<body>
 		<div class="container">
 			<div class="row">
-				<h2>Message Format Details</h2>
+				<h2>Message Format Registration</h2>
 			</div>
 			<div class="row">
 				<div class="pull-right">
-					<input id="btnShowlists" class="btn btn-primary" type="button" value="Show lists">
-					<input id="btnToggle" class="btn btn-primary" type="button" value="Modify">
+					<input id="btnShowlists" class="btn btn-default" type="button" value="Back">
 				</div>
 			</div>
 			<div class="row" role="tabpanel">
@@ -27,94 +26,83 @@
 				</ul>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="format">
-						<form>
+						<form id="registerForm" role="form">
+							<div class="form-group form-right">
+								<input id="btnRegister" class="btn btn-primary btn-right" type="submit" value="Register">
+							</div>
 							<div class="form-group">
 								<label for="msgName">Message Name</label>
-								<input type="text" class="form-control" id="msgName" readonly>
+								<input type="text" class="form-control" id="msgName" required autofocus>
 							</div>
 							<div class="form-group">
 								<label for="msgVer">Format Ver.</label>
-								<input type="text" class="form-control" id="msgVer" readonly>
+								<input type="text" class="form-control" id="msgVer" required>
 							</div>
 							<div class="form-group">
-								<label for="deviceModel">Device Model</label>
-								<input type="text" class="form-control" id="deviceModel" readonly>
+								<label for="deviceModel">Thing Model</label>
+								<input type="text" class="form-control" id="deviceModel" required>
 							</div>
 							<div class="form-group">
 								<label for="deviceDesc">Description</label>
-								<textarea class="form-control" id="deviceDesc" row="2" readonly></textarea>
+								<textarea class="form-control" id="deviceDesc" row="2" required></textarea>
 							</div>
 							<div class="form-group">
-								<label for="msgFormat">Format [ReadOnly]</label>
-								<div><textarea id="msgFormat" name="msgFormat"></textarea></div>
-							</form>
-						</div>
-					</div>
+								<label for="msgFormat">Format</label>
+								<textarea id="msgFormat" required></textarea>
+							</div>
+						</form>
 					<div role="tabpanel" class="tab-pane" id="history"></div>
 				</div>
 			</div>
 		</div>
+		
 		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.js"></script>
-		<script src="../lib/codemirror/mode/javascript.js"></script>
+		<script src="../../lib/codemirror/mode/javascript.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
-		<script src="../lib/common.js"></script>
+		<script src="../../lib/services.js"></script>
 		<script>
 			$(document).ready(function() {
-				var url = window.location.href;
-				var messageCode = url.substr(url.indexOf('?')+1);
+				var MsgFmt = Services.MsgFmt;
 
-				var msgName = $('#msgName')[0];
-				var msgVer = $('#msgVer')[0];
-				var deviceModel = $('#deviceModel')[0];
-				var deviceDesc = $('#deviceDesc')[0];
-				var msgFormat = $('#msgFormat')[0];
-
-				MessageService.test(function (err, data) {
-					var jsonData = JSON.parse(data);
-					
-					jsonData.forEach(function (data) {
-						if (data.messageCode === messageCode) {
-							msgName.value = data.messageName;
-							msgVer.value = data.formatVersion;
-							deviceModel.value = data.deviceModel;
-							deviceDesc.value = data.description;
-							editor.setValue(data.format);
-						}
-					});
-				});
+				var msgName = $('#msgName');
+				var msgVer = $('#msgVer');
+				var deviceModel = $('#deviceModel');
+				var deviceDesc = $('#deviceDesc');
+				var msgFormat = $('#msgFormat');
 
 				var editor = CodeMirror.fromTextArea(document.getElementById('msgFormat'), {
 					lineNumbers: true,
-					readOnly: true,
+					readOnly: false,
 					theme: 'monokai',
 					mode: 'application/ld+json',
 					styleActiveLine: true,
 					scrollbarStyle: 'simple'
 				});
-
-				$('#btnShowlists').click(function () {
-					window.location.href = 'lists.html';
+				
+				$('#btnShowlists').on('click', function () {
+					window.location.href = 'MessageList.html';
 				});
 
-				$('#btnToggle').click(function () {
-					var self = $(this)[0];
+				$('#btnRegister').on('click', function() {
+					var registerData = {
+						messageName: msgName[0].value,
+						formatVersion: msgVer[0].value,
+						thingModel: deviceModel[0].value,
+						description: deviceDesc[0].value,
+						format: editor.getValue()
+					};
 
-					if (self.value === 'Modify') {
-						var oldDatas = $('[readonly]');
-						oldDatas.each(function(i, node) {
-							$(node).attr('readonly', false);
-						});
-
-						editor.setOption('readOnly', false);
-
-						self.value = 'Save changes';
-					} else if (self.value === 'Save changes') {
-						window.location.href = 'lists.html';
-					}
+					MsgFmt.registerThing(registerData, function (err, data) {
+						if (err) {
+							console.error(err);
+						} else {
+							window.location.href = 'MessageList.html';
+						}
+					});
 				});
 			});
 		</script>
