@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,10 +33,12 @@ define(['webida-lib/app',
         'dojo/Deferred',
         'dijit/registry',
         'plugins/project-configurator/projectConfigurator',
+        'plugins/webida.ide.project-management.run/run-configuration-manager',
         'webida-lib/plugins/workspace/plugin',
         'popup-dialog'
        ],
-function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg, projectConfigurator, wv, PopupDialog) {
+function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg,
+          projectConfigurator, runConfiguration, wv, PopupDialog) {
     'use strict';
 
     // constructor
@@ -336,9 +338,13 @@ function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg, projectCon
     Util.getProjectPath = function (paths) {
         if (paths && paths.length === 1) {
             var path = paths[0];
-            return projectConfigurator.getProjectRootPath(path);
+            return pathUtil.getProjectRootPath(path);
         }
         return null;
+    };
+
+    Util.getRunConfiguration = function (projectName, cb) {
+        runConfiguration.getByProjectName(projectName, cb);
     };
 
     Util.getProjectConfiguration = function (projectName, cb) {
@@ -367,8 +373,12 @@ function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg, projectCon
         */
     };
 
-    Util.saveProject = function (projectInfo, cb) {
-        projectConfigurator.saveProjectProperty(ide.getPath() + '/' + projectInfo.name + '/', projectInfo, cb);
+    Util.saveProjectBuild = function (projectInfo, cb) {
+        projectConfigurator.saveProjectProperty(projectInfo.name, projectInfo, cb);
+    };
+
+    Util.saveProjectRun = function (projectName, projectInfo, cb) {
+        runConfiguration.set(projectName, projectInfo, cb);
     };
 
     Util.createRunConfiguration = function (name, path) {
@@ -376,27 +386,30 @@ function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg, projectCon
         var listItem = {};
         listItem.name = name + '_run';
         listItem.path = path;
+        listItem.type = '';
+        listItem.project = name;
         run.list = [];
         run.list.push(listItem);
         run.selectedId = listItem.name;
         return run;
     };
 
-    Util.addRunConfiguration = function (run, name, path, selected, updateIfExist) {
-        var result = $.grep(run.list, function (e) {
+    Util.addRunConfiguration = function (projectName, run, name, path, selected, updateIfExist) {
+        var result = $.grep(run, function (e) {
             return e.name === name;
         });
 
         var listItem;
         var update = updateIfExist && result[0];
         if (update) {
-            listItem = run.list[run.list.indexOf(result[0])];
+            listItem = run[run.indexOf(result[0])];
             listItem.path = path;
         } else {
             listItem = {};
             listItem.name = name;
             listItem.path = path;
-            run.list.push(listItem);
+            listItem.project = projectName;
+            run.push(listItem);
         }
 
         if (selected) {

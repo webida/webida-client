@@ -716,7 +716,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         'js': [['javascript'], 'text/javascript'],
         'json': [['javascript'], 'application/json'],
         'ts': [['javascript'], 'application/typescript'],
-        'html': [['xml', 'vbscript', 'javascript', 'css', 'htmlmixed'], 'text/html'],
+        'html': [['vbscript', 'javascript', 'css', 'htmlmixed'], 'text/html'],
         'css': [['css'], 'text/css'],
         'less': [['less'], 'text/less'],
         'c': [['clike'], 'text/x-csrc'],
@@ -753,7 +753,8 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         'schema': [['schema'], 'text/x-scheme'],
         'vbs': [['vbscript'], 'text/vbscript'],
         'go': [['go'], 'text/x-go'],
-        'hs': [['haskell'], 'text/x-haskell']
+        'hs': [['haskell'], 'text/x-haskell'],
+        'xml': [['xml'], 'application/xml']
     };
 
     function mapMode(mode) {

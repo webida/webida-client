@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,11 +26,11 @@
 
 define(['webida-lib/webida-0.3',
         'webida-lib/plugins/workspace/plugin',
-        'plugins/project-configurator/projectConfigurator',
+        'webida-lib/util/path',
         '../launcher',
         '../run-commands',
        ],
-function (webida, wv, projectConfigurator, Launcher, runCommand) {
+function (webida, wv, pathUtil, Launcher, runCommand) {
     'use strict';
 
     var DEVICES = [
@@ -117,7 +117,7 @@ function (webida, wv, projectConfigurator, Launcher, runCommand) {
         // need to remove the last ':'
         var filePath = absPath.substring(absPath.lastIndexOf('/') + 1);
         */
-        var projectPath = projectConfigurator.getProjectRootPath(wv.getSelectedPath());
+        var projectPath = pathUtil.getProjectRootPath(wv.getSelectedPath());
         switch (device.id) {
         case 'ripple' :
             //launcher.runToRippleWithAlias(node);

@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,6 @@ define(['webida-lib/app',
         'dojox/grid/enhanced/plugins/IndirectSelection',
         'dijit/registry',
         'webida-lib/plugins/workspace/plugin',
-        'plugins/project-configurator/projectConfigurator',
         'text!./layer/debug-layout.html',
         './export-commands',
         './constants',
@@ -47,7 +46,7 @@ define(['webida-lib/app',
        ],
 function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
            ObjectStore, Memory, EnhancedGrid, IndirectSelection, reg,
-           wv, projectConfigurator, tplLayout, exportViewCommand, Constants, Launcher, ViewCommand, Util) {
+           wv, tplLayout, exportViewCommand, Constants, Launcher, ViewCommand, Util) {
     'use strict';
 
     function RunCommand() {
@@ -57,13 +56,18 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
 
     var NAME = 'Mobile Application';
 
+    RunCommand.Modes = {
+        DEBUG_MODE: 'debug',
+        RUN_MODE: 'run'
+    };
+
     RunCommand.ConfigurationTypes = {
         MOBILE: 'org.webida.run.mobile'
     };
 
     RunCommand.DebugTypes = {
         DEVICE: 'device',
-        DEVICE_WEINRE: 'deviceWEINRE',
+        DEVICE_WEINRE: 'deviceWEINRE'
         /*
         BROWSER: 'browser',
         BROWSER_REMOTE: 'browserRemote'
@@ -105,28 +109,35 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
     RunCommand.prototype.constructor = RunCommand;
 
     // Called from project-configurator plugin
-    RunCommand.prototype.run = function (projectProperty, mode, runObject) {
-        console.log('run (mode: ' + mode + ')');
-        if (mode === projectConfigurator.RUN_MODE) {
-            switch (runObject[RunCommand.RunOptions.TYPE]) {
-            case RunCommand.RunTypes.DEVICE :
-                this.runDevice(projectProperty, runObject[RunCommand.Options.DEVICE]);
-                break;
-            case RunCommand.RunTypes.BROWSER_RIPPLE :
-                this.runRipple(projectProperty, runObject[RunCommand.RunOptions.PROFILE]);
-                break;
+    RunCommand.prototype.run = function (runObject, callback, mode) {
+        mode = (mode) ? mode :  RunCommand.Modes.RUN_MODE;
+        ide.getProjectInfo(runObject.project, function(err, projectProperty){
+            if(err){
+                callback(err);
+            } else {
+                if (mode ===  RunCommand.Modes.RUN_MODE) {
+                    switch (runObject[RunCommand.RunOptions.TYPE]) {
+                        case RunCommand.RunTypes.DEVICE :
+                            this.runDevice(projectProperty, runObject[RunCommand.Options.DEVICE]);
+                            break;
+                        case RunCommand.RunTypes.BROWSER_RIPPLE :
+                            this.runRipple(projectProperty, runObject[RunCommand.RunOptions.PROFILE]);
+                            break;
+                    }
+                } else if (mode ===  RunCommand.Modes.DEBUG_MODE) {
+                    this.debugWith(runObject[RunCommand.DebugOptions.TYPE], runObject[RunCommand.Options.DEVICE]);
+                }
+                callback(null, runObject);
             }
-        } else if (mode === projectConfigurator.DEBUG_MODE) {
-            this.debugWith(runObject[RunCommand.DebugOptions.TYPE], runObject[RunCommand.Options.DEVICE]);
-        }
+        });
     };
 
     RunCommand.prototype._getProjectPath = function (projectInfo) {
         if (projectInfo) {
-            return projectConfigurator.getProjectRootPath(wv.getRootPath() + projectInfo.name);
+            return pathUtil.getProjectRootPath(wv.getRootPath() + projectInfo.name);
         } else {
             var curDir = wv.getSelectedPath();
-            return projectConfigurator.getProjectRootPath(curDir);
+            return pathUtil.getProjectRootPath(curDir);
         }
     };
 
@@ -426,7 +437,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                     '");document.getElementsByTagName("body")[0].appendChild(e);})' +
                     '(document.createElement("script"));void(0);';
                  /* jshint +W107 */
-                
+
                 // TODO: This tip using CORS does not work in Firefox. It just works in Chrome.
                 //targetBookmarklet += 'window.WeinreServerURL="' + WEINRE_TARGET_HOST + '";void(0);';
                 $('#targetBookmarklet').attr('href', targetBookmarklet);
@@ -489,7 +500,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                         indirectSelection: {
                             width: '20px'
                         }
-                    },
+                    }
                     //onRowDblClick: function (test) { }
                 }, dojo.query('#debugGrid')[0]);
                 this.grid.startup();
@@ -501,7 +512,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                     this.selected = items[0].id;
                 }
                 dlg.hide();
-            },
+            }
         });
         dlg.set('doLayout', false);
         dlg.setContentArea(tplLayout);
@@ -512,11 +523,11 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
 
     RunCommand.prototype._addConfiguration = function (projectPath, name, type, options) {
         var projectName = pathUtil.getName(projectPath);
-        Util.getProjectConfiguration(projectName, function (obj) {
-            if (obj !== null) {
-                var projectInfo = obj;
-                Util.addRunConfiguration(projectInfo.run, name, '', true, true);
-                var result = $.grep(projectInfo.run.list, function (e) {
+        Util.getRunConfiguration(projectName, function (runConf) {
+            if (runConf !== null) {
+                var runConfs = runConf;
+                Util.addRunConfiguration(projectName, runConfs, name, '', true, true);
+                var result = $.grep(runConfs.list, function (e) {
                     return e.name === name;
                 });
                 if (result[0]) {
@@ -527,7 +538,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                             listItem[idx] = value;
                         });
                     }
-                    Util.saveProject(projectInfo, function (err) {
+                    Util.saveProjectRun(projectName, runConfs, function (err) {
                         if (err) {
                             console.log(err);
                         }

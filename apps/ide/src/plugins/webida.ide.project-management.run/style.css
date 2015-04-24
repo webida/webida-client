@@ -1,0 +1,260 @@
+.rcw-title {
+    position:relative;
+    height:30px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-color:#788899;
+}
+
+.rcw-title-name {
+    position: absolute;
+    top:3px;
+    margin:5px;
+    color:#FFFFFF;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.rcw-title-arrow {
+    position: absolute;
+    margin:8px;
+    width:9px;
+    height:9px;
+    background:url("images/runconfig_icon_title_arrow.png") 9px 0;
+    cursor:pointer;
+}
+
+.rcw-title-arrow-hover {
+    background-position:9px 0;
+}
+
+.rcw-title-arrow-unfold {
+    background-position:0 0;
+}
+
+.rcw-title-arrow-unfold-hover {
+    background-position:0 0;
+}
+
+.rcw-title-run {
+    position: absolute;
+    right:6px;
+    margin:5px;
+    width:20px;
+    height:20px;
+    background:url("images/runconfig_icon_run.png") 0 0;
+    cursor:pointer;
+}
+
+.rcw-title-delete {
+    position: absolute;
+    right:36px;
+    margin:5px;
+    width:20px;
+    height:20px;
+    background:url("images/runconfig_icon_delete.png") 0 0;
+    cursor:pointer;
+}
+
+.rcw-content {
+}
+
+.rcw-content-table-value {
+    border-bottom: #CDD8E3 1px solid;
+    background-color:#FFFFFF;
+    width:65%;
+    text-indent: 20px;
+}
+
+.rcw-content-table-label {
+    border-collapse:collapse;
+    border-bottom: #CDD8E3 1px solid;
+    background-color:#98B1CA;
+    width:33%;
+    height:31px;
+    color:#FFFFFF;
+    text-indent:16px;
+    line-height:250%;
+    text-align:left;
+    vertical-align:top;
+    padding-right:10px;
+}
+
+.rcw-content-table-inputbox {
+    border-width:0;
+    color:#4F5B67;
+    text-indent:2px;
+    line-height:100%;
+    padding:1px;
+    margin:1px;
+}
+
+.rcw-content-table-inputbox-edit {
+    border-width:1px;
+}
+
+.rcw-content-table-inputbox-readonly {
+    border-width:0;
+    color:#4F5B67;
+    text-indent:2px;
+    line-height:100%;
+    padding:1px;
+    margin:1px;
+}
+
+.rcw-content-table-checkbox {
+    position:relative;
+}
+
+.rcw-action {
+    text-align: right;
+    position:relative;
+    clear: both;
+}
+
+.rcw-action-modify {
+    position:absolute;
+    top:5px;
+    right:5px;
+    width:20px;
+    height:20px;
+    background:url('images/runconfig_icon_modify.png') 0 0;
+    cursor:pointer;
+}
+
+.rcw-action-path {
+    position:absolute;
+    top:6px;
+    right:18px;
+    width:20px;
+    height:20px;
+    background:url('images/runconfig_icon_path.png') 0 0;
+    cursor:pointer;
+}
+
+.rcw-action-save {
+   /* position:absolute;
+    top:5px;
+    right:5px;*/
+    width:20px;
+    height:20px;
+    background:url('images/runconfig_icon_save.png') 0 0;
+    cursor:pointer;
+    margin-top: 10px;
+    margin-right: 10px;
+    float: right;
+}
+
+.rcw-action-newsave {
+    position:absolute;
+    top:5px;
+    right:5px;
+    width:20px;
+    height:20px;
+    background:url('images/runconfig_icon_save.png') 0 0;
+    cursor:pointer;
+}
+
+.rcw-action-cancel {
+    position:absolute;
+    top:5px;
+    right:32px;
+    width:20px;
+    height:20px;
+    background:url('images/runconfig_icon_cancel.png') 0 0;
+    cursor:pointer;
+}
+
+.rcw-action-newcancel {
+    position:absolute;
+    top:5px;
+    right:32px;
+    width:20px;
+    height:20px;
+    background:url('images/runconfig_icon_cancel.png') 0 0;
+    cursor:pointer;
+}
+
+.rcw-display-block {
+    display:block;
+}
+
+.rcw-display-none {
+    display:none;
+}
+
+.rcw-button-hover-24 {
+    background-position:48px 0;
+}
+
+.rcw-button-push-24 {
+    background-position:24px 0;
+}
+
+.rcw-button-hover-20 {
+    background-position:40px 0;
+}
+
+.rcw-button-push-20 {
+    background-position:20px 0;
+}
+
+.rcw-button-hover-16 {
+    background-position:32px 0;
+}
+
+.rcw-button-push-16 {
+    background-position:16px 0;
+}
+
+.rcw-table-row {
+    display: block;
+    line-height: 33px;
+}
+
+.rcw-table-col {
+    float: left;
+    height: 33px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+.run-configuration-dialog-container {
+    height:466px;
+    position: relative;
+    font-size:10pt;
+    /*font-family: 'Nanum Gothic Coding', Verdana,Arial,sans-serif;*/
+}
+.run-configuration-dialog {
+    height:445px;
+    background:#E5ECF2;
+    border: #9EA5AE 1px solid;
+    border-radius: 3px;
+}
+.run-configuration-dialog-header {
+    height:40px;
+}
+.run-configuration-dialog-content {
+    height:405px;
+    overflow:auto;
+    background-color:#FFFFFF !important;
+}
+.run-configuration-detail {
+    border-top: #CDD8E3 1px solid;
+}
+ul.run-configuration-list-tree {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+ul.run-configuration-list-tree ul {
+    padding-left: 20px;
+}
+.run-configuration-list-tree li a.selected{
+    font-weight: bold;
+}
+#run-configuration-list-contentpane {
+    height: 100%;
+}

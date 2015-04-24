@@ -225,5 +225,16 @@ define([], function () {
         return this.endsWith(path, '.json', true);
     };
 
+    mod.getProjectRootPath = function(childPath) {
+        if (!childPath) {
+            return null;
+        }
+        var splitPath = childPath.split('/');
+        if (splitPath.length < 3) {
+            return null;
+        }
+        return splitPath.slice(0, 3).join('/') + '/';
+    };
+
     return mod;
 });

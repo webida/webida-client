@@ -10,6 +10,7 @@
             "fileValueRequired" : true,
             "handledFileExt" : [ ".*" ],
             "handledMimeTypes" : [],
+            "handledFileNames" : [],
             "unhandledFileExt" : [],
             "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
         },
