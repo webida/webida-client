@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Service Details</title>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h2>Service Details</h2>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<input id="btnShowlists" class="btn btn-primary" type="button" value="Show lists">
+					<input id="btnToggle" class="btn btn-primary" type="button" value="Modify">
+				</div>
+			</div>
+			<div class="row" role="tabpanel">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#format" aria-controls="format" role="tab" data-toggle="tab">Foramt</a></li>
+					<li role="presentation"><a href="#history" aria-controls="history" role="tab" data-toggle="tab">History</a></li>
+				</ul>
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="format">
+						<form>
+							<div class="form-group">
+								<label for="serviceName">Service Name</label>
+								<input type="text" class="form-control" id="serviceName" readonly>
+							</div>
+							<div class="form-group">
+								<label for="serviceDesc">Description</label>
+								<input type="text" class="form-control" id="serviceDesc" readonly>
+							</div>
+							<div class="form-group">
+								<label for="messageCode">Message Code</label>
+								<input type="text" class="form-control" id="messageCode" readonly>
+							</div>
+							<div class="form-group">
+								<label for="serviceType">Service Type</label>
+								<textarea class="form-control" id="serviceType" row="2" readonly>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore alias ducimus temporibus cum ipsam, consequuntur, exercitationem repellat molestias corporis! Numquam itaque et aliquam, illum quam autem facere nemo officia sequi.</textarea>
+							</div>
+							<div class="form-group">
+								<label for="serviceSource">Source [ReadOnly]</label>
+								<div><textarea id="serviceSource" name="serviceSource">
+
+								</textarea></div>
+							</form>
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="history"></div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.js"></script>
+		<script src="../../lib/codemirror/mode/javascript.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
+		<script src="../../lib/services.js"></script>
+		<script>
+			$(document).ready(function() {
+				var url = window.location.href;
+				var scriptServiceId = url.substr(url.indexOf('?')+1);
+
+				var svc = Services.Service;
+				var serviceName = $('#serviceName');
+				var serviceDesc = $('#serviceDesc');
+				var messageCode = $('#messageCode');
+				var serviceType = $('#serviceType');
+				var serviceSource = $('#serviceSource');
+
+				var oldData = {};
+
+				svc.details(scriptServiceId, function (err, data) {
+					if (err) {
+						console.error(err);
+					} else {
+						oldData = data;
+						console.log(data);
+						serviceName[0].value = data.scriptServiceName;	
+						serviceDesc[0].value = data.scriptServiceDesc;
+						messageCode[0].value = data.messageCode;
+						serviceType[0].value = "Script";
+						editor.setValue(data.scriptServiceSrc);
+					}
+				});
+
+				var editor = CodeMirror.fromTextArea(document.getElementById('serviceSource'), {
+					lineNumbers: true,
+					readOnly: true,
+					theme: 'monokai',
+					mode: 'text/x-java',
+					styleActiveLine: true,
+					scrollbarStyle: 'simple'
+				});
+
+				$('#btnShowlists').on('click', function () {
+					window.location.href = 'ServiceList.html';
+				});
+
+				$('#btnDelete').on('click', function () {
+					$('#deleteDlg').load('../../lib/dialog.html', function () {
+						var warnStr = 'Are you really delete the thing Model <strong>"' + deviceModel[0].value + '"</strong>?';
+
+						$('#mbody-content').html(warnStr);
+
+						$('#deleteConfirm').off('click').on('click', function () {
+							MsgFmt.deleteThing(messageCode, function (err, data) {
+								if (err) {
+									console.error(err);
+								} else {
+									window.location.href = 'MessageList.html';
+								}
+							});
+						});
+
+						$('#deleteModal').modal('show');
+
+						$('#deleteModal').on('hidden.bs.modal', function () {
+							$(this).remove();
+						});
+					});
+				});
+
+				$('#btnCancel').on('click', function () {
+					$(this).addClass('hidden');
+					$('#btnDelete').removeClass('hidden');
+					$('#btnToggle')[0].value = 'Modify';
+
+					msgName[0].value = oldData.messageName;
+					msgVer[0].value = oldData.formatVersion;
+					deviceModel[0].value = oldData.thingModel;
+					deviceDesc[0].value = oldData.description;
+					editor.setValue(oldData.format);
+
+					serviceName.attr('readonly', true);
+					serviceDesc.attr('readonly', true);
+					messageCode.attr('readonly', true);
+					serviceType.attr('readonly', true);
+					editor.setOption('readOnly', true);
+				});
+
+				$('#btnToggle').on('click', function () {
+					var self = $(this)[0];
+
+					if (self.value === 'Modify') {
+						var oldDatas = $('[readonly]');
+						oldDatas.each(function(i, node) {
+							$(node).attr('readonly', false);
+						});
+
+						editor.setOption('readOnly', false);
+
+						self.value = 'Save changes';
+						
+						serviceName .focus();
+						$('#btnCancel').removeClass('hidden');
+						$('#btnDelete').addClass('hidden');
+					} else if (self.value === 'Save changes') {
+						var updateData = {
+							scriptServiceName: serviceName[0].value,
+							messageCode: messageCode[0].value,
+							scriptServiceDesc: serviceDesc [0].value,
+							scriptServiceSrc: editor.getValue()
+						};
+
+						svc.updateThing(scriptServiceId, updateData, function (err, data) {
+							if (err) {
+								console.error(err);
+							} else {
+								window.location.href = 'ServiceList.html';
+							}
+						});
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

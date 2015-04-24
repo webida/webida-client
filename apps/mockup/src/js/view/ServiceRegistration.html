@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Message Format Registration</title>
+		<title>Service Registration</title>
 		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
 		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
@@ -16,9 +16,10 @@
 			</div>
 			<div class="row">
 				<div class="pull-right">
-					<input id="btnRegister" class="btn btn-primary" type="button" value="Register">
+					<input id="btnShowlists" class="btn btn-default" type="button" value="Back">
 				</div>
 			</div>
+
 			<div class="row" role="tabpanel">
 				<ul class="nav nav-tabs" role="tablist">
 					<li role="presentation" class="active"><a href="#format" aria-controls="format" role="tab" data-toggle="tab">Script Service</a></li>
@@ -27,21 +28,24 @@
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="format">
 						<form>
-							<div class="form-group">
-								<label for="serviceName">Service Name</label>
-								<input type="text" class="form-control" id="msgName">
+							<div class="form-group form-right">
+								<input id="btnRegister" class="btn btn-primary btn-right" type="submit" value="Register">
 							</div>
 							<div class="form-group">
-								<label for="serviceDesc">Description</label>
-								<input type="text" class="form-control" id="msgVer">
+								<label for="svcName">Service Name</label>
+								<input type="text" class="form-control" id="svcName">
 							</div>
 							<div class="form-group">
-								<label for="messageCD">Message Code</label>
-								<input type="text" class="form-control" id="deviceModel">
+								<label for="svcDesc">Description</label>
+								<input type="text" class="form-control" id="svcDesc">
+							</div>
+							<div class="form-group">
+								<label for="messageCode">Message Code</label>
+								<input type="text" class="form-control" id="messageCode">
 							</div>
 							<div class="form-group">
 								<label for="serviceType">Service Type</label>
-								<textarea class="form-control" id="deviceDesc" row="2"></textarea>
+								<textarea class="form-control" row="2" id="serviceType"></textarea>
 							</div>
 							<div class="form-group">
 								<label for="serviceSource">Srouce</label>
@@ -63,8 +67,17 @@
 		<script src="../../lib/codemirror/mode/javascript.js"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
+		<script src="../../lib/services.js"></script>
 		<script>
 			$(document).ready(function() {
+			
+				var svc = Services.Service;
+				var svcName = $('#svcName');
+				var svcDesc = $('#svcDesc');
+				var messageCode = $('#messageCode');
+				var serviceType = $('#serviceType');
+				var serviceSource = $('#serviceSource');
+
 				var editor = CodeMirror.fromTextArea(document.getElementById('serviceSource'), {
 					lineNumbers: true,
 					readOnly: false,
@@ -73,11 +86,28 @@
 					styleActiveLine: true,
 					scrollbarStyle: 'simple'
 				});
-			});
+				
+				$('#btnShowlists').on('click', function () {
+					window.location.href = 'ServiceList.html';
+				});
 
-			$('#btnRegister').click(function() {
-				window.location.href = './ServiceList.html';
-			})
+				$('#btnRegister').on('click', function() {
+					var registerData = {
+						scriptServiceName: svcName[0].value,
+						scriptServiceSrc: editor.getValue(),
+						scriptServiceDesc: svcDesc[0].value,
+						messageCode: messageCode[0].value
+					};
+
+					svc.registerThing(registerData, function (err, data) {
+						if (err) {
+							console.error(err);
+						} else {
+							window.location.href = 'ServiceList.html';
+						}
+					});
+				});
+			});
 		</script>
 	</body>
 </html>
