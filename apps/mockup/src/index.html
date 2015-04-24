@@ -7,9 +7,15 @@
 <body>
 	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	
+	<button type="button" class="btn btn-default navbar-btn" id="btnMsg">Message</button>
+	<button type="button" class="btn btn-default navbar-btn" id="btnService">Service</button>
 	<script>
-		$(document).ready(function () {
-			window.location.href = 'js/view/MessageList.html'
+		$("#btnMsg").on("click", function () {
+			window.location.href = 'js/view/MessageList.html';
+		});
+		$("#btnService").on("click", function () {
+			window.location.href = 'js/view/ServiceList.html';
 		});
 	</script>
 </body>
