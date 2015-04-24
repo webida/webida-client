@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Message Format Details</title>
+		<title>Message Format Registration</title>
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
@@ -12,12 +12,11 @@
 	<body>
 		<div class="container">
 			<div class="row">
-				<h2>Message Format Details</h2>
+				<h2>Message Format Registration</h2>
 			</div>
 			<div class="row">
 				<div class="pull-right">
-					<input id="btnShowlists" class="btn btn-primary" type="button" value="Show lists">
-					<input id="btnToggle" class="btn btn-primary" type="button" value="Modify">
+					<input id="btnShowlists" class="btn btn-default" type="button" value="Back">
 				</div>
 			</div>
 			<div class="row" role="tabpanel">
@@ -27,57 +26,31 @@
 				</ul>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="format">
-						<form>
+						<form id="registerForm" role="form">
+							<div class="form-group form-right">
+								<input id="btnRegister" class="btn btn-primary btn-right" type="submit" value="Register">
+							</div>
 							<div class="form-group">
 								<label for="msgName">Message Name</label>
-								<input type="text" class="form-control" id="msgName" readonly>
+								<input type="text" class="form-control" id="msgName" required autofocus>
 							</div>
 							<div class="form-group">
 								<label for="msgVer">Format Ver.</label>
-								<input type="text" class="form-control" id="msgVer" readonly>
+								<input type="text" class="form-control" id="msgVer" required>
 							</div>
 							<div class="form-group">
-								<label for="deviceModel">Device Model</label>
-								<input type="text" class="form-control" id="deviceModel" readonly>
+								<label for="deviceModel">Thing Model</label>
+								<input type="text" class="form-control" id="deviceModel" required>
 							</div>
 							<div class="form-group">
 								<label for="deviceDesc">Description</label>
-								<textarea class="form-control" id="deviceDesc" row="2" readonly>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore alias ducimus temporibus cum ipsam, consequuntur, exercitationem repellat molestias corporis! Numquam itaque et aliquam, illum quam autem facere nemo officia sequi.</textarea>
+								<textarea class="form-control" id="deviceDesc" row="2" required></textarea>
 							</div>
 							<div class="form-group">
-								<label for="msgFormat">Format [ReadOnly]</label>
-								<div><textarea id="msgFormat" name="msgFormat">
-{
-  "@context": {
-    "name": "http://schema.org/name",
-    "description": "http://schema.org/description",
-    "image": {
-      "@id": "http://schema.org/image",
-      "@type": "@id"
-    },
-    "geo": "http://schema.org/geo",
-    "latitude": {
-      "@id": "http://schema.org/latitude",
-      "@type": "xsd:float"
-    },
-    "longitude": {
-      "@id": "http://schema.org/longitude",
-      "@type": "xsd:float"
-    },
-    "xsd": "http://www.w3.org/2001/XMLSchema#"
-  },
-  "name": "The Empire State Building",
-  "description": "The Empire State Building is a 102-story landmark in New York City.",
-  "image": "http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg",
-  "geo": {
-    "latitude": "40.75",
-    "longitude": "73.98"
-  }
-}
-								</textarea></div>
-							</form>
-						</div>
-					</div>
+								<label for="msgFormat">Format</label>
+								<textarea id="msgFormat" required></textarea>
+							</div>
+						</form>
 					<div role="tabpanel" class="tab-pane" id="history"></div>
 				</div>
 			</div>
@@ -90,36 +63,46 @@
 		<script src="../../lib/codemirror/mode/javascript.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
+		<script src="../../lib/services.js"></script>
 		<script>
 			$(document).ready(function() {
+				var MsgFmt = Services.MsgFmt;
+
+				var msgName = $('#msgName');
+				var msgVer = $('#msgVer');
+				var deviceModel = $('#deviceModel');
+				var deviceDesc = $('#deviceDesc');
+				var msgFormat = $('#msgFormat');
+
 				var editor = CodeMirror.fromTextArea(document.getElementById('msgFormat'), {
 					lineNumbers: true,
-					readOnly: true,
+					readOnly: false,
 					theme: 'monokai',
 					mode: 'application/ld+json',
 					styleActiveLine: true,
 					scrollbarStyle: 'simple'
 				});
-
-				$('#btnShowlists').click(function () {
-					window.location.href = 'list.html';
+				
+				$('#btnShowlists').on('click', function () {
+					window.location.href = 'MessageList.html';
 				});
 
-				$('#btnToggle').click(function () {
-					var self = $(this)[0];
+				$('#btnRegister').on('click', function() {
+					var registerData = {
+						messageName: msgName[0].value,
+						formatVersion: msgVer[0].value,
+						thingModel: deviceModel[0].value,
+						description: deviceDesc[0].value,
+						format: editor.getValue()
+					};
 
-					if (self.value === 'Modify') {
-						var oldDatas = $('[readonly]');
-						oldDatas.each(function(i, node) {
-							$(node).attr('readonly', false);
-						});
-
-						editor.setOption('readOnly', false);
-
-						self.value = 'Save changes';
-					} else if (self.value === 'Save changes') {
-						window.location.href = 'list.html';
-					}
+					MsgFmt.registerThing(registerData, function (err, data) {
+						if (err) {
+							console.error(err);
+						} else {
+							window.location.href = 'MessageList.html';
+						}
+					});
 				});
 			});
 		</script>
