@@ -17,3 +17,8 @@
 #msgTable tbody tr {
 	cursor: pointer;
 }
+
+.form-col-md-8 {
+	width: 66%;
+	display: inline-block;
+}
