@@ -35,19 +35,28 @@
 							</div>
 							<div class="form-group">
 								<label for="msgName">Message Name</label>
-								<input type="text" class="form-control" id="msgName" readonly required>
+								<input type="text" class="form-control" id="msgName" placeholder="Ener message name" disabled>
 							</div>
 							<div class="form-group">
 								<label for="msgVer">Format Ver.</label>
-								<input type="text" class="form-control" id="msgVer" readonly required>
+								<input type="text" class="form-control" id="msgVer" placeholder="Ener format version" disabled>
 							</div>
 							<div class="form-group">
-								<label for="deviceModel">Thing Model</label>
-								<input type="text" class="form-control" id="deviceModel" readonly required>
+								<div>
+									<label for="deviceModel">Thing Model</label>
+								</div>
+								<div class="row">
+									<div class="col-md-8">
+										<input type="text" class="form-control" id="deviceModel" placeholder="Ener thing model" disabled>
+									</div>
+									<div class="col-md-1">
+										<input id="btnSearch" class="btn btn-primary " type="button" value="Search" disabled>
+									</div>
+								</div>
 							</div>
 							<div class="form-group">
 								<label for="deviceDesc">Description</label>
-								<textarea class="form-control" id="deviceDesc" row="2" readonly required></textarea>
+								<textarea class="form-control" id="deviceDesc" row="2" placeholder="Ener description" disabled></textarea>
 							</div>
 							<div class="form-group">
 								<label for="msgFormat">Format</label>
@@ -105,6 +114,10 @@
 					scrollbarStyle: 'simple'
 				});
 
+				$('#btnSearch').on('click', function () {
+					alert('Popup seach dialog');
+				});
+
 				$('#btnShowlists').on('click', function () {
 					window.location.href = 'MessageList.html';
 				});
@@ -144,11 +157,12 @@
 					deviceDesc[0].value = oldData.description;
 					editor.setValue(oldData.format);
 
-					msgName.attr('readonly', true);
-					msgVer.attr('readonly', true);
-					deviceModel.attr('readonly', true);
-					deviceDesc.attr('readonly', true);
-					msgFormat.attr('readonly', true);
+					msgName.attr('disabled', true);
+					msgVer.attr('disabled', true);
+					deviceModel.attr('disabled', true);
+					deviceDesc.attr('disabled', true);
+					msgFormat.attr('disabled', true);
+					$('#btnSearch').attr('disabled', true);
 					editor.setOption('readOnly', true);
 				});
 
@@ -156,9 +170,9 @@
 					var self = $(this)[0];
 
 					if (self.value === 'Modify') {
-						var oldDatas = $('[readonly]');
+						var oldDatas = $('[disabled]');
 						oldDatas.each(function(i, node) {
-							$(node).attr('readonly', false);
+							$(node).attr('disabled', false);
 						});
 
 						editor.setOption('readOnly', false);
