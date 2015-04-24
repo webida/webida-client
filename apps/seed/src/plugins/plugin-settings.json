@@ -1,0 +1,10 @@
+{
+    "plugins" : [
+        "plugins/uid-menu-items",
+        "plugins/output",
+        "plugins/workbench"
+    ],
+    "start-plugins" : [
+        "plugins/workbench"
+    ]
+}

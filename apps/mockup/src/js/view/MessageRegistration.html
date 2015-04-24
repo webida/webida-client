@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Message Format Registration</title>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h2>Message Format Registration</h2>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<input id="btnShowlists" class="btn btn-default" type="button" value="Back">
+				</div>
+			</div>
+			<div class="row" role="tabpanel">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#format" aria-controls="format" role="tab" data-toggle="tab">Format</a></li>
+					<li role="presentation"><a href="#history" aria-controls="history" role="tab" data-toggle="tab">History</a></li>
+				</ul>
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="format">
+						<form id="registerForm" role="form" novalidate>
+							<div class="form-group form-right">
+								<input id="btnRegister" class="btn btn-primary btn-right" type="submit" value="Register">
+							</div>
+							<div class="form-group">
+								<label for="msgName">Message Name</label>
+								<input type="text" class="form-control" id="msgName" placeholder="Enter message name" autofocus>
+							</div>
+							<div class="form-group">
+								<label for="msgVer">Format Ver.</label>
+								<input type="text" class="form-control" id="msgVer" placeholder="Enter format version">
+							</div>
+							<div class="form-group">
+								<div>
+									<label for="deviceModel">Thing Model</label>
+								</div>
+								<div class="form-group">
+									<div class="form-col-md-8">
+										<input type="text" class="form-control" id="deviceModel" placeholder="Enter thing model">
+									</div>
+									<input id="btnSearch" class="btn btn-default " type="button" value="Search">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="deviceDesc">Description</label>
+								<textarea class="form-control" id="deviceDesc" row="2" placeholder="Enter description"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="msgFormat">Format</label>
+								<textarea id="msgFormat"></textarea>
+							</div>
+						</form>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="history"></div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.js"></script>
+		<script src="../../lib/codemirror/mode/javascript.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
+		<script src="../../lib/services.js"></script>
+		<script>
+			$(document).ready(function() {
+				var MsgFmt = Services.MsgFmt;
+
+				var msgName = $('#msgName');
+				var msgVer = $('#msgVer');
+				var deviceModel = $('#deviceModel');
+				var deviceDesc = $('#deviceDesc');
+				var msgFormat = $('#msgFormat');
+
+				var editor = CodeMirror.fromTextArea(document.getElementById('msgFormat'), {
+					lineNumbers: true,
+					readOnly: false,
+					theme: 'monokai',
+					mode: 'application/ld+json',
+					styleActiveLine: true,
+					scrollbarStyle: 'simple'
+				});
+
+				$('#btnSearch').on('click', function () {
+					alert('Popup seach dialog');
+				});
+				
+				$('#btnShowlists').on('click', function () {
+					window.location.href = 'MessageList.html';
+				});
+
+				$('#btnRegister').on('click', function(e) {
+					e.preventDefault();
+
+					var messageName = msgName[0].value,
+					formatVersion = msgVer[0].value,
+					thingModel = deviceModel[0].value,
+					description = deviceDesc[0].value,
+					format = editor.getValue();
+
+					if (messageName && formatVersion && thingModel && description && format) {
+						var registerData = {
+							messageName: messageName,
+							formatVersion: formatVersion,
+							thingModel: thingModel,
+							description: description,
+							format: format
+						};
+
+						MsgFmt.registerThing(registerData, function (err, data) {
+							if (err) {
+								console.error(err);
+							} else {
+								window.location.href = 'MessageList.html';
+							}
+						});
+					} else {
+						alert('Please enter empty blank');
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

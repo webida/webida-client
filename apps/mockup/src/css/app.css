@@ -1,0 +1,24 @@
+.CodeMirror {
+	border: 1px solid #eee;
+	height: 400px;
+}
+.form-right {
+	height: 35px;
+	margin: 10px;
+}
+.btn-right {
+	float: right;
+	margin-left: 5px;
+}
+.modal-delete {
+	background: #d9534f;
+	color: #fff;
+}
+#msgTable tbody tr {
+	cursor: pointer;
+}
+
+.form-col-md-8 {
+	width: 66%;
+	display: inline-block;
+}

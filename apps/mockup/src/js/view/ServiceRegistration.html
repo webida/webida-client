@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Service Registration</title>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/theme/monokai.min.css">
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h2>Service Registration</h2>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<input id="btnShowlists" class="btn btn-default" type="button" value="Back">
+				</div>
+			</div>
+
+			<div class="row" role="tabpanel">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active"><a href="#format" aria-controls="format" role="tab" data-toggle="tab">Script Service</a></li>
+					<li role="presentation"><a href="#history" aria-controls="history" role="tab" data-toggle="tab">History</a></li>
+				</ul>
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane active" id="format">
+						<form>
+							<div class="form-group form-right">
+								<input id="btnRegister" class="btn btn-primary btn-right" type="submit" value="Register">
+							</div>
+							<div class="form-group">
+								<label for="svcName">Service Name</label>
+								<input type="text" class="form-control" id="svcName">
+							</div>
+							<div class="form-group">
+								<label for="svcDesc">Description</label>
+								<input type="text" class="form-control" id="svcDesc">
+							</div>
+							<div class="form-group">
+								<label for="messageCode">Message Code</label>
+								<input type="text" class="form-control" id="messageCode">
+							</div>
+							<div class="form-group">
+								<label for="serviceType">Service Type</label>
+								<textarea class="form-control" row="2" id="serviceType"></textarea>
+							</div>
+							<div class="form-group">
+								<label for="serviceSource">Srouce</label>
+								<textarea id="serviceSource"></textarea>
+							</form>
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="history"></div>
+				</div>
+			</div>
+			<div class="row">
+			</div>
+		</div>
+		
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/codemirror.min.js"></script>
+		<script src="../../lib/codemirror/mode/javascript.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/selection/active-line.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/codemirror/5.1.0/addon/scroll/simplescrollbars.min.js"></script>
+		<script src="../../lib/services.js"></script>
+		<script>
+			$(document).ready(function() {
+			
+				var svc = Services.Service;
+				var svcName = $('#svcName');
+				var svcDesc = $('#svcDesc');
+				var messageCode = $('#messageCode');
+				var serviceType = $('#serviceType');
+				var serviceSource = $('#serviceSource');
+
+				var editor = CodeMirror.fromTextArea(document.getElementById('serviceSource'), {
+					lineNumbers: true,
+					readOnly: false,
+					theme: 'monokai',
+					mode: 'text/x-java',
+					styleActiveLine: true,
+					scrollbarStyle: 'simple'
+				});
+				
+				$('#btnShowlists').on('click', function () {
+					window.location.href = 'ServiceList.html';
+				});
+
+				$('#btnRegister').on('click', function() {
+					var registerData = {
+						scriptServiceName: svcName[0].value,
+						scriptServiceSrc: editor.getValue(),
+						scriptServiceDesc: svcDesc[0].value,
+						messageCode: messageCode[0].value
+					};
+
+					svc.registerThing(registerData, function (err, data) {
+						if (err) {
+							console.error(err);
+						} else {
+							window.location.href = 'ServiceList.html';
+						}
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,102 @@
+[
+  {
+    "messageCode": "MSG0000016",
+    "messageName": "testMessage016",
+    "formatVersion": "0.1",
+    "thingModel": "door",
+    "description": "control message for door",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429628400000
+  },
+  {
+    "messageCode": "MSG0000017",
+    "messageName": "testMessage017",
+    "formatVersion": "0.1",
+    "thingModel": "door",
+    "description": "control message for door",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429690117371
+  },
+  {
+    "messageCode": "MSG0000001",
+    "messageName": "testMessage001",
+    "formatVersion": "0.1",
+    "thingModel": "doors",
+    "description": "control message for door",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429690117371
+  },
+  {
+    "messageCode": "MSG0000002",
+    "messageName": "testMessage002",
+    "formatVersion": "0.1",
+    "thingModel": "windows",
+    "description": "control message for window",
+    "formatType": "json",
+    "format": "{\"meta\":\"test\"}",
+    "regDate": 1429690117371
+  },
+  {
+    "messageCode": "MSG0000003",
+    "messageName": "testMessage003",
+    "formatVersion": "0.1",
+    "thingModel": "windows",
+    "description": "control message for window",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429690117371
+  },
+  {
+    "messageCode": "MSG0000004",
+    "messageName": "testMessage004",
+    "formatVersion": "0.1",
+    "thingModel": "windows",
+    "description": "control message for window",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429690117371
+  },
+  {
+    "messageCode": "MSG0000005",
+    "messageName": "testMessage005",
+    "formatVersion": "0.1",
+    "thingModel": "windows",
+    "description": "control message for window",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429690117371
+  },
+  {
+    "messageCode": "MSG0000006",
+    "messageName": "testMessage006",
+    "formatVersion": "0.1",
+    "thingModel": "windows",
+    "description": "control message for window",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429690117371
+  },
+  {
+    "messageCode": "MSG0000007",
+    "messageName": "testMessage007",
+    "formatVersion": "0.1",
+    "thingModel": "windows",
+    "description": "control message for window",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429690117371
+  },
+  {
+    "messageCode": "MSG0000008",
+    "messageName": "testMessage008",
+    "formatVersion": "0.1",
+    "thingModel": "windows",
+    "description": "control message for window",
+    "formatType": "json",
+    "format": "{}",
+    "regDate": 1429690117371
+  }
+]

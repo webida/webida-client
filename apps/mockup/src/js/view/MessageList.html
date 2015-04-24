@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Message Format List</title>
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/1.10.6/integration/bootstrap/3/dataTables.bootstrap.css">
+		<link rel="stylesheet" href="../../css/app.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h2>Message Format List</h2>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<input id="btnAdd" class="btn btn-primary" type="button" value="Add">
+				</div>
+			</div>
+			<div class="row">
+				<table id="msgTable" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>Thing Model</th>
+							<th>Message Name</th>
+							<th>Version</th>
+							<th>Reg. Date</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		
+		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>
+		// <script src="//cdn.datatables.net/plug-ins/1.10.6/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+		<script src="../../lib/services.js"></script>
+		<script>
+			$(document).ready(function() {
+				var MsgFmt = Services.MsgFmt;
+
+				$('#btnAdd').on('click', function () {
+					window.location.href = 'MessageRegistration.html';
+				});
+
+				MsgFmt.lists({ limit: 1000 }, function (err, data) {
+					$('#msgTable').dataTable({
+						'info': false,
+						'searching': false,
+						'lengthChange': false,
+						'data': data.list,
+						'order': [ [ 3,  'desc' ] ],
+						'columns': [
+							{ 'data': 'thingModel' },
+							{ 'data': 'messageName' },
+							{ 'data': 'formatVersion' },
+							{ 'data': 'regDate' }
+						],
+						'createdRow': function (row, data, index) {
+							$(row).data('id', data.messageCode);
+						},
+						'columnDefs': [
+							{
+								'targets': [ 3 ],
+								'render': function (data, type, row) {
+									return moment(data).format('lll');
+								}
+							}
+						]
+					});
+
+					$('#msgTable').removeClass( 'display' ).addClass('table table-striped table-bordered table-hover');
+					
+					$('#msgTable tbody').on('click', 'tr', function () {
+						var messageCode = $(this).data('id');
+
+						window.location.href = 'MessageDetail.html?' + messageCode;
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

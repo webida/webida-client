@@ -1,0 +1,33 @@
+<div id="webida-shortcut-keys-setting-dialog" tabindex="0">
+    <style>
+        .desc {
+                margin-top: 5px;
+                margin-bottom: 15px;
+        }
+    </style>
+    <p class='desc'>
+        You can set the shortcut keys bound to the menu item <br>
+        "%LOCATION%" of %MENU_HOLDER%.
+    </p>
+    <form id="wsks-form">
+       <div style="position:relative; left: 20px;">
+           <input type="radio" data-dojo-type="dijit/form/RadioButton" id="wsks-radio-none">
+           <label for="wsks-radio-one"> None </label> <br><br>
+           <input type="radio" data-dojo-type="dijit/form/RadioButton" id="wsks-radio-one">
+           <label id="wsks-edited-keys" for="wsks-radio-one"> Unset </label> <br>
+           <div style="position:relative; left:30px; top: 5px; font-size: 90%">
+               <label style="text-align: right;" for="wsks-use-alt=key"> Ctrl </label>
+               <input id="wsks-use-ctrl" data-dojo-type='dijit/form/CheckBox'/>
+               <label style="text-align: right;" for="wsks-use-alt=key"> Shift </label>
+               <input id="wsks-use-shift" data-dojo-type='dijit/form/CheckBox'/>
+               <label style="text-align: right;" for="wsks-use-alt=key"> Alt </label>
+               <input id="wsks-use-alt" data-dojo-type='dijit/form/CheckBox'/>
+               <label style="text-align: right; display: inline-block; width: 60px"> Main key </label>
+               <select id='wsks-main-key' data-dojo-type='dijit/form/ComboBox' style="width:100px"> </select>
+           </div> <br>
+           <p style="position: relative; left: 20px" id="wsks-msg-label" class="desc">
+                (Same as the app's initial setting)
+           </p>
+       </div>
+    </form>
+</div>

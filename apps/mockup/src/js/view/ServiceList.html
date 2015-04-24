@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Service List</title>
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="http://cdn.datatables.net/1.10.6/css/jquery.dataTables.min.css">
+		<link rel="stylesheet" href="../../css/app.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<h2>Service List</h2>
+			</div>
+			<div class="row">
+				<div class="pull-right">
+					<input id="btnAdd" class="btn btn-primary" type="button" value="Add">
+				</div>
+			</div>
+			<div class="row">
+				<table id="example" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th>Service Name</th>
+							<th>Service Source</th>
+							<th>Description</th>
+							<th>MaxType(h)</th>
+							<th>Message Code</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+		
+		<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="http://cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+		<script src="../../lib/services.js"></script>
+		<script>
+			$(document).ready(function() {
+				var svc = Services.Service;
+
+				$('#btnAdd').on('click', function () {
+					window.location.href = 'ServiceRegistration.html';
+				});
+
+				svc.lists({ limit: 1000 }, function (err, data) {
+					$('#example').dataTable({
+						'info': false,
+						'searching': false,
+						'lengthChange': false,
+						'data': data.list,
+						'order': [ [ 3,  'desc' ] ],
+						'columns': [
+							{ 'data': 'scriptServiceName' },
+							{ 'data': 'scriptServiceSrc' },
+							{ 'data': 'scriptServiceDesc' },
+							{ 'data': 'maxTime' },
+							{ 'data': 'messageCode' }
+						],
+						'createdRow': function (row, data, index) {
+							$(row).data('id', data.scriptServiceId);
+						},
+						'columnDefs': [
+							{
+								'targets': [ 3 ],
+								'render': function (data, type, row) {
+									return moment(data).format('lll');
+								}
+							}
+						]
+					});
+					
+					$('#example tbody').on('click', 'tr', function () {
+						var serviceCode = $(this).data('id');
+
+						window.location.href = 'ServiceDetail.html?' + serviceCode;
+					});
+				});
+			});
+		</script>
+	</body>
+</html>

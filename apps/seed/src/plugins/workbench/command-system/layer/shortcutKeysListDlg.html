@@ -1,0 +1,74 @@
+<div
+     id='webida-shortcutkey-info-dialog-content'
+     data-dojo-type="dijit/layout/BorderContainer"
+     data-dojo-props="gutters:false,liveSplitters:false"
+     >
+
+    <!-- this dialog style-->
+    <style type="text/css">
+        #grid {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: auto;
+            height: auto;
+        }
+        #grid .field-keys {
+            width: 130px;
+        }
+        #grid .field-area {
+            width: 150px;
+        }
+        #grid .dgrid-header-row {
+            background-color: #a3b4c2;
+        }
+        #grid .ui-widget-header {
+            color: black;
+            font-weight: normal;
+        }
+        #widget_webida-shortcutkey-search {
+            float: right;
+            margin-right: 5px;
+        }
+    </style>
+
+    <!-- check box pane -->
+    <div
+         id='webida-shortcutkey-info-checkbox-pane'
+         data-dojo-type="dijit/layout/ContentPane"
+         data-dojo-props="region:'top'"
+         >
+        <!-- checkbox -->
+        <input
+               id='webida-shortcutkey-info-checkbox'
+               data-dojo-type='dijit/form/CheckBox'
+               data-dojo-props='checked: true'
+               />
+        <label id='webida-shortcutkey-info-label'>
+            Show viable shortcuts only
+        </label>
+
+        <!-- search -->
+        <input
+               id='webida-shortcutkey-search'
+               autofocus
+               data-dojo-type="dijit/form/TextBox"
+               data-dojo-props="
+                                placeHolder: 'Search',
+                                intermediateChanges:true
+                                "
+               />
+    </div>
+
+    <!-- grid pane -->
+    <div
+         id='webida-shortcutkey-info-grid-pane'
+         data-dojo-type="dijit/layout/ContentPane"
+         data-dojo-props="region:'center'"
+         >
+        <div id='grid'></div>
+    </div>
+
+</div>
