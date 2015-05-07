@@ -1153,7 +1153,7 @@ var ENV_TYPE;
             };
 
             ajaxCall({
-                url: mod.conf.fsApiBaseUrl + '/archive/' + self.fsid,
+                url: mod.conf.fsApiBaseUrl + '/archive/' + self.fsid + '/',
                 data: data,
                 callback: callback
             });
@@ -1184,7 +1184,7 @@ var ENV_TYPE;
             };
 
             ajaxCall({
-                url: mod.conf.fsApiBaseUrl + '/archive/' + self.fsid,
+                url: mod.conf.fsApiBaseUrl + '/archive/' + self.fsid + '/',
                 data: data,
                 callback: callback
             });
