@@ -170,6 +170,7 @@ define([
             },
             runConf: function() {
                 delegator.run(selected.runConf);
+                ui.dialog.hide();
             },
             refocus: false,
             title: 'Run Configurations',
