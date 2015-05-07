@@ -1615,7 +1615,7 @@ var ENV_TYPE;
                 callbackWithRawData: function (data) {
                     callback(null, data);
                 },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1656,7 +1656,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/file/' + self.fsid + '/' + path,
                 type: 'POST',
                 data: fd,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1681,7 +1681,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/lockfile/' + self.fsid + '/' + file,
                 data: { sessionID: sessionID },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1706,7 +1706,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/unlockfile/' + self.fsid + '/' + file,
                 data: { sessionID: sessionID },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -1935,7 +1935,7 @@ var ENV_TYPE;
                 url: mod.conf.fsApiBaseUrl + '/meta/' + self.fsid + '/' + path,
                 type: 'POST',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
         ensureAuthorize(restApi);
@@ -1983,7 +1983,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/alias/' + aliasKey,
                 type: 'DELETE',
-                callback: callback,
+                callback: callback
             });
         }
         ensureAuthorize(restApi);
@@ -2045,7 +2045,7 @@ var ENV_TYPE;
                     } else {
                         callback(data.reason);
                     }
-                },
+                }
             });
         }
 
@@ -2247,7 +2247,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.fsApiBaseUrl + '/' + fsid,
                 type: 'DELETE',
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2423,7 +2423,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.appApiBaseUrl + '/changeappinfo',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2510,7 +2510,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.appApiBaseUrl + '/delete',
                 data: { appid: appid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2577,7 +2577,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.appApiBaseUrl + '/start',
                 data: { appid: appid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2599,7 +2599,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.appApiBaseUrl + '/stop',
                 data: { appid: appid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2629,7 +2629,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.appApiBaseUrl + '/deploy',
                 data: data,
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2885,7 +2885,7 @@ var ENV_TYPE;
                     ajaxCall({
                         url: mod.conf.authApiBaseUrl + '/myinfo/',
                         type: 'DELETE',
-                        callback: callback,
+                        callback: callback
                     });
                 }
 
@@ -2900,7 +2900,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.authApiBaseUrl + '/deleteaccount/',
                 data: {uid: uid},
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -2926,7 +2926,7 @@ var ENV_TYPE;
                 url: mod.conf.authApiBaseUrl + '/changepassword/',
                 type: 'POST',
                 data: {oldpw: oldPW, newpw: newPW},
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3016,7 +3016,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.authApiBaseUrl + '/personaltoken/' + deleteToken,
                 type: 'DELETE',
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3209,7 +3209,7 @@ var ENV_TYPE;
         function restApi() {
 
             var data  = {
-                profileInfo : JSON.stringify(profileInfo),
+                profileInfo : JSON.stringify(profileInfo)
             };
 
             ajaxCall({
@@ -3264,7 +3264,7 @@ var ENV_TYPE;
 
     mod.BuildService.prototype.registerGCMRegId = function (regid, info, cb) {
         var data  = {
-            info : info,
+            info : info
         };
 
         function restApi() {
@@ -3283,7 +3283,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.buildApiBaseUrl + '/gcm/' + regid,
                 type: 'DELETE',
-                callback: cb,
+                callback: cb
             });
         }
         ensureAuthorize(restApi);
@@ -3376,7 +3376,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.aclApiBaseUrl + '/deletepolicy/',
                 data: { pid: pid },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3422,7 +3422,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.aclApiBaseUrl + '/assignpolicy/',
                 data: { pid: pid, user: idArr.join(';'), sessionID: sessionID },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3445,7 +3445,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.aclApiBaseUrl + '/assignpolicies/',
                 data: { pid: pidArr.join(';'), user: id, sessionID: sessionID },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3468,7 +3468,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.aclApiBaseUrl + '/removepolicy/',
                 data: { pid: pid, user: user, sessionID: sessionID },
-                callback: callback,
+                callback: callback
             });
         }
 
@@ -3700,7 +3700,7 @@ var ENV_TYPE;
             ajaxCall({
                 url: mod.conf.groupApiBaseUrl + '/deletegroup/',
                 data: { gid: gid },
-                callback: callback,
+                callback: callback
             });
         }
 
