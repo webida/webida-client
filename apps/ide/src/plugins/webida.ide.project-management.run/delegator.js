@@ -23,12 +23,13 @@
 define([
     'webida-lib/app',
     'webida-lib/plugin-manager-0.1',
+    'webida-lib/util/path',
     'dojo/topic',
     './run-configuration-manager',
     'webida-lib/plugins/workspace/plugin',
     'other-lib/toastr/toastr',
     'other-lib/underscore/lodash.min'
-], function (ide, pluginManager, topic, runConfigurationManager, workspace, toastr, _) {
+], function (ide, pluginManager, pathUtil, topic, runConfigurationManager, workspace, toastr, _) {
 
     'use strict';
 
@@ -87,7 +88,7 @@ define([
      */
     defaultDelegator.run = function(runObject, callback) {
         var projectPath = workspace.getRootPath() + runObject.project;
-        var openName = projectPath + runObject.project;
+        var openName = pathUtil.attachSlash(projectPath) + runObject.name;
         var runningWin = window.open('', openName, runObject.openArgument);
         if (!runningWin) {
             callback('Window can\'t be opened.<br />It might be interrupted by pop-up blocking, please check it.');
