@@ -151,11 +151,14 @@ define([
                                 '<td>' + moment(file.ctime).format('lll') + '</td>' +
                                 '<td></td>' +
                                 '<td class="text-right">' +
-                                '<button data-launch="' + file.name + '" type="button" class="btn btn-success"><span class="glyphicon glyphicon-wrench"></span> IDE</button>' +
-                                ' <button data-remove="' + file.name + '" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Delete</button>' +
+                                '<button data-launch="' + file.name + '" type="button" class="btn btn-success">' +
+                                '<span class="glyphicon glyphicon-wrench"></span> IDE</button>' +
+                                ' <button data-remove="' + file.name + '" type="button" class="btn btn-danger">' +
+                                '<span class="glyphicon glyphicon-trash"></span> Delete</button>' +
                                 '</td>' +
                                 '</tr>' +
-                                '<tr id="project_' + idx + '" class="project-group hide"><td colspan="6"><table class="table table-hover"><tbody></tbody></td></tr>';
+                                '<tr id="project_' + idx + '" class="project-group hide"><td colspan="6">' +
+                                '<table class="table table-hover"><tbody></tbody></td></tr>';
                             /* jshint maxlen:120 */
 
                             workspaceItem.append(workspace);
@@ -174,7 +177,6 @@ define([
                                     }).each(function (file) {
                                         var PROJECT_PATH = wsName + '/' + file.name + '/.project/project.json';
 
-//                                        console.log(PROJECT_PATH);
                                         webidaFs.exists(PROJECT_PATH, function (err, exist) {
                                             if (err) {
                                                 next(err);
@@ -185,18 +187,18 @@ define([
                                                             next(err);
                                                         } else {
                                                             var rt = JSON.parse(data);
-                                                            /* jshint maxlen:200 */
                                                             var project =
                                                                 '<tr class="project-item">' +
                                                                 '<td style="width: 29px;">-</td>' +
                                                                 '<td style="width: 235px;">' + rt.name + '</td>' +
-                                                                '<td style="width: 245px;">' + rt.lastmodified + '</td>' +
+                                                                '<td style="width: 245px;">' +
+                                                                    rt.lastmodified +
+                                                                '</td>' +
                                                                 '<td style="width: 245px;">' + rt.created + '</td>' +
                                                                 '<td></td>' +
                                                                 '<td>' + rt.description + '</td>' +
                                                                 '<td>' + rt.type + '</td>' +
                                                                 '</tr>';
-                                                            /* jshint maxlen:120 */
 
                                                             $('tr#project_' + wIdx).find('tbody').append(project);
                                                         }

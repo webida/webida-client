@@ -66,7 +66,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                 if (this.editorModule.isClean) {
                     modifiedInEditor = !this.editorModule.isClean(this);
                 }
-                return  val !== undefined && val !== this.savedValue && modifiedInEditor;	// TODO: remove the first clause
+                // TODO: remove the first clause
+                return  val !== undefined && val !== this.savedValue && modifiedInEditor;
             } else {
                 return false;	// not yet even initialized.
             }
@@ -314,7 +315,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                             file.name = newName;
                             editors.refreshTabTitle(file);
                         } else {
-                            var isModified = file.isModified();
+                            //var isModified = file.isModified();
 
                             var view = vm.getView(file.viewId);
                             var vc = view.getParent();
@@ -817,7 +818,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         delete file._openFileOption;
         delete file._openFileCallback;
 
-        var show = option.show === false ? false : true;
+        var show = option.show !== false;
 
         var cellCount = editors.splitViewContainer.get('splitCount');
         var cellIndex;
