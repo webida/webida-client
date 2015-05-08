@@ -1,38 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-<plugin>
+<widget xmlns       = "http://www.w3.org/ns/widgets"
+        id          = "http://example.org/exampleWidget"
+        version     = "2.0 Beta"
+        height      = "200"
+        width       = "200"
+        viewmodes   = "fullscreen">
+ 
+  <name short="Example 2.0">
+    The example Widget!
+  </name>
 
-   <extension
-         point="org.eclipse.ui.views">
-      <category
-            name="GEF Book"
-            id="net.ajaxlab.gef">
-      </category>
-      <view
-            name="Genealogy"
-            icon="icons/sample.gif"
-            category="net.ajaxlab.gef"
-            class="net.ajaxlab.genealogy.view.GenealogyView"
-            id="net.ajaxlab.genealogy.view.GenealogyView">
-      </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.jdt.ui.JavaPerspective">
-         <view
-               ratio="0.5"
-               relative="org.eclipse.ui.views.ProblemView"
-               relationship="right"
-               id="net.ajaxlab.genealogy.view.GenealogyView">
-         </view>
-      </perspectiveExtension>
-   </extension>
-   <extension
-         point="org.eclipse.help.contexts">
-      <contexts
-            file="contexts.xml">
-      </contexts>
-   </extension>
+  <feature name="http://example.com/camera">
+    <param name="autofocus" value="true"/>
 
-</plugin>
+  </feature>
+
+  <preference name     = "apikey"
+              value    = "ea31ad3a23fd2f"
+              readonly = "true" />
+
+  <description>
+    A sample widget to demonstrate some of the possibilities.
+  </description>
+
+  <author href  = "http://foo-bar.example.org/"
+          email = "foo-bar@example.org">Foo Bar Corp</author>
+
+  <icon src="icons/example.png"/>
+  <icon src="icons/boo.png"/>
+  <content src="myWidget.html"/>
+</widget>
