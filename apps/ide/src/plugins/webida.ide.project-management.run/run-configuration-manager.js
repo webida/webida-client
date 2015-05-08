@@ -211,7 +211,12 @@ define(['webida-lib/app',
             console.log('fs.cache.file.set', arguments);
             var targetPathInfo = _getPathInfo(target);
             if(targetPathInfo.type === 'runConfig'){
-                loadRunConfigurations();
+                require(['plugins/webida.ide.project-management.run/view-controller'], function(viewController){
+                    if(!viewController.getWindowOpened()) {
+                        loadRunConfigurations();
+                    }
+                });
+
             }
         });
 
