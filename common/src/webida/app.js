@@ -26,14 +26,17 @@ define(['webida-lib/util/browserInfo',
         'webida-lib/widgets/dialogs/popup-dialog/PopupDialog',
         'dojo/topic',
         'dojo/_base/lang',
+        'webida-lib/util/logger/logger-client',
         'dojo/domReady!',
         'webida-lib/util/timedLogger',
         'webida-lib/util/loading-screen'],
        function (brInfo, loadingScreen, webida, msgAgent, _, toastr, pm,
-                  FSCache, URI, PopupDialog, topic, lang) {
+                  FSCache, URI, PopupDialog, topic, lang, Logger) {
     'use strict';
     /* global timedLogger: true */
 
+    var logger = new Logger();
+    
     var exports = {};
 
     var fsid = null;
@@ -190,6 +193,7 @@ define(['webida-lib/util/browserInfo',
      * @returns {undefined}
      */
     function startup(clientID, redirectUrl, options) {
+        logger.log('%c*** Starting Open Development Platform ***', 'color:green');
         function proceed() {
             var currentURI = URI(window.location.href);
             var workspaceInfo = currentURI.search(true).workspace;
