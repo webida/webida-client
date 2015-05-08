@@ -67,17 +67,12 @@
 }
 
 .rcw-content-table-label {
-    border-collapse:collapse;
     border-bottom: #CDD8E3 1px solid;
-    background-color:#98B1CA;
     width:33%;
-    height:31px;
-    color:#FFFFFF;
-    text-indent:16px;
+    color:#000000;
     line-height:250%;
-    text-align:left;
-    vertical-align:top;
-    padding-right:10px;
+    text-align:right;
+    font-weight: bold;
 }
 
 .rcw-content-table-inputbox {
@@ -249,11 +244,32 @@ ul.run-configuration-list-tree {
     padding: 0;
     margin: 0;
 }
+
 ul.run-configuration-list-tree ul {
     padding-left: 20px;
+    list-style: none;
 }
-.run-configuration-list-tree li a.selected{
+
+ul.run-configuration-list-tree li a {
+    text-decoration: none;
+    color: #111111;
+    display: block;
+    padding: 2px;
+}
+ul.run-configuration-list-tree li a.selected {
     font-weight: bold;
+}
+ul.run-configuration-list-tree > li {
+    border: 1px solid #98B1CA;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    padding: 1px;
+}
+ul.run-configuration-list-tree > li > a {
+    padding: 6px 15px;
+    background-color: #7BCDCD;
+    color: #fff;
+    border-radius: 5px;
 }
 #run-configuration-list-contentpane {
     height: 100%;
