@@ -45,6 +45,8 @@ define([
 
     var module = {};
 
+    var windowOpened = false;
+
     var extensionPoints = {
         RUN_CONFIGURATION_TYPE: 'webida.ide.project-management.run:type',
         RUN_CONFIGURATION: 'webida.ide.project-management.run:configuration',
@@ -176,7 +178,9 @@ define([
             title: 'Run Configurations',
             style: 'width: 800px',
             onHide: function () {
-                runConfManager.flushRunConfigurations();
+                runConfManager.flushRunConfigurations(function(){
+                    windowOpened = false;
+                });
                 ui.dialog.destroyRecursive();
                 workbench.focusLastWidget();
             },
@@ -248,6 +252,7 @@ define([
 
         module.refreshTree();
         ui.dialog.show();
+        windowOpened = true;
     };
 
     function checkUnsavedConf() {
@@ -441,6 +446,10 @@ define([
 
     module.deleteConf = function(runConfName, callback){
         callback(null, runConfName);
+    };
+
+    module.getWindowOpened = function(){
+        return windowOpened;
     };
 
 
