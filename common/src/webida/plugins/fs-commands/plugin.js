@@ -169,7 +169,8 @@ function (wv, pm, editors, _, topic, pathUtil, toastr)
                         if (availableEditorExtensions) {
                             var availableEditorExtensions2 = editors.getAvailableEditorExtensions(paths[i]);
                             if (availableEditorExtensions2) {
-                                availableEditorExtensions = _.intersection(availableEditorExtensions, availableEditorExtensions2);
+                                availableEditorExtensions = _.intersection(
+                                    availableEditorExtensions, availableEditorExtensions2);
                             } else {
                                 availableEditorExtensions = null;
                             }
@@ -206,7 +207,8 @@ function (wv, pm, editors, _, topic, pathUtil, toastr)
                             paths.every(function (n) { return !pathUtil.isDirPath(n); });
                     },
                     items: {
-                        'Open with': [ 'enum', 'webida-lib/plugins/fs-commands/fs-commands', 'handleOpenWith', openWithEditorNames ]                       
+                        'Open with': [ 'enum', 'webida-lib/plugins/fs-commands/fs-commands',
+                            'handleOpenWith', openWithEditorNames ]
                     }
                 },
 
@@ -228,7 +230,7 @@ function (wv, pm, editors, _, topic, pathUtil, toastr)
                     items: {
                         '&Copy': [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCopy' ],
                         'Cu&t': [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCut' ],
-                        '&Delete': [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDelete' ],
+                        '&Delete': [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDelete' ]
                     }
                 },
 
@@ -241,7 +243,7 @@ function (wv, pm, editors, _, topic, pathUtil, toastr)
                     items: {
                         'New': {
                             '&File': [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFile' ],
-                            '&Directory': [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFolder' ],
+                            '&Directory': [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFolder' ]
                         },
                         'Dow&nload' : [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDownloadZip' ]
                     }

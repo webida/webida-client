@@ -241,7 +241,7 @@ define([
         this._workbenchRunBinded(runConfigurationManager.RUN_MODE);
     };
 
-    module._workbenchRunBinded = function (mode) {
+    module._workbenchRunBinded = function (/*mode*/) {
         var context = workbench.getContext();
         var contextPaths;
 
