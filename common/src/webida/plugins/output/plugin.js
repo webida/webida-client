@@ -122,7 +122,7 @@ function (workbench, _, topic, CheckBox, Button, consoleViewHtml, toolbarTmpl, V
     mod.TRANSFORMERS_MAP = {
 //        'htmlescape': transformerHtmlEscape,
         'fileloc': transformerFileLoc,
-        'uri': transformerUri,
+        'uri': transformerUri
 //        'error': transformerError
     };
 
@@ -256,59 +256,49 @@ function (workbench, _, topic, CheckBox, Button, consoleViewHtml, toolbarTmpl, V
             var processQueue = function () {
                 _.range(rCount).forEach(function () {
                     if (self.logQueue.length > 0) {
-                        var args, i;
+                        var args;
                         var $contentElem = $(self.getContentElem());
                         var $groupContent = $('<div>');
                         var $messageElem;
                         var type;
 
-                        try {
-                            _.range(self.logQueue.length).forEach(function (i) {
-                                if (i >= MAX_COUNT) {
-                                    throw 'break';
+                        var range = Math.min(self.logQueue.length, MAX_COUNT);
+                        _.range(range).forEach(function (i) {
+                            args = self.logQueue[i].args;
+                            type = self.logQueue[i].type;
+                            $messageElem = $('<div class="console_message_item pre_whitespace">');
+                            _.each(args, function (arg) {
+                                var transformer = null;
+                                var data = null;
+                                if (typeof(arg) === 'object') {
+                                    if (arg.hasOwnProperty('type')) {
+                                        transformer = getTransformer(arg.type);
+                                    }
+                                } else if (typeof(arg) === 'string') {
+                                    transformer = getTransformer('uri');
                                 }
-                                args = self.logQueue[i].args;
-                                type = self.logQueue[i].type;
-                                $messageElem = $('<div class="console_message_item pre_whitespace">');
-                                _.each(args, function (arg) {
-                                    var transformer = null;
-                                    var data = null;
-                                    if (typeof(arg) === 'object') {
-                                        if (arg.hasOwnProperty('type')) {
-                                            transformer = getTransformer(arg.type);
-                                        }
-                                    } else if (typeof(arg) === 'string') {
-                                        transformer = getTransformer('uri');
-                                    }
 
-                                    if (transformer) {
-                                        data = transformer(arg);
-                                    } else {
-                                        data = arg;
-                                    }
+                                if (transformer) {
+                                    data = transformer(arg);
+                                } else {
+                                    data = arg;
+                                }
 
-                                    if (data) {
-                                        $messageElem.append(data);
-                                        $messageElem.append(' ');
-                                        if (type === 'err') {
-                                            $messageElem.addClass('console_error_message');
-                                        }
+                                if (data) {
+                                    $messageElem.append(data);
+                                    $messageElem.append(' ');
+                                    if (type === 'err') {
+                                        $messageElem.addClass('console_error_message');
                                     }
-                                });
-
-                                $messageElem.append('<br>');
-                                $groupContent.append($messageElem);
+                                }
                             });
-                        } catch (e) {
-                            if (e !== 'break') {
-                                throw e;
-                            }
-                        }
 
-                        if (i === MAX_COUNT) {
-                            self.logQueue.splice(0, MAX_COUNT);
-                        } else {
-                            self.logQueue = [];
+                            $messageElem.append('<br>');
+                            $groupContent.append($messageElem);
+                        });
+
+                        self.logQueue.splice(0, MAX_COUNT);
+                        if(range < MAX_COUNT){
                             clearInterval(self.interval);
                             self.interval = null;
                         }
