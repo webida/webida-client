@@ -1,0 +1,19 @@
+{
+    "template_id": "java-sample",
+    "title": "Java simple project",
+    "screen_shot": [],
+    "description": "project/README.md",
+    "version": "0.1",
+    "app_class": "java",
+    "app_main": "src/com/example/Main.java",
+    "template model": [
+        {
+           "param": "project name (NOT USED YET)",
+           "value": "default1"
+        },
+        {
+           "param": "app id (NOT USED YET)",
+           "value": "default2"
+        }
+    ]
+}
