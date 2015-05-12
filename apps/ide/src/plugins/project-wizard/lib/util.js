@@ -381,13 +381,19 @@ function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg,
         runConfiguration.set(projectName, projectInfo, cb);
     };
 
-    Util.createRunConfiguration = function (name, path) {
+    Util.createRunConfiguration = function (conf, template) {
         var run = {};
         var listItem = {};
-        listItem.name = name + '_run';
-        listItem.path = path;
-        listItem.type = '';
-        listItem.project = name;
+        listItem.name = conf.name + '_run';
+        /* jshint camelcase: false */
+        listItem.path = template.app_main;
+        /* jshint camelcase: true */
+        listItem.type = conf.type;
+        listItem.project = conf.name;
+        if(conf.type === 'org.webida.run.java'){
+            listItem.srcDir = template.srcDir;
+            listItem.outputDir = template.outputDir;
+        }
         run.list = [];
         run.list.push(listItem);
         run.selectedId = listItem.name;
