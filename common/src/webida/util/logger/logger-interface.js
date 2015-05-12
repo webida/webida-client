@@ -28,7 +28,7 @@
         warn: 4,
         error: 8,
         trace: 16,
-        all: 31,
+        all: 31
     };
 
     function LoggerInterface() {
@@ -37,9 +37,11 @@
         this.appenders = [];
         this.addAppender(console); //default logger for both sides
     }
+    /*jshint forin: true */
     for (var k in LEVELS) {
         LoggerInterface.prototype[k.toUpperCase()] = LEVELS[k];
     }
+    /*jshint forin: false */
     LoggerInterface.prototype.addAppender = function (appender) {
         if (typeof appender.trace !== 'function') {
             appender.trace = function () {};
@@ -67,11 +69,13 @@
         this.level = newLevel;
     };
     LoggerInterface.prototype.isLevel = function (flag) {
+        /*jslint bitwise: true */
         if (typeof this.getConfig('level') !== 'undefined') {
             return (this.getConfig('level') & flag) !== 0;
         } else {
             return (this.level & flag) !== 0;
         }
+        /*jslint bitwise: false */
     };
     LoggerInterface.prototype.setFormater = function (formater) {
         this.formater = formater;

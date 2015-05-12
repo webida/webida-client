@@ -4,8 +4,10 @@
     "screen_shot": [],
     "description": "project/README.md",
     "version": "0.1",
-    "app_class": "java",
-    "app_main": "src/com/example/Main.java",
+    "app_class": "org.webida.run.java",
+    "app_main": "com.example.Main",
+    "srcDir": "src",
+    "outputDir": "target",
     "template model": [
         {
            "param": "project name (NOT USED YET)",

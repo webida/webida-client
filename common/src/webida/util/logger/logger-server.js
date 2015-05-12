@@ -19,6 +19,8 @@
  * @author hw.shim
  */
 
+'use strict';
+
 var LoggerInterface = require('./logger-interface');
 var FileAppender = require('./appenders/file-appender');
 var singlton;
@@ -60,9 +62,9 @@ function getNow() {
 		}
 	}
 	result.push(now.getMilliseconds().toString());
-	if (result[3].length == 1) {
+	if (result[3].length === 1) {
 		result[3] = '00' + result[3];
-	} else if (result[3].length == 2) {
+	} else if (result[3].length === 2) {
 		result[3] = '0' + result[3];
 	}
 	return result.join(':');
@@ -73,6 +75,6 @@ Logger.getSingleton = function getSingleton() {
 		singlton = new Logger();
 	}
 	return singlton;
-}
+};
 
 module.exports = Logger;
