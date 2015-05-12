@@ -37,7 +37,7 @@ define([
     Logger.prototype = Object.create(LoggerInterface.prototype);
     Logger.prototype.constructor = Logger;
 
-    function formater(args, action) {
+    function formater(args/*, action*/) {
 
         function getNow() {
             var result = [],

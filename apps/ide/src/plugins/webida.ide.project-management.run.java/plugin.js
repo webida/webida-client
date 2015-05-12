@@ -23,7 +23,6 @@ define([
     ],
     function (ide, template, topic, Select, registry) {
         'use strict';
-        var runConfigurations = {};
         var FS = ide.getMount();
         var currentRunConf;
         var ui = {};
@@ -55,7 +54,8 @@ define([
                 ui.saveButton = ui.$parent.find('.rcw-action-save');
                 ui.saveButton.on('click', function(){
                     if(_doSave()) {
-                        topic.publish('webida.ide.project-management.run:configuration.changed', 'save', currentRunConf);
+                        topic.publish('webida.ide.project-management.run:configuration.changed',
+                            'save', currentRunConf);
                     }
                 });
             }
@@ -73,15 +73,17 @@ define([
                 console.log('Run As...', runConf);
                 var rootPath = ide.getPath() + '/' + runConf.project;
                 var filePath = runConf.srcDir + '/' + runConf.path.replace(/\./g, '/') + '.java';
-                FS.exec(rootPath, {cmd: 'javac', args: ['-d', runConf.outputDir, filePath]}, function(err, stdout, stderr){
-                    console.debug('###javac', runConf.path, stdout, stderr);
-                    topic.publish('#REQUEST.log', stdout);
-                    topic.publish('#REQUEST.log', stderr);
-                    FS.exec(rootPath, {cmd: 'java', args: ['-cp', runConf.outputDir, runConf.path]}, function(err, stdout, stderr){
-                        console.debug('###java', runConf.path, stdout, stderr);
+                FS.exec(rootPath, {cmd: 'javac', args: ['-d', runConf.outputDir, filePath]},
+                    function(err, stdout, stderr){
+                        console.debug('###javac', runConf.path, stdout, stderr);
                         topic.publish('#REQUEST.log', stdout);
                         topic.publish('#REQUEST.log', stderr);
-                        callback(null, runConf);
+                    FS.exec(rootPath, {cmd: 'java', args: ['-cp', runConf.outputDir, runConf.path]},
+                        function(err, stdout, stderr){
+                            console.debug('###java', runConf.path, stdout, stderr);
+                            topic.publish('#REQUEST.log', stdout);
+                            topic.publish('#REQUEST.log', stderr);
+                            callback(null, runConf);
                     });
                 });
             },
