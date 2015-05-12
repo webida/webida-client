@@ -187,7 +187,7 @@ define([
             onLoad: function () {
                 ui.content = $('#run-configuration-list-contentpane');
                 if(selected.runConf){
-                    addRunToListPane(selected.runConf);
+                    delegator.loadConf(ui.content, selected.runConf);
                 }
 
                 ui.btns.createNewButton = registry.byId('run-configuration-create-button');
