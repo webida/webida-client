@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,15 +28,15 @@ define(['dojo/topic',
 ], function (topic) {
     'use strict';
 
-    topic.subscribe('file.opened', function(file){
-        
+    topic.subscribe('file.opened', function(/*file*/){
+
     });
-    topic.subscribe('file.saved', function(file){
-        
+    topic.subscribe('file.saved', function(/*file*/){
+
     });
 
     var self = {
-        create: function (file, content, elem, started) {
+        create: function (file, content, elem/*, started*/) {
             console.info('create()', elem, content);
             file.tabTitle += ' :: XML Editor';
             var pre = document.createElement('pre');
@@ -52,26 +52,26 @@ define(['dojo/topic',
         },
 
         hide: function (/*file*/) {
-            console.info('hide()');            
+            console.info('hide()');
         },
 
-        destroy: function (file) {
+        destroy: function (/*file*/) {
             console.info('destroy()');
         },
 
-        getValue: function (file) {
+        getValue: function (/*file*/) {
             console.info('getValue()');
         },
 
-        addChangeListener: function (file, callback) {
+        addChangeListener: function (/*file, callback*/) {
             console.info('addChangeListener()');
         },
 
-        focus: function (file) {
+        focus: function (/*file*/) {
             console.info('focus()');
         },
 
-        pushCursorLocation: function (file, cursor, forced) {
+        pushCursorLocation: function (/*file, cursor, forced*/) {
             console.info('pushCursorLocation()');
         },
 
@@ -81,7 +81,7 @@ define(['dojo/topic',
         moveForth: function () {
             console.info('moveForth()');
         },
-        moveTo: function (location) {
+        moveTo: function (/*location*/) {
             console.info('moveTo()');
         },
 
@@ -89,11 +89,11 @@ define(['dojo/topic',
             console.info('getLastSavedFoldingStatus()');
         },
 
-        markClean: function (file) {
+        markClean: function (/*file*/) {
             console.info('markClean()');
         },
-        
-        isClean: function (file) {
+
+        isClean: function (/*file*/) {
             console.info('isClean()');
         },
 

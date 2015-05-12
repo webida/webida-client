@@ -19,30 +19,32 @@
  * @author hw.shim
  */
 
+'use strict';
+
 function FileAppender(logDir){
 	this.logDir = logDir || './';
 }
 FileAppender.prototype.log = function(){
 	this.write.apply(this, arguments);
-}
+};
 FileAppender.prototype.info = function(){
 	this.write.apply(this, arguments);
-}
+};
 FileAppender.prototype.warn = function(){
 	this.write.apply(this, arguments);
-}
+};
 FileAppender.prototype.error = function(){
 	this.write.apply(this, arguments);
-}
+};
 FileAppender.prototype.trace = function(){
 	this.write.apply(this, arguments);
-}
+};
 FileAppender.prototype.write = function(){
 	var fs = require('fs');
 	var os = require('os');
 	var msg = ([]).join.call(arguments,' ');
 	fs.writeFileSync(this.logDir+'server.log', msg+os.EOL, {flag:'a'});
 	//TODO Log rotate
-}
+};
 
 module.exports = FileAppender;
