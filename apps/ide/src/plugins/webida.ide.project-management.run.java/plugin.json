@@ -1,0 +1,35 @@
+{
+    "name": "webida.ide.project-management.run.java",
+    "description": "Java Project configurator (Project Wizard & Run)",
+    "version": "0.0.1",
+    "author": "Kyungmi Koong",
+    "requirement": "webida.common.workspace",
+    "extensions": {
+        "webida.ide.project-management.run:type" : [
+            {
+                "id" : "org.webida.run.java",
+                "name" : "Run As Java Application",
+                "hidden": false
+            }
+        ],
+        "webida.ide.project-management.run:configuration" : [
+            {
+                "module" : "plugins/webida.ide.project-management.run.java/plugin",
+                "id" : "org.webida.run.java.delegate",
+                "name" : "Run As Tizen Application",
+                "type" : "org.webida.run.java",
+                "newConf" : "newConf",
+                "loadConf" : "loadConf",
+                "saveConf" : "saveConf",
+                "deleteConf" : "deleteConf"
+            }
+        ],
+        "webida.ide.project-management.run:runner" : [
+            {
+                "module": "plugins/webida.ide.project-management.run.java/plugin",
+                "type" : "org.webida.run.java",
+                "run": "run"
+            }
+        ]
+    }
+}

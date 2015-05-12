@@ -168,23 +168,25 @@ function (webida, ide,
      * @param {String} type - project type
      * @param {String} path - project start path
      *
-     * @returns {String} .project file's contents
+     * @returns {object} run configuration object
      */
-    function createProjectConf(name, desc, type, path, options) {
+    function createProjectConf(name, template, options) {
         var conf = {};
 
         conf.name = (name ? name : 'default');
-        conf.description = (desc ? desc : '');
+        conf.description = '';
 
         var date = new Date().toLocaleString();
         conf.created = date;
         conf.lastmodified = date;
 
-        conf.type = (type ? type : '');
+        /* jshint camelcase: false */
+        conf.type = (template.app_class ? template.app_class : '');
+        /* jshint camelcase: true */
 
         conf.uuid = Util.newuuid();
 
-        conf.run = Util.createRunConfiguration(conf.name, path);
+        conf.run = Util.createRunConfiguration(conf, template);
 
         // build profile ("build")
         var profile = BuildProfile.getDefaultProfile(name);
@@ -630,12 +632,7 @@ function (webida, ide,
         function createProject() {
             function createDefaultProjectConf() {
                 var name = projectName ? projectName : item.name;
-                var desc = '';
-                 /* jshint camelcase: false */
-                var type = item.template.app_class;
-                var path = item.template.app_main;
-                /* jshint camelcase: true */
-                var pConf = createProjectConf(name, desc, type, path, options);
+                var pConf = createProjectConf(name, item.template, options);
                 var pConfText = JSON.stringify(pConf);
                 var pcPath = Util.concatWFSPath([destSelect, projectName, '.project']).replace(destFS, '');
 
@@ -667,11 +664,16 @@ function (webida, ide,
                                       srcFSPrjPath + ' to ' + destPrjPath, function () {
                     createDefaultProjectConf();
 
+                    /* jshint camelcase: false */
                     // For the performance reason, just apply templating for the specific files after batch copy.
-                    var file = 'index.html';
+                    var file = (item.template.app_class === 'org.webida.run.java') ?
+                        (item.template.srcDir + '/' + item.template.app_main.replace(/\./g, '/') + '.java') :
+                        'index.html';
+                    /* jshint camelcase: true */
                     if (options.supportsCordova) {
                         file = wwwPath + '/' + file;
                     }
+
                     doTemplate(mountDest, destPath + '/' + file, file);
 
                     if (options.supportsCordova) {
