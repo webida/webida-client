@@ -83,8 +83,8 @@ define([
 
     /**
      * Default run delegator
-     * @param projectProperty
      * @param runObject
+     * @param callback
      */
     defaultDelegator.run = function(runObject, callback) {
         var projectPath = workspace.getRootPath() + runObject.project;
@@ -107,7 +107,6 @@ define([
 
             runningWin.location.href = './redirect.html#' + url;
 
-            toastr.success('\'' + runObject.project + '\' successfully launched');
             callback();
             if (runningWin.focus) {
                 runningWin.focus();
@@ -229,6 +228,8 @@ define([
                     toastr.error(err);
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
+                    toastr.success('Run configuration \'' + runConf.project  + ':' + runConf.name +
+                        '\' was successfully launched');
                 }
                 if (callback) {
                     callback(err, runConf);
@@ -242,6 +243,7 @@ define([
      * @param $parent (mandatory)
      * @param type (mandatory)
      * @param project (optional)
+     * @param callback (optional)
      */
     module.newConf = function($parent, type, project, callback) {
         console.log('newConf', arguments);
@@ -309,9 +311,10 @@ define([
                     // validation for mandatory properties (name, project)
                     if(runConf.name && runConf.project) {
                         runConfigurationManager.save(runConf);
+                        toastr.success('Run configuration \'' + runConf.project  + ':' + runConf.name +
+                            '\' was successfully saved');
                     } else {
-                        callback('You should fill the mandatory fields (run configuration name and target project)',
-                            runConf);
+                        err = 'You should fill the mandatory fields (run configuration name and target project)';
                     }
                 }
                 if (callback) {
@@ -338,6 +341,8 @@ define([
                 } else {
                     runConfigurationManager.delete(runConfName);
                     $parent.empty();
+                    toastr.success('Run configuration \'' + runConf.project  + ':' + runConf.name +
+                        '\' was successfully removed');
                 }
                 if (callback) {
                     callback(err, runConfName);
