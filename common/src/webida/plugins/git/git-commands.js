@@ -2030,8 +2030,7 @@ define(['require',
                         {
                             id: 'GitMergeApplyBtn',
                             caption: 'Apply',
-                            methodOnClick: 'merge',
-                            disabledOnShow: true
+                            methodOnClick: 'merge'
                         },
                         {
                             caption: 'Close',
@@ -2136,14 +2135,14 @@ define(['require',
                     }
                 });
 
-                dojo.connect(mergeMsgInput, 'onKeyUp', function (event) {
-                    var msg = mergeMsgInput.get('value');
-                    if (msg === '') {
-                        mergeButton.set('disabled', true);
-                    } else {
-                        mergeButton.set('disabled', false);
-                    }
-                });
+                //dojo.connect(mergeMsgInput, 'onKeyUp', function (event) {
+                //    var msg = mergeMsgInput.get('value');
+                //    if (msg === '') {
+                //        mergeButton.set('disabled', true);
+                //    } else {
+                //        mergeButton.set('disabled', false);
+                //    }
+                //});
             });
         }
 
