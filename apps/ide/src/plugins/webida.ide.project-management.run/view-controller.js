@@ -163,8 +163,6 @@ define([
                         type: 'info'
                     }).then(function () {
                         ui.dialog.hide();
-                    }, function () {
-                        return;
                     });
                 } else {
                     ui.dialog.hide();
@@ -231,13 +229,9 @@ define([
                                     module.refreshTree();
                                 }
                             });
-                            toastr.info('Successfully deleted');
                         }, function () {
                             toastr.info('Deletion canceled');
-                            return;
                         });
-
-
                     }
                 });
 
@@ -377,7 +371,6 @@ define([
                     }
                 } else {
                     toastr.warning('Select a file.');
-                    return;
                 }
             }
         });
@@ -409,13 +402,8 @@ define([
         selected.runConf.fragment = ui.forms.inputBoxes[2].value;
         selected.runConf.openArgument = ui.forms.inputBoxes[3].value;
 
-        if (ui.forms.checkBoxes[0].checked === true) {
-            selected.runConf.liveReload = true;
-        } else {
-            selected.runConf.liveReload = false;
-        }
+        selected.runConf.liveReload = (ui.forms.checkBoxes[0].checked) ? true : false;
         selected.runConf.project = ui.forms.select.get('value');
-        toastr.success('Successfully modified');
         topic.publish('webida.ide.project-management.run:configuration.changed', 'save', selected.runConf);
     }
 
@@ -428,10 +416,8 @@ define([
             ui.content.removeChild(markup);
             delegator.deleteConf(run.name);
 
-            toastr.info('Successfully deleted');
         }, function () {
             toastr.info('Deletion canceled');
-            return;
         });
 
     }
@@ -468,11 +454,8 @@ define([
         var child = markup.domNode;
         var title = $(child).find('.rcw-title-name');
 
-        var selected = false;
-
         if (runConf.latestRun) {
             $(title).text(runConf.name + ' [latest run]');
-            selected = true;
         } else {
             $(title).text(runConf.name);
         }
@@ -509,11 +492,7 @@ define([
         ui.forms.readonlyInputBoxes[0].value = runConf.path;
 
         ui.forms.checkBoxes = $(child).find('.rcw-content-table-checkbox'); //FIXME
-        if (runConf.liveReload) {
-            ui.forms.checkBoxes[0].checked = true;
-        } else {
-            ui.forms.checkBoxes[0].checked = false;
-        }
+        ui.forms.checkBoxes[0].checked = (runConf.liveReload) ? true : false;
 
         ui.btns.saveButton = registry.byId('rcw-action-save');
         dojo.connect(ui.btns.saveButton, 'onClick', function () {
