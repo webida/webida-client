@@ -63,8 +63,8 @@ define([
 
         function _doSave(){
             // validation on currentRunConf
-            currentRunConf.name = ui.inputBoxNodes[0].value;
-            currentRunConf.project = ui.select.get('value');
+            //currentRunConf.name = ui.inputBoxNodes[0].value;
+            //currentRunConf.project = ui.select.get('value');
             return true;
         }
 
@@ -100,7 +100,7 @@ define([
             saveConf: function(runConf, callback) {
                 // validation
                 if(_doSave()) {
-                    callback(null, currentRunConf);
+                    callback(null, runConf);
                 } else {
                     callback('validation failed');
                 }
