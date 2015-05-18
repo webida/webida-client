@@ -394,7 +394,7 @@ define([
             return;
         }
 
-        if(!/^([\w-]+(=[\w-]*)?(&[\w-]+(=[\w-]*)?)*)?$/.test( ui.forms.inputBoxes[1].value)){
+        if(!/^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/.test( ui.forms.inputBoxes[1].value)){
             toastr.error('Invalid arguments');
             return;
         }
