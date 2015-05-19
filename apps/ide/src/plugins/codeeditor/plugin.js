@@ -189,12 +189,16 @@ define(['other-lib/underscore/lodash.min',
                         right: '0px',
                         top: '0px',
                         bottom: '0px'
-                    });
+                    });                   
                 });
                 instance.setMode(file.name.substr(file.name.lastIndexOf('.') + 1));
                 setPreferences(instance);
 
                 onFileOpened(file, content);
+                
+                instance.addDeferredAction(function (editor) {
+                    editor.editor.setOption('overviewRuler', false);
+                });
 
                 if (store.getValue('codeeditor:editorconfig') === true) {
                     configloader.editorconfig(instance, file);
