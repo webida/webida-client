@@ -383,6 +383,7 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
                 if (state.query) {
                     state.query = null;
                     cm.removeOverlay(state.overlay);
+                    if (state.annotate) { state.annotate.clear(); state.annotate = null; }
                 }
             });
         }
@@ -426,6 +427,10 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
             cm.removeOverlay(state.overlay);
             state.overlay = searchOverlay(state.query);
             cm.addOverlay(state.overlay);
+            if (cm.showMatchesOnScrollbar) {
+                if (state.annotate) { state.annotate.clear(); state.annotate = null; }
+                state.annotate = cm.showMatchesOnScrollbar(state.query);
+            }
             state.posFrom = state.posTo = cm.getCursor();
             state.opt = opt;
         }

@@ -409,6 +409,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog',
                      'webida-lib/custom-lib/codemirror/addon/search/searchcursor',
                      './search-addon',
+                     './addon/overview-ruler/overview-ruler',
                      'webida-lib/custom-lib/codemirror/addon/edit/closebrackets',
                      'webida-lib/custom-lib/codemirror/addon/edit/closetag',
                      'webida-lib/custom-lib/codemirror/addon/edit/matchbrackets'], function () {
