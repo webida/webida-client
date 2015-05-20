@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+
+    <title>Webida Test Runner</title>
+
+    <link rel="stylesheet" href="external/src/qunit/qunit-1.18.0.css">
+    <link rel="stylesheet" href="external/src/qunit/qunit-composite.css">
+
+</head>
+
+<body>
+
+    <div id="qunit"></div>
+
+    <div id="qunit-fixture"></div>
+
+    <script src="external/src/qunit/qunit-1.18.0.js"></script>
+    <script src="external/src/qunit/qunit-composite.js"></script>
+
+    <script>
+        // 추가 부분 시작 (Composite 문법)
+        /*
+        QUnit.testSuites("dashboard test ", [
+            "apps/dashboard/dashboard_test.html"
+        ]);
+        QUnit.testSuites("deploy test ", [
+            "apps/deploy/deploy_test.html"
+        ]);
+        QUnit.testSuites("desktop test ", [
+            "apps/deploy/desktop_test.html"
+        ]);
+        QUnit.testSuites("site test ", [
+            "apps/deploy/site_test.html"
+        ]);
+        */
+        QUnit.testSuites("ide test ", [
+            "apps/ide/src/unit-test.html"
+        ]);
+        // 추가 부분 끝 (Composite 문법)
+    </script>
+
+</body>
+
+</html>

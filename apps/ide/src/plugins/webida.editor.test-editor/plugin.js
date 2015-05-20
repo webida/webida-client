@@ -44,6 +44,7 @@ define(['dojo/topic',
             pre.style.fontSize = '8pt';
             pre.innerText = content;
             elem.appendChild(pre);
+            return pre;
         },
 
         show: function (file) {
