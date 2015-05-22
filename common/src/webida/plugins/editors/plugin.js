@@ -659,7 +659,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             file = editors.files[path];
         }
 
-        if (file) {
+        if (file && file.isModified()) {
             fm.saveFile(file, option);
         }
     };
