@@ -120,7 +120,7 @@ define([
         if(!_.isEmpty(allRunConfigurations)) {
             contextMenuItems.push('---');
         }
-        contextMenuItems.push('Run configurations');
+        contextMenuItems.push('Run Configurations');
 
         items['Run &with'] = workbenchWholeItems['Run &with'];
         items['Run &with'][3] = contextMenuItems;
@@ -175,7 +175,7 @@ define([
         }
 
         contextMenuItems.push('---');
-        contextMenuItems.push('Run configurations');
+        contextMenuItems.push('Run Configurations');
 
         items['&Run'] = workspaceWholeItems['&Run'];
         items['Run &with'] = workspaceWholeItems['Run &with'];
@@ -282,7 +282,7 @@ define([
             return null;
         }
 
-        if (runString.trim() === 'Run configurations') {
+        if (runString.trim() === 'Run Configurations') {
             openRunConfigurationDialog();
         } else {
             var runStirngSplit = runString.split(' : ');
