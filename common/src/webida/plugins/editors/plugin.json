@@ -10,7 +10,8 @@
             { "name" : "handledFileExt", "type" : "array" },
             { "name" : "handledMimeTypes", "type" : "array" },
             { "name" : "unhandledFileExt", "type" : "array" },
-            { "name" : "unhandledMimeTypes", "type" : "array" }
+            { "name" : "unhandledMimeTypes", "type" : "array" },
+            { "name" : "handledFileNames", "type" : "array" }
         ],
         "webida.common.editors:menu" : "webida-lib/plugins/_extension-points/menu.json"
     },
