@@ -45,8 +45,10 @@ define([
             } else if (line.match(/Patch failed at \d* init\w*/)) {
                 return '<div class="gv-contentbody-message">' + line.replace(/ /g, '&nbsp;') + '</div>';
             } else if (line.match(/(http|https)/)) {
-                var m = line.match(/(.*)((http|https):\/\/[\w./\d]*)(.*)/);
-
+                // remove authentication information
+                // e.g. https://username:password@git.repository/url
+                line = line.replace(/(https?:\/\/)(.*:.*)@/, '$1');
+                var m = line.match(/(.*)((http|https):\/\/[\w\.\/\d\-]*)(.*)/);
                 return m[1] + '<a href="' + m[2] + '" target="_blank">' + m[2] + '</a>' + m[4];
             } else {
                 var output = line.replace(/ /g, '&nbsp;');

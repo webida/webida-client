@@ -301,11 +301,13 @@ define([
         }
 
         var projectName = pathUtil.getName(projectLevelPath);
-        if (!projectName || projectName[0] === '.') {
-            return false;
-        }
+        //if (!projectName || projectName[0] === '.') {
+        //    return false;
+        //}
+        //
+        //return true;
 
-        return true;
+        return projectName && projectName.charAt(0) !== '.';
     }
 
     function isRunnablePath(path) {
@@ -324,8 +326,13 @@ define([
     module.runObjectChanged = function(action, runConf) {
         console.log('webida.ide.project-management.run:configuration.changed', action, runConf);
         if(action === 'save'){
-            runConfigurationManager.save(runConf);
-            refreshRunConfigurationTree();
+            delegator.saveConf(runConf, function(err){
+                if(!err){
+                    refreshRunConfigurationTree();
+                }
+            });
+            //runConfigurationManager.save(runConf);
+            //refreshRunConfigurationTree();
         }
     };
 

@@ -1,0 +1,21 @@
+{
+    "template_id": "java-sample",
+    "title": "Java simple project",
+    "screen_shot": [],
+    "description": "project/README.md",
+    "version": "0.1",
+    "app_class": "org.webida.run.java",
+    "app_main": "com.example.Main",
+    "srcDir": "src",
+    "outputDir": "target",
+    "template model": [
+        {
+           "param": "project name (NOT USED YET)",
+           "value": "default1"
+        },
+        {
+           "param": "app id (NOT USED YET)",
+           "value": "default2"
+        }
+    ]
+}

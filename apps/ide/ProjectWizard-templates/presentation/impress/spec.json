@@ -6,7 +6,7 @@
                     "res/screenshot3.jpg"],
     "description": "project/README.md",
     "version": "0.1",
-    "app_class": "html",
+    "app_class": "",
     "app_main": "index.html",
     "template model": [
         {
