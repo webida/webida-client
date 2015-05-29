@@ -270,7 +270,9 @@ define(['./plugin',
             } else {
                 deferred.resolve(items);
             }
-        }
+        } else { 
+            deferred.resolve(null);
+        } 
 
         return deferred;
     }
