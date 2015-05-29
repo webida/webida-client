@@ -25,6 +25,7 @@ define([
     'dojo/store/Memory',
     'dojo/store/Observable',
     'dijit/registry',
+    'webida-lib/util/path',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog', // ButtonedDialog
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
     'dijit/layout/ContentPane',
@@ -37,7 +38,7 @@ define([
     'other-lib/underscore/lodash.min',
     'other-lib/toastr/toastr',
     'xstyle/css!./style.css'
-], function(ide, workbench, workspace, pluginManager, runConfManager, delegator, topic, Memory, Observable, registry,
+], function(ide, workbench, workspace, pluginManager, runConfManager, delegator, topic, Memory, Observable, registry, pathUtil,
             ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
             windowTemplate, contentTemplate, _, toastr){
 
@@ -190,6 +191,13 @@ define([
 
                 ui.btns.createNewButton = registry.byId('run-configuration-create-button');
                 dojo.connect(ui.btns.createNewButton, 'onClick', function () {
+                    // get project from selected context
+                    var projectName = undefined;
+                    var context = workbench.getContext();
+                    if (context.projectPath) {
+                        projectName = pathUtil.getName(context.projectPath) || undefined;
+                    }
+
                     var runConfs = runConfManager.getAll();
                     var unsaved = _.where(runConfs, {unsaved: true});
                     if(!_.isEmpty(unsaved)){
@@ -198,7 +206,7 @@ define([
                             message: 'You will may lose unsaved data. Are you sure to continue?',
                             type: 'info'
                         }).then(function () {
-                            delegator.newConf(ui.content, selected.type, undefined, function(error, newConf){
+                            delegator.newConf(ui.content, selected.type, projectName, function(error, newConf){
                                 if(!error){
                                     selected.runConf = newConf;
                                     module.refreshTree();
@@ -206,7 +214,7 @@ define([
                             });
                         });
                     } else {
-                        delegator.newConf(ui.content, selected.type, undefined, function(error, newConf){
+                        delegator.newConf(ui.content, selected.type, projectName, function(error, newConf){
                             if(!error){
                                 selected.runConf = newConf;
                                 module.refreshTree();
