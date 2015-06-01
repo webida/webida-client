@@ -77,7 +77,7 @@ define([
             
             area.append(div);
             
-            WorkspaceManager.getWorkspaces(function (err, list) {
+            WorkspaceManager.loadWorkspaces().then(function (list) {
                 var total = 0;
                 
                 _.forEach(list, function (ws) {
