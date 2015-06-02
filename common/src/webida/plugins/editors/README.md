@@ -20,6 +20,10 @@ This can be extended for detailed detailed editor implementations
 * unhandledMimeTypes: array
     * ..
 
+* handledFileNames: array
+    * Specify file names to open with your editor plug-in
+    * This will override handledFileExt, handledMimeTypes
+
 ### webida.common.editors:menu
 This can be extended for populate editor menu items
 
