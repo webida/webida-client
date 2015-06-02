@@ -74,18 +74,20 @@ define([
                 var rootPath = ide.getPath() + '/' + runConf.project;
                 var filePath = runConf.srcDir + '/' + runConf.path.replace(/\./g, '/') + '.java';
                 FS.exec(rootPath, {cmd: 'javac', args: ['-d', runConf.outputDir, filePath]},
-                    function(err, stdout, stderr){
+                    function (err, stdout, stderr) {
                         console.debug('###javac', runConf.path, stdout, stderr);
                         topic.publish('#REQUEST.log', stdout);
                         topic.publish('#REQUEST.log', stderr);
-                    FS.exec(rootPath, {cmd: 'java', args: ['-cp', runConf.outputDir, runConf.path]},
-                        function(err, stdout, stderr){
-                            console.debug('###java', runConf.path, stdout, stderr);
-                            topic.publish('#REQUEST.log', stdout);
-                            topic.publish('#REQUEST.log', stderr);
-                            callback(null, runConf);
+                        if (!err && !stderr) {
+                            FS.exec(rootPath, {cmd: 'java', args: ['-cp', runConf.outputDir, runConf.path]},
+                                function (err, stdout, stderr) {
+                                    console.debug('###java', runConf.path, stdout, stderr);
+                                    topic.publish('#REQUEST.log', stdout);
+                                    topic.publish('#REQUEST.log', stderr);
+                                    callback(null, runConf);
+                                });
+                        }
                     });
-                });
             },
             newConf: function($parent, runConf, callback){
                 ui.$parent = $parent;
