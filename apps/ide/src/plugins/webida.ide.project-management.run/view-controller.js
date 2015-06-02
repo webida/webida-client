@@ -177,6 +177,7 @@ define([
             title: 'Run Configurations',
             style: 'width: 800px',
             onHide: function () {
+                topic.publish('webida.ide.project-management.run:configuration.hide');
                 runConfManager.flushRunConfigurations(function(){
                     windowOpened = false;
                 });
