@@ -28,7 +28,7 @@ define([
     
     $('body').append(settingsDlg);
     
-    var PROFILE_PATH = '/.profile';
+    var PROFILE_PATH = '/.userinfo';
     
     exports.getFS = function (cb) {
         console.log('getFS');
