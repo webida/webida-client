@@ -445,7 +445,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
     };
     CodeEditor.getAvailableThemes = function () {
         return [
-            'default', 'ambiance', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
+            'default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
             'midnight', 'monokai', 'neat', 'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight',
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
