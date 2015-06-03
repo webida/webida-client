@@ -17,7 +17,7 @@
 require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (common, _, async, toastr) {
     'use strict';
 
-    //var PROFILE_PATH = '/.profile';
+    //var PROFILE_PATH = '/.userinfo';
     //var PROFILEJSON_PATH = PROFILE_PATH + '/profile.json';
 
     toastr.options = {

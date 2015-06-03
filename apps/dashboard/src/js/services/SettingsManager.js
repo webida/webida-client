@@ -21,9 +21,9 @@ define([
     'q'
 ], function (_, FS, Auth, Q) {
     'use strict';
-    var PUBLIC_KEY_PATH = '.profile/id_rsa.pub';
-    var RSA_KEY_PATH = '.profile/id_rsa';
-    var GITHUB_TOKEN_PATH = '.profile/github.json';
+    var PUBLIC_KEY_PATH = '.userinfo/id_rsa.pub';
+    var RSA_KEY_PATH = '.userinfo/id_rsa';
+    var GITHUB_TOKEN_PATH = '.userinfo/github.json';
 
     var SettingsManager = function () {
 

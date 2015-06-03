@@ -25,7 +25,7 @@ require([
     'use strict';
 
     /* global webidaFs, webidaApp, webidaAuth, webidaHost: true */
-    var WORKSPACE_PATH = '.profile/workspace.json';
+    var WORKSPACE_PATH = '.userinfo/workspace.json';
     var WORKSPACE_INFO;
     //var _menuSettings = $('#menu-settings');
     var _wsContents = $('.ws-body');

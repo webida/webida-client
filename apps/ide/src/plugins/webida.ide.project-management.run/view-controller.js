@@ -38,8 +38,8 @@ define([
     'other-lib/underscore/lodash.min',
     'other-lib/toastr/toastr',
     'xstyle/css!./style.css'
-], function(ide, workbench, workspace, pluginManager, runConfManager, delegator, topic, Memory, Observable, registry, pathUtil,
-            ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
+], function(ide, workbench, workspace, pluginManager, runConfManager, delegator, topic, Memory, Observable, registry,
+            pathUtil, ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
             windowTemplate, contentTemplate, _, toastr){
 
     'use strict';
@@ -193,7 +193,7 @@ define([
                 ui.btns.createNewButton = registry.byId('run-configuration-create-button');
                 dojo.connect(ui.btns.createNewButton, 'onClick', function () {
                     // get project from selected context
-                    var projectName = undefined;
+                    var projectName;
                     var context = workbench.getContext();
                     if (context.projectPath) {
                         projectName = pathUtil.getName(context.projectPath) || undefined;
@@ -403,7 +403,8 @@ define([
             return;
         }
 
-        if(!/^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/.test( ui.forms.inputBoxes[1].value)){
+        if (!/^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/.
+                test(ui.forms.inputBoxes[1].value)) {
             toastr.error('Invalid arguments');
             return;
         }
