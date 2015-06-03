@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,9 +56,9 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
 
         if (webidaInfo.gravatar) {
             md5 = $.md5(webidaInfo.gravatar);
-            gravatar1 = '<img src="https://secure.gravatar.com/avatar/' + 
+            gravatar1 = '<img src="https://secure.gravatar.com/avatar/' +
                 md5 + SIZE36 + '&d=https://desktop.webida.org/resource/desktop_usericon2.png">';
-            gravatar2 = '<img src="https://secure.gravatar.com/avatar/' + 
+            gravatar2 = '<img src="https://secure.gravatar.com/avatar/' +
                 md5 + SIZE90 + '&d=https://desktop.webida.org/resource/desktop_usericon1.png">';
             $('#pf-gravatar-email').val(webidaInfo.gravatar);
         } else {
@@ -79,8 +79,8 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
             $('.dimming').toggleClass('hide');
             $('.pf-dlg').toggleClass('hide');
         });
-        
-        // make webidaAuth, webidaHost, webidaFs, webidaApp to global for jshintrc 
+
+        // make webidaAuth, webidaHost, webidaFs, webidaApp to global for jshintrc
         /* global webidaAuth, webidaHost, webidaFs:true */
 
         logout.click(function () {
@@ -117,9 +117,9 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
                 $('#pf-info-name').text(userInfo.name);
 
                 md5 = $.md5(userInfo.gravatar);
-                pfImg.attr('src', 'https://secure.gravatar.com/avatar/' + 
+                pfImg.attr('src', 'https://secure.gravatar.com/avatar/' +
                            md5 + SIZE36 + '&d=https://desktop.webida.org/resource/desktop_usericon2.png');
-                pfEditImg.attr('src', 'https://secure.gravatar.com/avatar/' + 
+                pfEditImg.attr('src', 'https://secure.gravatar.com/avatar/' +
                                md5 + SIZE90 + '&d=https://desktop.webida.org/resource/desktop_usericon1.png');
             }
         });
@@ -147,7 +147,7 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
                             workspace.forEach(function (file) {
                                 var item =
                                     '<li>' +
-                                    '<div class="workspace-name" title="' + 
+                                    '<div class="workspace-name" title="' +
                                     file.name + '" data-workspacename="' + file.name + '">' + file.name + '</div>' +
                                     '<div class="project-container">' +
                                     '<div class="project-name" data-project="' + file.name + '"></div>' +
@@ -217,7 +217,7 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
                             if (projectLen) {
                                 projectlist.forEach(function (project, idx) {
                                     if (idx <= 4) {
-                                        projectNode.append('<div class="project-nameitem" title="' + 
+                                        projectNode.append('<div class="project-nameitem" title="' +
                                                            project.name + '">' + project.name + '</div>');
                                     }
                                     else if (idx === 5) {
@@ -307,7 +307,7 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
             else {
                 webidaAuth.changeMyPassword(oldPW.val(), newPW.val(), function (err) {
                     if (err) {
-                        toastr.warning('The old password is not correct');
+                        toastr.warning(err);
                         oldPW.val('');
                         newPW.val('');
                         confirmPW.val('');

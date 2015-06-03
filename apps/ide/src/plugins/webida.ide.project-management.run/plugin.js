@@ -60,6 +60,8 @@ define([
         ]
     };
 
+    var RUN_CONFIGURATIONS = 'Run Configurations...';
+
     function _parseProjectNameFromPath(path) {
         if (!path) {
             return '';
@@ -120,7 +122,7 @@ define([
         if(!_.isEmpty(allRunConfigurations)) {
             contextMenuItems.push('---');
         }
-        contextMenuItems.push('Run Configurations');
+        contextMenuItems.push(RUN_CONFIGURATIONS);
 
         items['Run &with'] = workbenchWholeItems['Run &with'];
         items['Run &with'][3] = contextMenuItems;
@@ -175,7 +177,7 @@ define([
         }
 
         contextMenuItems.push('---');
-        contextMenuItems.push('Run Configurations');
+        contextMenuItems.push(RUN_CONFIGURATIONS);
 
         items['&Run'] = workspaceWholeItems['&Run'];
         items['Run &with'] = workspaceWholeItems['Run &with'];
@@ -282,7 +284,7 @@ define([
             return null;
         }
 
-        if (runString.trim() === 'Run Configurations') {
+        if (runString.trim() === RUN_CONFIGURATIONS) {
             openRunConfigurationDialog();
         } else {
             var runStirngSplit = runString.split(' : ');
