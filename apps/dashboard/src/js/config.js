@@ -43,5 +43,5 @@ var require = {
     }
 };
 
-var WS_PROFILE_PATH = '.profile';
+var WS_PROFILE_PATH = '.userinfo';
 var WS_INFO_PATH = WS_PROFILE_PATH + '/workspace.json';
