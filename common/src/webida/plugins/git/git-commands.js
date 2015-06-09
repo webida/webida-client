@@ -1068,7 +1068,7 @@ define(['require',
     function _clone(selectedPath) {
         require(['text!./layer/clone.html'], function (cloneView) {
             function fetchGitHubURL() {
-                var GITHUB_INFO_PATH = '/.profile/github.json';
+                var GITHUB_INFO_PATH = '/.userinfo/github.json';
                 var MSG = 'You can fetch your repository list from GitHub by setting the GitHub token on ';
                 //var visitURL = 'https://dashboard.' + webidaHost + '/#settings';
                 var visitURL =  window.location.protocol + '//' + webidaHost + '/apps/dashboard/#settings';
@@ -1198,7 +1198,7 @@ define(['require',
                 if (value === '' || TargetTextBox.get('value') === '') {
                     cloneButton.set('disabled', true);
                 } else if (value.match(/^ssh:.*/)) {
-                    fsCache.exists('.profile/id_rsa', function (err, exists) {
+                    fsCache.exists('.userinfo/id_rsa', function (err, exists) {
                         if (err) {
                             gitviewlog.error(GIT_DIR, 'clone', err);
                         } else {
@@ -4159,7 +4159,7 @@ define(['require',
                 };
                 /* jshint camelcase: true */
 
-                var GITHUB_INFO_PATH = '/.profile/github.json';
+                var GITHUB_INFO_PATH = '/.userinfo/github.json';
 
                 async.waterfall([
                     function (next) {

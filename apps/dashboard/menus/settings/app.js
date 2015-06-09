@@ -26,10 +26,10 @@ define([
     var menuname = '<li><a href="#/settings">SETTINGS</a></li>';
     menu.append(menuname);
 
-    var GITHUBCONFIG_PATH = '.profile/github.json';
-    var RSA_KEYPATH = '.profile/id_rsa';
-    var PUBLIC_KEYPATH = '.profile/id_rsa.pub';
-    var PRIVATE_KEYPATH = '.profile/id_rsa';
+    var GITHUBCONFIG_PATH = '.userinfo/github.json';
+    var RSA_KEYPATH = '.userinfo/id_rsa';
+    var PUBLIC_KEYPATH = '.userinfo/id_rsa.pub';
+    var PRIVATE_KEYPATH = '.userinfo/id_rsa';
 
     function _generateKey() {
         var info = {
