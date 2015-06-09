@@ -95,11 +95,11 @@ define([
     //    }
     //};
 
-    module.refreshTree = function(){
+    module.refreshTree = function () {
         ui.tree = $('#run-configuration-list-tree').empty();
         var runByType = _.groupBy(runConfManager.getAll(), 'type');
         var allType = _getAllTypes();
-        _.each(allType, function(type){
+        _.each(allType, function (type) {
             var $listElem = $('<li></li>');
             var $listLink = $('<a href data-type-id="' + type.id + '">' + type.name + '</a>');
             $listElem.append($listLink);
@@ -147,11 +147,23 @@ define([
         }
     };
 
-    module.openWindow = function(defaultRun){
+    module.openWindow = function(defaultRun, mode){
+        var title;
+        var caption;
+        switch (mode) {
+            case runConfManager.MODE.RUN_MODE:
+                title = 'Run Configurations';
+                caption= 'Run';
+                break;
+            case runConfManager.MODE.DEBUG_MODE:
+                title = 'Debug Configurations';
+                caption = 'Debug';
+                break;
+        }
         selected.runConf = defaultRun || _.first(_.toArray(runConfManager.getAll()));
         ui.dialog = new ButtonedDialog({
             buttons: [
-                {id: 'dialogRunButton', caption: 'Run', methodOnClick: 'runConf'},
+                {id: 'dialogRunButton', caption: caption, methodOnClick: 'runConf'},
                 {id: 'dialogOkButton', caption: 'OK', methodOnClick: 'okOnRunConf'}
             ],
             methodOnEnter: null,
@@ -159,8 +171,8 @@ define([
                 var unSaveMsg = checkUnsavedConf();
                 if (unSaveMsg) {
                     PopupDialog.yesno({
-                        title: 'Run Configuration',
-                        message: 'Run configuration has ' + unSaveMsg + '. Are you sure you want to close this dialog?',
+                        title: title,
+                        message: title + 'has ' + unSaveMsg + '. Are you sure you want to close this dialog?',
                         type: 'info'
                     }).then(function () {
                         ui.dialog.hide();
@@ -169,16 +181,23 @@ define([
                     ui.dialog.hide();
                 }
             },
-            runConf: function() {
-                delegator.run(selected.runConf);
+            runConf: function () {
+                switch (mode) {
+                    case runConfManager.MODE.RUN_MODE:
+                        delegator.run(selected.runConf);
+                        break;
+                    case runConfManager.MODE.DEBUG_MODE:
+                        delegator.debug(selected.runConf);
+                        break;
+                }
                 ui.dialog.hide();
             },
             refocus: false,
-            title: 'Run Configurations',
+            title: title,
             style: 'width: 800px',
             onHide: function () {
                 topic.publish('webida.ide.project-management.run:configuration.hide');
-                runConfManager.flushRunConfigurations(function(){
+                runConfManager.flushRunConfigurations(function () {
                     windowOpened = false;
                 });
                 ui.dialog.destroyRecursive();
@@ -186,7 +205,7 @@ define([
             },
             onLoad: function () {
                 ui.content = $('#run-configuration-list-contentpane');
-                if(selected.runConf){
+                if (selected.runConf) {
                     delegator.loadConf(ui.content, selected.runConf);
                 }
 
@@ -203,7 +222,7 @@ define([
                     var unsaved = _.where(runConfs, {unsaved: true});
                     if(!_.isEmpty(unsaved)){
                         PopupDialog.yesno({
-                            title: 'Run Configuration',
+                            title: title,
                             message: 'You will may lose unsaved data. Are you sure to continue?',
                             type: 'info'
                         }).then(function () {
@@ -228,8 +247,8 @@ define([
                 dojo.connect(ui.btns.deleteButton, 'onClick', function() {
                     if(selected.runConf) {
                         PopupDialog.yesno({
-                            title: 'Delete Run Configuration',
-                            message: 'Are you sure you want to delete this run configuration?',
+                            title: 'Delete ' + title,
+                            message: 'Are you sure you want to delete this configuration?',
                             type: 'info'
                         }).then(function () {
                             delegator.deleteConf(ui.content, selected.runConf.name, function(error){
@@ -424,8 +443,8 @@ define([
 
     function deleteButtonClicked(run, markup) {
         PopupDialog.yesno({
-            title: 'Delete Run Configuration',
-            message: 'Are you sure you want to delete this run configuration?',
+            title: 'Delete Configuration',
+            message: 'Are you sure you want to delete this configuration?',
             type: 'info'
         }).then(function () {
             ui.content.removeChild(markup);
