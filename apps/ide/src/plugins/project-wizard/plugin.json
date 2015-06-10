@@ -10,16 +10,6 @@
             {
                 "location" : "/&Project/",
                 "wholeItems" : {
-                    "Run with Device" : [ "cmnd", {
-                                            "procedural": true
-                                        }],
-                    "delim1" : "---",
-                    "Debug" : [ "cmnd", {
-                              }],
-                    "Debug with" : [ "cmnd", {
-                                       "procedural": true
-                                   }],
-                    "delim2" : "---",
                     "&Test" : [ "cmnd", {
                               }],
                     "delim3" : "---",
