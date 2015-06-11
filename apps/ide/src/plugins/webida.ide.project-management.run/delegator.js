@@ -59,7 +59,8 @@ define([
                 viewController.deleteConf(runConfName, callback);
             });
         },
-        'run': undefined
+        'run': undefined,
+        'debug': undefined
     };
 
     /**
