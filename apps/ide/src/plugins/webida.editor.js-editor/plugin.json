@@ -1,16 +1,16 @@
 {
-    "name": "webida.editor.test-editor",
-    "description": "Test Editor",
+    "name": "webida.editor.js-editor",
+    "description": "JavaScript Editor",
     "version": "0.1.0",
     "requirement": "webida.common.editors",
     "extensions" : {
 
         "webida.common.editors:editor" : {
-            "name" : "Test Editor",
+            "name" : "JavaScript Editor",
             "fileValueRequired" : true,
-            "handledFileExt" : [ "test" ],
+            "handledFileExt" : [ "js", "json" ],
             "handledMimeTypes" : [],
-            "handledFileNames" : [ "open_with_test_case.test" ],
+            "handledFileNames" : [],
             "unhandledFileExt" : [],
             "unhandledMimeTypes" : []
         }

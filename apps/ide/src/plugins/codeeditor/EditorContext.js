@@ -14,6 +14,18 @@
  * limitations under the License.
  */
 
+/**
+ * EditorContext is an wrapper(or adapter) object that encapsulates 
+ * web based text editors, such as codemirror, ace editor,.. etc.
+ * Now EditorContext supports codemirror only, but we will
+ * support other editors like ace sooner or later.
+ *
+ * @constructor
+ * @see TextEditor
+ * @since: 2013
+ * @refactor: hw.shim (2015.06.11)
+ */
+
 define(['require',
         'webida-lib/plugins/editors/viable-menu-items',
         'other-lib/underscore/lodash.min',
@@ -212,7 +224,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         return _.contains(availables, type + '::' + name);
     }
 
-    // CodeEditor
+    // EditorContext
     var eventTransformers = {
         // TODO 예전 에이스 에디터의 잔해
         // row, col 사용은 제거해도 무방할 듯
@@ -371,7 +383,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         cm.__instance.triggerEvent('save');
     };
 
-    function CodeEditor(elem, file, startedListener) {
+    function EditorContext(elem, file, startedListener) {
         var self = this;
 
         this.elem = elem;
@@ -413,12 +425,14 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
                      'webida-lib/custom-lib/codemirror/addon/edit/closebrackets',
                      'webida-lib/custom-lib/codemirror/addon/edit/closetag',
                      'webida-lib/custom-lib/codemirror/addon/edit/matchbrackets'], function () {
-                self.start();
+                setTimeout(function(self){
+                	self.start();
+                },10,self);
             });
         });
 
     }
-    CodeEditor.jsHintWorker = (function () {
+    EditorContext.jsHintWorker = (function () {
         var listeners = {};
         var worker = null;
         return function (code, options, listener) {
@@ -438,29 +452,29 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             listeners[reqId] = listener;
         };
     })();
-    CodeEditor.getAvailableModes = function () {
+    EditorContext.getAvailableModes = function () {
         return [
             'js', 'json', 'ts', 'html', 'css', 'less'
         ];
     };
-    CodeEditor.getAvailableThemes = function () {
+    EditorContext.getAvailableThemes = function () {
         return [
             'default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
             'midnight', 'monokai', 'neat', 'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight',
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
     };
-    CodeEditor.getAvailableKeymaps = function () {
+    EditorContext.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
     };
-    CodeEditor.prototype.addDeferredAction = function (action) {
+    EditorContext.prototype.addDeferredAction = function (action) {
         if (this.editor) {
             action(this);
         } else {
             this.deferredActions.push(action);
         }
     };
-    CodeEditor.prototype.start = function () {
+    EditorContext.prototype.start = function () {
         if (this.editor !== undefined) {
             console.error('Error!');
             return;
@@ -541,7 +555,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
 
         Snippet.init(self.editor);
     };
-    CodeEditor.prototype.__checkSizeChange = function () {
+    EditorContext.prototype.__checkSizeChange = function () {
         if (this.editor) {
             var visible = $(this.elem).is(':visible');
             if (visible) {
@@ -555,38 +569,38 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         }
     };
-    CodeEditor.prototype.destroy = function () {
+    EditorContext.prototype.destroy = function () {
         $(this.elem).html('');
         if (this.sizeChangePoller !== undefined) {
             clearInterval(this.sizeChangePoller);
         }
     };
-    CodeEditor.prototype.addChangeListener = function (listener) {
+    EditorContext.prototype.addChangeListener = function (listener) {
         var tListener = eventTransformers.change(this, listener);
         this.addDeferredAction(function (self) {
             self.editor.on('change', tListener);
         });
     };
-    CodeEditor.prototype.addCursorListener = function (listener) {
+    EditorContext.prototype.addCursorListener = function (listener) {
         var tListener = eventTransformers.cursor(this, listener);
         this.cursorListeners.push(listener);
         this.addDeferredAction(function (self) {
             self.editor.on('cursorActivity', tListener);
         });
     };
-    CodeEditor.prototype.addFocusListener = function (listener) {
+    EditorContext.prototype.addFocusListener = function (listener) {
         this.focusListeners.push(listener);
         this.addDeferredAction(function (self) {
             self.editor.on('focus', listener);
         });
     };
-    CodeEditor.prototype.addBlurListener = function (listener) {
+    EditorContext.prototype.addBlurListener = function (listener) {
         this.blurListeners.push(listener);
         this.addDeferredAction(function (self) {
             self.editor.on('blur', listener);
         });
     };
-    CodeEditor.prototype.addEventListener = function (type, listener) {
+    EditorContext.prototype.addEventListener = function (type, listener) {
         if (this.customListeners === undefined) {
             this.customListeners = {};
         }
@@ -595,13 +609,13 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         }
         this.customListeners[type].push(listener);
     };
-    CodeEditor.prototype.addExtraKeys = function (extraKeys) {
+    EditorContext.prototype.addExtraKeys = function (extraKeys) {
         this.options.extraKeys = _.extend(this.options.extraKeys, extraKeys);
         if (this.editor) {
             this.editor.setOption('extraKeys', this.options.extraKeys);
         }
     };
-    CodeEditor.prototype.triggerEvent = function (type, event) {
+    EditorContext.prototype.triggerEvent = function (type, event) {
         var self = this;
         if (this.customListeners !== undefined) {
             if (this.customListeners[type] !== undefined) {
@@ -611,7 +625,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         }
     };
-    CodeEditor.prototype.setCursor = function (cursor) {
+    EditorContext.prototype.setCursor = function (cursor) {
         this.cursor = cursor;
         this.addDeferredAction(function (self) {
             self.editor.getDoc().setCursor(eventTransformers.wrapperLoc2cmLoc(cursor));
@@ -623,7 +637,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             });
         }
     };
-    CodeEditor.prototype.setSelection = function (anchor, head) {
+    EditorContext.prototype.setSelection = function (anchor, head) {
         this.cursor = head;
         this.addDeferredAction(function (self) {
             self.editor.getDoc().setSelection(
@@ -637,7 +651,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             });
         }
     };
-    CodeEditor.prototype.getCursor = function () {
+    EditorContext.prototype.getCursor = function () {
         if (this.editor) {
             return eventTransformers.cmLoc2wrapperLoc(this.editor.getDoc().getCursor());
         } else {
@@ -652,7 +666,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             return this.cursor;
         }
     };
-    CodeEditor.prototype.getMode = function () {
+    EditorContext.prototype.getMode = function () {
         return this.mode;
     };
 
@@ -786,7 +800,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         }
     }
 
-    CodeEditor.prototype.setMode = function (mode) {
+    EditorContext.prototype.setMode = function (mode) {
         if (mode === undefined || this.mode === mode) {
             return;
         }
@@ -835,17 +849,17 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         });
     };
 
-    CodeEditor.prototype.setSize = function (width, height) {
+    EditorContext.prototype.setSize = function (width, height) {
         this.size = {width: width, height: height};
         this.addDeferredAction(function (self) {
             self.editor.setSize(width, height);
         });
     };
 
-    CodeEditor.prototype.getTheme = function () {
+    EditorContext.prototype.getTheme = function () {
         return this.theme;
     };
-    CodeEditor.prototype.setTheme = function (theme) {
+    EditorContext.prototype.setTheme = function (theme) {
         if (theme === undefined) {
             return;
         }
@@ -880,10 +894,10 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             });
         }
     };
-    CodeEditor.prototype.getKeymap = function () {
+    EditorContext.prototype.getKeymap = function () {
         return (this.keymap) ? this.keymap: 'default';
     };
-    CodeEditor.prototype.setKeymap = function (keymap) {
+    EditorContext.prototype.setKeymap = function (keymap) {
         if (keymap === undefined) {
             return;
         }
@@ -914,7 +928,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             throw new Error('Not supported keymap "' + keymap + '"');
         }
     };
-    CodeEditor.prototype.setFontFamily = function (fontFamily) {
+    EditorContext.prototype.setFontFamily = function (fontFamily) {
         if (fontFamily !== undefined) {
             this.fontFamily = fontFamily;
             this.addDeferredAction(function (self) {
@@ -926,7 +940,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             });
         }
     };
-    CodeEditor.prototype.setFontSize = function (fontSize) {
+    EditorContext.prototype.setFontSize = function (fontSize) {
         if (fontSize !== undefined) {
             this.fontSize = fontSize;
             this.addDeferredAction(function (self) {
@@ -940,7 +954,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
 
     // Option setters and getters
 
-    CodeEditor.prototype._gutterOn = function (gutterName) {
+    EditorContext.prototype._gutterOn = function (gutterName) {
         if (this.editor) {
             var gutters = this.editor.getOption('gutters');
             if (!_.contains(gutters, gutterName)) {
@@ -960,14 +974,14 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         }
     };
-    CodeEditor.prototype._gutterOff = function (gutterName) {
+    EditorContext.prototype._gutterOff = function (gutterName) {
         if (this.editor) {
             var gutters = this.editor.getOption('gutters');
             this.editor.setOption('gutters', _.without(gutters, gutterName));
         }
     };
 
-    CodeEditor.prototype.setStyleActiveLine = function (highlight) {
+    EditorContext.prototype.setStyleActiveLine = function (highlight) {
         if (highlight !== undefined) {
             this.styleActiveLine = highlight;
             if (highlight) {
@@ -984,7 +998,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         }
     };
-    CodeEditor.prototype.setMatchBrackets = function (match) {
+    EditorContext.prototype.setMatchBrackets = function (match) {
         if (match === undefined) {
             return;
         }
@@ -1002,7 +1016,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             });
         }
     };
-    CodeEditor.prototype.setHighlightSelection = function (highlight) {
+    EditorContext.prototype.setHighlightSelection = function (highlight) {
         if (highlight === undefined) {
             return;
         }
@@ -1022,7 +1036,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             });
         }
     };
-    CodeEditor.prototype.setLinter = function (type, option) {
+    EditorContext.prototype.setLinter = function (type, option) {
         if (type === undefined || option === undefined) {
             return;
         }
@@ -1112,7 +1126,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             break;
         }
     };
-    CodeEditor.prototype.__applyLinter = function () {
+    EditorContext.prototype.__applyLinter = function () {
         if (this.editor && this.linters && _.contains(['js', 'json', 'css', 'html'], this.mode)) {
             if (this.linters[this.mode]) {
                 this._gutterOn('CodeMirror-lint-markers');
@@ -1124,7 +1138,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
                             this.editor.setOption('lint', {
                                 async: true,
                                 getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-                                    CodeEditor.jsHintWorker(editorValue, jshintrc, function (data) {
+                                    EditorContext.jsHintWorker(editorValue, jshintrc, function (data) {
                                         updateLinting(editor, data.annotations);
                                     });
                                 }
@@ -1133,7 +1147,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
                             this.editor.setOption('lint', {
                                 async: true,
                                 getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-                                    CodeEditor.jsHintWorker(editorValue, false, function (data) {
+                                    EditorContext.jsHintWorker(editorValue, false, function (data) {
                                         updateLinting(editor, data.annotations);
                                     });
                                 }
@@ -1212,7 +1226,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         return hintersMap[hinter];
     };
 
-    CodeEditor.prototype.setHinters = function (mode, hinterNames) {
+    EditorContext.prototype.setHinters = function (mode, hinterNames) {
         if (mode && hinterNames) {
             var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
             var paths = ['webida-lib/custom-lib/codemirror/addon/hint/show-hint'];
@@ -1227,7 +1241,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         }
     };
 
-    CodeEditor.prototype.setGlobalHinters = function (hinterNames) {
+    EditorContext.prototype.setGlobalHinters = function (hinterNames) {
         _globalHinterSchemes = [];
         if (hinterNames) {
             var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
@@ -1337,7 +1351,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         return localResult;
     }
 
-    CodeEditor.prototype.setAnywordHint = function (anywordHint) {
+    EditorContext.prototype.setAnywordHint = function (anywordHint) {
         if (anywordHint) {
             this.setGlobalHinters(['word']);
         } else {
@@ -1345,7 +1359,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         }
     };
 
-    CodeEditor.prototype.setTabSize = function (tabSize) {
+    EditorContext.prototype.setTabSize = function (tabSize) {
         if (tabSize !== undefined) {
             this.options.tabSize = tabSize;
             if (this.editor) {
@@ -1353,7 +1367,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         }
     };
-    CodeEditor.prototype.setIndentWithTabs = function (indentWithTabs) {
+    EditorContext.prototype.setIndentWithTabs = function (indentWithTabs) {
         if (indentWithTabs !== undefined) {
             this.options.indentWithTabs = indentWithTabs;
             if (this.editor) {
@@ -1361,7 +1375,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         }
     };
-    CodeEditor.prototype.setIndentUnit = function (indentUnit) {
+    EditorContext.prototype.setIndentUnit = function (indentUnit) {
         if (indentUnit !== undefined) {
             this.options.indentUnit = indentUnit;
             if (this.editor) {
@@ -1369,7 +1383,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         }
     };
-    CodeEditor.prototype.setIndentOnPaste = function (indentOnPaste) {
+    EditorContext.prototype.setIndentOnPaste = function (indentOnPaste) {
         if (indentOnPaste !== undefined) {
             this.options.indentOnPaste = indentOnPaste;
             if (this.editor) {
@@ -1377,22 +1391,22 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             }
         }
     };
-    CodeEditor.prototype.setTrimTrailingWhitespaces = function (trimTrailingWhitespaces) {
+    EditorContext.prototype.setTrimTrailingWhitespaces = function (trimTrailingWhitespaces) {
         if (trimTrailingWhitespaces !== undefined) {
             this.trimTrailingWhitespaces = trimTrailingWhitespaces;
         }
     };
-    CodeEditor.prototype.setInsertFinalNewLine = function (insertFinalNewLine) {
+    EditorContext.prototype.setInsertFinalNewLine = function (insertFinalNewLine) {
         if (insertFinalNewLine !== undefined) {
             this.insertFinalNewLine = insertFinalNewLine;
         }
     };
-    CodeEditor.prototype.setRetabIndentations = function (retabIndentations) {
+    EditorContext.prototype.setRetabIndentations = function (retabIndentations) {
         if (retabIndentations !== undefined) {
             this.retabIndentations = retabIndentations;
         }
     };
-    CodeEditor._whitespaceOverlay = {
+    EditorContext._whitespaceOverlay = {
         token: function (stream) {
             if (stream.eatWhile(/\S/)) { return null; }
 
@@ -1406,25 +1420,25 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             return 'whitespace';
         }
     };
-    CodeEditor.prototype.setShowInvisibles = function (showingInvisibles) {
+    EditorContext.prototype.setShowInvisibles = function (showingInvisibles) {
         this.showingInvisibles = showingInvisibles;
         if (showingInvisibles) {
             this.addDeferredAction(function (self) {
-                self.editor.addOverlay(CodeEditor._whitespaceOverlay);
+                self.editor.addOverlay(EditorContext._whitespaceOverlay);
             });
         } else {
             this.addDeferredAction(function (self) {
-                self.editor.removeOverlay(CodeEditor._whitespaceOverlay);
+                self.editor.removeOverlay(EditorContext._whitespaceOverlay);
             });
         }
     };
-    CodeEditor.prototype.setLineWrapping = function (lineWrapping) {
+    EditorContext.prototype.setLineWrapping = function (lineWrapping) {
         this.options.lineWrapping = lineWrapping;
         if (this.editor) {
             this.editor.setOption('lineWrapping', lineWrapping);
         }
     };
-    CodeEditor.prototype.setCodeFolding = function (codeFolding) {
+    EditorContext.prototype.setCodeFolding = function (codeFolding) {
         this.options.setCodeFolding = codeFolding;
         if (codeFolding) {
             var self = this;
@@ -1451,7 +1465,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             });
         }
     };
-    CodeEditor.prototype.setSnippetEnabled = function (enabled) {
+    EditorContext.prototype.setSnippetEnabled = function (enabled) {
         this.options.setSnippetEnabled = enabled;
         if (!enabled) {
             this.addDeferredAction(function (self) {
@@ -1459,27 +1473,27 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
             });
         }
     };
-    CodeEditor.prototype.setShowLineNumbers = function (showLineNumbers) {
+    EditorContext.prototype.setShowLineNumbers = function (showLineNumbers) {
         this.options.setShowLineNumbers = showLineNumbers;
         this.addDeferredAction(function (self) {
             self.editor.setOption('lineNumbers', showLineNumbers);
         });
     };
-    CodeEditor.prototype.getValue = function () {
+    EditorContext.prototype.getValue = function () {
         return this.editor ? this.editor.getValue() : undefined;
     };
-    CodeEditor.prototype.setValue = function (value) {
+    EditorContext.prototype.setValue = function (value) {
         this.addDeferredAction(function (self) {
             self.editor.setValue(value);
         });
     };
 
-    CodeEditor.prototype.foldCode = function (range) {
+    EditorContext.prototype.foldCode = function (range) {
         if (this.editor) {
             foldCode(this.editor, range.from, range.to);
         }
     };
-    CodeEditor.prototype.getFoldings = function () {
+    EditorContext.prototype.getFoldings = function () {
         if (this.editor) {
             var cm = this.editor;
             var foldings = _.filter(cm.getAllMarks(), function (mark) { return mark.__isFold; });
@@ -1489,34 +1503,34 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         }
     };
 
-    CodeEditor.prototype.markClean = function () {
+    EditorContext.prototype.markClean = function () {
         this.addDeferredAction(function (self) {
             self.editor.getDoc().markClean();
         });
     };
-    CodeEditor.prototype.isClean = function () {
+    EditorContext.prototype.isClean = function () {
         if (this.editor) {
             return this.editor.getDoc().isClean();
         } else {
             return true;
         }
     };
-    CodeEditor.prototype.clearHistory = function () {
+    EditorContext.prototype.clearHistory = function () {
         this.addDeferredAction(function (self) {
             self.editor.clearHistory();
         });
     };
-    CodeEditor.prototype.markClean = function () {
+    EditorContext.prototype.markClean = function () {
         this.addDeferredAction(function (self) {
             self.editor.markClean();
         });
     };
 
-    CodeEditor.getEnclosingDOMElem = function () {
+    EditorContext.getEnclosingDOMElem = function () {
         return document.getElementById('editor');
     };
 
-    CodeEditor.getShortcuts = function () {
+    EditorContext.getShortcuts = function () {
         return [
             { keys : 'shift+alt+P', title : 'TEST C, viable', desc: 'TEST, viable', viable: true },
             { keys : 'ctrl+shift+alt+V', title : 'TEST C 2, viable', desc: 'TEST, viable', viable: true },
@@ -1524,11 +1538,11 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         ];
     };
 
-    CodeEditor.prototype.setAutoCompletion = function (autoCompletion) {
+    EditorContext.prototype.setAutoCompletion = function (autoCompletion) {
         settings.autoHint = autoCompletion;
     };
 
-    CodeEditor.prototype.setAutoCompletionDelay = function (delay) {
+    EditorContext.prototype.setAutoCompletionDelay = function (delay) {
         var num = typeof delay === 'string' ? parseFloat(delay, 10) : delay;
         num *= 1000;
         settings.autoHintDelay = num;
@@ -1536,5 +1550,5 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         setChangeForAutoHintDebounced();
     };
 
-    return CodeEditor;
+    return EditorContext;
 });

@@ -32,12 +32,17 @@ define([
     function Logger() {
         LoggerInterface.apply(this, arguments);
         this.setFormater(formater);
-        this.setConfigs(clientConfig);
+        this.setConfigs(clientConfig);      
     }
     Logger.prototype = Object.create(LoggerInterface.prototype);
     Logger.prototype.constructor = Logger;
 
-    function formater(args/*, action*/) {
+    function formater(args, action, logger) {
+
+        var pathDepth = 1; //depth of path (In default it only shows filename);
+        if (typeof logger.getConfig('pathDepth') === 'number') {
+            pathDepth = logger.getConfig('pathDepth');
+        }
 
         function getNow() {
             var result = [],
@@ -68,9 +73,16 @@ define([
             ([]).shift.call(args);
         }
 
+        var path = '';
         var callPath = (new Error()).stack.split('\n')[4].split('/');
-        var fileToken = callPath[callPath.length - 1].split(':');
-        var basename = '<' + fileToken[0].split('?')[0] + ':' + fileToken[1] + '>';
+        var lastIndex = callPath.length - 1;
+        for (var j = callPath.length - pathDepth; j < lastIndex ; j++) {
+            if (callPath[j]) {
+                path += callPath[j] + '/';
+            }
+        }
+        var fileToken = callPath[lastIndex].split(':');
+        var basename = '<' + path + fileToken[0].split('?')[0] + ':' + fileToken[1] + '>';
 
         ([]).unshift.call(args, prefix);
         ([]).push.call(args, basename);
