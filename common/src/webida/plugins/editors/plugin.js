@@ -42,11 +42,13 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         'webida-lib/widgets/views/viewFocusController',
         'dojo/topic',
         'other-lib/async',
-        'other-lib/toastr/toastr'
+        'other-lib/toastr/toastr',
+        'webida-lib/util/logger/logger-client'
 ], function (extToMime, _, pathUtil, BubblingArray, ide, pm, workbench,
-              View, vm, ViewFocusController,  topic, async, toastr) {
+              View, vm, ViewFocusController,  topic, async, toastr, Logger) {
     'use strict';
 
+	var logger = new Logger();
     time = timedLogger.log('loaded modules required by editors-view. initializing editors-view plugin\'s module', time);
 
     function getFileClass() {
@@ -711,9 +713,9 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
     function checkFileNameHandleExtension(path) {
         var fileName = pathUtil.getFileName(path);
-        console.info(fileName);
+		//console.info(fileName);
         var extensions = pm.getExtensions('webida.common.editors:editor');
-        console.info(extensions);
+        //console.info(extensions);
         if (extensions instanceof Array && extensions.length) {
             for (var i = 0; i < extensions.length ; i++) {
                 if (extensions[i].handledFileNames instanceof Array && 
@@ -743,7 +745,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             var fileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
             
             var fileNameHandleExtension = checkFileNameHandleExtension(path);
-            console.info(fileNameHandleExtension);
             //for handledFileNames
             if (!options.editorName && fileNameHandleExtension) {
                 options.extension = fileNameHandleExtension;
@@ -808,6 +809,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.onFileOpened = function (file) {
+    	
+    	console.log('');
+    	logger.info('editors.onFileOpened('+file.name+')');
+    	
         // TODO: remove the following check if possible
         if (!file._openFileOption) {
             return;
@@ -830,6 +835,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         }
 
         var extension = option.extension;
+        logger.info('extension.module = '+extension.module);
 
         // Create editor and update editor content
         if (show) {
@@ -838,8 +844,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             }
         }
 
-        console.info(extension.module);
-        
         require([extension.module], function (editorModule) {
             function _findViewIndexUsingSibling(viewContainer, file, siblings) {
                 var previousSiblings = [];
