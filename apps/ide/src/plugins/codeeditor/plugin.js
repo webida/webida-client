@@ -17,7 +17,7 @@
 /**
  * This plug-in just returns new CodeEditor instance.
  * 
- * @see codeEditor
+ * @see CodeEditor
  * @since: 2015.06.11
  * @author: hw.shim
  */

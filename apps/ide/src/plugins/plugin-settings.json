@@ -18,7 +18,8 @@
         "webida-lib/plugins/output",
         "webida-lib/plugins/preview",
         "webida-lib/plugins/workspace",
-        "webida-lib/plugins/workbench"
+        "webida-lib/plugins/workbench",
+        "webida-lib/plugins/webida.editor.text-editor"
     ],
     "start-plugins" : [
         "webida-lib/plugins/workbench"

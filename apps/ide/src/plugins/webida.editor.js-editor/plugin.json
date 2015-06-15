@@ -2,7 +2,7 @@
     "name": "webida.editor.js-editor",
     "description": "JavaScript Editor",
     "version": "0.1.0",
-    "requirement": "webida.common.editors",
+    "requirement": "codeeditor",
     "extensions" : {
 
         "webida.common.editors:editor" : {
