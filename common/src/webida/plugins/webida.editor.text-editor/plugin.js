@@ -15,15 +15,15 @@
  */
 
 /**
- * This plug-in just returns new JsEditor instance.
+ * This plug-in just returns new TextEditor instance.
  * 
  * @see JsEditor
  * @since: 2015.06.11
  * @author: hw.shim
  */
-define(['./JsEditor'], function (JsEditor) {
+define(['./TextEditor'], function (TextEditor) {
     'use strict';
 
-    var jsEditor = new JsEditor();
-    return jsEditor;
+    var textEditor = new TextEditor();
+    return textEditor;
 });

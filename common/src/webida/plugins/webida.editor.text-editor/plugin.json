@@ -1,14 +1,14 @@
 {
-    "name": "webida.editor.js-editor",
-    "description": "JavaScript Editor",
+    "name": "webida.editor.text-editor",
+    "description": "Text Editor",
     "version": "0.1.0",
-    "requirement": "codeeditor",
+    "requirement": "webida.common.workbench",
     "extensions" : {
 
         "webida.common.editors:editor" : {
-            "name" : "JavaScript Editor",
+            "name" : "Text Editor",
             "fileValueRequired" : true,
-            "handledFileExt" : [ "js", "json" ],
+            "handledFileExt" : [ "txt", "text" ],
             "handledMimeTypes" : [],
             "handledFileNames" : [],
             "unhandledFileExt" : [],
