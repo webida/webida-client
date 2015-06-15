@@ -53,7 +53,8 @@ define(['./plugin', './codemirror'], function (editor, cm) {
                     { label: 'Times New Roman', value: 'Times New Roman, Times, serif'},
                     { label: 'Trebuchet MS', value: 'Trebuchet MS, sans-serif'},
                     { label: 'Verdana', value: 'Verdana, Geneva, sans-serif'},
-                    { label: 'MS Serif (New York)', value: 'MS Serif, New York, serif'}
+                    { label: 'MS Serif (New York)', value: 'MS Serif, New York, serif'},
+                    { label: 'Consolas', value: 'Consolas'}
                 ],
                 'default': 'Nanum Gothic Coding'
             });

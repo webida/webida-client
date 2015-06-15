@@ -71,11 +71,12 @@ function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, 
                 'Generate Signed Package' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'buildSigned' ],
                 '&Export' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'doExport' ]
             };
-            var itemsContext = {
-                'Debug' : [ 'cmnd', 'plugins/webida.ide.project-management.run/commands', 'workbenchDebugBinded' ],
-                'Run with Device' : [ 'cmnd', 'plugins/project-wizard/run-commands', 'runDevice' ],
-                'Debug with' : [ 'cmnd', 'plugins/project-wizard/run-commands', 'debugWith' ]
-            };
+            // FIXME:: Refactoring to use extension point
+//            var itemsContext = {
+//                'Debug' : [ 'cmnd', 'plugins/webida.ide.project-management.run/commands', 'workbenchDebugBinded' ],
+//                'Run with Device' : [ 'cmnd', 'plugins/project-wizard/run-commands', 'runDevice' ],
+//                'Debug with' : [ 'cmnd', 'plugins/project-wizard/run-commands', 'debugWith' ]
+//            };
 
             var items = {};
             // to enable for the files in project directory
@@ -89,7 +90,8 @@ function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, 
                 if (contextPaths.length === 1) {
                     var isRunnable = isRunnablePath(contextPaths[0]);
                     if (isRunnable === true) {
-                        items = $.extend(items, itemsContext);
+                        // FIXME:: Refactoring to use extension point
+//                        items = $.extend(items, itemsContext);
                     }
                 }
             }

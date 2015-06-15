@@ -32,7 +32,8 @@ define([
     'use strict';
 
     var module = {};
-    var contextMenuItems = [];
+    var contextRunMenuItems  = [];
+    var contextDebugMenuItems = [];
 
     var workbenchWholeItems = {
         '&Run': [
@@ -44,6 +45,16 @@ define([
             'enum',
             'plugins/webida.ide.project-management.run/plugin',
             'workbenchRunListBinded'
+        ],
+        'Debug': [
+            'cmnd',
+            'plugins/webida.ide.project-management.run/plugin',
+            'workbenchDebugBinded'
+        ],
+        'Debug with': [
+            'enum',
+            'plugins/webida.ide.project-management.run/plugin',
+            'workbenchDebugListBinded'
         ]
     };
 
@@ -57,10 +68,21 @@ define([
             'enum',
             'plugins/webida.ide.project-management.run/plugin',
             'workspaceRunListBinded'
+        ],
+        'Debug': [
+            'cmnd',
+            'plugins/webida.ide.project-management.run/plugin',
+            'workspaceDebugBinded'
+        ],
+        'Debug with': [
+            'enum',
+            'plugins/webida.ide.project-management.run/plugin',
+            'workspaceDebugListBinded'
         ]
     };
 
     var RUN_CONFIGURATIONS = 'Run Configurations...';
+    var DEBUG_CONFIGURATIONS = 'Debug Configurations...';
 
     function _parseProjectNameFromPath(path) {
         if (!path) {
@@ -70,8 +92,15 @@ define([
         return (splitPath.length < 3) ? '' : splitPath[2];
     }
 
+    /**
+     * Implementation of webida.common.workbench:menu
+     * @method getViableItemsForWorkbench
+     * @memberOf module:webida.ide.project-management.run
+     */
     module.getViableItemsForWorkbench = function () {
-        contextMenuItems = [];
+        var contextMenuItems = [];
+        contextRunMenuItems  = [];
+        contextDebugMenuItems = [];
 
         var items = {};
         var contextPaths = [];
@@ -84,18 +113,19 @@ define([
 
                 if (bRunnable === true) {
                     items['&Run'] = workbenchWholeItems['&Run'];
+                    items['Debug'] = workbenchWholeItems['Debug'];
                 }
                 contextProjectName = _parseProjectNameFromPath(contextPaths[0]);
             }
         }
 
         var allRunConfigurations = _.toArray(runConfigurationManager.getAll());
-        if(!_.isEmpty(allRunConfigurations)){
-            allRunConfigurations.sort(function(a, b){
-                if(a.project === b.project){
-                    if(a.latestRun){
+        if (!_.isEmpty(allRunConfigurations)) {
+            allRunConfigurations.sort(function (a, b) {
+                if (a.project === b.project) {
+                    if (a.latestRun) {
                         return -1;
-                    } else if (b.latestRun){
+                    } else if (b.latestRun) {
                         return 1;
                     } else {
                         if (a.name > b.name) {
@@ -115,33 +145,45 @@ define([
             });
         }
 
-        _.each(allRunConfigurations, function(run){
+        _.each(allRunConfigurations, function (run) {
             var menuName = run.project + ' : ' + run.name + ((run.latestRun) ? ' [latest run]' : '');
             contextMenuItems.push(menuName);
         });
-        if(!_.isEmpty(allRunConfigurations)) {
+        if (!_.isEmpty(allRunConfigurations)) {
             contextMenuItems.push('---');
         }
-        contextMenuItems.push(RUN_CONFIGURATIONS);
 
+        contextRunMenuItems = _.clone(contextMenuItems);
+        contextRunMenuItems.push(RUN_CONFIGURATIONS);
         items['Run &with'] = workbenchWholeItems['Run &with'];
-        items['Run &with'][3] = contextMenuItems;
+        items['Run &with'][3] = contextRunMenuItems;
+
+        contextDebugMenuItems =  _.clone(contextMenuItems);
+        contextDebugMenuItems.push(DEBUG_CONFIGURATIONS);
+        items['Debug with'] = workbenchWholeItems['Debug with'];
+        items['Debug with'][3] = contextDebugMenuItems;
 
         return items;
     };
 
+    /**
+     * Implementation of webida.common.workspace:menu
+     * @method getViableItemsForWorkspaceView
+     * @memberOf module:webida.ide.project-management.run
+     */
     module.getViableItemsForWorkspaceView = function () {
-        contextMenuItems = [];
+        contextRunMenuItems  = [];
+        contextDebugMenuItems = [];
+        var contextMenuItems = [];
         var items = {};
+        var disableList = [];
 
         var selectedPaths = workspace.getSelectedPaths();
-
         if (!selectedPaths || selectedPaths.length !== 1) {
             return null;
         }
 
         var selectedPath = selectedPaths[0];
-
         if (!selectedPath) {
             return items;
         }
@@ -155,95 +197,100 @@ define([
         }
 
         var projectName = _parseProjectNameFromPath(selectedPath);
-
         if (!projectName) {
             return items;
         }
 
         var runConfigurations = runConfigurationManager.getByProjectName(projectName);
-
-        var disableList = [];
-
-        _.each(runConfigurations, function(runConf){
-            if(runConf.latestRun){
+        _.each(runConfigurations, function (runConf) {
+            if (runConf.latestRun) {
                 contextMenuItems.unshift(runConf.project + ' : ' + runConf.name + ' [latest run]');
             } else {
                 contextMenuItems.push(runConf.project + ' : ' + runConf.name);
             }
         });
+
         if (_.isEmpty(contextMenuItems)) {
             contextMenuItems.push('No project index');
             disableList.push(0);
         }
 
         contextMenuItems.push('---');
-        contextMenuItems.push(RUN_CONFIGURATIONS);
 
         items['&Run'] = workspaceWholeItems['&Run'];
+        contextRunMenuItems = _.clone(contextMenuItems);
+        contextRunMenuItems.push(RUN_CONFIGURATIONS);
         items['Run &with'] = workspaceWholeItems['Run &with'];
-        items['Run &with'][3] = contextMenuItems;
+        items['Run &with'][3] = contextRunMenuItems;
         items['Run &with'][4] = disableList;
+
+        items['Debug'] = workspaceWholeItems['Debug'];
+        contextDebugMenuItems = _.clone(contextMenuItems);
+        contextDebugMenuItems.push(DEBUG_CONFIGURATIONS);
+        items['Debug with'] = workspaceWholeItems['Debug with'];
+        items['Debug with'][3] = contextDebugMenuItems;
+        items['Debug with'][4] = disableList;
 
         return items;
     };
 
-    function _getContextItem(index) {
-        if (!contextMenuItems || contextMenuItems.length <= index) {
-            return null;
+    /**
+     * Implementation for subscriptions of "webida.ide.project-management.run:configuration.changed"
+     * @method runObjectChanged
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.runObjectChanged = function (action, runConf) {
+        console.log('webida.ide.project-management.run:configuration.changed', action, runConf);
+        if (action === 'save') {
+            delegator.saveConf(runConf, function (err) {
+                if (!err) {
+                    refreshRunConfigurationTree();
+                }
+            });
         }
-        return contextMenuItems[index];
-    }
+    };
 
-    function openRunConfigurationDialog(defaultRun){
-        require(['plugins/webida.ide.project-management.run/view-controller'], function(viewController){
-            viewController.openWindow(defaultRun);
+    /**
+     * Open the configuration dialog
+     * @method openRunConfigurationDialog
+     * @memberOf module:webida.ide.project-management.run
+     */
+    function openRunConfigurationDialog(defaultRun, mode) {
+        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+            viewController.openWindow(defaultRun, mode);
         });
     }
 
-    function refreshRunConfigurationTree(){
-        require(['plugins/webida.ide.project-management.run/view-controller'], function(viewController){
+    /**
+     * Refresh for configuration list
+     * @method refreshRunConfigurationTree
+     * @memberOf module:webida.ide.project-management.run
+     */
+    function refreshRunConfigurationTree() {
+        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
             viewController.refreshTree();
         });
     }
 
-    function _runBinded(runConf/*, mode*/) {
-        if (!runConf) {
-            toastr.info('Cannot find a run configuration. Add a new one.');
-            openRunConfigurationDialog();
-        }
-        delegator.run(runConf);
-    }
-
-    module.workspaceRunBinded = function () {
-        var selectedPaths = workspace.getSelectedPaths();
-        if (!selectedPaths || selectedPaths.length !== 1) {
-            return null;
-        }
-
-        var selectedPath = selectedPaths[0];
-        if (!selectedPath) {
-            return;
-        }
-        var nodeSplit = selectedPath.split('/');
-        var projectName = nodeSplit[2];
-        var runConfigurations = runConfigurationManager.getByProjectName(projectName);
-        if (_.isEmpty(runConfigurations)) {
-            openRunConfigurationDialog();
-        } else {
-            var latestRuns = _.where(runConfigurations, {latestRun: true});
-            _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0]);
-        }
+    /**
+     * Run menu item handler in workbench
+     * @method workbenchRunBinded
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.workbenchRunBinded = function () {
+        _workbenchRunBinded(runConfigurationManager.MODE.RUN_MODE);
     };
 
-    module.workbenchDebugBinded = function () { //FIXME remove
-        this._workbenchRunBinded(runConfigurationManager.DEBUG_MODE);
+    /**
+     * Debug menu item handler in workbench
+     * @method workbenchDebugBinded
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.workbenchDebugBinded = function () {
+        _workbenchRunBinded(runConfigurationManager.MODE.DEBUG_MODE);
     };
 
-    module.workbenchRunBinded = function () {   // FIXME remove
-        this._workbenchRunBinded(runConfigurationManager.RUN_MODE);
-    };
-
-    module._workbenchRunBinded = function (/*mode*/) {
+    function _workbenchRunBinded(mode) {
         var context = workbench.getContext();
         var contextPaths;
 
@@ -271,31 +318,166 @@ define([
         var projectName = parseProjectNameFromPath(contextPath);
         var runConfigurations = runConfigurationManager.getByProjectName(projectName);
         if (_.isEmpty(runConfigurations)) {
-            openRunConfigurationDialog();
+            openRunConfigurationDialog(null, mode);
         } else {
             var latestRuns = _.where(runConfigurations, {latestRun: true});
-            _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0]);
+            _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
         }
+    }
+
+    /**
+     * Run with menu item handler in workbench
+     * @method workbenchRunListBinded
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.workbenchRunListBinded = function (index) {
+        _runListBinded(index, runConfigurationManager.MODE.RUN_MODE);
     };
 
-    function _runListBinded(index) {
-        var runString = _getContextItem(index);
+    /**
+     * Debug with menu item handler in workbench
+     * @method workbenchDebugListBinded
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.workbenchDebugListBinded = function (index) {
+        _runListBinded(index, runConfigurationManager.MODE.DEBUG_MODE);
+    };
+
+    function _getContextItem(index, mode) {
+        switch (mode) {
+            case runConfigurationManager.MODE.RUN_MODE:
+                if (!contextRunMenuItems || contextRunMenuItems.length <= index) {
+                    return null;
+                } else {
+                    return contextRunMenuItems[index];
+                }
+                break;
+            case runConfigurationManager.MODE.DEBUG_MODE:
+                if (!contextDebugMenuItems || contextDebugMenuItems.length <= index) {
+                    return null;
+                } else {
+                    return contextDebugMenuItems[index];
+                }
+                break;
+            default:
+                break;
+        }
+        return null;
+    }
+
+    function _runListBinded(index, mode) {
+        var runStirngSplit;
+        var runConfName;
+        var runConfNameSplit;
+        var name;
+        var runConf;
+        var runString = _getContextItem(index, mode);
         if (!runString) {
             return null;
         }
 
-        if (runString.trim() === RUN_CONFIGURATIONS) {
-            openRunConfigurationDialog();
+        if (runString.trim() === RUN_CONFIGURATIONS ||
+            runString.trim() === DEBUG_CONFIGURATIONS) {
+            openRunConfigurationDialog(null, mode);
         } else {
-            var runStirngSplit = runString.split(' : ');
-            var runConfName = runStirngSplit[1];
+            runStirngSplit = runString.split(' : ');
+            runConfName = runStirngSplit[1];
+            runConfNameSplit = runConfName.split(' [');
+            name = runConfNameSplit[0];
+            runConf = runConfigurationManager.getByName(name);
 
-            var runConfNameSplit = runConfName.split(' [');
-            var name = runConfNameSplit[0];
-            var runConf = runConfigurationManager.getByName(name);
-            delegator.run(runConf/*, runConfigurationManager.RUN_MODE*/ );
+            switch (mode) {
+                case runConfigurationManager.MODE.RUN_MODE:
+                    delegator.run(runConf);
+                    break;
+                case runConfigurationManager.MODE.DEBUG_MODE:
+                    delegator.debug(runConf);
+                    break;
+                default:
+                    break;
+            }
         }
     }
+
+    /**
+     * Run menu item handler in workspace
+     * @method workspaceRunBinded
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.workspaceRunBinded = function () {
+        _workspaceRunBinded(runConfigurationManager.MODE.RUN_MODE);
+    };
+
+    /**
+     * Debug menu item handler in workspace
+     * @method workspaceDebugBinded
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.workspaceDebugBinded = function () {
+        _workspaceRunBinded(runConfigurationManager.MODE.DEBUG_MODE);
+    };
+
+    function _workspaceRunBinded(mode) {
+        var selectedPaths = workspace.getSelectedPaths();
+        if (!selectedPaths || selectedPaths.length !== 1) {
+            return null;
+        }
+
+        var selectedPath = selectedPaths[0];
+        if (!selectedPath) {
+            return;
+        }
+        var nodeSplit = selectedPath.split('/');
+        var projectName = nodeSplit[2];
+        var runConfigurations = runConfigurationManager.getByProjectName(projectName);
+        if (_.isEmpty(runConfigurations)) {
+            openRunConfigurationDialog(null, mode);
+        } else {
+            var latestRuns = _.where(runConfigurations, {latestRun: true});
+            _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
+        }
+    }
+
+    function _runBinded(runConf, mode) {
+        switch (mode) {
+            case runConfigurationManager.MODE.RUN_MODE:
+                if (!runConf) {
+                    toastr.info('Cannot find a run configuration. Add a new one.');
+                    openRunConfigurationDialog(null, mode);
+                } else {
+                    delegator.run(runConf);
+                }
+                break;
+            case runConfigurationManager.MODE.DEBUG_MODE:
+                if (!runConf) {
+                    toastr.info('Cannot find a debug configuration. Add a new one.');
+                    openRunConfigurationDialog(null, mode);
+                } else {
+                    delegator.debug(runConf);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Run with menu item handler in workspace
+     * @method workspaceRunListBinded
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.workspaceRunListBinded = function (index) {
+        _runListBinded(index, runConfigurationManager.MODE.RUN_MODE);
+    };
+
+    /**
+     * Debug with menu item handler in workspace
+     * @method workspaceDebugListBinded
+     * @memberOf module:webida.ide.project-management.run
+     */
+    module.workspaceDebugListBinded = function (index) {
+        _runListBinded(index, runConfigurationManager.MODE.DEBUG_MODE);
+    };
 
     function isRunnableProjectPath(projectLevelPath) {
         if (!projectLevelPath || !pathUtil.isDirPath(projectLevelPath)) {
@@ -303,12 +485,6 @@ define([
         }
 
         var projectName = pathUtil.getName(projectLevelPath);
-        //if (!projectName || projectName[0] === '.') {
-        //    return false;
-        //}
-        //
-        //return true;
-
         return projectName && projectName.charAt(0) !== '.';
     }
 
@@ -317,39 +493,17 @@ define([
         return isRunnableProjectPath(projectPath);
     }
 
-    module.workspaceRunListBinded = function (index) {
-        _runListBinded(index);
-    };
-
-    module.workbenchRunListBinded = function (index) {
-        _runListBinded(index);
-    };
-
-    module.runObjectChanged = function(action, runConf) {
-        console.log('webida.ide.project-management.run:configuration.changed', action, runConf);
-        if(action === 'save'){
-            delegator.saveConf(runConf, function(err){
-                if(!err){
-                    refreshRunConfigurationTree();
-                }
-            });
-            //runConfigurationManager.save(runConf);
-            //refreshRunConfigurationTree();
-        }
-    };
-
     function parseProjectNameFromPath(path) {
         if (!path) {
             return '';
         }
-
         var splitPath = path.split('/');
         if (!splitPath || splitPath.length < 3) {
             return '';
         }
-
         return splitPath[2];
     }
+
     return module;
 
 });

@@ -19,7 +19,8 @@
         ],
         "webida.ide.project-management.run:runner": [
             { "name": "type", "type": "string", "desc": "run type id" },
-            { "name": "run", "type": "function", "desc": "run a project with the specified run configuration"}
+            { "name": "run", "type": "function", "desc": "run a project with the specified run configuration"},
+            { "name": "debug", "type": "function", "desc": "debug a project with the specified run configuration"}
         ]
     },
 
@@ -36,6 +37,16 @@
                            "disabledOn":"toolbar.runas.disable"
                        }
                     }
+                ],
+                "Debug" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+D" }, "desc" : "Debug recent project" } } ],
+                "Debug with" : [ "enum", {
+                    "toolbar": {
+                        "icons" : "./styles/webida-images/icons/toolbar_runhistory.png",
+                        "tooltip" : "Debug with",
+                        "enabledOn":"toolbar.debugas.enable",
+                        "disabledOn":"toolbar.debugas.disable"
+                    }
+                }
                 ]
             },
             "getViableItems" : "getViableItemsForWorkbench"
@@ -44,7 +55,9 @@
             "location" : "/",
             "wholeItems" : {
                 "&Run" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+R" }, "desc" : "Run current project" } } ],
-                "Run &with" : ["enum"]
+                "Run &with" : ["enum"],
+                "Debug" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+D" }, "desc" : "Debug current project" } } ],
+                "Debug with" : ["enum"]
             },
             "getViableItems" : "getViableItemsForWorkspaceView"
         }

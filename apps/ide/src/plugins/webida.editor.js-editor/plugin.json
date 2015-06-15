@@ -1,0 +1,18 @@
+{
+    "name": "webida.editor.js-editor",
+    "description": "JavaScript Editor",
+    "version": "0.1.0",
+    "requirement": "codeeditor",
+    "extensions" : {
+
+        "webida.common.editors:editor" : {
+            "name" : "JavaScript Editor",
+            "fileValueRequired" : true,
+            "handledFileExt" : [ "js", "json" ],
+            "handledMimeTypes" : [],
+            "handledFileNames" : [],
+            "unhandledFileExt" : [],
+            "unhandledMimeTypes" : []
+        }
+    }
+}

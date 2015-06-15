@@ -2,6 +2,7 @@
     "plugins" : [
         "plugins/codeeditor",
         "plugins/javaeditor",
+        "plugins/webida.editor.js-editor",
         "plugins/webida.editor.test-editor",
         "plugins/deploy",
         "plugins/help",
@@ -17,7 +18,8 @@
         "webida-lib/plugins/output",
         "webida-lib/plugins/preview",
         "webida-lib/plugins/workspace",
-        "webida-lib/plugins/workbench"
+        "webida-lib/plugins/workbench",
+        "webida-lib/plugins/webida.editor.text-editor"
     ],
     "start-plugins" : [
         "webida-lib/plugins/workbench"

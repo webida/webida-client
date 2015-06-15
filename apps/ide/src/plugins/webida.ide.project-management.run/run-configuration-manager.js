@@ -40,6 +40,11 @@ define(['webida-lib/app',
     //    RUN_AS_ENABLED: 'toolbar.runas.enable'
     //};
 
+    var MODE = {
+        RUN_MODE: 'run',
+        DEBUG_MODE : 'debug'
+    };
+
     var fsMount = ide.getFSCache();
 
     var runConfigurations = {};
@@ -263,6 +268,8 @@ define(['webida-lib/app',
     function RunConfigurationManager(){
         var self = this;
 
+        this.MODE = MODE;
+
         this.flushRunConfigurations = flushRunConfigurations;
         this.getByPath = function(path) {
             var pathInfo = _getPathInfo(path);
@@ -367,8 +374,6 @@ define(['webida-lib/app',
             }
         };
     }
-
-
 
     return new RunConfigurationManager();
 });

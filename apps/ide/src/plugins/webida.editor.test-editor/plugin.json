@@ -8,7 +8,7 @@
         "webida.common.editors:editor" : {
             "name" : "Test Editor",
             "fileValueRequired" : true,
-            "handledFileExt" : [ ".test" ],
+            "handledFileExt" : [ "test" ],
             "handledMimeTypes" : [],
             "handledFileNames" : [ "open_with_test_case.test" ],
             "unhandledFileExt" : [],

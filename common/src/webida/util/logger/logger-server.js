@@ -35,7 +35,7 @@ function Logger() {
 Logger.prototype = Object.create(LoggerInterface.prototype);
 Logger.prototype.constructor = Logger;
 
-function formater(args, action) {
+function formater(args, action, logger) {
 	var now = new Date();
 	var prefix = '[' + now.toISOString() + '] ['+action.toUpperCase()+']';
 	var regExp = /\(([^)]+)\)/;
