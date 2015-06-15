@@ -1,0 +1,18 @@
+{
+    "name": "webida.editor.text-editor",
+    "description": "Text Editor",
+    "version": "0.1.0",
+    "requirement": "webida.common.workbench",
+    "extensions" : {
+
+        "webida.common.editors:editor" : {
+            "name" : "Text Editor",
+            "fileValueRequired" : true,
+            "handledFileExt" : [ "txt", "text" ],
+            "handledMimeTypes" : [],
+            "handledFileNames" : [],
+            "unhandledFileExt" : [],
+            "unhandledMimeTypes" : []
+        }
+    }
+}
