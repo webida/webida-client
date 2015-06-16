@@ -19,30 +19,119 @@ define([
         'text!./java-run-configuration.html',
         'dojo/topic',
         'dijit/form/Select',
-        'dijit/registry'
+        'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
+        'dijit/layout/ContentPane',
+        'dijit/registry',
+        'other-lib/toastr/toastr'
     ],
-    function (ide, template, topic, Select, registry) {
+    function (ide, template, topic, Select, FileDialog, ContentPane, registry, toastr) {
         'use strict';
         var FS = ide.getMount();
         var currentRunConf;
         var ui = {};
 
-        function _setTemplate(runConf){
+        var SRC_DIR = 'src';
+
+        function _makeConfigurationName(path) {
+            var ret = path;
+
+            if (isDuplicateRunName(ret) === true) {
+                var temp;
+                for (var i = 1; i < 100; i++) {
+                    temp = ret + '-' + i.toString();
+                    if (isDuplicateRunName(temp) !== true) {
+                        return temp;
+                    }
+                }
+                var date = new Date();
+                return ret + date.toGMTString();
+            } else {
+                return ret;
+            }
+        }
+
+        function _pathButtonClicked() {
+            var pathInputBox = ui.readonlyInputBoxes[0];
+            var nameInputBox = ui.inputBoxNodes[0];
+            var project = ui.select.get('value');
+            if (!currentRunConf || !project || !pathInputBox) {
+                toastr.error('Cannot find root path');
+                return;
+            }
+
+            var root = ide.getPath() + '/' + project + '/' + SRC_DIR + '/';
+            var initialPath;
+
+            if (pathInputBox.value) {
+                initialPath = root + pathInputBox.value;
+            } else {
+                initialPath = root;
+            }
+
+            var dlg = new FileDialog({
+                mount: ide.getFSCache(),
+                root: root,
+                initialSelection: [initialPath],
+                title: 'Select the Main Java File to Run',
+                singular: true,
+                dirOnly: false,
+                showRoot: false
+            });
+            dlg.open(function (selected) {
+                if (selected) {
+                    if (selected.length <= 0) {
+                        toastr.warning('Select a java file.');
+                        return;
+                    }
+                    var pathSplit = selected[0].split(root);
+                    if (pathSplit.length > 0) {
+                        pathInputBox.value = pathSplit[1];
+                        if (!nameInputBox) {
+                            return;
+                        }
+                        if (!nameInputBox.value) {
+                            nameInputBox.value = _makeConfigurationName(pathInputBox.value);
+                        } else {
+                            if ($(nameInputBox).attr('userinput') !== 'true') {
+                                var splitName = nameInputBox.value.split(pathInputBox.value);
+                                if (splitName.length > 0) {
+                                    nameInputBox.value = _makeConfigurationName(pathInputBox.value);
+                                }
+                            }
+                        }
+                    } else {
+                        toastr.warning('Select a java file.');
+                    }
+                }
+            });
+        }
+
+        function _setTemplate(runConf) {
+            if(registry.byId('rcw-action-save')) {
+                registry.byId('rcw-action-save').destroyRecursive();
+            }
             currentRunConf = runConf;
             if(runConf){
-                ui.$parent.append(template);
+                var markup = new ContentPane({
+                    /* style: 'text-indent:20px; line-height:100%',*/
+                    content: template
+                });
+                var child = markup.domNode;
+                ui.$parent.append(child);
                 ui.inputBoxNodes = ui.$parent.find('.rcw-content-table-inputbox-edit');
                 ui.inputBoxNodes[0].value = runConf.name ? runConf.name : '';
+                ui.readonlyInputBoxes = ui.$parent.find('.rcw-content-table-inputbox-readonly');
+                ui.readonlyInputBoxes[0].value = runConf.path ? (runConf.path.split('.').join('/') + '.java') : '';
 
                 ide.getWorkspaceInfo(function(err, workspaceInfo){
-                    if(!err) {
+                    if (!err) {
                         var projects = workspaceInfo.projects.map(function(project){
                             return {
                                 value: project,
                                 label: project
                             };
                         });
-                        if(registry.byId('run-configuration-project')) {
+                        if (registry.byId('run-configuration-project')) {
                             registry.byId('run-configuration-project').destroyRecursive();
                         }
                         ui.select = new Select({ options: projects }, 'run-configuration-project');
@@ -51,20 +140,35 @@ define([
                     }
                 });
 
-                ui.saveButton = ui.$parent.find('.rcw-action-save');
-                ui.saveButton.on('click', function(){
-                    if(_doSave()) {
+                ui.saveButton = registry.byId('rcw-action-save');
+                dojo.connect(ui.saveButton, 'onClick', function () {
+                    if (_doSave()) {
                         topic.publish('webida.ide.project-management.run:configuration.changed',
                             'save', currentRunConf);
+                    } else {
+                        toastr.error('Invalid Run Configuration.');
                     }
+                });
+                ui.pathButton = ui.$parent.find('.rcw-action-path');
+                ui.pathButton.bind('mouseup', function () {
+                    _pathButtonClicked();
                 });
             }
         }
 
-        function _doSave(){
+        var srcRegex = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
+        function _doSave() {
             // validation on currentRunConf
-            //currentRunConf.name = ui.inputBoxNodes[0].value;
-            //currentRunConf.project = ui.select.get('value');
+            currentRunConf.name = ui.inputBoxNodes[0].value;
+            currentRunConf.project = ui.select.get('value');
+            currentRunConf.outputDir = 'target';
+            currentRunConf.srcDir = SRC_DIR;
+            var fullPath = ui.readonlyInputBoxes[0].value;
+            var matchResult = srcRegex.exec(fullPath);
+            if (matchResult === null) {
+                return false;
+            }
+            currentRunConf.path = matchResult[1].split('/').join('.') + matchResult[2];
             return true;
         }
 
