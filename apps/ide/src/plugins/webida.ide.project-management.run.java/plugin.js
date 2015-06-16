@@ -32,23 +32,6 @@ define([
 
         var SRC_DIR = 'src';
 
-        function _makeConfigurationName(path) {
-            var ret = path;
-
-            if (isDuplicateRunName(ret) === true) {
-                var temp;
-                for (var i = 1; i < 100; i++) {
-                    temp = ret + '-' + i.toString();
-                    if (isDuplicateRunName(temp) !== true) {
-                        return temp;
-                    }
-                }
-                var date = new Date();
-                return ret + date.toGMTString();
-            } else {
-                return ret;
-            }
-        }
 
         function _pathButtonClicked() {
             var pathInputBox = ui.readonlyInputBoxes[0];
@@ -90,12 +73,12 @@ define([
                             return;
                         }
                         if (!nameInputBox.value) {
-                            nameInputBox.value = _makeConfigurationName(pathInputBox.value);
+                            nameInputBox.value = pathInputBox.value;
                         } else {
                             if ($(nameInputBox).attr('userinput') !== 'true') {
                                 var splitName = nameInputBox.value.split(pathInputBox.value);
                                 if (splitName.length > 0) {
-                                    nameInputBox.value = _makeConfigurationName(pathInputBox.value);
+                                    nameInputBox.value = pathInputBox.value;
                                 }
                             }
                         }
@@ -107,11 +90,11 @@ define([
         }
 
         function _setTemplate(runConf) {
-            if(registry.byId('rcw-action-save')) {
+            if (registry.byId('rcw-action-save')) {
                 registry.byId('rcw-action-save').destroyRecursive();
             }
             currentRunConf = runConf;
-            if(runConf){
+            if (runConf){
                 var markup = new ContentPane({
                     /* style: 'text-indent:20px; line-height:100%',*/
                     content: template
@@ -123,9 +106,9 @@ define([
                 ui.readonlyInputBoxes = ui.$parent.find('.rcw-content-table-inputbox-readonly');
                 ui.readonlyInputBoxes[0].value = runConf.path ? (runConf.path.split('.').join('/') + '.java') : '';
 
-                ide.getWorkspaceInfo(function(err, workspaceInfo){
+                ide.getWorkspaceInfo(function (err, workspaceInfo) {
                     if (!err) {
-                        var projects = workspaceInfo.projects.map(function(project){
+                        var projects = workspaceInfo.projects.map(function (project) {
                             return {
                                 value: project,
                                 label: project
@@ -173,7 +156,7 @@ define([
         }
 
         return {
-            run: function(runConf, callback) {
+            run: function (runConf, callback) {
                 console.log('Run As...', runConf);
                 var rootPath = ide.getPath() + '/' + runConf.project;
                 var filePath = runConf.srcDir + '/' + runConf.path.replace(/\./g, '/') + '.java';
@@ -193,25 +176,25 @@ define([
                         }
                     });
             },
-            newConf: function($parent, runConf, callback){
+            newConf: function ($parent, runConf, callback) {
                 ui.$parent = $parent;
                 _setTemplate(runConf);
                 callback(null, runConf);
             },
-            loadConf: function($parent, runConf, callback) {
+            loadConf: function ($parent, runConf, callback) {
                 ui.$parent = $parent;
                 _setTemplate(runConf);
                 callback(null, runConf);
             },
-            saveConf: function(runConf, callback) {
+            saveConf: function (runConf, callback) {
                 // validation
-                if(_doSave()) {
+                if (_doSave()) {
                     callback(null, runConf);
                 } else {
                     callback('validation failed');
                 }
             },
-            deleteConf: function(runConfName, callback){
+            deleteConf: function (runConfName, callback) {
                 callback(null, currentRunConf);
             }
         };
