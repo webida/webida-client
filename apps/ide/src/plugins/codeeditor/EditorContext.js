@@ -415,6 +415,8 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
 
         this.settings = settings;
 
+		self.start();
+
         loadCSSList([require.toUrl('./css/webida.css'),
                      require.toUrl('webida-lib/custom-lib/codemirror/lib/codemirror.css'),
                      require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css')], function () {
@@ -425,9 +427,6 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
                      'webida-lib/custom-lib/codemirror/addon/edit/closebrackets',
                      'webida-lib/custom-lib/codemirror/addon/edit/closetag',
                      'webida-lib/custom-lib/codemirror/addon/edit/matchbrackets'], function () {
-                setTimeout(function(self){
-                	self.start();
-                },10,self);
             });
         });
 
@@ -1548,6 +1547,14 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
         settings.autoHintDelay = num;
 
         setChangeForAutoHintDebounced();
+    };
+
+    EditorContext.prototype.focus = function () {
+        this.editor.focus();
+    };
+
+    EditorContext.prototype.refresh = function () {
+        this.editor.refresh();
     };
 
     return EditorContext;

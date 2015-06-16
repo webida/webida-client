@@ -15,33 +15,22 @@
  */
 
 /**
- * Interface
- * An ancestor of all workbench UI parts
+ * An ancestor of all workbench UI views
  *
- * @see View, Editor
+ * @see Part, Editor
  * @since: 2015.06.09
  * @author: hw.shim
  */
 
-define(['webida-lib/util/gene'], function(gene) {
+define([
+	'webida-lib/util/gene',
+	'./Part'
+], function(
+	gene,
+	Part
+) {
 	'use strict';
-	function Part(){}
-	gene.inherit(Part, Object, {
-		create : function(elem, started){
-			throw new Error('create() should be implemented by subclass');
-		},
-		destroy : function(file){
-			throw new Error('destroy() should be implemented by subclass');
-		},
-		show : function(file){
-			throw new Error('show() should be implemented by subclass');
-		},
-		hide : function(file){
-			throw new Error('hide() should be implemented by subclass');
-		},
-		focus : function(){
-			throw new Error('focus() should be implemented by subclass');
-		}
-	});
-	return Part;
+	function ViewPart(){}
+	gene.inherit(ViewPart, Part);
+	return ViewPart;
 });

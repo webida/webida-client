@@ -26,7 +26,7 @@ function (require, topic, _, ide, codemirror, pathUtil) {
     var jshint = {};
 
     function moveToPosition(data) {
-        require(['../plugin'], function (CodeEditor) {
+        require(['../CodeEditor'], function (CodeEditor) {
             CodeEditor.moveTo(CodeEditor.pushCursorLocation(data.file, {
                 row: data.start.line,
                 col: data.start.ch
