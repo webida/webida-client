@@ -32,11 +32,13 @@
 var time;
 define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         'other-lib/underscore/lodash.min',
+        'other-lib/URIjs/URI',
         'webida-lib/util/path',
         'webida-lib/util/arrays/BubblingArray',
         'webida-lib/app',
         'webida-lib/plugin-manager-0.1',
         'webida-lib/plugins/workbench/plugin',
+        'webida-lib/plugins/workbench/ui/EditorPart',
         'webida-lib/widgets/views/view',
         'webida-lib/widgets/views/viewmanager',
         'webida-lib/widgets/views/viewFocusController',
@@ -44,7 +46,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         'other-lib/async',
         'other-lib/toastr/toastr',
         'webida-lib/util/logger/logger-client'
-], function (extToMime, _, pathUtil, BubblingArray, ide, pm, workbench,
+], function (extToMime, _, URI, pathUtil, BubblingArray, ide, pm, workbench, EditorPart,
               View, vm, ViewFocusController,  topic, async, toastr, Logger) {
     'use strict';
 
@@ -62,11 +64,11 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         };
            
         File.prototype.isModified = function () {
-            if (this.editorModule) {
-                var val = this.editorModule.getValue(this);
+            if (this.editorPart) {
+                var val = this.editorPart.getValue();
                 var modifiedInEditor = false;
-                if (this.editorModule.isClean) {
-                    modifiedInEditor = !this.editorModule.isClean(this);
+                if (this.editorPart.isClean) {
+                    modifiedInEditor = !this.editorPart.isClean();
                 }
                 // TODO: remove the first clause
                 return  val !== undefined && val !== this.savedValue && modifiedInEditor;
@@ -74,6 +76,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                 return false;	// not yet even initialized.
             }
         };
+
+		File.prototype.toString = function () {
+			return this.path;
+		}
 
         return File;
     }
@@ -112,7 +118,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
             var path = file.path;
 
-            var value = file.editorModule.getValue(file);
+            var value = file.editorPart.getValue();
             if (value === undefined) {		// TODO: make this check unnecessary.
                 throw new Error('tried to save a file "' + file.path +
                                 '" + whose value is not yet set');
@@ -155,8 +161,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     editors.onFileError(file);
                 } else {
                     file.savedValue = value;
-                    if (file.editorModule && file.editorModule.markClean) {
-                        file.editorModule.markClean(file);
+                    if (file.editorPart && file.editorPart.markClean) {
+                        file.editorPart.markClean();
                     }
 
                     topic.publish('file.saved', file);
@@ -350,7 +356,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     if (!isDir) {
                         file.name = pathUtil.getFileName(dst);
                         file.editor.setMode(pathUtil.getFileExt(file.name));
-                        //file.editorModule.setMode(file.editor, pathUtil.getFileExt(file.name));
+                        //file.editorPart.setMode(file.editor, pathUtil.getFileExt(file.name));
                             // The above line is not enough for linters and hinters
                     }
                     delete editors.files[src];
@@ -521,7 +527,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         currentFile: null,
         currentFiles: new BubblingArray(),
         recentFiles: new BubblingArray(20),	// keep history of 20 files
-        onloadPendingFilesCount: 0
+        onloadPendingFilesCount: 0,
+        parts: new Map()
     };
 
     editors.setCurrentFile = function (file) {
@@ -554,8 +561,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     topic.publish('editors.clean.current');
                 }
 
-                if (file.editorModule) {
-                    file.editorModule.focus(editors.currentFile);
+                if (file.editorPart) {
+                    file.editorPart.focus(editors.currentFile);
                 }
 
                 if (file.toRefresh) {
@@ -575,10 +582,11 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.ensureCreated = function (file, bShowAndFocus, cb) {
+    	console.info('ensureCreated()');
         function showAndFocus(file) {
-            if (file.editorModule) {
-                file.editorModule.show(file);
-                file.editorModule.focus(file);
+            if (file.editorPart) {
+                file.editorPart.show();
+                file.editorPart.focus();
             }
             if (cb) {
                 cb();
@@ -602,6 +610,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     function onloadFinalize() {
+    	console.info('onloadFinalize()');
         var vcs = editors.splitViewContainer.getViewContainers();
         _.each(vcs, function (vc) {
             var selview = vc.getSelectedView();
@@ -735,7 +744,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                 editors.setCursor(editors.currentFile, options.pos);
             }
 
-            editors.currentFile.editorModule.focus(editors.currentFile);
+            editors.currentFile.editorPart.focus(editors.currentFile);
 
             if (callback) {
                 callback(editors.currentFile);
@@ -811,20 +820,16 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     editors.onFileOpened = function (file) {
     	
     	console.log('');
-    	logger.info('editors.onFileOpened('+file.name+')');
+    	logger.info('editors.onFileOpened('+file+')');
+    	logger.info('file._openFileOption = ', file._openFileOption);
     	
-        // TODO: remove the following check if possible
-        if (!file._openFileOption) {
-            return;
-        }
-
+        if (!file._openFileOption) {return;}
         var option = file._openFileOption;
         var callback = file._openFileCallback;
         delete file._openFileOption;
         delete file._openFileCallback;
 
         var show = option.show !== false;
-
         var cellCount = editors.splitViewContainer.get('splitCount');
         var cellIndex;
 
@@ -837,14 +842,26 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         var extension = option.extension;
         logger.info('extension.module = '+extension.module);
 
+		var partPathTokens = extension.module.split('/');
+		partPathTokens[partPathTokens.length-1] = extension.editorPart;
+		var editorPartPath = partPathTokens.join('/');
+		logger.info('editorPartPath = ',editorPartPath);
+
         // Create editor and update editor content
         if (show) {
-            if (editors.currentFile && editors.currentFile.editorModule) {
-                editors.currentFile.editorModule.hide(editors.currentFile);
+            if (editors.currentFile && editors.currentFile.editorPart) {
+                editors.currentFile.editorPart.hide(editors.currentFile);
             }
         }
 
-        require([extension.module], function (editorModule) {
+        require([editorPartPath], function (EditorPart) {
+
+        	console.info('file = ', file);
+			var editorPart = new EditorPart(file);
+			
+			//file to part map
+			editors.addPart(file, editorPart);
+
             function _findViewIndexUsingSibling(viewContainer, file, siblings) {
                 var previousSiblings = [];
                 var nextSiblings = [];
@@ -941,9 +958,9 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             }
              */
 
-            if (file.editorModule !== editorModule) {
-                file.editorModuleName = extension.module;
-                file.editorModule = editorModule;
+            if (file.editorPart !== editorPart) {
+                file.editorPartName = extension.module;
+                file.editorPart = editorPart;
 
                 var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
 
@@ -958,16 +975,21 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     }
 
                     file.pendingCreator = function (c) {
-
-                        function createEditor(file, editorModule, view, callback) {
-                            editorModule.create(file, file.savedValue, view.getContent(), function (file, instance) {
+						
+						console.info('file.pendingCreator('+c+')');
+						
+                        function createEditor(file, editorPart, view, callback) {
+                        	
+                        	
+                        	
+                            editorPart.create(view.getContent(), function (file, instance) {
                                 file.editor = instance;
-                                if (editorModule.addChangeListener) {
-                                    editorModule.addChangeListener(file, function (file) {
+                                if (editorPart.addChangeListener) {
+                                    editorPart.addChangeListener(function (file) {
                                         _.defer(function () {
                                             editors.refreshTabTitle(file);
                                             topic.publish('file.content.changed', file.path,
-                                                          file.editorModule.getValue(file));
+                                                          file.editorPart.getValue());
                                         });
                                     });
                                 }
@@ -982,7 +1004,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                             });
                         }
 
-                        createEditor(file, editorModule, view, function (file) {
+                        createEditor(file, editorPart, view, function (file) {
                             if (callback) {
                                 callback(file);
                             }
@@ -1018,7 +1040,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             editors.refreshTabTitle(file);
             if (show) {
                 editors.setCurrentFile(file);
-                editorModule.show(file);
+                editorPart.show();
             }
         });
     };
@@ -1083,6 +1105,20 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             return cb(instance, instance.editor);
         }
     };
+
+	editors.addPart = function(file, part) {
+		logger.info('editors.addPart('+file+', '+part+')');
+		editors.parts.set(file, part);
+	}
+
+	editors.getPart = function(file) {
+		logger.info('getPart('+file+')');
+		if (editors.parts.get(file) instanceof EditorPart) {
+			return editors.parts.get(file);
+		} else {
+			return null;
+		}
+	}
 
     subscribeToTopics();
 

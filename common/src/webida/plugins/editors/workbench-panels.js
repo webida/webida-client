@@ -112,8 +112,8 @@ define(['./plugin',
             if (file) {
                 var changed = editors.currentFile !== file;
                 if (changed) {
-                    if (editors.currentFile && editors.currentFile.editorModule) {
-                        editors.currentFile.editorModule.hide(editors.currentFile);
+                    if (editors.currentFile && editors.currentFile.editorPart) {
+                        editors.currentFile.editorPart.hide(editors.currentFile);
                     }
                     editors.setCurrentFile(file);
                 }
@@ -162,8 +162,8 @@ define(['./plugin',
 
             function closeFile() {
                 if (event.closable) {
-                    file.editorModule.hide(file);
-                    file.editorModule.destroy(file);
+                    file.editorPart.hide();
+                    file.editorPart.destroy();
                     delete editors.files[file.path];
 
                     var i = editors.currentFiles.indexOf(file);

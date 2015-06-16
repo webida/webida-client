@@ -1,7 +1,6 @@
 {
     "plugins" : [
         "plugins/codeeditor",
-        "plugins/javaeditor",
         "plugins/webida.editor.js-editor",
         "plugins/webida.editor.test-editor",
         "plugins/deploy",

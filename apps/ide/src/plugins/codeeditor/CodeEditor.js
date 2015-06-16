@@ -29,6 +29,7 @@
 define([
 	'webida-lib/util/gene',
 	'other-lib/underscore/lodash.min',
+	'webida-lib/plugins/workbench/ui/EditorPart',
 	'webida-lib/plugins/webida.editor.text-editor/TextEditor',
 	'webida-lib/plugins/workbench/preference-system/store',	// TODO: issue #12055
 	'webida-lib/plugins/editors/plugin',
@@ -42,6 +43,7 @@ define([
 ], function(
 	gene,
 	_, 
+	EditorPart,
 	TextEditor,
 	store, 
 	editors, 
@@ -55,23 +57,21 @@ define([
 	'use strict';
 
 	var logger = new Logger();
-    var editorContexts = {};
     var elemIdCounter = 1;
     var lastSavedFoldingStatus = {};
 
     // file events
     function onFileOpened(file, content) {
-        // console.log('file.opened', file.name, file);
-        var editorContext = editorContexts[file.__elemId];
-        if (editorContext === undefined || editorContext === null) {
-            return;
-        }
-
-        editorContext.setValue(content);
-        editorContext.clearHistory();
-        editorContext.markClean();
-        var mode = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
-        setMode(editorContext, mode);
+    	logger.info('onFileOpened('+file+', content)');
+    	var part = editors.getPart(file);
+    	if(part instanceof EditorPart){
+	    	var editorContext = part.getEditorContext();
+	        editorContext.setValue(content);
+	        editorContext.clearHistory();
+	        editorContext.markClean();
+	        var mode = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
+	        setMode(editorContext, mode);
+    	}
     }
 
     function setMode(editorContext, mode) {
@@ -107,10 +107,11 @@ define([
     }
 
     function onFileSaved(file) {
-        // console.log('file.saved', file.name);
-        var editorContext = editorContexts[file.__elemId];
-        if (editorContext) {
-            lastSavedFoldingStatus[file.path] = editorContext.getFoldings();	// ??? Why save foldings here?
+        logger.info('onFileSaved('+file+')');
+        var part = editors.getPart(file);
+        if(part instanceof EditorPart){
+	        var editorContext = part.getEditorContext();
+            lastSavedFoldingStatus[file.path] = editorContext.getFoldings();
         }
     }
 
@@ -179,14 +180,20 @@ define([
         forth: []
     };
 
-	function CodeEditor(){
+	function CodeEditor(file){
+		this.file = file;
 	}
 
 	gene.inherit(CodeEditor, TextEditor, {
 
-        create: function (file, content, elem, started) {
+        create: function (elem, started) {
+
+			logger.info('create('+elem.tagName+', started)');
+
+        	var file = this.file;
+        	var content = file.savedValue;
+
             if (file.__elemId === undefined) {
-            	var that = this;
                 var elemId = (elemIdCounter++);
                 var editorContext = new EditorContext(elem, file, function (file, editorContext) {
                     editorContext.addChangeListener(function (editorContext, change) {
@@ -200,7 +207,7 @@ define([
                         });
                     }
                 });
-                editorContexts[elemId] = editorContext;
+                this.editorContext = editorContext;
                 file.elem = elem;
                 file.__elemId = elemId;
 
@@ -215,12 +222,12 @@ define([
                         right: '0px',
                         top: '0px',
                         bottom: '0px'
-                    });                   
+                    });
                 });
                 editorContext.setMode(file.name.substr(file.name.lastIndexOf('.') + 1));
                 setPreferences(editorContext);
 
-                onFileOpened(file, content);
+                onFileOpened(file, content, editorContext);
                 
                 //editorContext.addDeferredAction(function (editor) {
                  //   editor.editor.setOption('overviewRuler', false);
@@ -249,160 +256,153 @@ define([
                 editorContext.addCursorListener(setStatusBarText);
                 editorContext.addFocusListener(setStatusBarText);
                 editorContext.addCursorListener(function (editorContext) {
-                    that.pushCursorLocation(editorContext.file, editorContext.getCursor());
+                    CodeEditor.pushCursorLocation(editorContext.file, editorContext.getCursor());
                 });
                 editorContext.addExtraKeys({
                     'Ctrl-Alt-Left': function () {
-                        that.moveBack();
+                        CodeEditor.moveBack();
                     },
                     'Ctrl-Alt-Right': function () {
-                        that.moveForth();
+                        CodeEditor.moveForth();
                     }
                 });
             }
         },
 
-        show: function (file) {
-            logger.info('show('+file.name+')');
-            var editorContext = editorContexts[file.__elemId];
-            if (editorContext && editorContext.editor) {
-                editorContext.editor.refresh();
-				//console.info('editorContext.editor = ',editorContext.editor);
-            }
+        show: function () {
+			logger.info('show()');
+			this.editorContext.refresh();
         },
 
-        hide: function (/*file*/) { },
-
-        destroy: function (file) {
-            // console.log('destroy', file.name);
-            var editorContext = editorContexts[file.__elemId];
-            if (editorContext) {
-                unsetPreferences(editorContext);
-                editorContext.destroy();
-                delete editorContexts[file.__elemId];
-            }
-            delete file.__elemId;
+        hide: function () {
         },
 
-        getValue: function (file) {
-            var editorContext = editorContexts[file.__elemId];
-            if (editorContext) {
-                return editorContext.getValue();
-            } else {
-                return undefined;
+        destroy: function () {
+            if (this.editorContext) {
+                unsetPreferences(this.editorContext);
+                this.editorContext.destroy();
+                delete this.editorContext;
             }
+            delete this.file.__elemId;
         },
 
-        addChangeListener: function (file, callback) {
-            var editorContext = editorContexts[file.__elemId];
-            if (editorContext) {
-                editorContext._changeCallback = callback;
-            }
+        getValue: function () {
+        	if(this.editorContext){
+        		return this.editorContext.getValue();
+        	}else{
+        		logger.trace();
+        	}
         },
 
-        focus: function (file) {
-            var editorContext = editorContexts[file.__elemId];
-            if (editorContext && editorContext.editor) {
-                editorContext.editor.focus();
-            }
+        addChangeListener: function (callback) {
+			this.editorContext._changeCallback = callback;
         },
 
-        pushCursorLocation: function (file, cursor, forced) {
-            var filepath = (typeof file === 'string') ? file : file.path;
-            var thisLocation = {
-                filepath: filepath,
-                cursor: cursor,
-                timestamp: new Date().getTime(),
-                forced: forced
-            };
-
-            function compareLocations(cursor1, cursor2, colspan, rowspan, timespan) {
-                if (cursor1.filepath === cursor2.filepath) {
-                    if (((!colspan || (Math.abs(cursor1.cursor.col - cursor2.cursor.col) < colspan)) &&
-                        (!rowspan || (Math.abs(cursor1.cursor.row - cursor2.cursor.row) < rowspan))) ||
-                        (!timespan || (Math.abs(cursor1.timestamp - cursor2.timestamp) < timespan))) {
-                        return true;
-                    }
-                    return false;
-                } else {
-                    return false;
-                }
-            }
-            function similarLocations(cursor1, cursor2) {
-                return compareLocations(cursor1, cursor2, 5, 5, 3000);
-            }
-            function identicalLocations(cursor1, cursor2) {
-                return compareLocations(cursor1, cursor2, 1, 1, false);
-            }
-            if (cursorStacks.back.length > 0) {
-                var latest = cursorStacks.back.pop();
-                if (((forced || latest.forced) && !identicalLocations(thisLocation, latest)) ||
-                    (!similarLocations(thisLocation, latest))) {
-                    cursorStacks.back.push(latest);
-                    cursorStacks.forth = [];
-                }
-            }
-            cursorStacks.back.push(thisLocation);
-            return thisLocation;
+        focus: function () {
+        	if(this.editorContext){
+        		this.editorContext.focus();
+        	}else{
+        		logger.trace();
+        	}
         },
 
-        moveBack: function () {
-            if (cursorStacks.back.length > 1) {
-                var popped = cursorStacks.back.pop();
-
-                if (popped) {
-                    cursorStacks.forth.push(popped);
-                }
-                this.moveTo(cursorStacks.back[cursorStacks.back.length - 1]);
-            }
+        markClean: function () {
+            this.editorContext.markClean();
         },
-        moveForth: function () {
-            var popped = cursorStacks.forth.pop();
 
-            if (popped) {
-                cursorStacks.back.push(popped);
-                this.moveTo(popped);
-            }
-        },
-        moveTo: function (location) {
-            editors.openFile(location.filepath, {show: true}, function (file) {
-                if (file.__elemId && editorContexts[file.__elemId]) {
-                    if (location.start && location.end) {
-                        editorContexts[file.__elemId].setSelection(location.start, location.end);
-                    } else {
-                        editorContexts[file.__elemId].setCursor(location.cursor);
-                    }
-                    editorContexts[file.__elemId].addDeferredAction(function (editorContext) {
-                        if (editorContext.editor) {
-                            editorContext.editor.focus();
-                        }
-                    });
-                }
-            });
+        isClean: function () {
+            return this.editorContext.isClean();
         },
 
         getLastSavedFoldingStatus: function () {
             return lastSavedFoldingStatus;
         },
-
-        markClean: function (file) {
-            var editorContext = editorContexts[file.__elemId];
-            if (editorContext) {
-                editorContext.markClean();
-            }
-        },
-
-        isClean: function (file) {
-            var editorContext = editorContexts[file.__elemId];
-            if (editorContext) {
-                return editorContext.isClean();
-            } else {
-                return true;
-            }
+        
+        toString : function(){
+        	return '<CodeEditor>';
         },
 
         setMode: setMode
     });
+
+	//Static functions
+
+	CodeEditor.moveTo = function (location) {
+        editors.openFile(location.filepath, {show: true}, function (file) {
+            if (editors.getPart(file) === null) {
+            	return;
+            }
+            var part = editors.getPart(file);
+        	var context = part.editorContext;
+            if (location.start && location.end) {
+                context.setSelection(location.start, location.end);
+            } else {
+                context.setCursor(location.cursor);
+            }
+            context.addDeferredAction(function (editorContext) {
+                if (editorContext.editor) {
+                    editorContext.editor.focus();
+                }
+            });
+        });
+    };
+
+	CodeEditor.moveBack = function () {
+		if (cursorStacks.back.length > 1) {
+			var popped = cursorStacks.back.pop();
+			if (popped) {
+				cursorStacks.forth.push(popped);
+			}
+			CodeEditor.moveTo(cursorStacks.back[cursorStacks.back.length - 1]);
+		}
+	};
+
+	CodeEditor.moveForth = function () {
+		var popped = cursorStacks.forth.pop();
+		if (popped) {
+			cursorStacks.back.push(popped);
+			CodeEditor.moveTo(popped);
+		}
+	};
+
+	CodeEditor.pushCursorLocation = function (file, cursor, forced) {
+        var filepath = (typeof file === 'string') ? file : file.path;
+        var thisLocation = {
+            filepath: filepath,
+            cursor: cursor,
+            timestamp: new Date().getTime(),
+            forced: forced
+        };
+
+        function compareLocations(cursor1, cursor2, colspan, rowspan, timespan) {
+            if (cursor1.filepath === cursor2.filepath) {
+                if (((!colspan || (Math.abs(cursor1.cursor.col - cursor2.cursor.col) < colspan)) &&
+                    (!rowspan || (Math.abs(cursor1.cursor.row - cursor2.cursor.row) < rowspan))) ||
+                    (!timespan || (Math.abs(cursor1.timestamp - cursor2.timestamp) < timespan))) {
+                    return true;
+                }
+                return false;
+            } else {
+                return false;
+            }
+        }
+        function similarLocations(cursor1, cursor2) {
+            return compareLocations(cursor1, cursor2, 5, 5, 3000);
+        }
+        function identicalLocations(cursor1, cursor2) {
+            return compareLocations(cursor1, cursor2, 1, 1, false);
+        }
+        if (cursorStacks.back.length > 0) {
+            var latest = cursorStacks.back.pop();
+            if (((forced || latest.forced) && !identicalLocations(thisLocation, latest)) ||
+                (!similarLocations(thisLocation, latest))) {
+                cursorStacks.back.push(latest);
+                cursorStacks.forth = [];
+            }
+        }
+        cursorStacks.back.push(thisLocation);
+        return thisLocation;
+    };
 
 	return CodeEditor;
 });

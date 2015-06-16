@@ -7,8 +7,9 @@
 
         "webida.common.editors:editor" : {
             "name" : "Code editor",
+            "editorPart" : "CodeEditor",
             "fileValueRequired" : true,
-            "handledFileExt" : [ ".*" ],
+            "handledFileExt" : [ "js", "html" ],
             "handledMimeTypes" : [],
             "handledFileNames" : [],
             "unhandledFileExt" : [],
