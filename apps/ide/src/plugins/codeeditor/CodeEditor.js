@@ -271,8 +271,13 @@ define([
 
         show: function () {
 			logger.info('show()');
-			this.editorContext.refresh();
-        },
+			if (this.editorContext) {
+				this.editorContext.refresh();
+			}else{
+				logger.info('this.editorContext not found');
+				logger.trace();
+			}
+		},
 
         hide: function () {
         },
@@ -282,7 +287,10 @@ define([
                 unsetPreferences(this.editorContext);
                 this.editorContext.destroy();
                 delete this.editorContext;
-            }
+            }else{
+				logger.info('this.editorContext not found');
+				logger.trace();
+			}
             delete this.file.__elemId;
         },
 
@@ -290,6 +298,7 @@ define([
         	if(this.editorContext){
         		return this.editorContext.getValue();
         	}else{
+				logger.info('this.editorContext not found');
         		logger.trace();
         	}
         },
@@ -302,6 +311,7 @@ define([
         	if(this.editorContext){
         		this.editorContext.focus();
         	}else{
+				logger.info('this.editorContext not found');
         		logger.trace();
         	}
         },
@@ -314,6 +324,7 @@ define([
         	if(this.editorContext){
         		return this.editorContext.isClean();
         	}else{
+				logger.info('this.editorContext not found');
         		logger.trace();
         		return true;
         	}
