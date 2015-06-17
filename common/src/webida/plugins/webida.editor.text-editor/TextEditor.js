@@ -24,10 +24,10 @@
 
 define([
 	'webida-lib/util/gene',
-	'webida-lib/plugins/workbench/ui/Editor'
+	'webida-lib/plugins/workbench/ui/EditorPart'
 ], function(
 	gene,
-	Editor
+	EditorPart
 ) {
 	'use strict';
 
@@ -35,7 +35,7 @@ define([
 		//TODO
 	}
 	
-	gene.inherit(TextEditor, Editor, {
+	gene.inherit(TextEditor, EditorPart, {
 		//TODO
 	});
 

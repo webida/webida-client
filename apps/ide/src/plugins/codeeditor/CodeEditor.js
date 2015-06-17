@@ -311,7 +311,12 @@ define([
         },
 
         isClean: function () {
-            return this.editorContext.isClean();
+        	if(this.editorContext){
+        		return this.editorContext.isClean();
+        	}else{
+        		logger.trace();
+        		return true;
+        	}
         },
 
         getLastSavedFoldingStatus: function () {

@@ -9,7 +9,7 @@
             "name" : "Code editor",
             "editorPart" : "CodeEditor",
             "fileValueRequired" : true,
-            "handledFileExt" : [ "js", "html" ],
+            "handledFileExt" : [ ".*" ],
             "handledMimeTypes" : [],
             "handledFileNames" : [],
             "unhandledFileExt" : [],
