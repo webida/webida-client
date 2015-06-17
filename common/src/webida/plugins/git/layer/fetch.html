@@ -18,26 +18,26 @@
     </div>
 </div>
 <div style="padding-bottom: 5px;">
+    <div style="width:135px;display:inline-block;">
+        <label for="GitFetchRemoteRepoSelect">Remote repository:</label>
+    </div>
+    <select id="GitFetchRemoteRepoSelect" style="width:330px" data-dojo-type="dijit/form/Select" data-dojo-props="disabled:true"></select>
+</div>
+<div style="padding-bottom: 5px;">
     <fieldset style="padding: 5px; border: 1px solid gray">
         <legend>
-            <strong>Target ref</strong>
+            <strong>Refspec</strong>
         </legend>
         <div style="padding-bottom: 5px;">
             <div style="width:135px;display:inline-block;">
-                <label for="GitFetchRemoteRepoSelect">Remote repository:</label>
+                <label for="GitFetchSourceRefSelect">Source ref:</label>
             </div>
-            <select id="GitFetchRemoteRepoSelect" style="width:330px" data-dojo-type="dijit/form/Select" data-dojo-props="disabled:true"></select>
-        </div>
-        <div style="padding-bottom: 5px;">
-            <div style="width:135px;display:inline-block;">
-                <label for="GitFetchRemoteBranchSelect">Source branch (remote):</label>
-            </div>
-            <select id="GitFetchRemoteBranchSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox" data-dojo-props="disabled:true"></select>
+            <select id="GitFetchSourceRefSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox" data-dojo-props="disabled:true"></select>
         </div>
         <div style="width:135px;display:inline-block;">
-            <label for="GitFetchLocalBranchSelect">Target branch (local):</label>
+            <label for="GitFetchDestinationRefSelect">Destination ref:</label>
         </div>
-        <select id="GitFetchLocalBranchSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox" data-dojo-props="disabled:true"></select>
+        <select id="GitFetchDestinationRefSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox" data-dojo-props="disabled:true"></select>
     </fieldset>
 </div>
 <div>

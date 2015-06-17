@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ define(['require',
     './lib/jsdifflib/diffview',
     './lib/jsdifflib/difflib',
     'webida-lib/plugins/workbench/plugin',
-    'webida-lib/util/arrays/BubblingArray', 
+    'webida-lib/util/arrays/BubblingArray',
     'other-lib/toastr/toastr',
     'popup-dialog',
     'dijit/registry',
@@ -46,6 +46,8 @@ define(['require',
     'dijit/Tree',
     'dojox/grid/DataGrid',
     'dojox/grid/EnhancedGrid',
+    'dijit/Menu',
+    'dijit/MenuItem',
     'dojox/grid/enhanced/plugins/IndirectSelection',
     'dojox/grid/enhanced/plugins/Pagination',
     'dojox/grid/enhanced/plugins/Search',
@@ -54,8 +56,6 @@ define(['require',
     'dijit/form/ComboBox',
     'dijit/form/ComboButton',
     'dijit/DropDownMenu',
-    'dijit/Menu',
-    'dijit/MenuItem',
     'dijit/form/CheckBox',
     'dijit/form/SimpleTextarea',
 ], function (require, _,
@@ -71,7 +71,7 @@ define(['require',
               diffview,
               difflib,
               workbench,
-              BubblingArray, 
+              BubblingArray,
               toastr,
               PopupDialog,
               registry,
@@ -88,26 +88,26 @@ define(['require',
     'use strict';
 
     var fsCache = ide.getFSCache();   // ide.getMount();
-    var globalStatus = ide.registerStatusContributorAndGetLastStatus('git-commands', function () { 
+    var globalStatus = ide.registerStatusContributorAndGetLastStatus('git-commands', function () {
         return globalStatus;
-    }) || { 
+    }) || {
         pushHistory: { }
     };
-    Object.keys(globalStatus).forEach(function (kind) { 
-        switch (kind) { 
-            case 'pushHistory': 
-                Object.keys(globalStatus.pushHistory).forEach(function (repoPath) { 
+    Object.keys(globalStatus).forEach(function (kind) {
+        switch (kind) {
+            case 'pushHistory':
+                Object.keys(globalStatus.pushHistory).forEach(function (repoPath) {
                     var history = globalStatus.pushHistory[repoPath];
                     history.repos = new BubblingArray().importFromPlainArray(history.repos);
                     history.dests = new BubblingArray().importFromPlainArray(history.dests);
                 });
                 break;
-            default: 
-                throw new Error('assertion fail: unreachable'); 
-                
+            default:
+                throw new Error('assertion fail: unreachable');
+
         }
     });
-        
+
     var HELP_KEY_SETTING = 'Verify your \'Public SSH Key\' setting in Development Center.';
     var COMMIT_TEMPLATE_PATH = '/.gitmessage';
 
@@ -1397,7 +1397,7 @@ define(['require',
             function pushToRemoteEvent(path) {
                 var selectRepo = remoteRepoSelect.get('value');
                 var toBranch = pushDestInput.get('value');
-                
+
                 var jobId = workbench.addJob('git push : ' + GIT_DIR, 'Processing...');
                 var cmd = ['push'];
 
@@ -1413,7 +1413,7 @@ define(['require',
                     var history = globalStatus.pushHistory[GIT_DIR];
                     history.repos.put(selectRepo);
                     history.dests.put(toBranch);
-                    
+
                     git.exec(path, cmd, function (err, stdout, stderr) {
                         if (err) {
                             toastr.error('For more details, refer to the Git view.', 'Git Push Error');
@@ -1574,7 +1574,7 @@ define(['require',
                         if (err) {
                             next(err);
                         } else {
-                             
+
                             var history = globalStatus.pushHistory[GIT_DIR];
                             if (!history) {
                                 history = globalStatus.pushHistory[GIT_DIR] = {
@@ -1582,7 +1582,7 @@ define(['require',
                                     dests: new BubblingArray()
                                 };
                             }
-                             
+
                             var localBranches = git.parseBranch(data)
                             .filter(function (branch) {
                                 var m = branch.name.match(/remotes\//);
@@ -1590,12 +1590,12 @@ define(['require',
                             }).map(function (data) {
                                 return 'refs/heads/' + data.name;
                             });
-                           
+
                             var branches = new BubblingArray().importFromPlainArray(localBranches);
-                            for (var i = history.dests.length - 1; i > -1; i--) { 
+                            for (var i = history.dests.length - 1; i > -1; i--) {
                                 branches.put(history.dests[i]);
-                            } 
-                            branches = branches.map(function (br) { 
+                            }
+                            branches = branches.map(function (br) {
                                 return { name: br };
                             });
 
@@ -1606,7 +1606,7 @@ define(['require',
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
-                                searchDelay: 500, 
+                                searchDelay: 500,
                                 value: branches[0].name
                             });
 
@@ -1625,15 +1625,15 @@ define(['require',
                                 return line.trim();
                             })
                             remotes = new BubblingArray().importFromPlainArray(remotes);
-                            for (var i = history.repos.length - 1; i >= 0; i--) { 
-                                if (remotes.indexOf(history.repos[i]) >= 0) { 
+                            for (var i = history.repos.length - 1; i >= 0; i--) {
+                                if (remotes.indexOf(history.repos[i]) >= 0) {
                                     remotes.put(history.repos[i]);
                                 }
-                            } 
-                            var value = remotes[0] || ''; 
+                            }
+                            var value = remotes[0] || '';
                             remotes = remotes.map(function (remote) {
                                 return {
-                                    label: remote, 
+                                    label: remote,
                                     value: remote
                                 };
                             });
@@ -1688,7 +1688,7 @@ define(['require',
                     }
 
                     var repo = remoteRepoSelect.get('value');
-                    var repspec = null;
+                    var refspec = null;
 
                     pullEvent(GIT_DIR, repo);
                     pullDialog.hide();
@@ -1703,12 +1703,12 @@ define(['require',
             pullDialog.setContentArea(pullView);
 
             var remoteRepoSelect = registry.byId('GitPullRemoteRepoSelect');
-            var remoteBranchSelect = registry.byId('GitPullRemoteBranchSelect');
-            var localBranchSelect = registry.byId('GitPullLocalBranchSelect');
             var noCommitCheckBox = registry.byId('GitPullNoCommitCheckbox');
             var squashCheckBox = registry.byId('GitPullSquashCheckbox');
             var noFastFowardCheckBox = registry.byId('GitPullNoFFCheckbox');
             var pullButton = registry.byId('GitPullBtn');
+            var sourceRefSelect = registry.byId('GitPullSourceRefSelect');
+            var destinationRefSelect = registry.byId('GitPullDestinationRefSelect');
 
             var uptodate = false;
 
@@ -1716,7 +1716,7 @@ define(['require',
                 var noCommitOption = noCommitCheckBox.checked;
                 var squashOption = squashCheckBox.checked;
                 var noFastFoward = noFastFowardCheckBox.checked;
-                var repspec = localBranchSelect.get('value') + ':' + remoteBranchSelect.get('value');
+                var refspec = sourceRefSelect.get('value') + ':' + destinationRefSelect.get('value');
                 var options = [];
                 var jobId = workbench.addJob('git pull : ' + GIT_DIR, 'Processing...');
 
@@ -1734,7 +1734,7 @@ define(['require',
 
                 options.push('--no-edit');
                 options.push(repo);
-                options.push(repspec);
+                options.push(refspec);
 
                 // run 'git pull' command
                 git.exec(GIT_DIR, ['pull'].concat(options), function (err, stdout, stderr) {
@@ -1859,20 +1859,20 @@ define(['require',
                                 return data;
                             });
 
-                            localBranchSelect.set({
+                            sourceRefSelect.set({
                                 store: new Memory({ data: localBranch }),
                                 searchAttr: 'name',
-                                placeHolder: 'Select or enter a local branch',
+                                placeHolder: 'Select branch or enter a source ref',
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
                                 searchDelay: 500
                             });
 
-                            remoteBranchSelect.set({
+                            destinationRefSelect.set({
                                 store: new Memory({ data: remoteBranch }),
                                 searchAttr: 'name',
-                                placeHolder: 'Select or enter a remote branch',
+                                placeHolder: 'Select remote-tracking branch or enter a destionation ref',
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
@@ -1896,8 +1896,8 @@ define(['require',
                 var remote = 'refs/remotes/' + repo + '/' + curBranch;
                 var local = 'refs/heads/' + curBranch;
 
-                localBranchSelect.set('value', local);
-                remoteBranchSelect.set('value', remote);
+                sourceRefSelect.set('value', local);
+                destinationRefSelect.set('value', remote);
             });
 
             dojo.connect(squashCheckBox, 'onChange', function (checked) {
@@ -1926,18 +1926,18 @@ define(['require',
                 }
             });
 
-            dojo.connect(remoteBranchSelect, 'onKeyUp', function (event) {
-                var inputValue = remoteBranchSelect.get('value');
-                if (inputValue.length && localBranchSelect.get('value').length) {
+            dojo.connect(destinationRefSelect, 'onKeyUp', function (event) {
+                var inputValue = destinationRefSelect.get('value');
+                if (inputValue.length && sourceRefSelect.get('value').length) {
                     pullButton.set('disabled', false);
                 } else {
                     pullButton.set('disabled', true);
                 }
             });
 
-            dojo.connect(localBranchSelect, 'onKeyUp', function (event) {
-                var inputValue = localBranchSelect.get('value');
-                if (inputValue.length && remoteBranchSelect.get('value').length) {
+            dojo.connect(sourceRefSelect, 'onKeyUp', function (event) {
+                var inputValue = sourceRefSelect.get('value');
+                if (inputValue.length && destinationRefSelect.get('value').length) {
                     pullButton.set('disabled', false);
                 } else {
                     pullButton.set('disabled', true);
@@ -2248,20 +2248,29 @@ define(['require',
             fetchDialog.setContentArea(fetchView);
 
             var remoteRepoSelect = registry.byId('GitFetchRemoteRepoSelect');
-            var remoteBranchSelect = registry.byId('GitFetchRemoteBranchSelect');
-            var localBranchSelect = registry.byId('GitFetchLocalBranchSelect');
             var fetchComboButton = registry.byId('GitFetchComboBtn');
             var fetchAllChk = registry.byId('GitFetchAllChk');
             var fetchRefspec = registry.byId('GitFetchRefspecChk');
             var pruneChk = registry.byId('GitFetchPruneChk');
             var notTagChk = registry.byId('GitFetchNoTagChk');
+            var sourceRefSelect = registry.byId('GitFetchSourceRefSelect');
+            var destinationRefSelect = registry.byId('GitFetchDestinationRefSelect');
+
             var rebaseFlag = false;
 
             function fetchEvent(path, repo) {
                 var options = [];
-                var repspec = localBranchSelect.get('value') + ':' + remoteBranchSelect.get('value');
+                var refspec;
                 var jobId = workbench.addJob('git fetch : ' + GIT_DIR, 'Processing...');
+                var sourceRef = sourceRefSelect.get('value');
+                var destinationRef = destinationRefSelect.get('value');
 
+                if (destinationRef) {
+                    refspec = sourceRef + ':' + destinationRef;
+                } else {
+                    // This will fetch to FETCH_HEAD
+                    refspec = sourceRef;
+                }
                 if (notTagChk.checked) {
                     options.push('--no-tags');
                 }
@@ -2274,7 +2283,7 @@ define(['require',
                     options.push('--all');
                 } else {
                     options.push(repo);
-                    options.push(repspec);
+                    options.push(refspec);
                 }
 
                 // run 'git fetch' command
@@ -2386,20 +2395,20 @@ define(['require',
                                 return data;
                             });
 
-                            localBranchSelect.set({
+                            sourceRefSelect.set({
                                 store: new Memory({ data: localBranch }),
                                 searchAttr: 'name',
-                                placeHolder: 'Select or enter a local branch',
+                                placeHolder: 'Select branch or enter a source ref',
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
                                 searchDelay: 500
                             });
 
-                            remoteBranchSelect.set({
+                            destinationRefSelect.set({
                                 store: new Memory({ data: remoteBranch }),
                                 searchAttr: 'name',
-                                placeHolder: 'Select or enter a remote branch',
+                                placeHolder: 'Select remote-tracking branch or enter a destionation ref',
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
@@ -2412,7 +2421,7 @@ define(['require',
                 }
             ], function (err) {
                 if (err) {
-                    gitviewlog.error(GIT_DIR, 'fetch ' + repo, err);
+                    gitviewlog.error(GIT_DIR, 'fetch ', err);
                 } else {
                     fetchDialog.show();
                 }
@@ -2423,38 +2432,29 @@ define(['require',
                 var remote = 'refs/remotes/' + repo + '/' + curBranch;
                 var local = 'refs/heads/' + curBranch;
 
-                localBranchSelect.set('value', local);
-                remoteBranchSelect.set('value', remote);
+                sourceRefSelect.set('value', local);
+                destinationRefSelect.set('value', remote);
             });
 
             dojo.connect(fetchAllChk, 'onChange', function (checked) {
                 if (checked) {
                     remoteRepoSelect.set('disabled', true);
-                    localBranchSelect.set('disabled', true);
-                    remoteBranchSelect.set('disabled', true);
+                    sourceRefSelect.set('disabled', true);
+                    destinationRefSelect.set('disabled', true);
                 }
             });
 
             dojo.connect(fetchRefspec, 'onChange', function (checked) {
                 if (checked) {
                     remoteRepoSelect.set('disabled', false);
-                    localBranchSelect.set('disabled', false);
-                    remoteBranchSelect.set('disabled', false);
+                    sourceRefSelect.set('disabled', false);
+                    destinationRefSelect.set('disabled', false);
                 }
             });
 
-            dojo.connect(remoteBranchSelect, 'onKeyUp', function (event) {
-                var inputValue = remoteBranchSelect.get('value');
-                if (inputValue.length && localBranchSelect.get('value').length) {
-                    fetchComboButton.set('disabled', false);
-                } else {
-                    fetchComboButton.set('disabled', true);
-                }
-            });
-
-            dojo.connect(localBranchSelect, 'onKeyUp', function (event) {
-                var inputValue = localBranchSelect.get('value');
-                if (inputValue.length && remoteBranchSelect.get('value').length) {
+            dojo.connect(sourceRefSelect, 'onKeyUp', function (event) {
+                var inputValue = sourceRefSelect.get('value');
+                if (inputValue.length) {
                     fetchComboButton.set('disabled', false);
                 } else {
                     fetchComboButton.set('disabled', true);
@@ -3547,6 +3547,7 @@ define(['require',
             var authorInput = registry.byId('GitAuthorInput');
             var amendCheckbox = registry.byId('GitCommitAmendCheckbox');
             var changeIdCheckbox = registry.byId('GitCommitChangeIdCheckbox');
+            var changeSignedOffCheckbox = registry.byId('GitCommitSignedOffByCheckbox');
             var pushFlag = false;
             var GIT_DIR = gitRootPath;
             var dataStore;
@@ -3770,6 +3771,17 @@ define(['require',
                 }
             }
 
+            function signedOffByEvent(checked) {
+                var msg = '', signedOffByMsg = '';
+                if (checked) {
+                    msg = previousMsg = commitMsgInput.get('value');
+                    signedOffByMsg = '\nSigned-off-by: ' + authorInput.get('value');
+                    commitMsgInput.setValue(msg.trim() + signedOffByMsg);
+                } else {
+                    commitMsgInput.setValue(previousMsg);
+                }
+            }
+
             function commitEvent(path) {
                 var commitMsg = commitMsgInput.displayedValue;
                 var author = authorInput.get('value');
@@ -3929,6 +3941,12 @@ define(['require',
                 var checked = this.checked;
 
                 amendEvent(GIT_DIR, checked);
+            });
+
+            dojo.connect(changeSignedOffCheckbox, 'onClick', function () {
+                var checked = this.checked;
+
+                signedOffByEvent(checked);
             });
         });
     }
@@ -5612,6 +5630,106 @@ define(['require',
         });
     }
 
+    function _runCommand(selectedPath, gitRootPath) {
+        require(['text!./layer/runcommand.html'], function (runCommandView) {
+            var button, commandInput;
+
+            function parse(str, lookForQuotes) {
+                var args = [];
+                var readingPart = false;
+                var part = '';
+                for (var i = 0; i < str.length; i++) {
+                    if (str.charAt(i) === ' ' && !readingPart) {
+                        args.push(part);
+                        part = '';
+                    } else {
+                        if (str.charAt(i) === '\"' && lookForQuotes) {
+                            readingPart = !readingPart;
+                        } else {
+                            part += str.charAt(i);
+                        }
+                    }
+                }
+                if (part !== '') {
+                    args.push(part);
+                }
+                return args;
+            }
+
+            function runEvent() {
+                var argStr = commandInput.get('value').trim();
+                var args = parse(argStr, true);
+                var path = gitRootPath || selectedPath;
+                var jobId = workbench.addJob('git ' + argStr + ': Processing...');
+
+                git.exec(path, args, function (err, stdout, stderr) {
+                    var logTitle = 'command: git ' + argStr;
+                    workbench.removeJob(jobId);
+                    if (err) {
+                        gitviewlog.error(path, logTitle, err);
+                        toastr.error('For more details, refer to the Git view.', 'Git Command Error');
+                    } else {
+                        var data = stdout + stderr;
+                        if (data.match(/(fatal|error): .*/)) {
+                            gitviewlog.error(path, logTitle, data);
+                            toastr.error('For more details, refer to the Git view.', 'Git Command Error');
+                        } else {
+                            toastr.success('', 'Git Command Success');
+                            gitviewlog.success(path, logTitle, data);
+                            refresh(path, true);
+                        }
+                    }
+                });
+            }
+            var dialog = new ButtonedDialog({
+                buttons: [
+                    {
+                        id: 'GitRunCommandBtn',
+                        caption: 'Run',
+                        methodOnClick: 'runGitCommand',
+                        disabledOnShow: true
+                    },
+                    {
+                        caption: 'Close',
+                        methodOnClick: 'hide'
+                    }
+                ],
+                methodOnEnter: 'runGitCommand',
+                runGitCommand: function () {
+                    if (button.disabled) {
+                        return;
+                    }
+                    runEvent();
+                    dialog.hide();
+                },
+
+                title: 'Run Git Command',
+                onHide: function (evt) {
+                    dialog.destroyRecursive();
+                    workbench.focusLastWidget();
+                }
+            });
+            dialog.setContentArea(runCommandView);
+            commandInput = registry.byId('GitRunCommandInput');
+            button = registry.byId('GitRunCommandBtn');
+            dialog.show();
+            commandInput.set('placeHolder', '<Git command arguments> eg. commit -a -m "test"');
+
+            dojo.connect(commandInput, 'onKeyUp', function (event) {
+                var inputValue = commandInput.get('value');
+                if (inputValue === '') {
+                    button.set({
+                        disabled: true
+                    });
+                } else {
+                    button.set({
+                        disabled: false
+                    });
+                }
+            });
+        });
+    }
+
     // end of Git commands
 
     //
@@ -5811,6 +5929,13 @@ define(['require',
             _submodule(gitRootPath);
         }
     }
+    function runCommand() {
+        var selectedPath = wv.getSelectedPath();
+        if (selectedPath) {
+            var gitRootPath = git.findGitRootPath(selectedPath);
+            _runCommand(selectedPath, gitRootPath);
+        }
+    }
     // End - convert context menu function
 
     return {
@@ -5838,5 +5963,6 @@ define(['require',
         blame: blame,
         compare: compare,
         submodule: submodule,
+        runCommand: runCommand
     };
 });

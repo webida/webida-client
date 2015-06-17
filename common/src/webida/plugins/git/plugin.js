@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,6 +51,7 @@ define([
                     'Show File History': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'historyFile' ],
                     'Show Repository History': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'historyRepo' ],
                     'Confi&gure': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'preference' ],
+                    'Run Git Command': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'runCommand' ],
                     '&Push': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'push' ],
                     '&Fetch': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'fetch' ],
                     'P&ull': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'pull' ],
@@ -70,6 +71,7 @@ define([
             if (pathUtil.isDirPath(path)) {
                 commands['Clone from URL'] = [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'clone' ];
                 commands['New Repository'] = [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'createRepo' ];
+                commands['Run Git Command'] = [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'runCommand' ];
             }
 
             return commands;
@@ -102,6 +104,7 @@ define([
                     'Show File History': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'historyFile' ],
                     'Show Repository History': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'historyRepo' ],
                     'Confi&gure': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'preference' ],
+                    'Run Git Command': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'runCommand' ],
                     '&Push': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'push' ],
                     '&Fetch': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'fetch' ],
                     'P&ull': [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'pull' ],
@@ -121,6 +124,7 @@ define([
             if (pathUtil.isDirPath(path)) {
                 commands['Clone from URL'] = [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'clone' ];
                 commands['New Repository'] = [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'createRepo' ];
+                commands['Run Git Command'] = [ 'cmnd', 'webida-lib/plugins/git/git-commands', 'runCommand' ];
             }
 
             return {
