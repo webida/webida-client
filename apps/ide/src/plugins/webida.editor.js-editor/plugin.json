@@ -7,6 +7,7 @@
 
         "webida.common.editors:editor" : {
             "name" : "JavaScript Editor",
+            "editorPart": "JsEditor",
             "fileValueRequired" : true,
             "handledFileExt" : [ "js", "json" ],
             "handledMimeTypes" : [],
