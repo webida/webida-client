@@ -1,19 +1,19 @@
 /* global QUnit */
-require(['codeEditors/webida.editor.text-editor/CodeEditor'], function (CodeEditor) {
+require(['editors/webida.editor.text-editor/TextEditor'], function (TextEditor) {
     'use strict';
-    var codeEditor = new CodeEditor();
-    QUnit.test('codeEditor API Validation', function (assert) {
-        assert.ok(typeof codeEditor.create === 'function', 'create() method exists');
-		assert.ok(typeof codeEditor.show === 'function', 'show() method exists');
-		assert.ok(typeof codeEditor.destroy === 'function', 'destroy() method exists');
-		assert.ok(typeof codeEditor.getValue === 'function', 'getValue() method exists');
-		assert.ok(typeof codeEditor.addChangeListener === 'function', 'addChangeListener() method exists');
-		assert.ok(typeof codeEditor.focus === 'function', 'focus() method exists');
-		assert.ok(typeof codeEditor.moveBack === 'function', 'moveBack() method exists');
-		assert.ok(typeof codeEditor.moveForth === 'function', 'moveForth() method exists');
-		assert.ok(typeof codeEditor.getLastSavedFoldingStatus === 'function', 'getLastSavedFoldingStatus() method exists');
-		assert.ok(typeof codeEditor.markClean === 'function', 'markClean() method exists');
-		assert.ok(typeof codeEditor.isClean === 'function', 'isClean() method exists');
-		assert.ok(typeof codeEditor.setMode === 'function', 'setMode() method exists');
+    var editor = new TextEditor();
+    QUnit.test('editor API Validation', function (assert) {
+        assert.ok(typeof editor.create === 'function', 'create() method exists');
+		assert.ok(typeof editor.show === 'function', 'show() method exists');
+		assert.ok(typeof editor.destroy === 'function', 'destroy() method exists');
+		assert.ok(typeof editor.getValue === 'function', 'getValue() method exists');
+		assert.ok(typeof editor.addChangeListener === 'function', 'addChangeListener() method exists');
+		assert.ok(typeof editor.focus === 'function', 'focus() method exists');
+		assert.ok(typeof editor.moveBack === 'function', 'moveBack() method exists');
+		assert.ok(typeof editor.moveForth === 'function', 'moveForth() method exists');
+		assert.ok(typeof editor.getLastSavedFoldingStatus === 'function', 'getLastSavedFoldingStatus() method exists');
+		assert.ok(typeof editor.markClean === 'function', 'markClean() method exists');
+		assert.ok(typeof editor.isClean === 'function', 'isClean() method exists');
+		assert.ok(typeof editor.setMode === 'function', 'setMode() method exists');
     });
 });
