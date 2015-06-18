@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['./plugin', './codemirror'], function (editor, cm) {
+define(['./EditorContext'], function (EditorContext) {
     'use strict';
 
     return {
@@ -22,7 +22,7 @@ define(['./plugin', './codemirror'], function (editor, cm) {
             fieldCreator.addField('codeeditor:cm-theme', 'select', {
                 title: 'Theme',
                 name: 'Editor theme',
-                items: cm.getAvailableThemes(),
+                items: EditorContext.getAvailableThemes(),
                 'default': 'webida-dark'
             });
             fieldCreator.addField('codeeditor:fontSize', 'slider', {
