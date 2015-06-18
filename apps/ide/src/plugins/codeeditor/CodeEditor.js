@@ -215,8 +215,24 @@ define([
                 file.elem = elem;
                 file.__elemId = elemId;
 
-                editorContext.setSize('100%', '99%');               
+                editorContext.setSize('100%', '99%');
                 
+                /* Invalid direct css manipulation. This causes ODP-423 bug. 
+                 (ODP-423) Ocassional no contents display in newly created CodeEditor
+                   
+                editorContext.addDeferredAction(function (editor) {
+                    console.log("-tmep--------- addDeferredAction wrapper css");
+                    var wrapper = editor.editor.getWrapperElement();
+                    $(wrapper).css({
+                        height: 'auto',
+                        position: 'absolute',
+                        left: '0px',
+                        right: '0px',
+                        top: '0px',
+                        bottom: '0px'
+                    });                   
+                });*/
+
                 editorContext.setMode(file.name.substr(file.name.lastIndexOf('.') + 1));
                 setPreferences(editorContext);
 
