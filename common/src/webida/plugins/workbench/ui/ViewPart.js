@@ -30,7 +30,9 @@ define([
 	Part
 ) {
 	'use strict';
-	function ViewPart(){}
+	function ViewPart(){
+		Part.apply(this, arguments);
+	}
 	gene.inherit(ViewPart, Part);
 	return ViewPart;
 });
