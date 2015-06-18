@@ -215,19 +215,8 @@ define([
                 file.elem = elem;
                 file.__elemId = elemId;
 
-                //editorContext.setSize('100%', '100%');
-                //editorContext.setSize('100%', '');
-                editorContext.addDeferredAction(function (editorContext) {
-                    var wrapper = editorContext.editor.getWrapperElement();
-                    $(wrapper).css({
-                        height: 'auto',
-                        position: 'absolute',
-                        left: '0px',
-                        right: '0px',
-                        top: '0px',
-                        bottom: '0px'
-                    });
-                });
+                editorContext.setSize('100%', '99%');               
+                
                 editorContext.setMode(file.name.substr(file.name.lastIndexOf('.') + 1));
                 setPreferences(editorContext);
 
