@@ -1,12 +1,12 @@
 {
     "name": "codeeditor",
-    "description": "Code editor",
+    "description": "Code Editor",
     "version": "0.1.0",
     "requirement": "webida.common.editors",
     "extensions" : {
 
         "webida.common.editors:editor" : {
-            "name" : "Code editor",
+            "name" : "Code Editor",
             "editorPart" : "CodeEditor",
             "fileValueRequired" : true,
             "handledFileExt" : [ ".*" ],
@@ -50,3 +50,4 @@
         ]
     }
 }
+

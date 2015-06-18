@@ -64,11 +64,12 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         };
            
         File.prototype.isModified = function () {
-            if (this.editorPart) {
-                var val = this.editorPart.getValue();
+        	var editorPart = editors.getPart(this);
+            if (editorPart) {
+                var val = editorPart.getValue();
                 var modifiedInEditor = false;
-                if (this.editorPart.isClean) {
-                    modifiedInEditor = !this.editorPart.isClean();
+                if (editorPart.isClean) {
+                    modifiedInEditor = !editorPart.isClean();
                 }
                 // TODO: remove the first clause
                 return  val !== undefined && val !== this.savedValue && modifiedInEditor;
@@ -118,7 +119,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
             var path = file.path;
 
-            var value = file.editorPart.getValue();
+            var value = editors.getPart(file).getValue();
             if (value === undefined) {		// TODO: make this check unnecessary.
                 throw new Error('tried to save a file "' + file.path +
                                 '" + whose value is not yet set');
@@ -161,8 +162,9 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     editors.onFileError(file);
                 } else {
                     file.savedValue = value;
-                    if (file.editorPart && file.editorPart.markClean) {
-                        file.editorPart.markClean();
+                    var editorPart = editors.getPart(file);
+                    if (editorPart && editorPart.markClean) {
+                        editorPart.markClean();
                     }
 
                     topic.publish('file.saved', file);
@@ -216,7 +218,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             require(['webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'], function (ButtonedDialog) {
                 var answer = {};
                 async.eachSeries(toClose, function (filePath, cb) {
-                    var file = editors.files[filePath];
+                    var file = editors.getFile(filePath);
                     if (file) {
                         if (file.isModified()) {
                             if (answer.yesToModified || answer.noToModified) {
@@ -306,20 +308,20 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         topic.subscribe('fs.cache.node.deleted', function (fsUrl, dir, name, type, movedTo) {
 
             function fileMoved(src, dst) {
-                var file = editors.files[src];
+                var file = editors.getFile(src);
                 if (file) {
                     if (isDir) {
                         file.path = dst;
-                        delete editors.files[src];
-                        editors.files[dst] = file;
+                        editors.removeFile(src);
+                        editors.addFile(dst, file);
                     } else {
                         var newName = pathUtil.getFileName(dst);
                         var oldExt = pathUtil.getFileExt(file.name);
                         var newExt = pathUtil.getFileExt(newName);
                         if (oldExt === newExt) {
                             file.path = dst;
-                            delete editors.files[src];
-                            editors.files[dst] = file;
+                            editors.removeFile(src);
+                            editors.addFile(dst, file);
                             file.name = newName;
                             editors.refreshTabTitle(file);
                         } else {
@@ -356,10 +358,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     if (!isDir) {
                         file.name = pathUtil.getFileName(dst);
                         file.editor.setMode(pathUtil.getFileExt(file.name));
-                        //file.editorPart.setMode(file.editor, pathUtil.getFileExt(file.name));
+                        //editors.getPart(file).setMode(file.editor, pathUtil.getFileExt(file.name));
                             // The above line is not enough for linters and hinters
                     }
-                    delete editors.files[src];
+                    editors.removeFile(src);
                     editors.files[dst] = file;
                     editors.refreshTabTitle(file);
                      */
@@ -420,7 +422,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         });
 
         topic.subscribe('fs.cache.file.invalidated', function (fsURL, path) {
-            var file = editors.files[path];
+        	var file = editors.getFile(path);
             if (file) {
                 if (file === editors.currentFile) {
                     fsCache.refreshFileContents(path);
@@ -432,7 +434,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
         topic.subscribe('fs.cache.file.set', function (fsUrl, target, reason) {
             if (reason === 'refreshed') {
-                var file = editors.files[target];
+                var file = editors.getFile(target);
                 if (file) {
                     if (file === editors.currentFile) {
                         _.defer(askAndReload.bind(null, file));
@@ -462,7 +464,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         topic.subscribe('#REQUEST.closeFile', _.bind(editors.closeFile, editors));
         topic.subscribe('#REQUEST.saveFile', _.bind(editors.saveFile, editors));
         topic.subscribe('#REQUEST.selectFile', function (path) {
-            if (editors.files[path]) {
+            if (editors.getFile(path)) {
                 editors.openFile(path);
             }
         });
@@ -532,6 +534,9 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.setCurrentFile = function (file) {
+    	
+    	logger.info('editors.setCurrentFile('+file+')');
+    	
         if (editors.currentFile !== file) {
             var view;
             if (editors.currentFile) {
@@ -561,8 +566,9 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     topic.publish('editors.clean.current');
                 }
 
-                if (file.editorPart) {
-                    file.editorPart.focus(editors.currentFile);
+				var editorPart = editors.getPart(file);
+                if (editorPart) {
+                    editorPart.focus(editors.currentFile);
                 }
 
                 if (file.toRefresh) {
@@ -584,9 +590,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     editors.ensureCreated = function (file, bShowAndFocus, cb) {
     	console.info('ensureCreated()');
         function showAndFocus(file) {
-            if (file.editorPart) {
-                file.editorPart.show();
-                file.editorPart.focus();
+        	var editorPart = editors.getPart(file);
+            if (editorPart) {
+                editorPart.show();
+                editorPart.focus();
             }
             if (cb) {
                 cb();
@@ -627,7 +634,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
         var file;
         if (options && options.path) {
-            file = editors.files[options.path];
+            file = editors.getFile(options.path);
             if (!file) {
                 toastr.error('Cannot close the file "' + options.path + '"');
                 return;
@@ -667,7 +674,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         var file = editors.currentFile;
         if (option) {
             var path = option.path;
-            file = editors.files[path];
+            file = editors.getFile(path);
         }
 
         if (file && file.isModified()) {
@@ -737,22 +744,26 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     }
     
     editors.openFile = function (path, options, callback) {
+    	logger.info('editors.openFile('+path+', options, callback)');
+    	logger.info('options = ', options);
+        
         options = options || {};
 
+        //if this file's part is showing
         if (editors.currentFile && editors.currentFile.path === path) {
             if (options.pos) {
                 editors.setCursor(editors.currentFile, options.pos);
             }
-
-            editors.currentFile.editorPart.focus(editors.currentFile);
-
+            editors.getPart(editors.currentFile).focus();
             if (callback) {
                 callback(editors.currentFile);
             }
+
+		//new file
         } else {
-            var file = editors.files[path];
             var fileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
-            
+
+			//find module for this file
             var fileNameHandleExtension = checkFileNameHandleExtension(path);
             //for handledFileNames
             if (!options.editorName && fileNameHandleExtension) {
@@ -768,18 +779,20 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                 return;
             }
 
-            var openFile = !file;
+			var file = editors.getFile(path);
+            var fileNotExist = !file;
 
-            if (!file) {
+            if (fileNotExist) {
                 file = new File(path);
-                file.editorName = options.extension.name;
-                editors.files[path] = file;
+                editors.addFile(path, file);
             }
 
+			file.editorName = options.extension.name;
+			console.info('file.editorName = ', file.editorName);
             file._openFileOption = options;
             file._openFileCallback = callback;
 
-            if (openFile && options.extension.fileValueRequired) {
+            if (fileNotExist && options.extension.fileValueRequired) {
                 fm.openFile(file);
             } else {
                 editors.onFileOpened(file);
@@ -817,224 +830,224 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         }
     };
 
-    editors.onFileOpened = function (file) {
-    	
-    	console.log('');
-    	logger.info('editors.onFileOpened('+file+')');
-    	logger.info('file._openFileOption = ', file._openFileOption);
-    	
-        if (!file._openFileOption) {return;}
-        var option = file._openFileOption;
-        var callback = file._openFileCallback;
-        delete file._openFileOption;
-        delete file._openFileCallback;
+    function _findViewIndexUsingSibling(viewContainer, file, siblings) {
+        var previousSiblings = [];
+        var nextSiblings = [];
+        var i, j, sibling, siblingFile, view;
+        var index = -1;
 
-        var show = option.show !== false;
+        if (!siblings) {
+            return index;
+        }
+
+        var found = false;
+        for (i = 0; i < siblings.length; i++) {
+            sibling = siblings[i];
+            if (sibling === file.path) {
+                found = true;
+                continue;
+            }
+
+            siblingFile = editors.files[sibling];
+            if (found) {
+                nextSiblings.push(siblingFile && siblingFile.viewId);
+            } else {
+                previousSiblings.push(sibling && siblingFile.viewId);
+            }
+        }
+
+        var views = viewContainer.getChildren();
+
+        //find from nextSilings
+        found = false;
+        for (i = 0; i < nextSiblings.length; i++) {
+            sibling = nextSiblings[i];
+            if (found) {
+                break;
+            }
+            for (j = 0 ; j < views.length; j++) {
+                view = views[j];
+                if (sibling === view.getId()) {
+                    index = j;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            //find from previousSiblings
+            for (i = previousSiblings.length - 1; i >= 0; i--) {
+                sibling = previousSiblings[i];
+                if (found) {
+                    break;
+                }
+                for (j = 0 ; j < views.length; j++) {
+                    view = views[j];
+                    if (sibling === view.getId()) {
+                        index = j + 1;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return index;
+    }
+
+	function getPartPath (extension) {
+        logger.info('extension.module = '+extension.module);
+		var partPathTokens = extension.module.split('/');
+		partPathTokens[partPathTokens.length-1] = extension.editorPart;
+		var editorPartPath = partPathTokens.join('/');
+		logger.info('editorPartPath = ',editorPartPath);
+		return editorPartPath;
+	}
+
+	function getViewContainer (view, file, option) {
+		//cellCount=2, cellIndex=-1
+		var viewContainer;
         var cellCount = editors.splitViewContainer.get('splitCount');
         var cellIndex;
-
         if ((option.cellIndex >= 0) && (option.cellIndex < cellCount)) {
             cellIndex = option.cellIndex;
         } else {
             cellIndex = -1;
         }
+        var opt = {};
+        opt.fields = {title: view.getTitle(), path: file.path};
+        editors.editorTabFocusController.registerView(view, opt);
+        if (cellIndex === -1) {
+            viewContainer = editors.splitViewContainer.getFocusedViewContainer();
+        } else {
+            viewContainer = editors.splitViewContainer.getViewContainer(cellIndex);
+        }
+        return viewContainer;
+	}
 
-        var extension = option.extension;
-        logger.info('extension.module = '+extension.module);
+    editors.onFileOpened = function (file) {
+    	
+    	console.log('');
+    	logger.info('editors.onFileOpened('+file+')');
+    	logger.info('file._openFileOption = ', file._openFileOption);
 
-		var partPathTokens = extension.module.split('/');
-		partPathTokens[partPathTokens.length-1] = extension.editorPart;
-		var editorPartPath = partPathTokens.join('/');
-		logger.info('editorPartPath = ',editorPartPath);
+		if (!file._openFileOption) {return;}
+        var option = file._openFileOption;
+        var callback = file._openFileCallback;
+        delete file._openFileOption;
+        delete file._openFileCallback;
 
-        // Create editor and update editor content
+		//Check file is already showing
+		if (editors.currentFile === file) {
+			logger.info('editors.currentFile === file');
+			return;
+		}
+
+		var show = option.show !== false;
         if (show) {
-            if (editors.currentFile && editors.currentFile.editorPart) {
-                editors.currentFile.editorPart.hide(editors.currentFile);
+            if (editors.currentFile && editors.getPart(editors.currentFile)) {
+                editors.getPart(editors.currentFile).hide();
             }
         }
 
-        require([editorPartPath], function (EditorPart) {
+		//View and ViewContainer
+        var view = vm.getView(file.viewId);
+        if (view === null) {
+            file.viewId = _.uniqueId('view_'); //TODO file.viewId
+            view = new View(file.viewId, file.name);
+        }
+        var viewContainer = getViewContainer(view, file, option);
 
-        	console.info('file = ', file);
-			var editorPart = new EditorPart(file);
-			
-			//file to part map
-			editors.addPart(file, editorPart);
-
-            function _findViewIndexUsingSibling(viewContainer, file, siblings) {
-                var previousSiblings = [];
-                var nextSiblings = [];
-                var i, j, sibling, siblingFile, view;
-                var index = -1;
-
-                if (!siblings) {
-                    return index;
-                }
-
-                var found = false;
-                for (i = 0; i < siblings.length; i++) {
-                    sibling = siblings[i];
-                    if (sibling === file.path) {
-                        found = true;
-                        continue;
-                    }
-
-                    siblingFile = editors.files[sibling];
-                    if (found) {
-                        nextSiblings.push(siblingFile && siblingFile.viewId);
-                    } else {
-                        previousSiblings.push(sibling && siblingFile.viewId);
-                    }
-                }
-
-                var views = viewContainer.getChildren();
-
-                //find from nextSilings
-                found = false;
-                for (i = 0; i < nextSiblings.length; i++) {
-                    sibling = nextSiblings[i];
-                    if (found) {
-                        break;
-                    }
-                    for (j = 0 ; j < views.length; j++) {
-                        view = views[j];
-                        if (sibling === view.getId()) {
-                            index = j;
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!found) {
-                    //find from previousSiblings
-                    for (i = previousSiblings.length - 1; i >= 0; i--) {
-                        sibling = previousSiblings[i];
-                        if (found) {
-                            break;
-                        }
-                        for (j = 0 ; j < views.length; j++) {
-                            view = views[j];
-                            if (sibling === view.getId()) {
-                                index = j + 1;
-                                found = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                return index;
+		//Check exsisting part
+		var part = editors.getPart(file);
+		console.info('part = ', part);
+		if (part) {
+			logger.info('part already exists');
+            if (option.pos) {
+                editors.setCursor(file, option.pos);
             }
-
-            var view = null;
-            var viewContainer = null;
-            var needToAdd = false;
-
-            view = vm.getView(file.viewId);
-
-            if (view === null) {
-                file.viewId = _.uniqueId('view_');
-                view = new View(file.viewId, file.name);
-                var opt = {};
-                opt.fields = {title: view.getTitle(), path: file.path};
-                editors.editorTabFocusController.registerView(view, opt);
-                if (cellIndex === -1) {
-                    viewContainer = editors.splitViewContainer.getFocusedViewContainer();
-                } else {
-                    viewContainer = editors.splitViewContainer.getViewContainer(cellIndex);
-                }
-                needToAdd = true;
-            } else {
-                if (view.getParent()) {
-                    view.getParent().select(view);
-                }
+            if (typeof callback === 'function') {
+                callback(file);
             }
-
-            /*
-            if (show || view) {
+            editors.refreshTabTitle(file);
+            if (show) {
                 editors.setCurrentFile(file);
+                viewContainer.select(view, true);
             }
-             */
+			return;
+		}
 
-            if (file.editorPart !== editorPart) {
-                file.editorPartName = extension.module;
-                file.editorPart = editorPart;
+		// Create EditorPart and update content
+		var partPath = getPartPath(option.extension);
+		require([partPath], function (EditorPart) {
 
-                var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
+	        var editorPart = new EditorPart(file);
+			editors.addPart(file, editorPart); //file to part map
 
-                if (viewContainer && needToAdd) {
-                    view.set('tooltip', file.path);
-                    view.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
-                    view.set('closable', true);
-                    if (index >= 0) {
-                        viewContainer.addAt(view, index);
-                    } else {
-                        viewContainer.addLast(view);
-                    }
+			var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
 
-                    file.pendingCreator = function (c) {
-						
-						console.info('file.pendingCreator('+c+')');
-						
-                        function createEditor(file, editorPart, view, callback) {
-                        	
-                        	
-                        	
-                            editorPart.create(view.getContent(), function (file, instance) {
-                                file.editor = instance;
-                                if (editorPart.addChangeListener) {
-                                    editorPart.addChangeListener(function (file) {
-                                        _.defer(function () {
-                                            editors.refreshTabTitle(file);
-                                            topic.publish('file.content.changed', file.path,
-                                                          file.editorPart.getValue());
-                                        });
+			console.info('viewContainer = ', viewContainer);
+
+            if (viewContainer) {
+                view.set('tooltip', file.path);
+                view.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
+                view.set('closable', true);
+                if (index >= 0) {
+                    viewContainer.addAt(view, index);
+                } else {
+                    viewContainer.addLast(view);
+                }
+
+                file.pendingCreator = function (c) {
+					console.info('file.pendingCreator('+c+')');
+                    function createEditor(file, editorPart, view, callback) {
+                        editorPart.create(view.getContent(), function (file, editorContext) {
+                            file.editor = editorContext;	//TODO : file.editor
+                            if (editorPart.addChangeListener) {
+                                editorPart.addChangeListener(function (file) {
+                                    _.defer(function () {
+                                        editors.refreshTabTitle(file);
+                                        topic.publish('file.content.changed', file.path,
+                                                      editors.getPart(file).getValue());
                                     });
-                                }
+                                });
+                            }
 
-                                if (option.pos) {
-                                    editors.setCursor(file, option.pos);
-                                }
+                            if (option.pos) {
+                                editors.setCursor(file, option.pos);
+                            }
 
-                                if (callback) {
-                                    callback(file);
-                                }
-                            });
-                        }
-
-                        createEditor(file, editorPart, view, function (file) {
                             if (callback) {
                                 callback(file);
                             }
-                            if (c) {
-                                c(file);
-                            }
                         });
-                    };
-
-                    if (show) {
-                        view.getParent().select(view);
-                        editors.ensureCreated(file, true);
                     }
 
-                    editors.onloadPendingFilesCount--;
-                    if (editors.onloadPendingFilesCount === 0) {
-                        onloadFinalize();
-                    }
-                } else {
-                    console.log('editor open failed : ' + file.path);
-                    view.destroy();
+                    createEditor(file, editorPart, view, function (file) {
+                        if (callback) {
+                            callback(file);
+                        }
+                        if (c) {
+                            c(file);
+                        }
+                    });
+                };
+
+                if (show) {
+		            if (view.getParent()) {
+		                view.getParent().select(view);
+		            }
+                    editors.ensureCreated(file, true);
+                }
+
+                editors.onloadPendingFilesCount--;
+                if (editors.onloadPendingFilesCount === 0) {
+                    onloadFinalize();
                 }
             } else {
-                if (option.pos) {
-                    editors.setCursor(file, option.pos);
-                }
-
-                if (callback) {
-                    callback(file);
-                }
+                console.log('editor open failed : ' + file.path);
+                view.destroy();
             }
 
             editors.refreshTabTitle(file);
@@ -1042,8 +1055,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                 editors.setCurrentFile(file);
                 editorPart.show();
             }
-        });
-    };
+
+		});
+
+    }; //end of editors.onFileOpened
 
     editors.onFileSaved = function (file) {
         editors.refreshTabTitle(file);
@@ -1055,8 +1070,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             onloadFinalize();
         }
         if (file._openFileOption) {
-            if (editors.files[file.path]) {
-                delete editors.files[file.path];
+            if (editors.getFile(file.path)) {
+                editors.removeFile(file.path);
             }
         }
     };
@@ -1108,16 +1123,30 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
 	editors.addPart = function(file, part) {
 		logger.info('editors.addPart('+file+', '+part+')');
-		editors.parts.set(file, part);
+		this.parts.set(file, part);
 	}
 
 	editors.getPart = function(file) {
 		logger.info('getPart('+file+')');
-		if (editors.parts.get(file) instanceof EditorPart) {
-			return editors.parts.get(file);
+		if (this.parts.get(file) instanceof EditorPart) {
+			return this.parts.get(file);
 		} else {
 			return null;
 		}
+	}
+
+	editors.addFile = function(path, file) {
+		this.files[path] = file;
+	}
+
+	editors.getFile = function(path) {
+		return this.files[path];
+	}
+
+	editors.removeFile = function(path) {
+		var file = editors.files[path];
+		delete editors.files[path];
+		return file;
 	}
 
     subscribeToTopics();

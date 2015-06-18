@@ -15,15 +15,14 @@
  */
 
 /**
- * This plug-in just returns new CodeEditor instance.
+ * This plug-in manages life-cycle of the CodeEditor
  * 
  * @see CodeEditor
  * @since: 2015.06.11
  * @author: hw.shim
  */
-define(['./CodeEditor'], function (CodeEditor) {
+define([], function () {
     'use strict';
 
-    var codeEditor = new CodeEditor();
-    return codeEditor;
+    //TODO : Plugin should be used as a LifeCycle Management
 });

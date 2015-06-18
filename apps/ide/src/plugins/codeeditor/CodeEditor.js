@@ -180,8 +180,12 @@ define([
         forth: []
     };
 
+	var partNo = 0;
+
 	function CodeEditor(file){
+		logger.info('new CodeEditor('+file+')');
 		this.file = file;
+		this.partNo = ++partNo;
 	}
 
 	gene.inherit(CodeEditor, TextEditor, {
@@ -271,6 +275,7 @@ define([
 
         show: function () {
 			logger.info('show()');
+			logger.trace();
 			if (this.editorContext) {
 				this.editorContext.refresh();
 			}else{
@@ -280,6 +285,7 @@ define([
 		},
 
         hide: function () {
+        	logger.info('hide()');
         },
 
         destroy: function () {
@@ -335,7 +341,11 @@ define([
         },
         
         toString : function(){
-        	return '<CodeEditor>';
+        	var res = '<CodeEditor>#'+this.partNo;
+        	if(this.file){
+        		res += '(' + this.file.name + ')';
+        	}
+        	return res;
         },
 
         setMode: setMode
@@ -422,3 +432,4 @@ define([
 
 	return CodeEditor;
 });
+
