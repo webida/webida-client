@@ -952,13 +952,18 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             }
         }
 
-		//View and ViewContainer
+		//View and ViewContainer       
         var view = vm.getView(file.viewId);
+        var viewContainer = null;
         if (view === null) {
             file.viewId = _.uniqueId('view_'); //TODO file.viewId
             view = new View(file.viewId, file.name);
+            viewContainer = getViewContainer(view, file, option);
+        } else {
+            if (view.getParent()) {
+                view.getParent().select(view);
+            }
         }
-        var viewContainer = getViewContainer(view, file, option);
 
 		//Check exsisting part
 		var part = editors.getPart(file);
