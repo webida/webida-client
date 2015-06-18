@@ -415,7 +415,8 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
 
         this.settings = settings;
 
-		self.start();
+     	self.start();
+     	self.editor.setSize('100%', '100%');
 
         loadCSSList([require.toUrl('./css/webida.css'),
                      require.toUrl('webida-lib/custom-lib/codemirror/lib/codemirror.css'),
