@@ -29,12 +29,10 @@
 * messaging api for Javascript module.
 *
 * This module provides JavaScript API's for message service.
+* It depends on socket.io in the path other-lib/socket.io/socket.io
 * @module msg
 */
-
-/* global connHostUrl: true */
-
-define([connHostUrl + '/socket.io/socket.io.js'], function (sio) {
+define(['./webida-0.3', 'other-lib/socket.io/socket.io'], function (webida, sio) {
     'use strict';
 
     /**
