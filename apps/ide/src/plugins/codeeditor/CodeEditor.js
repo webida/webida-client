@@ -217,8 +217,8 @@ define([
 
                 //editorContext.setSize('100%', '100%');
                 //editorContext.setSize('100%', '');
-                editorContext.addDeferredAction(function (editor) {
-                    var wrapper = editor.editor.getWrapperElement();
+                editorContext.addDeferredAction(function (editorContext) {
+                    var wrapper = editorContext.editor.getWrapperElement();
                     $(wrapper).css({
                         height: 'auto',
                         position: 'absolute',
@@ -233,8 +233,8 @@ define([
 
                 onFileOpened(file, content, editorContext);
                 
-                //editorContext.addDeferredAction(function (editor) {
-                 //   editor.editor.setOption('overviewRuler', false);
+                //editorContext.addDeferredAction(function (editorContext) {
+                 //   editorContext.editor.setOption('overviewRuler', false);
                 //});
 
                 if (store.getValue('codeeditor:editorconfig') === true) {
@@ -432,4 +432,3 @@ define([
 
 	return CodeEditor;
 });
-
