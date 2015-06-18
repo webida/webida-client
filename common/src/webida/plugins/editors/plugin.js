@@ -957,6 +957,11 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         if (view === null) {
             file.viewId = _.uniqueId('view_'); //TODO file.viewId
             view = new View(file.viewId, file.name);
+        } else {
+        	//[BUGFIX] Opening non-focused file in split editor bug
+			if (view.getParent()) {
+				view.getParent().select(view);
+			}
         }
         var viewContainer = getViewContainer(view, file, option);
 

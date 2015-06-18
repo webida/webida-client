@@ -34,6 +34,8 @@ define([
 	'use strict';
 	function EditorPart(){
 
+		Part.apply(this, arguments);
+
 		//default editorContext
 		this.editorContext = {
 			isClean : function(){
@@ -65,6 +67,9 @@ define([
 		},
 		addChangeListener : function(){
 			throw new Error('addChangeListener() should be implemented by subclass');
+		},
+		setEditorContext : function(editorContext){
+			this.editorContext = editorContext;
 		},
 		getEditorContext : function(){
 			return this.editorContext;

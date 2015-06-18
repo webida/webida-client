@@ -17,13 +17,14 @@
 /**
  * Constructor function
  * TextEditor implementation of EditorPart
- * This should be an ancestor of all code based editors. 
+ * This should be an ancestor of all text based editors. 
  *
  * @constructor
  * @see EditorPart
  * @since: 2015.06.11
- * @todo: oop, editorContext, move some codes to TextEditor
  * @author: hw.shim
+ * 
+ * file.__elemId removed
  */
 
 define([
@@ -55,7 +56,6 @@ define([
 	'use strict';
 
 	var logger = new Logger();
-    var elemIdCounter = 1;
     var lastSavedFoldingStatus = {};
 
     // file events
@@ -178,102 +178,112 @@ define([
         forth: []
     };
 
-	var partNo = 0;
-
 	function TextEditor(file){
 		logger.info('new TextEditor('+file+')');
+		EditorPart.apply(this, arguments);
 		this.file = file;
-		this.partNo = ++partNo;
+		this.created = false;
 	}
 
 	gene.inherit(TextEditor, EditorPart, {
 
         create: function (elem, started) {
-
 			logger.info('create('+elem.tagName+', started)');
+			if (this.created === true) {
+				return;
+			}
 
         	var file = this.file;
         	var content = file.savedValue;
-
-            if (file.__elemId === undefined) {
-                var elemId = (elemIdCounter++);
-                var editorContext = new EditorContext(elem, file, function (file, editorContext) {
-                    editorContext.addChangeListener(function (editorContext, change) {
-                        if (editorContext._changeCallback) {
-                            editorContext._changeCallback(file, change);
-                        }
-                    });
-                    if (started) {
-                        _.defer(function () {
-                            started(file, editorContext);
-                        });
+            this.editorContext = new EditorContext(elem, file, function (file, editorContext) {
+                editorContext.addChangeListener(function (editorContext, change) {
+                    if (editorContext._changeCallback) {
+                        editorContext._changeCallback(file, change);
                     }
                 });
-                this.editorContext = editorContext;
-                file.elem = elem;
-                file.__elemId = elemId;
-
-                editorContext.setSize('100%', '99%');
-                
-                /* Invalid direct css manipulation. This causes ODP-423 bug. 
-                 (ODP-423) Ocassional no contents display in newly created TextEditor
-                   
-                editorContext.addDeferredAction(function (editor) {
-                    console.log("-tmep--------- addDeferredAction wrapper css");
-                    var wrapper = editor.editor.getWrapperElement();
-                    $(wrapper).css({
-                        height: 'auto',
-                        position: 'absolute',
-                        left: '0px',
-                        right: '0px',
-                        top: '0px',
-                        bottom: '0px'
-                    });                   
-                });*/
-
-                editorContext.setMode(file.name.substr(file.name.lastIndexOf('.') + 1));
-                setPreferences(editorContext);
-
-                onFileOpened(file, content, editorContext);
-                
-                //editorContext.addDeferredAction(function (editorContext) {
-                 //   editorContext.editor.setOption('overviewRuler', false);
-                //});
-
-                if (store.getValue('webida.editor.text-editor:editorconfig') === true) {
-                    configloader.editorconfig(editorContext, file);
-                }
-                if (store.getValue('webida.editor.text-editor:jshintrc') !== false) {
-                    configloader.jshintrc(editorContext, file);
-                }
-
-                editorContext.addEventListener('save', function () {
-                    require(['dojo/topic'], function (topic) {
-                        topic.publish('#REQUEST.saveFile');
+                if (started) {
+                    _.defer(function () {
+                        started(file, editorContext);
                     });
-                });
+                }
+            });
+            var editorContext = this.editorContext;
+            file.elem = elem;
 
-                var setStatusBarText = function () {
-                    require(['webida-lib/plugins/workbench/plugin'], function (workbench) {
-                        workbench.__editor = editorContext;
-                        var cursor = editorContext.getCursor();
-                        workbench.setContext([file.path], {cursor: (cursor.row + 1) + ':' + (cursor.col + 1)});
-                    });
-                };
-                editorContext.addCursorListener(setStatusBarText);
-                editorContext.addFocusListener(setStatusBarText);
-                editorContext.addCursorListener(function (editorContext) {
-                    TextEditor.pushCursorLocation(editorContext.file, editorContext.getCursor());
-                });
-                editorContext.addExtraKeys({
-                    'Ctrl-Alt-Left': function () {
-                        TextEditor.moveBack();
-                    },
-                    'Ctrl-Alt-Right': function () {
-                        TextEditor.moveForth();
-                    }
-                });
+            editorContext.setSize('100%', '99%');
+            
+            /* Invalid direct css manipulation. This causes ODP-423 bug. 
+             (ODP-423) Ocassional no contents display in newly created TextEditor
+               
+            editorContext.addDeferredAction(function (editor) {
+                console.log("-tmep--------- addDeferredAction wrapper css");
+                var wrapper = editor.editor.getWrapperElement();
+                $(wrapper).css({
+                    height: 'auto',
+                    position: 'absolute',
+                    left: '0px',
+                    right: '0px',
+                    top: '0px',
+                    bottom: '0px'
+                });                   
+            });*/
+
+            editorContext.setMode(file.name.substr(file.name.lastIndexOf('.') + 1));
+            setPreferences(editorContext);
+
+            onFileOpened(file, content, editorContext);
+            
+            //editorContext.addDeferredAction(function (editorContext) {
+             //   editorContext.editor.setOption('overviewRuler', false);
+            //});
+
+            if (store.getValue('webida.editor.text-editor:editorconfig') === true) {
+                configloader.editorconfig(editorContext, file);
             }
+            if (store.getValue('webida.editor.text-editor:jshintrc') !== false) {
+                configloader.jshintrc(editorContext, file);
+            }
+
+            editorContext.addEventListener('save', function () {
+                require(['dojo/topic'], function (topic) {
+                    topic.publish('#REQUEST.saveFile');
+                });
+            });
+
+            var setStatusBarText = function () {
+                require(['webida-lib/plugins/workbench/plugin'], function (workbench) {
+                    workbench.__editor = editorContext;
+                    var cursor = editorContext.getCursor();
+                    workbench.setContext([file.path], {cursor: (cursor.row + 1) + ':' + (cursor.col + 1)});
+                });
+            };
+            editorContext.addCursorListener(setStatusBarText);
+            editorContext.addFocusListener(setStatusBarText);
+            editorContext.addCursorListener(function (editorContext) {
+                TextEditor.pushCursorLocation(editorContext.file, editorContext.getCursor());
+            });
+            editorContext.addExtraKeys({
+                'Ctrl-Alt-Left': function () {
+                    TextEditor.moveBack();
+                },
+                'Ctrl-Alt-Right': function () {
+                    TextEditor.moveForth();
+                }
+            });
+
+            this.created = true;
+        },
+
+        destroy: function () {
+            if (this.editorContext) {
+                unsetPreferences(this.editorContext);
+                this.editorContext.destroy();
+                this.created = false;
+                delete this.editorContext;
+            }else{
+				logger.info('this.editorContext not found');
+				logger.trace();
+			}
         },
 
         show: function () {
@@ -289,18 +299,6 @@ define([
 
         hide: function () {
         	logger.info('hide()');
-        },
-
-        destroy: function () {
-            if (this.editorContext) {
-                unsetPreferences(this.editorContext);
-                this.editorContext.destroy();
-                delete this.editorContext;
-            }else{
-				logger.info('this.editorContext not found');
-				logger.trace();
-			}
-            delete this.file.__elemId;
         },
 
         getValue: function () {
@@ -344,7 +342,8 @@ define([
         },
         
         toString : function(){
-        	var res = '<TextEditor>#'+this.partNo;
+        	//TODO : inherit from Part
+        	var res = '<TextEditor>#'+this.partId;
         	if(this.file){
         		res += '(' + this.file.name + ')';
         	}

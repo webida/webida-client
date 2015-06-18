@@ -25,7 +25,10 @@
 
 define(['webida-lib/util/gene'], function(gene) {
 	'use strict';
-	function Part(){}
+	var partId = 0;
+	function Part(){
+		this.partId = ++partId;
+	}
 	gene.inherit(Part, Object, {
 		create : function(elem, started){
 			throw new Error('create() should be implemented by subclass');
