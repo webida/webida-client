@@ -99,8 +99,8 @@ define(['./plugin',
             'emmet.reflect_css_value': 'Reflect css value',
             'emmet.insert_formatted_line_break_only': 'Insert formatted line break only'
         };
-        if (editors && editors.currentFile && editors.currentFile.editor && editors.currentFile.editor.editor) {
-            var editor = editors.currentFile.editor.editor;
+        if (editors && editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor) {
+            var editor = editors.currentFile.editorContext.editor;
             var currentKeyMap = editor.getOption('keyMap');
             var merge = function (current, processed, keymap) {
                 var curKeyMap = codeMirror.keyMap[current];

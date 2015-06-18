@@ -109,6 +109,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         };
 
         FileManager.saveFile = function (file, option) {
+        	logger.info('FileManager.saveFile('+file+', option)');
             function getSpaces(n) {
                 if (spaces[n] === undefined) {
                     return (spaces[n] = (n ? ' ' + getSpaces(n - 1) : ''));
@@ -125,34 +126,34 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                                 '" + whose value is not yet set');
             }
 
-            console.assert(file.editor);
-            var codeEditor = file.editor;
+            console.assert(file.editorContext);
+            var editorContext = file.editorContext;
 
-            if (codeEditor.trimTrailingWhitespaces ||
-                codeEditor.insertFinalNewLine ||
-                codeEditor.retabIndentations) {
+            if (editorContext.trimTrailingWhitespaces ||
+                editorContext.insertFinalNewLine ||
+                editorContext.retabIndentations) {
                 var v = value;
-                if (codeEditor.trimTrailingWhitespaces && v.match(/( |\t)+$/m)) {
+                if (editorContext.trimTrailingWhitespaces && v.match(/( |\t)+$/m)) {
                     v = v.replace(/( |\t)+$/mg, '');
                 }
-                if (codeEditor.insertFinalNewLine && v.match(/.$/)) {
+                if (editorContext.insertFinalNewLine && v.match(/.$/)) {
                     v = v + '\n';	// TODO: consider line ending mode
                 }
-                if (codeEditor.retabIndentations) {
-                    //var spaces = getSpaces(codeEditor.options.indentUnit);
-                    var unit = codeEditor.options.indentUnit, re = /^(( )*)\t/m, m;
+                if (editorContext.retabIndentations) {
+                    //var spaces = getSpaces(editorContext.options.indentUnit);
+                    var unit = editorContext.options.indentUnit, re = /^(( )*)\t/m, m;
                     while ((m = v.match(re))) {
                         v = v.replace(re, '$1' +  getSpaces(unit - (m[0].length - 1) % unit));
                     }
                 }
 
                 if (v !== value) {
-                    var cursor = codeEditor.getCursor();
-                    var scrollInfo = codeEditor.editor.getScrollInfo();
+                    var cursor = editorContext.getCursor();
+                    var scrollInfo = editorContext.editor.getScrollInfo();
                     value = v;
-                    codeEditor.setValue(value);
-                    codeEditor.setCursor(cursor);
-                    codeEditor.editor.scrollTo(scrollInfo.left, scrollInfo.top);
+                    editorContext.setValue(value);
+                    editorContext.setCursor(cursor);
+                    editorContext.editor.scrollTo(scrollInfo.left, scrollInfo.top);
                 }
             }
 
@@ -357,8 +358,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     file.path = dst;
                     if (!isDir) {
                         file.name = pathUtil.getFileName(dst);
-                        file.editor.setMode(pathUtil.getFileExt(file.name));
-                        //editors.getPart(file).setMode(file.editor, pathUtil.getFileExt(file.name));
+                        file.editorContext.setMode(pathUtil.getFileExt(file.name));
+                        //editors.getPart(file).setMode(file.editorContext, pathUtil.getFileExt(file.name));
                             // The above line is not enough for linters and hinters
                     }
                     editors.removeFile(src);
@@ -815,17 +816,17 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.setCursor = function (file, pos) {
-        if (file.editor) {
-            if (file.editor.setCursor) {
-                file.editor.setCursor(pos);
+        if (file.editorContext) {
+            if (file.editorContext.setCursor) {
+                file.editorContext.setCursor(pos);
             }
         }
     };
 
     editors.getCursor = function (file) {
-        if (file.editor) {
-            if (file.editor.getCursor) {
-                return file.editor.getCursor();
+        if (file.editorContext) {
+            if (file.editorContext.getCursor) {
+                return file.editorContext.getCursor();
             }
         }
     };
@@ -1003,7 +1004,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 					console.info('file.pendingCreator('+c+')');
                     function createEditor(file, editorPart, view, callback) {
                         editorPart.create(view.getContent(), function (file, editorContext) {
-                            file.editor = editorContext;	//TODO : file.editor
+                            file.editorContext = editorContext;	//TODO : file.editorContext refactor
                             if (editorPart.addChangeListener) {
                                 editorPart.addChangeListener(function (file) {
                                     _.defer(function () {
@@ -1115,9 +1116,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.doWithCurrentEditor = function (cb) {
-        if (editors.currentFile && editors.currentFile.editor && editors.currentFile.editor.editor) {
-            var instance = editors.currentFile.editor;
-            return cb(instance, instance.editor);
+    	//TODO : refactor : too long (editorContext should be taken simply)
+        if (editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor) {
+            var editorContext = editors.currentFile.editorContext;
+            return cb(editorContext, editorContext.editor);
         }
     };
 

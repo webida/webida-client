@@ -292,9 +292,9 @@ define(['./plugin',
                         var view = viewList[j];
                         var file = editors.getFileByViewId(view.getId());
                         var cursor = editors.getCursor(file) || cursorDefault;
-                        var foldings = file.editor ? file.editor.getFoldings() : [];
+                        var foldings = file.editorContext ? file.editorContext.getFoldings() : [];
                                 // temporary solution
-                                // TODO: see why file.editor sometimes is null.
+                                // TODO: see why file.editorContext sometimes is null.
                         tabs.push([cursor.col, cursor.row, file.path, foldings, file.editorName]);
                         console.log('--* path : ' + file.path);
                     }
@@ -347,12 +347,12 @@ define(['./plugin',
                         //console.log('hina: file opend. pos.row = ' + pos.row);
 
                         _.defer(function () {
-                            if (file.editor && file.editor.setCursor) {
-                                file.editor.setCursor(pos);
+                            if (file.editorContext && file.editorContext.setCursor) {
+                                file.editorContext.setCursor(pos);
                             }
-                            if (file.editor && foldings) {
+                            if (file.editorContext && foldings) {
                                 _.each(foldings, function (fold) {
-                                    file.editor.foldCode(fold);
+                                    file.editorContext.foldCode(fold);
                                 });
                             }
                         });
