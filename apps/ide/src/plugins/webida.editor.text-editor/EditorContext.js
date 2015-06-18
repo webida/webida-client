@@ -1549,15 +1549,11 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
     };
 
     EditorContext.prototype.focus = function () {
-    	if(this.editor){
-    		this.editor.focus();
-    	}
+        this.editor.focus();
     };
 
     EditorContext.prototype.refresh = function () {
-    	if(this.editor){
-    		this.editor.refresh();
-    	}
+        this.editor.refresh();
     };
 
     return EditorContext;
