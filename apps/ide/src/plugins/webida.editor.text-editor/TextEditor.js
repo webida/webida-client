@@ -16,11 +16,11 @@
 
 /**
  * Constructor function
- * CodeEditor implementation of Editor
+ * TextEditor implementation of EditorPart
  * This should be an ancestor of all code based editors. 
  *
  * @constructor
- * @see TextEditor
+ * @see EditorPart
  * @since: 2015.06.11
  * @todo: oop, editorContext, move some codes to TextEditor
  * @author: hw.shim
@@ -30,7 +30,6 @@ define([
 	'webida-lib/util/gene',
 	'other-lib/underscore/lodash.min',
 	'webida-lib/plugins/workbench/ui/EditorPart',
-	'webida-lib/plugins/webida.editor.text-editor/TextEditor',
 	'webida-lib/plugins/workbench/preference-system/store',	// TODO: issue #12055
 	'webida-lib/plugins/editors/plugin',
 	'./EditorContext',
@@ -44,7 +43,6 @@ define([
 	gene,
 	_, 
 	EditorPart,
-	TextEditor,
 	store, 
 	editors, 
 	EditorContext, 
@@ -182,13 +180,13 @@ define([
 
 	var partNo = 0;
 
-	function CodeEditor(file){
-		logger.info('new CodeEditor('+file+')');
+	function TextEditor(file){
+		logger.info('new TextEditor('+file+')');
 		this.file = file;
 		this.partNo = ++partNo;
 	}
 
-	gene.inherit(CodeEditor, TextEditor, {
+	gene.inherit(TextEditor, EditorPart, {
 
         create: function (elem, started) {
 
@@ -218,7 +216,7 @@ define([
                 editorContext.setSize('100%', '99%');
                 
                 /* Invalid direct css manipulation. This causes ODP-423 bug. 
-                 (ODP-423) Ocassional no contents display in newly created CodeEditor
+                 (ODP-423) Ocassional no contents display in newly created TextEditor
                    
                 editorContext.addDeferredAction(function (editor) {
                     console.log("-tmep--------- addDeferredAction wrapper css");
@@ -265,14 +263,14 @@ define([
                 editorContext.addCursorListener(setStatusBarText);
                 editorContext.addFocusListener(setStatusBarText);
                 editorContext.addCursorListener(function (editorContext) {
-                    CodeEditor.pushCursorLocation(editorContext.file, editorContext.getCursor());
+                    TextEditor.pushCursorLocation(editorContext.file, editorContext.getCursor());
                 });
                 editorContext.addExtraKeys({
                     'Ctrl-Alt-Left': function () {
-                        CodeEditor.moveBack();
+                        TextEditor.moveBack();
                     },
                     'Ctrl-Alt-Right': function () {
-                        CodeEditor.moveForth();
+                        TextEditor.moveForth();
                     }
                 });
             }
@@ -346,7 +344,7 @@ define([
         },
         
         toString : function(){
-        	var res = '<CodeEditor>#'+this.partNo;
+        	var res = '<TextEditor>#'+this.partNo;
         	if(this.file){
         		res += '(' + this.file.name + ')';
         	}
@@ -358,7 +356,7 @@ define([
 
 	//Static functions
 
-	CodeEditor.moveTo = function (location) {
+	TextEditor.moveTo = function (location) {
         editors.openFile(location.filepath, {show: true}, function (file) {
             if (editors.getPart(file) === null) {
             	return;
@@ -378,25 +376,25 @@ define([
         });
     };
 
-	CodeEditor.moveBack = function () {
+	TextEditor.moveBack = function () {
 		if (cursorStacks.back.length > 1) {
 			var popped = cursorStacks.back.pop();
 			if (popped) {
 				cursorStacks.forth.push(popped);
 			}
-			CodeEditor.moveTo(cursorStacks.back[cursorStacks.back.length - 1]);
+			TextEditor.moveTo(cursorStacks.back[cursorStacks.back.length - 1]);
 		}
 	};
 
-	CodeEditor.moveForth = function () {
+	TextEditor.moveForth = function () {
 		var popped = cursorStacks.forth.pop();
 		if (popped) {
 			cursorStacks.back.push(popped);
-			CodeEditor.moveTo(popped);
+			TextEditor.moveTo(popped);
 		}
 	};
 
-	CodeEditor.pushCursorLocation = function (file, cursor, forced) {
+	TextEditor.pushCursorLocation = function (file, cursor, forced) {
         var filepath = (typeof file === 'string') ? file : file.path;
         var thisLocation = {
             filepath: filepath,
@@ -435,5 +433,5 @@ define([
         return thisLocation;
     };
 
-	return CodeEditor;
+	return TextEditor;
 });
