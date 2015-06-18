@@ -415,9 +415,6 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
 
         this.settings = settings;
 
-     	self.start();
-     	self.editor.setSize('100%', '100%');
-
         loadCSSList([require.toUrl('./css/webida.css'),
                      require.toUrl('webida-lib/custom-lib/codemirror/lib/codemirror.css'),
                      require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css')], function () {
@@ -428,6 +425,7 @@ function (require, vmi, _, codemirror, loadCSSList, Snippet) {
                      'webida-lib/custom-lib/codemirror/addon/edit/closebrackets',
                      'webida-lib/custom-lib/codemirror/addon/edit/closetag',
                      'webida-lib/custom-lib/codemirror/addon/edit/matchbrackets'], function () {
+                self.start();
             });
         });
 

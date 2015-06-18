@@ -212,7 +212,7 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
                 backgroundRepeat: 'repeat-x',
                 backgroundImage: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABICAIAAAC4IAh6AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAdSURBVChTY5i/ei/D7uM3GC7cezOKkTAoTBgYGABrArekfvp7PAAAAABJRU5ErkJggg==)' //jshint ignore:line
             });
-            $(wrapper).css({ top: dlgHeight });
+            
             // WTC-387
             searchDlg.bind('keyup', function (e) { e.stopPropagation(); });
             searchDlg.bind('keydown', function (e) {
