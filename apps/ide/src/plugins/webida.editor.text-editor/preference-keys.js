@@ -19,7 +19,7 @@ define([], function () {
 
     return {
         editor: function (fieldCreator) {
-            fieldCreator.addField('codeeditor:keymap', 'select', {
+            fieldCreator.addField('webida.editor.text-editor:keymap', 'select', {
                 name: 'Editor key map',
                 items: ['default', 'vim'],
                 'default': 'default'

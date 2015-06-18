@@ -354,7 +354,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                         }
                     }
 
-                    /* replace the above procedure when codeeditor.setMode is done.
+                    /* replace the above procedure when setMode is done.
                     file.path = dst;
                     if (!isDir) {
                         file.name = pathUtil.getFileName(dst);

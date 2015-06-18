@@ -19,13 +19,13 @@ define(['./EditorContext'], function (EditorContext) {
 
     return {
         editor: function (fieldCreator) {
-            fieldCreator.addField('codeeditor:cm-theme', 'select', {
+            fieldCreator.addField('webida.editor.text-editor:cm-theme', 'select', {
                 title: 'Theme',
                 name: 'Editor theme',
                 items: EditorContext.getAvailableThemes(),
                 'default': 'webida-dark'
             });
-            fieldCreator.addField('codeeditor:fontSize', 'slider', {
+            fieldCreator.addField('webida.editor.text-editor:fontSize', 'slider', {
                 title: '<br>Font',
                 name: 'Editor font size',
                 min: 7,
@@ -34,7 +34,7 @@ define(['./EditorContext'], function (EditorContext) {
                 labels: ['7', '9', '11', '13', '15', '17', '19', '21'],
                 'default': 13
             });
-            fieldCreator.addField('codeeditor:font', 'select', {
+            fieldCreator.addField('webida.editor.text-editor:font', 'select', {
                 name: 'Editor font',
                 items: [
                     { label: 'Nanum Gothic Coding', value: 'Nanum Gothic Coding'},
@@ -58,7 +58,7 @@ define(['./EditorContext'], function (EditorContext) {
                 ],
                 'default': 'Nanum Gothic Coding'
             });
-            fieldCreator.addField('codeeditor:editorconfig', 'checkbox', {
+            fieldCreator.addField('webida.editor.text-editor:editorconfig', 'checkbox', {
                 title: '<br>Editor Config',
                 name: 'Use .editorconfig files',
                 'default': 'false'

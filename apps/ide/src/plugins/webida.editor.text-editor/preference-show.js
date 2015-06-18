@@ -19,24 +19,24 @@ define([], function () {
 
     return {
         editor: function (fieldCreator) {
-            fieldCreator.addField('codeeditor:invisibles', 'checkbox', {
+            fieldCreator.addField('webida.editor.text-editor:invisibles', 'checkbox', {
                 title: 'Show or Hide',
                 name: 'Show whitespace characters',
                 'default': false
             });
             /*
             // FIXME : function does not work
-            fieldCreator.addField('codeeditor:activeline', 'checkbox', {
+            fieldCreator.addField('webida.editor.text-editor:activeline', 'checkbox', {
                 title: '<br>Highlight',
                 name: 'Enable show highlight active line',
                 'default': true
             });
-            fieldCreator.addField('codeeditor:highlightselection', 'checkbox', {
+            fieldCreator.addField('webida.editor.text-editor:highlightselection', 'checkbox', {
                 name: 'Enable show highlight selection',
                 'default': true
             });
             */
-            fieldCreator.addField('codeeditor:lineNumbers', 'checkbox', {
+            fieldCreator.addField('webida.editor.text-editor:lineNumbers', 'checkbox', {
                 //title: '<br>Line number',
                 name: 'Show line numbers',
                 'default': true

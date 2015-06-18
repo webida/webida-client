@@ -73,7 +73,7 @@ define(['./plugin',
             'tern-jumpback': 'JavaScript jump back to the reference',
             'tern-rename': 'JavaScript rename variable',
 
-            // emmet shortcuts. see codeeditor/emmet.js
+            // emmet shortcuts. see webida.editor.text-editor/emmet.js
             'emmet.expand_abbreviation': 'Expand abbreviation',
             'emmet.expand_abbreviation_with_tab': 'Expand abbreviation with tab',
             'emmet.match_pair_outward': 'Match pair outward',

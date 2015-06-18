@@ -119,31 +119,31 @@ define([
     topic.subscribe('file.saved', onFileSaved);
 
     var preferenceFields = {
-        'codeeditor:cm-theme': ['setTheme', 'webida-dark'],
-        'codeeditor:invisibles': ['setShowInvisibles'],
-        'codeeditor:folding': ['setCodeFolding', true],
-        'codeeditor:activeline': ['setStyleActiveLine', true],
-        // 'codeeditor:gutterline': ['setHighlightGutterLine', true],
-        // 'codeeditor:indentguides': ['setDisplayIndentGuides', true],
-        'codeeditor:highlightselection': ['setHighlightSelection', true],
-        'codeeditor:wordWrap': ['setLineWrapping', false],
-        'codeeditor:indentWithTabs' : ['setIndentWithTabs', false],
-        'codeeditor:indentunit': ['setIndentUnit', 4],
-        'codeeditor:indentOnPaste' : ['setIndentOnPaste', true],
-        'codeeditor:tabsize': ['setTabSize', 4],
-        'codeeditor:trimTrailing': ['setTrimTrailingWhitespaces', false],
-        'codeeditor:insertFinal': ['setInsertFinalNewLine', false],
-        'codeeditor:retabIndentations': ['setRetabIndentations', false],
-        'codeeditor:font': ['setFontFamily', 'Nanum Gothic Coding'],
-        'codeeditor:fontSize': ['setFontSize', 13],
-        'codeeditor:keymap': ['setKeymap', 'default'],
-        'codeeditor:enableSnippet': ['setSnippetEnabled', true],
-        'codeeditor:lineNumbers': ['setShowLineNumbers', true],
+        'webida.editor.text-editor:cm-theme': ['setTheme', 'webida-dark'],
+        'webida.editor.text-editor:invisibles': ['setShowInvisibles'],
+        'webida.editor.text-editor:folding': ['setCodeFolding', true],
+        'webida.editor.text-editor:activeline': ['setStyleActiveLine', true],
+        // 'webida.editor.text-editor:gutterline': ['setHighlightGutterLine', true],
+        // 'webida.editor.text-editor:indentguides': ['setDisplayIndentGuides', true],
+        'webida.editor.text-editor:highlightselection': ['setHighlightSelection', true],
+        'webida.editor.text-editor:wordWrap': ['setLineWrapping', false],
+        'webida.editor.text-editor:indentWithTabs' : ['setIndentWithTabs', false],
+        'webida.editor.text-editor:indentunit': ['setIndentUnit', 4],
+        'webida.editor.text-editor:indentOnPaste' : ['setIndentOnPaste', true],
+        'webida.editor.text-editor:tabsize': ['setTabSize', 4],
+        'webida.editor.text-editor:trimTrailing': ['setTrimTrailingWhitespaces', false],
+        'webida.editor.text-editor:insertFinal': ['setInsertFinalNewLine', false],
+        'webida.editor.text-editor:retabIndentations': ['setRetabIndentations', false],
+        'webida.editor.text-editor:font': ['setFontFamily', 'Nanum Gothic Coding'],
+        'webida.editor.text-editor:fontSize': ['setFontSize', 13],
+        'webida.editor.text-editor:keymap': ['setKeymap', 'default'],
+        'webida.editor.text-editor:enableSnippet': ['setSnippetEnabled', true],
+        'webida.editor.text-editor:lineNumbers': ['setShowLineNumbers', true],
 
         // content assist
-        'codeeditor:autoCompletion': ['setAutoCompletion', true],
-        'codeeditor:autoCompletionDelay': ['setAutoCompletionDelay', 0.3],
-        'codeeditor:anywordHint': ['setAnywordHint', false]
+        'webida.editor.text-editor:autoCompletion': ['setAutoCompletion', true],
+        'webida.editor.text-editor:autoCompletionDelay': ['setAutoCompletionDelay', 0.3],
+        'webida.editor.text-editor:anywordHint': ['setAnywordHint', false]
     };
     function applyPreference(editorContext, fieldId, definition, fieldValue) {
         var setterName = definition[0];
@@ -242,10 +242,10 @@ define([
                  //   editorContext.editor.setOption('overviewRuler', false);
                 //});
 
-                if (store.getValue('codeeditor:editorconfig') === true) {
+                if (store.getValue('webida.editor.text-editor:editorconfig') === true) {
                     configloader.editorconfig(editorContext, file);
                 }
-                if (store.getValue('codeeditor:jshintrc') !== false) {
+                if (store.getValue('webida.editor.text-editor:jshintrc') !== false) {
                     configloader.jshintrc(editorContext, file);
                 }
 

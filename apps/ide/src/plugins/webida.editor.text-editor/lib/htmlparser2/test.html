@@ -62,7 +62,7 @@
 
             function parseNew() {
                 // Caution: Do not load modules under plugins directory.
-                require(['webida-lib/plugins/codeeditor/content-assist/html-io'], function (HtmlIO) {
+                require(['webida-lib/plugins/webida.editor.text-editor/content-assist/html-io'], function (HtmlIO) {
                     var htmltext = document.querySelector('#input').value;
                     var doc = HtmlIO.parse(htmltext);
                     appendRawData(htmltext, doc.children);

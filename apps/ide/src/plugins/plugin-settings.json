@@ -1,6 +1,6 @@
 {
     "plugins" : [
-        "plugins/codeeditor",
+        "plugins/webida.editor.text-editor",
         "plugins/deploy",
         "plugins/help",
         "plugins/preference",
@@ -16,8 +16,7 @@
         "webida-lib/plugins/output",
         "webida-lib/plugins/preview",
         "webida-lib/plugins/workspace",
-        "webida-lib/plugins/workbench",
-        "webida-lib/plugins/webida.editor.text-editor"
+        "webida-lib/plugins/workbench"
     ],
     "start-plugins" : [
         "webida-lib/plugins/workbench"
