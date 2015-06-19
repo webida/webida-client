@@ -16,6 +16,6 @@
 ### Usage ###
 * In order to implement new editor using extension point, You have to use extension point "webida.common.editors:editor" then specify your Part Module's path at "editorPart" property.
 * Then, in your Part Module's file you have to extend EditorPart and implement it. (That's all!)
-* See "webida.editor.test-editor" plug-in's plugin.json and TestEditor.js
+* See the "webida.editor.test-editor" plug-in's plugin.json and TestEditor.js
 
 ![Parts](https://raw.githubusercontent.com/webida/webida-client/master/common/src/webida/plugins/workbench/ui/doc/Parts.png).
