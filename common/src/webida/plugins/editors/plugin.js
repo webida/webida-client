@@ -979,7 +979,9 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             editors.refreshTabTitle(file);
             if (show) {
                 editors.setCurrentFile(file);
-                viewContainer.select(view, true);
+                if (viewContainer) {
+                    viewContainer.select(view, true);
+                }
             }
 			return;
 		}
