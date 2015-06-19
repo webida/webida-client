@@ -40,7 +40,10 @@
                 "Clone from URL" : [ "cmnd", {"procedural": true} ],
                 "New Repository" : [ "cmnd", {"procedural": true} ],
                 "delim3" : "---",
-                "Confi&gure": [ "cmnd", {"procedural": true} ]
+                "Confi&gure": [ "cmnd", {"procedural": true} ],
+                "Run Git Command": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Shift + Alt + R" },
+                                                              "desc" : "Run Git commands from the command line" },
+                                                "procedural": true}]
             },
             "getViableItems" : "gitTopLevelMenuItems"
         },
@@ -81,7 +84,10 @@
                     "Clone from URL" : [ "cmnd", {"procedural": true} ],
                     "New Repository" : [ "cmnd", {"procedural": true} ],
                     "delim3" : "---",
-                    "Confi&gure": [ "cmnd", {"procedural": true} ]
+                    "Confi&gure": [ "cmnd", {"procedural": true} ],
+                    "Run Git Command": [ "cmnd", { "shortcut" : { "keys" : { "default" : "Shift + Alt + R" },
+                                                                  "desc" : "Run Git commands from the command line" },
+                                                    "procedural": true}]
                 }
             },
             "getViableItems" : "gitContextMenuItems"

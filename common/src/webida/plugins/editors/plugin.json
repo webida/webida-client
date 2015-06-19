@@ -6,6 +6,11 @@
     "extensionPoints" : {
         "webida.common.editors:editor" : [
             { "name" : "name", "type" : "string" },
+            { 
+                "name" : "editorPart", 
+                "type" : "string", 
+                "desc" : "A module returns descendants of EditorPart interface" 
+            },
             { "name" : "fileValueRequired", "type" : "bool" },
             { "name" : "handledFileExt", "type" : "array" },
             { "name" : "handledMimeTypes", "type" : "array" },

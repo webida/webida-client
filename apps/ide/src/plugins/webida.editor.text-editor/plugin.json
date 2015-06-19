@@ -1,0 +1,52 @@
+{
+    "name": "webida.editor.text-editor",
+    "description": "Text Editor",
+    "version": "0.1.0",
+    "requirement": "webida.common.editors",
+    "extensions" : {
+
+        "webida.common.editors:editor" : {
+            "name" : "Text Editor",
+            "editorPart" : "TextEditor",
+            "fileValueRequired" : true,
+            "handledFileExt" : [ ".*" ],
+            "handledMimeTypes" : [],
+            "handledFileNames" : [],
+            "unhandledFileExt" : [],
+            "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
+        },
+
+        "webida.common.workbench:preference-page" : [
+            {
+                "module": "plugins/webida.editor.text-editor/preference-appearance",
+                "hierarchy": "editor",
+                "name": "Editor",
+                "handler": "editor"
+            },
+            {
+                "module": "plugins/webida.editor.text-editor/preference-contentassist",
+                "hierarchy": "editor/content-assist",
+                "name": "Content Assists",
+                "handler": "editor"
+            },
+            {
+                "module": "plugins/webida.editor.text-editor/preference-editor",
+                "hierarchy": "editor/lines",
+                "name": "Lines",
+                "handler": "editor"
+            },
+            {
+                "module": "plugins/webida.editor.text-editor/preference-keys",
+                "hierarchy": "editor/key-map",
+                "name": "Key Map",
+                "handler": "editor"
+            },
+            {
+                "module": "plugins/webida.editor.text-editor/preference-show",
+                "hierarchy": "editor/show-hide",
+                "name": "Show or Hide",
+                "handler": "editor"
+            }
+        ]
+    }
+}

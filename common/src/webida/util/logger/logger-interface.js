@@ -101,7 +101,7 @@
             return;
         }
         if (typeof this.formater === 'function') {
-            args = this.formater(args, action);
+            args = this.formater(args, action, this);
         }
         for (var k in this.appenders) {
             appender = this.appenders[k];

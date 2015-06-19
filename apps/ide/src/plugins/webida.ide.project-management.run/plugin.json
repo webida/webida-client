@@ -41,7 +41,7 @@
                 "Debug" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+D" }, "desc" : "Debug recent project" } } ],
                 "Debug with" : [ "enum", {
                     "toolbar": {
-                        "icons" : "./styles/webida-images/icons/toolbar_runhistory.png",
+                        "icons" : "./styles/webida-images/icons/toolbar_debug.png",
                         "tooltip" : "Debug with",
                         "enabledOn":"toolbar.debugas.enable",
                         "disabledOn":"toolbar.debugas.disable"

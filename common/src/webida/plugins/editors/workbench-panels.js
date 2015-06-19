@@ -112,8 +112,8 @@ define(['./plugin',
             if (file) {
                 var changed = editors.currentFile !== file;
                 if (changed) {
-                    if (editors.currentFile && editors.currentFile.editorModule) {
-                        editors.currentFile.editorModule.hide(editors.currentFile);
+                    if (editors.currentFile && editors.getPart(editors.currentFile)) {
+                        editors.getPart(editors.currentFile).hide();
                     }
                     editors.setCurrentFile(file);
                 }
@@ -162,9 +162,10 @@ define(['./plugin',
 
             function closeFile() {
                 if (event.closable) {
-                    file.editorModule.hide(file);
-                    file.editorModule.destroy(file);
-                    delete editors.files[file.path];
+                	var editorPart = editors.getPart(file);
+                    editorPart.hide();
+                    editorPart.destroy();
+                    editors.removeFile(file.path);
 
                     var i = editors.currentFiles.indexOf(file);
                     if (i >= 0) {
@@ -291,9 +292,9 @@ define(['./plugin',
                         var view = viewList[j];
                         var file = editors.getFileByViewId(view.getId());
                         var cursor = editors.getCursor(file) || cursorDefault;
-                        var foldings = file.editor ? file.editor.getFoldings() : [];
+                        var foldings = file.editorContext ? file.editorContext.getFoldings() : [];
                                 // temporary solution
-                                // TODO: see why file.editor sometimes is null.
+                                // TODO: see why file.editorContext sometimes is null.
                         tabs.push([cursor.col, cursor.row, file.path, foldings, file.editorName]);
                         console.log('--* path : ' + file.path);
                     }
@@ -346,12 +347,12 @@ define(['./plugin',
                         //console.log('hina: file opend. pos.row = ' + pos.row);
 
                         _.defer(function () {
-                            if (file.editor && file.editor.setCursor) {
-                                file.editor.setCursor(pos);
+                            if (file.editorContext && file.editorContext.setCursor) {
+                                file.editorContext.setCursor(pos);
                             }
-                            if (file.editor && foldings) {
+                            if (file.editorContext && foldings) {
                                 _.each(foldings, function (fold) {
-                                    file.editor.foldCode(fold);
+                                    file.editorContext.foldCode(fold);
                                 });
                             }
                         });
