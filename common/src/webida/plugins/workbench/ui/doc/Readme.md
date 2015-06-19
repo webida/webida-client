@@ -9,7 +9,7 @@
 * In ODP 1.4.0 webida.editor.web-editor and webida.editor.java-editor will support above files more specifically.
 
 ### Merits ###
-* You can make new Editor easily by inheriting from exsisting EditorPart Classes. (Such as EditorPart, TextEditor..)
+* You can make new Editor easily by inheriting from existing EditorPart Classes. (Such as EditorPart, TextEditor..)
 * By introducing EditorContext, you can choose the editor you prefer. (Codemirror, ace, ... etc)
 * By refactoring and distributing code to their Classes, now codes has become more maintainable.
  
