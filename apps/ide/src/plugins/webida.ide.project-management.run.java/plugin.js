@@ -32,10 +32,10 @@ define([
             isHidden: true
         };
 
-        topic.subscribe('webida.ide.project-management.run:configuration.hide', function(){
+        topic.subscribe('webida.ide.project-management.run:configuration.hide', function() {
             ui.isHidden = true;
         });
-        topic.subscribe('webida.ide.project-management.run:configuration.show', function(){
+        topic.subscribe('webida.ide.project-management.run:configuration.show', function() {
             ui.isHidden = false;
         });
 
@@ -102,7 +102,7 @@ define([
                 registry.byId('rcw-action-save').destroyRecursive();
             }
             currentRunConf = runConf;
-            if (runConf){
+            if (runConf) {
                 var markup = new ContentPane({
                     /* style: 'text-indent:20px; line-height:100%',*/
                     content: template
@@ -150,7 +150,7 @@ define([
         var srcRegex = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
         function _doSave() {
             // validation on currentRunConf
-            if(!ui.isHidden) {
+            if (!ui.isHidden) {
                 currentRunConf.name = ui.inputBoxNodes[0].value;
                 currentRunConf.project = ui.select.get('value');
                 currentRunConf.outputDir = 'target';
