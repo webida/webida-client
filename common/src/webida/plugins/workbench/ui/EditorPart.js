@@ -33,25 +33,8 @@ define([
 ) {
 	'use strict';
 	function EditorPart(){
-
-		//default editorContext
-		this.editorContext = {
-			isClean : function(){
-				throw new Error("isClean() should be implemented in subclass' editorContext");
-			},
-			markClean : function(){
-				throw new Error("markClean() should be implemented in subclass' editorContext");
-			},
-			focus : function(){
-				throw new Error("focus() should be implemented in subclass' editorContext");
-			},
-			markClean : function(){
-				throw new Error("markClean() should be implemented in subclass' editorContext");
-			},
-			markClean : function(){
-				throw new Error("markClean() should be implemented in subclass' editorContext");
-			}
-		};
+		Part.apply(this, arguments);
+		this.editorContext = null;
 	}
 	gene.inherit(EditorPart, Part, {
 		getValue : function(){
@@ -65,6 +48,9 @@ define([
 		},
 		addChangeListener : function(){
 			throw new Error('addChangeListener() should be implemented by subclass');
+		},
+		setEditorContext : function(editorContext){
+			this.editorContext = editorContext;
 		},
 		getEditorContext : function(){
 			return this.editorContext;
