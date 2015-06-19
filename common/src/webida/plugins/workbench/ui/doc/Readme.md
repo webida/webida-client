@@ -1,6 +1,6 @@
 ## Part Architecture ##
 
-### Release Notes ###
+### Release Plan ###
 * Following picture shows inheritance of Parts.
 * Blue parts has been implemented ODP 1.2.0
 * Gray parts will be implemented int the next releases.
