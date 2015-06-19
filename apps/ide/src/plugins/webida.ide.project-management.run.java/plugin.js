@@ -28,10 +28,18 @@ define([
         'use strict';
         var FS = ide.getMount();
         var currentRunConf;
-        var ui = {};
+        var ui = {
+            isHide: true
+        };
+
+        topic.subscribe('webida.ide.project-management.run:configuration.hide', function(){
+            ui.isHide = true;
+        });
+        topic.subscribe('webida.ide.project-management.run:configuration.show', function(){
+            ui.isHide = false;
+        });
 
         var SRC_DIR = 'src';
-
 
         function _pathButtonClicked() {
             var pathInputBox = ui.readonlyInputBoxes[0];
@@ -142,16 +150,18 @@ define([
         var srcRegex = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
         function _doSave() {
             // validation on currentRunConf
-            currentRunConf.name = ui.inputBoxNodes[0].value;
-            currentRunConf.project = ui.select.get('value');
-            currentRunConf.outputDir = 'target';
-            currentRunConf.srcDir = SRC_DIR;
-            var fullPath = ui.readonlyInputBoxes[0].value;
-            var matchResult = srcRegex.exec(fullPath);
-            if (matchResult === null) {
-                return false;
+            if(!ui.isHide) {
+                currentRunConf.name = ui.inputBoxNodes[0].value;
+                currentRunConf.project = ui.select.get('value');
+                currentRunConf.outputDir = 'target';
+                currentRunConf.srcDir = SRC_DIR;
+                var fullPath = ui.readonlyInputBoxes[0].value;
+                var matchResult = srcRegex.exec(fullPath);
+                if (matchResult === null) {
+                    return false;
+                }
+                currentRunConf.path = matchResult[1].split('/').join('.') + matchResult[2];
             }
-            currentRunConf.path = matchResult[1].split('/').join('.') + matchResult[2];
             return true;
         }
 

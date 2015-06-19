@@ -267,6 +267,8 @@ define([
                 if(!selected.runConf || selected.runConf.unsaved) {
                     ui.btns.runButton.setDisabled(true);
                 }
+
+                topic.publish('webida.ide.project-management.run:configuration.show');
             }
         });
         ui.dialog.set('doLayout', true);
