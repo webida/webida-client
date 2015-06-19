@@ -6,7 +6,7 @@
 * Gray parts will be implemented in the next releases.
 * In ODP 1.2.0 webida.editor.text-editor supports all type of files. (except for audio, video)
 * In ODP 1.3.0 webida.editor.code-editor will support code-based files. (Such as .js, .css, .html, .java..)
-* In ODP 1.4.0 webida.editor.web-editor and webida.editor.java-editor will support above files.
+* In ODP 1.4.0 webida.editor.web-editor and webida.editor.java-editor will support above files more specifically.
 
 ### Merits ###
 * You can make new Editor easily by inheriting from exsisting EditorPart Classes. (Such as EditorPart, TextEditor..)
