@@ -15,88 +15,14 @@
  */
 
 /**
- * TODO: Describe it
- * @class plugins.codeEditor
- * @constructor
- * @module plugins
- * @param {object} fm blabal
- * @param {object} store blabla
- * @param {object} amrkup blabla
+ * This plug-in manages life-cycle of the TestEditor
+ * 
+ * @see TextEditor
+ * @since: 2015.06.19
+ * @author: hw.shim
  */
-define(['dojo/topic',
-        'dojo/domReady!'
-], function (topic) {
+define([], function () {
     'use strict';
 
-    topic.subscribe('file.opened', function(/*file*/){
-
-    });
-    topic.subscribe('file.saved', function(/*file*/){
-
-    });
-
-    var self = {
-        create: function (file, content, elem/*, started*/) {
-            console.info('create()', elem, content);
-            file.tabTitle += ' :: XML Editor';
-            var pre = document.createElement('pre');
-            pre.contentEditable = true;
-            pre.style.fontSize = '8pt';
-            pre.innerText = content;
-            elem.appendChild(pre);
-            return pre;
-        },
-
-        show: function (file) {
-            console.info('show()');
-            file.tabTitle += ' :: XML Editor';
-        },
-
-        hide: function (/*file*/) {
-            console.info('hide()');
-        },
-
-        destroy: function (/*file*/) {
-            console.info('destroy()');
-        },
-
-        getValue: function (/*file*/) {
-            console.info('getValue()');
-        },
-
-        addChangeListener: function (/*file, callback*/) {
-            console.info('addChangeListener()');
-        },
-
-        focus: function (/*file*/) {
-            console.info('focus()');
-        },
-
-        moveBack: function () {
-            console.info('moveBack()');
-        },
-        moveForth: function () {
-            console.info('moveForth()');
-        },
-        moveTo: function (/*location*/) {
-            console.info('moveTo()');
-        },
-
-        getLastSavedFoldingStatus: function () {
-            console.info('getLastSavedFoldingStatus()');
-        },
-
-        markClean: function (/*file*/) {
-            console.info('markClean()');
-        },
-
-        isClean: function (/*file*/) {
-            console.info('isClean()');
-        },
-
-        setMode: function(){
-            console.info('setMode()');
-        }
-    };
-    return self;
+    //TODO : Plugin should be used as a LifeCycle Management
 });
