@@ -29,14 +29,14 @@ define([
         var FS = ide.getMount();
         var currentRunConf;
         var ui = {
-            isHide: true
+            isHidden: true
         };
 
         topic.subscribe('webida.ide.project-management.run:configuration.hide', function(){
-            ui.isHide = true;
+            ui.isHidden = true;
         });
         topic.subscribe('webida.ide.project-management.run:configuration.show', function(){
-            ui.isHide = false;
+            ui.isHidden = false;
         });
 
         var SRC_DIR = 'src';
@@ -150,7 +150,7 @@ define([
         var srcRegex = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
         function _doSave() {
             // validation on currentRunConf
-            if(!ui.isHide) {
+            if(!ui.isHidden) {
                 currentRunConf.name = ui.inputBoxNodes[0].value;
                 currentRunConf.project = ui.select.get('value');
                 currentRunConf.outputDir = 'target';
