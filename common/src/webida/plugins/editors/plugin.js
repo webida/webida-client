@@ -353,19 +353,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                             editors.closeFile({path: src});
                         }
                     }
-
-                    /* replace the above procedure when setMode is done.
-                    file.path = dst;
-                    if (!isDir) {
-                        file.name = pathUtil.getFileName(dst);
-                        file.editorContext.setMode(pathUtil.getFileExt(file.name));
-                        //editors.getPart(file).setMode(file.editorContext, pathUtil.getFileExt(file.name));
-                            // The above line is not enough for linters and hinters
-                    }
-                    editors.removeFile(src);
-                    editors.files[dst] = file;
-                    editors.refreshTabTitle(file);
-                     */
                 }
             }
 

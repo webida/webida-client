@@ -1,0 +1,34 @@
+{
+    "name": "webida.editor.code-editor",
+    "description": "Code Editor",
+    "version": "0.1.0",
+    "requirement": "webida.common.editors",
+    "extensions" : {
+
+        "webida.common.editors:editor" : {
+            "name" : "Code Editor",
+            "editorPart" : "CodeEditor",
+            "fileValueRequired" : true,
+            "handledFileExt" : [ ".*" ],
+            "handledMimeTypes" : [],
+            "handledFileNames" : [],
+            "unhandledFileExt" : [],
+            "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
+        },
+
+        "webida.common.workbench:preference-page" : [
+            {
+                "module": "plugins/webida.editor.code-editor/preferences/preference-main",
+                "hierarchy": "codeeditor",
+                "name": "Code Editor",
+                "handler": "editor"
+            },
+            {
+                "module": "plugins/webida.editor.code-editor/preferences/preference-contentassist",
+                "hierarchy": "codeeditor/content-assist",
+                "name": "Content Assists",
+                "handler": "editor"
+            }
+        ]
+    }
+}

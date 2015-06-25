@@ -77,4 +77,6 @@ Logger.getSingleton = function getSingleton() {
 	return singlton;
 };
 
+Logger.LEVELS = LoggerInterface.LEVELS;
+
 module.exports = Logger;

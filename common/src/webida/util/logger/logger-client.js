@@ -97,5 +97,7 @@ define([
         return singlton;
     };
 
+	Logger.LEVELS = LoggerInterface.LEVELS;
+
     return Logger;
 });

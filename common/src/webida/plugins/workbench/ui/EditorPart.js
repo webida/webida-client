@@ -35,6 +35,7 @@ define([
 	function EditorPart(){
 		Part.apply(this, arguments);
 		this.editorContext = null;
+		this.file = null;
 	}
 	gene.inherit(EditorPart, Part, {
 		getValue : function(){
@@ -54,7 +55,20 @@ define([
 		},
 		getEditorContext : function(){
 			return this.editorContext;
-		}
+		},
+		setFile : function(file){
+			this.file = file;
+		},
+		getFile : function(){
+			return this.file;
+		},
+        toString : function(){
+        	var res = '<'+this.constructor.name+'>#'+this.partId;
+        	if(this.file){
+        		res += '(' + this.file.name + ')';
+        	}
+        	return res;
+        }
 	});
 	return EditorPart;
 });

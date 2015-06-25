@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['./EditorContext'], function (EditorContext) {
+define(['../TextEditorContext'], function (TextEditorContext) {
     'use strict';
 
     return {
@@ -22,7 +22,7 @@ define(['./EditorContext'], function (EditorContext) {
             fieldCreator.addField('webida.editor.text-editor:cm-theme', 'select', {
                 title: 'Theme',
                 name: 'Editor theme',
-                items: EditorContext.getAvailableThemes(),
+                items: TextEditorContext.getAvailableThemes(),
                 'default': 'webida-dark'
             });
             fieldCreator.addField('webida.editor.text-editor:fontSize', 'slider', {
