@@ -9,7 +9,7 @@
             "name" : "Text Editor",
             "editorPart" : "TextEditor",
             "fileValueRequired" : true,
-            "handledFileExt" : [ ".*" ],
+            "handledFileExt" : [ "txt", "text", "md" ],
             "handledMimeTypes" : [],
             "handledFileNames" : [],
             "unhandledFileExt" : [],
@@ -18,32 +18,26 @@
 
         "webida.common.workbench:preference-page" : [
             {
-                "module": "plugins/webida.editor.text-editor/preference-appearance",
-                "hierarchy": "editor",
-                "name": "Editor",
+                "module": "plugins/webida.editor.text-editor/preferences/preference-appearance",
+                "hierarchy": "texteditor",
+                "name": "Text Editor",
                 "handler": "editor"
             },
             {
-                "module": "plugins/webida.editor.text-editor/preference-contentassist",
-                "hierarchy": "editor/content-assist",
-                "name": "Content Assists",
-                "handler": "editor"
-            },
-            {
-                "module": "plugins/webida.editor.text-editor/preference-editor",
-                "hierarchy": "editor/lines",
+                "module": "plugins/webida.editor.text-editor/preferences/preference-editor",
+                "hierarchy": "texteditor/lines",
                 "name": "Lines",
                 "handler": "editor"
             },
             {
-                "module": "plugins/webida.editor.text-editor/preference-keys",
-                "hierarchy": "editor/key-map",
+                "module": "plugins/webida.editor.text-editor/preferences/preference-keys",
+                "hierarchy": "texteditor/key-map",
                 "name": "Key Map",
                 "handler": "editor"
             },
             {
-                "module": "plugins/webida.editor.text-editor/preference-show",
-                "hierarchy": "editor/show-hide",
+                "module": "plugins/webida.editor.text-editor/preferences/preference-show",
+                "hierarchy": "texteditor/show-hide",
                 "name": "Show or Hide",
                 "handler": "editor"
             }

@@ -27,6 +27,8 @@ define(['webida-lib/util/gene'], function(gene) {
 	'use strict';
 	var partId = 0;
 	function Part(){
+		console.info('new Part()');
+		this.flags = null;
 		this.partId = ++partId;
 	}
 	gene.inherit(Part, Object, {
@@ -44,7 +46,19 @@ define(['webida-lib/util/gene'], function(gene) {
 		},
 		focus : function(){
 			throw new Error('focus() should be implemented by subclass');
+		},
+		setFlag : function(/*int*/ flag, /*boolean*/ value){
+			if(!flag){throw new Error('Invalid flag name');}
+			if (value) {
+				this.flags |= flag;
+			} else {
+				this.flags &= ~flag;
+			}
+		},
+		getFlag : function(/*int*/ flag){
+			return (this.flags & flag) != 0;
 		}
 	});
+	Part.CREATED = 1;
 	return Part;
 });

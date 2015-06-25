@@ -90,31 +90,14 @@ define([
             console.info('focus()');
         },
 
-        moveBack: function () {
-            console.info('moveBack()');
-        },
-        moveForth: function () {
-            console.info('moveForth()');
-        },
-        moveTo: function (/*location*/) {
-            console.info('moveTo()');
-        },
-
-        getLastSavedFoldingStatus: function () {
-            console.info('getLastSavedFoldingStatus()');
-        },
-
         markClean: function () {
             console.info('markClean()');
         },
 
         isClean: function () {
             console.info('isClean()');
-        },
-
-        setMode: function(){
-            console.info('setMode()');
         }
+
     });
 
     return TestEditor;

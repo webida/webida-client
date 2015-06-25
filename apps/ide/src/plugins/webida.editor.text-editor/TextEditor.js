@@ -28,190 +28,68 @@
  */
 
 define([
-	'webida-lib/util/gene',
 	'other-lib/underscore/lodash.min',
+	'webida-lib/util/gene',
+	'webida-lib/plugins/workbench/ui/Part',
 	'webida-lib/plugins/workbench/ui/EditorPart',
 	'webida-lib/plugins/workbench/preference-system/store',	// TODO: issue #12055
 	'webida-lib/plugins/editors/plugin',
-	'./EditorContext',
-	'./configloader',
+	'webida-lib/plugins/editors/EditorPreference',
+	'./preferences/preference-config',
+	'./TextEditorContext',
 	'dojo/topic',
-	'dojo/dom-geometry',
-	'dojo/dom-style',
 	'webida-lib/util/logger/logger-client',
 	'dojo/domReady!'
 ], function(
-	gene,
 	_, 
+	gene,
+	Part,
 	EditorPart,
 	store, 
-	editors, 
-	EditorContext, 
-	configloader, 
+	editors,
+	EditorPreference,
+	preferenceConfig, 
+	TextEditorContext, 
 	topic,
-	geometry,
-	domStyle,
 	Logger
 ) {
 	'use strict';
 
+	//TODO : this.editorContext -> this.getEditorContext()
+			//See File.prototype.isModified = function () {
+	//TODO : this.file -> this.getFile()
+
 	var logger = new Logger();
-    var lastSavedFoldingStatus = {};
-
-    // file events
-    function onFileOpened(file, content) {
-    	logger.info('onFileOpened('+file+', content)');
-    	var part = editors.getPart(file);
-    	if(part instanceof EditorPart){
-	    	var editorContext = part.getEditorContext();
-	        editorContext.setValue(content);
-	        editorContext.clearHistory();
-	        editorContext.markClean();
-	        var mode = file.name.substr(file.name.lastIndexOf('.') + 1).toLowerCase();
-	        setMode(editorContext, mode);
-    	}
-    }
-
-    function setMode(editorContext, mode) {
-
-        // TODO: clear the current mode before setting a new one.
-        // Currently, without this, file is reopened when its extension (mode) is changed
-        // instead of resetting its mode. Note that the latter is more desirable.
-
-        editorContext.setMode(mode);
-        switch (mode) {
-        case 'json':
-            editorContext.setLinter('json', true);
-            editorContext.setHinters('json', ['word']);
-            break;
-        case 'js':
-            editorContext.setLinter('js', false);
-            editorContext.setHinters('javascript', ['javascript']);
-            break;
-        case 'css':
-            editorContext.setLinter('css', true);
-            editorContext.setHinters('css', ['css', 'cssSmart']);
-            break;
-        case 'html':
-            editorContext.setLinter('html', true);
-            editorContext.setHinters('html', ['html', 'htmlLink', 'htmlSmart']);
-            editorContext.setHinters('htmlmixed', ['html', 'htmlLink', 'htmlSmart']);
-            editorContext.setHinters('css', ['css', 'cssSmart']);
-            break;
-        default:
-            editorContext.setHinters('word', ['word']);
-            break;
-        }
-    }
-
-    function onFileSaved(file) {
-        logger.info('onFileSaved('+file+')');
-        var part = editors.getPart(file);
-        if(part instanceof EditorPart){
-	        var editorContext = part.getEditorContext();
-            lastSavedFoldingStatus[file.path] = editorContext.getFoldings();
-        }
-    }
-
-    topic.subscribe('file.opened', onFileOpened);
-    topic.subscribe('file.saved', onFileSaved);
-
-    var preferenceFields = {
-        'webida.editor.text-editor:cm-theme': ['setTheme', 'webida-dark'],
-        'webida.editor.text-editor:invisibles': ['setShowInvisibles'],
-        'webida.editor.text-editor:folding': ['setCodeFolding', true],
-        'webida.editor.text-editor:activeline': ['setStyleActiveLine', true],
-        // 'webida.editor.text-editor:gutterline': ['setHighlightGutterLine', true],
-        // 'webida.editor.text-editor:indentguides': ['setDisplayIndentGuides', true],
-        'webida.editor.text-editor:highlightselection': ['setHighlightSelection', true],
-        'webida.editor.text-editor:wordWrap': ['setLineWrapping', false],
-        'webida.editor.text-editor:indentWithTabs' : ['setIndentWithTabs', false],
-        'webida.editor.text-editor:indentunit': ['setIndentUnit', 4],
-        'webida.editor.text-editor:indentOnPaste' : ['setIndentOnPaste', true],
-        'webida.editor.text-editor:tabsize': ['setTabSize', 4],
-        'webida.editor.text-editor:trimTrailing': ['setTrimTrailingWhitespaces', false],
-        'webida.editor.text-editor:insertFinal': ['setInsertFinalNewLine', false],
-        'webida.editor.text-editor:retabIndentations': ['setRetabIndentations', false],
-        'webida.editor.text-editor:font': ['setFontFamily', 'Nanum Gothic Coding'],
-        'webida.editor.text-editor:fontSize': ['setFontSize', 13],
-        'webida.editor.text-editor:keymap': ['setKeymap', 'default'],
-        'webida.editor.text-editor:enableSnippet': ['setSnippetEnabled', true],
-        'webida.editor.text-editor:lineNumbers': ['setShowLineNumbers', true],
-
-        // content assist
-        'webida.editor.text-editor:autoCompletion': ['setAutoCompletion', true],
-        'webida.editor.text-editor:autoCompletionDelay': ['setAutoCompletionDelay', 0.3],
-        'webida.editor.text-editor:anywordHint': ['setAnywordHint', false]
-    };
-    function applyPreference(editorContext, fieldId, definition, fieldValue) {
-        var setterName = definition[0];
-        if (fieldValue === undefined && definition.length > 1) {
-            fieldValue = definition[1];
-        }
-        editorContext[setterName](fieldValue);
-    }
-    function setPreferences(editorContext) {
-        store.addLoadedListener(function () {
-            editorContext.setMatchBrackets(true);
-            _.each(preferenceFields, function (definition, fieldId) {
-                applyPreference(editorContext, fieldId, definition, store.getValue(fieldId));
-            });
-            var listener = function (value, fieldId) {
-                applyPreference(editorContext, fieldId, preferenceFields[fieldId], value);
-            };
-            _.each(preferenceFields, function (_, fieldId) {
-                store.addFieldChangeListener(fieldId, listener);
-            });
-            editorContext.__preferenceListener = listener;
-        });
-    }
-    function unsetPreferences(editorContext) {
-        if (editorContext.__preferenceListener !== undefined) {
-            _.each(preferenceFields, function (_, fieldId) {
-                store.removeFieldChangeListener(fieldId, editorContext.__preferenceListener);
-            });
-        }
-    }
-
-    var cursorStacks = {
-        back: [],
-        forth: []
-    };
+	//logger.off();
 
 	function TextEditor(file){
 		logger.info('new TextEditor('+file+')');
 		EditorPart.apply(this, arguments);
 		this.file = file;
-		this.created = false;
+		this.fileOpenedHandle = null;
+		this.fileSavedHandle = null;
+		this.preferences = null;
+		this.foldingStatus = null;
 	}
 
 	gene.inherit(TextEditor, EditorPart, {
 
-        create: function (elem, started) {
-			logger.info('create('+elem.tagName+', started)');
-			if (this.created === true) {
-				return;
-			}
+		initialize : function(){
+			logger.info('initialize()');
+			this.initializeContext();
+			this.initializeListeners();
+            this.initializePreferences();
+		},
 
-        	var file = this.file;
-        	var content = file.savedValue;
-            this.editorContext = new EditorContext(elem, file, function (file, editorContext) {
-                editorContext.addChangeListener(function (editorContext, change) {
-                    if (editorContext._changeCallback) {
-                        editorContext._changeCallback(file, change);
-                    }
-                });
-                if (started) {
-                    _.defer(function () {
-                        started(file, editorContext);
-                    });
-                }
-            });
-            var editorContext = this.editorContext;
-            file.elem = elem;
+		initializeContext : function(){
+			logger.info('initializeContext()');
+			var context = this.getEditorContext();
+			context.setValue(this.file.savedValue);
+			context.clearHistory();
+			context.markClean();
+			context.setSize('100%', '99%'); //TODO: http://jira.score/browse/ODP-458
+			context.setMatchBrackets(true);
 
-            editorContext.setSize('100%', '99%');
-            
             /* Invalid direct css manipulation. This causes ODP-423 bug. 
              (ODP-423) Ocassional no contents display in newly created TextEditor
                
@@ -227,42 +105,21 @@ define([
                     bottom: '0px'
                 });                   
             });*/
-
-            editorContext.setMode(file.name.substr(file.name.lastIndexOf('.') + 1));
-            setPreferences(editorContext);
-
-            onFileOpened(file, content, editorContext);
-            
-            //editorContext.addDeferredAction(function (editorContext) {
-             //   editorContext.editor.setOption('overviewRuler', false);
-            //});
-
-            if (store.getValue('webida.editor.text-editor:editorconfig') === true) {
-                configloader.editorconfig(editorContext, file);
-            }
-            if (store.getValue('webida.editor.text-editor:jshintrc') !== false) {
-                configloader.jshintrc(editorContext, file);
-            }
-
-            editorContext.addEventListener('save', function () {
-                require(['dojo/topic'], function (topic) {
-                    topic.publish('#REQUEST.saveFile');
-                });
-            });
-
+			var that = this;
             var setStatusBarText = function () {
-                require(['webida-lib/plugins/workbench/plugin'], function (workbench) {
-                    workbench.__editor = editorContext;
-                    var cursor = editorContext.getCursor();
-                    workbench.setContext([file.path], {cursor: (cursor.row + 1) + ':' + (cursor.col + 1)});
-                });
+            	var workbench = require('webida-lib/plugins/workbench/plugin');
+            	var file = that.file;
+            	var editorContext = that.getEditorContext();
+                var cursor = editorContext.getCursor();
+                workbench.__editor = editorContext; //TODO : refactor
+                workbench.setContext([file.path], {cursor: (cursor.row + 1) + ':' + (cursor.col + 1)});
             };
-            editorContext.addCursorListener(setStatusBarText);
-            editorContext.addFocusListener(setStatusBarText);
-            editorContext.addCursorListener(function (editorContext) {
-                TextEditor.pushCursorLocation(editorContext.file, editorContext.getCursor());
+            context.addCursorListener(setStatusBarText);
+            context.addFocusListener(setStatusBarText);
+            context.addCursorListener(function (editorContext) {
+                TextEditor.pushCursorLocation(context.file, context.getCursor());
             });
-            editorContext.addExtraKeys({
+            context.addExtraKeys({
                 'Ctrl-Alt-Left': function () {
                     TextEditor.moveBack();
                 },
@@ -270,31 +127,129 @@ define([
                     TextEditor.moveForth();
                 }
             });
+		},
 
-            this.created = true;
+		/**
+		 * To initialize listeners you want
+		 * override this
+		 */
+		initializeListeners : function(){
+			logger.info('initializeListeners()');
+			var that = this;
+			//subscribe topic
+			/*
+		    this.fileOpenedHandle = topic.subscribe('file.opened', function(file, content){
+		    	//do something with file.opened topic
+		    });
+		    */
+		    this.fileSavedHandle = topic.subscribe('file.saved', function(file){
+	            that.foldingStatus = that.getEditorContext().getFoldings();
+		    });
+            this.editorContext.addEventListener('save', function () {
+                require(['dojo/topic'], function (topic) {
+                    topic.publish('#REQUEST.saveFile');
+                });
+            });
+		},
+
+		initializePreferences : function(){
+			logger.info('initializePreferences()');
+			if(this.editorContext && this.file){
+
+				//preferences
+				this.preferences = new EditorPreference(store, this.editorContext);
+				this.preferences.setFields(this.getPreferences());
+			}
+		},
+
+		/**
+		 * To use the Preferences you want, override this method
+		 * and return Preferences you want use
+		 * 
+		 * @returns preferenceConfig for TextEditor
+		 */
+		getPreferences : function(){
+			return preferenceConfig;
+		},
+
+		/**
+		 * To use the Context you want, override this method
+		 * and return Class you want use
+		 * 
+		 * @returns TextEditorContext
+		 */
+		getContextClass : function(){
+			return TextEditorContext;
+		},
+
+		getEditorContext : function(){
+			//TODO : parent, callback in case of none
+			if(this.editorContext !== null){
+				return this.editorContext;
+			}
+			var parent = this.parent;
+			var callback = this.createCallback;
+			var ContextClass = this.getContextClass();
+            var context = new (ContextClass)(parent, this.file, function (file, context) {
+                context.addChangeListener(function (context, change) {
+                    if (context._changeCallback) {
+                        context._changeCallback(file, change);
+                    }
+                });
+                if (callback) {
+                    _.defer(function () {
+                        callback(file, context);
+                    });
+                }
+            });
+            this.setEditorContext(context);
+            return this.editorContext;
+		},
+
+        getFoldingStatus: function () {
+            return this.foldingStatus;
+        },
+
+        create: function (parent, callback) {
+			logger.info('create('+parent.tagName+', callback)');
+			if (this.getFlag(Part.CREATED) === true) {
+				return;
+			}
+			this.parent = parent;
+			this.createCallback = callback;
+            this.file.elem = parent;	//TODO : remove
+            this.initialize();
+            this.setFlag(Part.CREATED, true);
         },
 
         destroy: function () {
+        	logger.info('destroy()');
             if (this.editorContext) {
-                unsetPreferences(this.editorContext);
                 this.editorContext.destroy();
-                this.created = false;
-                delete this.editorContext;
+                this.editorContext = null;
             }else{
 				logger.info('this.editorContext not found');
 				logger.trace();
 			}
+			//unset preferences
+			if(this.preferences){
+				this.preferences.unsetFields();
+			}
+			//unsubscribe topic
+			if(this.fileOpenedHandle !== null){
+				logger.info('this.fileOpenedHandle.remove()');
+				this.fileOpenedHandle.remove();
+			}
+			if(this.fileSavedHandle !== null){
+				this.fileSavedHandle.remove();
+			}
+			//clear state
+			this.setFlag(Part.CREATED, false);
         },
 
         show: function () {
 			logger.info('show()');
-			logger.trace();
-			if (this.editorContext) {
-				this.editorContext.refresh();
-			}else{
-				logger.info('this.editorContext not found');
-				logger.trace();
-			}
+			this.getEditorContext().refresh();
 		},
 
         hide: function () {
@@ -303,7 +258,7 @@ define([
 
         getValue: function () {
         	if(this.editorContext){
-        		return this.editorContext.getValue();
+        		return this.editorContext.getValue(); //TODO : getEditorContext()
         	}else{
 				logger.info('this.editorContext not found');
         		logger.trace();
@@ -316,7 +271,7 @@ define([
 
         focus: function () {
         	if(this.editorContext){
-        		this.editorContext.focus();
+        		this.editorContext.focus(); //TODO : getEditorContext()
         	}else{
 				logger.info('this.editorContext not found');
         		logger.trace();
@@ -324,36 +279,27 @@ define([
         },
 
         markClean: function () {
-            this.editorContext.markClean();
+            this.getEditorContext().markClean();
         },
 
         isClean: function () {
         	if(this.editorContext){
-        		return this.editorContext.isClean();
+        		return this.editorContext.isClean(); //TODO : getEditorContext()
         	}else{
 				logger.info('this.editorContext not found');
         		logger.trace();
         		return true;
         	}
-        },
+        }
 
-        getLastSavedFoldingStatus: function () {
-            return lastSavedFoldingStatus;
-        },
-        
-        toString : function(){
-        	//TODO : inherit from Part
-        	var res = '<TextEditor>#'+this.partId;
-        	if(this.file){
-        		res += '(' + this.file.name + ')';
-        	}
-        	return res;
-        },
-
-        setMode: setMode
     });
 
 	//Static functions
+
+    var cursorStacks = {
+        back: [],
+        forth: []
+    };
 
 	TextEditor.moveTo = function (location) {
         editors.openFile(location.filepath, {show: true}, function (file) {
@@ -394,6 +340,7 @@ define([
 	};
 
 	TextEditor.pushCursorLocation = function (file, cursor, forced) {
+		logger.info('pushCursorLocation(file, '+cursor+', forced)');
         var filepath = (typeof file === 'string') ? file : file.path;
         var thisLocation = {
             filepath: filepath,

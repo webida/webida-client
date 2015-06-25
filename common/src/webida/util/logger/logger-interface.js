@@ -37,6 +37,7 @@
         this.appenders = [];
         this.addAppender(console); //default logger for both sides
     }
+    LoggerInterface.LEVELS = LEVELS;
     /*jshint forin: true */
     for (var k in LEVELS) {
         LoggerInterface.prototype[k.toUpperCase()] = LEVELS[k];
@@ -107,6 +108,10 @@
             appender = this.appenders[k];
             appender[action].apply(appender, args);
         }
+    };
+
+	LoggerInterface.prototype.off = function () {
+        this.setConfig('level', LEVELS.off);
     };
 
     //amd
