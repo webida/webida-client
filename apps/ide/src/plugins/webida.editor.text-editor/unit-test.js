@@ -1,7 +1,7 @@
 /* global QUnit */
-require(['editors/webida.editor.text-editor/TextEditor'], function (TextEditor) {
+require(['editors/webida.editor.text-editor/TextEditorPart'], function (TextEditorPart) {
     'use strict';
-    var editor = new TextEditor();
+    var editor = new TextEditorPart();
     QUnit.test('editor API Validation', function (assert) {
         assert.ok(typeof editor.create === 'function', 'create() method exists');
         assert.ok(typeof editor.destroy === 'function', 'destroy() method exists');

@@ -17,7 +17,7 @@
 /**
  * This plug-in manages life-cycle of the TestEditor
  * 
- * @see TextEditor
+ * @see TestEditorPart
  * @since: 2015.06.19
  * @author: hw.shim
  */

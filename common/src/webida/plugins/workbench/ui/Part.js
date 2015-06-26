@@ -27,7 +27,6 @@ define(['webida-lib/util/gene'], function(gene) {
 	'use strict';
 	var partId = 0;
 	function Part(){
-		console.info('new Part()');
 		this.flags = null;
 		this.partId = ++partId;
 	}

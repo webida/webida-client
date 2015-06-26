@@ -16,7 +16,7 @@
 
 /**
  * Constructor function
- * TextEditor implementation of EditorPart
+ * TextEditorPart implementation of EditorPart
  * This should be an ancestor of all text based editors. 
  *
  * @constructor
@@ -60,10 +60,10 @@ define([
 	//TODO : this.file -> this.getFile()
 
 	var logger = new Logger();
-	//logger.off();
+	logger.off();
 
-	function TextEditor(file){
-		logger.info('new TextEditor('+file+')');
+	function TextEditorPart(file){
+		logger.info('new TextEditorPart('+file+')');
 		EditorPart.apply(this, arguments);
 		this.file = file;
 		this.fileOpenedHandle = null;
@@ -72,7 +72,7 @@ define([
 		this.foldingStatus = null;
 	}
 
-	gene.inherit(TextEditor, EditorPart, {
+	gene.inherit(TextEditorPart, EditorPart, {
 
 		initialize : function(){
 			logger.info('initialize()');
@@ -117,14 +117,14 @@ define([
             context.addCursorListener(setStatusBarText);
             context.addFocusListener(setStatusBarText);
             context.addCursorListener(function (editorContext) {
-                TextEditor.pushCursorLocation(context.file, context.getCursor());
+                TextEditorPart.pushCursorLocation(context.file, context.getCursor());
             });
             context.addExtraKeys({
                 'Ctrl-Alt-Left': function () {
-                    TextEditor.moveBack();
+                    TextEditorPart.moveBack();
                 },
                 'Ctrl-Alt-Right': function () {
-                    TextEditor.moveForth();
+                    TextEditorPart.moveForth();
                 }
             });
 		},
@@ -301,7 +301,7 @@ define([
         forth: []
     };
 
-	TextEditor.moveTo = function (location) {
+	TextEditorPart.moveTo = function (location) {
         editors.openFile(location.filepath, {show: true}, function (file) {
             if (editors.getPart(file) === null) {
             	return;
@@ -321,25 +321,25 @@ define([
         });
     };
 
-	TextEditor.moveBack = function () {
+	TextEditorPart.moveBack = function () {
 		if (cursorStacks.back.length > 1) {
 			var popped = cursorStacks.back.pop();
 			if (popped) {
 				cursorStacks.forth.push(popped);
 			}
-			TextEditor.moveTo(cursorStacks.back[cursorStacks.back.length - 1]);
+			TextEditorPart.moveTo(cursorStacks.back[cursorStacks.back.length - 1]);
 		}
 	};
 
-	TextEditor.moveForth = function () {
+	TextEditorPart.moveForth = function () {
 		var popped = cursorStacks.forth.pop();
 		if (popped) {
 			cursorStacks.back.push(popped);
-			TextEditor.moveTo(popped);
+			TextEditorPart.moveTo(popped);
 		}
 	};
 
-	TextEditor.pushCursorLocation = function (file, cursor, forced) {
+	TextEditorPart.pushCursorLocation = function (file, cursor, forced) {
 		logger.info('pushCursorLocation(file, '+cursor+', forced)');
         var filepath = (typeof file === 'string') ? file : file.path;
         var thisLocation = {
@@ -379,5 +379,5 @@ define([
         return thisLocation;
     };
 
-	return TextEditor;
+	return TextEditorPart;
 });

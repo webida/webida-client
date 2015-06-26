@@ -18,7 +18,7 @@
 * This is configuratoin of preference fields 
 * and their default value for TextEditor
 *
-* @see EditorPreference, TextEditor
+* @see EditorPreference, TextEditorPart
 * @since: 2015.06.23
 * @author: hw.shim
 */

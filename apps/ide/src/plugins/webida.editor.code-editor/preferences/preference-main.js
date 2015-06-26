@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-define(['../CodeEditorContext'], function (EditorContext) {
+define(['../CodeEditorContext'], function (CodeEditorContext) {
     'use strict';
 
     return {
         editor: function (fieldCreator) {
-        	
+        	//TODO : fill something needed
         }
     };
 });

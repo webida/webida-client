@@ -7,7 +7,7 @@
 
         "webida.common.editors:editor" : {
             "name" : "Text Editor",
-            "editorPart" : "TextEditor",
+            "editorPart" : "TextEditorPart",
             "fileValueRequired" : true,
             "handledFileExt" : [ "txt", "text", "md" ],
             "handledMimeTypes" : [],
