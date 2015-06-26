@@ -22,6 +22,7 @@ define([
     './run-configuration-manager',
     './delegator',
     'dojo/topic',
+    'dojo/on',
     'dojo/store/Memory',
     'dojo/store/Observable',
     'dijit/registry',
@@ -38,14 +39,15 @@ define([
     'other-lib/underscore/lodash.min',
     'other-lib/toastr/toastr',
     'xstyle/css!./style.css'
-], function(ide, workbench, workspace, pluginManager, runConfManager, delegator, topic, Memory, Observable, registry,
-            pathUtil, ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
-            windowTemplate, contentTemplate, _, toastr){
-
+], function (ide, workbench, workspace, pluginManager, runConfManager, delegator,
+             topic, on, Memory, Observable, registry,
+             pathUtil, ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
+             windowTemplate, contentTemplate, _, toastr) {
     'use strict';
 
     var module = {};
-
+    var selected;
+    var ui;
     var windowOpened = false;
 
     var extensionPoints = {
@@ -60,16 +62,17 @@ define([
             return !type.hidden;
         });
         // add default type
-        return [{id:'', name: 'General Web Application'}].concat(availableTypesInUI);
+        return [{id: '', name: 'General Web Application'}].concat(availableTypesInUI);
     }
 
-    var selected = {
+    selected = {
         type: _getAllTypes()[0].id,
         runConf: undefined
     };
 
-    var ui = {
+    ui = {
         dialog: undefined,
+        contentArea: undefined,
         content: undefined,
         tree: undefined,
         btns: {
@@ -88,12 +91,21 @@ define([
         }
     };
 
-    //var css = {
-    //    classes: {
-    //        DISPLAY_NONE: 'rcw-display-none',
-    //        DISPLAY_BLOCK: 'rcw-display-block'
-    //    }
-    //};
+    function _removeContentArea() {
+        if(ui.content) {
+            ui.contentArea.removeChild(ui.content);
+            ui.content.destroyRecursive();
+            delete ui.content;
+        }
+    }
+
+    function _addContentArea(newContent) {
+        _removeContentArea();
+        if(newContent) {
+            ui.contentArea.addChild(newContent);
+            ui.content = newContent;
+        }
+    }
 
     module.refreshTree = function () {
         ui.tree = $('#run-configuration-list-tree').empty();
@@ -125,10 +137,15 @@ define([
                 event.preventDefault();
                 var runName = $(this).attr('data-run-id');
                 var typeId = $(this).attr('data-type-id');
-                if(runName){
+                if (runName) {
                     selected.runConf = runConfManager.getByName(runName);
                     selected.type = typeId;
-                    delegator.loadConf(ui.content, selected.runConf);
+                    _removeContentArea();
+                    delegator.loadConf(ui.contentArea, selected.runConf, function (err, runConf, content) {
+                        if(!err) {
+                            _addContentArea(content);
+                        }
+                    });
                 } else {
                     selected.type = typeId;
                 }
@@ -138,7 +155,7 @@ define([
             });
         });
 
-        if(ui.btns.runButton) {
+        if(windowOpened && ui.btns.runButton) {
             if (!selected.runConf || selected.runConf.unsaved) {
                 ui.btns.runButton.setDisabled(true);
             } else {
@@ -153,7 +170,7 @@ define([
         switch (mode) {
             case runConfManager.MODE.RUN_MODE:
                 title = 'Run Configurations';
-                caption= 'Run';
+                caption = 'Run';
                 break;
             case runConfManager.MODE.DEBUG_MODE:
                 title = 'Debug Configurations';
@@ -196,72 +213,88 @@ define([
             title: title,
             style: 'width: 800px',
             onHide: function () {
+                console.debug('ui.dialog onHide', arguments);
                 topic.publish('webida.ide.project-management.run:configuration.hide');
                 runConfManager.flushRunConfigurations(function () {
                     windowOpened = false;
+                    ui.dialog.destroyRecursive();
+                    workbench.focusLastWidget();
                 });
-                ui.dialog.destroyRecursive();
-                workbench.focusLastWidget();
             },
             onLoad: function () {
-                ui.content = $('#run-configuration-list-contentpane');
+                ui.contentArea = registry.byId('run-configuration-list-contentpane'); // FIXME choose jquery or dojo
                 if (selected.runConf) {
-                    delegator.loadConf(ui.content, selected.runConf);
+                    _removeContentArea();
+                    delegator.loadConf(ui.contentArea, selected.runConf, function (err, runConf, content) {
+                        _addContentArea(content);
+                    });
                 }
 
                 ui.btns.createNewButton = registry.byId('run-configuration-create-button');
-                dojo.connect(ui.btns.createNewButton, 'onClick', function () {
-                    // get project from selected context
-                    var projectName;
-                    var context = workbench.getContext();
-                    if (context.projectPath) {
-                        projectName = pathUtil.getName(context.projectPath) || undefined;
-                    }
-
-                    var runConfs = runConfManager.getAll();
-                    var unsaved = _.where(runConfs, {unsaved: true});
-                    if(!_.isEmpty(unsaved)){
-                        PopupDialog.yesno({
-                            title: title,
-                            message: 'You will may lose unsaved data. Are you sure to continue?',
-                            type: 'info'
-                        }).then(function () {
-                            delegator.newConf(ui.content, selected.type, projectName, function(error, newConf){
-                                if(!error){
-                                    selected.runConf = newConf;
-                                    module.refreshTree();
-                                }
-                            });
-                        });
-                    } else {
-                        delegator.newConf(ui.content, selected.type, projectName, function(error, newConf){
-                            if(!error){
-                                selected.runConf = newConf;
-                                module.refreshTree();
-                            }
-                        });
-                    }
-                });
-
                 ui.btns.deleteButton = registry.byId('run-configuration-delete-button');
-                dojo.connect(ui.btns.deleteButton, 'onClick', function() {
-                    if(selected.runConf) {
-                        PopupDialog.yesno({
-                            title: 'Delete ' + title,
-                            message: 'Are you sure you want to delete this configuration?',
-                            type: 'info'
-                        }).then(function () {
-                            delegator.deleteConf(ui.content, selected.runConf.name, function(error){
-                                if(!error) {
-                                    selected.runConf = undefined;
-                                    module.refreshTree();
-                                }
+
+                ui.contentArea.own(
+                    on(ui.btns.createNewButton, 'click', function () {
+                        // get project from selected context
+                        var projectName;
+                        var runConfs = runConfManager.getAll();
+                        var unsaved = _.where(runConfs, {unsaved: true});
+
+                        var context = workbench.getContext();
+                        if (context.projectPath) {
+                            projectName = pathUtil.getName(context.projectPath) || undefined;
+                        }
+
+                        if(!_.isEmpty(unsaved)){
+                            PopupDialog.yesno({
+                                title: title,
+                                message: 'You will may lose unsaved data. Are you sure to continue?',
+                                type: 'info'
+                            }).then(function () {
+                                _removeContentArea();
+                                delegator.newConf(ui.contentArea, selected.type, projectName,
+                                    function (err, runConf, content) {
+                                        if (!error) {
+                                            selected.runConf = newConf;
+                                            module.refreshTree();
+                                        }
+                                        _addContentArea(content);
+                                    });
                             });
-                        }, function () {
-                            toastr.info('Deletion canceled');
-                        });
-                    }
-                });
+                        } else {
+                            _removeContentArea();
+                            delegator.newConf(ui.contentArea, selected.type, projectName,
+                                function (error, newConf, content) {
+                                    if (!error) {
+                                        selected.runConf = newConf;
+                                        module.refreshTree();
+                                        _addContentArea(content);
+                                    }
+                                });
+                        }
+                    }),
+                    on(ui.btns.deleteButton, 'click', function() {
+                        if(selected.runConf) {
+                            PopupDialog.yesno({
+                                title: 'Delete ' + title,
+                                message: 'Are you sure you want to delete this configuration?',
+                                type: 'info'
+                            }).then(function () {
+                                _removeContentArea();
+                                delegator.deleteConf(ui.contentArea, selected.runConf.name,
+                                    function(error){
+                                        if(!error) {
+                                            selected.runConf = undefined;
+                                            module.refreshTree();
+                                            _addContentArea();
+                                        }
+                                    });
+                            }, function () {
+                                toastr.info('Deletion canceled');
+                            });
+                        }
+                    })
+                );
 
                 ui.btns.runButton = registry.byId('dialogRunButton');
                 if(!selected.runConf || selected.runConf.unsaved) {
@@ -285,50 +318,28 @@ define([
             return runConf.unsaved;
         });
         return _.isEmpty(unsavedConfs) ? '' : 'not been saved';
-
-        //ui.btns.saveButton = document.getElementsByClassName('rcw-action-save');
-        //if (!ui.btns.saveButton) {
-        //    return;
-        //}
-        //var i;
-        //for (i = 0; i < ui.btns.saveButton.length; i++) {
-        //    if ($(ui.btns.saveButton[i]).hasClass(css.classes.DISPLAY_NONE) === false) {
-        //        return 'not been saved';
-        //    }
-        //}
-        //
-        //ui.btns.saveButton = document.getElementsByClassName('rcw-action-newsave');
-        //if (!ui.btns.saveButton) {
-        //    return;
-        //}
-        //for (i = 0; i < ui.btns.saveButton.length; i++) {
-        //    if ($(ui.btns.saveButton[i]).hasClass(css.classes.DISPLAY_NONE) === false) {
-        //        return 'not been created';
-        //    }
-        //}
     }
 
     function isDuplicateRunName(name) {
         return runConfManager.getByName(name) ? true : false;
     }
 
-    function addButtonCssClass(button, size) {
-        button.bind('mouseover', function () {
-            button.addClass('rcw-button-hover-' + size);
-        });
-
-        button.bind('mouseout', function () {
-            button.removeClass('rcw-button-hover-' + size);
-            button.removeClass('rcw-button-push-' + size);
-        });
-
-        button.bind('mousedown', function () {
-            button.addClass('rcw-button-push-' + size);
-        });
-
-        button.bind('mouseup', function () {
-            button.removeClass('rcw-button-push-' + size);
-        });
+    function addButtonCssClass(container, button, size) {
+        container.own(
+            on(button, 'mouseover', function () {
+                $(button).addClass('rcw-button-hover-' + size);
+            }),
+            on(button, 'mouseout', function () {
+                $(button).removeClass('rcw-button-hover-' + size);
+                $(button).removeClass('rcw-button-push-' + size);
+            }),
+            on(button, 'mousedown', function () {
+                $(button).addClass('rcw-button-push-' + size);
+            }),
+            on(button, 'mouseup', function () {
+                $(button).removeClass('rcw-button-push-' + size);
+            })
+        );
     }
 
     function _makeConfigurationName(path) {
@@ -443,50 +454,10 @@ define([
         topic.publish('webida.ide.project-management.run:configuration.changed', 'save', selected.runConf);
     }
 
-    function deleteButtonClicked(run, markup) {
-        PopupDialog.yesno({
-            title: 'Delete Configuration',
-            message: 'Are you sure you want to delete this configuration?',
-            type: 'info'
-        }).then(function () {
-            ui.content.removeChild(markup);
-            delegator.deleteConf(run.name);
-
-        }, function () {
-            toastr.info('Deletion canceled');
-        });
-
-    }
-
-    module.loadConf = function($parent, runConfiguration, callback){
-        addRunToListPane(runConfiguration, callback);
-    };
-
-    module.saveConf = function(runConf, callback){
-        callback(null, runConf);
-    };
-
-    module.deleteConf = function(runConfName, callback){
-        callback(null, runConfName);
-    };
-
-    module.getWindowOpened = function(){
-        return windowOpened;
-    };
-
-
-    function addRunToListPane(runConf, callback) {
-        if(registry.byId('run-configuration-project')) {
-            registry.byId('run-configuration-project').destroyRecursive();
-        }
-        if(registry.byId('rcw-action-save')) {
-            registry.byId('rcw-action-save').destroyRecursive();
-        }
+    function _drawContentPane(runConf) {
         var markup = new ContentPane({
-           /* style: 'text-indent:20px; line-height:100%',*/
             content: contentTemplate
         });
-
         var child = markup.domNode;
         var title = $(child).find('.rcw-title-name');
 
@@ -497,26 +468,9 @@ define([
         }
         $(title).attr('title', runConf.name);
 
-        var runButtonNode = $(child).find('.rcw-title-run');
+        ui.btns.pathButton = $(child).find('.rcw-action-path').get(0);
 
-        addButtonCssClass(runButtonNode, '20');
-
-        runButtonNode.bind('mouseup', function () {
-            delegator.run(runConf);
-        });
-
-        var deleteButtonNode = $(child).find('.rcw-title-delete');
-        addButtonCssClass(deleteButtonNode, '20');
-
-        deleteButtonNode.bind('mouseup', function () {
-            deleteButtonClicked(runConf, markup);
-        });
-
-        /*ui.btns.saveButton = $(child).find('.rcw-action-save');
-        addButtonCssClass(ui.btns.saveButton, '24');*/
-
-        ui.btns.pathButton = $(child).find('.rcw-action-path');
-        addButtonCssClass(ui.btns.pathButton, '20');
+        addButtonCssClass(markup, ui.btns.pathButton, '20');
 
         ui.forms.inputBoxes = $(child).find('.rcw-content-table-inputbox-edit');
         ui.forms.inputBoxes[0].value = runConf.name ? runConf.name : '';
@@ -531,19 +485,14 @@ define([
         ui.forms.checkBoxes[0].checked = (runConf.liveReload) ? true : false;
 
         ui.btns.saveButton = registry.byId('rcw-action-save');
-        dojo.connect(ui.btns.saveButton, 'onClick', function () {
-            saveButtonClicked(title);
-        });
-
-        //ui.btns.saveButton.bind('mouseup', function () {
-        //    saveButtonClicked(title);
-        //});
-
-        ui.btns.pathButton.bind('mouseup', function () {
-            pathButtonClicked();
-        });
-
-        ui.content.append(child);
+        markup.own(
+            on(ui.btns.saveButton, 'click', function () {
+                saveButtonClicked(title);
+            }),
+            on(ui.btns.pathButton, 'click', function () {
+                pathButtonClicked();
+            })
+        );
 
         var projects = [];
         ide.getWorkspaceInfo(function(err, workspaceInfo){
@@ -562,10 +511,25 @@ define([
             }
         });
 
-        if(callback) {
-            callback();
-        }
+        return markup;
     }
+
+    module.loadConf = function (parent, runConfiguration, callback) {
+        var innerContent = _drawContentPane(runConfiguration);
+        callback(null, runConfiguration, innerContent);
+    };
+
+    module.saveConf = function (runConf, callback) {
+        callback(null, runConf);
+    };
+
+    module.deleteConf = function (runConfName, callback) {
+        callback(null, runConfName);
+    };
+
+    module.getWindowOpened = function () {
+        return windowOpened;
+    };
 
     return module;
 });

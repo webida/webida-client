@@ -42,7 +42,7 @@ define(['webida-lib/app',
 
     var MODE = {
         RUN_MODE: 'run',
-        DEBUG_MODE : 'debug'
+        DEBUG_MODE: 'debug'
     };
 
     var fsMount = ide.getFSCache();
@@ -56,7 +56,7 @@ define(['webida-lib/app',
     /**
      * load run configurations of all project from workspace.json file
      */
-    function loadRunConfigurations(callback){
+    function loadRunConfigurations(callback) {
 
         function readRunConfigurationFile(next) {
             fsMount.exists(PATH_RUN_CONFIG, function (err, exist) {
@@ -65,17 +65,18 @@ define(['webida-lib/app',
                     next(err);
                 } else if (exist) {
                     fsMount.readFile(PATH_RUN_CONFIG, function (err, content) {
+                        var workspaceObj;
                         if (err) {
                             next(err);
                             console.error('loadRunConfigurations:readFile:' + PATH_RUN_CONFIG, err);
                         } else if (content) {
-                            var workspaceObj = JSON.parse(content);
+                            workspaceObj = JSON.parse(content);
                             if (workspaceObj.run && Object.getOwnPropertyNames(workspaceObj.run).length > 0) {
                                 next(null, workspaceObj.run);
                             } else {
                                 next(null, {});
                             }
-                        }else{
+                        } else {
                             next(null, {});
                         }
                     });
@@ -116,50 +117,53 @@ define(['webida-lib/app',
     /**
      * flush updated run configurations to workspace.json file
      */
-    function flushRunConfigurations(callback){
+    function flushRunConfigurations(callback) {
         isFlushing = true;
-        _.each(runConfigurations, function(runConf){
-            if(runConf.unsaved){
+        _.each(runConfigurations, function (runConf) {
+            if (runConf.unsaved) {
+                var runConfsByProject = runConfigurationsByProject[runConf.project];
+                runConfigurationsByProject[runConf.project] = _.without(runConfsByProject,
+                    _.findWhere(runConfsByProject, {name: runConf.name}));
                 delete runConfigurations[runConf.name];
             }
         });
         var content = JSON.stringify({run: runConfigurations});
-        fsMount.writeFile(PATH_RUN_CONFIG, content, function(err){
+        fsMount.writeFile(PATH_RUN_CONFIG, content, function (err) {
             isFlushing = false;
-            if(err){
+            if (err) {
                 toastr.error(err);
                 console.error('flushRunConfigurations:writeFile', PATH_RUN_CONFIG);
             }
-            if(callback) {
+            if (callback) {
                 callback(err);
             }
         });
     }
 
-    function _getPathInfo(path){
+    function _getPathInfo(path) {
         var result = {};
-        if(!path){
+        if (!path) {
             return result;
         }
-        if(path.charAt(0) === '/'){
+        if (path.charAt(0) === '/') {
             path = path.substring(1);
         }
         var workspaceName = PATH_WORKSPACE.substring(1);
         var splitedPath = pathutil.detachSlash(path).split('/');
 
-        if(splitedPath.length > 0) {
+        if (splitedPath.length > 0) {
             result.name = splitedPath[splitedPath.length - 1];
             var distanceFromWorkspace = splitedPath.length - splitedPath.indexOf(workspaceName);
             if (distanceFromWorkspace <= splitedPath.length) {
                 result.isInWorkspace = true;
-                if(distanceFromWorkspace === 1){
+                if (distanceFromWorkspace === 1) {
                     result.type = 'workspace';
-                } else if(distanceFromWorkspace === 2 && result.name !== WORKSPACE_INFO_DIR_NAME) {
+                } else if (distanceFromWorkspace === 2 && result.name !== WORKSPACE_INFO_DIR_NAME) {
                     result.type = 'project';
                 } else if (distanceFromWorkspace === 2 && result.name === WORKSPACE_INFO_DIR_NAME) {
                     result.type = 'workspaceInfo';
-                } else if(distanceFromWorkspace === 3 && result.name === RUN_CONFIG_FILE_NAME &&
-                    splitedPath[splitedPath.indexOf(workspaceName) + 1] === WORKSPACE_INFO_DIR_NAME){
+                } else if (distanceFromWorkspace === 3 && result.name === RUN_CONFIG_FILE_NAME &&
+                    splitedPath[splitedPath.indexOf(workspaceName) + 1] === WORKSPACE_INFO_DIR_NAME) {
                     result.type = 'runConfig';
                 } else {
                     result.projectName = splitedPath[splitedPath.indexOf(workspaceName) + 1];
