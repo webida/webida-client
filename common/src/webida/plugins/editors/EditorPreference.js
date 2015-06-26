@@ -43,7 +43,7 @@ define([
 		this.storage = storage;
 		this.editorContext = editorContext;
 		this.listener = function (value, key) {
-	        that.setField(key, value);
+			that.setField(key, value);
 		}
 	}
 
