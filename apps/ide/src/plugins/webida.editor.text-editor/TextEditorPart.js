@@ -87,7 +87,7 @@ define([
 			context.setValue(this.file.savedValue);
 			context.clearHistory();
 			context.markClean();
-			context.setSize('100%', '99%'); //TODO: http://jira.score/browse/ODP-458
+			context.setSize(this.parent.offsetWidth, this.parent.offsetHeight);
 			context.setMatchBrackets(true);
 
             /* Invalid direct css manipulation. This causes ODP-423 bug. 
