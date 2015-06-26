@@ -21,9 +21,14 @@ define(['require',
         'other-lib/underscore/lodash.min',
         'webida-lib/plugins/workbench/preference-system/store',
         'webida-lib/util/keyCode',
-        'other-lib/toastr/toastr'],
-function (require, Deferred, when, all, _, prefStore, keyCode, toastr) {
+        'other-lib/toastr/toastr',
+        'webida-lib/util/logger/logger-client'],
+function (require, Deferred, when, all, _, prefStore, keyCode, toastr, Logger) {
     'use strict';
+
+	var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
 
     var emptyArr = [];
 
@@ -448,7 +453,7 @@ function (require, Deferred, when, all, _, prefStore, keyCode, toastr) {
                                 }
                             } else {
                                 if (isVisibleLocation(location)) {
-                                    console.warn('Location "' + newLocation +
+                                    logger.warn('Location "' + newLocation +
                                                  '" is outside of the predefined menu hierarchy.');
                                 }
                             }

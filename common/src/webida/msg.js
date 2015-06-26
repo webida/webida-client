@@ -32,8 +32,20 @@
 * It depends on socket.io in the path other-lib/socket.io/socket.io
 * @module msg
 */
-define(['./webida-0.3', 'other-lib/socket.io/socket.io'], function (webida, sio) {
+define([
+	'./webida-0.3', 
+	'other-lib/socket.io/socket.io',
+	'webida-lib/util/logger/logger-client'
+], function (
+	webida, 
+	sio,
+	Logger
+) {
     'use strict';
+
+	var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	logger.off();
 
     /**
      * user information
@@ -80,17 +92,17 @@ define(['./webida-0.3', 'other-lib/socket.io/socket.io'], function (webida, sio)
         }
 
         this.sock.on('connect', function () {
-            console.log('connected to the notify-server');
+            logger.log('connected to the notify-server');
         });
 
         this.sock.on('disconnect', function () {
-            console.log('disconnected');
+            logger.log('disconnected');
             //topicMgr.publish(topics.logout);
         });
 
         this.disconnect = function () {
             self.sock.disconnect();
-            console.log('try disconnecting...');
+            logger.log('try disconnecting...');
         };
 
         this.sendMsg = function (type, msg) {
@@ -144,12 +156,12 @@ define(['./webida-0.3', 'other-lib/socket.io/socket.io'], function (webida, sio)
 
     /* jshint camelcase: false */
     function msg_Ready(conn, msg) {
-        console.log('ready - ' + JSON.stringify(msg));
+        logger.log('ready - ' + JSON.stringify(msg));
         conn.sendMsg('auth', conn.user);
     }
 
     function msg_authAns(conn, msg) {
-        console.log('authAns - ' + JSON.stringify(msg));
+        logger.log('authAns - ' + JSON.stringify(msg));
         if (loginCallback) {
             if (msg.errcode.code === 0) {
                 loginCallback(null, msg.data);
@@ -161,19 +173,19 @@ define(['./webida-0.3', 'other-lib/socket.io/socket.io'], function (webida, sio)
     }
 
     function msg_subAns(conn, msg) {
-        console.log('subAns - ' + JSON.stringify(msg));
+        logger.log('subAns - ' + JSON.stringify(msg));
         var err = (msg.errcode.code === 0) ? null : new Error(msg.errcode.msg);
         taskMgr.popTask(msg.data.taskid, err, msg.data);
     }
 
     function msg_pubAns(conn, msg) {
-        console.log('pubAns - ' + JSON.stringify(msg));
+        logger.log('pubAns - ' + JSON.stringify(msg));
         var err = (msg.errcode.code === 0) ? null : new Error(msg.errcode.msg);
         taskMgr.popTask(msg.data.taskid, err, msg.data);
     }
 
     function msg_topicUserNtf(conn, msg) {
-        console.log('user ntf - ' + JSON.stringify(msg));
+        logger.log('user ntf - ' + JSON.stringify(msg));
 
         if (!msg.data.topic) {
             console.error('invalid topic:' + JSON.stringify(msg));
@@ -187,7 +199,7 @@ define(['./webida-0.3', 'other-lib/socket.io/socket.io'], function (webida, sio)
 
     function msg_topicSysNtf(conn, msg) {
 
-        console.log('system ntf - ' + JSON.stringify(msg));
+        logger.log('system ntf - ' + JSON.stringify(msg));
 
         if (!msg.data.topic) {
             console.error('invalid topic:' + JSON.stringify(msg));
@@ -201,7 +213,7 @@ define(['./webida-0.3', 'other-lib/socket.io/socket.io'], function (webida, sio)
     }
 
     function msg_userMsg(conn, msg) {
-        console.log('user msg - - ' + JSON.stringify(msg));
+        logger.log('user msg - - ' + JSON.stringify(msg));
 
         if (options && options.usermsg) {
             var xx = options.usermsg.bind(options);

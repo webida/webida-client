@@ -24,22 +24,35 @@
  *      });
  */
 
-/* global timedLogger: true */
+define([
+	'webida-lib/plugins/workbench/plugin',
+	'other-lib/underscore/lodash.min',
+	'dojo/topic',
+	'dijit/form/CheckBox',
+	'dijit/form/Button',
+	'text!./output-view.html',
+	'text!./templates/_tmplToolbar.html',
+	'webida-lib/widgets/views/view',
+	'webida-lib/util/logger/logger-client'
+], function (
+	workbench, 
+	_, 
+	topic, 
+	CheckBox, 
+	Button, 
+	consoleViewHtml, 
+	toolbarTmpl, 
+	View, 
+	Logger
+) {
+	'use strict';
 
-var time;
-define([(time = timedLogger.getLoggerTime(), 'webida-lib/plugins/workbench/plugin'),
-    'other-lib/underscore/lodash.min',
-    'dojo/topic',
-    'dijit/form/CheckBox',
-    'dijit/form/Button',
-    'text!./output-view.html',
-    'text!./templates/_tmplToolbar.html',
-    'webida-lib/widgets/views/view'
-],
-function (workbench, _, topic, CheckBox, Button, consoleViewHtml, toolbarTmpl, View) {
-    'use strict';
+	var singleLogger = new Logger.getSingleton();
+	//var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
 
-    time = timedLogger.log('loaded modules required by output. initializing output plugin\'s module', time);
+    singleLogger.log('loaded modules required by output. initializing output plugin\'s module');
 
     var consoleMgr;
     var mod = {};
@@ -459,7 +472,7 @@ function (workbench, _, topic, CheckBox, Button, consoleViewHtml, toolbarTmpl, V
 
     topic.subscribe('#REQUEST.log', mod.log);
 
-    timedLogger.log('initialized output plugin\'s module', time);
+    singleLogger.log('initialized output plugin\'s module');
 
     return mod;
 });

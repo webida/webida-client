@@ -19,10 +19,15 @@
  *
  */
 
-define([ 'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
-       ],
-function (preferences) {
+define([
+	'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
+	'webida-lib/util/logger/logger-client'
+], function (preferences, Logger) {
     'use strict';
+
+	var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
 
     // preferece value
     var PREFERENCE_AUTO_CONTENTS = 'preview:autoContentsChange';
@@ -35,7 +40,7 @@ function (preferences) {
         if (typeof value === 'boolean') {
             options[id] = value;
         } else {
-            console.log('Non-boolean value was tried to set an option ' + id + '. Ignored.');
+            logger.log('Non-boolean value was tried to set an option ' + id + '. Ignored.');
         }
     }
 

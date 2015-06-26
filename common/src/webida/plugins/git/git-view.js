@@ -19,11 +19,8 @@
  *
  */
 
-/* global timedLogger: true */
-
-var time;
 define([
-    (time = timedLogger.getLoggerTime(), 'dojo/topic'),
+    'dojo/topic',
     'webida-lib/plugins/workspace/plugin',
     './git-core',
     './gitview-log',
@@ -33,22 +30,31 @@ define([
     'webida-lib/widgets/views/viewToolbar',
     'webida-lib/util/path',
     'dijit/form/Button',
-    'require'
-], function (topic,
-              wv,
-              git,
-              gitviewlog,
-              toolbarContentTmpl,
-              workbench,
-              View,
-              ViewToolbar,
-              pathUtil,
-              Button,
-              require) {
+    'require',
+    'webida-lib/util/logger/logger-client'
+], function (
+	topic,
+	wv,
+	git,
+	gitviewlog,
+	toolbarContentTmpl,
+	workbench,
+	View,
+	ViewToolbar,
+	pathUtil,
+	Button,
+	require,
+	Logger
+) {
 
     'use strict';
 
-    time = timedLogger.log('loaded modules required by git-view. initializing git-view\'s module', time);
+	var singleLogger = new Logger.getSingleton();
+	//var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
+
+    singleLogger.log('loaded modules required by git-view. initializing git-view\'s module');
 
     var oldGitDir = null;
     function _displayGitView(path) {
@@ -294,7 +300,7 @@ define([
         });
     }
 
-    timedLogger.log('initialized git-view\'s module', time);
+    singleLogger.log('initialized git-view\'s module');
 
     return {
         getView: getView,

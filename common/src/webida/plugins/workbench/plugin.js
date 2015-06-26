@@ -23,47 +23,51 @@
  * Src:
  */
 
-/* global timedLogger: true */
-
-var time;
-define([(time = timedLogger.getLoggerTime(), 'other-lib/underscore/lodash.min'), 'require',
-        'webida-lib/plugin-manager-0.1',                         // pm
-        './job-manager', // jobManager
-        './views-controller', // jobManager
-        './command-system/MenuItemTree',          // MenuItemTree
-        './command-system/context-menu',          // contextMenu
-        './command-system/top-level-menu',        // menubar
-        './command-system/toolbar',               // toolbar
-        'dojo/text!./workbench.html',             // markup
-        'webida-lib/widgets/views/viewmanager',   // vm
-        'dijit/focus',
-        'dojo/topic',
-        'dojo/dom',
-        'dojo/dom-class',                         // domClass
-       ],
-function (_, require,
-           pm,
-           jobManager,
-           viewsController,
-           MenuItemTree,
-           contextMenu,
-           menubar,
-           toolbar,
-           markup,
-           vm,
-           focus,
-           topic,
-           dom,
-           domClass
+define([
+	'other-lib/underscore/lodash.min',
+	'webida-lib/util/logger/logger-client', 
+	'require',
+    'webida-lib/plugin-manager-0.1',                         // pm
+    './job-manager', // jobManager
+    './views-controller', // jobManager
+    './command-system/MenuItemTree',          // MenuItemTree
+    './command-system/context-menu',          // contextMenu
+    './command-system/top-level-menu',        // menubar
+    './command-system/toolbar',               // toolbar
+    'dojo/text!./workbench.html',             // markup
+    'webida-lib/widgets/views/viewmanager',   // vm
+    'dijit/focus',
+    'dojo/topic',
+    'dojo/dom',
+    'dojo/dom-class',                         // domClass
+], function (
+	_,
+	Logger, 
+	require,
+	pm,
+	jobManager,
+	viewsController,
+	MenuItemTree,
+	contextMenu,
+	menubar,
+	toolbar,
+	markup,
+	vm,
+	focus,
+	topic,
+	dom,
+	domClass
          )
 {
     'use strict';
 
-    time = timedLogger.log('loaded modules required by workbench. initializing workbench plugin\'s module', time);
+	var singleLogger = new Logger.getSingleton();
+	//var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
 
     //console.log('hina: Loading workbench module');
 
-    var time2 = time;
     var menuItemTrees = {};
 
     var topElem, elem, elemTopPanel, elemCenterPanel;
@@ -74,17 +78,17 @@ function (_, require,
 
     jobManager.init();
 
-    time2 = timedLogger.log('(a) in initialization of workbench module', time2);
+    singleLogger.log('(a) in initialization of workbench module');
 
     elem = document.getElementById('app-workbench-border-container');
     viewsController.initialize(elem);
 
-    time2 = timedLogger.log('(b) in initialization of workbench module', time2);
+    singleLogger.log('(b) in initialization of workbench module');
 
     elemTopPanel = document.getElementById('app-workbench-top-panel');
     elemCenterPanel = document.getElementById('app-workbench-center-panel');
 
-    time2 = timedLogger.log('(c) in initialization of workbench module', time2);
+    singleLogger.log('(c) in initialization of workbench module');
 
 
     // extensions of webida.common.workbench:menu
@@ -94,7 +98,7 @@ function (_, require,
     var menuItemTree = new MenuItemTree(predefinedHierarchy, exts, topElem, 'workbench',
                                        pm.getAppConfig('webida.common.workbench').menuSystem);
 
-    time2 = timedLogger.log('(d) in initialization of workbench module', time2);
+    singleLogger.log('(d) in initialization of workbench module');
 
     if (menuItemTree instanceof Error) {
         alert('Failed to initialize the top-level menu: ' + menuItemTree.message);
@@ -111,18 +115,19 @@ function (_, require,
         /*
         window.setTimeout(function() {
             menuItemTree.getViableItems(function () {
-                timedLogger.log('(Y) loading modules contributing to the top-level menu done');
+                singleLogger.log('(Y) loading modules contributing to the top-level menu done');
             });
         }, 7);
          */
         topic.subscribe('app.showing', function () {
             menuItemTree.getViableItems(function () {
-                timedLogger.log('(Y) loading modules contributing to the top-level menu done');
+                singleLogger.log('(Y) loading modules contributing to the top-level menu done');
+                singleLogger.log('%c*** Loading Time = '+singleLogger.getDuration()+' ***', 'color:green');
             });
         });
     }
 
-    time2 = timedLogger.log('(e) in initialization of workbench module', time2);
+    singleLogger.log('(e) in initialization of workbench module');
 
     var regionsToInitialize;
     var regionsInitialized = 0;
@@ -177,7 +182,7 @@ function (_, require,
 
     });
 
-    time2 = timedLogger.log('(f) in initialization of workbench module', time2);
+    singleLogger.log('(f) in initialization of workbench module');
 
     // extensions of webida.common.workbench:views
     var locations1 = ['top', 'left', 'right', 'bottom', 'center'];
@@ -223,7 +228,7 @@ function (_, require,
 
     });
 
-    time2 = timedLogger.log('(g) in initialization of workbench module', time2);
+    singleLogger.log('(g) in initialization of workbench module');
 
     if (regionsToInitialize === 0) {
         topic.publish('#REQUEST.showApp');
@@ -310,7 +315,7 @@ function (_, require,
         }
     });
 
-    time2 = timedLogger.log('(h) in initialization of workbench module', time2);
+    singleLogger.log('(h) in initialization of workbench module');
 
     // add bubble event handler to the extensions of webida.common.workbench:shortcutList
     exts = pm.getExtensions('webida.common.workbench:shortcutList');
@@ -336,7 +341,7 @@ function (_, require,
         });
     });
 
-    time2 = timedLogger.log('(i) in initialization of workbench module', time2);
+    singleLogger.log('(i) in initialization of workbench module');
 
     function addContextMenuHandler(pluginName, menuExtPoint, elem) {
         if (menuExtPoint === 'webida-lib/plugins/_extension-points/menu.json') {
@@ -428,9 +433,9 @@ function (_, require,
         }
     }
 
-    timedLogger.log('(j) in initialization of workbench module', time2);
+    singleLogger.log('(j) in initialization of workbench module');
 
-    timedLogger.log('initialized workbench plugin\'s module', time);
+    singleLogger.log('initialized workbench plugin\'s module');
 
     return {
         appendView : function (view, location) {

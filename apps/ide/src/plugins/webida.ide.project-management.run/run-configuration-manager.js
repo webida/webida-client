@@ -26,9 +26,14 @@ define(['webida-lib/app',
         'webida-lib/plugins/workspace/plugin',
         'other-lib/async',
         'other-lib/underscore/lodash.min',
-        'other-lib/toastr/toastr'
-], function (ide, pathutil, topic, workspace, async, _, toastr) {
+        'other-lib/toastr/toastr',
+        'webida-lib/util/logger/logger-client'
+], function (ide, pathutil, topic, workspace, async, _, toastr, Logger) {
     'use strict';
+
+	var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	logger.off();
 
     var PATH_WORKSPACE = ide.getPath();
     var WORKSPACE_INFO_DIR_NAME = '.workspace';
@@ -61,13 +66,13 @@ define(['webida-lib/app',
         function readRunConfigurationFile(next) {
             fsMount.exists(PATH_RUN_CONFIG, function (err, exist) {
                 if (err) {
-                    console.error('loadRunConfigurations:exist:' + PATH_RUN_CONFIG, err);
+                    logger.error('loadRunConfigurations:exist:' + PATH_RUN_CONFIG, err);
                     next(err);
                 } else if (exist) {
                     fsMount.readFile(PATH_RUN_CONFIG, function (err, content) {
                         if (err) {
                             next(err);
-                            console.error('loadRunConfigurations:readFile:' + PATH_RUN_CONFIG, err);
+                            logger.error('loadRunConfigurations:readFile:' + PATH_RUN_CONFIG, err);
                         } else if (content) {
                             var workspaceObj = JSON.parse(content);
                             if (workspaceObj.run && Object.getOwnPropertyNames(workspaceObj.run).length > 0) {
@@ -103,7 +108,7 @@ define(['webida-lib/app',
                                 }
                             });
                         }
-                        console.log('loadRunConfigurations success', runConfigurations, runConfigurationsByProject);
+                        //logger.log('loadRunConfigurations success', runConfigurations, runConfigurationsByProject);
                     }
                     if (callback) {
                         callback(err);
@@ -128,7 +133,7 @@ define(['webida-lib/app',
             isFlushing = false;
             if(err){
                 toastr.error(err);
-                console.error('flushRunConfigurations:writeFile', PATH_RUN_CONFIG);
+                logger.error('flushRunConfigurations:writeFile', PATH_RUN_CONFIG);
             }
             if(callback) {
                 callback(err);
@@ -205,7 +210,7 @@ define(['webida-lib/app',
 
     function addListeners(){
         topic.subscribe('sys.fs.node.moved', function(uid, sid, src, dest){
-            console.log('sys.fs.node.moved', arguments);
+            logger.log('sys.fs.node.moved', arguments);
             var srcPathInfo = _getPathInfo(src);
             var destPathInfo = _getPathInfo(dest);
             if(srcPathInfo.type === 'project' && destPathInfo.type === 'project'){
@@ -217,7 +222,7 @@ define(['webida-lib/app',
         });
 
         topic.subscribe('fs.cache.file.set', function (fsURL, target/*, type, maybeModified*/) {
-            console.log('fs.cache.file.set', arguments);
+            logger.log('fs.cache.file.set', arguments);
             var targetPathInfo = _getPathInfo(target);
             if(targetPathInfo.type === 'runConfig'){
                 require(['plugins/webida.ide.project-management.run/view-controller'], function(viewController){
@@ -230,12 +235,12 @@ define(['webida-lib/app',
         });
 
         topic.subscribe('projectWizard.created', function (targetDir, projectName) {
-            console.log('projectWizard.created', arguments);
+            logger.log('projectWizard.created', arguments);
             projectActions.addNewProject(projectName);
         });
 
         topic.subscribe('fs.cache.node.added', function (fsURL, targetDir, name, type, created) {
-            console.log('fs.cache.node.added', arguments);
+            logger.log('fs.cache.node.added', arguments);
             if (!created || type !== 'dir') {
                 return;
             }
@@ -247,7 +252,7 @@ define(['webida-lib/app',
         });
 
         topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
-            console.log('fs.cache.node.deleted', arguments);
+            logger.log('fs.cache.node.deleted', arguments);
             if (type !== 'dir') {
                 return;
             }

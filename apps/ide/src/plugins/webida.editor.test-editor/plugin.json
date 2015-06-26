@@ -7,7 +7,7 @@
 
         "webida.common.editors:editor" : {
             "name" : "Test Editor",
-            "editorPart" : "TestEditor",
+            "editorPart" : "TestEditorPart",
             "fileValueRequired" : true,
             "handledFileExt" : [ "test" ],
             "handledMimeTypes" : [],

@@ -28,16 +28,23 @@ define([(t = timedLogger.getLoggerTime(), 'require'),
         'webida-lib/widgets/views/viewToolbar',       // ViewToolbar
         'text!./layout/preview.html',                 // previewTemplate
         'text!./layout/preview-toolbar.html',         // previewToolbarTemplate
+        'webida-lib/util/logger/logger-client'
        ],
 function (require,
           workbench,
           View,
           ViewToolbar,
           previewTemplate,
-          previewToolbarTemplate) {
+          previewToolbarTemplate,
+          Logger) {
     'use strict';
 
-    t = timedLogger.log('loaded modules required by preview. initializing preview\'s module', t);
+	var singleLogger = new Logger.getSingleton();
+	//var logger = new Logger.getSingleton();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
+
+    singleLogger.log('loaded modules required by preview. initializing preview\'s module');
 
     var previewView;
     function getView() {
@@ -66,7 +73,7 @@ function (require,
         require(['./preview-pref-values', './preview-commands'], function () { });
     }
 
-    timedLogger.log('initialized preview\'s module', t);
+    singleLogger.log('initialized preview\'s module');
 
     return {
         getView: getView,

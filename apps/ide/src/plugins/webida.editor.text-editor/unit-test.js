@@ -1,5 +1,5 @@
 /* global QUnit */
-require(['editors/webida.editor.text-editor/TextEditorPart'], function (TextEditorPart) {
+require(['plugins/webida.editor.text-editor/TextEditorPart'], function (TextEditorPart) {
     'use strict';
     var editor = new TextEditorPart();
     QUnit.test('editor API Validation', function (assert) {

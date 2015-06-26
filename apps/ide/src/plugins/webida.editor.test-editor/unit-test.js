@@ -1,7 +1,7 @@
 /* global QUnit */
-require(['testEditors/webida.editor.test-editor/TestEditor'], function (TestEditor) {
+require(['plugins/webida.editor.test-editor/TestEditorPart'], function (TestEditorPart) {
     'use strict';
-    var testEditor = new TestEditor();
+    var testEditor = new TestEditorPart();
     QUnit.test('TestEditor API Validation', function (assert) {
         assert.ok(typeof testEditor.create === 'function', 'create() method exists');
 		assert.ok(typeof testEditor.destroy === 'function', 'destroy() method exists');

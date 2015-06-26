@@ -32,10 +32,15 @@ define([
     function Logger() {
         LoggerInterface.apply(this, arguments);
         this.setFormater(formater);
-        this.setConfigs(clientConfig);      
+        this.setConfigs(clientConfig);
+        this.startMS = (new Date()).getTime();
     }
     Logger.prototype = Object.create(LoggerInterface.prototype);
     Logger.prototype.constructor = Logger;
+
+	Logger.prototype.getDuration = function () {
+		return (new Date()).getTime() - this.startMS;
+	};
 
     function formater(args, action, logger) {
 

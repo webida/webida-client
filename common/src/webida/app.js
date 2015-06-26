@@ -35,8 +35,11 @@ define(['webida-lib/util/browserInfo',
     'use strict';
     /* global timedLogger: true */
 
-    var logger = new Logger();
-    
+	var singleLogger = new Logger.getSingleton();
+	var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
+
     var exports = {};
 
     var fsid = null;
@@ -54,9 +57,9 @@ define(['webida-lib/util/browserInfo',
 
     // loading screen
     topic.subscribe('#REQUEST.showApp', function () {
-        timedLogger.log('showApp request');
+        logger.log('showApp request');
         setTimeout(function () {
-            timedLogger.log('Hiding loading screen');
+            logger.log('Hiding loading screen');
             topic.publish('app.showing');
             loadingScreen.hideLoadingScreen();
         }, 200);
@@ -110,7 +113,6 @@ define(['webida-lib/util/browserInfo',
             accum[(failed ? ERROR_KEY_PREFIX : '') + key] = lastStatus;
         });
         var statusString = JSON.stringify(accum);
-        //  console.log('hina: statusString = ' + statusString);
 
         return lastSaved === statusString ? null : statusString;
     }
@@ -135,13 +137,10 @@ define(['webida-lib/util/browserInfo',
                 return 'XHR error: ' + e;
             }
 
-            //console.log('hina temp: in saveStatusSync(): ');
-            //console.log('hina temp:     status = ' + xhr.status);
-            //console.log('hina temp:     responseText = ' + xhr.responseText);
             try {
                 retData = JSON.parse(xhr.responseText);
             } catch (e) {
-                console.error('error while parsing responseText ' + xhr.responseText);
+                logger.error('error while parsing responseText ' + xhr.responseText);
                 retData = { result: 'failed',
                             reason: 'Invalid server return (' + xhr.responseText + ')' };
             }
@@ -167,7 +166,7 @@ define(['webida-lib/util/browserInfo',
                         eb();
                     }
                 } else {
-                    console.log('Saving App status succeeded');
+                    logger.log('Saving App status succeeded');
                     lastSaved = statusString;
                     if (cb) {
                         cb();
@@ -193,11 +192,10 @@ define(['webida-lib/util/browserInfo',
      * @returns {undefined}
      */
     function startup(clientID, redirectUrl, options) {
-        logger.log('%c*** Starting Open Development Platform ***', 'color:green');
+        singleLogger.log('%c*** Starting Open Development Platform ***', 'color:green');
         function proceed() {
             var currentURI = URI(window.location.href);
             var workspaceInfo = currentURI.search(true).workspace;
-            console.log('workspaceInfo', workspaceInfo);
             if (!workspaceInfo || workspaceInfo.length === 0 || workspaceInfo.split('/').length < 2) {
                 require(['popup-dialog'], function (PopupDialog) {
                     PopupDialog.alert({
@@ -239,7 +237,7 @@ define(['webida-lib/util/browserInfo',
 
     function init(appPath, workspacePath, options) {
 
-        var time = timedLogger.log('(A) initializing app');
+        singleLogger.log('(A) initializing app');
 
         //console.log('hina temp: appPath = <' + appPath + '>');
         //console.log('hina temp: workspacePath = <' + workspacePath + '>');
@@ -297,24 +295,24 @@ define(['webida-lib/util/browserInfo',
         // read last status file and set appLastStatus
         // (this must be done before loading any plugin)
         function restoreLastStatusOfApp() {
-            time = timedLogger.log('(B) verified the workspace', time);
+            singleLogger.log('(B) verified the workspace');
             mount.readFile(path + lastStatusFile, function (err, content) {
                 if (err) {
-                    time = timedLogger.log('(C) not read last status file (' + err + ')', time);
+                    singleLogger.log('(C) not read last status file (' + err + ')');
                 } else {
                     try {
                         appLastStatus = JSON.parse(content);
                         lastSaved = content;
                     } catch (e) {
-                        console.log('An exception while parsing last status of the App: ' + e.toString());
+                        logger.log('An exception while parsing last status of the App: ' + e.toString());
                     }
-                    time = timedLogger.log('(C) read and parsed last status file', time);
+                    singleLogger.log('(C) read and parsed last status file');
                 }
 
                 if (appLastStatus) {
                     Object.keys(appLastStatus).forEach(function (key) {
                         if (key.indexOf(ERROR_KEY_PREFIX) === 0) {
-                            console.log('lastStatus[' + key + '] = ', appLastStatus[key]);
+                            logger.log('lastStatus[' + key + '] = ', appLastStatus[key]);
                         }
                     });
                 }
@@ -329,10 +327,10 @@ define(['webida-lib/util/browserInfo',
             });
 
             fsCache.start(lastStatus);
-            time = timedLogger.log('(D) started fs-cache', time);
+            singleLogger.log('(D) started fs-cache');
 
             fsCache.refreshHierarchy(path + '/', { level: -1 }, function () {
-                timedLogger.log('(Z) refreshed fs-cache', time);
+                singleLogger.log('(Z) refreshed fs-cache');
                 connectToConnServer();
             });
 
@@ -343,7 +341,7 @@ define(['webida-lib/util/browserInfo',
             // initialize plug-ins
             pm.initPlugins(appPath, workspacePath, function () {
 
-                timedLogger.log('(E) initialized plug-ins', time);
+                singleLogger.log('(E) initialized plug-ins');
 
                 // TODO: is the following necessary?
                 // suppress DnD on the window (but, an inner element can accept DnD).
@@ -358,27 +356,27 @@ define(['webida-lib/util/browserInfo',
         function connectToConnServer() {
             webida.auth.getMyInfo(function (e, data) {
                 if (e) {
-                    console.error('getMyInfo error: ' + e);
+                    logger.error('getMyInfo error: ' + e);
                 } else {
                     var loginCB = function (err, user) {
                         if (err) {
-                            console.error('failed to connect to conn server');
+                            logger.error('failed to connect to conn server');
                         } else {
-                            console.log('connected to conn server');
+                            logger.log('connected to conn server');
 
                             // sys.fs.change notification subscribe
                             webida.acl.getAuthorizedRsc('fs:readFile', function (err, topics) {
                                 if (err) {
-                                    console.error('getAuthorizedRsc: ', err);
+                                    logger.error('getAuthorizedRsc: ', err);
                                 } else {
                                     var scope = 'sys.fs.change:';
                                     topics.forEach(function (value, index) {
                                         topics[index] = scope + value;
                                     });
                                     msgAgent.sub2(user, topics, function (err, msg) {
-                                        console.log(JSON.stringify(msg));
+                                        //logger.log(JSON.stringify(msg));
                                         if (err) {
-                                            console.error('failed to subacribe topics with ' + JSON.stringify(msg));
+                                            logger.error('failed to subacribe topics with ' + JSON.stringify(msg));
                                         }
                                     });
                                 }
@@ -391,9 +389,9 @@ define(['webida-lib/util/browserInfo',
                             aclTopics.push(aclScope + workspaceInfo);
                             aclTopics.push(aclScope + workspaceInfo.split('/')[0] + '/*');
                             msgAgent.sub2(user, aclTopics, function (err, msg) {
-                                console.log(JSON.stringify(msg));
+                                logger.log(JSON.stringify(msg));
                                 if (err) {
-                                    console.error('failed to subacribe acl topics with ' + JSON.stringify(msg));
+                                    logger.error('failed to subacribe acl topics with ' + JSON.stringify(msg));
                                 }
                             });
                         }
@@ -495,7 +493,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             default:
-                                console.warn('unknown eventType in system notification data: ' +
+                                logger.warn('unknown eventType in system notification data: ' +
                                              data.eventType);
                             }
 
@@ -507,7 +505,7 @@ define(['webida-lib/util/browserInfo',
                         msgAgent.init(data.uid, webida.auth.getTokenObj().data,
                             webida.conf.connServer, callbacks, loginCB);
                     } catch (e) {
-                        console.error('Failed to initialize message agent', e);
+                        logger.error('Failed to initialize message agent', e);
                     }
                 }
             });
@@ -613,10 +611,10 @@ define(['webida-lib/util/browserInfo',
      * @returns {object} the object which the callback function returned at the last unload of the App.
      */
     function registerStatusContributorAndGetLastStatus(key, contributor) {
-        timedLogger.log('entering registerStatusContributorAndGetLastStatus() with a key ' + key);
+        logger.log('entering registerStatusContributorAndGetLastStatus() with a key ' + key);
 
         if (lastStatusContributors[key]) {
-            console.log('A last status contributor function was already registed with the key \'' + key + '\'');
+            logger.log('A last status contributor function was already registed with the key \'' + key + '\'');
             return null;
         } else {
             lastStatusContributors[key] = contributor;
@@ -636,13 +634,13 @@ define(['webida-lib/util/browserInfo',
             window.opener = window;
             window.close();
         } catch (e) {
-            console.log('First try to close App failed', e);
+            logger.log('First try to close App failed', e);
 
             try {
                 window.open('', '_self', '');
                 window.close();
             } catch (e) {
-                console.log('Second try to close App failed', e);
+                logger.log('Second try to close App failed', e);
             }
         }
     }
