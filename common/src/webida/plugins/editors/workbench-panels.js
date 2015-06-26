@@ -35,7 +35,7 @@ define(['./plugin',
     }
 
     function onPanelAppended() {
-        var $elemTab = $('<div id="editor-tab" style="width:100%; height:100%"class="editor-tab"></div>');
+        var $elemTab = $('<div id="editor-tab" style="width:100%; height:100%" class="editor-tab"></div>');
         $(editors.elem).append($elemTab);
 
         editors.splitViewContainer = new SplitViewContainer();
@@ -50,8 +50,8 @@ define(['./plugin',
         topic.subscribe('editor-panel-resize', function () {
             var borderContainer = editors.splitViewContainer.widgetObject;
             var children = borderContainer.getChildren();
-            var totalW = 0;
-            var totalH = 0;
+            var totalW = 5;  // including margin and splitter size
+            var totalH = 5;  // including margin and splitter size
             var width, height;
             var child;
             var i;
@@ -66,8 +66,8 @@ define(['./plugin',
                 child = children[i];
                 width = geometry.getMarginBox(child.domNode).w;
                 height = geometry.getMarginBox(child.domNode).h;
-                ratioW =  parseInt((width * 100 / totalW) + 0.5, 10) + '%';
-                ratioH =  parseInt((height * 100 / totalH) + 0.5, 10) + '%';
+                ratioW = ((width - 2) * 100 / totalW) + '%';
+                ratioH = ((height - 2) * 100 / totalH) + '%';
                 //console.log('total : ' +totalW+ ', content : '+ i  + ' : ' + width + ', ratio : '+ratioW);
                 if (child.get('region') === 'right') {
                     if ($(child.domNode).css('width').split('%').length > 1) {
