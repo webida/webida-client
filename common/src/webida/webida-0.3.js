@@ -72,27 +72,37 @@ var ENV_TYPE;
         }
     }
 
-    // if you want to use WEBIDA_HOST_URL..
-    // then you should define the varibles before including this js file or define using browser extension
+    function getParamByName(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+        results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    function prependSubDomain(subdomain, url) {
+        return url.replace('//', '//' + subdomain + '.');
+    }
+
+    function getHostParam(paramName, subdomain, webidaHost) {
+        var globalVarName = paramName.replace('.', '_');
+        var hostUrl = (typeof window !== 'undefined' && window[globalVarName]) ||
+            getParamByName(paramName) ||
+            readCookie(paramName) ||
+            prependSubDomain(subdomain, webidaHost);
+        return hostUrl;
+    }
+
     var mod = {};
-    var webidaHost = (typeof window !== 'undefined' && window.WEBIDA_HOST_URL) ||
-        readCookie('webida.host') || 'https://webida.org';
-    var fsServer = (typeof window !== 'undefined' && window.WEBIDA_FS_SERVER_URL) ||
-        readCookie('webida.fsHostUrl') || 'https://fs.webida.org';
-    var authServer = (typeof window !== 'undefined' && window.WEBIDA_AUTH_SERVER_URL) ||
-        readCookie('webida.authHostUrl') || 'https://auth.webida.org';
-    var appServer = (typeof window !== 'undefined' && window.WEBIDA_APP_SERVER_URL)  ||
-        readCookie('webida.appHostUrl') || 'https://app.webida.org';
-    var buildServer = (typeof window !== 'undefined' && window.WEBIDA_BUILD_SERVER_URL) ||
-        readCookie('webida.buildHostUrl') || 'https://build.webida.org';
-    var dbServer = (typeof window !== 'undefined' && window.WEBIDA_DB_SERVER_URL) ||
-        readCookie('webida.dbHostUrl') || 'https://db.webida.org';
-    var ntfServer = (typeof window !== 'undefined' && window.WEBIDA_NTF_SERVER_URL) ||
-        readCookie('webida.ntfHostUrl') || 'https://ntf.webida.org';
-    var corsServer = (typeof window !== 'undefined' && window.WEBIDA_CORS_SERVER_URL) ||
-        readCookie('webida.corsHostUrl') || 'https://cors.webida.org';
-    var connServer = (typeof window !== 'undefined' && window.WEBIDA_CONN_SERVER_URL) ||
-        readCookie('webida.connHostUrl') || 'https://conn.webida.org';
+    var webidaHost = (typeof window !== 'undefined' && window && window.webida_host) ||
+        getParamByName('webida.host') || readCookie('webida.host') || 'https://webida.org';
+    var fsServer = getHostParam('webida.fsHostUrl', 'fs', webidaHost);
+    var authServer = getHostParam('webida.authHostUrl', 'auth', webidaHost);
+    var appServer = getHostParam('webida.appHostUrl', 'app', webidaHost);
+    var buildServer = getHostParam('webida.buildHostUrl', 'build', webidaHost);
+    var dbServer = getHostParam('webida.dbHostUrl', 'db', webidaHost);
+    var ntfServer = getHostParam('webida.ntfHostUrl', 'ntf', webidaHost);
+    var corsServer = getHostParam('webida.corsHostUrl', 'cors', webidaHost);
+    var connServer = getHostParam('webida.connHostUrl', 'conn', webidaHost);
 
     var deploy = {
         type: readCookie('webida.deploy.type') || 'domain',
@@ -283,7 +293,7 @@ var ENV_TYPE;
             //    if (m[1] === 'access_token') {
             //        window.removeEventListener('message', receiveMsg);
             //        alreadyRequested = false;
-            //        cb(m[2]);	// m[2] is the token
+            //        cb(m[2]);    // m[2] is the token
             //        break;
             //    }
             //}
