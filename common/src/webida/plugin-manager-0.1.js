@@ -28,12 +28,17 @@ define(['webida-lib/webida-0.3',
         'other-lib/URIjs/URI',
         'dojo/promise/all',
         'dojo/request',
-        'dojo/topic'
+        'dojo/topic',
+        'webida-lib/util/logger/logger-client'
        ],
-function (webida, _, URI, all, request, topic) {
+function (webida, _, URI, all, request, topic, Logger) {
 
     'use strict';
 
+	var singleLogger = new Logger.getSingleton();
+	var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
     var wholePlugins = {}; // including disabled ones.
     var activePlugins = {};
     var wholeEP = {}, activeEP = {};
@@ -436,7 +441,7 @@ function (webida, _, URI, all, request, topic) {
                         //console.log('config.json read succ for ' + pluginName + ': ' + data);
                         return data;
                     }, function (err) {
-                        console.warn('config.json read err for ' + pluginName + ': ' + err);
+                        logger.warn('config.json read err for ' + pluginName + ': ' + err);
                         return '{}';
                     });
                     promises[pluginName] = promise;
@@ -469,7 +474,7 @@ function (webida, _, URI, all, request, topic) {
                     });
                     modules = _.uniq(modules);
                     require(modules, function () {
-                        console.log('Loaded start plug-ins');
+                        singleLogger.log('Loaded start plug-ins');
 
                         // callback
                         if (nextJob) {

@@ -22,10 +22,7 @@
  *
  */
 
-/* global timedLogger: true */
-
-var time;
-define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
+define(['webida-lib/app',
         'webida-lib/plugins/workbench/preference-system/store',	// TODO: issue #12055
         'webida-lib/plugins/workbench/plugin',
         'webida-lib/webida-0.3',
@@ -58,15 +55,21 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
         'other-lib/toastr/toastr',
         'other-lib/underscore/lodash.min',
         'other-lib/async',
-        'require'
+        'require',
+        'webida-lib/util/logger/logger-client'
 ], function (ide, preferences, workbench, webida, dijit, registry, Tree,
               ObjectStoreModel, aspect, array, connect, lang, Deferred, dom,
               domAttr, domClass, domConstruct, domGeom, domStyle, on, all,
              Memory, Observable, topic, win, Node, markup, View, pathUtil,
-              PopupDialog, toastr, _, async, require) {
+              PopupDialog, toastr, _, async, require, Logger) {
     'use strict';
 
-    time = timedLogger.log('loaded modules required by workspace. initializing workspace plugin\'s module', time);
+	var singleLogger = new Logger.getSingleton();
+	//var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
+
+    singleLogger.log('loaded modules required by workspace. initializing workspace plugin\'s module');
 
     var view, tree;
     var rootNode;
@@ -1496,7 +1499,7 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
         upload: upload
     };
 
-    timedLogger.log('initialized workspace plugin\'s module', time);
+    singleLogger.log('initialized workspace plugin\'s module');
 
     return workspaceView;
 });

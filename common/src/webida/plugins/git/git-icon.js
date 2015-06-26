@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 
-define(['require',
+define([
+	'require',
     'dojo/topic',
     'webida-lib/plugins/workspace/plugin',
     './git-core',
     'webida-lib/app',
     'webida-lib/util/path',
-    'other-lib/toastr/toastr'],
-function (require, topic, wv, git, ide, pathUtil, toastr) {
+    'other-lib/toastr/toastr',
+    'webida-lib/util/logger/logger-client'
+], function (
+	require, 
+	topic, 
+	wv, 
+	git, 
+	ide, 
+	pathUtil, 
+	toastr, 
+	Logger
+) {
 
     'use strict';
-    /* global timedLogger: true */
+
+	var singleLogger = new Logger.getSingleton();
+	//var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
 
     var THROTTLE_DELAY = 100;
     var EMPTY_MAP = {};
@@ -187,16 +202,13 @@ function (require, topic, wv, git, ide, pathUtil, toastr) {
             }
         }
 
-        //var t = timedLogger.log('setting icon info for repo "' + repoPath + '"');
-        var t = timedLogger.getLoggerTime();
-
         if (wv.exists(repoPath)) {
             setIconInfoOfSubnodes(repoPath);
         } else {
             console.warn('The node ' + repoPath + ' was gone during the throttle delay');
         }
 
-        timedLogger.log('done with setting icon info for repo "' + repoPath + '"', t);
+        singleLogger.log('done with setting icon info for repo "' + repoPath + '"');
     }
 
     function callSetIconInfo(repoPath) {
@@ -206,9 +218,9 @@ function (require, topic, wv, git, ide, pathUtil, toastr) {
                 setIconInfo(repoPath, update.pathToCode);
                 pendingIconUpdates[repoPath] = null;
             } else {
-                var t = timedLogger.log('sending git status request for ' + repoPath);
+                singleLogger.log('sending git status request for ' + repoPath);
                 git.exec(repoPath, ['status', '--ignored', '-z'], function (err, stdout, stderr) {
-                    timedLogger.log('received the response to the git status request for ' + repoPath, t);
+                    singleLogger.log('received the response to the git status request for ' + repoPath);
                     if (err) {
                         toastr.error('git status failed for ' + repoPath + ' (' + err + ')');
                     } else if (stderr) {
@@ -249,7 +261,7 @@ function (require, topic, wv, git, ide, pathUtil, toastr) {
     function detectGitRepo(path) {
         if (pathUtil.getName(path) === '.git') {
             var parentPath = pathUtil.getParentPath(path);
-            var t = timedLogger.log('sending the first git status request for ' + parentPath);
+            singleLogger.log('sending the first git status request for ' + parentPath);
             git.exec(parentPath, ['status', '--ignored', '-z'], function (err, stdout, stderr) {
                 function restoreSubmoduleIcons(path, repoPath) {
                     if (git.findGitRootPath(path) !== repoPath) {
@@ -270,8 +282,8 @@ function (require, topic, wv, git, ide, pathUtil, toastr) {
                     }
                 }
 
-                timedLogger.log('received the response to the first git status request for ' +
-                                parentPath, t);
+                singleLogger.log('received the response to the first git status request for ' +
+                                parentPath);
                 if (err) {
                     toastr.error('git status failed for ' + parentPath + ' (' + err + ')');
                 } else if (stderr) {

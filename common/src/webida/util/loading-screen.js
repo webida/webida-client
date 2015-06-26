@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-define(['webida-lib/util/timedLogger', 'dojo/domReady!'], function () {
+define(['webida-lib/util/logger/logger-client','dojo/domReady!'], function (Logger) {
     'use strict';
-    /* global timedLogger: true */
 
+	var singleLogger = new Logger.getSingleton();
     var loadingElem;
     var loadingScreen = {
         loadingStart : function () {
@@ -39,7 +39,7 @@ define(['webida-lib/util/timedLogger', 'dojo/domReady!'], function () {
             }
 
             createLoadingScreen();
-            timedLogger.log('loading screen put');
+            singleLogger.log('loading screen put');
 
             setTimeout(function () {
                 loadingScreen.hideLoadingScreen();

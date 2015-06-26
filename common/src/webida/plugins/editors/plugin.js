@@ -27,10 +27,7 @@
  * - addChangeListener(file, callback : Function)
  **/
 
-/* global timedLogger: true */
-
-var time;
-define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
+define(['text!./ext-to-mime.json',
         'other-lib/underscore/lodash.min',
         'other-lib/URIjs/URI',
         'webida-lib/util/path',
@@ -51,9 +48,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     'use strict';
 
 	var logger = new Logger();
-	logger.off();
+	logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
 
-    time = timedLogger.log('loaded modules required by editors-view. initializing editors-view plugin\'s module', time);
+    logger.log('loaded modules required by editors. initializing editors plugin');
 
     function getFileClass() {
         var File = function (path) {
@@ -1149,10 +1147,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
     subscribeToTopics();
 
-    timedLogger.log('initialized editors-view plugin\'s module', time);
+    logger.log('initialized editors plugin\'s module');
 
     return editors;
-
-
 
 });

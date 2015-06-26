@@ -1,5 +1,5 @@
 /* global QUnit */
-require(['codeEditors/webida.editor.code-editor/CodeEditorPart'], function (CodeEditorPart) {
+require(['plugins/webida.editor.code-editor/CodeEditorPart'], function (CodeEditorPart) {
     'use strict';
     var part = new CodeEditorPart();
     QUnit.test('TestEditor API Validation', function (assert) {
