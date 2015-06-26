@@ -134,7 +134,7 @@ define([
                 ui.pathButton = $(child).find('.rcw-action-path').get(0);
 
                 markup.own(
-                    on(ui.saveButton, 'onClick', function () {
+                    on(ui.saveButton, 'click', function () {
                         if (_doSave()) {
                             topic.publish('webida.ide.project-management.run:configuration.changed',
                                 'save', currentRunConf);
@@ -142,7 +142,7 @@ define([
                             toastr.error('Invalid Run Configuration.');
                         }
                     }),
-                    on(ui.pathButton, 'mouseUp', function () {
+                    on(ui.pathButton, 'click', function () {
                         _pathButtonClicked();
                     })
                 );

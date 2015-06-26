@@ -254,8 +254,8 @@ define([
                                 _removeContentArea();
                                 delegator.newConf(ui.contentArea, selected.type, projectName,
                                     function (err, runConf, content) {
-                                        if (!error) {
-                                            selected.runConf = newConf;
+                                        if (!err) {
+                                            selected.runConf = runConf;
                                             module.refreshTree();
                                         }
                                         _addContentArea(content);
