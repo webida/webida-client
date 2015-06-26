@@ -20,7 +20,7 @@
  * Still needs refactoring (2015.06.25, hw.shim)
  * 
  * @constructor
- * @see CodeEditor
+ * @see CodeEditorPart
  * @refactor: hw.shim (2015.06.25)
  */
 

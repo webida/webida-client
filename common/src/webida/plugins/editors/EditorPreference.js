@@ -19,7 +19,7 @@
  * EditorPreference set or unset fields of editor preferences
  *
  * @constructor
- * @see TextEditor, 
+ * @see TextEditorPart
  * @since: 2015.06.23
  * @author: hw.shim
  * 
@@ -35,6 +35,7 @@ define([
 	'use strict';
 
 	var logger = new Logger();
+	logger.off();
 
 	function EditorPreference(storage, editorContext) {
 		logger.info('new EditorPreference('+storage+', '+editorContext+')');

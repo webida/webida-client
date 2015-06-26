@@ -14,34 +14,41 @@
  * limitations under the License.
  */
 
-define(['other-lib/underscore/lodash.min',
-        'webida-lib/util/browserUtil',
-        'dijit/layout/TabContainer',
-        'dijit/layout/ContentPane',
-        'dijit/registry',
-        './viewmanager',
-        './viewdndmanager',
-        'dojo/text!./template/_tmplViewContainerFeedback.html',
-        'dojo/dom-geometry',
-        'dojo/dom-class',
-        'dojo/dom-style',
-        'dojo/topic',
-        'dojo/_base/lang',
-        'dojo/domReady!'],
+define([
+	'other-lib/underscore/lodash.min',
+    'webida-lib/util/browserUtil',
+    'dijit/layout/TabContainer',
+    'dijit/layout/ContentPane',
+    'dijit/registry',
+    './viewmanager',
+    './viewdndmanager',
+    'dojo/text!./template/_tmplViewContainerFeedback.html',
+    'dojo/dom-geometry',
+    'dojo/dom-class',
+    'dojo/dom-style',
+    'dojo/topic',
+    'dojo/_base/lang',
+    'webida-lib/util/logger/logger-client',
+    'dojo/domReady!'],
 function (_,
-          BrowserUtil,
-          TabContainer,
-          ContentPane,
-          registry,
-          vm,
-          vdndm,
-          feedbackMarkup,
-          geometry,
-          domclass,
-          domstyle,
-          topic,
-          lang) {
+    BrowserUtil,
+    TabContainer,
+    ContentPane,
+    registry,
+    vm,
+    vdndm,
+    feedbackMarkup,
+    geometry,
+    domclass,
+    domstyle,
+    topic,
+    lang,
+    Logger
+) {
     'use strict';
+
+	var logger = new Logger();
+	logger.off();
 
     function ViewContainerEvent(name) {
         this.name = name;
@@ -585,7 +592,7 @@ function (_,
         },
 
         _contentPaneSelected : function (pane) {
-			console.info('_contentPaneSelected('+pane+')');
+			logger.info('_contentPaneSelected('+pane+')');
             var _self = this;
             var event = new ViewContainerEvent(ViewContainerEvent.SELECTED);
             event.view = _self._getViewByContentPane(pane);

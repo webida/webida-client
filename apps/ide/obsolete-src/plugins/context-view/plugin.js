@@ -108,15 +108,15 @@ define(['underscore',
                         });
                         if (data.file) {
                             cp.on('dblclick', function () {
-                                require(['plugins/webida.editor.text-editor/TextEditor'], function (TextEditor) {
+                                require(['plugins/webida.editor.text-editor/TextEditorPart'], function (TextEditorPart) {
                                     if (data.start && data.end) {
-                                        TextEditor.moveTo({
+                                        TextEditorPart.moveTo({
                                             filepath: data.file,
                                             start: data.start,
                                             end: data.end
                                         });
                                     } else {
-                                        TextEditor.moveTo({
+                                        TextEditorPart.moveTo({
                                             filepath: data.file
                                         });
                                     }

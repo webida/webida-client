@@ -18,7 +18,7 @@
 * This is configuratoin of preference fields 
 * and their default value for CodeEditor
 *
-* @see EditorPreference, CodeEditor
+* @see EditorPreference, CodeEditorPart
 * @since: 2015.06.23
 * @author: hw.shim
 */

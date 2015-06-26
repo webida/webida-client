@@ -16,11 +16,11 @@
 
 /**
  * Constructor function
- * CodeEditor implementation of EditorPart
+ * CodeEditorPart implementation of EditorPart
  * This should be an ancestor of all programming language based editors. 
  *
  * @constructor
- * @see TextEditor, EditorPart
+ * @see TextEditorPart, EditorPart
  * @since: 2015.06.11
  * @author: hw.shim
  * 
@@ -30,7 +30,7 @@ define([
 	'webida-lib/util/gene',
 	'other-lib/underscore/lodash.min',
 	'webida-lib/plugins/workbench/ui/EditorPart',
-	'plugins/webida.editor.text-editor/TextEditor',
+	'plugins/webida.editor.text-editor/TextEditorPart',
 	'webida-lib/plugins/workbench/preference-system/store',
 	'webida-lib/plugins/editors/plugin',
 	'webida-lib/plugins/editors/EditorPreference',
@@ -44,7 +44,7 @@ define([
 	gene,
 	_, 
 	EditorPart,
-	TextEditor,
+	TextEditorPart,
 	store, 
 	editors, 
 	EditorPreference,
@@ -57,13 +57,14 @@ define([
 	'use strict';
 
 	var logger = new Logger();
+	logger.off();
 
-	function CodeEditor(file){
-		logger.info('new CodeEditor('+file+')');
-		TextEditor.apply(this, arguments); //super constructor
+	function CodeEditorPart(file){
+		logger.info('new CodeEditorPart('+file+')');
+		TextEditorPart.apply(this, arguments); //super constructor
 	}
 
-	gene.inherit(CodeEditor, TextEditor, {
+	gene.inherit(CodeEditorPart, TextEditorPart, {
 
 		/**
 		 * Initialize CodeEditorPart
@@ -71,7 +72,7 @@ define([
 		 */
 		initialize : function(){
 			logger.info('initialize()');
-			TextEditor.prototype.initialize.call(this);
+			TextEditorPart.prototype.initialize.call(this);
 			this.initializeCodeEditorPart();
 		},
 
@@ -96,7 +97,7 @@ define([
 		 */
 		initializeContext : function(){
 			logger.info('initializeContext()');
-			TextEditor.prototype.initializeContext.call(this);
+			TextEditorPart.prototype.initializeContext.call(this);
 			var context = this.getEditorContext();
 			if(context && this.file){
 				var mode = this.file.name.split('.').pop().toLowerCase();
@@ -152,5 +153,5 @@ define([
 	    }
     });
 
-	return CodeEditor;
+	return CodeEditorPart;
 });

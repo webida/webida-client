@@ -51,6 +51,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     'use strict';
 
 	var logger = new Logger();
+	logger.off();
+
     time = timedLogger.log('loaded modules required by editors-view. initializing editors-view plugin\'s module', time);
 
     function getFileClass() {
@@ -576,7 +578,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.ensureCreated = function (file, bShowAndFocus, cb) {
-    	console.info('ensureCreated()');
+    	logger.info('ensureCreated()');
         function showAndFocus(file) {
         	var editorPart = editors.getPart(file);
             if (editorPart) {
@@ -605,7 +607,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     function onloadFinalize() {
-    	console.info('onloadFinalize()');
+    	logger.info('onloadFinalize()');
         var vcs = editors.splitViewContainer.getViewContainers();
         _.each(vcs, function (vc) {
             var selview = vc.getSelectedView();
@@ -717,9 +719,9 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
     function checkFileNameHandleExtension(path) {
         var fileName = pathUtil.getFileName(path);
-		//console.info(fileName);
+		//logger.info(fileName);
         var extensions = pm.getExtensions('webida.common.editors:editor');
-        //console.info(extensions);
+        //logger.info(extensions);
         if (extensions instanceof Array && extensions.length) {
             for (var i = 0; i < extensions.length ; i++) {
                 if (extensions[i].handledFileNames instanceof Array && 
@@ -776,7 +778,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             }
 
 			file.editorName = options.extension.name;
-			console.info('file.editorName = ', file.editorName);
+			logger.info('file.editorName = ', file.editorName);
             file._openFileOption = options;
             file._openFileCallback = callback;
 
@@ -954,7 +956,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
 		//Check exsisting part
 		var part = editors.getPart(file);
-		console.info('part = ', part);
+		logger.info('part = ', part);
 		if (part) {
 			logger.info('part already exists');
             if (option.pos) {
@@ -982,7 +984,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
 			var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
 
-			console.info('viewContainer = ', viewContainer);
+			logger.info('viewContainer = ', viewContainer);
 
             if (viewContainer) {
                 view.set('tooltip', file.path);
@@ -995,7 +997,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                 }
 
                 file.pendingCreator = function (c) {
-					console.info('file.pendingCreator('+c+')');
+					logger.info('file.pendingCreator('+c+')');
                     function createEditor(file, editorPart, view, callback) {
                         editorPart.create(view.getContent(), function (file, editorContext) {
                             file.editorContext = editorContext;	//TODO : file.editorContext refactor

@@ -26,8 +26,8 @@ function (require, topic, _, ide, codemirror, pathUtil) {
     var jshint = {};
 
     function moveToPosition(data) {
-        require(['plugins/webida.editor.text-editor/TextEditor'], function (TextEditor) {
-            TextEditor.moveTo(TextEditor.pushCursorLocation(data.file, {
+        require(['plugins/webida.editor.text-editor/TextEditorPart'], function (TextEditorPart) {
+            TextEditorPart.moveTo(TextEditorPart.pushCursorLocation(data.file, {
                 row: data.start.line,
                 col: data.start.ch
             }, true));

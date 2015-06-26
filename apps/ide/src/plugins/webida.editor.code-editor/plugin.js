@@ -15,9 +15,9 @@
  */
 
 /**
- * This plug-in manages life-cycle of the TextEditor
+ * This plug-in manages life-cycle of the CodeEditor
  * 
- * @see TextEditor
+ * @see CodeEditorPart
  * @since: 2015.06.11
  * @author: hw.shim
  */
