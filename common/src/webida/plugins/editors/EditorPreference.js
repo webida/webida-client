@@ -38,9 +38,13 @@ define([
 
 	function EditorPreference(storage, editorContext) {
 		logger.info('new EditorPreference('+storage+', '+editorContext+')');
+		var that = this;
 		this.configs = null;
 		this.storage = storage;
 		this.editorContext = editorContext;
+		this.listener = function (value, key) {
+	        that.setField(key, value);
+		}
 	}
 
 	gene.inherit(EditorPreference, Object, {
@@ -75,10 +79,6 @@ define([
 	            value = config[1];
 	        }
 	        this.editorContext[setter](value);
-		},
-		listener : function (value, key) {
-			logger.info('listener('+value+', '+key+')');
-            this.setField(key, value);
 		}
 	});
 
