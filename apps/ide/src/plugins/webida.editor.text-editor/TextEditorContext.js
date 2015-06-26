@@ -271,19 +271,26 @@ define([
 	    },
 
 	    __checkSizeChange : function () {
-	        if (this.editor) {
-	            var visible = $(this.elem).is(':visible');
-	            if (visible) {
-	                var width = $(this.elem).width(), height = $(this.elem).height();
-	                if (this.__width !== width || this.__height !== height || this.__visible !== visible) {
-	                    this.editor.refresh();
-	                    this.__width = width;
-	                    this.__height = height;
-	                    this.__visible = visible;
-	                }
-	            }
-	        }
-	    },
+            //TODO : Remove this polling routine and refactor sizechange checker.
+            if (this.editor) {
+                var visible = $(this.elem).is(':visible');
+                if (visible) {
+                    var wrapper = this.editor.getWrapperElement();
+                    var parentElem = wrapper.parentNode;
+                    var boundingClientRect = wrapper.getBoundingClientRect();
+                    var parentBoundingClientRect = parentElem.getBoundingClientRect();
+
+                    var width = parentElem.offsetWidth;
+                    var height = parentElem.offsetHeight - (boundingClientRect.top - parentBoundingClientRect.top);
+                    if (this.__width !== width || this.__height !== height || this.__visible !== visible) {
+
+                        this.setSize(width, height);
+
+                        this.__visible = visible;
+                    }
+                }
+            }
+        },
 
 	    destroy : function () {
 	        $(this.elem).html('');
@@ -394,11 +401,30 @@ define([
 	    },
 	
 	    setSize : function (width, height) {
-	        this.size = {width: width, height: height};
-	        this.addDeferredAction(function (self) {
-	            self.editor.setSize(width, height);
-	        });
-	    },
+            if (typeof width === 'number') {
+                this.__width = width;
+            } else {
+                this.__width = null;
+            }
+
+            if (typeof height === 'number') {
+                this.__height = height;
+            } else {
+                this.__height = null;
+            }
+
+            this.addDeferredAction(function (self) {
+                if (typeof height === 'number') { //applying border correction
+                    var wrapper = self.editor.getWrapperElement();                            
+
+                    self.editor.setSize(width, height);
+                    var borderCorrection = wrapper.offsetHeight - wrapper.clientHeight;
+                    self.editor.setSize(wrapper.clientWidth, wrapper.clientHeight - borderCorrection);
+                } else {
+                    self.editor.setSize(width, height);
+                }
+            });
+        },
 	
 	    getTheme : function () {
 	        return this.theme;

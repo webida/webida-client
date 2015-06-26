@@ -58,9 +58,17 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
         }
 
         function showDialog(cm, replace, callbacks) {
+            function setCodemirrorSize(cm, width, height) {             
+                cm.setSize(width, height);
+                var borderCorrection = wrapper.offsetHeight - wrapper.clientHeight;
+                cm.setSize(wrapper.clientWidth, wrapper.clientHeight - borderCorrection);
+            }
+
             function closeDialog() {
                 searchDlg.remove();
-                $(wrapper).css({ top: '0px' });
+
+                setCodemirrorSize(cm, parentElem.clientWidth, parentElem.clientHeight);
+
                 cm.off('focus', closeDialog);
                 clearSearch(cm);
             }
@@ -190,6 +198,7 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
             // check if the dialog was opened already.
             var wrapper = cm.getWrapperElement();
             var parentElem = wrapper.parentNode;
+
             if (parentElem.getElementsByClassName('webida-find-replace-dialog').length > 0) {
                 console.warn('Unexpected: Tried to attach the second search dialog, which is ignored');
                 return;
@@ -199,7 +208,8 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
             // Search Dialog
             //
             var searchDlg = $('<div class="webida-find-replace-dialog" tabindex="0">').insertBefore(wrapper);
-            var dlgHeight = replace ? '72px' : '39px';
+            var dlgHeightNum = replace ? 72 : 39;
+            var dlgHeight = dlgHeightNum + 'px';
             searchDlg.css({
                 position: 'relative',
                 top: '0px',
@@ -211,8 +221,10 @@ define(['webida-lib/custom-lib/codemirror/lib/codemirror',
                 zIndex: 1000,
                 backgroundRepeat: 'repeat-x',
                 backgroundImage: 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABICAIAAAC4IAh6AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAdSURBVChTY5i/ei/D7uM3GC7cezOKkTAoTBgYGABrArekfvp7PAAAAABJRU5ErkJggg==)' //jshint ignore:line
-            });
-            
+            });            
+
+            setCodemirrorSize(cm, parentElem.clientWidth, parentElem.clientHeight - dlgHeightNum);
+
             // WTC-387
             searchDlg.bind('keyup', function (e) { e.stopPropagation(); });
             searchDlg.bind('keydown', function (e) {
