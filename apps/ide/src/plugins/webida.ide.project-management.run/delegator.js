@@ -64,27 +64,49 @@ define([
     };
 
     /**
-     * Default new or load delegator
+     * Dojo Widget Object
+     * @typedef {Object} DojoWidget
+     */
+
+    /**
+     * @callback contentCreationCallback
+     * @param error
+     * @param runConf
+     * @param content {Object} dojo object of
+     */
+
+    /**
+     * Default new delegator
+     * @param {DojoWidget} parent - dojo object of parent widget
+     * @param {Object} newRunConf - default run configuration
+     * @param {contentCreationCallback} callback
      * @type {Function}
      */
-    defaultDelegator.newConf = function ($parent, newRunConf, callback) {
+    defaultDelegator.newConf = function (parent, newRunConf, callback) {
         // draw ui
         newRunConf.path = '';   // initialize path value
         require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
-            viewController.loadConf($parent, newRunConf, callback);
+            viewController.loadConf(parent, newRunConf, callback);
         });
     };
 
-    defaultDelegator.loadConf = function ($parent, newRunConf, callback) {
+    /**
+     * Default load delegator
+     * @param {DojoWidget} parent - dojo object of parent widget
+     * @param {Object} newRunConf - default run configuration
+     * @param {contentCreationCallback} callback
+     * @type {Function}
+     */
+    defaultDelegator.loadConf = function (parent, newRunConf, callback) {
         // draw ui
         require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
-            viewController.loadConf($parent, newRunConf, callback);
+            viewController.loadConf(parent, newRunConf, callback);
         });
     };
 
     /**
      * Default run delegator
-     * @param runObject
+     * @param {Object} runObject - run configuration to execute
      * @param callback
      */
     defaultDelegator.run = function (runObject, callback) {
@@ -135,8 +157,9 @@ define([
     };
 
     /**
-     * Usage: Delegator.get(type).action(...)
-     * @param type
+     * @example
+     *      Delegator.get(type).action(...)
+     * @param {String} type - the type of run configuration
      * @constructor
      */
     function Delegator(type) {
@@ -184,6 +207,11 @@ define([
         }
     }
 
+    /**
+     * Get a delegators by its type
+     * @param type
+     * @returns {*}
+     */
     Delegator.get = function (type) {
         if (!delegators[(type ? type : '_default')]) {
             delegators[(type ? type : '_default')] = new Delegator(type);
@@ -214,6 +242,11 @@ define([
         return result;
     }
 
+    /**
+     * Execute selected run configuration
+     * @param {Object} runConf - selected run configuration
+     * @param [callback]
+     */
     module.run = function (runConf, callback) {
         console.log('run', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).run)) {
@@ -238,6 +271,11 @@ define([
         }
     };
 
+    /**
+     * Start to debug for selected run configuration
+     * @param {Object} runConf - selected run configuration
+     * @param [callback]
+     */
     module.debug = function (runConf, callback) {
         console.log('debug', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).debug)) {
@@ -264,14 +302,13 @@ define([
 
     /**
      * Make a new run configuration
-     * @param $parent (mandatory)
-     * @param type (mandatory)
-     * @param project (optional)
-     * @param callback (optional)
+     * @param {DojoWidget} parent - dojo object of parent widget
+     * @param {String} type - the type of configuration
+     * @param {String} [project] - project name
+     * @param {contentCreationCallback} [callback]
      */
-    module.newConf = function ($parent, type, project, callback) {
+    module.newConf = function (parent, type, project, callback) {
         console.log('newConf', arguments);
-        $parent.empty();
         var runConf = {
             type: type,
             name: _makeConfigurationName(),
@@ -285,22 +322,27 @@ define([
                 callback(null, runConf);
             }
         } else {
-            Delegator.get(type).newConf($parent, runConf, function (err) {
+            Delegator.get(type).newConf(parent, runConf, function (err, runConf, content) {
                 if (err) {
                     toastr.error(err);
                 } else {
                     runConfigurationManager.add(runConf);
                 }
                 if (callback) {
-                    callback(err, runConf);
+                    callback(err, runConf, content);
                 }
             });
         }
     };
 
-    module.loadConf = function ($parent, runConf, callback) {
+    /**
+     * Load the selected run configuration
+     * @param {DojoWidget} parent - dojo object of parent widget
+     * @param {Object} runConf
+     * @param {contentCreationCallback} callback
+     */
+    module.loadConf = function (parent, runConf, callback) {
         console.log('loadConf', arguments);
-        $parent.empty();
         if (!_.isFunction(Delegator.get(runConf.type).loadConf)) {
             console.warn('loadConf function hasn\'t be implemented for the run configurator type(' +
                 runConf.type + ')');
@@ -308,17 +350,22 @@ define([
                 callback(null, runConf);
             }
         } else {
-            Delegator.get(runConf.type).loadConf($parent, runConf, function (err) {
+            Delegator.get(runConf.type).loadConf(parent, runConf, function (err, runConf, content) {
                 if (err) {
                     toastr.error(err);
                 }
                 if (callback) {
-                    callback(err, runConf);
+                    callback(err, runConf, content);
                 }
             });
         }
     };
 
+    /**
+     * Save properties of the selected run configuration
+     * @param {Object} runConf - selected run configuration
+     * @param callback
+     */
     module.saveConf = function (runConf, callback) {
         console.log('saveConf', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).loadConf)) {
@@ -348,13 +395,18 @@ define([
         }
     };
 
-    module.deleteConf = function ($parent, runConfName, callback) {
+    /**
+     * Remove the selected run configuration
+     *  @param {DojoWidget} parent - dojo object of parent widget
+     * @param {String} runConfName - run configuration's name to remove
+     * @param [callback]
+     */
+    module.deleteConf = function (parent, runConfName, callback) {
         console.log('deleteConf', arguments);
         var runConf = runConfigurationManager.getByName(runConfName);
         if (!_.isFunction(Delegator.get(runConf.type).deleteConf)) {
             console.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
             runConfigurationManager.delete(runConfName);
-            $parent.empty();
             if (callback) {
                 callback(null, runConfName);
             }
@@ -364,8 +416,7 @@ define([
                     toastr.error(err);
                 } else {
                     runConfigurationManager.delete(runConfName);
-                    $parent.empty();
-                    toastr.success('Run configuration \'' + runConf.project  + ':' + runConf.name +
+                    toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
                         '\' was successfully removed');
                 }
                 if (callback) {

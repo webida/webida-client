@@ -18,48 +18,50 @@ define([
         'webida-lib/app',
         'text!./java-run-configuration.html',
         'dojo/topic',
+        'dojo/on',
         'dijit/form/Select',
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
         'dijit/layout/ContentPane',
         'dijit/registry',
         'other-lib/toastr/toastr'
     ],
-    function (ide, template, topic, Select, FileDialog, ContentPane, registry, toastr) {
+    function (ide, template, topic, on, Select, FileDialog, ContentPane, registry, toastr) {
         'use strict';
         var FS = ide.getMount();
+        var SRC_DIR = 'src';
         var currentRunConf;
         var ui = {
             isHidden: true
         };
 
-        topic.subscribe('webida.ide.project-management.run:configuration.hide', function() {
+        topic.subscribe('webida.ide.project-management.run:configuration.hide', function () {
             ui.isHidden = true;
         });
-        topic.subscribe('webida.ide.project-management.run:configuration.show', function() {
+        topic.subscribe('webida.ide.project-management.run:configuration.show', function () {
             ui.isHidden = false;
         });
-
-        var SRC_DIR = 'src';
 
         function _pathButtonClicked() {
             var pathInputBox = ui.readonlyInputBoxes[0];
             var nameInputBox = ui.inputBoxNodes[0];
             var project = ui.select.get('value');
+            var initialPath;
+            var root;
+            var dlg;
+
             if (!currentRunConf || !project || !pathInputBox) {
                 toastr.error('Cannot find root path');
                 return;
             }
 
-            var root = ide.getPath() + '/' + project + '/' + SRC_DIR + '/';
-            var initialPath;
-
+            root = ide.getPath() + '/' + project + '/' + SRC_DIR + '/';
             if (pathInputBox.value) {
                 initialPath = root + pathInputBox.value;
             } else {
                 initialPath = root;
             }
 
-            var dlg = new FileDialog({
+            dlg = new FileDialog({
                 mount: ide.getFSCache(),
                 root: root,
                 initialSelection: [initialPath],
@@ -69,12 +71,14 @@ define([
                 showRoot: false
             });
             dlg.open(function (selected) {
+                var pathSplit;
+                var splitName;
                 if (selected) {
                     if (selected.length <= 0) {
                         toastr.warning('Select a java file.');
                         return;
                     }
-                    var pathSplit = selected[0].split(root);
+                    pathSplit = selected[0].split(root);
                     if (pathSplit.length > 0) {
                         pathInputBox.value = pathSplit[1];
                         if (!nameInputBox) {
@@ -84,7 +88,7 @@ define([
                             nameInputBox.value = pathInputBox.value;
                         } else {
                             if ($(nameInputBox).attr('userinput') !== 'true') {
-                                var splitName = nameInputBox.value.split(pathInputBox.value);
+                                splitName = nameInputBox.value.split(pathInputBox.value);
                                 if (splitName.length > 0) {
                                     nameInputBox.value = pathInputBox.value;
                                 }
@@ -98,20 +102,15 @@ define([
         }
 
         function _setTemplate(runConf) {
-            if (registry.byId('rcw-action-save')) {
-                registry.byId('rcw-action-save').destroyRecursive();
-            }
+            var markup = new ContentPane({
+                content: template
+            });
             currentRunConf = runConf;
             if (runConf) {
-                var markup = new ContentPane({
-                    /* style: 'text-indent:20px; line-height:100%',*/
-                    content: template
-                });
                 var child = markup.domNode;
-                ui.$parent.append(child);
-                ui.inputBoxNodes = ui.$parent.find('.rcw-content-table-inputbox-edit');
+                ui.inputBoxNodes = $(child).find('.rcw-content-table-inputbox-edit');
                 ui.inputBoxNodes[0].value = runConf.name ? runConf.name : '';
-                ui.readonlyInputBoxes = ui.$parent.find('.rcw-content-table-inputbox-readonly');
+                ui.readonlyInputBoxes = $(child).find('.rcw-content-table-inputbox-readonly');
                 ui.readonlyInputBoxes[0].value = runConf.path ? (runConf.path.split('.').join('/') + '.java') : '';
 
                 ide.getWorkspaceInfo(function (err, workspaceInfo) {
@@ -123,7 +122,7 @@ define([
                             };
                         });
                         if (registry.byId('run-configuration-project')) {
-                            registry.byId('run-configuration-project').destroyRecursive();
+                            registry.byId('run-configuration-project').destroy();
                         }
                         ui.select = new Select({ options: projects }, 'run-configuration-project');
                         ui.select.startup();
@@ -132,31 +131,37 @@ define([
                 });
 
                 ui.saveButton = registry.byId('rcw-action-save');
-                dojo.connect(ui.saveButton, 'onClick', function () {
-                    if (_doSave()) {
-                        topic.publish('webida.ide.project-management.run:configuration.changed',
-                            'save', currentRunConf);
-                    } else {
-                        toastr.error('Invalid Run Configuration.');
-                    }
-                });
-                ui.pathButton = ui.$parent.find('.rcw-action-path');
-                ui.pathButton.bind('mouseup', function () {
-                    _pathButtonClicked();
-                });
+                ui.pathButton = $(child).find('.rcw-action-path').get(0);
+
+                markup.own(
+                    on(ui.saveButton, 'click', function () {
+                        if (_doSave()) {
+                            topic.publish('webida.ide.project-management.run:configuration.changed',
+                                'save', currentRunConf);
+                        } else {
+                            toastr.error('Invalid Run Configuration.');
+                        }
+                    }),
+                    on(ui.pathButton, 'click', function () {
+                        _pathButtonClicked();
+                    })
+                );
             }
+            return markup;
         }
 
         var srcRegex = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
         function _doSave() {
+            var fullPath;
+            var matchResult;
             // validation on currentRunConf
             if (!ui.isHidden) {
                 currentRunConf.name = ui.inputBoxNodes[0].value;
                 currentRunConf.project = ui.select.get('value');
                 currentRunConf.outputDir = 'target';
                 currentRunConf.srcDir = SRC_DIR;
-                var fullPath = ui.readonlyInputBoxes[0].value;
-                var matchResult = srcRegex.exec(fullPath);
+                fullPath = ui.readonlyInputBoxes[0].value;
+                matchResult = srcRegex.exec(fullPath);
                 if (matchResult === null) {
                     return false;
                 }
@@ -167,9 +172,9 @@ define([
 
         return {
             run: function (runConf, callback) {
-                console.log('Run As...', runConf);
                 var rootPath = ide.getPath() + '/' + runConf.project;
                 var filePath = runConf.srcDir + '/' + runConf.path.replace(/\./g, '/') + '.java';
+                console.log('Run As...', runConf);
                 FS.exec(rootPath, {cmd: 'javac', args: ['-d', runConf.outputDir, filePath]},
                     function (err, stdout, stderr) {
                         console.debug('###javac', runConf.path, stdout, stderr);
@@ -186,15 +191,15 @@ define([
                         }
                     });
             },
-            newConf: function ($parent, runConf, callback) {
-                ui.$parent = $parent;
-                _setTemplate(runConf);
-                callback(null, runConf);
+            newConf: function (parent, runConf, callback) {
+                ui.parent = parent;
+                var innerContent = _setTemplate(runConf);
+                callback(null, runConf, innerContent);
             },
-            loadConf: function ($parent, runConf, callback) {
-                ui.$parent = $parent;
-                _setTemplate(runConf);
-                callback(null, runConf);
+            loadConf: function (parent, runConf, callback) {
+                ui.parent = parent;
+                var innerContent = _setTemplate(runConf);
+                callback(null, runConf, innerContent);
             },
             saveConf: function (runConf, callback) {
                 // validation
