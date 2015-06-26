@@ -1,10 +1,35 @@
-define(['other-lib/underscore/lodash.min',
-        'other-lib/toastr/toastr'],
-function (_, toastr) {
+/*
+ * Copyright (c) 2012-2015 S-Core Co., Ltd.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+define([
+	'other-lib/underscore/lodash.min',
+	'other-lib/toastr/toastr',
+	'webida-lib/util/logger/logger-client'
+], function (
+	_, 
+	toastr,
+	Logger
+) {
     'use strict';
 
     // css and modules manager
 
+	var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
     var loadedItems = [];
     var loadingItems = [];
     var deferredDones = {};
@@ -49,7 +74,7 @@ function (_, toastr) {
 
                     if (link[sheet]) {
                         clearInterval(intervalId);
-                        console.log('loaded a CSS ' + link.href);
+                        logger.log(link.href+' loaded');
                         onload(true);
                     } else {
                         failedCounter++;

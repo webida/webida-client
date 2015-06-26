@@ -14,19 +14,34 @@
  * limitations under the License.
  */
 
-define(['./plugin',
-        'webida-lib/plugins/workbench/plugin',
-        'webida-lib/app',
-        'webida-lib/widgets/views/splitviewcontainer',
-        'webida-lib/widgets/views/viewmanager',
-        'dojo/dom-style',
-        'dojo/dom-geometry',
-        'dojo/topic',
-        'other-lib/underscore/lodash.min'
-       ], function (editors, workbench, ide, SplitViewContainer, vm, domStyle,
-              geometry, topic, _) {
+define([
+	'./plugin',
+	'webida-lib/plugins/workbench/plugin',
+	'webida-lib/app',
+	'webida-lib/widgets/views/splitviewcontainer',
+	'webida-lib/widgets/views/viewmanager',
+	'dojo/dom-style',
+	'dojo/dom-geometry',
+	'dojo/topic',
+	'other-lib/underscore/lodash.min',
+	'webida-lib/util/logger/logger-client'
+], function (
+	editors, 
+	workbench, 
+	ide, 
+	SplitViewContainer, 
+	vm, 
+	domStyle,
+    geometry, 
+    topic, 
+    _,
+    Logger
+) {
     'use strict';
-    /* global timedLogger: true */
+
+	var logger = new Logger();
+	//logger.setConfig('level', Logger.LEVELS.log);
+	//logger.off();
 
     function getPanel() {
         var docFrag = document.createDocumentFragment();
@@ -341,7 +356,6 @@ define(['./plugin',
 
                 var tab;
                 var openFileWithNamespace = function (path, opt, pos, foldings) {
-                    var t = timedLogger.getLoggerTime();
                     editors.openFile(path, opt, function (file) {
                         //console.log('hina: file opend. pos.col = ' + pos.col);
                         //console.log('hina: file opend. pos.row = ' + pos.row);
@@ -357,7 +371,7 @@ define(['./plugin',
                             }
                         });
 
-                        timedLogger.log('opened file "' + path + '"', t);
+                        logger.log('opened file "' + path + '"');
                     });
                 };
 
