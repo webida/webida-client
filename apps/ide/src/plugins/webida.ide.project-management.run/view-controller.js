@@ -92,7 +92,7 @@ define([
     };
 
     function _removeContentArea() {
-        if(ui.content) {
+        if (ui.content) {
             ui.contentArea.removeChild(ui.content);
             ui.content.destroyRecursive();
             delete ui.content;
@@ -101,7 +101,7 @@ define([
 
     function _addContentArea(newContent) {
         _removeContentArea();
-        if(newContent) {
+        if (newContent) {
             ui.contentArea.addChild(newContent);
             ui.content = newContent;
         }
@@ -115,16 +115,16 @@ define([
             var $listElem = $('<li></li>');
             var $listLink = $('<a href data-type-id="' + type.id + '">' + type.name + '</a>');
             $listElem.append($listLink);
-            if(type.id === selected.type){
+            if (type.id === selected.type) {
                 $listLink.addClass('selected');
             }
             var $subListElem = $('<ul></ul>');
-            _.each(runByType[type.id], function(runObj){
+            _.each(runByType[type.id], function (runObj) {
                 var $runItemElem = $('<li></li>');
                 var $runItemLink = $('<a href data-run-id="' + runObj.name + '" data-type-id="' + type.id + '">' +
                     runObj.name + (runObj.unsaved ? ' *' : '') + '</a>');
                 $runItemElem.append($runItemLink);
-                if(selected.runConf && runObj.name === selected.runConf.name){
+                if (selected.runConf && runObj.name === selected.runConf.name) {
                     $runItemLink.addClass('selected');
                 }
                 $subListElem.append($runItemElem);
@@ -133,19 +133,15 @@ define([
             ui.tree.append($listElem);
 
             ui.tree.undelegate('li a', 'click');
-            ui.tree.delegate('li a', 'click', function(event){
+            ui.tree.delegate('li a', 'click', function (event) {
                 event.preventDefault();
                 var runName = $(this).attr('data-run-id');
                 var typeId = $(this).attr('data-type-id');
                 if (runName) {
                     selected.runConf = runConfManager.getByName(runName);
                     selected.type = typeId;
-                    _removeContentArea();
-                    delegator.loadConf(ui.contentArea, selected.runConf, function (err, runConf, content) {
-                        if(!err) {
-                            _addContentArea(content);
-                        }
-                    });
+                    _addContentArea(new ContentPane());
+                    delegator.loadConf(ui.content, selected.runConf);
                 } else {
                     selected.type = typeId;
                 }
@@ -217,17 +213,16 @@ define([
                 topic.publish('webida.ide.project-management.run:configuration.hide');
                 runConfManager.flushRunConfigurations(function () {
                     windowOpened = false;
+                    ui.contentArea.destroyRecursive();
                     ui.dialog.destroyRecursive();
                     workbench.focusLastWidget();
                 });
             },
             onLoad: function () {
-                ui.contentArea = registry.byId('run-configuration-list-contentpane'); // FIXME choose jquery or dojo
+                ui.contentArea = registry.byId('run-configuration-list-contentpane');
                 if (selected.runConf) {
-                    _removeContentArea();
-                    delegator.loadConf(ui.contentArea, selected.runConf, function (err, runConf, content) {
-                        _addContentArea(content);
-                    });
+                    _addContentArea(new ContentPane());
+                    delegator.loadConf(ui.content, selected.runConf);
                 }
 
                 ui.btns.createNewButton = registry.byId('run-configuration-create-button');
@@ -251,44 +246,38 @@ define([
                                 message: 'You will may lose unsaved data. Are you sure to continue?',
                                 type: 'info'
                             }).then(function () {
-                                _removeContentArea();
-                                delegator.newConf(ui.contentArea, selected.type, projectName,
-                                    function (err, runConf, content) {
-                                        if (!err) {
-                                            selected.runConf = runConf;
-                                            module.refreshTree();
-                                        }
-                                        _addContentArea(content);
-                                    });
-                            });
-                        } else {
-                            _removeContentArea();
-                            delegator.newConf(ui.contentArea, selected.type, projectName,
-                                function (error, newConf, content) {
-                                    if (!error) {
-                                        selected.runConf = newConf;
+                                _addContentArea(new ContentPane());
+                                delegator.newConf(ui.content, selected.type, projectName, function (err, runConf) {
+                                    if (!err) {
+                                        selected.runConf = runConf;
                                         module.refreshTree();
-                                        _addContentArea(content);
                                     }
                                 });
+                            });
+                        } else {
+                            _addContentArea(new ContentPane());
+                            delegator.newConf(ui.content, selected.type, projectName, function (error, newConf) {
+                                if (!error) {
+                                    selected.runConf = newConf;
+                                    module.refreshTree();
+                                }
+                            });
                         }
                     }),
                     on(ui.btns.deleteButton, 'click', function() {
-                        if(selected.runConf) {
+                        if (selected.runConf) {
                             PopupDialog.yesno({
                                 title: 'Delete ' + title,
                                 message: 'Are you sure you want to delete this configuration?',
                                 type: 'info'
                             }).then(function () {
-                                _removeContentArea();
-                                delegator.deleteConf(ui.contentArea, selected.runConf.name,
-                                    function(error){
-                                        if(!error) {
-                                            selected.runConf = undefined;
-                                            module.refreshTree();
-                                            _addContentArea();
-                                        }
-                                    });
+                                delegator.deleteConf(selected.runConf.name, function (error) {
+                                    if (!error) {
+                                        selected.runConf = undefined;
+                                        module.refreshTree();
+                                        _removeContentArea();
+                                    }
+                                });
                             }, function () {
                                 toastr.info('Deletion canceled');
                             });
@@ -297,7 +286,7 @@ define([
                 );
 
                 ui.btns.runButton = registry.byId('dialogRunButton');
-                if(!selected.runConf || selected.runConf.unsaved) {
+                if (!selected.runConf || selected.runConf.unsaved) {
                     ui.btns.runButton.setDisabled(true);
                 }
 
@@ -455,10 +444,8 @@ define([
     }
 
     function _drawContentPane(runConf) {
-        var markup = new ContentPane({
-            content: contentTemplate
-        });
-        var child = markup.domNode;
+        ui.content.setContent(contentTemplate);
+        var child = ui.content.domNode;
         var title = $(child).find('.rcw-title-name');
 
         if (runConf.latestRun) {
@@ -470,7 +457,7 @@ define([
 
         ui.btns.pathButton = $(child).find('.rcw-action-path').get(0);
 
-        addButtonCssClass(markup, ui.btns.pathButton, '20');
+        addButtonCssClass(ui.content, ui.btns.pathButton, '20');
 
         ui.forms.inputBoxes = $(child).find('.rcw-content-table-inputbox-edit');
         ui.forms.inputBoxes[0].value = runConf.name ? runConf.name : '';
@@ -481,11 +468,11 @@ define([
         ui.forms.readonlyInputBoxes = $(child).find('.rcw-content-table-inputbox-readonly');
         ui.forms.readonlyInputBoxes[0].value = runConf.path;
 
-        ui.forms.checkBoxes = $(child).find('.rcw-content-table-checkbox'); //FIXME
+        ui.forms.checkBoxes = $(child).find('.rcw-content-table-checkbox');
         ui.forms.checkBoxes[0].checked = (runConf.liveReload) ? true : false;
 
         ui.btns.saveButton = registry.byId('rcw-action-save');
-        markup.own(
+        ui.content.own(
             on(ui.btns.saveButton, 'click', function () {
                 saveButtonClicked(title);
             }),
@@ -499,7 +486,7 @@ define([
             if(err){
                 toastr.error('failed to get project list');
             } else {
-                projects = workspaceInfo.projects.map(function(project){
+                projects = workspaceInfo.projects.map(function (project) {
                     return {
                         value: project,
                         label: project
@@ -510,13 +497,11 @@ define([
                 ui.forms.select.set('value', runConf.project);
             }
         });
-
-        return markup;
     }
 
-    module.loadConf = function (parent, runConfiguration, callback) {
-        var innerContent = _drawContentPane(runConfiguration);
-        callback(null, runConfiguration, innerContent);
+    module.loadConf = function (content, runConfiguration, callback) {
+        _drawContentPane(runConfiguration);
+        callback(null, runConfiguration);
     };
 
     module.saveConf = function (runConf, callback) {

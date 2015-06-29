@@ -102,12 +102,10 @@ define([
         }
 
         function _setTemplate(runConf) {
-            var markup = new ContentPane({
-                content: template
-            });
+            ui.content.setContent(template);
             currentRunConf = runConf;
             if (runConf) {
-                var child = markup.domNode;
+                var child = ui.content.domNode;
                 ui.inputBoxNodes = $(child).find('.rcw-content-table-inputbox-edit');
                 ui.inputBoxNodes[0].value = runConf.name ? runConf.name : '';
                 ui.readonlyInputBoxes = $(child).find('.rcw-content-table-inputbox-readonly');
@@ -133,7 +131,7 @@ define([
                 ui.saveButton = registry.byId('rcw-action-save');
                 ui.pathButton = $(child).find('.rcw-action-path').get(0);
 
-                markup.own(
+                ui.content.own(
                     on(ui.saveButton, 'click', function () {
                         if (_doSave()) {
                             topic.publish('webida.ide.project-management.run:configuration.changed',
@@ -147,7 +145,6 @@ define([
                     })
                 );
             }
-            return markup;
         }
 
         var srcRegex = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
@@ -191,15 +188,15 @@ define([
                         }
                     });
             },
-            newConf: function (parent, runConf, callback) {
-                ui.parent = parent;
-                var innerContent = _setTemplate(runConf);
-                callback(null, runConf, innerContent);
+            newConf: function (content, runConf, callback) {
+                ui.content = content;
+                _setTemplate(runConf);
+                callback(null, runConf);
             },
-            loadConf: function (parent, runConf, callback) {
-                ui.parent = parent;
-                var innerContent = _setTemplate(runConf);
-                callback(null, runConf, innerContent);
+            loadConf: function (content, runConf, callback) {
+                ui.content = content;
+                _setTemplate(runConf);
+                callback(null, runConf);
             },
             saveConf: function (runConf, callback) {
                 // validation
