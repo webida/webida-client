@@ -214,15 +214,17 @@ define(['webida-lib/app',
         }
     };
 
-    function addListeners(){
-        topic.subscribe('sys.fs.node.moved', function(uid, sid, src, dest){
+    function addListeners() {
+        topic.subscribe('sys.fs.node.moved', function (event) {
             logger.log('sys.fs.node.moved', arguments);
+            var src = event.srcURL;
+            var dest = event.dstURL;
             var srcPathInfo = _getPathInfo(src);
             var destPathInfo = _getPathInfo(dest);
-            if(srcPathInfo.type === 'project' && destPathInfo.type === 'project'){
+            if (srcPathInfo.type === 'project' && destPathInfo.type === 'project') {
                 // ignore the case of nested projects
                 projectActions.replaceProject(srcPathInfo.name, destPathInfo.name);
-            } else if(srcPathInfo.type === 'workspaceInfo' || srcPathInfo.type === 'runConfig'){
+            } else if (srcPathInfo.type === 'workspaceInfo' || srcPathInfo.type === 'runConfig') {
                 loadRunConfigurations();
             }
         });
