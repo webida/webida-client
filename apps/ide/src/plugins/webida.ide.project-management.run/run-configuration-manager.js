@@ -126,9 +126,11 @@ define(['webida-lib/app',
         isFlushing = true;
         _.each(runConfigurations, function (runConf) {
             if (runConf.unsaved) {
-                var runConfsByProject = runConfigurationsByProject[runConf.project];
-                runConfigurationsByProject[runConf.project] = _.without(runConfsByProject,
-                    _.findWhere(runConfsByProject, {name: runConf.name}));
+                if(runConf.project) {
+                    var runConfsByProject = runConfigurationsByProject[runConf.project];
+                    runConfigurationsByProject[runConf.project] = _.without(runConfsByProject,
+                        _.findWhere(runConfsByProject, {name: runConf.name}));
+                }
                 delete runConfigurations[runConf.name];
             }
         });
