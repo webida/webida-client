@@ -261,7 +261,7 @@ define([
                     toastr.error(err);
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
-                    toastr.success('Run configuration \'' + runConf.project  + ':' + runConf.name +
+                    toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
                         '\' was successfully launched');
                 }
                 if (callback) {
@@ -290,7 +290,7 @@ define([
                     toastr.error(err);
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
-                    toastr.success('Debug configuration \'' + runConf.project  + ':' + runConf.name +
+                    toastr.success('Debug configuration \'' + runConf.project + ':' + runConf.name +
                                    '\' was successfully launched');
                 }
                 if (callback) {
@@ -308,13 +308,13 @@ define([
      * @param {contentCreationCallback} [callback]
      */
     module.newConf = function (content, type, project, callback) {
-        console.log('newConf', arguments);
         var runConf = {
             type: type,
             name: _makeConfigurationName(),
             project: project,
             unsaved: true
         };
+        console.log('newConf', arguments);
         if (!_.isFunction(Delegator.get(type).newConf)) {
             console.warn('newConf function hasn\'t be implemented for the run configurator type(' + type + ')');
             runConfigurationManager.add(runConf);
@@ -368,28 +368,38 @@ define([
      */
     module.saveConf = function (runConf, callback) {
         console.log('saveConf', arguments);
-        if (!_.isFunction(Delegator.get(runConf.type).loadConf)) {
+        if (!_.isFunction(Delegator.get(runConf.type).saveConf)) {
             console.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
             runConfigurationManager.save(runConf);
             if (callback) {
                 callback(null, runConf);
             }
         } else {
-            Delegator.get(runConf.type).saveConf(runConf, function (err, runConf) {
-                if (err) {
-                    toastr.error(err);
+            require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+                if (viewController.getWindowOpened()) {
+                    Delegator.get(runConf.type).saveConf(runConf, function (err, runConf) {
+                        if (err) {
+                            toastr.error(err);
+                        } else {
+                            // validation for mandatory properties (name, project)
+                            if (runConf.name && runConf.project) {
+                                runConfigurationManager.save(runConf);
+                                toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
+                                    '\' was successfully saved');
+                            } else {
+                                err = 'You should fill the mandatory fields(run configuration name and target project)';
+                            }
+                        }
+                        if (callback) {
+                            callback(err, runConf);
+                        }
+                    });
                 } else {
-                    // validation for mandatory properties (name, project)
-                    if (runConf.name && runConf.project) {
-                        runConfigurationManager.save(runConf);
-                        toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
-                            '\' was successfully saved');
-                    } else {
-                        err = 'You should fill the mandatory fields (run configuration name and target project)';
+                    // if this run configuration has been auto-generated, there is no need to validate options
+                    runConfigurationManager.save(runConf);
+                    if (callback) {
+                        callback(null, runConf);
                     }
-                }
-                if (callback) {
-                    callback(err, runConf);
                 }
             });
         }
@@ -401,8 +411,8 @@ define([
      * @param [callback]
      */
     module.deleteConf = function (runConfName, callback) {
-        console.log('deleteConf', arguments);
         var runConf = runConfigurationManager.getByName(runConfName);
+        console.log('deleteConf', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).deleteConf)) {
             console.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
             runConfigurationManager.delete(runConfName);
