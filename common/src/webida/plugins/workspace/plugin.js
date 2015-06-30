@@ -1324,7 +1324,7 @@ define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
                 removeFilterFunc(filters.filterFuncs[id]);
             }
         }
-        //console.log('addLoadedListener');
+        console.log('addLoadedListener');
         preferences.addLoadedListener(function () {
             initPreferences();
             preferences.addFieldChangeListener('workspace:filter:.*', applyPreferences);

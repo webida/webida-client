@@ -73,7 +73,7 @@ define(['./plugin',
             'tern-jumpback': 'JavaScript jump back to the reference',
             'tern-rename': 'JavaScript rename variable',
 
-            // emmet shortcuts. see webida.editor.text-editor/emmet.js
+            // emmet shortcuts. see codeeditor/emmet.js
             'emmet.expand_abbreviation': 'Expand abbreviation',
             'emmet.expand_abbreviation_with_tab': 'Expand abbreviation with tab',
             'emmet.match_pair_outward': 'Match pair outward',
@@ -99,8 +99,8 @@ define(['./plugin',
             'emmet.reflect_css_value': 'Reflect css value',
             'emmet.insert_formatted_line_break_only': 'Insert formatted line break only'
         };
-        if (editors && editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor) {
-            var editor = editors.currentFile.editorContext.editor;
+        if (editors && editors.currentFile && editors.currentFile.editor && editors.currentFile.editor.editor) {
+            var editor = editors.currentFile.editor.editor;
             var currentKeyMap = editor.getOption('keyMap');
             var merge = function (current, processed, keymap) {
                 var curKeyMap = codeMirror.keyMap[current];

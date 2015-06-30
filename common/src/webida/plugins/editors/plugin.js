@@ -32,25 +32,21 @@
 var time;
 define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         'other-lib/underscore/lodash.min',
-        'other-lib/URIjs/URI',
         'webida-lib/util/path',
         'webida-lib/util/arrays/BubblingArray',
         'webida-lib/app',
         'webida-lib/plugin-manager-0.1',
         'webida-lib/plugins/workbench/plugin',
-        'webida-lib/plugins/workbench/ui/EditorPart',
         'webida-lib/widgets/views/view',
         'webida-lib/widgets/views/viewmanager',
         'webida-lib/widgets/views/viewFocusController',
         'dojo/topic',
         'other-lib/async',
-        'other-lib/toastr/toastr',
-        'webida-lib/util/logger/logger-client'
-], function (extToMime, _, URI, pathUtil, BubblingArray, ide, pm, workbench, EditorPart,
-              View, vm, ViewFocusController,  topic, async, toastr, Logger) {
+        'other-lib/toastr/toastr'
+], function (extToMime, _, pathUtil, BubblingArray, ide, pm, workbench,
+              View, vm, ViewFocusController,  topic, async, toastr) {
     'use strict';
 
-	var logger = new Logger();
     time = timedLogger.log('loaded modules required by editors-view. initializing editors-view plugin\'s module', time);
 
     function getFileClass() {
@@ -64,12 +60,11 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         };
            
         File.prototype.isModified = function () {
-        	var editorPart = editors.getPart(this);
-            if (editorPart) {
-                var val = editorPart.getValue();
+            if (this.editorModule) {
+                var val = this.editorModule.getValue(this);
                 var modifiedInEditor = false;
-                if (editorPart.isClean) {
-                    modifiedInEditor = !editorPart.isClean();
+                if (this.editorModule.isClean) {
+                    modifiedInEditor = !this.editorModule.isClean(this);
                 }
                 // TODO: remove the first clause
                 return  val !== undefined && val !== this.savedValue && modifiedInEditor;
@@ -77,10 +72,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                 return false;	// not yet even initialized.
             }
         };
-
-		File.prototype.toString = function () {
-			return this.path;
-		}
 
         return File;
     }
@@ -109,7 +100,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         };
 
         FileManager.saveFile = function (file, option) {
-        	logger.info('FileManager.saveFile('+file+', option)');
             function getSpaces(n) {
                 if (spaces[n] === undefined) {
                     return (spaces[n] = (n ? ' ' + getSpaces(n - 1) : ''));
@@ -120,40 +110,40 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
             var path = file.path;
 
-            var value = editors.getPart(file).getValue();
+            var value = file.editorModule.getValue(file);
             if (value === undefined) {		// TODO: make this check unnecessary.
                 throw new Error('tried to save a file "' + file.path +
                                 '" + whose value is not yet set');
             }
 
-            console.assert(file.editorContext);
-            var editorContext = file.editorContext;
+            console.assert(file.editor);
+            var codeEditor = file.editor;
 
-            if (editorContext.trimTrailingWhitespaces ||
-                editorContext.insertFinalNewLine ||
-                editorContext.retabIndentations) {
+            if (codeEditor.trimTrailingWhitespaces ||
+                codeEditor.insertFinalNewLine ||
+                codeEditor.retabIndentations) {
                 var v = value;
-                if (editorContext.trimTrailingWhitespaces && v.match(/( |\t)+$/m)) {
+                if (codeEditor.trimTrailingWhitespaces && v.match(/( |\t)+$/m)) {
                     v = v.replace(/( |\t)+$/mg, '');
                 }
-                if (editorContext.insertFinalNewLine && v.match(/.$/)) {
+                if (codeEditor.insertFinalNewLine && v.match(/.$/)) {
                     v = v + '\n';	// TODO: consider line ending mode
                 }
-                if (editorContext.retabIndentations) {
-                    //var spaces = getSpaces(editorContext.options.indentUnit);
-                    var unit = editorContext.options.indentUnit, re = /^(( )*)\t/m, m;
+                if (codeEditor.retabIndentations) {
+                    //var spaces = getSpaces(codeEditor.options.indentUnit);
+                    var unit = codeEditor.options.indentUnit, re = /^(( )*)\t/m, m;
                     while ((m = v.match(re))) {
                         v = v.replace(re, '$1' +  getSpaces(unit - (m[0].length - 1) % unit));
                     }
                 }
 
                 if (v !== value) {
-                    var cursor = editorContext.getCursor();
-                    var scrollInfo = editorContext.editor.getScrollInfo();
+                    var cursor = codeEditor.getCursor();
+                    var scrollInfo = codeEditor.editor.getScrollInfo();
                     value = v;
-                    editorContext.setValue(value);
-                    editorContext.setCursor(cursor);
-                    editorContext.editor.scrollTo(scrollInfo.left, scrollInfo.top);
+                    codeEditor.setValue(value);
+                    codeEditor.setCursor(cursor);
+                    codeEditor.editor.scrollTo(scrollInfo.left, scrollInfo.top);
                 }
             }
 
@@ -163,9 +153,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     editors.onFileError(file);
                 } else {
                     file.savedValue = value;
-                    var editorPart = editors.getPart(file);
-                    if (editorPart && editorPart.markClean) {
-                        editorPart.markClean();
+                    if (file.editorModule && file.editorModule.markClean) {
+                        file.editorModule.markClean(file);
                     }
 
                     topic.publish('file.saved', file);
@@ -219,7 +208,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             require(['webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'], function (ButtonedDialog) {
                 var answer = {};
                 async.eachSeries(toClose, function (filePath, cb) {
-                    var file = editors.getFile(filePath);
+                    var file = editors.files[filePath];
                     if (file) {
                         if (file.isModified()) {
                             if (answer.yesToModified || answer.noToModified) {
@@ -309,20 +298,20 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         topic.subscribe('fs.cache.node.deleted', function (fsUrl, dir, name, type, movedTo) {
 
             function fileMoved(src, dst) {
-                var file = editors.getFile(src);
+                var file = editors.files[src];
                 if (file) {
                     if (isDir) {
                         file.path = dst;
-                        editors.removeFile(src);
-                        editors.addFile(dst, file);
+                        delete editors.files[src];
+                        editors.files[dst] = file;
                     } else {
                         var newName = pathUtil.getFileName(dst);
                         var oldExt = pathUtil.getFileExt(file.name);
                         var newExt = pathUtil.getFileExt(newName);
                         if (oldExt === newExt) {
                             file.path = dst;
-                            editors.removeFile(src);
-                            editors.addFile(dst, file);
+                            delete editors.files[src];
+                            editors.files[dst] = file;
                             file.name = newName;
                             editors.refreshTabTitle(file);
                         } else {
@@ -354,15 +343,15 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                         }
                     }
 
-                    /* replace the above procedure when setMode is done.
+                    /* replace the above procedure when codeeditor.setMode is done.
                     file.path = dst;
                     if (!isDir) {
                         file.name = pathUtil.getFileName(dst);
-                        file.editorContext.setMode(pathUtil.getFileExt(file.name));
-                        //editors.getPart(file).setMode(file.editorContext, pathUtil.getFileExt(file.name));
+                        file.editor.setMode(pathUtil.getFileExt(file.name));
+                        //file.editorModule.setMode(file.editor, pathUtil.getFileExt(file.name));
                             // The above line is not enough for linters and hinters
                     }
-                    editors.removeFile(src);
+                    delete editors.files[src];
                     editors.files[dst] = file;
                     editors.refreshTabTitle(file);
                      */
@@ -423,7 +412,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         });
 
         topic.subscribe('fs.cache.file.invalidated', function (fsURL, path) {
-        	var file = editors.getFile(path);
+            var file = editors.files[path];
             if (file) {
                 if (file === editors.currentFile) {
                     fsCache.refreshFileContents(path);
@@ -435,7 +424,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
         topic.subscribe('fs.cache.file.set', function (fsUrl, target, reason) {
             if (reason === 'refreshed') {
-                var file = editors.getFile(target);
+                var file = editors.files[target];
                 if (file) {
                     if (file === editors.currentFile) {
                         _.defer(askAndReload.bind(null, file));
@@ -465,7 +454,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         topic.subscribe('#REQUEST.closeFile', _.bind(editors.closeFile, editors));
         topic.subscribe('#REQUEST.saveFile', _.bind(editors.saveFile, editors));
         topic.subscribe('#REQUEST.selectFile', function (path) {
-            if (editors.getFile(path)) {
+            if (editors.files[path]) {
                 editors.openFile(path);
             }
         });
@@ -530,14 +519,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         currentFile: null,
         currentFiles: new BubblingArray(),
         recentFiles: new BubblingArray(20),	// keep history of 20 files
-        onloadPendingFilesCount: 0,
-        parts: new Map()
+        onloadPendingFilesCount: 0
     };
 
     editors.setCurrentFile = function (file) {
-    	
-    	logger.info('editors.setCurrentFile('+file+')');
-    	
         if (editors.currentFile !== file) {
             var view;
             if (editors.currentFile) {
@@ -567,9 +552,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                     topic.publish('editors.clean.current');
                 }
 
-				var editorPart = editors.getPart(file);
-                if (editorPart) {
-                    editorPart.focus(editors.currentFile);
+                if (file.editorModule) {
+                    file.editorModule.focus(editors.currentFile);
                 }
 
                 if (file.toRefresh) {
@@ -589,12 +573,10 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.ensureCreated = function (file, bShowAndFocus, cb) {
-    	console.info('ensureCreated()');
         function showAndFocus(file) {
-        	var editorPart = editors.getPart(file);
-            if (editorPart) {
-                editorPart.show();
-                editorPart.focus();
+            if (file.editorModule) {
+                file.editorModule.show(file);
+                file.editorModule.focus(file);
             }
             if (cb) {
                 cb();
@@ -618,7 +600,6 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     function onloadFinalize() {
-    	console.info('onloadFinalize()');
         var vcs = editors.splitViewContainer.getViewContainers();
         _.each(vcs, function (vc) {
             var selview = vc.getSelectedView();
@@ -635,7 +616,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
         var file;
         if (options && options.path) {
-            file = editors.getFile(options.path);
+            file = editors.files[options.path];
             if (!file) {
                 toastr.error('Cannot close the file "' + options.path + '"');
                 return;
@@ -675,7 +656,7 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
         var file = editors.currentFile;
         if (option) {
             var path = option.path;
-            file = editors.getFile(path);
+            file = editors.files[path];
         }
 
         if (file && file.isModified()) {
@@ -730,9 +711,9 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
 
     function checkFileNameHandleExtension(path) {
         var fileName = pathUtil.getFileName(path);
-		//console.info(fileName);
+        console.info(fileName);
         var extensions = pm.getExtensions('webida.common.editors:editor');
-        //console.info(extensions);
+        console.info(extensions);
         if (extensions instanceof Array && extensions.length) {
             for (var i = 0; i < extensions.length ; i++) {
                 if (extensions[i].handledFileNames instanceof Array && 
@@ -745,27 +726,24 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     }
     
     editors.openFile = function (path, options, callback) {
-    	logger.info('editors.openFile('+path+', options, callback)');
-    	logger.info('options = ', options);
-        
         options = options || {};
 
-        //if this file's part is showing
         if (editors.currentFile && editors.currentFile.path === path) {
             if (options.pos) {
                 editors.setCursor(editors.currentFile, options.pos);
             }
-            editors.getPart(editors.currentFile).focus();
+
+            editors.currentFile.editorModule.focus(editors.currentFile);
+
             if (callback) {
                 callback(editors.currentFile);
             }
-
-		//new file
         } else {
+            var file = editors.files[path];
             var fileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
-
-			//find module for this file
+            
             var fileNameHandleExtension = checkFileNameHandleExtension(path);
+            console.info(fileNameHandleExtension);
             //for handledFileNames
             if (!options.editorName && fileNameHandleExtension) {
                 options.extension = fileNameHandleExtension;
@@ -780,20 +758,18 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
                 return;
             }
 
-			var file = editors.getFile(path);
-            var fileNotExist = !file;
+            var openFile = !file;
 
-            if (fileNotExist) {
+            if (!file) {
                 file = new File(path);
-                editors.addFile(path, file);
+                file.editorName = options.extension.name;
+                editors.files[path] = file;
             }
 
-			file.editorName = options.extension.name;
-			console.info('file.editorName = ', file.editorName);
             file._openFileOption = options;
             file._openFileCallback = callback;
 
-            if (fileNotExist && options.extension.fileValueRequired) {
+            if (openFile && options.extension.fileValueRequired) {
                 fm.openFile(file);
             } else {
                 editors.onFileOpened(file);
@@ -816,257 +792,232 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.setCursor = function (file, pos) {
-        if (file.editorContext) {
-            if (file.editorContext.setCursor) {
-                file.editorContext.setCursor(pos);
+        if (file.editor) {
+            if (file.editor.setCursor) {
+                file.editor.setCursor(pos);
             }
         }
     };
 
     editors.getCursor = function (file) {
-        if (file.editorContext) {
-            if (file.editorContext.getCursor) {
-                return file.editorContext.getCursor();
+        if (file.editor) {
+            if (file.editor.getCursor) {
+                return file.editor.getCursor();
             }
         }
     };
 
-    function _findViewIndexUsingSibling(viewContainer, file, siblings) {
-        var previousSiblings = [];
-        var nextSiblings = [];
-        var i, j, sibling, siblingFile, view;
-        var index = -1;
-
-        if (!siblings) {
-            return index;
-        }
-
-        var found = false;
-        for (i = 0; i < siblings.length; i++) {
-            sibling = siblings[i];
-            if (sibling === file.path) {
-                found = true;
-                continue;
-            }
-
-            siblingFile = editors.files[sibling];
-            if (found) {
-                nextSiblings.push(siblingFile && siblingFile.viewId);
-            } else {
-                previousSiblings.push(sibling && siblingFile.viewId);
-            }
-        }
-
-        var views = viewContainer.getChildren();
-
-        //find from nextSilings
-        found = false;
-        for (i = 0; i < nextSiblings.length; i++) {
-            sibling = nextSiblings[i];
-            if (found) {
-                break;
-            }
-            for (j = 0 ; j < views.length; j++) {
-                view = views[j];
-                if (sibling === view.getId()) {
-                    index = j;
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-            //find from previousSiblings
-            for (i = previousSiblings.length - 1; i >= 0; i--) {
-                sibling = previousSiblings[i];
-                if (found) {
-                    break;
-                }
-                for (j = 0 ; j < views.length; j++) {
-                    view = views[j];
-                    if (sibling === view.getId()) {
-                        index = j + 1;
-                        found = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return index;
-    }
-
-	function getPartPath (extension) {
-        logger.info('extension.module = '+extension.module);
-		var partPathTokens = extension.module.split('/');
-		partPathTokens[partPathTokens.length-1] = extension.editorPart;
-		var editorPartPath = partPathTokens.join('/');
-		logger.info('editorPartPath = ',editorPartPath);
-		return editorPartPath;
-	}
-
-	function getViewContainer (view, file, option) {
-		//cellCount=2, cellIndex=-1
-		var viewContainer;
-        var cellCount = editors.splitViewContainer.get('splitCount');
-        var cellIndex;
-        if ((option.cellIndex >= 0) && (option.cellIndex < cellCount)) {
-            cellIndex = option.cellIndex;
-        } else {
-            cellIndex = -1;
-        }
-        var opt = {};
-        opt.fields = {title: view.getTitle(), path: file.path};
-        editors.editorTabFocusController.registerView(view, opt);
-        if (cellIndex === -1) {
-            viewContainer = editors.splitViewContainer.getFocusedViewContainer();
-        } else {
-            viewContainer = editors.splitViewContainer.getViewContainer(cellIndex);
-        }
-        return viewContainer;
-	}
-
     editors.onFileOpened = function (file) {
-    	
-    	console.log('');
-    	logger.info('editors.onFileOpened('+file+')');
-    	logger.info('file._openFileOption = ', file._openFileOption);
+        // TODO: remove the following check if possible
+        if (!file._openFileOption) {
+            return;
+        }
 
-		if (!file._openFileOption) {return;}
         var option = file._openFileOption;
         var callback = file._openFileCallback;
         delete file._openFileOption;
         delete file._openFileCallback;
 
-		//Check file is already showing
-		if (editors.currentFile === file) {
-			logger.info('editors.currentFile === file');
-			return;
-		}
+        var show = option.show !== false;
 
-		var show = option.show !== false;
-        if (show) {
-            if (editors.currentFile && editors.getPart(editors.currentFile)) {
-                editors.getPart(editors.currentFile).hide();
-            }
-        }
+        var cellCount = editors.splitViewContainer.get('splitCount');
+        var cellIndex;
 
-		//View and ViewContainer       
-        var view = vm.getView(file.viewId);
-        var viewContainer = null;
-        if (view === null) {
-            file.viewId = _.uniqueId('view_'); //TODO file.viewId
-            view = new View(file.viewId, file.name);
-            viewContainer = getViewContainer(view, file, option);
+        if ((option.cellIndex >= 0) && (option.cellIndex < cellCount)) {
+            cellIndex = option.cellIndex;
         } else {
-            if (view.getParent()) {
-                view.getParent().select(view);
+            cellIndex = -1;
+        }
+
+        var extension = option.extension;
+
+        // Create editor and update editor content
+        if (show) {
+            if (editors.currentFile && editors.currentFile.editorModule) {
+                editors.currentFile.editorModule.hide(editors.currentFile);
             }
         }
 
-		//Check exsisting part
-		var part = editors.getPart(file);
-		console.info('part = ', part);
-		if (part) {
-			logger.info('part already exists');
-            if (option.pos) {
-                editors.setCursor(file, option.pos);
-            }
-            if (typeof callback === 'function') {
-                callback(file);
-            }
-            editors.refreshTabTitle(file);
-            if (show) {
-                editors.setCurrentFile(file);
-                if (viewContainer) {
-                    viewContainer.select(view, true);
+        console.info(extension.module);
+        
+        require([extension.module], function (editorModule) {
+            function _findViewIndexUsingSibling(viewContainer, file, siblings) {
+                var previousSiblings = [];
+                var nextSiblings = [];
+                var i, j, sibling, siblingFile, view;
+                var index = -1;
+
+                if (!siblings) {
+                    return index;
                 }
+
+                var found = false;
+                for (i = 0; i < siblings.length; i++) {
+                    sibling = siblings[i];
+                    if (sibling === file.path) {
+                        found = true;
+                        continue;
+                    }
+
+                    siblingFile = editors.files[sibling];
+                    if (found) {
+                        nextSiblings.push(siblingFile && siblingFile.viewId);
+                    } else {
+                        previousSiblings.push(sibling && siblingFile.viewId);
+                    }
+                }
+
+                var views = viewContainer.getChildren();
+
+                //find from nextSilings
+                found = false;
+                for (i = 0; i < nextSiblings.length; i++) {
+                    sibling = nextSiblings[i];
+                    if (found) {
+                        break;
+                    }
+                    for (j = 0 ; j < views.length; j++) {
+                        view = views[j];
+                        if (sibling === view.getId()) {
+                            index = j;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!found) {
+                    //find from previousSiblings
+                    for (i = previousSiblings.length - 1; i >= 0; i--) {
+                        sibling = previousSiblings[i];
+                        if (found) {
+                            break;
+                        }
+                        for (j = 0 ; j < views.length; j++) {
+                            view = views[j];
+                            if (sibling === view.getId()) {
+                                index = j + 1;
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                return index;
             }
-			return;
-		}
 
-		// Create EditorPart and update content
-		var partPath = getPartPath(option.extension);
-		require([partPath], function (EditorPart) {
+            var view = null;
+            var viewContainer = null;
+            var needToAdd = false;
 
-	        var editorPart = new EditorPart(file);
-			editors.addPart(file, editorPart); //file to part map
+            view = vm.getView(file.viewId);
 
-			var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
-
-			console.info('viewContainer = ', viewContainer);
-
-            if (viewContainer) {
-                view.set('tooltip', file.path);
-                view.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
-                view.set('closable', true);
-                if (index >= 0) {
-                    viewContainer.addAt(view, index);
+            if (view === null) {
+                file.viewId = _.uniqueId('view_');
+                view = new View(file.viewId, file.name);
+                var opt = {};
+                opt.fields = {title: view.getTitle(), path: file.path};
+                editors.editorTabFocusController.registerView(view, opt);
+                if (cellIndex === -1) {
+                    viewContainer = editors.splitViewContainer.getFocusedViewContainer();
                 } else {
-                    viewContainer.addLast(view);
+                    viewContainer = editors.splitViewContainer.getViewContainer(cellIndex);
                 }
+                needToAdd = true;
+            } else {
+                if (view.getParent()) {
+                    view.getParent().select(view);
+                }
+            }
 
-                file.pendingCreator = function (c) {
-					console.info('file.pendingCreator('+c+')');
-                    function createEditor(file, editorPart, view, callback) {
-                        editorPart.create(view.getContent(), function (file, editorContext) {
-                            file.editorContext = editorContext;	//TODO : file.editorContext refactor
-                            if (editorPart.addChangeListener) {
-                                editorPart.addChangeListener(function (file) {
-                                    _.defer(function () {
-                                        editors.refreshTabTitle(file);
-                                        topic.publish('file.content.changed', file.path,
-                                                      editors.getPart(file).getValue());
+            /*
+            if (show || view) {
+                editors.setCurrentFile(file);
+            }
+             */
+
+            if (file.editorModule !== editorModule) {
+                file.editorModuleName = extension.module;
+                file.editorModule = editorModule;
+
+                var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
+
+                if (viewContainer && needToAdd) {
+                    view.set('tooltip', file.path);
+                    view.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
+                    view.set('closable', true);
+                    if (index >= 0) {
+                        viewContainer.addAt(view, index);
+                    } else {
+                        viewContainer.addLast(view);
+                    }
+
+                    file.pendingCreator = function (c) {
+
+                        function createEditor(file, editorModule, view, callback) {
+                            editorModule.create(file, file.savedValue, view.getContent(), function (file, instance) {
+                                file.editor = instance;
+                                if (editorModule.addChangeListener) {
+                                    editorModule.addChangeListener(file, function (file) {
+                                        _.defer(function () {
+                                            editors.refreshTabTitle(file);
+                                            topic.publish('file.content.changed', file.path,
+                                                          file.editorModule.getValue(file));
+                                        });
                                     });
-                                });
-                            }
+                                }
 
-                            if (option.pos) {
-                                editors.setCursor(file, option.pos);
-                            }
+                                if (option.pos) {
+                                    editors.setCursor(file, option.pos);
+                                }
 
+                                if (callback) {
+                                    callback(file);
+                                }
+                            });
+                        }
+
+                        createEditor(file, editorModule, view, function (file) {
                             if (callback) {
                                 callback(file);
                             }
+                            if (c) {
+                                c(file);
+                            }
                         });
+                    };
+
+                    if (show) {
+                        view.getParent().select(view);
+                        editors.ensureCreated(file, true);
                     }
 
-                    createEditor(file, editorPart, view, function (file) {
-                        if (callback) {
-                            callback(file);
-                        }
-                        if (c) {
-                            c(file);
-                        }
-                    });
-                };
-
-                if (show) {
-		            if (view.getParent()) {
-		                view.getParent().select(view);
-		            }
-                    editors.ensureCreated(file, true);
-                }
-
-                editors.onloadPendingFilesCount--;
-                if (editors.onloadPendingFilesCount === 0) {
-                    onloadFinalize();
+                    editors.onloadPendingFilesCount--;
+                    if (editors.onloadPendingFilesCount === 0) {
+                        onloadFinalize();
+                    }
+                } else {
+                    console.log('editor open failed : ' + file.path);
+                    view.destroy();
                 }
             } else {
-                console.log('editor open failed : ' + file.path);
-                view.destroy();
+                if (option.pos) {
+                    editors.setCursor(file, option.pos);
+                }
+
+                if (callback) {
+                    callback(file);
+                }
             }
 
             editors.refreshTabTitle(file);
             if (show) {
                 editors.setCurrentFile(file);
-                editorPart.show();
+                editorModule.show(file);
             }
-
-		});
-
-    }; //end of editors.onFileOpened
+        });
+    };
 
     editors.onFileSaved = function (file) {
         editors.refreshTabTitle(file);
@@ -1078,8 +1029,8 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
             onloadFinalize();
         }
         if (file._openFileOption) {
-            if (editors.getFile(file.path)) {
-                editors.removeFile(file.path);
+            if (editors.files[file.path]) {
+                delete editors.files[file.path];
             }
         }
     };
@@ -1123,40 +1074,11 @@ define([(time = timedLogger.getLoggerTime(), 'text!./ext-to-mime.json'),
     };
 
     editors.doWithCurrentEditor = function (cb) {
-    	//TODO : refactor : too long (editorContext should be taken simply)
-        if (editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor) {
-            var editorContext = editors.currentFile.editorContext;
-            return cb(editorContext, editorContext.editor);
+        if (editors.currentFile && editors.currentFile.editor && editors.currentFile.editor.editor) {
+            var instance = editors.currentFile.editor;
+            return cb(instance, instance.editor);
         }
     };
-
-	editors.addPart = function(file, part) {
-		logger.info('editors.addPart('+file+', '+part+')');
-		this.parts.set(file, part);
-	}
-
-	editors.getPart = function(file) {
-		logger.info('getPart('+file+')');
-		if (this.parts.get(file) instanceof EditorPart) {
-			return this.parts.get(file);
-		} else {
-			return null;
-		}
-	}
-
-	editors.addFile = function(path, file) {
-		this.files[path] = file;
-	}
-
-	editors.getFile = function(path) {
-		return this.files[path];
-	}
-
-	editors.removeFile = function(path) {
-		var file = editors.files[path];
-		delete editors.files[path];
-		return file;
-	}
 
     subscribeToTopics();
 

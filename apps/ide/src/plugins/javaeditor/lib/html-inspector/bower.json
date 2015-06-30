@@ -1,0 +1,15 @@
+{
+  "name": "html-inspector",
+  "version": "0.5.1",
+  "main": "dist/html-inspector.js",
+  "ignore": [
+    "img",
+    "spec",
+    "src",
+    ".*",
+    "bower.json",
+    "CONTRIBUTING.md",
+    "Gruntfile.js",
+    "package.json"
+  ]
+}
