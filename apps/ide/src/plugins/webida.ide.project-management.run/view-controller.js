@@ -56,9 +56,9 @@ define([
         RUN_CONFIGURATION_RUNNER: 'webida.ide.project-management.run:runner'
     };
 
-    function _getAllTypes(){
+    function _getAllTypes() {
         var types = pluginManager.getExtensions(extensionPoints.RUN_CONFIGURATION_TYPE);
-        var availableTypesInUI = _.filter(types, function(type){
+        var availableTypesInUI = _.filter(types, function (type) {
             return !type.hidden;
         });
         // add default type
@@ -309,10 +309,6 @@ define([
         return _.isEmpty(unsavedConfs) ? '' : 'not been saved';
     }
 
-    function isDuplicateRunName(name) {
-        return runConfManager.getByName(name) ? true : false;
-    }
-
     function addButtonCssClass(container, button, size) {
         container.own(
             on(button, 'mouseover', function () {
@@ -331,25 +327,7 @@ define([
         );
     }
 
-    function _makeConfigurationName(path) {
-        var ret = path;
-
-        if (isDuplicateRunName(ret) === true) {
-            var temp;
-            for (var i = 1; i < 100; i++) {
-                temp = ret + '-' + i.toString();
-                if (isDuplicateRunName(temp) !== true) {
-                    return temp;
-                }
-            }
-            var date = new Date();
-            return ret + date.toGMTString();
-        } else {
-            return ret;
-        }
-    }
-
-    function pathButtonClicked() {
+    function _pathButtonClicked() {
         var pathInputBox = ui.forms.readonlyInputBoxes[0];
         var nameInputBox = ui.forms.inputBoxes[0];
         var runConf = selected.runConf;
@@ -377,27 +355,20 @@ define([
             dirOnly: false,
             showRoot: false
         });
-        dlg.open(function (selected) {
-            if (selected) {
-                if (selected.length <= 0) {
+        dlg.open(function (fileSelected) {
+            if (fileSelected) {
+                if (fileSelected.length <= 0) {
                     toastr.warning('Select a file.');
                     return;
                 }
-                var pathSplit = selected[0].split(root);
+                var pathSplit = fileSelected[0].split(root);
                 if (pathSplit.length > 0) {
                     pathInputBox.value = pathSplit[1];
                     if (!nameInputBox) {
                         return;
                     }
-                    if (!nameInputBox.value) {
-                        nameInputBox.value = _makeConfigurationName(pathInputBox.value);
-                    } else {
-                        if ($(nameInputBox).attr('userinput') !== 'true') {
-                            var splitName = nameInputBox.value.split(pathInputBox.value);
-                            if (splitName.length > 0) {
-                                nameInputBox.value = _makeConfigurationName(pathInputBox.value);
-                            }
-                        }
+                    if (!nameInputBox.value || selected.runConf.unsaved) {
+                        nameInputBox.value = pathInputBox.value;
                     }
                 } else {
                     toastr.warning('Select a file.');
@@ -406,31 +377,28 @@ define([
         });
     }
 
-    function saveButtonClicked(title) {
-
-        if (!ui.forms.inputBoxes[0].value) {
+    function _saveButtonClicked() {
+        // validation of the common required fields are handled by delegator module
+        /*if (!ui.forms.inputBoxes[0].value) {
             toastr.error('Enter a name.');
             return;
         }
 
-        if (ui.forms.inputBoxes[0].value !== selected.runConf.name &&
-            isDuplicateRunName(ui.forms.inputBoxes[0].value)) {
+        if (isDuplicateRunName(ui.forms.inputBoxes[0].value)) {
             toastr.error('Duplicate name');
             return;
-        }
+        }*/
 
         if (!ui.forms.readonlyInputBoxes[0].value) {
-            toastr.error('Select a path.');
+            toastr.error('Select a path');
             return;
         }
 
-        if (!/^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/.
-                test(ui.forms.inputBoxes[1].value)) {
+        if (!/^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/
+                .test(ui.forms.inputBoxes[1].value)) {
             toastr.error('Invalid arguments');
             return;
         }
-
-        $(title[0]).attr('title', ui.forms.inputBoxes[0].value);
 
         selected.runConf.name = ui.forms.inputBoxes[0].value;
         selected.runConf.path = ui.forms.readonlyInputBoxes[0].value;
@@ -444,19 +412,12 @@ define([
     }
 
     function _drawContentPane(runConf) {
+        var child;
+        var projects = [];
         ui.content.setContent(contentTemplate);
-        var child = ui.content.domNode;
-        var title = $(child).find('.rcw-title-name');
-
-        if (runConf.latestRun) {
-            $(title).text(runConf.name + ' [latest run]');
-        } else {
-            $(title).text(runConf.name);
-        }
-        $(title).attr('title', runConf.name);
+        child = ui.content.domNode;
 
         ui.btns.pathButton = $(child).find('.rcw-action-path').get(0);
-
         addButtonCssClass(ui.content, ui.btns.pathButton, '20');
 
         ui.forms.inputBoxes = $(child).find('.rcw-content-table-inputbox-edit');
@@ -474,16 +435,15 @@ define([
         ui.btns.saveButton = registry.byId('rcw-action-save');
         ui.content.own(
             on(ui.btns.saveButton, 'click', function () {
-                saveButtonClicked(title);
+                _saveButtonClicked();
             }),
             on(ui.btns.pathButton, 'click', function () {
-                pathButtonClicked();
+                _pathButtonClicked();
             })
         );
 
-        var projects = [];
-        ide.getWorkspaceInfo(function(err, workspaceInfo){
-            if(err){
+        ide.getWorkspaceInfo(function (err, workspaceInfo) {
+            if (err) {
                 toastr.error('failed to get project list');
             } else {
                 projects = workspaceInfo.projects.map(function (project) {
@@ -492,7 +452,7 @@ define([
                         label: project
                     };
                 });
-                ui.forms.select = new Select({ options: projects }, 'run-configuration-project');
+                ui.forms.select = new Select({options: projects}, 'run-configuration-project');
                 ui.forms.select.startup();
                 ui.forms.select.set('value', runConf.project);
             }
@@ -514,6 +474,11 @@ define([
 
     module.getWindowOpened = function () {
         return windowOpened;
+    };
+
+    module.reload = function () {
+        _addContentArea(new ContentPane());
+        delegator.loadConf(ui.content, selected.runConf);
     };
 
     return module;

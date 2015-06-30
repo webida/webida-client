@@ -63,7 +63,6 @@ define([
             });
             dlg.open(function (selected) {
                 var pathSplit;
-                var splitName;
                 if (selected) {
                     if (selected.length <= 0) {
                         toastr.warning('Select a java file.');
@@ -75,15 +74,8 @@ define([
                         if (!nameInputBox) {
                             return;
                         }
-                        if (!nameInputBox.value) {
+                        if (!nameInputBox.value || currentRunConf.unsaved) {
                             nameInputBox.value = pathInputBox.value;
-                        } else {
-                            if ($(nameInputBox).attr('userinput') !== 'true') {
-                                splitName = nameInputBox.value.split(pathInputBox.value);
-                                if (splitName.length > 0) {
-                                    nameInputBox.value = pathInputBox.value;
-                                }
-                            }
                         }
                     } else {
                         toastr.warning('Select a java file.');

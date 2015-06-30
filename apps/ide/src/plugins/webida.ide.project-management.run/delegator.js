@@ -350,6 +350,7 @@ define([
                 callback(null, runConf);
             }
         } else {
+            runConf.originalName = runConf.name;
             Delegator.get(runConf.type).loadConf(content, runConf, function (err, runConf) {
                 if (err) {
                     toastr.error(err);
@@ -361,6 +362,46 @@ define([
         }
     };
 
+    function _isDuplicateRunName(name, originalName) {
+        var dupRunConf;
+        if (originalName && originalName === name) {
+            // When status of this configuration is 'saved' and its name has not been changed,
+            // there is no need to check duplication.
+            return false;
+        }
+        dupRunConf = runConfigurationManager.getByName(name);
+        return (dupRunConf && !dupRunConf.unsaved);
+    }
+
+    function _resolveDuplication(runConf) {
+        var ret = runConf.name;
+        var i = 2;
+        while (_isDuplicateRunName(ret, runConf.originalName)) {
+            ret = runConf.name + ' (' + i++ + ')';
+            if (i > 100) {
+                ret = runConf.name + '_' + new Date().toUTCString();
+            }
+        }
+        runConf.name = ret;
+    }
+
+    /**
+     * Validation for common required fields (name and target project of the run configuration)
+     * @param runConf
+     * @param callback
+     * @returns {*}
+     * @private
+     */
+    function _validation(runConf, callback) {
+        if (!runConf.name) {
+            return callback('You should fill the configuration name');
+        }
+        if (!runConf.project) {
+            return callback('You should fill the target project');
+        }
+        _resolveDuplication(runConf);
+        callback();
+    }
     /**
      * Save properties of the selected run configuration
      * @param {Object} runConf - selected run configuration
@@ -382,16 +423,15 @@ define([
                             toastr.error(err);
                         } else {
                             // validation for mandatory properties (name, project)
-                            if (runConf.name && runConf.project) {
-                                runConfigurationManager.save(runConf);
-                                toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
-                                    '\' was successfully saved');
-                            } else {
-                                err = 'You should fill the mandatory fields(run configuration name and target project)';
-                            }
-                        }
-                        if (callback) {
-                            callback(err, runConf);
+                            _validation(runConf, function (errMsg) {
+                                if (!errMsg) {
+                                    runConfigurationManager.save(runConf);
+                                    viewController.reload();
+                                    toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
+                                        '\' was successfully saved');
+                                }
+                                callback(errMsg, runConf);
+                            });
                         }
                     });
                 } else {
