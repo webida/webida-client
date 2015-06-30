@@ -1,0 +1,51 @@
+{
+    "name": "javaeditor",
+    "description": "Java editor",
+    "version": "0.1.0",
+    "requirement": "webida.common.editors",
+    "extensions" : {
+
+        "webida.common.editors:editor" : {
+            "name" : "Java editor",
+            "fileValueRequired" : true,
+            "handledFileExt" : [ "java" ],
+            "handledMimeTypes" : [],
+            "handledFileNames" : [],
+            "unhandledFileExt" : [],
+            "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
+        },
+
+        "webida.common.workbench:preference-page" : [
+            {
+                "module": "plugins/javaeditor/preference-appearance",
+                "hierarchy": "javaeditor",
+                "name": "Java Editor",
+                "handler": "javaeditor"
+            },
+            {
+                "module": "plugins/javaeditor/preference-contentassist",
+                "hierarchy": "javaeditor/content-assist",
+                "name": "Content Assists",
+                "handler": "javaeditor"
+            },
+            {
+                "module": "plugins/javaeditor/preference-editor",
+                "hierarchy": "javaeditor/lines",
+                "name": "Lines",
+                "handler": "javaeditor"
+            },
+            {
+                "module": "plugins/javaeditor/preference-keys",
+                "hierarchy": "javaeditor/key-map",
+                "name": "Key Map",
+                "handler": "javaeditor"
+            },
+            {
+                "module": "plugins/javaeditor/preference-show",
+                "hierarchy": "javaeditor/show-hide",
+                "name": "Show or Hide",
+                "handler": "javaeditor"
+            }
+        ]
+    }
+}

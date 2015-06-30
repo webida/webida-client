@@ -94,8 +94,8 @@ define(['plugins/workbench/plugin', 'dojo/_base/declare', 'dgrid/Grid', 'dgrid/S
             grid.on('dgrid-select', function (e) {
                 if (e.rows && e.rows.length === 1) {
                     var ref = e.rows[0];
-                    require(['plugins/webida.editor.text-editor/TextEditor'], function (TextEditor) {
-                        TextEditor.moveTo({
+                    require(['plugins/codeeditor/plugin'], function (CodeEditor) {
+                        CodeEditor.moveTo({
                             filepath: ref.data.path,
                             start: ref.data.location.start,
                             end: ref.data.location.end

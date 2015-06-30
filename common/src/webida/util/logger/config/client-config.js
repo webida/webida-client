@@ -14,8 +14,7 @@ define(function(/*require, exports, module*/) {
 	};
     /*jslint bitwise: true */
 	return {
-		level : LEVELS.all,
-        pathDepth : 2
+		level : LEVELS.all
 	};
     /*jslint bitwise: false */
 });

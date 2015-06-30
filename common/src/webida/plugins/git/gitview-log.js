@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,10 +17,9 @@
 define([
     'other-lib/underscore/lodash.min',
     'other-lib/moment/moment.min',
-    'other-lib/URIjs/URI',
     'dojo/topic',
     'webida-lib/widgets/views/viewmanager'
-], function (_, moment, URI, topic, viewmanager) {
+], function (_, moment, topic, viewmanager) {
     'use strict';
 
     function _getCurrentTime() {
@@ -37,34 +36,29 @@ define([
         this.type = type;
     };
 
-    function escape(str) {
-        return _.escape(str).replace(/ /g, '&nbsp;');
-    }
-    function hidePassword(url) {
-        var uri = new URI(url);
-        if (uri.password()) {
-            return uri.password('****').toString();
-        } else {
-            return url;
-        }
-    }
-
     function _messageParse(gitroot, msg, id) {
         var parseLog = msg.split(/\r*\n/).map(function (line) {
+
             if (line.match(/(modified:|new file:|added:|CONFLICT)\w*/)) {
                 return '<div class="gv-contentbody-issue gv-issue' + id +
-                    '" data-gitroot="' + gitroot + '">' + escape(line) + '</div>';
+                    '" data-gitroot="' + gitroot + '">' + line.replace(/ /g, '&nbsp;') + '</div>';
             } else if (line.match(/Patch failed at \d* init\w*/)) {
-                return '<div class="gv-contentbody-message">' + escape(line) + '</div>';
+                return '<div class="gv-contentbody-message">' + line.replace(/ /g, '&nbsp;') + '</div>';
+            } else if (line.match(/(http|https)/)) {
+                // remove authentication information
+                // e.g. https://username:password@git.repository/url
+                line = line.replace(/(https?:\/\/)(.*:.*)@/, '$1');
+                var m = line.match(/(.*)((http|https):\/\/[\w\.\/\d\-]*)(.*)/);
+                return m[1] + '<a href="' + m[2] + '" target="_blank">' + m[2] + '</a>' + m[4];
             } else {
-                var result = URI.withinString(line, function (url) {
-                    var uri = new URI(url);
-                    uri.normalize().userinfo('');
-                    return '<a href="' + uri.toString() + '" target="_blank">' + escape(uri.readable()) + '</a>';
-                });
-                return result;
+                var output = line.replace(/ /g, '&nbsp;');
+                output = output.replace(/</g, '&lt;');
+                output = output.replace(/>/g, '&gt;');
+                output = '<div>' + output + '</div>';
+
+                return output;
             }
-        }).join('<br>');
+        }).join('');
 
         return parseLog;
     }

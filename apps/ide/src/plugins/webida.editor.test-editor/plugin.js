@@ -72,6 +72,10 @@ define(['dojo/topic',
             console.info('focus()');
         },
 
+        pushCursorLocation: function (/*file, cursor, forced*/) {
+            console.info('pushCursorLocation()');
+        },
+
         moveBack: function () {
             console.info('moveBack()');
         },

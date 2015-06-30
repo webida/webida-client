@@ -197,7 +197,7 @@ define(['./plugin',
             return null;
         }
 
-        var editor = editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor;
+        var editor = editors.currentFile && editors.currentFile.editor && editors.currentFile.editor.editor;
         if (editor) {
             var selected = editor.getSelection();
 
@@ -286,7 +286,7 @@ define(['./plugin',
             items['&Replace'] = menuItems.findMenuItems['&Replace'];
             items['F&ind'] = menuItems.findMenuItems['F&ind'];
             items['&Highlight to Find'] = menuItems.findMenuItems['&Highlight to Find'];
-            var editor = editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor;
+            var editor = editors.currentFile && editors.currentFile.editor && editors.currentFile.editor.editor;
             var query = editor && editor.state && editor.state.search && editor.state.search.query;
             if (query) {
                 items['Find &Next'] = menuItems.findMenuItems['Find &Next'];
@@ -425,8 +425,8 @@ define(['./plugin',
         }
 
         var editor = (editors.currentFile &&
-                      editors.currentFile.editorContext &&
-                      editors.currentFile.editorContext.editor) ? editors.currentFile.editorContext.editor : null;
+                      editors.currentFile.editor &&
+                      editors.currentFile.editor.editor) ? editors.currentFile.editor.editor : null;
         if (editor) {
             var selected = editor.getSelection();
 

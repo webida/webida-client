@@ -1,6 +1,8 @@
 {
     "plugins" : [
-        "plugins/webida.editor.text-editor",
+        "plugins/codeeditor",
+        "plugins/javaeditor",
+        "plugins/webida.editor.test-editor",
         "plugins/deploy",
         "plugins/help",
         "plugins/preference",
@@ -9,7 +11,6 @@
         "plugins/project-wizard",
         "plugins/webida.ide.project-management.run.java",
         "plugins/uid-menu-items",
-        "plugins/webida.terminal",
         "webida-lib/plugins/editors",
         "webida-lib/plugins/fs-commands",
         "webida-lib/plugins/git",

@@ -585,7 +585,6 @@ function (_,
         },
 
         _contentPaneSelected : function (pane) {
-			console.info('_contentPaneSelected('+pane+')');
             var _self = this;
             var event = new ViewContainerEvent(ViewContainerEvent.SELECTED);
             event.view = _self._getViewByContentPane(pane);
