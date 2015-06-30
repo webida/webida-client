@@ -320,6 +320,7 @@ define(['webida-lib/app',
         this.save = function(runConfiguration){
 
             delete runConfiguration.unsaved;
+            delete runConfiguration.originalName;
             runConfigurations[runConfiguration.name] = runConfiguration;
 
             var unsyncedItems = [];
