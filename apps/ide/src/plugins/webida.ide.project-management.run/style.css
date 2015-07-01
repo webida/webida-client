@@ -221,7 +221,6 @@
     height:466px;
     position: relative;
     font-size:10pt;
-    /*font-family: 'Nanum Gothic Coding', Verdana,Arial,sans-serif;*/
 }
 .run-configuration-dialog {
     height:445px;
@@ -244,10 +243,11 @@ ul.run-configuration-list-tree {
     list-style: none;
     padding: 0;
     margin: 0;
+    white-space: nowrap;
 }
 
 ul.run-configuration-list-tree ul {
-    padding-left: 20px;
+    padding-left: 0px;
     list-style: none;
 }
 
@@ -255,22 +255,39 @@ ul.run-configuration-list-tree li a {
     text-decoration: none;
     color: #111111;
     display: block;
-    padding: 2px;
+    padding: 0 5px;
+    margin: 3px 0;
 }
-ul.run-configuration-list-tree li a.selected {
-    font-weight: bold;
-}
-ul.run-configuration-list-tree > li {
-    border: 1px solid #98B1CA;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    padding: 1px;
-}
+
 ul.run-configuration-list-tree > li > a {
-    padding: 6px 15px;
-    background-color: #7BCDCD;
-    color: #fff;
-    border-radius: 5px;
+    font-weight: bold;
+    border-top: 1px solid #bbbbbb;
+    background-color: #eee;
+    padding: 5px;
+}
+
+ul.run-configuration-list-tree li a.selected {
+    background-color: #43cbff;
+    color: #eeffff;
+}
+
+ul.run-configuration-list-tree > li > a.selected {
+    background-color: #D0EBF5;
+    color: #111111;
+    border-top: 1px solid #43cbff;
+}
+
+ul.run-configuration-list-tree > li > ul {
+    margin-bottom: 5px;
+}
+
+ul.run-configuration-list-tree > li > ul > li > a {
+    padding-left: 25px;
+    font-size: 0.9em;
+}
+#run-configuration-list {
+    width: 190px;
+    overflow-x: scroll;
 }
 #run-configuration-list-contentpane {
     height: 100%;
