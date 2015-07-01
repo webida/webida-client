@@ -107,6 +107,16 @@ define([
         }
     }
 
+    function _setSelection(typeOrRunConf) {
+        if (typeof typeOrRunConf === 'string') {
+            selected.runConf = undefined;
+            selected.type = typeOrRunConf;
+        } else if (typeOrRunConf) {
+            selected.runConf = typeOrRunConf;
+            selected.type = typeOrRunConf.type;
+        }
+    }
+
     module.refreshTree = function () {
         ui.tree = $('#run-configuration-list-tree').empty();
         var runByType = _.groupBy(runConfManager.getAll(), 'type');
@@ -138,12 +148,11 @@ define([
                 var runName = $(this).attr('data-run-id');
                 var typeId = $(this).attr('data-type-id');
                 if (runName) {
-                    selected.runConf = runConfManager.getByName(runName);
-                    selected.type = typeId;
+                    _setSelection(runConfManager.getByName(runName));
                     _addContentArea(new ContentPane());
                     delegator.loadConf(ui.content, selected.runConf);
                 } else {
-                    selected.type = typeId;
+                    _setSelection(typeId);
                 }
                 ui.tree.find('.selected').removeClass('selected');
                 ui.tree.find('[data-run-id="' + runName + '"]').addClass('selected');
@@ -151,7 +160,7 @@ define([
             });
         });
 
-        if(windowOpened && ui.btns.runButton) {
+        if (windowOpened && ui.btns.runButton) {
             if (!selected.runConf || selected.runConf.unsaved) {
                 ui.btns.runButton.setDisabled(true);
             } else {
@@ -160,7 +169,7 @@ define([
         }
     };
 
-    module.openWindow = function(defaultRun, mode){
+    module.openWindow = function (defaultRun, mode) {
         var title;
         var caption;
         switch (mode) {
@@ -173,7 +182,7 @@ define([
                 caption = 'Debug';
                 break;
         }
-        selected.runConf = defaultRun || _.first(_.toArray(runConfManager.getAll()));
+        _setSelection(defaultRun || _.first(_.toArray(runConfManager.getAll())));
         ui.dialog = new ButtonedDialog({
             buttons: [
                 {id: 'dialogRunButton', caption: caption, methodOnClick: 'runConf'},
@@ -240,7 +249,7 @@ define([
                             projectName = pathUtil.getName(context.projectPath) || undefined;
                         }
 
-                        if(!_.isEmpty(unsaved)){
+                        if (!_.isEmpty(unsaved)) {
                             PopupDialog.yesno({
                                 title: title,
                                 message: 'You will may lose unsaved data. Are you sure to continue?',
@@ -249,7 +258,7 @@ define([
                                 _addContentArea(new ContentPane());
                                 delegator.newConf(ui.content, selected.type, projectName, function (err, runConf) {
                                     if (!err) {
-                                        selected.runConf = runConf;
+                                        _setSelection(runConf);
                                         module.refreshTree();
                                     }
                                 });
@@ -258,7 +267,7 @@ define([
                             _addContentArea(new ContentPane());
                             delegator.newConf(ui.content, selected.type, projectName, function (error, newConf) {
                                 if (!error) {
-                                    selected.runConf = newConf;
+                                    _setSelection(newConf);
                                     module.refreshTree();
                                 }
                             });
@@ -273,7 +282,7 @@ define([
                             }).then(function () {
                                 delegator.deleteConf(selected.runConf.name, function (error) {
                                     if (!error) {
-                                        selected.runConf = undefined;
+                                        _setSelection(selected.runConf.type);
                                         module.refreshTree();
                                         _removeContentArea();
                                     }
