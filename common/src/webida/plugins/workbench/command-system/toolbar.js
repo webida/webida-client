@@ -294,8 +294,9 @@ function (pm,
                                 });
                             }
 
-                            // cmnd handle bind, just icon click then first index
-                            on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, 0));
+                            // Events on clicking icon and selecting the first item of dropdown list
+                            // should be distinguishable. (index: 0 -> -1)
+                            on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, -1));
 
                             var menu = new Menu({ style: 'display: none;'});
                             item.dropDown = menu;
