@@ -35,6 +35,7 @@ var require = {
         sly: 'script/lib/sly.min',
         toastr: 'script/lib/toastr/toastr',
         text: 'script/lib/text',
-        'webida-lib': '../../common/src/webida'
+        'webida-lib': '../../common/src/webida',
+        'external': '../../bower_components'
     }
 };

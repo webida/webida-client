@@ -6,5 +6,6 @@
     "bower_components"
   ],
   "dependencies": {
+    "codemirror": "webida/codemirror#fork"
   }
 }

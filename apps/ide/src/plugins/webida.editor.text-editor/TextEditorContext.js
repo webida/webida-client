@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,13 +15,13 @@
  */
 
 /**
- * TextTextEditorContext is an wrapper(or adapter) object that encapsulates 
+ * TextTextEditorContext is an wrapper(or adapter) object that encapsulates
  * web based text editors, such as codemirror, ace editor,.. etc.
  * Now TextTextEditorContext supports codemirror only, but we will
  * support other editors like ace sooner or later.
  *
  * Still needs refactoring (2015.06.25, hw.shim)
- * 
+ *
  * @constructor
  * @see TextEditor
  * @refactor: hw.shim (2015.06.11)
@@ -32,15 +32,15 @@ define([
 	'webida-lib/util/gene',
 	'webida-lib/plugins/editors/viable-menu-items',
 	'other-lib/underscore/lodash.min',
-	'webida-lib/custom-lib/codemirror/lib/codemirror',
+	'external/codemirror/lib/codemirror',
 	'webida-lib/util/loadCSSList',
 	'webida-lib/plugins/editors/EditorContext'
 ], function (
 	require,
-	gene, 
-	vmi, 
-	_, 
-	codemirror, 
+	gene,
+	vmi,
+	_,
+	codemirror,
 	loadCSSList,
 	EditorContext
 ) {
@@ -62,8 +62,8 @@ define([
     codemirror.commands.gotoLine = function (cm) {
         if (cm.getOption('keyMap') === 'default') {
             var dialog = 'Go to line: <input type="text" style="width: 10em"/> <span style="color: #888"></span>';
-            loadCSSList([require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css')], function () {
-                require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog'], function () {
+            loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css')], function () {
+                require(['external/codemirror/addon/dialog/dialog'], function () {
                     cm.openDialog(dialog, function (query) {
                         var line = Math.floor(+query - 1);
                         cm.__instance.setCursor({row: line, col: 0});
@@ -185,14 +185,14 @@ define([
         }
 
         loadCSSList([require.toUrl('./css/webida.css'),
-                     require.toUrl('webida-lib/custom-lib/codemirror/lib/codemirror.css'),
-                     require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css')], function () {
-            require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog',
-                     'webida-lib/custom-lib/codemirror/addon/search/searchcursor',
+                     require.toUrl('external/codemirror/lib/codemirror.css'),
+                     require.toUrl('external/codemirror/addon/dialog/dialog.css')], function () {
+            require(['external/codemirror/addon/dialog/dialog',
+                     'external/codemirror/addon/search/searchcursor',
                      './search-addon',
-                     'webida-lib/custom-lib/codemirror/addon/edit/closebrackets',
-                     'webida-lib/custom-lib/codemirror/addon/edit/closetag',
-                     'webida-lib/custom-lib/codemirror/addon/edit/matchbrackets'], function () {
+                     'external/codemirror/addon/edit/closebrackets',
+                     'external/codemirror/addon/edit/closetag',
+                     'external/codemirror/addon/edit/matchbrackets'], function () {
                 self.start();
             });
         });
@@ -219,7 +219,7 @@ define([
 	            autoCloseBrackets: this.keymap !== 'vim',
 	            autoCloseTags: true
 	        };
-	
+
 	        function setOption(name, value, condition, defaultValue) {
 	            if (condition === undefined) {
 	                if (value !== undefined) {
@@ -243,12 +243,12 @@ define([
 	        setOption('indentOnPaste', this.options.indentOnPaste);
 	        setOption('extraKeys', this.options.extraKeys);
 	        setOption('lineWrapping', this.options.lineWrapping);
-	
+
 	        this.editor = codemirror(this.elem, options);
 	        this.editor.setOption('showCursorWhenSelecting', true);
 	        this.editor.__instance = this;
 	        $(this.editor.getWrapperElement()).addClass('maincodeeditor');
-	
+
 	        if (this.deferredActions) {
 	            _.each(this.deferredActions, function (action) {
 	                action(self);
@@ -399,7 +399,7 @@ define([
 	            return this.cursor;
 	        }
 	    },
-	
+
 	    setSize : function (width, height) {
             if (typeof width === 'number') {
                 this.__width = width;
@@ -415,7 +415,7 @@ define([
 
             this.addDeferredAction(function (self) {
                 if (typeof height === 'number') { //applying border correction
-                    var wrapper = self.editor.getWrapperElement();                            
+                    var wrapper = self.editor.getWrapperElement();
 
                     self.editor.setSize(width, height);
                     var borderCorrection = wrapper.offsetHeight - wrapper.clientHeight;
@@ -425,7 +425,7 @@ define([
                 }
             });
         },
-	
+
 	    getTheme : function () {
 	        return this.theme;
 	    },
@@ -444,7 +444,7 @@ define([
 	            }
 	        } else {
 	            var self = this;
-	            var csspath = 'webida-lib/custom-lib/codemirror/theme/' + theme + '.css';
+	            var csspath = 'external/codemirror/theme/' + theme + '.css';
 	            switch (theme) {
 	            case 'webida-dark':
 	                csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
@@ -454,7 +454,7 @@ define([
 	                break;
 	            case 'solarized dark':
 	            case 'solarized light':
-	                csspath = 'webida-lib/custom-lib/codemirror/theme/solarized.css';
+	                csspath = 'external/codemirror/theme/solarized.css';
 	                break;
 	            }
 	            loadCSSList([require.toUrl(csspath)], function () {
@@ -490,7 +490,7 @@ define([
 	                this.editor.setOption('autoCloseBrackets', false);
 	            }
 	            this.keymap = keymap;
-	            require(['webida-lib/custom-lib/codemirror/keymap/' + keymap], function () {
+	            require(['external/codemirror/keymap/' + keymap], function () {
 	                addAvailable('keymap', keymap);
 	                if (self.editor) {
 	                    self.editor.setOption('keyMap', keymap);
@@ -526,7 +526,7 @@ define([
 	            });
 	        }
 	    },
-	
+
 	    _gutterOn : function (gutterName) {
 	        if (this.editor) {
 	            var gutters = this.editor.getOption('gutters');
@@ -554,13 +554,13 @@ define([
 	            this.editor.setOption('gutters', _.without(gutters, gutterName));
 	        }
 	    },
-	
+
 	    setStyleActiveLine : function (highlight) {
 	        if (highlight !== undefined) {
 	            this.styleActiveLine = highlight;
 	            if (highlight) {
 	                var self = this;
-	                require(['webida-lib/custom-lib/codemirror/addon/selection/active-line'], function () {
+	                require(['external/codemirror/addon/selection/active-line'], function () {
 	                    self.addDeferredAction(function (self) {
 	                        self.editor.setOption('styleActiveLine', highlight);
 	                    });
@@ -580,7 +580,7 @@ define([
 	        this.matchBrackets = match;
 	        if (match) {
 	            var self = this;
-	            require(['webida-lib/custom-lib/codemirror/addon/edit/matchbrackets'], function () {
+	            require(['external/codemirror/addon/edit/matchbrackets'], function () {
 	                self.addDeferredAction(function (self) {
 	                    self.editor.setOption('matchBrackets', match);
 	                });
@@ -600,7 +600,7 @@ define([
 	        if (highlight) {
 	            var self = this;
 	            loadCSSList([require.toUrl('./css/match-highlighter.css')], function () {
-	                require(['webida-lib/custom-lib/codemirror/addon/search/match-highlighter'], function () {
+	                require(['external/codemirror/addon/search/match-highlighter'], function () {
 	                    self.addDeferredAction(function (self) {
 	                        self.editor.setOption('highlightSelectionMatches', highlight);
 	                    });
@@ -612,7 +612,7 @@ define([
 	            });
 	        }
 	    },
-	
+
 	    setTabSize : function (tabSize) {
 	        if (tabSize !== undefined) {
 	            this.options.tabSize = tabSize;
@@ -692,9 +692,9 @@ define([
 	        if (codeFolding) {
 	            var self = this;
 	            loadCSSList([require.toUrl('./css/codefolding.css')], function () {
-	                require(['webida-lib/custom-lib/codemirror/addon/fold/foldcode',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/foldgutter',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/brace-fold'], function () {
+	                require(['external/codemirror/addon/fold/foldcode',
+	                         'external/codemirror/addon/fold/foldgutter',
+	                         'external/codemirror/addon/fold/brace-fold'], function () {
 	                    self.addDeferredAction(function (self) {
 	                        self._gutterOn('CodeMirror-foldgutter');
 	                        var rf = new codemirror.fold.combine(codemirror.fold.brace);
@@ -728,7 +728,7 @@ define([
 	            self.editor.setValue(value);
 	        });
 	    },
-	
+
 	    foldCode : function (range) {
 	        if (this.editor) {
 	            foldCode(this.editor, range.from, range.to);
@@ -744,7 +744,7 @@ define([
 	            });
 	        }
 	    },
-	
+
 	    isClean : function () {
 	        if (this.editor) {
 	            return this.editor.getDoc().isClean();
@@ -764,13 +764,13 @@ define([
 	            self.editor.markClean();
 	        });
 	    },
-	
+
 	    focus : function () {
 	    	if(this.editor){
 	    		this.editor.focus();
 	    	}
 	    },
-	
+
 	    refresh : function () {
 	    	if(this.editor){
 	    		this.editor.refresh();

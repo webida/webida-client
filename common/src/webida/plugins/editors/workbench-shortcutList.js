@@ -15,7 +15,7 @@
  */
 
 define(['./plugin',
-        'webida-lib/custom-lib/codemirror/lib/codemirror',
+        'external/codemirror/lib/codemirror',
         'other-lib/underscore/lodash.min'
 ], function (editors, codeMirror, _) {
     'use strict';

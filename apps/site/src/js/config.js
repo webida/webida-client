@@ -32,6 +32,7 @@ var require = {
     paths: {
         webida: webida,
         toastr: 'src/lib/toastr/toastr',
-        'webida-lib': '../../common/src/webida'
+        'webida-lib': '../../common/src/webida',
+        'external': '../../bower_components'
     }
 };
