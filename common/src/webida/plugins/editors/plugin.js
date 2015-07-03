@@ -1116,6 +1116,15 @@ define(['text!./ext-to-mime.json',
             return cb(editorContext, editorContext.editor);
         }
     };
+    
+    editors.execCommandForCurrentEditorContext = function (commandKey) { 
+        // Command means a method of EditorContext which have no arguments
+        
+        if (editors.currentFile && editors.currentFile.editorContext) {
+            var editorContext = editors.currentFile.editorContext;
+            return editorContext[commandKey]();
+        }
+    };
 
 	editors.addPart = function(file, part) {
 		logger.info('editors.addPart('+file+', '+part+')');

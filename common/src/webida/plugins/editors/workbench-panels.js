@@ -366,7 +366,7 @@ define([
                             }
                             if (file.editorContext && foldings) {
                                 _.each(foldings, function (fold) {
-                                    file.editorContext.foldCode(fold);
+                                    file.editorContext.foldCodeRange(fold);
                                 });
                             }
                         });
