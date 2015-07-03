@@ -28,7 +28,7 @@
  **/
 
 define(['text!./ext-to-mime.json',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'other-lib/URIjs/URI',
         'webida-lib/util/path',
         'webida-lib/util/arrays/BubblingArray',
@@ -40,7 +40,7 @@ define(['text!./ext-to-mime.json',
         'webida-lib/widgets/views/viewmanager',
         'webida-lib/widgets/views/viewFocusController',
         'dojo/topic',
-        'other-lib/async',
+        'external/async/dist/async.min',
         'other-lib/toastr/toastr',
         'webida-lib/util/logger/logger-client'
 ], function (extToMime, _, URI, pathUtil, BubblingArray, ide, pm, workbench, EditorPart,

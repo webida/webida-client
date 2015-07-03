@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,7 @@
  * CodeEditorContext for code-base EditorParts
  *
  * Still needs refactoring (2015.06.25, hw.shim)
- * 
+ *
  * @constructor
  * @see CodeEditorPart
  * @refactor: hw.shim (2015.06.25)
@@ -28,18 +28,18 @@ define([
 	'require',
 	'webida-lib/util/gene',
 	'webida-lib/plugins/editors/viable-menu-items',
-	'other-lib/underscore/lodash.min',
-	'webida-lib/custom-lib/codemirror/lib/codemirror',
+	'external/lodash/lodash.min',
+	'external/codemirror/lib/codemirror',
 	'webida-lib/util/loadCSSList',
 	'plugins/webida.editor.text-editor/TextEditorContext',
 	'./snippet'
 ], function (
-	require, 
+	require,
 	gene,
-	vmi, 
-	_, 
-	codemirror, 
-	loadCSSList, 
+	vmi,
+	_,
+	codemirror,
+	loadCSSList,
 	TextEditorContext,
 	Snippet
 ) {
@@ -62,12 +62,12 @@ define([
         },
         'coffee': {
             name: 'coffeescript',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/javascript-hint']
+            requires: ['external/codemirror/addon/hint/javascript-hint']
         },
         'html': {
             name: 'html',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/xml-hint',
-                       'webida-lib/custom-lib/codemirror/addon/hint/html-hint']
+            requires: ['external/codemirror/addon/hint/xml-hint',
+                       'external/codemirror/addon/hint/html-hint']
         },
         'htmlLink': {
             name: 'htmlLink',
@@ -79,11 +79,11 @@ define([
         },
         'xml': {
             name: 'xml',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/xml-hint']
+            requires: ['external/codemirror/addon/hint/xml-hint']
         },
         'css': {
             name: 'css',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/css-hint']
+            requires: ['external/codemirror/addon/hint/css-hint']
         },
         'cssSmart': {
             name: 'cssSmart',
@@ -91,11 +91,11 @@ define([
         },
         'word': {
             name: 'anyword',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/anyword-hint']
+            requires: ['external/codemirror/addon/hint/anyword-hint']
         },
         'py': {
             name: 'python',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/python-hint']
+            requires: ['external/codemirror/addon/hint/python-hint']
         }
     };
 
@@ -111,16 +111,16 @@ define([
         'css': [['css'], 'text/css'],
         'less': [['less'], 'text/less'],
         'c': [['clike'], 'text/x-csrc'],
-        'h': [['clike'], 'text/x-csrc'],              
+        'h': [['clike'], 'text/x-csrc'],
         'java': [['clike'], 'text/x-java'],
         'm': [['clike'], 'text/x-objectivec'],
         'hh': [['clike'], 'text/x-c++src'],
         'hpp': [['clike'], 'text/x-c++src'],
         'hxx': [['clike'], 'text/x-c++src'],
-        'cc': [['clike'], 'text/x-c++src'],        
+        'cc': [['clike'], 'text/x-c++src'],
         'cpp': [['clike'], 'text/x-c++src'],
         'cxx': [['clike'], 'text/x-c++src'],
-        'cs': [['clike'], 'text/x-csharp'],          
+        'cs': [['clike'], 'text/x-csharp'],
         'php': [['php'], 'text/x-php'],
         'py': [['python'], 'text/x-python'],
         'fs': [['mllike'], 'text/x-fsharp'],
@@ -365,8 +365,8 @@ define([
     codemirror.commands.gotoLine = function (cm) {
         if (cm.getOption('keyMap') === 'default') {
             var dialog = 'Go to line: <input type="text" style="width: 10em"/> <span style="color: #888"></span>';
-            loadCSSList([require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css')], function () {
-                require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog'], function () {
+            loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css')], function () {
+                require(['external/codemirror/addon/dialog/dialog'], function () {
                     cm.openDialog(dialog, function (query) {
                         var line = Math.floor(+query - 1);
                         cm.__instance.setCursor({row: line, col: 0});
@@ -651,7 +651,7 @@ define([
         }
         if (mappedMode) {
             mappedMode = _.map(mappedMode, function (modename) {
-                return 'webida-lib/custom-lib/codemirror/mode/' + modename + '/' + modename;
+                return 'external/codemirror/mode/' + modename + '/' + modename;
             });
             require(mappedMode, function () {
                 addAvailable('mode', modename);
@@ -692,15 +692,15 @@ define([
         }
 
         loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/webida.css'),
-                     require.toUrl('webida-lib/custom-lib/codemirror/lib/codemirror.css'),
-                     require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css')], function () {
-            require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog',
-                     'webida-lib/custom-lib/codemirror/addon/search/searchcursor',
+                     require.toUrl('external/codemirror/lib/codemirror.css'),
+                     require.toUrl('external/codemirror/addon/dialog/dialog.css')], function () {
+            require(['external/codemirror/addon/dialog/dialog',
+                     'external/codemirror/addon/search/searchcursor',
                      'plugins/webida.editor.text-editor/search-addon',
                      './addon/overview-ruler/overview-ruler',
-                     'webida-lib/custom-lib/codemirror/addon/edit/closebrackets',
-                     'webida-lib/custom-lib/codemirror/addon/edit/closetag',
-                     'webida-lib/custom-lib/codemirror/addon/edit/matchbrackets'], function () {
+                     'external/codemirror/addon/edit/closebrackets',
+                     'external/codemirror/addon/edit/closetag',
+                     'external/codemirror/addon/edit/matchbrackets'], function () {
                 self.start();
             });
         });
@@ -719,7 +719,7 @@ define([
 	            autoCloseBrackets: this.keymap !== 'vim',
 	            autoCloseTags: true
 	        };
-	
+
 	        function setOption(name, value, condition, defaultValue) {
 	            if (condition === undefined) {
 	                if (value !== undefined) {
@@ -743,24 +743,24 @@ define([
 	        setOption('indentOnPaste', this.options.indentOnPaste);
 	        setOption('extraKeys', this.options.extraKeys);
 	        setOption('lineWrapping', this.options.lineWrapping);
-	
+
 	        this.editor = codemirror(this.elem, options);
 	        this.editor.setOption('showCursorWhenSelecting', true);
 	        this.editor.__instance = this;
 	        $(this.editor.getWrapperElement()).addClass('maincodeeditor');
 	        this.__applyLinter();
-	
+
 	        if (this.deferredActions) {
 	            _.each(this.deferredActions, function (action) {
 	                action(self);
 	            });
 	            delete this.deferredActions;
 	        }
-	
+
 	        this.sizeChangePoller = setInterval(function () {
 	            self.__checkSizeChange();
 	        }, 500);
-	
+
 	        this.editor.on('mousedown', function (cm, e) {
 	            if (settings.gotoLinkEnabled) {
 	                require(['./content-assist/goto-link'], function (gotolink) {
@@ -768,7 +768,7 @@ define([
 	                });
 	            }
 	        });
-	
+
 	        this.editor.on('keydown', function (cm, e) {
 	            if (settings.gotoLinkEnabled) {
 	                require(['./content-assist/goto-link'], function (gotolink) {
@@ -776,7 +776,7 @@ define([
 	                });
 	            }
 	        });
-	
+
 	        // conditionally indent on paste
 	        self.editor.on('change', function (cm, e) {
 	            if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
@@ -785,22 +785,22 @@ define([
 	                }
 	            }
 	        });
-	
+
 	        Snippet.init(self.editor);
 	    },
 
 	    getMode : function () {
 	        return this.mode;
 	    },
-	
+
 	    setMode : function (mode) {
 	        if (mode === undefined || this.mode === mode) {
 	            return;
 	        }
 	        this.mode = mode;
-	
+
 	        var self = this;
-	
+
 	        this.mappedMode = mapMode(mode);
 	        loadMode(mode, function () {
 	            if (self.editor) {
@@ -813,14 +813,14 @@ define([
 	                });
 	            });
 	        });
-	
-	        loadCSSList([require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css'),
-	             require.toUrl('webida-lib/custom-lib/codemirror/addon/hint/show-hint.css'),
-	             require.toUrl('webida-lib/custom-lib/codemirror/addon/tern/tern.css'),
+
+	        loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css'),
+	             require.toUrl('external/codemirror/addon/hint/show-hint.css'),
+	             require.toUrl('external/codemirror/addon/tern/tern.css'),
 	        ], function () {
-	            require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog',
-	                'webida-lib/custom-lib/codemirror/addon/hint/show-hint',
-	                'webida-lib/custom-lib/codemirror/addon/tern/tern'
+	            require(['external/codemirror/addon/dialog/dialog',
+	                'external/codemirror/addon/hint/show-hint',
+	                'external/codemirror/addon/tern/tern'
 	            ], function () {
 	                self.addDeferredAction(function () {
 	                    if (mode === 'js') {
@@ -841,10 +841,10 @@ define([
 	            });
 	        });
 	    },
-	
+
 	    //TODO : inherit from TextEditorContext
 	    /**
-	     * @override 
+	     * @override
 	     */
 	    setTheme : function (theme) {
 	        if (theme === undefined) {
@@ -860,7 +860,7 @@ define([
 	            }
 	        } else {
 	            var self = this;
-	            var csspath = 'webida-lib/custom-lib/codemirror/theme/' + theme + '.css';
+	            var csspath = 'external/codemirror/theme/' + theme + '.css';
 	            switch (theme) {
 	            case 'webida-dark':
 	                csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
@@ -870,7 +870,7 @@ define([
 	                break;
 	            case 'solarized dark':
 	            case 'solarized light':
-	                csspath = 'webida-lib/custom-lib/codemirror/theme/solarized.css';
+	                csspath = 'external/codemirror/theme/solarized.css';
 	                break;
 	            }
 	            loadCSSList([require.toUrl(csspath)], function () {
@@ -895,11 +895,11 @@ define([
 	            this.linters.js = option;
 	            if (option) {
 	                loadCSSList([
-	                    require.toUrl('webida-lib/custom-lib/codemirror/addon/lint/lint.css'),
+	                    require.toUrl('external/codemirror/addon/lint/lint.css'),
 	                ], function () {
 	                    require([
-	                        'webida-lib/custom-lib/codemirror/addon/lint/lint',
-	                        'webida-lib/custom-lib/codemirror/addon/lint/javascript-lint'
+	                        'external/codemirror/addon/lint/lint',
+	                        'external/codemirror/addon/lint/javascript-lint'
 	                    ], function () {
 	                        addAvailable('addon', 'lint');
 	                        addAvailable('addon', 'javascript-lint');
@@ -915,11 +915,11 @@ define([
 	            if (option) {
 	                require(['./lib/lints/jsonlint'], function () {
 	                    loadCSSList([
-	                        require.toUrl('webida-lib/custom-lib/codemirror/addon/lint/lint.css')
+	                        require.toUrl('external/codemirror/addon/lint/lint.css')
 	                    ], function () {
 	                        require([
-	                            'webida-lib/custom-lib/codemirror/addon/lint/lint',
-	                            'webida-lib/custom-lib/codemirror/addon/lint/json-lint'
+	                            'external/codemirror/addon/lint/lint',
+	                            'external/codemirror/addon/lint/json-lint'
 	                        ], function () {
 	                            addAvailable('addon', 'lint');
 	                            addAvailable('addon', 'json-lint');
@@ -935,10 +935,10 @@ define([
 	            this.linters.html = option;
 	            if (option) {
 	                loadCSSList([
-	                    require.toUrl('webida-lib/custom-lib/codemirror/addon/lint/lint.css')
+	                    require.toUrl('external/codemirror/addon/lint/lint.css')
 	                ], function () {
 	                    require([
-	                        'webida-lib/custom-lib/codemirror/addon/lint/lint',
+	                        'external/codemirror/addon/lint/lint',
 	                    ], function () {
 	                        require(['./content-assist/html-lint'], function () {
 	                            addAvailable('addon', 'lint');
@@ -954,11 +954,11 @@ define([
 	            if (option) {
 	                require(['./lib/lints/csslint'], function () {
 	                    loadCSSList([
-	                        require.toUrl('webida-lib/custom-lib/codemirror/addon/lint/lint.css')
+	                        require.toUrl('external/codemirror/addon/lint/lint.css')
 	                    ], function () {
 	                        require([
-	                            'webida-lib/custom-lib/codemirror/addon/lint/lint',
-	                            'webida-lib/custom-lib/codemirror/addon/lint/css-lint'
+	                            'external/codemirror/addon/lint/lint',
+	                            'external/codemirror/addon/lint/css-lint'
 	                        ], function () {
 	                            addAvailable('addon', 'lint');
 	                            addAvailable('addon', 'css-lint');
@@ -1023,22 +1023,22 @@ define([
 	            }
 	        }
 	    },
-	
+
 	    setHinters : function (mode, hinterNames) {
 	        if (mode && hinterNames) {
 	            var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
-	            var paths = ['webida-lib/custom-lib/codemirror/addon/hint/show-hint'];
+	            var paths = ['external/codemirror/addon/hint/show-hint'];
 	            _.each(hinterSchms, function (x) {
 	                paths = _.union(paths, x.requires);
 	            });
-	            loadCSSList([require.toUrl('webida-lib/custom-lib/codemirror/addon/hint/show-hint.css')], function () {
+	            loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
 	                require(paths, function () {
 	                    _localHinterSchemes[mode] = hinterSchms;
 	                });
 	            });
 	        }
 	    },
-	
+
 	    setGlobalHinters : function (hinterNames) {
 	        _globalHinterSchemes = [];
 	        if (hinterNames) {
@@ -1052,7 +1052,7 @@ define([
 	            });
 	        }
 	    },
-	
+
 	    setAnywordHint : function (anywordHint) {
 	        if (anywordHint) {
 	            this.setGlobalHinters(['word']);
@@ -1060,7 +1060,7 @@ define([
 	            this.setGlobalHinters([]);
 	        }
 	    },
-	
+
 		/**
 		 * @override
 		 */
@@ -1069,11 +1069,11 @@ define([
 	        if (codeFolding) {
 	            var self = this;
 	            loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/codefolding.css')], function () {
-	                require(['webida-lib/custom-lib/codemirror/addon/fold/foldcode',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/foldgutter',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/brace-fold',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/xml-fold',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/comment-fold'], function () {
+	                require(['external/codemirror/addon/fold/foldcode',
+	                         'external/codemirror/addon/fold/foldgutter',
+	                         'external/codemirror/addon/fold/brace-fold',
+	                         'external/codemirror/addon/fold/xml-fold',
+	                         'external/codemirror/addon/fold/comment-fold'], function () {
 	                    self.addDeferredAction(function (self) {
 	                        self._gutterOn('CodeMirror-foldgutter');
 	                        var rf = new codemirror.fold.combine(codemirror.fold.brace, codemirror.fold.comment,
@@ -1099,16 +1099,16 @@ define([
 	            });
 	        }
 	    },
-	
+
 	    setAutoCompletion : function (autoCompletion) {
 	        settings.autoHint = autoCompletion;
 	    },
-	
+
 	    setAutoCompletionDelay : function (delay) {
 	        var num = typeof delay === 'string' ? parseFloat(delay, 10) : delay;
 	        num *= 1000;
 	        settings.autoHintDelay = num;
-	
+
 	        setChangeForAutoHintDebounced();
 	    }
 

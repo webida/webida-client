@@ -24,7 +24,7 @@
  */
 
 define([
-	'other-lib/underscore/lodash.min',
+	'external/lodash/lodash.min',
 	'webida-lib/util/logger/logger-client', 
 	'require',
     'webida-lib/plugin-manager-0.1',                         // pm

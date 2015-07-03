@@ -23,7 +23,7 @@ define([
 	'dojo/dom-style',
 	'dojo/dom-geometry',
 	'dojo/topic',
-	'other-lib/underscore/lodash.min',
+	'external/lodash/lodash.min',
 	'webida-lib/util/logger/logger-client'
 ], function (
 	editors, 

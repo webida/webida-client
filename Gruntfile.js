@@ -41,14 +41,22 @@ module.exports = function (grunt) {
                       '!apps/ide/r.js']
             }
         },
+        bower: {
+            install: {
+                // just run grunt bower install
+            },
+            options: {
+                copy: false
+            }
+        },
         copy: {
-            all : {
+            all: {
                 files: [
                     {
                         expand: true,
                         cwd: './',
                         src: ['**'],
-                        dest: 'deploy/',
+                        dest: 'deploy/'
                     }
                 ]
             },
@@ -105,7 +113,7 @@ module.exports = function (grunt) {
             }
         },
         clean: {
-            all : ['deploy'],
+            all: ['deploy'],
             unnecessary: ['deploy/Gruntfile.js', 'deploy/node_modules']
         },
         fix_source_maps: {
@@ -121,10 +129,11 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-bower-task');
 
     grunt.registerMultiTask('fix_source_maps', 'Fixes uglified source maps', function() {
         this.files.forEach(function(f) {
-            var json, new_file_value, src;
+            var json, src;
             src = f.src.filter(function(filepath) {
                 if (!grunt.file.exists(filepath)) {
                     grunt.log.warn('Source file "' + filepath + '" not found.');
@@ -145,8 +154,8 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask('default', ['clean:all', 'copy:all'/*, 'copy:uncompressed', 'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
-    grunt.registerTask('release', ['clean:all', 'copy:all', 'clean:unnecessary', 'uglify:release']);
+    grunt.registerTask('default', ['clean:all', 'copy:all', 'bower'/*, 'copy:uncompressed', 'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
+    grunt.registerTask('release', ['clean:all', 'copy:all', 'bower', 'clean:unnecessary', 'uglify:release']);
     grunt.registerTask('convention', ['jshint']);
 };
 

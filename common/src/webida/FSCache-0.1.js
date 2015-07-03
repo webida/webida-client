@@ -17,7 +17,7 @@
 define(['webida-lib/webida-0.3',
         'webida-lib/util/arrays/SortedArray',
         'webida-lib/util/path',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'other-lib/URIjs/URI',
         'dojo/_base/declare',
         'dojo/topic'],

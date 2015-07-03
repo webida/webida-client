@@ -39,7 +39,8 @@ var require = {
         common: 'src/js/common',
         q: 'lib/q',
         async: 'lib/async',
-        'webida-lib': '../../common/src/webida'
+        'webida-lib': '../../common/src/webida',
+        'external': '../../bower_components'
     }
 };
 

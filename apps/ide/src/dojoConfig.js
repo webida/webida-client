@@ -28,15 +28,16 @@ var dojoConfig = {
     baseUrl: '.',
     parseOnLoad: false,
     packages: [
-        { name: 'xstyle', location: '../../../external/src/xstyle' },
-        { name: 'put-selector', location: '../../../external/src/put-selector' }
+        { name: 'xstyle', location: '../../../bower_components/xstyle' },
+        { name: 'put-selector', location: '../../../bower_components/put-selector' }
     ],
     locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {
         'webida-lib': '../../../common/src/webida',
         'other-lib': '../../../external/src',
         'lib' : 'lib',
-        'plugins' : 'plugins'
+        'plugins' : 'plugins',
+        'external': '../../../bower_components'
     },
     aliases: [
         ['text', 'dojo/text'],

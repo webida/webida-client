@@ -25,7 +25,7 @@
  */
 
 define([
-    'other-lib/underscore/lodash.min',           // _
+    'external/lodash/lodash.min',           // _
     'dojo/store/Memory',          // Memory
     'dijit/registry',             // reg
     'webida-lib/plugin-manager-0.1',             // pm

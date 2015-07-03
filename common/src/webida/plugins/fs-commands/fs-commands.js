@@ -21,10 +21,10 @@
 
 define(['require',
         './plugin',                                 //fh        
-        'other-lib/underscore/lodash.min',          // _
+        'external/lodash/lodash.min',          // _
         'webida-lib/app',                           // ide
         'webida-lib/util/path',                           // pathUtil
-        'other-lib/async',                                // async
+        'external/async/dist/async.min',                                // async
         'webida-lib/util/arrays/BubblingArray',     // BubblingArray
         'webida-lib/plugins/workspace/plugin',                 // wv
         'webida-lib/plugins/workbench/plugin',      // workbench

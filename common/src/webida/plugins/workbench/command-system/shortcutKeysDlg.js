@@ -24,7 +24,7 @@
  *   plugins/shortcutKey-info/plugin.js
  */
 
-define(['other-lib/underscore/lodash.min',    // _
+define(['external/lodash/lodash.min',    // _
         'webida-lib/plugin-manager-0.1',                   // pm
         'dojo',                             // dojo
         'dojo/on',                          // on
@@ -45,10 +45,10 @@ define(['other-lib/underscore/lodash.min',    // _
         'dijit/layout/TabContainer',        // TabContainer
         'dijit/layout/ContentPane',         // ContentPane
         'dojox/grid/DataGrid',              // DataGrid
-        'other-lib/dgrid/OnDemandGrid',               // OnDemandGrid
-        'other-lib/dgrid/Selection',                  // Selection
-        'other-lib/dgrid/Keyboard',                   // Keyboard
-        'other-lib/dgrid/extensions/Pagination',      // Pagination
+        'external/dgrid/OnDemandGrid',               // OnDemandGrid
+        'external/dgrid/Selection',                  // Selection
+        'external/dgrid/Keyboard',                   // Keyboard
+        'external/dgrid/extensions/Pagination',      // Pagination
         'dojo/fx/Toggler',                  // Toggler
         'dojo/query',                       // query
         'dojo/store/Memory',                // Memory

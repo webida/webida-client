@@ -15,7 +15,7 @@
  */
 
 define([
-    'other-lib/underscore/lodash.min',
+    'external/lodash/lodash.min',
     'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',
     'dijit/Tooltip',

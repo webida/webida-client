@@ -15,7 +15,7 @@
  */
 
 define([
-	'other-lib/underscore/lodash.min',
+	'external/lodash/lodash.min',
     'webida-lib/util/browserUtil',
     'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',

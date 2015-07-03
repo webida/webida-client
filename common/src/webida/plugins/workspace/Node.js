@@ -26,7 +26,7 @@
 /* global File: true */
 
 define(['require',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'dijit/registry',
         'webida-lib/app',
         'webida-lib/FSCache-0.1',
