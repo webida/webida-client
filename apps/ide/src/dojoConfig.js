@@ -28,8 +28,8 @@ var dojoConfig = {
     baseUrl: '.',
     parseOnLoad: false,
     packages: [
-        { name: 'xstyle', location: '../../../external/src/xstyle' },
-        { name: 'put-selector', location: '../../../external/src/put-selector' }
+        { name: 'xstyle', location: '../../../bower_components/xstyle' },
+        { name: 'put-selector', location: '../../../bower_components/put-selector' }
     ],
     locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {
