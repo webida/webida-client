@@ -526,7 +526,7 @@ define([
 		var beautifyOptions;
 		/* jshint camelcase: false */
 		if (currentModeName === 'javascript') {
-			beautifierModuleID = 'other-lib/js-beautify/beautify';
+			beautifierModuleID = 'external/js-beautify/js/lib/beautify';
 			// TODO .editorconfig-aware options
 			beautifyOptions = {
 				jslint_happy : true,
@@ -536,12 +536,12 @@ define([
 				callback(beautifier.js_beautify, beautifyOptions);
 			});
 		} else if (currentModeName === 'htmlmixed') {
-			beautifierModuleID = 'other-lib/js-beautify/beautify-html';
+			beautifierModuleID = 'external/js-beautify/js/lib/beautify-html';
 			require([beautifierModuleID], function(beautifier) {
 				callback(beautifier.html_beautify, beautifyOptions);
 			});
 		} else if (currentModeName === 'css') {
-			beautifierModuleID = 'other-lib/js-beautify/beautify-css';
+			beautifierModuleID = 'external/js-beautify/js/lib/beautify-css';
 			require([beautifierModuleID], function(beautifier) {
 				callback(beautifier.css_beautify, beautifyOptions);
 			});
