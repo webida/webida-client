@@ -24,7 +24,7 @@ define(['webida-lib/app',
         'webida-lib/util/path',
         'dojo/topic',
         'webida-lib/plugins/workspace/plugin',
-        'other-lib/async',
+        'external/async/dist/async.min',
         'other-lib/underscore/lodash.min',
         'other-lib/toastr/toastr',
         'webida-lib/util/logger/logger-client'
