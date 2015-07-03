@@ -53,7 +53,7 @@ define(['webida-lib/app',
         'webida-lib/util/path',
         'popup-dialog',
         'other-lib/toastr/toastr',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'external/async/dist/async.min',
         'require',
         'webida-lib/util/logger/logger-client'

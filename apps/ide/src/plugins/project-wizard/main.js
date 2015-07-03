@@ -26,7 +26,7 @@
 define(['webida-lib/webida-0.3',
         'webida-lib/app',
         'other-lib/toastr/toastr',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'other-lib/pageDown/Markdown.Converter',
         'lib/image-slide/sly.wrapper',
         'dojo/aspect',

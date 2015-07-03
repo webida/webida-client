@@ -26,7 +26,7 @@
 
 define([
 	'webida-lib/plugins/workbench/plugin',
-	'other-lib/underscore/lodash.min',
+	'external/lodash/lodash.min',
 	'dojo/topic',
 	'dijit/form/CheckBox',
 	'dijit/form/Button',

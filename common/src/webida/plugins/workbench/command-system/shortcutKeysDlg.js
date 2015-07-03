@@ -24,7 +24,7 @@
  *   plugins/shortcutKey-info/plugin.js
  */
 
-define(['other-lib/underscore/lodash.min',    // _
+define(['external/lodash/lodash.min',    // _
         'webida-lib/plugin-manager-0.1',                   // pm
         'dojo',                             // dojo
         'dojo/on',                          // on

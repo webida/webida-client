@@ -25,7 +25,7 @@
  */
 
 define(['webida-lib/plugin-manager-0.1',                // pm
-        'other-lib/underscore/lodash.min',               // _
+        'external/lodash/lodash.min',               // _
         'dojo',                          // dojo
         'dojo/on',                       // on
         'dojo/dom-style',                // domStyle

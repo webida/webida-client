@@ -15,7 +15,7 @@
  */
 
 define(['external/codemirror/lib/codemirror',
-        'other-lib/underscore/lodash.min'], function (CodeMirror, _) {
+        'external/lodash/lodash.min'], function (CodeMirror, _) {
     // Define search commands. Depends on dialog.js or another
     // implementation of the openDialog method.
 

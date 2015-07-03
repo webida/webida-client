@@ -21,7 +21,7 @@
 
 define(['require',
         './plugin',                                 //fh        
-        'other-lib/underscore/lodash.min',          // _
+        'external/lodash/lodash.min',          // _
         'webida-lib/app',                           // ide
         'webida-lib/util/path',                           // pathUtil
         'external/async/dist/async.min',                                // async

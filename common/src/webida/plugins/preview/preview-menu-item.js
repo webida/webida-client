@@ -22,7 +22,7 @@
 define(['./preview-pref-values',					// options
         './preview-view',
         'webida-lib/util/path',
-        'other-lib/underscore/lodash.min',            // _
+        'external/lodash/lodash.min',            // _
         'webida-lib/plugins/workspace/plugin'                   // ws
        ], function (options, view, pathUtil, _, ws) {
     'use strict';
