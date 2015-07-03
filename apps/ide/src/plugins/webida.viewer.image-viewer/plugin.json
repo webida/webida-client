@@ -1,0 +1,19 @@
+{
+    "name": "webida.viewer.image-viewer",
+    "description": "Image Viewer",
+    "version": "0.1.0",
+    "requirement": "webida.common.editors",
+    "extensions" : {
+
+        "webida.common.editors:editor" : {
+            "name" : "Image Viewer",
+            "editorPart" : "ImageEditorPart",
+            "fileValueRequired" : true,
+            "handledFileExt" : [],
+            "handledMimeTypes" : [ "image/.*" ],
+            "handledFileNames" : [],
+            "unhandledFileExt" : [],
+            "unhandledMimeTypes" : []
+        }
+    }
+}
