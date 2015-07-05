@@ -64,7 +64,7 @@ define(['text!./ext-to-mime.json',
         };
            
         File.prototype.isModified = function () {
-        	var editorPart = editors.getPart(this);
+            var editorPart = editors.getPart(this);
             if (editorPart) {
                 var val = editorPart.getValue();
                 var modifiedInEditor = false;
@@ -80,7 +80,7 @@ define(['text!./ext-to-mime.json',
 
 		File.prototype.toString = function () {
 			return this.path;
-		}
+		};
 
         return File;
     }
@@ -109,7 +109,7 @@ define(['text!./ext-to-mime.json',
         };
 
         FileManager.saveFile = function (file, option) {
-        	logger.info('FileManager.saveFile('+file+', option)');
+            logger.info('FileManager.saveFile(' + file + ', option)');
             function getSpaces(n) {
                 if (spaces[n] === undefined) {
                     return (spaces[n] = (n ? ' ' + getSpaces(n - 1) : ''));
@@ -149,11 +149,11 @@ define(['text!./ext-to-mime.json',
 
                 if (v !== value) {
                     var cursor = editorContext.getCursor();
-                    var scrollInfo = editorContext.editor.getScrollInfo();
+                    var scrollInfo = editorContext.getScrollInfo();
                     value = v;
                     editorContext.setValue(value);
                     editorContext.setCursor(cursor);
-                    editorContext.editor.scrollTo(scrollInfo.left, scrollInfo.top);
+                    editorContext.scrollToScrollInfo(scrollInfo);
                 }
             }
 
@@ -410,7 +410,7 @@ define(['text!./ext-to-mime.json',
         });
 
         topic.subscribe('fs.cache.file.invalidated', function (fsURL, path) {
-        	var file = editors.getFile(path);
+            var file = editors.getFile(path);
             if (file) {
                 if (file === editors.currentFile) {
                     fsCache.refreshFileContents(path);
@@ -522,9 +522,9 @@ define(['text!./ext-to-mime.json',
     };
 
     editors.setCurrentFile = function (file) {
-    	
-    	logger.info('editors.setCurrentFile('+file+')');
-    	
+
+        logger.info('editors.setCurrentFile(' + file + ')');
+
         if (editors.currentFile !== file) {
             var view;
             if (editors.currentFile) {
@@ -576,9 +576,9 @@ define(['text!./ext-to-mime.json',
     };
 
     editors.ensureCreated = function (file, bShowAndFocus, cb) {
-    	logger.info('ensureCreated()');
+        logger.info('ensureCreated()');
         function showAndFocus(file) {
-        	var editorPart = editors.getPart(file);
+            var editorPart = editors.getPart(file);
             if (editorPart) {
                 editorPart.show();
                 editorPart.focus();
@@ -605,7 +605,7 @@ define(['text!./ext-to-mime.json',
     };
 
     function onloadFinalize() {
-    	logger.info('onloadFinalize()');
+        logger.info('onloadFinalize()');
         var vcs = editors.splitViewContainer.getViewContainers();
         _.each(vcs, function (vc) {
             var selview = vc.getSelectedView();
@@ -732,8 +732,8 @@ define(['text!./ext-to-mime.json',
     }
     
     editors.openFile = function (path, options, callback) {
-    	logger.info('editors.openFile('+path+', options, callback)');
-    	logger.info('options = ', options);
+        logger.info('editors.openFile(' + path + ', options, callback)');
+        logger.info('options = ', options);
         
         options = options || {};
 
@@ -884,16 +884,16 @@ define(['text!./ext-to-mime.json',
         return index;
     }
 
-	function getPartPath (extension) {
-        logger.info('extension.module = '+extension.module);
+	function getPartPath(extension) {
+        logger.info('extension.module = ' + extension.module);
 		var partPathTokens = extension.module.split('/');
-		partPathTokens[partPathTokens.length-1] = extension.editorPart;
+		partPathTokens[partPathTokens.length - 1] = extension.editorPart;
 		var editorPartPath = partPathTokens.join('/');
-		logger.info('editorPartPath = ',editorPartPath);
+		logger.info('editorPartPath = ', editorPartPath);
 		return editorPartPath;
 	}
 
-	function getViewContainer (view, file, option) {
+	function getViewContainer(view, file, option) {
 		//cellCount=2, cellIndex=-1
 		var viewContainer;
         var cellCount = editors.splitViewContainer.get('splitCount');
@@ -915,12 +915,14 @@ define(['text!./ext-to-mime.json',
 	}
 
     editors.onFileOpened = function (file) {
-    	
-    	console.log('');
-    	logger.info('editors.onFileOpened('+file+')');
-    	logger.info('file._openFileOption = ', file._openFileOption);
 
-		if (!file._openFileOption) {return;}
+        console.log('');
+        logger.info('editors.onFileOpened(' + file + ')');
+        logger.info('file._openFileOption = ', file._openFileOption);
+
+		if (!file._openFileOption) {
+            return;
+        }
         var option = file._openFileOption;
         var callback = file._openFileCallback;
         delete file._openFileOption;
@@ -977,7 +979,7 @@ define(['text!./ext-to-mime.json',
 		var partPath = getPartPath(option.extension);
 		require([partPath], function (EditorPart) {
 
-	        var editorPart = new EditorPart(file);
+            var editorPart = new EditorPart(file);
 			editors.addPart(file, editorPart); //file to part map
 
 			var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
@@ -995,7 +997,7 @@ define(['text!./ext-to-mime.json',
                 }
 
                 file.pendingCreator = function (c) {
-					logger.info('file.pendingCreator('+c+')');
+					logger.info('file.pendingCreator(' + c + ')');
                     function createEditor(file, editorPart, view, callback) {
                         editorPart.create(view.getContent(), function (file, editorContext) {
                             file.editorContext = editorContext;	//TODO : file.editorContext refactor
@@ -1030,9 +1032,9 @@ define(['text!./ext-to-mime.json',
                 };
 
                 if (show) {
-		            if (view.getParent()) {
-		                view.getParent().select(view);
-		            }
+                    if (view.getParent()) {
+                        view.getParent().select(view);
+                    }
                     editors.ensureCreated(file, true);
                 }
 
@@ -1108,14 +1110,6 @@ define(['text!./ext-to-mime.json',
             }
         }
     };
-
-    editors.doWithCurrentEditor = function (cb) {
-    	//TODO : refactor : too long (editorContext should be taken simply)
-        if (editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor) {
-            var editorContext = editors.currentFile.editorContext;
-            return cb(editorContext, editorContext.editor);
-        }
-    };
     
     editors.execCommandForCurrentEditorContext = function (commandKey) { 
         // Command means a method of EditorContext which have no arguments
@@ -1126,33 +1120,33 @@ define(['text!./ext-to-mime.json',
         }
     };
 
-	editors.addPart = function(file, part) {
-		logger.info('editors.addPart('+file+', '+part+')');
+	editors.addPart = function (file, part) {
+		logger.info('editors.addPart(' + file + ', ' + part + ')');
 		this.parts.set(file, part);
-	}
+	};
 
-	editors.getPart = function(file) {
-		logger.info('getPart('+file+')');
+	editors.getPart = function (file) {
+		logger.info('getPart(' + file + ')');
 		if (this.parts.get(file) instanceof EditorPart) {
 			return this.parts.get(file);
 		} else {
 			return null;
 		}
-	}
+	};
 
-	editors.addFile = function(path, file) {
+	editors.addFile = function (path, file) {
 		this.files[path] = file;
-	}
+	};
 
-	editors.getFile = function(path) {
+	editors.getFile = function (path) {
 		return this.files[path];
-	}
+	};
 
-	editors.removeFile = function(path) {
+	editors.removeFile = function (path) {
 		var file = editors.files[path];
 		delete editors.files[path];
 		return file;
-	}
+	};
 
     subscribeToTopics();
 
