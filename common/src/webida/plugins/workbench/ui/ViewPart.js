@@ -17,7 +17,7 @@
 /**
  * An ancestor of all workbench UI views
  *
- * @see Part, Editor
+ * @see Part, EditorPart
  * @since: 2015.06.09
  * @author: hw.shim
  */

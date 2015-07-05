@@ -8,7 +8,7 @@
         "webida.ide.project-management.run:type" : [
             {
                 "id" : "org.webida.run.java",
-                "name" : "Run As Java Application",
+                "name" : "Java Application",
                 "hidden": false
             }
         ],
@@ -16,7 +16,7 @@
             {
                 "module" : "plugins/webida.ide.project-management.run.java/plugin",
                 "id" : "org.webida.run.java.delegate",
-                "name" : "Run As Tizen Application",
+                "name" : "Run As Java Application",
                 "type" : "org.webida.run.java",
                 "newConf" : "newConf",
                 "loadConf" : "loadConf",

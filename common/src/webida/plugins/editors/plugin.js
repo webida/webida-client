@@ -78,6 +78,14 @@ define(['text!./ext-to-mime.json',
             }
         };
 
+		File.prototype.getValue = function () {
+			return this.savedValue;
+		};
+		
+		File.prototype.getPath = function () {
+			return this.path;
+		};
+
 		File.prototype.toString = function () {
 			return this.path;
 		};

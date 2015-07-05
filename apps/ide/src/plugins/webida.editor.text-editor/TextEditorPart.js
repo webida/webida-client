@@ -65,7 +65,7 @@ define([
 	function TextEditorPart(file){
 		logger.info('new TextEditorPart('+file+')');
 		EditorPart.apply(this, arguments);
-		this.file = file;
+		this.setFile(file);
 		this.fileOpenedHandle = null;
 		this.fileSavedHandle = null;
 		this.preferences = null;
@@ -84,10 +84,11 @@ define([
 		initializeContext : function(){
 			logger.info('initializeContext()');
 			var context = this.getEditorContext();
+			var parent = this.getParentElement();
 			context.setValue(this.file.savedValue);
 			context.clearHistory();
 			context.markClean();
-			context.setSize(this.parent.offsetWidth, this.parent.offsetHeight);
+			context.setSize(parent.offsetWidth, parent.offsetHeight);
 			context.setMatchBrackets(true);
 
             /* Invalid direct css manipulation. This causes ODP-423 bug. 
@@ -187,7 +188,7 @@ define([
 			if(this.editorContext !== null){
 				return this.editorContext;
 			}
-			var parent = this.parent;
+			var parent = this.getParentElement();
 			var callback = this.createCallback;
 			var ContextClass = this.getContextClass();
             var context = new (ContextClass)(parent, this.file, function (file, context) {
@@ -215,7 +216,7 @@ define([
 			if (this.getFlag(Part.CREATED) === true) {
 				return;
 			}
-			this.parent = parent;
+			this.setParentElement(parent);
 			this.createCallback = callback;
             this.file.elem = parent;	//TODO : remove
             this.initialize();

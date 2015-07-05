@@ -52,17 +52,17 @@ define([
         logger.info('new TestEditor('+file+')');
         console.info('file = ', file);
         EditorPart.apply(this, arguments);
-        this.file = file;
+        this.setFile(file);
     }
 
     gene.inherit(TestEditor, EditorPart, {
-        create: function (elem, started) {
+        create: function (parent, callback) {
             console.info(this.file);
             var pre = document.createElement('pre');
             pre.contentEditable = true;
             pre.style.fontSize = '8pt';
-            pre.innerText = this.file.savedValue;
-            elem.appendChild(pre);
+            pre.innerText = this.getFile().getValue();
+            parent.appendChild(pre);
             return pre;
         },
 
@@ -82,7 +82,7 @@ define([
             console.info('getValue()');
         },
 
-        addChangeListener: function (file, callback) {
+        addChangeListener: function (callback) {
             console.info('addChangeListener()');
         },
 

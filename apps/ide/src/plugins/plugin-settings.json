@@ -3,6 +3,7 @@
         "plugins/webida.editor.text-editor",
         "plugins/webida.editor.code-editor",
         "plugins/webida.editor.test-editor",
+        "plugins/webida.viewer.image-viewer",
         "plugins/deploy",
         "plugins/help",
         "plugins/preference",
