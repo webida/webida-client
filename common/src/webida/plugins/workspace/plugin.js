@@ -54,7 +54,7 @@ define(['webida-lib/app',
         'popup-dialog',
         'other-lib/toastr/toastr',
         'other-lib/underscore/lodash.min',
-        'other-lib/async',
+        'external/async/dist/async.min',
         'require',
         'webida-lib/util/logger/logger-client'
 ], function (ide, preferences, workbench, webida, dijit, registry, Tree,
