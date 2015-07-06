@@ -20,7 +20,7 @@
  */
 /* jshint ignore:start */
 define(['require',
-    'other-lib/underscore/lodash.min',
+    'external/lodash/lodash.min',
     'webida-lib/webida-0.3',
     'webida-lib/app',
     'webida-lib/util/path',

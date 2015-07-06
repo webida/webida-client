@@ -36,7 +36,7 @@ define([
     'popup-dialog',
     'text!./run-configuration.html',
     'text!./default-run-configuration.html',
-    'other-lib/underscore/lodash.min',
+    'external/lodash/lodash.min',
     'other-lib/toastr/toastr',
     'xstyle/css!./style.css'
 ], function (ide, workbench, workspace, pluginManager, runConfManager, delegator,

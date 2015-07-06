@@ -28,7 +28,7 @@
  **/
 
 define(['text!./ext-to-mime.json',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'other-lib/URIjs/URI',
         'webida-lib/util/path',
         'webida-lib/util/arrays/BubblingArray',

@@ -29,7 +29,7 @@
  * @memberOf module:webida.terminal
  */
 define(['webida-lib/util/logger/logger-client',          // Logger
-        'other-lib/underscore/lodash.min',  // _
+        'external/lodash/lodash.min',  // _
         'webida-lib/app',                   // ide
         'webida-lib/webida-0.3',            // webida
         'webida-lib/widgets/views/view',    // View

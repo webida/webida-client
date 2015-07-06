@@ -15,7 +15,7 @@
  */
 
 define([
-    'other-lib/underscore/lodash.min',
+    'external/lodash/lodash.min',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/util/browserUtil',
     './store',

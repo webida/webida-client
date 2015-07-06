@@ -16,7 +16,7 @@
 
 define(['require',
         'dojo/topic',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'webida-lib/app',
         'external/codemirror/lib/codemirror',
         'webida-lib/util/path'],

@@ -22,7 +22,7 @@
 define(['webida-lib/plugins/workspace/plugin',            // wv
         'webida-lib/plugin-manager-0.1',            //pm
         'webida-lib/plugins/editors/plugin',        //editors
-        'other-lib/underscore/lodash.min',           //_
+        'external/lodash/lodash.min',           //_
         'dojo/topic',                               // topic
         'webida-lib/util/path',                                     // pathUtil
         'other-lib/toastr/toastr'                                    // Toastr

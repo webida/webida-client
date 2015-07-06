@@ -17,18 +17,18 @@
 /**
  * Constructor function
  * TextEditorPart implementation of EditorPart
- * This should be an ancestor of all text based editors. 
+ * This should be an ancestor of all text based editors.
  *
  * @constructor
  * @see EditorPart
  * @since: 2015.06.11
  * @author: hw.shim
- * 
+ *
  * file.__elemId removed
  */
 
 define([
-	'other-lib/underscore/lodash.min',
+	'external/lodash/lodash.min',
 	'webida-lib/util/gene',
 	'webida-lib/plugins/workbench/ui/Part',
 	'webida-lib/plugins/workbench/ui/EditorPart',
@@ -41,15 +41,15 @@ define([
 	'webida-lib/util/logger/logger-client',
 	'dojo/domReady!'
 ], function(
-	_, 
+	_,
 	gene,
 	Part,
 	EditorPart,
-	store, 
+	store,
 	editors,
 	EditorPreference,
-	preferenceConfig, 
-	TextEditorContext, 
+	preferenceConfig,
+	TextEditorContext,
 	topic,
 	Logger
 ) {
@@ -91,9 +91,9 @@ define([
 			context.setSize(parent.offsetWidth, parent.offsetHeight);
 			context.setMatchBrackets(true);
 
-            /* Invalid direct css manipulation. This causes ODP-423 bug. 
+            /* Invalid direct css manipulation. This causes ODP-423 bug.
              (ODP-423) Ocassional no contents display in newly created TextEditor
-               
+
             editorContext.addDeferredAction(function (editor) {
                 console.log("-tmep--------- addDeferredAction wrapper css");
                 var wrapper = editor.editor.getWrapperElement();
@@ -104,7 +104,7 @@ define([
                     right: '0px',
                     top: '0px',
                     bottom: '0px'
-                });                   
+                });
             });*/
 			var that = this;
             var setStatusBarText = function () {
@@ -166,7 +166,7 @@ define([
 		/**
 		 * To use the Preferences you want, override this method
 		 * and return Preferences you want use
-		 * 
+		 *
 		 * @returns preferenceConfig for TextEditor
 		 */
 		getPreferences : function(){
@@ -176,7 +176,7 @@ define([
 		/**
 		 * To use the Context you want, override this method
 		 * and return Class you want use
-		 * 
+		 *
 		 * @returns TextEditorContext
 		 */
 		getContextClass : function(){

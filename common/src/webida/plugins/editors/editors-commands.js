@@ -19,7 +19,7 @@ define([
 	'webida-lib/plugins/workbench/plugin', 
 	'webida-lib/widgets/views/viewmanager', 
 	'dojo/topic', 
-	'other-lib/underscore/lodash.min'
+	'external/lodash/lodash.min'
 ], function (
 	editors, 
 	workbench, 

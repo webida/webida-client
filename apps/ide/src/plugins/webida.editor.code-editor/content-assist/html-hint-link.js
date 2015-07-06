@@ -15,7 +15,7 @@
  */
 
 define(['require',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'external/codemirror/lib/codemirror',
         'webida-lib/app',
         'webida-lib/util/path'],
