@@ -154,8 +154,8 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask('default', ['clean:all', 'copy:all', 'bower'/*, 'copy:uncompressed', 'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
-    grunt.registerTask('release', ['clean:all', 'copy:all', 'bower', 'clean:unnecessary', 'uglify:release']);
+    grunt.registerTask('default', ['clean:all', 'bower', 'copy:all'/*, 'copy:uncompressed', 'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
+    grunt.registerTask('release', ['clean:all', 'bower', 'copy:all', 'clean:unnecessary', 'uglify:release']);
     grunt.registerTask('convention', ['jshint']);
 };
 
