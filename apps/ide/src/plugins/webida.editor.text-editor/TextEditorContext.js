@@ -31,7 +31,7 @@ define([
     'require',
     'webida-lib/util/gene',
     'webida-lib/plugins/editors/viable-menu-items',
-    'other-lib/underscore/lodash.min',
+    'external/lodash/lodash.min',
     'external/codemirror/lib/codemirror',
     'webida-lib/util/loadCSSList',
     'webida-lib/plugins/editors/EditorContext'

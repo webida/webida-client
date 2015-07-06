@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['other-lib/underscore/lodash.min', // _
+define(['external/lodash/lodash.min', // _
         'dojo/topic',                             // topic
         'dojox/grid/DataGrid',                    // DataGrid
         'dojo/data/ItemFileWriteStore',           // ItemFileWriteStore

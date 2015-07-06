@@ -17,7 +17,7 @@
 define(['./plugin',
         './menu-items',
         'dojo/Deferred',
-        'other-lib/underscore/lodash.min'
+        'external/lodash/lodash.min'
 ], function (editors, menuItems, Deferred, _) {
     'use strict';
 

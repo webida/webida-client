@@ -25,7 +25,7 @@
  */
 
 define(['require',
-        'other-lib/underscore/lodash.min',             // _
+        'external/lodash/lodash.min',             // _
         'dojo',                       // dojo
         'dojo/on',
         'dijit/registry',             // reg

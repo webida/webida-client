@@ -16,7 +16,7 @@
 
 define(['webida-lib/app',
     'webida-lib/plugin-manager-0.1',
-    'other-lib/underscore/lodash.min'],
+    'external/lodash/lodash.min'],
 function (app, pm, _) {
     'use strict';
 

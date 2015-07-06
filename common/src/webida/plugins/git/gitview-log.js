@@ -15,7 +15,7 @@
  */
 
 define([
-    'other-lib/underscore/lodash.min',
+    'external/lodash/lodash.min',
     'other-lib/moment/moment.min',
     'other-lib/URIjs/URI',
     'dojo/topic',

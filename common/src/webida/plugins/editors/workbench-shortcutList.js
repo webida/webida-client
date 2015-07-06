@@ -16,7 +16,7 @@
 
 define(['./plugin',
         'external/codemirror/lib/codemirror',
-        'other-lib/underscore/lodash.min'
+        'external/lodash/lodash.min'
 ], function (editors, codeMirror, _) {
     'use strict';
 

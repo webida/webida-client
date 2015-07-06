@@ -19,7 +19,7 @@
  *   https://github.com/philipwalton/html-inspector/blob/master/src/rules/validation/
  */
 
-define(['other-lib/underscore/lodash.min',
+define(['external/lodash/lodash.min',
         'external/codemirror/lib/codemirror',
         '../lib/html-inspector/src/modules/validation',
         './html-dom',

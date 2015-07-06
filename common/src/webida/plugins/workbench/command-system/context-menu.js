@@ -24,7 +24,7 @@
  *   context-menu.js
  */
 
-define(['other-lib/underscore/lodash.min',                 // _
+define(['external/lodash/lodash.min',                 // _
         'dojo/on',                    // on
         'dijit/Menu',                 // Menu
         'dijit/MenuItem',             // MenuItem

@@ -16,7 +16,7 @@
 
 
 
-define(['other-lib/underscore/lodash.min',
+define(['external/lodash/lodash.min',
         'dojo/aspect',
         'dojo/dom-geometry',
         'dijit/layout/TabContainer',
