@@ -67,7 +67,8 @@ function initServers(/*webidaHost, webidaLibPath, otherLibPath*/) {
             'webida-lib': '../../../../../common/src/webida',
             text: 'lib/text',
             tern: 'lib/ternjs',
-            acorn: 'lib/acorn'
+            acorn: 'lib/acorn',
+            'external': '../../../../../bower_components'
         }
     });
 

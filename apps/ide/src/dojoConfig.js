@@ -36,7 +36,8 @@ var dojoConfig = {
         'webida-lib': '../../../common/src/webida',
         'other-lib': '../../../external/src',
         'lib' : 'lib',
-        'plugins' : 'plugins'
+        'plugins' : 'plugins',
+        'external': '../../../bower_components'
     },
     aliases: [
         ['text', 'dojo/text'],
