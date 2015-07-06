@@ -16,7 +16,7 @@
 
 define([
     'external/lodash/lodash.min',
-    'other-lib/moment/moment.min',
+    'external/moment/min/moment.min',
     'other-lib/URIjs/URI',
     'dojo/topic',
     'webida-lib/widgets/views/viewmanager'
