@@ -1492,6 +1492,90 @@ define([
                     }
                 }
             });
+        },
+        
+        // From editors viable-menu-items
+        
+        isThereMatchingBracket: function () {
+            if (this.editor) {
+                var editor = this.editor;
+                return !!(editor.findMatchingBracket(editor.getCursor(), false));
+            } else {
+                return false;
+            }           
+        },
+        
+        isDefaultKeyMap: function () {
+            if (this.editor) {
+                var editor = this.editor;
+                return editor.getOption('keyMap') === 'default';
+            } else {
+                return false;
+            }           
+        },
+        
+        // From from editors plugin.js
+        
+        getScrollInfo: function () {
+            if (this.editor) {
+                var editor = this.editor;
+                return editor.getScrollInfo();
+            } else {
+                return null;
+            }           
+        },
+        
+        scrollToScrollInfo: function (scrollInfo) {
+            if (this.editor && scrollInfo) {
+                var editor = this.editor;
+                editor.scrollTo(scrollInfo.left, scrollInfo.top);
+            }
+        },
+        
+        getWorkbenchShortcuts: function (desc) {
+            if (this.editor) {
+                var editor = this.editor;
+                var currentKeyMap = editor.getOption('keyMap');
+                var merge = function (current, processed, keymap) {
+                    var curKeyMap = codemirror.keyMap[current];
+                    keymap = _.extend(keymap, curKeyMap);
+                    if (curKeyMap.fallthrough && !_.contains(processed, curKeyMap.fallthrough)) {
+                        processed.push(curKeyMap.fallthrough);
+                        return merge(curKeyMap.fallthrough, processed, keymap);
+                    } else {
+                        return keymap;
+                    }
+                };
+                var keymap = merge(currentKeyMap, [currentKeyMap], {});
+                delete keymap.fallthrough;
+                delete keymap.nofallthrough;
+                delete keymap.disableInput;
+                delete keymap.style;
+                var extraKeys = editor.getOption('extraKeys');
+                if (extraKeys) {
+                    keymap = _.extend(keymap, extraKeys);
+                }
+                //console.log('Keymap:', keymap);
+                return _.compact(_.map(keymap, function (name, key) {
+                    if ((typeof name) === 'string') {
+                        var d = desc[name];
+                        if (d) {
+                            return {
+                                keys: key.replace(/Ctrl\-/g, 'Ctrl+')
+                                .replace(/Alt\-/g, 'Alt+')
+                                .replace(/Shift\-/g, 'Shift+'),
+                                desc: d,
+                                viable: true
+                            };
+                        } else {
+                            //console.log('hina temp: no desciption for ' + name);
+                            return null;
+                        }
+                    }
+                }));
+            } else {
+                return [];
+            }
         }
     });
 

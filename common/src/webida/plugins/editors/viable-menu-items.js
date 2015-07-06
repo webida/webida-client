@@ -358,16 +358,13 @@ define(['./plugin',
         items['&Navigate Editors'] = naviEditorsItems;
 
         if (opened && opened.length >= 1) {
-            items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];
-            editors.doWithCurrentEditor(function (inst, editor) {
-                if (editor.getOption('keyMap') === 'default') {
-                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
-                }
-            });
-            var mb = editors.doWithCurrentEditor(function (instance, editor) {
-                return !!(editor.findMatchingBracket(editor.getCursor(), false));
-            });
-            if (mb) {
+            items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];            
+            
+            if (editors.execCommandForCurrentEditorContext('isDefaultKeyMap')) {
+                items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
+            }            
+           
+            if (editors.execCommandForCurrentEditorContext('isThereMatchingBracket')) {
                 items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
             }
         }
@@ -513,15 +510,12 @@ define(['./plugin',
 
             // Go to
             items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];
-            editors.doWithCurrentEditor(function (inst, editor) {
-                if (editor.getOption('keyMap') === 'default') {
-                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
-                }
-            });
-            var mb = editors.doWithCurrentEditor(function (instance, editor) {
-                return !!(editor.findMatchingBracket(editor.getCursor(), false));
-            });
-            if (mb) {
+                        
+            if (editors.execCommandForCurrentEditorContext('isDefaultKeyMap')) {
+                items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];               
+            }            
+            
+            if (editors.execCommandForCurrentEditorContext('isThereMatchingBracket')) {
                 items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
             }
 
