@@ -48,6 +48,19 @@ define([
 
     var logger = new Logger();
 
+	var dom = {
+		getStyle : function(element, prop){
+			var styles = window.getComputedStyle(element);
+			return styles.getPropertyValue(prop);
+		},
+		setStyles : function(element, propSet){
+			var prop, style = element.style;
+			for(prop in propSet){
+				style.setProperty(prop, propSet[prop]);
+			}
+		},
+	}
+
     function ImageEditorPart(file){
         logger.info('new ImageEditorPart('+file+')');
         console.info('file = ', file);
@@ -93,29 +106,18 @@ define([
 	        	 		div.setAttribute('style', 'width:100%; height:100%; overflow:auto');
 	        	 		div.appendChild(this);
 	        	 		parent.appendChild(div);
+	        	 		ImageEditorPart.setZoomCursor(this);
 	        	 	});
 	        	 	img.addEventListener('click', function(event){
-	        	 		switchFit(this);
-	        	 	});
-	        	 	function switchFit(img){
 						if (isFull === true) {
-		        	 		var style;
-		        	 		var parent = img.parentNode;
-		        	 		var parentBounds = parent.getBoundingClientRect();
-		        	 		var imgRatio = img.naturalWidth / img.naturalHeight;
-		        	 		var parentRatio = parentBounds.width / parentBounds.height;
-						    if (imgRatio < parentRatio) {
-						    	style = 'width:auto; height:100%';
-						    } else {
-						    	style = 'width:100%; height:auto';
-						    }
-						    img.setAttribute('style', style);
+							ImageEditorPart.sizeToFit(img);
 						    isFull = false;
 						} else {
-							img.setAttribute('style', 'width:'+img.naturalWidth+'px; height:'+img.naturalHeight+'px');
+							ImageEditorPart.sizeToOrigin(img);
 							isFull = true;
 						}
-	        	 	}
+	        	 		ImageEditorPart.setZoomCursor(this);
+	        	 	});
 	        	 }
 	        });
 		},
@@ -171,6 +173,49 @@ define([
         }
 
     });
+
+	ImageEditorPart.sizeToFit = function(img){
+ 		var style;
+ 		var parent = img.parentNode;
+ 		var parentBounds = parent.getBoundingClientRect();
+ 		var imgRatio = img.naturalWidth / img.naturalHeight;
+ 		var parentRatio = parentBounds.width / parentBounds.height;
+	    if (imgRatio < parentRatio) {
+	    	dom.setStyles(img, {width:'auto', height:'100%'});
+	    } else {
+	    	dom.setStyles(img, {width:'100%', height:'auto'});
+	    }
+	};
+
+	ImageEditorPart.sizeToOrigin = function(img){
+		dom.setStyles(img, 
+			{width:img.naturalWidth+'px', 
+			height:img.naturalHeight+'px'});
+	};
+
+ 	ImageEditorPart.setZoomCursor = function(img){
+ 		var parent = img.parentNode;
+ 		var imgRect = img.getBoundingClientRect();
+ 		var parentRect = parent.getBoundingClientRect();
+ 		//case if fit to screen
+ 		if(imgRect.width === parentRect.width ||
+ 			imgRect.height === parentRect.height){
+ 			if(img.naturalWidth > parentRect.width ||
+ 				img.naturalHeight > parentRect.height){
+ 				dom.setStyles(img, {cursor:'zoom-in'});
+ 			}else{
+ 				dom.setStyles(img, {cursor:'zoom-out'});
+ 			}
+ 		//case of original size
+ 		}else{
+ 			if(img.naturalWidth > parentRect.width ||
+ 				img.naturalHeight > parentRect.height){
+ 				dom.setStyles(img, {cursor:'zoom-out'});
+ 			}else{
+ 				dom.setStyles(img, {cursor:'zoom-in'});
+ 			}
+ 		}
+ 	};
 
     return ImageEditorPart;
 });
