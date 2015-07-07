@@ -27,7 +27,7 @@ define(['webida-lib/webida-0.3',
         'webida-lib/app',
         'external/toastr/toastr.min',
         'external/lodash/lodash.min',
-        'other-lib/pageDown/Markdown.Converter',
+        'showdown',
         'lib/image-slide/sly.wrapper',
         'dojo/aspect',
         'dojo/Deferred',
@@ -48,7 +48,7 @@ define(['webida-lib/webida-0.3',
         'dojo/topic'
        ],
 function (webida, ide,
-          toastr, _, Markdown, sly,
+          toastr, _, showdown, sly,
           aspect, Deferred, dom, on, ready, Memory, Observable,
           Dialog, TabContainer, ContentPane, reg, Tree, ObjectStoreModel,
           Constants, BuildProfile, Util, topic
@@ -481,11 +481,8 @@ function (webida, ide,
                         if (ext === '.html') {
                             desc = '<div>' + content + '</div>';
                         } else if (ext === '.md') {
-                            var converter = new Markdown.Converter({
-                                targetBlank: true
-                            });
-                            var markdownToHtml = converter.makeHtml;
-                            desc = markdownToHtml(content);
+                            var converter = new showdown.Converter();
+                            desc = converter.makeHtml(content);
                         }
                         $('#pw-descDescPane').empty().append(desc);
 

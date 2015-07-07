@@ -18,6 +18,7 @@
     "requirejs": "~2.1.18",
     "qunit": "~1.18.0",
     "qunit-composite": "git://github.com/JamesMGreene/qunit-composite#~1.1.0",
-    "toastr": "~2.1.1"
+    "toastr": "~2.1.1",
+    "showdown": "~1.1.0"
   }
 }

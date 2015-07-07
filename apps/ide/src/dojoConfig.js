@@ -30,7 +30,8 @@ var dojoConfig = {
     packages: [
         { name: 'xstyle', location: '../../../bower_components/xstyle' },
         { name: 'put-selector', location: '../../../bower_components/put-selector' },
-        { name: 'jquery', location: '../../../bower_components/jquery/dist', main: 'jquery.min' }
+        { name: 'jquery', location: '../../../bower_components/jquery/dist', main: 'jquery.min' },
+        { name: 'showdown', location: '../../../bower_components/showdown/dist', main: 'showdown.min' }
     ],
     locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {
