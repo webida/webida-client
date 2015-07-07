@@ -712,7 +712,7 @@ function (webida, ide,
 
         function doTemplateFile(file, content) {
             var path = Util.concatWFSPath([destSelect, projectName]).replace(destFS, '');
-            mountDest.writeFile(path + '/' + file, _.template(content, {
+            mountDest.writeFile(path + '/' + file, _.template(content)({
                 app: {
                     name: projectName,
                     packageName: BuildProfile.getDefaultPackageName(projectName),
