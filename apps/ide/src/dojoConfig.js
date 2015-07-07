@@ -29,7 +29,8 @@ var dojoConfig = {
     parseOnLoad: false,
     packages: [
         { name: 'xstyle', location: '../../../bower_components/xstyle' },
-        { name: 'put-selector', location: '../../../bower_components/put-selector' }
+        { name: 'put-selector', location: '../../../bower_components/put-selector' },
+        { name: 'jquery', location: '../../../bower_components/jquery/dist', main: 'jquery.min' }
     ],
     locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {

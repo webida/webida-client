@@ -46,7 +46,7 @@ define(['webida-lib/plugin-manager-0.1',                // pm
         'dijit/MenuItem',                // MenuItem
         'dijit/MenuSeparator',           // MenuSeparator
         './MenuItemTree',                // MenuItemTree
-        'other-lib/toastr/toastr'                         // toastr
+        'external/toastr/toastr.min'                         // toastr
        ],
 function (pm,
           _,

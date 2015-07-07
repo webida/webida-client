@@ -44,7 +44,7 @@ define(['require',
         'dijit/Tree',                               // Tree
         'dijit/registry',                           // reg
         'dijit/Tooltip',                            // Tooltip
-        'other-lib/toastr/toastr',                  // Toastr
+        'external/toastr/toastr.min',                  // Toastr
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
         ],

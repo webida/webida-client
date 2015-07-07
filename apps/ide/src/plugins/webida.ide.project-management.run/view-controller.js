@@ -37,7 +37,7 @@ define([
     'text!./run-configuration.html',
     'text!./default-run-configuration.html',
     'external/lodash/lodash.min',
-    'other-lib/toastr/toastr',
+    'external/toastr/toastr.min',
     'xstyle/css!./style.css'
 ], function (ide, workbench, workspace, pluginManager, runConfManager, delegator,
              topic, on, Memory, Observable, registry,
