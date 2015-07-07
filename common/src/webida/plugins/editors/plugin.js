@@ -41,7 +41,7 @@ define(['text!./ext-to-mime.json',
         'webida-lib/widgets/views/viewFocusController',
         'dojo/topic',
         'external/async/dist/async.min',
-        'other-lib/toastr/toastr',
+        'external/toastr/toastr.min',
         'webida-lib/util/logger/logger-client'
 ], function (extToMime, _, URI, pathUtil, BubblingArray, ide, pm, workbench, EditorPart,
               View, vm, ViewFocusController,  topic, async, toastr, Logger) {

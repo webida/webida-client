@@ -21,7 +21,7 @@
 
 define(['webida-lib/app',
         'webida-lib/util/path',
-        'other-lib/toastr/toastr',
+        'external/toastr/toastr.min',
         'dijit/registry',
         'dijit/form/Button',
         'text!../layout/image-toolbar.html'

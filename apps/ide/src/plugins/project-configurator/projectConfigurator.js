@@ -25,7 +25,7 @@ define(['webida-lib/app',
         'dojo/topic',
         'webida-lib/plugins/workspace/plugin',
         'external/lodash/lodash.min',
-        'other-lib/toastr/toastr'
+        'external/toastr/toastr.min'
 ], function (ide, pathutil, topic, workspace, _, toastr) {
     'use strict';
 

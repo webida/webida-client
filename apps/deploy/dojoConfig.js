@@ -23,6 +23,9 @@ var dojoConfig = {
     async: true,
     baseUrl: '.',
     parseOnLoad: true,
+    packages: [
+        { name: 'jquery', location: '../../bower_components/jquery/dist', main: 'jquery.min' }
+    ],
     paths: {
         'lib' : 'lib',
         'core' : 'core',

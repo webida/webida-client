@@ -27,7 +27,7 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/path',
     'external/lodash/lodash.min',
-    'other-lib/toastr/toastr'
+    'external/toastr/toastr.min'
 ], function (runConfigurationManager, delegator, workspace, workbench, pathUtil, _, toastr) {
     'use strict';
 
