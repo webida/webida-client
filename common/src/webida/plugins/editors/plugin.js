@@ -29,7 +29,7 @@
 
 define(['text!./ext-to-mime.json',
         'external/lodash/lodash.min',
-        'other-lib/URIjs/URI',
+        'external/URIjs/src/URI',
         'webida-lib/util/path',
         'webida-lib/util/arrays/BubblingArray',
         'webida-lib/app',
