@@ -138,12 +138,12 @@ define([
 			logger.info('initializeListeners()');
 			var that = this;
 			//subscribe topic
-			/*
-		    this.fileOpenedHandle = topic.subscribe('file.opened', function(file, content){
-		    	//do something with file.opened topic
-		    });
-		    */
-		    this.fileSavedHandle = topic.subscribe('file.saved', function(file){
+
+            this.fileOpenedHandle = topic.subscribe('file.opened', function(file, content){
+                that.editorContext.setValue(content);
+            });
+
+            this.fileSavedHandle = topic.subscribe('file.saved', function(file){
 	            that.foldingStatus = that.getEditorContext().getFoldings();
 		    });
             this.editorContext.addEventListener('save', function () {
