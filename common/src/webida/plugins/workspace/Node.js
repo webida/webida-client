@@ -83,7 +83,7 @@ define(['require',
 
         this.id = id;
         this.parent = pathToId(pair[0]);
-        this.name = decodeURI(pair[1]);
+        this.name = decodeURI(pair[1]).replace(/ /g, '&nbsp;');
         this.isInternal = isInternal;
     }
 
@@ -146,7 +146,7 @@ define(['require',
 
         var iEnd = subnodes.length;
         for (var i = 0; i < iEnd; i++) {
-            if (subnodes[i].name === name) {
+            if (subnodes[i].name === name.replace(/ /g, '&nbsp;')) {
                 if (rest.length > 0) {
                     return subnodes[i].getSubnode(rest);
                 } else {
@@ -1278,6 +1278,7 @@ define(['require',
             box = domGeom.position(nodes[0].labelNode, true);
         }
 
+        self.name = self.name.replace(/&nbsp;/g, ' ');
         var $input = $('<input id="renameInputTemp" type="text" style="position: absolute"></input>')
                         .css('left', 0)
                         .css('top', 0)
@@ -1341,6 +1342,7 @@ define(['require',
             evt.stopPropagation();
         });
 
+        self.name = self.name.replace(/ /g, '&nbsp;');
         function checkAndRename(newName, /* boolean */ reselect) {
             function sliceDotString(name) {
                 var newName = name;
