@@ -34,6 +34,7 @@ define(['webida-lib/app',
         'dojo/_base/array',
         'dojo/_base/connect',
         'dojo/_base/lang',
+        'dojo/_base/declare',
         'dojo/Deferred',
         'dojo/dom',
         'dojo/dom-attr',
@@ -58,7 +59,7 @@ define(['webida-lib/app',
         'require',
         'webida-lib/util/logger/logger-client'
 ], function (ide, preferences, workbench, webida, dijit, registry, Tree,
-              ObjectStoreModel, aspect, array, connect, lang, Deferred, dom,
+              ObjectStoreModel, aspect, array, connect, lang, declare, Deferred, dom,
               domAttr, domClass, domConstruct, domGeom, domStyle, on, all,
              Memory, Observable, topic, win, Node, markup, View, pathUtil,
               PopupDialog, toastr, _, async, require, Logger) {
@@ -177,9 +178,17 @@ define(['webida-lib/app',
 
         var focusedNode = null;
 
+        // Custom TreeNode class (based on dijit.TreeNode) that allows rich text labels
+        var TreeNode = declare(Tree._TreeNode, {
+            _setLabelAttr: {node: "labelNode", type: "innerHTML"}
+        });
+
         // create tree
         tree = new Tree({
             model: model,
+            _createTreeNode: function(args){
+                return new TreeNode(args);
+            },
             openOnDblClick: true,
             tabindex : 0,
             getIconClass: function (item, opened) {
