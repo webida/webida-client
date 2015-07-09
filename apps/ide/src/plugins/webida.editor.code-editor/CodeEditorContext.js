@@ -846,7 +846,38 @@ define([
              )
             );
     }
-
+    
+    function getBeautifier(editor, callback) {
+        var currentModeName = editor.getMode().name;
+        var beautifierModuleID;
+        var beautifyOptions;
+        /* jshint camelcase: false */
+        if (currentModeName === 'javascript') {
+            beautifierModuleID = 'external/js-beautify/js/lib/beautify';
+            // TODO .editorconfig-aware options
+            beautifyOptions = {
+                jslint_happy: true,
+                wrap_line_length: 120
+            };
+            require([beautifierModuleID], function (beautifier) {
+                callback(beautifier.js_beautify, beautifyOptions);
+            });
+        } else if (currentModeName === 'htmlmixed') {
+            beautifierModuleID = 'external/js-beautify/js/lib/beautify-html';
+            require([beautifierModuleID], function (beautifier) {
+                callback(beautifier.html_beautify, beautifyOptions);
+            });
+        } else if (currentModeName === 'css') {
+            beautifierModuleID = 'external/js-beautify/js/lib/beautify-css';
+            require([beautifierModuleID], function (beautifier) {
+                callback(beautifier.css_beautify, beautifyOptions);
+            });
+        } else {
+            // Shouldn't be reached
+            callback();
+        }
+        /* jshint camelcase: true */
+    }
     
     gene.inherit(CodeEditorContext, TextEditorContext, {
 
@@ -1254,6 +1285,159 @@ define([
 	        setChangeForAutoHintDebounced();
 	    },
         
+        lineComment: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                // comment line
+                editor.execCommand('linecomment');
+            });
+        },
+
+        blockComment: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                // comment block
+                editor.execCommand('blockcomment');
+            });
+        },
+
+        commentOutSelection: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                // comment out
+                editor.execCommand('commentOutSelection');
+            });
+        },
+
+        beautifyCode: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                getBeautifier(editor, function (beautifier, options) {
+                    if (beautifier) {
+                        // reselect
+                        var startPos = editor.getCursor('from'),
+                            startPosOrig;
+                        var endPos = editor.getCursor('to');
+                        var endPosInfo = editor.lineInfo(endPos.line);
+
+                        if (startPos.ch !== 0) {
+                            startPosOrig = startPos;
+                            startPos = {
+                                line: startPos.line,
+                                ch: 0
+                            };
+                        }
+                        if (endPosInfo.text.length !== endPos.ch) {
+                            endPos = {
+                                line: endPos.line,
+                                ch: endPosInfo.text.length
+                            };
+                        }
+
+                        editor.replaceRange(beautifier(editor.getRange(startPos,
+                                                                       endPos), options), startPos, endPos);
+                    }
+                });
+            });
+        },
+
+        beautifyAllCode: function () {
+            this.addDeferredAction(function (self) {
+                var ANCHOR_STR = '_line_of_original_cursor_';
+                var editor = self.editor;
+                self.focus();
+
+                getBeautifier(editor, function (beautifier, options) {
+                    if (beautifier) {
+                        var cursor = editor.getCursor();
+                        var mode = editor.getModeAt(cursor);
+
+                        editor.operation(function () {
+                            if (mode.blockCommentStart) {
+                                var anchorComment = mode.blockCommentStart +
+                                    ANCHOR_STR + mode.blockCommentEnd;
+                                editor.replaceRange(anchorComment + '\n', {
+                                    line: cursor.line,
+                                    ch: 0
+                                }, {
+                                    line: cursor.line,
+                                    ch: 0
+                                }, '+beautifyAll');
+                            }
+
+                            var startPos = {
+                                line: editor.firstLine(),
+                                ch: 0
+                            };
+                            var lastLine, endPos = {
+                                line: (lastLine = editor.lastLine()),
+                                ch: editor.getLine(lastLine).length
+                            };
+                            editor.replaceRange(beautifier(editor.getValue(),
+                                                           options), startPos, endPos,
+                                                '+beautifyAll');
+
+                            if (mode.blockCommentStart) {
+                                var i, j = -1;
+                                for (i = 0; i < editor.lineCount(); i++) {
+                                    var line = editor.getLine(i);
+                                    if ((j = line.indexOf(ANCHOR_STR)) >= 0) {
+                                        break;
+                                    }
+                                }
+                                if (j >= 0) {
+                                    var token = editor.getTokenAt({
+                                        line: i,
+                                        ch: j
+                                    }, true);
+                                    if (token.string.indexOf(mode.blockCommentEnd) >
+                                        0) {
+                                        editor.setCursor({
+                                            line: i,
+                                            ch: 0
+                                        });
+                                        editor.replaceRange('', {
+                                            line: i,
+                                            ch: 0
+                                        }, {
+                                            line: i + 1,
+                                            ch: 0
+                                        }, '+beautifyAll');
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        },
+        
+        gotoDefinition: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+                editor.execCommand('tern-gotodefinition');
+            });
+        },
+
+        rename: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                // rename trigger
+                editor.execCommand('tern-rename');
+            });
+        },
+
         getMenuItemsUnderEdit: function (items, menuItems, deferred) {
             var editor = this.editor;
 
@@ -1333,6 +1517,7 @@ define([
                 deferred.resolve(items);
             }
         },
+        
         getContextMenuItems: function (opened, items, menuItems, deferred) {
 
             function selectionCommentable(editor) {
