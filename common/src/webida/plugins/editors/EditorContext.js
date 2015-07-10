@@ -44,7 +44,89 @@ define([
 	}
 
 	gene.inherit(EditorContext, Object, {
+        start : function () {
+            throw new Error('start() should be implemented by subclass');
+        },
+        
+        destroy: function () {
+            throw new Error('destroy() should be implemented by subclass');
+        },
+        
+        addChangeListener: function (listener) {
+            throw new Error('addChangeListener() should be implemented by subclass');            
+        }, 
+        
+        addFocusListener: function (listener) {
+            throw new Error('addFocusListener() should be implemented by subclass'); 
+        },
+        
+        addBlurListener: function (listener) {
+            throw new Error('addBlurListener() should be implemented by subclass'); 
+        },
+        
+        addEventListener: function (type, listener) {
+            throw new Error('addEventListener() should be implemented by subclass');
+        },
+        
+        triggerEvent: function (type, event) {
+            throw new Error('triggerEvent() should be implemented by subclass');
+        },
+        
+        setSize: function (width, height) {
+            throw new Error('setSize() should be implemented by subclass');
+        },
+        
+        getKeymap: function () {
+            throw new Error('getKeymap() should be implemented by subclass');
+        },
 
+        setKeymap: function (keymap) {
+            throw new Error('setKeymap() should be implemented by subclass');
+        },
+        
+        isClean: function () {
+            throw new Error('isClean() should be implemented by subclass');
+        },
+        
+        clearHistory: function () {
+            throw new Error('clearHistory() should be implemented by subclass');
+        },
+        
+        markClean: function () {
+            throw new Error('markClean() should be implemented by subclass');
+        },
+        
+        focus: function () {
+            throw new Error('focus() should be implemented by subclass');
+        },
+        
+        refresh: function () {
+            throw new Error('refresh() should be implemented by subclass');
+        },
+        
+        undo: function () {
+            throw new Error('undo() should be implemented by subclass');
+        },
+        
+        redo: function () {
+            throw new Error('redo() should be implemented by subclass');
+        },
+        
+        isDefaultKeyMap: function () {
+            throw new Error('isDefaultKeyMap() should be implemented by subclass');
+        },
+        
+        getWorkbenchShortcuts: function (desc) {
+            throw new Error('getWorkbenchShortcuts() should be implemented by subclass');
+        },
+        
+        getMenuItemsUnderEdit: function (items, menuItems, deferred) {
+            throw new Error('getWorkbenchShortcuts() should be implemented by subclass');
+        },
+        
+        getContextMenuItems: function (opened, items, menuItems, deferred) {
+            throw new Error('getWorkbenchShortcuts() should be implemented by subclass');
+        }
 	});
 
 	return EditorContext;
