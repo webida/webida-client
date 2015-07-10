@@ -393,7 +393,7 @@ define([
                 _.each(pages, function (page, index) {
                     // not to show when "visible": "false"
                     if (page.visible === 'false') {
-                        return false;
+                        return;
                     }
 
                     function augpath(hierarchy) {
