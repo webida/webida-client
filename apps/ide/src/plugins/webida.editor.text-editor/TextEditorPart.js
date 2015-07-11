@@ -316,11 +316,7 @@ define([
             } else {
                 context.setCursor(location.cursor);
             }
-            context.addDeferredAction(function (editorContext) {
-                if (editorContext.editor) {
-                    editorContext.editor.focus();
-                }
-            });
+            context.focus();
         });
     };
 
