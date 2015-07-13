@@ -29,12 +29,12 @@
 * messaging api for Javascript module.
 *
 * This module provides JavaScript API's for message service.
-* It depends on socket.io in the path other-lib/socket.io/socket.io
+* It depends on socket.io in external/socket.io-client/
 * @module msg
 */
 define([
 	'./webida-0.3', 
-	'other-lib/socket.io/socket.io',
+	'external/socket.io-client/socket.io',
 	'webida-lib/util/logger/logger-client'
 ], function (
 	webida, 

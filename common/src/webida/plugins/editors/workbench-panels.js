@@ -45,13 +45,13 @@ define([
 
     function getPanel() {
         var docFrag = document.createDocumentFragment();
-        docFrag.appendChild(editors.elem);
+        docFrag.appendChild(editors.getPartContainer().getElement());
         return docFrag;
     }
 
     function onPanelAppended() {
         var $elemTab = $('<div id="editor-tab" style="width:100%; height:100%" class="editor-tab"></div>');
-        $(editors.elem).append($elemTab);
+        $(editors.getPartContainer().getElement()).append($elemTab);
 
         editors.splitViewContainer = new SplitViewContainer();
         editors.splitViewContainer.init({

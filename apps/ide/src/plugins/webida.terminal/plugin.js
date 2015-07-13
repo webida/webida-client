@@ -35,7 +35,7 @@ define(['webida-lib/util/logger/logger-client',          // Logger
         'webida-lib/widgets/views/view',    // View
         'dojo/query',                       // query
         'external/URIjs/src/URI',              // URI
-        'other-lib/socket.io/socket.io',    // io
+        'external/socket.io-client/socket.io',    // io
         './lib/socket.io-stream',           // ss
         './lib/terminal',                   // Terminal
         'dojo/text!./layout/terminal.html'],  // terminalHtml

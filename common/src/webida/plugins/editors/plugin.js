@@ -15,36 +15,50 @@
  */
 
 /**
- * required methods for editor module
- * - create(file, parentElem : HTMLElement, callback)
- * - show(file)
- * - hide(file)
- * - destroy(file)
- * - getValue(file)
- *
- * optional methods  for editor module
- * - focus(file)
- * - addChangeListener(file, callback : Function)
- **/
+ * This plug-in manages EditorParts
+ * 
+ * @see EditorPart
+ */
 
-define(['text!./ext-to-mime.json',
-        'external/lodash/lodash.min',
-        'external/URIjs/src/URI',
-        'webida-lib/util/path',
-        'webida-lib/util/arrays/BubblingArray',
-        'webida-lib/app',
-        'webida-lib/plugin-manager-0.1',
-        'webida-lib/plugins/workbench/plugin',
-        'webida-lib/plugins/workbench/ui/EditorPart',
-        'webida-lib/widgets/views/view',
-        'webida-lib/widgets/views/viewmanager',
-        'webida-lib/widgets/views/viewFocusController',
-        'dojo/topic',
-        'external/async/dist/async.min',
-        'external/toastr/toastr.min',
-        'webida-lib/util/logger/logger-client'
-], function (extToMime, _, URI, pathUtil, BubblingArray, ide, pm, workbench, EditorPart,
-              View, vm, ViewFocusController,  topic, async, toastr, Logger) {
+define([
+    'dojo/topic',
+	'text!./ext-to-mime.json',
+    'external/lodash/lodash.min',
+    'external/URIjs/src/URI',
+    'webida-lib/app',
+    'webida-lib/util/path',
+    'webida-lib/util/arrays/BubblingArray',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/plugin-manager-0.1',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workbench/ui/EditorPart',
+    'webida-lib/plugins/workbench/ui/PartContainer',
+    'webida-lib/widgets/views/view',
+    'webida-lib/widgets/views/viewmanager',
+    'webida-lib/widgets/views/viewFocusController',
+    'external/async/dist/async.min',
+    'external/toastr/toastr.min',
+    './EditorManager'
+], function (
+	topic, 
+	extToMime, 
+	_, 
+	URI, 
+	ide, 
+	pathUtil, 
+	BubblingArray,
+	Logger, 
+	pm, 
+	workbench, 
+	EditorPart,
+	PartContainer,
+	View, 
+	vm, 
+	ViewFocusController,  
+	async, 
+	toastr, 
+	EditorManager
+) {
     'use strict';
 
 	var logger = new Logger();
@@ -515,9 +529,22 @@ define(['text!./ext-to-mime.json',
         });
     }
 
+	/** @module editors */
     var editors = {
-        elem: $('<div id="editor" tabindex="0" style="position:absolute; ' +
-            'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0],
+
+		partContainer : null,
+		/**
+		 * Returns PartContainer for EditorParts
+		 * @returns {PartContainer}
+		 */
+		getPartContainer : function(){
+			logger.info('getPartContainer()');
+			if(this.partContainer === null){
+				this.partContainer = new PartContainer({id:'editor'});
+			}
+			return this.partContainer;
+		},
+
         splitViewContainer : null,
         editorTabFocusController : new ViewFocusController({'Title' : 'title', 'Path' : 'path'}),
         editorExtensions: pm.getExtensions('webida.common.editors:editor'),
@@ -1128,6 +1155,10 @@ define(['text!./ext-to-mime.json',
         }
     };
 
+	editors.getCurrentEditorPart = function () {
+		return this.currentEditorPart;
+	};
+
 	editors.addPart = function (file, part) {
 		logger.info('editors.addPart(' + file + ', ' + part + ')');
 		this.parts.set(file, part);
@@ -1140,6 +1171,14 @@ define(['text!./ext-to-mime.json',
 		} else {
 			return null;
 		}
+	};
+
+	//TODO : call removePart() when destroy editor panel
+	editors.removePart = function (model) {
+		if (this.getPart(model)) {
+			return this.parts.delete(model);
+		}
+		return false;
 	};
 
 	editors.addFile = function (path, file) {

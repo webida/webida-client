@@ -47,6 +47,7 @@ define([
     'use strict';
 
     var logger = new Logger();
+    logger.off();
 
 	var dom = {
 		getStyle : function(element, prop){
@@ -63,7 +64,6 @@ define([
 
     function ImageEditorPart(file){
         logger.info('new ImageEditorPart('+file+')');
-        console.info('file = ', file);
         EditorPart.apply(this, arguments);
         this.setFile(file);
         this.fileOpenedHandle = null;
@@ -86,7 +86,7 @@ define([
 		},
 
 		renderImage : function(){
-			console.info('renderImage()');
+			logger.info('renderImage()');
 			var fs = app.getFSCache();
 			var parent = this.getParentElement();
 			var arr = pathUtil.dividePath(this.getFile().getPath());
@@ -134,7 +134,7 @@ define([
         },
 
         destroy: function () {
-            console.info('destroy()');
+            logger.info('destroy()');
 			//unsubscribe topic
 			if(this.fileOpenedHandle !== null){
 				logger.info('this.fileOpenedHandle.remove()');
@@ -145,31 +145,31 @@ define([
         },
 
         show: function () {
-            console.info('show()');
+            logger.info('show()');
         },
 
         hide: function () {
-            console.info('hide()');
+            logger.info('hide()');
         },
 
         getValue: function () {
-            console.info('getValue()');
+            logger.info('getValue()');
         },
 
         addChangeListener: function (callback) {
-            console.info('addChangeListener()');
+            logger.info('addChangeListener()');
         },
 
         focus: function () {
-            console.info('focus()');
+            logger.info('focus()');
         },
 
         markClean: function () {
-            console.info('markClean()');
+            logger.info('markClean()');
         },
 
         isClean: function () {
-            console.info('isClean()');
+            logger.info('isClean()');
         }
 
     });
