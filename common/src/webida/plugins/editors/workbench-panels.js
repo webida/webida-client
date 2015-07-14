@@ -20,6 +20,7 @@ define([
 	'webida-lib/app',
 	'webida-lib/widgets/views/splitviewcontainer',
 	'webida-lib/widgets/views/viewmanager',
+	'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
 	'dojo/dom-style',
 	'dojo/dom-geometry',
 	'dojo/topic',
@@ -30,7 +31,8 @@ define([
 	workbench, 
 	ide, 
 	SplitViewContainer, 
-	vm, 
+	vm,
+	ButtonedDialog,
 	domStyle,
     geometry, 
     topic, 
@@ -47,6 +49,48 @@ define([
         var docFrag = document.createDocumentFragment();
         docFrag.appendChild(editors.getPartContainer().getElement());
         return docFrag;
+    }
+
+    function createDialog (file, title, action) {
+        var dialog = new ButtonedDialog({
+            title: 'Unsaved Changes in the File to ' + title,
+            buttons: [
+                {
+                    caption: 'Save and ' + title,
+                    methodOnClick: 'saveAnd' + title
+                },
+                {
+                    caption: title + ' without Saving',
+                    methodOnClick: title + 'WithoutSaving'
+                },
+                {
+                    caption: 'Cancel',
+                    methodOnClick: 'hide'
+                }
+                ],
+                methodOnEnter: 'saveAnd' + title,
+                saveAndQuit: function () {
+                    editors.saveFile({
+                        path: file.path,
+                        callback: function () {
+                            action();
+                            dialde();
+                        }
+                    });
+                },
+                quitWithoutSaving: function () {
+                    action();
+                    this.hide();
+                },
+
+                buttonsWidth: '140px',
+                onHide: function () {
+                    dialog.destroyRecursive();
+                }
+        });
+        dialog.setContentArea('<span> File "' + file.name  + '" has unsaved changes. </span>' +
+                '<span> Save and '+ name + ' this file? </span>');
+        dialog.show();
     }
 
     function onPanelAppended() {
@@ -175,7 +219,7 @@ define([
 
         topic.subscribe('view.close', function (event, close) {
 
-            function closeFile() {
+            var action = function closeFile() {
                 if (event.closable) {
                 	var editorPart = editors.getPart(file);
                     editorPart.hide();
@@ -211,56 +255,40 @@ define([
             editors.editorTabFocusController.unregisterView(view);
 
             if (!event.force && file.isModified()) {
-                require(['webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'], function (ButtonedDialog) {
-                    var dialog = new ButtonedDialog({
-                        title: 'Unsaved Changes in the File to Close',
-                        buttons: [
-                            {
-                                caption: 'Save and Close',
-                                methodOnClick: 'saveAndClose'
-                            },
-                            {
-                                caption: 'Close without Saving',
-                                methodOnClick: 'closeWithoutSaving'
-                            },
-                            {
-                                caption: 'Cancel',
-                                methodOnClick: 'hide'
-                            }
-                        ],
-                        methodOnEnter: 'saveAndClose',
-                        saveAndClose: function () {
-                            editors.saveFile({
-                                path: file.path,
-                                callback: function () {
-                                    //event.closable = true;
-                                    closeFile();
-                                    dialog.hide();
-                                }
-                            });
-                        },
-                        closeWithoutSaving: function () {
-                            //event.closable = true;
-                            closeFile();
-                            this.hide();
-                        },
-
-                        buttonsWidth: '140px',
-                        onHide: function () {
-                            dialog.destroyRecursive();
-                        }
-                    });
-                    dialog.setContentArea('<span> File "' + file.name  + '" has unsaved changes. </span>' +
-                                          '<span> Save and close this file? </span>');
-                    dialog.show();
-                });
+                createDialog(file, 'Close', action);
             } else {
-                closeFile();
+                action();
             }
 
         });
 
+        topic.subscribe('view.quit', function (event, quit) {
+            var keys = Object.keys(editors.files);
+            var modifiedFileNames = [];
+            var len = keys.length;
+            for (var i = 0; i < len; i++) {
+                var key = keys[i];
+                var file = editors.files[key];
+                if (file.isModified()) {
+                    modifiedFileNames.push(file.name);
+                }
+            }
+
+            var action = function closeWindow() {
+                window.focus();
+                window.opener = window;
+                window.close();
+            };
+
+            if (modifiedFileNames.length > 0) {
+                createDialog(modifiedFileNames.join(', '), 'Quit', action);
+            } else {
+                action();
+            }
+        });
+
         ide.registerBeforeUnloadChecker(function () {
+
             var keys = Object.keys(editors.files);
             var modifiedFileNames = [];
             var len = keys.length;
@@ -272,6 +300,7 @@ define([
                     modifiedFileNames.push(file.name);
                 }
             }
+
             if (modifiedFileNames.length > 0) {
                 return 'You have unsaved changes in files: ' + modifiedFileNames.join(', ');
             }
