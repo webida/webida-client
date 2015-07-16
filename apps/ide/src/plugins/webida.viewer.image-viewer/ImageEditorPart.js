@@ -69,7 +69,7 @@ define([
         this.fileOpenedHandle = null;
     }
 
-    genetic.inherit(ImageEditorPart, EditorPart, {
+    genetic.inherits(ImageEditorPart, EditorPart, {
 
 		initialize : function(){
 			logger.info('initialize()');

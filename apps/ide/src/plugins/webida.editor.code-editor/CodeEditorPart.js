@@ -62,7 +62,7 @@ define([
 		TextEditorPart.apply(this, arguments); //super constructor
 	}
 
-	genetic.inherit(CodeEditorPart, TextEditorPart, {
+	genetic.inherits(CodeEditorPart, TextEditorPart, {
 
 		/**
 		 * Initialize CodeEditorPart

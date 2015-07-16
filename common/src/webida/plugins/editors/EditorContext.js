@@ -43,7 +43,7 @@ define([
 		
 	}
 
-	genetic.inherit(EditorContext, Object, {
+	genetic.inherits(EditorContext, Object, {
         start : function () {
             throw new Error('start() should be implemented by subclass');
         },

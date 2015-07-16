@@ -31,7 +31,7 @@ define(['webida-lib/util/genetic'], function(genetic) {
 		this.parent = null;
 		this.partId = ++partId;
 	}
-	genetic.inherit(Part, Object, {
+	genetic.inherits(Part, Object, {
 		create : function(parent, started){
 			throw new Error('create() should be implemented by subclass');
 		},
