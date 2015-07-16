@@ -36,8 +36,7 @@ define([
     'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
     'external/async/dist/async.min',
-    'external/toastr/toastr.min',
-    './EditorManager'
+    'external/toastr/toastr.min'
 ], function (
 	topic, 
 	extToMime, 
@@ -54,8 +53,7 @@ define([
 	vm, 
 	ViewFocusController,  
 	async, 
-	toastr, 
-	EditorManager
+	toastr
 ) {
     'use strict';
 
