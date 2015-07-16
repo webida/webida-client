@@ -23,7 +23,7 @@
  * @author: hw.shim
  */
 
-define(['webida-lib/util/genetic'], function(gene) {
+define(['webida-lib/util/genetic'], function(genetic) {
 	'use strict';
 	var partId = 0;
 	function Part(){
