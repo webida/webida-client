@@ -18,7 +18,7 @@ define(['webida-lib/app',
         'webida-lib/util/path',
         'webida-lib/plugins/workspace/plugin',
         'webida-lib/webida-0.3',
-        'other-lib/toastr/toastr'
+        'external/toastr/toastr.min'
        ],
 
 function (ide, pathUtil, wv, webida, toastr) {

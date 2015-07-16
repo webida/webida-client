@@ -24,8 +24,8 @@
  *   toolbar.js
  */
 
-define(['webida-lib/plugin-manager-0.1',                // pm
-        'other-lib/underscore/lodash.min',               // _
+define(['webida-lib/plugin-manager-0.1', // pm
+        'external/lodash/lodash.min',    // _
         'dojo',                          // dojo
         'dojo/on',                       // on
         'dojo/dom-style',                // domStyle
@@ -46,7 +46,7 @@ define(['webida-lib/plugin-manager-0.1',                // pm
         'dijit/MenuItem',                // MenuItem
         'dijit/MenuSeparator',           // MenuSeparator
         './MenuItemTree',                // MenuItemTree
-        'other-lib/toastr/toastr'                         // toastr
+        'external/toastr/toastr.min'     // toastr
        ],
 function (pm,
           _,
@@ -106,12 +106,15 @@ function (pm,
         var iconNormal = icons;
 
         if (iconNormal) {
+            var menuitem = item.attr('data-menuitem');
+            // convert id to valid class name e.g. /&File/&New/&File -> __File__New__File
+            var iconClass = menuitem.replace(/&/g, '').replace(/\//g, '__').replace(/ /g, '_') + '_wticons';
             var img = '<style type="text/css">' +
-                        '.' + item.id + '_wticons {' +
+                        '.' + iconClass + ' {' +
                             'background-image: url("' + iconNormal + '");' +
                         '}' +
                       '</style>';
-            var imgClasses = item.id + '_wticons webida-tool-bar-icon ' +
+            var imgClasses = iconClass + ' webida-tool-bar-icon ' +
                              'webida-tool-bar-icon-normal';
 
             img = img + '<img class="' + imgClasses + '"' +
@@ -201,6 +204,8 @@ function (pm,
                         if (cmndInfo && cmndInfo.toolbar) {
                             // create toolbar item
                             item = new Button();
+                            // set unique identifier for toolbar icon
+                            item.attr('data-menuitem', ploc + menuItemName);
 
                             // tooltip setting
                             tooltip = cmndInfo.toolbar.tooltip ?
@@ -254,6 +259,7 @@ function (pm,
                         if (cmndInfo && cmndInfo.toolbar) {
                             // create toolbar item
                             item = new ComboButton();
+                            item.attr('data-menuitem', ploc + menuItemName);
 
                             // tooltip setting
                             tooltip = cmndInfo.toolbar.tooltip ?
@@ -294,8 +300,9 @@ function (pm,
                                 });
                             }
 
-                            // cmnd handle bind, just icon click then first index
-                            on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, 0));
+                            // Events on clicking icon and selecting the first item of dropdown list
+                            // should be distinguishable. (index: 0 -> -1)
+                            on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, -1));
 
                             var menu = new Menu({ style: 'display: none;'});
                             item.dropDown = menu;

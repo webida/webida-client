@@ -17,18 +17,18 @@
 /**
  * Constructor function
  * TextEditorPart implementation of EditorPart
- * This should be an ancestor of all text based editors. 
+ * This should be an ancestor of all text based editors.
  *
  * @constructor
  * @see EditorPart
  * @since: 2015.06.11
  * @author: hw.shim
- * 
+ *
  * file.__elemId removed
  */
 
 define([
-	'other-lib/underscore/lodash.min',
+	'external/lodash/lodash.min',
 	'webida-lib/util/gene',
 	'webida-lib/plugins/workbench/ui/Part',
 	'webida-lib/plugins/workbench/ui/EditorPart',
@@ -41,15 +41,15 @@ define([
 	'webida-lib/util/logger/logger-client',
 	'dojo/domReady!'
 ], function(
-	_, 
+	_,
 	gene,
 	Part,
 	EditorPart,
-	store, 
+	store,
 	editors,
 	EditorPreference,
-	preferenceConfig, 
-	TextEditorContext, 
+	preferenceConfig,
+	TextEditorContext,
 	topic,
 	Logger
 ) {
@@ -65,7 +65,7 @@ define([
 	function TextEditorPart(file){
 		logger.info('new TextEditorPart('+file+')');
 		EditorPart.apply(this, arguments);
-		this.file = file;
+		this.setFile(file);
 		this.fileOpenedHandle = null;
 		this.fileSavedHandle = null;
 		this.preferences = null;
@@ -84,15 +84,16 @@ define([
 		initializeContext : function(){
 			logger.info('initializeContext()');
 			var context = this.getEditorContext();
+			var parent = this.getParentElement();
 			context.setValue(this.file.savedValue);
 			context.clearHistory();
 			context.markClean();
-			context.setSize(this.parent.offsetWidth, this.parent.offsetHeight);
+			context.setSize(parent.offsetWidth, parent.offsetHeight);
 			context.setMatchBrackets(true);
 
-            /* Invalid direct css manipulation. This causes ODP-423 bug. 
+            /* Invalid direct css manipulation. This causes ODP-423 bug.
              (ODP-423) Ocassional no contents display in newly created TextEditor
-               
+
             editorContext.addDeferredAction(function (editor) {
                 console.log("-tmep--------- addDeferredAction wrapper css");
                 var wrapper = editor.editor.getWrapperElement();
@@ -103,7 +104,7 @@ define([
                     right: '0px',
                     top: '0px',
                     bottom: '0px'
-                });                   
+                });
             });*/
 			var that = this;
             var setStatusBarText = function () {
@@ -137,12 +138,14 @@ define([
 			logger.info('initializeListeners()');
 			var that = this;
 			//subscribe topic
-			/*
-		    this.fileOpenedHandle = topic.subscribe('file.opened', function(file, content){
-		    	//do something with file.opened topic
-		    });
-		    */
-		    this.fileSavedHandle = topic.subscribe('file.saved', function(file){
+
+            this.fileOpenedHandle = topic.subscribe('file.opened', function (file, content) {
+                if (that.file === file) {
+                    that.editorContext.setValue(content);
+                }
+            });
+
+            this.fileSavedHandle = topic.subscribe('file.saved', function (file) {
 	            that.foldingStatus = that.getEditorContext().getFoldings();
 		    });
             this.editorContext.addEventListener('save', function () {
@@ -165,7 +168,7 @@ define([
 		/**
 		 * To use the Preferences you want, override this method
 		 * and return Preferences you want use
-		 * 
+		 *
 		 * @returns preferenceConfig for TextEditor
 		 */
 		getPreferences : function(){
@@ -175,7 +178,7 @@ define([
 		/**
 		 * To use the Context you want, override this method
 		 * and return Class you want use
-		 * 
+		 *
 		 * @returns TextEditorContext
 		 */
 		getContextClass : function(){
@@ -187,7 +190,7 @@ define([
 			if(this.editorContext !== null){
 				return this.editorContext;
 			}
-			var parent = this.parent;
+			var parent = this.getParentElement();
 			var callback = this.createCallback;
 			var ContextClass = this.getContextClass();
             var context = new (ContextClass)(parent, this.file, function (file, context) {
@@ -215,7 +218,7 @@ define([
 			if (this.getFlag(Part.CREATED) === true) {
 				return;
 			}
-			this.parent = parent;
+			this.setParentElement(parent);
 			this.createCallback = callback;
             this.file.elem = parent;	//TODO : remove
             this.initialize();

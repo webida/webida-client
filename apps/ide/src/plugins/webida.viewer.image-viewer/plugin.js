@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-/* exported require, webidaHost */
-/* jshint -W079 */
+/**
+ * This plug-in manages life-cycle of the TestEditor
+ * 
+ * @see ImageEditorPart
+ * @since: 2015.06.19
+ * @author: hw.shim
+ */
+define([], function () {
+    'use strict';
 
-var webidaHost =
-    decodeURIComponent(document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1'));
-// var webida = '//library.' + webidaHost + '/webida/webida-0.3';
-var webida = '../../common/src/webida/webida-0.3';
-
-var require = {
-    baseUrl: '.',
-    /*
-    packages: [
-        { name: "uri", location: "src/lib/URIjs" }
-    ],
-    */
-    paths: {
-        webida: webida,
-        toastr: 'src/lib/toastr/toastr',
-        'webida-lib': '../../common/src/webida',
-        'external': '../../bower_components'
-    }
-};
+    //TODO : Plugin should be used as a LifeCycle Management
+});

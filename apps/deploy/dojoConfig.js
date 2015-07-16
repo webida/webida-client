@@ -23,6 +23,9 @@ var dojoConfig = {
     async: true,
     baseUrl: '.',
     parseOnLoad: true,
+    packages: [
+        { name: 'jquery', location: '../../bower_components/jquery/dist', main: 'jquery.min' }
+    ],
     paths: {
         'lib' : 'lib',
         'core' : 'core',
@@ -30,7 +33,8 @@ var dojoConfig = {
         //'webida-lib': '//library.' + webidaHost + '/src/webida',
         //'other-lib': '//library3.' + webidaHost + '/src',
         'webida-lib': '../../common/src/webida',
-        'other-lib': '../../external/src'
+        'other-lib': '../../external/src',
+        'external': '../../bower_components'
     },
     aliases: [
         ['text', 'dojo/text'],

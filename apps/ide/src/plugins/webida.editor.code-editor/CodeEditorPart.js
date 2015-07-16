@@ -17,22 +17,21 @@
 /**
  * Constructor function
  * CodeEditorPart implementation of EditorPart
- * This should be an ancestor of all programming language based editors. 
+ * This should be an ancestor of all programming language based editors.
  *
  * @constructor
  * @see TextEditorPart, EditorPart
  * @since: 2015.06.11
  * @author: hw.shim
- * 
+ *
  */
 
 define([
 	'webida-lib/util/gene',
-	'other-lib/underscore/lodash.min',
+	'external/lodash/lodash.min',
 	'webida-lib/plugins/workbench/ui/EditorPart',
 	'plugins/webida.editor.text-editor/TextEditorPart',
 	'webida-lib/plugins/workbench/preference-system/store',
-	'webida-lib/plugins/editors/plugin',
 	'webida-lib/plugins/editors/EditorPreference',
 	'./preferences/preference-config',
 	'./CodeEditorContext',
@@ -42,15 +41,14 @@ define([
 	'dojo/domReady!'
 ], function(
 	gene,
-	_, 
+	_,
 	EditorPart,
 	TextEditorPart,
-	store, 
-	editors, 
+	store,
 	EditorPreference,
 	preferenceConfig,
-	CodeEditorContext, 
-	configloader, 
+	CodeEditorContext,
+	configloader,
 	topic,
 	Logger
 ) {

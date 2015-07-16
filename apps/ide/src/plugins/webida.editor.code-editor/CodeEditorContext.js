@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,7 @@
  * CodeEditorContext for code-base EditorParts
  *
  * Still needs refactoring (2015.06.25, hw.shim)
- * 
+ *
  * @constructor
  * @see CodeEditorPart
  * @refactor: hw.shim (2015.06.25)
@@ -27,19 +27,19 @@
 define([
 	'require',
 	'webida-lib/util/gene',
-	'webida-lib/plugins/editors/viable-menu-items',
-	'other-lib/underscore/lodash.min',
-	'webida-lib/custom-lib/codemirror/lib/codemirror',
+	'external/lodash/lodash.min',
+	'external/codemirror/lib/codemirror',
+    'webida-lib/plugins/editors/plugin',
 	'webida-lib/util/loadCSSList',
 	'plugins/webida.editor.text-editor/TextEditorContext',
 	'./snippet'
 ], function (
-	require, 
+	require,
 	gene,
-	vmi, 
-	_, 
-	codemirror, 
-	loadCSSList, 
+	_,
+	codemirror,
+    editors,
+	loadCSSList,
 	TextEditorContext,
 	Snippet
 ) {
@@ -62,12 +62,12 @@ define([
         },
         'coffee': {
             name: 'coffeescript',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/javascript-hint']
+            requires: ['external/codemirror/addon/hint/javascript-hint']
         },
         'html': {
             name: 'html',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/xml-hint',
-                       'webida-lib/custom-lib/codemirror/addon/hint/html-hint']
+            requires: ['external/codemirror/addon/hint/xml-hint',
+                       'external/codemirror/addon/hint/html-hint']
         },
         'htmlLink': {
             name: 'htmlLink',
@@ -79,11 +79,11 @@ define([
         },
         'xml': {
             name: 'xml',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/xml-hint']
+            requires: ['external/codemirror/addon/hint/xml-hint']
         },
         'css': {
             name: 'css',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/css-hint']
+            requires: ['external/codemirror/addon/hint/css-hint']
         },
         'cssSmart': {
             name: 'cssSmart',
@@ -91,11 +91,11 @@ define([
         },
         'word': {
             name: 'anyword',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/anyword-hint']
+            requires: ['external/codemirror/addon/hint/anyword-hint']
         },
         'py': {
             name: 'python',
-            requires: ['webida-lib/custom-lib/codemirror/addon/hint/python-hint']
+            requires: ['external/codemirror/addon/hint/python-hint']
         }
     };
 
@@ -111,16 +111,16 @@ define([
         'css': [['css'], 'text/css'],
         'less': [['less'], 'text/less'],
         'c': [['clike'], 'text/x-csrc'],
-        'h': [['clike'], 'text/x-csrc'],              
+        'h': [['clike'], 'text/x-csrc'],
         'java': [['clike'], 'text/x-java'],
         'm': [['clike'], 'text/x-objectivec'],
         'hh': [['clike'], 'text/x-c++src'],
         'hpp': [['clike'], 'text/x-c++src'],
         'hxx': [['clike'], 'text/x-c++src'],
-        'cc': [['clike'], 'text/x-c++src'],        
+        'cc': [['clike'], 'text/x-c++src'],
         'cpp': [['clike'], 'text/x-c++src'],
         'cxx': [['clike'], 'text/x-c++src'],
-        'cs': [['clike'], 'text/x-csharp'],          
+        'cs': [['clike'], 'text/x-csharp'],
         'php': [['php'], 'text/x-php'],
         'py': [['python'], 'text/x-python'],
         'fs': [['mllike'], 'text/x-fsharp'],
@@ -281,7 +281,7 @@ define([
             } else {
                 // uncommenting
                 var comments =
-                    vmi.getEnclosingBlockComments(mode, cm, from, to, bcStart, bcEnd);
+                    getEnclosingBlockComments(mode, cm, from, to, bcStart, bcEnd);
                 if (comments.length === 1) {
                     var comment = comments[0];
                     doc.replaceRange('',
@@ -365,8 +365,8 @@ define([
     codemirror.commands.gotoLine = function (cm) {
         if (cm.getOption('keyMap') === 'default') {
             var dialog = 'Go to line: <input type="text" style="width: 10em"/> <span style="color: #888"></span>';
-            loadCSSList([require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css')], function () {
-                require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog'], function () {
+            loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css')], function () {
+                require(['external/codemirror/addon/dialog/dialog'], function () {
                     cm.openDialog(dialog, function (query) {
                         var line = Math.floor(+query - 1);
                         cm.__instance.setCursor({row: line, col: 0});
@@ -651,7 +651,7 @@ define([
         }
         if (mappedMode) {
             mappedMode = _.map(mappedMode, function (modename) {
-                return 'webida-lib/custom-lib/codemirror/mode/' + modename + '/' + modename;
+                return 'external/codemirror/mode/' + modename + '/' + modename;
             });
             require(mappedMode, function () {
                 addAvailable('mode', modename);
@@ -692,20 +692,193 @@ define([
         }
 
         loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/webida.css'),
-                     require.toUrl('webida-lib/custom-lib/codemirror/lib/codemirror.css'),
-                     require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css')], function () {
-            require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog',
-                     'webida-lib/custom-lib/codemirror/addon/search/searchcursor',
+                     require.toUrl('external/codemirror/lib/codemirror.css'),
+                     require.toUrl('external/codemirror/addon/dialog/dialog.css')], function () {
+            require(['external/codemirror/addon/dialog/dialog',
+                     'external/codemirror/addon/search/searchcursor',
                      'plugins/webida.editor.text-editor/search-addon',
                      './addon/overview-ruler/overview-ruler',
-                     'webida-lib/custom-lib/codemirror/addon/edit/closebrackets',
-                     'webida-lib/custom-lib/codemirror/addon/edit/closetag',
-                     'webida-lib/custom-lib/codemirror/addon/edit/matchbrackets'], function () {
+                     'external/codemirror/addon/edit/closebrackets',
+                     'external/codemirror/addon/edit/closetag',
+                     'external/codemirror/addon/edit/matchbrackets'], function () {
                 self.start();
             });
         });
     }
 
+    function lineCommentableOrUncommentable(editor) {
+        var from = editor.getCursor('from');
+        var to = editor.getCursor('to');
+        var mode1 = editor.getModeAt(from);
+        var mode2 = editor.getModeAt(to);
+        return mode1.name === mode2.name && mode1.lineComment &&
+            mode1.lineComment === mode2.lineComment;
+    }
+
+    function getEnclosingBlockComments(mode, editor, from, to) {
+        var startStr = mode.blockCommentStart;
+        var endStr = mode.blockCommentEnd;
+        var doc = editor.getDoc();
+        var endStrLen = endStr.length;
+        var state = 'closed';
+        var comments = [];
+        var openingPos;
+        var lineComment = mode.lineComment;
+        var done = false;
+        function comparePos(p1, p2) {
+            if (p1.line < p2.line) {
+                return -1;
+            } else if (p1.line > p2.line) {
+                return 1;
+            } else {
+                return p1.ch - p2.ch;
+            }
+        }
+
+        // collect block comments in the code
+        doc.eachLine(function (h) {
+
+            var lineNo, text;
+
+            function findCommentStart(i) {
+                if (state !== 'closed') {
+                    throw new Error('assertion fail: unrechable');
+                }
+
+                if (comparePos({ line: lineNo, ch: i }, to) >= 0) {
+                    done = true;
+                    return;
+                }
+
+                var j = text.indexOf(startStr, i);
+                if (j >= i) {
+                    var pos = { line: lineNo, ch: j + 1 };
+                    var token = editor.getTokenAt(pos, true);
+                    if (token && token.string.indexOf(startStr) === 0) {
+                        if (comparePos({ line: lineNo, ch: j }, to) < 0) {
+                            // found an opening of a block comment
+                            state = 'opened';
+                            openingPos = { line: lineNo, ch: j };
+                            findCommentEnd(j + startStr.length);
+                        } else {
+                            done = true;
+                            return;
+                        }
+                    }
+                }
+            }
+
+            function findCommentEnd(i) {
+                if (state !== 'opened') {
+                    throw new Error('assertion fail: unrechable');
+                }
+                var j = text.indexOf(endStr, i);
+                if (j >= i) {
+                    var pos = { line: lineNo, ch: j + 1 };
+                    var token = editor.getTokenAt(pos, true);
+                    if (token && token.string.substr(-endStrLen) === endStr &&
+                        (!lineComment || token.string.indexOf(lineComment) !== 0)) {
+                        // found an closing of a block comment
+                        state = 'closed';
+                        var closingPos;
+                        if (comparePos(from, (closingPos = { line: lineNo, ch: j + endStrLen })) < 0) {
+                            comments.push([openingPos, closingPos]);
+                        }
+                        openingPos = null;
+
+                        findCommentStart(j + endStrLen);
+                    }
+                }
+            }
+
+            if (!done) {
+                lineNo = h.lineNo();
+                text = h.text;
+                if (state === 'closed') {
+                    findCommentStart(0);
+                } else if (state === 'opened') {
+                    findCommentEnd(0);
+                } else {
+                    throw new Error('assertion fail: unreachable');
+                }
+            }
+        });
+
+        //console.log('hina temp: overlapping block comments: ');
+        //console.debug(comments);
+
+        // check if from-to overlaps any block comments
+        // without being included or including the comments.
+        var commentsLen = comments.length;
+        if (commentsLen === 0) {
+            return [];
+        } else if (commentsLen === 1) {
+            if (comparePos(comments[0][0], from) <= 0 && comparePos(to, comments[0][1]) <= 0) {
+                return comments;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    function blockCommentableOrUncommentable(editor) {
+
+        var doc = editor.getDoc();
+        var from = editor.getCursor('from');
+        var to = editor.getCursor('to');
+        var from2 = { line: from.line, ch: 0 };
+        var to2 = { line: to.line, ch: doc.getLine(to.line).length };
+        //console.log('hina temp: from and to: ');
+        //console.debug(from);
+        //console.debug(to);
+
+        var mode1 = editor.getModeAt(from);
+        var mode2 = editor.getModeAt(to);
+        var comments;
+        return mode1.name === mode2.name && mode1.blockCommentStart &&
+            mode1.blockCommentStart === mode2.blockCommentStart &&
+            mode1.blockCommentEnd === mode2.blockCommentEnd &&
+            (comments = getEnclosingBlockComments(mode1, editor, from, to)) &&
+            (comments.length === 1 ||
+             ((comments = getEnclosingBlockComments(mode1, editor, from2, to2)) && comments.length === 0
+             )
+            );
+    }
+    
+    function getBeautifier(editor, callback) {
+        var currentModeName = editor.getMode().name;
+        var beautifierModuleID;
+        var beautifyOptions;
+        /* jshint camelcase: false */
+        if (currentModeName === 'javascript') {
+            beautifierModuleID = 'external/js-beautify/js/lib/beautify';
+            // TODO .editorconfig-aware options
+            beautifyOptions = {
+                jslint_happy: true,
+                wrap_line_length: 120
+            };
+            require([beautifierModuleID], function (beautifier) {
+                callback(beautifier.js_beautify, beautifyOptions);
+            });
+        } else if (currentModeName === 'htmlmixed') {
+            beautifierModuleID = 'external/js-beautify/js/lib/beautify-html';
+            require([beautifierModuleID], function (beautifier) {
+                callback(beautifier.html_beautify, beautifyOptions);
+            });
+        } else if (currentModeName === 'css') {
+            beautifierModuleID = 'external/js-beautify/js/lib/beautify-css';
+            require([beautifierModuleID], function (beautifier) {
+                callback(beautifier.css_beautify, beautifyOptions);
+            });
+        } else {
+            // Shouldn't be reached
+            callback();
+        }
+        /* jshint camelcase: true */
+    }
+    
     gene.inherit(CodeEditorContext, TextEditorContext, {
 
 	    start : function () {
@@ -719,7 +892,7 @@ define([
 	            autoCloseBrackets: this.keymap !== 'vim',
 	            autoCloseTags: true
 	        };
-	
+
 	        function setOption(name, value, condition, defaultValue) {
 	            if (condition === undefined) {
 	                if (value !== undefined) {
@@ -743,24 +916,24 @@ define([
 	        setOption('indentOnPaste', this.options.indentOnPaste);
 	        setOption('extraKeys', this.options.extraKeys);
 	        setOption('lineWrapping', this.options.lineWrapping);
-	
+
 	        this.editor = codemirror(this.elem, options);
 	        this.editor.setOption('showCursorWhenSelecting', true);
 	        this.editor.__instance = this;
 	        $(this.editor.getWrapperElement()).addClass('maincodeeditor');
 	        this.__applyLinter();
-	
+
 	        if (this.deferredActions) {
 	            _.each(this.deferredActions, function (action) {
 	                action(self);
 	            });
 	            delete this.deferredActions;
 	        }
-	
+
 	        this.sizeChangePoller = setInterval(function () {
 	            self.__checkSizeChange();
 	        }, 500);
-	
+
 	        this.editor.on('mousedown', function (cm, e) {
 	            if (settings.gotoLinkEnabled) {
 	                require(['./content-assist/goto-link'], function (gotolink) {
@@ -768,7 +941,7 @@ define([
 	                });
 	            }
 	        });
-	
+
 	        this.editor.on('keydown', function (cm, e) {
 	            if (settings.gotoLinkEnabled) {
 	                require(['./content-assist/goto-link'], function (gotolink) {
@@ -776,7 +949,7 @@ define([
 	                });
 	            }
 	        });
-	
+
 	        // conditionally indent on paste
 	        self.editor.on('change', function (cm, e) {
 	            if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
@@ -785,22 +958,22 @@ define([
 	                }
 	            }
 	        });
-	
+
 	        Snippet.init(self.editor);
 	    },
 
 	    getMode : function () {
 	        return this.mode;
 	    },
-	
+
 	    setMode : function (mode) {
 	        if (mode === undefined || this.mode === mode) {
 	            return;
 	        }
 	        this.mode = mode;
-	
+
 	        var self = this;
-	
+
 	        this.mappedMode = mapMode(mode);
 	        loadMode(mode, function () {
 	            if (self.editor) {
@@ -813,14 +986,14 @@ define([
 	                });
 	            });
 	        });
-	
-	        loadCSSList([require.toUrl('webida-lib/custom-lib/codemirror/addon/dialog/dialog.css'),
-	             require.toUrl('webida-lib/custom-lib/codemirror/addon/hint/show-hint.css'),
-	             require.toUrl('webida-lib/custom-lib/codemirror/addon/tern/tern.css'),
+
+	        loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css'),
+	             require.toUrl('external/codemirror/addon/hint/show-hint.css'),
+	             require.toUrl('external/codemirror/addon/tern/tern.css'),
 	        ], function () {
-	            require(['webida-lib/custom-lib/codemirror/addon/dialog/dialog',
-	                'webida-lib/custom-lib/codemirror/addon/hint/show-hint',
-	                'webida-lib/custom-lib/codemirror/addon/tern/tern'
+	            require(['external/codemirror/addon/dialog/dialog',
+	                'external/codemirror/addon/hint/show-hint',
+	                'external/codemirror/addon/tern/tern'
 	            ], function () {
 	                self.addDeferredAction(function () {
 	                    if (mode === 'js') {
@@ -841,10 +1014,10 @@ define([
 	            });
 	        });
 	    },
-	
+
 	    //TODO : inherit from TextEditorContext
 	    /**
-	     * @override 
+	     * @override
 	     */
 	    setTheme : function (theme) {
 	        if (theme === undefined) {
@@ -860,7 +1033,7 @@ define([
 	            }
 	        } else {
 	            var self = this;
-	            var csspath = 'webida-lib/custom-lib/codemirror/theme/' + theme + '.css';
+	            var csspath = 'external/codemirror/theme/' + theme + '.css';
 	            switch (theme) {
 	            case 'webida-dark':
 	                csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
@@ -870,7 +1043,7 @@ define([
 	                break;
 	            case 'solarized dark':
 	            case 'solarized light':
-	                csspath = 'webida-lib/custom-lib/codemirror/theme/solarized.css';
+	                csspath = 'external/codemirror/theme/solarized.css';
 	                break;
 	            }
 	            loadCSSList([require.toUrl(csspath)], function () {
@@ -895,11 +1068,11 @@ define([
 	            this.linters.js = option;
 	            if (option) {
 	                loadCSSList([
-	                    require.toUrl('webida-lib/custom-lib/codemirror/addon/lint/lint.css'),
+	                    require.toUrl('external/codemirror/addon/lint/lint.css'),
 	                ], function () {
 	                    require([
-	                        'webida-lib/custom-lib/codemirror/addon/lint/lint',
-	                        'webida-lib/custom-lib/codemirror/addon/lint/javascript-lint'
+	                        'external/codemirror/addon/lint/lint',
+	                        'external/codemirror/addon/lint/javascript-lint'
 	                    ], function () {
 	                        addAvailable('addon', 'lint');
 	                        addAvailable('addon', 'javascript-lint');
@@ -915,11 +1088,11 @@ define([
 	            if (option) {
 	                require(['./lib/lints/jsonlint'], function () {
 	                    loadCSSList([
-	                        require.toUrl('webida-lib/custom-lib/codemirror/addon/lint/lint.css')
+	                        require.toUrl('external/codemirror/addon/lint/lint.css')
 	                    ], function () {
 	                        require([
-	                            'webida-lib/custom-lib/codemirror/addon/lint/lint',
-	                            'webida-lib/custom-lib/codemirror/addon/lint/json-lint'
+	                            'external/codemirror/addon/lint/lint',
+	                            'external/codemirror/addon/lint/json-lint'
 	                        ], function () {
 	                            addAvailable('addon', 'lint');
 	                            addAvailable('addon', 'json-lint');
@@ -935,10 +1108,10 @@ define([
 	            this.linters.html = option;
 	            if (option) {
 	                loadCSSList([
-	                    require.toUrl('webida-lib/custom-lib/codemirror/addon/lint/lint.css')
+	                    require.toUrl('external/codemirror/addon/lint/lint.css')
 	                ], function () {
 	                    require([
-	                        'webida-lib/custom-lib/codemirror/addon/lint/lint',
+	                        'external/codemirror/addon/lint/lint',
 	                    ], function () {
 	                        require(['./content-assist/html-lint'], function () {
 	                            addAvailable('addon', 'lint');
@@ -954,11 +1127,11 @@ define([
 	            if (option) {
 	                require(['./lib/lints/csslint'], function () {
 	                    loadCSSList([
-	                        require.toUrl('webida-lib/custom-lib/codemirror/addon/lint/lint.css')
+	                        require.toUrl('external/codemirror/addon/lint/lint.css')
 	                    ], function () {
 	                        require([
-	                            'webida-lib/custom-lib/codemirror/addon/lint/lint',
-	                            'webida-lib/custom-lib/codemirror/addon/lint/css-lint'
+	                            'external/codemirror/addon/lint/lint',
+	                            'external/codemirror/addon/lint/css-lint'
 	                        ], function () {
 	                            addAvailable('addon', 'lint');
 	                            addAvailable('addon', 'css-lint');
@@ -1023,22 +1196,22 @@ define([
 	            }
 	        }
 	    },
-	
+
 	    setHinters : function (mode, hinterNames) {
 	        if (mode && hinterNames) {
 	            var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
-	            var paths = ['webida-lib/custom-lib/codemirror/addon/hint/show-hint'];
+	            var paths = ['external/codemirror/addon/hint/show-hint'];
 	            _.each(hinterSchms, function (x) {
 	                paths = _.union(paths, x.requires);
 	            });
-	            loadCSSList([require.toUrl('webida-lib/custom-lib/codemirror/addon/hint/show-hint.css')], function () {
+	            loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
 	                require(paths, function () {
 	                    _localHinterSchemes[mode] = hinterSchms;
 	                });
 	            });
 	        }
 	    },
-	
+
 	    setGlobalHinters : function (hinterNames) {
 	        _globalHinterSchemes = [];
 	        if (hinterNames) {
@@ -1052,7 +1225,7 @@ define([
 	            });
 	        }
 	    },
-	
+
 	    setAnywordHint : function (anywordHint) {
 	        if (anywordHint) {
 	            this.setGlobalHinters(['word']);
@@ -1060,7 +1233,7 @@ define([
 	            this.setGlobalHinters([]);
 	        }
 	    },
-	
+
 		/**
 		 * @override
 		 */
@@ -1069,11 +1242,11 @@ define([
 	        if (codeFolding) {
 	            var self = this;
 	            loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/codefolding.css')], function () {
-	                require(['webida-lib/custom-lib/codemirror/addon/fold/foldcode',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/foldgutter',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/brace-fold',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/xml-fold',
-	                         'webida-lib/custom-lib/codemirror/addon/fold/comment-fold'], function () {
+	                require(['external/codemirror/addon/fold/foldcode',
+	                         'external/codemirror/addon/fold/foldgutter',
+	                         'external/codemirror/addon/fold/brace-fold',
+	                         'external/codemirror/addon/fold/xml-fold',
+	                         'external/codemirror/addon/fold/comment-fold'], function () {
 	                    self.addDeferredAction(function (self) {
 	                        self._gutterOn('CodeMirror-foldgutter');
 	                        var rf = new codemirror.fold.combine(codemirror.fold.brace, codemirror.fold.comment,
@@ -1099,19 +1272,390 @@ define([
 	            });
 	        }
 	    },
-	
+
 	    setAutoCompletion : function (autoCompletion) {
 	        settings.autoHint = autoCompletion;
 	    },
-	
+
 	    setAutoCompletionDelay : function (delay) {
 	        var num = typeof delay === 'string' ? parseFloat(delay, 10) : delay;
 	        num *= 1000;
 	        settings.autoHintDelay = num;
-	
-	        setChangeForAutoHintDebounced();
-	    }
 
+	        setChangeForAutoHintDebounced();
+	    },
+        
+        lineComment: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                // comment line
+                editor.execCommand('linecomment');
+            });
+        },
+
+        blockComment: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                // comment block
+                editor.execCommand('blockcomment');
+            });
+        },
+
+        commentOutSelection: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                // comment out
+                editor.execCommand('commentOutSelection');
+            });
+        },
+
+        beautifyCode: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                getBeautifier(editor, function (beautifier, options) {
+                    if (beautifier) {
+                        // reselect
+                        var startPos = editor.getCursor('from'),
+                            startPosOrig;
+                        var endPos = editor.getCursor('to');
+                        var endPosInfo = editor.lineInfo(endPos.line);
+
+                        if (startPos.ch !== 0) {
+                            startPosOrig = startPos;
+                            startPos = {
+                                line: startPos.line,
+                                ch: 0
+                            };
+                        }
+                        if (endPosInfo.text.length !== endPos.ch) {
+                            endPos = {
+                                line: endPos.line,
+                                ch: endPosInfo.text.length
+                            };
+                        }
+
+                        editor.replaceRange(beautifier(editor.getRange(startPos,
+                                                                       endPos), options), startPos, endPos);
+                    }
+                });
+            });
+        },
+
+        beautifyAllCode: function () {
+            this.addDeferredAction(function (self) {
+                var ANCHOR_STR = '_line_of_original_cursor_';
+                var editor = self.editor;
+                self.focus();
+
+                getBeautifier(editor, function (beautifier, options) {
+                    if (beautifier) {
+                        var cursor = editor.getCursor();
+                        var mode = editor.getModeAt(cursor);
+
+                        editor.operation(function () {
+                            if (mode.blockCommentStart) {
+                                var anchorComment = mode.blockCommentStart +
+                                    ANCHOR_STR + mode.blockCommentEnd;
+                                editor.replaceRange(anchorComment + '\n', {
+                                    line: cursor.line,
+                                    ch: 0
+                                }, {
+                                    line: cursor.line,
+                                    ch: 0
+                                }, '+beautifyAll');
+                            }
+
+                            var startPos = {
+                                line: editor.firstLine(),
+                                ch: 0
+                            };
+                            var lastLine, endPos = {
+                                line: (lastLine = editor.lastLine()),
+                                ch: editor.getLine(lastLine).length
+                            };
+                            editor.replaceRange(beautifier(editor.getValue(),
+                                                           options), startPos, endPos,
+                                                '+beautifyAll');
+
+                            if (mode.blockCommentStart) {
+                                var i, j = -1;
+                                for (i = 0; i < editor.lineCount(); i++) {
+                                    var line = editor.getLine(i);
+                                    if ((j = line.indexOf(ANCHOR_STR)) >= 0) {
+                                        break;
+                                    }
+                                }
+                                if (j >= 0) {
+                                    var token = editor.getTokenAt({
+                                        line: i,
+                                        ch: j
+                                    }, true);
+                                    if (token.string.indexOf(mode.blockCommentEnd) >
+                                        0) {
+                                        editor.setCursor({
+                                            line: i,
+                                            ch: 0
+                                        });
+                                        editor.replaceRange('', {
+                                            line: i,
+                                            ch: 0
+                                        }, {
+                                            line: i + 1,
+                                            ch: 0
+                                        }, '+beautifyAll');
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+        },
+        
+        gotoDefinition: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+                editor.execCommand('tern-gotodefinition');
+            });
+        },
+
+        rename: function () {
+            this.addDeferredAction(function (self) {
+                var editor = self.editor;
+                self.focus();
+
+                // rename trigger
+                editor.execCommand('tern-rename');
+            });
+        },
+
+        getMenuItemsUnderEdit: function (items, menuItems, deferred) {
+            var editor = this.editor;
+
+            if (editor) {
+                var selected = editor.getSelection();
+
+                // Undo, Redo
+                var history = editor.getHistory();
+                if (history) {
+                    if (history.done && history.done.length > 0) {
+                        items['&Undo'] = menuItems.editMenuItems['&Undo'];
+                    }
+                    if (history.undone && history.undone.length > 0) {
+                        items['&Redo'] = menuItems.editMenuItems['&Redo'];
+                    }
+                }
+
+                // Delete
+                items['&Delete'] = menuItems.editMenuItems['&Delete'];
+
+                // Select All, Select Line
+                items['Select &All'] = menuItems.editMenuItems['Select &All'];
+                items['Select L&ine'] = menuItems.editMenuItems['Select L&ine'];
+
+                // Line
+                var lineItems = {};
+
+                // Line - Move Line Up, Move Line Down, Copy, Delete
+                lineItems['&Indent'] = menuItems.editMenuItems['&Line']['&Indent'];
+                lineItems['&Dedent'] = menuItems.editMenuItems['&Line']['&Dedent'];
+                var pos = editor.getCursor();
+                if (pos.line > 0) {
+                    lineItems['Move Line U&p'] = menuItems.editMenuItems['&Line']['Move Line U&p'];
+                }
+                if (pos.line < editor.lastLine()) {
+                    lineItems['Move Line Dow&n'] = menuItems.editMenuItems['&Line']['Move Line Dow&n'];
+                }
+                //lineItems['&Copy Line'] = menuItems.editMenuItems['&Line']['&Copy Line'];
+                lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
+                items['&Line'] = lineItems;
+
+                // Source
+                var sourceItems = {};
+
+                // Toggle Comments
+                if (lineCommentableOrUncommentable(editor)) {
+                    sourceItems['&Toggle Line Comments'] = menuItems.editMenuItems['&Source']['&Toggle Line Comments'];
+                }
+                if (blockCommentableOrUncommentable(editor)) {
+                    sourceItems['Toggle Block Comment'] = menuItems.editMenuItems['&Source']['Toggle Block Comment'];
+                }
+                // Code Folding
+                sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
+                // Beutify (All)
+                if (editor.getMode().name === 'javascript') {
+                    if (selected) {
+                        sourceItems['&Beautify'] = menuItems.editMenuItems['&Source']['&Beautify'];
+                    }
+                    sourceItems['B&eautify All'] = menuItems.editMenuItems['&Source']['B&eautify All'];
+                }
+                // Rename
+                items['&Source'] = sourceItems;
+
+                if (editor._ternAddon) {
+                    editor._ternAddon.request(editor,
+                                              {type: 'rename', newName: 'merong', fullDocs: true},
+                                              function (error/*, data*/) {
+                        if (!error) {
+                            sourceItems['&Rename Variables'] = menuItems.editMenuItems['&Source']['&Rename Variables'];
+                        }
+                        deferred.resolve(items);
+                    });
+                } else {
+                    deferred.resolve(items);
+                }
+            } else {
+                deferred.resolve(items);
+            }
+        },
+        
+        getContextMenuItems: function (opened, items, menuItems, deferred) {
+
+            function selectionCommentable(editor) {
+                var from = editor.getCursor('from');
+                var to = editor.getCursor('to');
+                //console.log('hina temp: from and to: ');
+                //console.debug(from);
+                //console.debug(to);
+
+                if (from.line === to.line && from.ch === to.ch) {
+                    return false;	// no selection
+                }
+
+                var mode1 = editor.getModeAt(from);
+                var mode2 = editor.getModeAt(to);
+                var comments;
+                return mode1.name === mode2.name && mode1.blockCommentStart &&
+                    mode1.blockCommentStart === mode2.blockCommentStart &&
+                    mode1.blockCommentEnd === mode2.blockCommentEnd &&
+                    (comments = getEnclosingBlockComments(mode1, editor, from, to)) && comments.length === 0;
+            }
+                       
+            var editor = this.editor;
+            if (editor) {
+                var selected = editor.getSelection();
+
+                // Close Others, Close All
+                if (opened.length > 1) {
+                    items['Close O&thers'] = menuItems.fileMenuItems['Cl&ose Others'];
+                }
+                items['&Close All'] = menuItems.fileMenuItems['C&lose All'];
+
+                // Undo, Redo
+                var history = editor.getHistory();
+                if (history) {
+                    if (history.done && history.done.length > 0) {
+                        items['U&ndo'] = menuItems.editMenuItems['&Undo'];
+                    }
+                    if (history.undone && history.undone.length > 0) {
+                        items['&Redo'] = menuItems.editMenuItems['&Redo'];
+                    }
+                }
+
+                // Save
+                //if (editors.isModifiedFile(editors.currentFile)) {
+                if (editors.currentFile.isModified()) {
+                    items['&Save'] = menuItems.fileMenuItems['&Save'];
+                }
+
+                // Delete
+                items['&Delete'] = menuItems.editMenuItems['&Delete'];
+
+                // Select All, Select Line
+                items['Select &All'] = menuItems.editMenuItems['Select &All'];
+                items['Select L&ine'] = menuItems.editMenuItems['Select L&ine'];
+
+                // Line
+                var lineItems = {};
+
+                // Line - Move Line Up, Move Line Down, Copy, Delete
+                lineItems['&Indent'] = menuItems.editMenuItems['&Line']['&Indent'];
+                lineItems['&Dedent'] = menuItems.editMenuItems['&Line']['&Dedent'];
+                var pos = editor.getCursor();
+                if (pos.line > 0) {
+                    lineItems['Move Line U&p'] = menuItems.editMenuItems['&Line']['Move Line U&p'];
+                }
+                if (pos.line < editor.lastLine()) {
+                    lineItems['Move Line Dow&n'] = menuItems.editMenuItems['&Line']['Move Line Dow&n'];
+                }
+                //lineItems['&Copy Line'] = menuItems.editMenuItems['&Line']['&Copy Line'];
+                lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
+                lineItems['Move Cursor Line to Middle'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
+                lineItems['Move Cursor Line to Top'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
+                lineItems['Move Cursor Line to Bottom'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
+
+                if (_.values(lineItems).length > 0) {
+                    items['&Line'] = lineItems;
+                }
+
+                // Source
+                var sourceItems = {};
+
+                // Toggle Comments
+                if (lineCommentableOrUncommentable(editor)) {
+                    sourceItems['&Toggle Line Comments'] = menuItems.editMenuItems['&Source']['&Toggle Line Comments'];
+                }
+                if (blockCommentableOrUncommentable(editor)) {
+                    sourceItems['Toggle Block Comment'] = menuItems.editMenuItems['&Source']['Toggle Block Comment'];
+                }
+                if (selectionCommentable(editor)) {
+                    sourceItems['Comment Out Selection'] = menuItems.editMenuItems['&Source']['Comment Out Selection'];
+                }
+                // Code Folding
+                sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
+                // Beutify (All)
+                var currentModeName = editor.getMode().name;
+                if (currentModeName === 'javascript' || currentModeName === 'htmlmixed' || currentModeName === 'css') {
+                    if (selected) {
+                        sourceItems['&Beautify'] = menuItems.editMenuItems['&Source']['&Beautify'];
+                    }
+                    sourceItems['B&eautify All'] = menuItems.editMenuItems['&Source']['B&eautify All'];
+                }
+                // Rename
+                if (_.values(sourceItems).length > 0) {
+                    items['So&urce'] = sourceItems;
+                }
+
+                // Go to
+                items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];
+
+                if (this.isDefaultKeyMap()) {
+                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];               
+                }            
+
+                if (this.isThereMatchingBracket()) {
+                    items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
+                }
+
+                if (editor._ternAddon) {
+                    editor._ternAddon.request(editor,
+                                              {type: 'rename', newName: 'merong', fullDocs: true},
+                                              function (error/*, data*/) {
+                        if (!error) {
+                            sourceItems['&Rename Variables'] = menuItems.editMenuItems['&Source']['&Rename Variables'];
+                        }
+                        deferred.resolve(items);
+                    });
+                } else {
+                    deferred.resolve(items);
+                }
+            } else {
+                // FIXME: this is temp code, must fix this coe when editor plugin refactoring
+                if (editors.currentFile.isModified()) {
+                    items['&Save'] = menuItems.fileMenuItems['&Save'];
+                }
+                deferred.resolve(items);
+            }            
+        }
     });
 
     CodeEditorContext._whitespaceOverlay = {

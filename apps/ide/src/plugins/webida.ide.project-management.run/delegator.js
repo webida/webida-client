@@ -27,8 +27,8 @@ define([
     'dojo/topic',
     './run-configuration-manager',
     'webida-lib/plugins/workspace/plugin',
-    'other-lib/toastr/toastr',
-    'other-lib/underscore/lodash.min'
+    'external/toastr/toastr.min',
+    'external/lodash/lodash.min'
 ], function (ide, pluginManager, pathUtil, topic, runConfigurationManager, workspace, toastr, _) {
 
     'use strict';

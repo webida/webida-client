@@ -17,8 +17,8 @@
 define(['webida-lib/webida-0.3',
         'webida-lib/util/arrays/SortedArray',
         'webida-lib/util/path',
-        'other-lib/underscore/lodash.min',
-        'other-lib/URIjs/URI',
+        'external/lodash/lodash.min',
+        'external/URIjs/src/URI',
         'dojo/_base/declare',
         'dojo/topic'],
 function (webida, SortedArray, pathUtil, _, URI, declare, topic) {

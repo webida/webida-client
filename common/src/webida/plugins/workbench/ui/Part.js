@@ -28,19 +28,20 @@ define(['webida-lib/util/gene'], function(gene) {
 	var partId = 0;
 	function Part(){
 		this.flags = null;
+		this.parent = null;
 		this.partId = ++partId;
 	}
 	gene.inherit(Part, Object, {
-		create : function(elem, started){
+		create : function(parent, started){
 			throw new Error('create() should be implemented by subclass');
 		},
-		destroy : function(file){
+		destroy : function(){
 			throw new Error('destroy() should be implemented by subclass');
 		},
-		show : function(file){
+		show : function(){
 			throw new Error('show() should be implemented by subclass');
 		},
-		hide : function(file){
+		hide : function(){
 			throw new Error('hide() should be implemented by subclass');
 		},
 		focus : function(){
@@ -56,6 +57,12 @@ define(['webida-lib/util/gene'], function(gene) {
 		},
 		getFlag : function(/*int*/ flag){
 			return (this.flags & flag) != 0;
+		},
+		setParentElement : function(/*HtmlElement*/ parent){
+			this.parent = parent;
+		},
+		getParentElement : function(){
+			return this.parent;
 		}
 	});
 	Part.CREATED = 1;

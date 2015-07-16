@@ -26,13 +26,13 @@ define([
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/path',
-    'other-lib/underscore/lodash.min',
-    'other-lib/toastr/toastr'
+    'external/lodash/lodash.min',
+    'external/toastr/toastr.min'
 ], function (runConfigurationManager, delegator, workspace, workbench, pathUtil, _, toastr) {
     'use strict';
 
     var module = {};
-    var contextRunMenuItems  = [];
+    var contextRunMenuItems = [];
     var contextDebugMenuItems = [];
 
     var workbenchWholeItems = {
@@ -99,9 +99,6 @@ define([
      */
     module.getViableItemsForWorkbench = function () {
         var contextMenuItems = [];
-        contextRunMenuItems  = [];
-        contextDebugMenuItems = [];
-
         var items = {};
         var contextPaths = [];
         var context = workbench.getContext();
@@ -172,8 +169,6 @@ define([
      * @memberOf module:webida.ide.project-management.run
      */
     module.getViableItemsForWorkspaceView = function () {
-        contextRunMenuItems  = [];
-        contextDebugMenuItems = [];
         var contextMenuItems = [];
         var items = {};
         var disableList = [];
@@ -371,7 +366,11 @@ define([
         var runConfNameSplit;
         var name;
         var runConf;
-        var runString = _getContextItem(index, mode);
+        var runString;
+        if (index === -1) {
+            return _workbenchRunBinded(mode);
+        }
+        runString = _getContextItem(index, mode);
         if (!runString) {
             return null;
         }
@@ -385,7 +384,6 @@ define([
             runConfNameSplit = runConfName.split(' [');
             name = runConfNameSplit[0];
             runConf = runConfigurationManager.getByName(name);
-
             switch (mode) {
                 case runConfigurationManager.MODE.RUN_MODE:
                     delegator.run(runConf);

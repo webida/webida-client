@@ -15,8 +15,8 @@
  */
 
 define([
-	'other-lib/underscore/lodash.min',
-	'other-lib/toastr/toastr',
+	'external/lodash/lodash.min',
+	'external/toastr/toastr.min',
 	'webida-lib/util/logger/logger-client'
 ], function (
 	_, 

@@ -22,7 +22,7 @@
 define(['./preview-view',
         './preview-pref-values',
         'dojo/topic',
-        'other-lib/underscore/lodash.min',            // _
+        'external/lodash/lodash.min',            // _
         'webida-lib/util/path',                             // pathUtil
         'webida-lib/plugins/workspace/plugin',                   // ws
         'dojo/Deferred'                               // Deferred

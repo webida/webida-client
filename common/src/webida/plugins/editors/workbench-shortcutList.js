@@ -15,8 +15,8 @@
  */
 
 define(['./plugin',
-        'webida-lib/custom-lib/codemirror/lib/codemirror',
-        'other-lib/underscore/lodash.min'
+        'external/codemirror/lib/codemirror',
+        'external/lodash/lodash.min'
 ], function (editors, codeMirror, _) {
     'use strict';
 
@@ -100,45 +100,9 @@ define(['./plugin',
             'emmet.insert_formatted_line_break_only': 'Insert formatted line break only'
         };
         if (editors && editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor) {
-            var editor = editors.currentFile.editorContext.editor;
-            var currentKeyMap = editor.getOption('keyMap');
-            var merge = function (current, processed, keymap) {
-                var curKeyMap = codeMirror.keyMap[current];
-                keymap = _.extend(keymap, curKeyMap);
-                if (curKeyMap.fallthrough && !_.contains(processed, curKeyMap.fallthrough)) {
-                    processed.push(curKeyMap.fallthrough);
-                    return merge(curKeyMap.fallthrough, processed, keymap);
-                } else {
-                    return keymap;
-                }
-            };
-            var keymap = merge(currentKeyMap, [currentKeyMap], {});
-            delete keymap.fallthrough;
-            delete keymap.nofallthrough;
-            delete keymap.disableInput;
-            delete keymap.style;
-            var extraKeys = editor.getOption('extraKeys');
-            if (extraKeys) {
-                keymap = _.extend(keymap, extraKeys);
-            }
-            //console.log('Keymap:', keymap);
-            return _.compact(_.map(keymap, function (name, key) {
-                if ((typeof name) === 'string') {
-                    var d = desc[name];
-                    if (d) {
-                        return {
-                            keys: key.replace(/Ctrl\-/g, 'Ctrl+')
-                                    .replace(/Alt\-/g, 'Alt+')
-                                    .replace(/Shift\-/g, 'Shift+'),
-                            desc: d,
-                            viable: true
-                        };
-                    } else {
-                        //console.log('hina temp: no desciption for ' + name);
-                        return null;
-                    }
-                }
-            }));
+            var editorContext = editors.currentFile.editorContext;
+            return editorContext.getWorkbenchShortcuts(desc);
+            
         } else {
             return [];
         }

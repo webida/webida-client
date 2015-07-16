@@ -24,7 +24,7 @@
  */
 
 define([
-	'other-lib/underscore/lodash.min',
+	'external/lodash/lodash.min',
 	'webida-lib/util/logger/logger-client', 
 	'require',
     'webida-lib/plugin-manager-0.1',                         // pm
@@ -467,7 +467,7 @@ define([
             return {
                 'Switc&h Workspace' : [ 'cmnd', 'webida-lib/plugins/workbench/workspaceSelectionDialog', 'show' ],
                 'Save Status' : [ 'cmnd', 'webida-lib/app', 'saveStatus' ],
-                '&Quit' : [ 'cmnd', 'webida-lib/app', 'quit' ]
+                '&Quit' : [ 'cmnd', 'webida-lib/plugins/editors/plugin', 'quit' ]
             };
         },
 

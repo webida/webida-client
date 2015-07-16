@@ -28,7 +28,7 @@
  * @module plugins
  */
 
-require(['other-lib/URIjs/URI', 'core/deploy'], function (URI, deploy) {
+require(['external/URIjs/src/URI', 'core/deploy'], function (URI, deploy) {
     var uri = URI(window.location.href);
     var appPath = uri.segment(-1, '').pathname();
     var projectPath = uri.search(true).project; 

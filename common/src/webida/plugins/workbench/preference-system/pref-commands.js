@@ -15,7 +15,7 @@
  */
 
 define([
-    'other-lib/underscore/lodash.min',
+    'external/lodash/lodash.min',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/util/browserUtil',
     './store',
@@ -393,7 +393,7 @@ define([
                 _.each(pages, function (page, index) {
                     // not to show when "visible": "false"
                     if (page.visible === 'false') {
-                        return false;
+                        return;
                     }
 
                     function augpath(hierarchy) {

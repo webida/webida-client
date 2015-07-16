@@ -19,10 +19,10 @@
  *
  */
 
-define(['other-lib/underscore/lodash.min',          // _
+define(['external/lodash/lodash.min',          // _
         'webida-lib/app',                           // ide
         'webida-lib/util/path',                           // pathUtil
-        'other-lib/async',                                // async
+        'external/async/dist/async.min',                                // async
         'webida-lib/util/arrays/BubblingArray',     // BubblingArray
         'webida-lib/plugins/workspace/plugin',                 // wv
         'webida-lib/plugins/workbench/plugin',      // workbench
@@ -42,7 +42,7 @@ define(['other-lib/underscore/lodash.min',          // _
         'dijit/Tree',                               // Tree
         'dijit/registry',                           // reg
         'dijit/Tooltip',                            // Tooltip
-        'other-lib/toastr/toastr',                  // Toastr
+        'external/toastr/toastr.min',                  // Toastr
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
         ],

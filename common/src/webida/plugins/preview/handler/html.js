@@ -19,7 +19,7 @@
  *
  */
 
-define(['webida-lib/app', 'other-lib/toastr/toastr'],
+define(['webida-lib/app', 'external/toastr/toastr.min'],
 function (app, toastr) {
     'use strict';
 

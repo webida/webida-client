@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['webida-lib/webida-0.3', 'other-lib/toastr/toastr'], function (webida, toastr) {
+define(['webida-lib/webida-0.3', 'external/toastr/toastr.min'], function (webida, toastr) {
     'use strict';
 
     function openDashboard() {

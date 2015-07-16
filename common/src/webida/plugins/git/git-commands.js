@@ -20,21 +20,21 @@
  */
 /* jshint ignore:start */
 define(['require',
-    'other-lib/underscore/lodash.min',
+    'external/lodash/lodash.min',
     'webida-lib/webida-0.3',
     'webida-lib/app',
     'webida-lib/util/path',
     'webida-lib/plugins/workspace/plugin',
     './git-core',
     './gitview-log',
-    'other-lib/async',
+    'external/async/dist/async.min',
     './git-icon',
     './lib/github',
     './lib/jsdifflib/diffview',
     './lib/jsdifflib/difflib',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/arrays/BubblingArray',
-    'other-lib/toastr/toastr',
+    'external/toastr/toastr.min',
     'popup-dialog',
     'dijit/registry',
     'dojo/store/Memory',
@@ -3953,13 +3953,13 @@ define(['require',
 
     function _compare(gitRootPath, filepath) {
         require(['text!./layer/compare.html',
-                 'webida-lib/custom-lib/codemirror/lib/codemirror',
-                 'webida-lib/custom-lib/codemirror/mode/scheme/scheme',
-                 'webida-lib/custom-lib/codemirror/mode/diff/diff',
-                 'webida-lib/custom-lib/codemirror/mode/javascript/javascript',
-                 'webida-lib/custom-lib/codemirror/addon/merge/merge'
+                 'external/codemirror/lib/codemirror',
+                 'external/codemirror/mode/scheme/scheme',
+                 'external/codemirror/mode/diff/diff',
+                 'external/codemirror/mode/javascript/javascript',
+                 'external/codemirror/addon/merge/merge'
                 ], function (compareView, codemirror) {
-            _loadCss(require.toUrl('webida-lib/custom-lib/codemirror/lib/codemirror.css'));
+            _loadCss(require.toUrl('external/codemirror/lib/codemirror.css'));
 
             var GIT_DIR = gitRootPath;
             var path = wv.getSelectedPath();
@@ -4432,13 +4432,13 @@ define(['require',
 
     function _blame(gitRootPath, relPath) {
         require(['text!./layer/blame.html',
-                 'webida-lib/custom-lib/codemirror/lib/codemirror',
-                 'webida-lib/custom-lib/codemirror/mode/scheme/scheme',
-                 'webida-lib/custom-lib/codemirror/mode/diff/diff',
-                 'webida-lib/custom-lib/codemirror/mode/javascript/javascript',
-                 'webida-lib/custom-lib/codemirror/addon/merge/merge'
+                 'external/codemirror/lib/codemirror',
+                 'external/codemirror/mode/scheme/scheme',
+                 'external/codemirror/mode/diff/diff',
+                 'external/codemirror/mode/javascript/javascript',
+                 'external/codemirror/addon/merge/merge'
                 ], function (blameView, codemirror) {
-            _loadCss(require.toUrl('webida-lib/custom-lib/codemirror/lib/codemirror.css'));
+            _loadCss(require.toUrl('external/codemirror/lib/codemirror.css'));
 
             var blameDialog = new ButtonedDialog({
                 buttons: [{

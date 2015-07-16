@@ -29,13 +29,13 @@
  * @memberOf module:webida.terminal
  */
 define(['webida-lib/util/logger/logger-client',          // Logger
-        'other-lib/underscore/lodash.min',  // _
+        'external/lodash/lodash.min',  // _
         'webida-lib/app',                   // ide
         'webida-lib/webida-0.3',            // webida
         'webida-lib/widgets/views/view',    // View
         'dojo/query',                       // query
-        'other-lib/URIjs/URI',              // URI
-        'other-lib/socket.io/socket.io',    // io
+        'external/URIjs/src/URI',              // URI
+        'external/socket.io-client/socket.io',    // io
         './lib/socket.io-stream',           // ss
         './lib/terminal',                   // Terminal
         'dojo/text!./layout/terminal.html'],  // terminalHtml

@@ -35,7 +35,7 @@ define([
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
-    'other-lib/toastr/toastr',
+    'external/toastr/toastr.min',
     'popup-dialog'
 ], function (ide, pm, pathUtil, topic, runConfHtml, runWidgetHtml, reg, ButtonedDialog,
               ContentPane, projectConfigurator, pc, workspace, workbench, FileDialog, toastr,

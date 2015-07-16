@@ -15,36 +15,50 @@
  */
 
 /**
- * required methods for editor module
- * - create(file, parentElem : HTMLElement, callback)
- * - show(file)
- * - hide(file)
- * - destroy(file)
- * - getValue(file)
- *
- * optional methods  for editor module
- * - focus(file)
- * - addChangeListener(file, callback : Function)
- **/
+ * This plug-in manages EditorParts
+ * 
+ * @see EditorPart
+ */
 
-define(['text!./ext-to-mime.json',
-        'other-lib/underscore/lodash.min',
-        'other-lib/URIjs/URI',
-        'webida-lib/util/path',
-        'webida-lib/util/arrays/BubblingArray',
-        'webida-lib/app',
-        'webida-lib/plugin-manager-0.1',
-        'webida-lib/plugins/workbench/plugin',
-        'webida-lib/plugins/workbench/ui/EditorPart',
-        'webida-lib/widgets/views/view',
-        'webida-lib/widgets/views/viewmanager',
-        'webida-lib/widgets/views/viewFocusController',
-        'dojo/topic',
-        'other-lib/async',
-        'other-lib/toastr/toastr',
-        'webida-lib/util/logger/logger-client'
-], function (extToMime, _, URI, pathUtil, BubblingArray, ide, pm, workbench, EditorPart,
-              View, vm, ViewFocusController,  topic, async, toastr, Logger) {
+define([
+    'dojo/topic',
+	'text!./ext-to-mime.json',
+    'external/lodash/lodash.min',
+    'external/URIjs/src/URI',
+    'webida-lib/app',
+    'webida-lib/util/path',
+    'webida-lib/util/arrays/BubblingArray',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/plugin-manager-0.1',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workbench/ui/EditorPart',
+    'webida-lib/plugins/workbench/ui/PartContainer',
+    'webida-lib/widgets/views/view',
+    'webida-lib/widgets/views/viewmanager',
+    'webida-lib/widgets/views/viewFocusController',
+    'external/async/dist/async.min',
+    'external/toastr/toastr.min',
+    './EditorManager'
+], function (
+	topic, 
+	extToMime, 
+	_, 
+	URI, 
+	ide, 
+	pathUtil, 
+	BubblingArray,
+	Logger, 
+	pm, 
+	workbench, 
+	EditorPart,
+	PartContainer,
+	View, 
+	vm, 
+	ViewFocusController,  
+	async, 
+	toastr, 
+	EditorManager
+) {
     'use strict';
 
 	var logger = new Logger();
@@ -64,7 +78,7 @@ define(['text!./ext-to-mime.json',
         };
            
         File.prototype.isModified = function () {
-        	var editorPart = editors.getPart(this);
+            var editorPart = editors.getPart(this);
             if (editorPart) {
                 var val = editorPart.getValue();
                 var modifiedInEditor = false;
@@ -78,9 +92,17 @@ define(['text!./ext-to-mime.json',
             }
         };
 
+		File.prototype.getValue = function () {
+			return this.savedValue;
+		};
+		
+		File.prototype.getPath = function () {
+			return this.path;
+		};
+
 		File.prototype.toString = function () {
 			return this.path;
-		}
+		};
 
         return File;
     }
@@ -109,7 +131,7 @@ define(['text!./ext-to-mime.json',
         };
 
         FileManager.saveFile = function (file, option) {
-        	logger.info('FileManager.saveFile('+file+', option)');
+            logger.info('FileManager.saveFile(' + file + ', option)');
             function getSpaces(n) {
                 if (spaces[n] === undefined) {
                     return (spaces[n] = (n ? ' ' + getSpaces(n - 1) : ''));
@@ -149,11 +171,11 @@ define(['text!./ext-to-mime.json',
 
                 if (v !== value) {
                     var cursor = editorContext.getCursor();
-                    var scrollInfo = editorContext.editor.getScrollInfo();
+                    var scrollInfo = editorContext.getScrollInfo();
                     value = v;
                     editorContext.setValue(value);
                     editorContext.setCursor(cursor);
-                    editorContext.editor.scrollTo(scrollInfo.left, scrollInfo.top);
+                    editorContext.scrollToScrollInfo(scrollInfo);
                 }
             }
 
@@ -410,7 +432,7 @@ define(['text!./ext-to-mime.json',
         });
 
         topic.subscribe('fs.cache.file.invalidated', function (fsURL, path) {
-        	var file = editors.getFile(path);
+            var file = editors.getFile(path);
             if (file) {
                 if (file === editors.currentFile) {
                     fsCache.refreshFileContents(path);
@@ -507,9 +529,22 @@ define(['text!./ext-to-mime.json',
         });
     }
 
+	/** @module editors */
     var editors = {
-        elem: $('<div id="editor" tabindex="0" style="position:absolute; ' +
-            'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0],
+
+		partContainer : null,
+		/**
+		 * Returns PartContainer for EditorParts
+		 * @returns {PartContainer}
+		 */
+		getPartContainer : function(){
+			logger.info('getPartContainer()');
+			if(this.partContainer === null){
+				this.partContainer = new PartContainer({id:'editor'});
+			}
+			return this.partContainer;
+		},
+
         splitViewContainer : null,
         editorTabFocusController : new ViewFocusController({'Title' : 'title', 'Path' : 'path'}),
         editorExtensions: pm.getExtensions('webida.common.editors:editor'),
@@ -522,9 +557,9 @@ define(['text!./ext-to-mime.json',
     };
 
     editors.setCurrentFile = function (file) {
-    	
-    	logger.info('editors.setCurrentFile('+file+')');
-    	
+
+        logger.info('editors.setCurrentFile(' + file + ')');
+
         if (editors.currentFile !== file) {
             var view;
             if (editors.currentFile) {
@@ -576,9 +611,9 @@ define(['text!./ext-to-mime.json',
     };
 
     editors.ensureCreated = function (file, bShowAndFocus, cb) {
-    	logger.info('ensureCreated()');
+        logger.info('ensureCreated()');
         function showAndFocus(file) {
-        	var editorPart = editors.getPart(file);
+            var editorPart = editors.getPart(file);
             if (editorPart) {
                 editorPart.show();
                 editorPart.focus();
@@ -605,7 +640,7 @@ define(['text!./ext-to-mime.json',
     };
 
     function onloadFinalize() {
-    	logger.info('onloadFinalize()');
+        logger.info('onloadFinalize()');
         var vcs = editors.splitViewContainer.getViewContainers();
         _.each(vcs, function (vc) {
             var selview = vc.getSelectedView();
@@ -652,6 +687,45 @@ define(['text!./ext-to-mime.json',
 
         topic.publish('view.close', event, function () {
             if (event.closable) {
+                vc._remove(event.view, true);
+            }
+        });
+    };
+
+    editors.quit = function (options) {
+
+        var file;
+        if (options && options.path) {
+            file = editors.getFile(options.path);
+            if (!file) {
+                toastr.error('Cannot quit the file "' + options.path + '"');
+                return;
+            }
+        } else {
+            file = editors.currentFile;
+            if (!file) {
+                toastr.error('No files to quit');
+                return;
+            }
+        }
+
+        var view = vm.getView(file.viewId);
+        var vc = view.getParent();
+
+        // event is hard-coded, because ViewContainerEvent is private.
+        var event = {
+            name: 'view.quit',
+            viewContainer: vc,
+            view: view,
+            quitable: true,
+            force: options && options.force,
+            noClose: function () {
+                this.quitable = false;
+            }
+        };
+
+        topic.publish('view.quit', event, function () {
+            if (event.quitable) {
                 vc._remove(event.view, true);
             }
         });
@@ -732,8 +806,8 @@ define(['text!./ext-to-mime.json',
     }
     
     editors.openFile = function (path, options, callback) {
-    	logger.info('editors.openFile('+path+', options, callback)');
-    	logger.info('options = ', options);
+        logger.info('editors.openFile(' + path + ', options, callback)');
+        logger.info('options = ', options);
         
         options = options || {};
 
@@ -884,16 +958,16 @@ define(['text!./ext-to-mime.json',
         return index;
     }
 
-	function getPartPath (extension) {
-        logger.info('extension.module = '+extension.module);
+	function getPartPath(extension) {
+        logger.info('extension.module = ' + extension.module);
 		var partPathTokens = extension.module.split('/');
-		partPathTokens[partPathTokens.length-1] = extension.editorPart;
+		partPathTokens[partPathTokens.length - 1] = extension.editorPart;
 		var editorPartPath = partPathTokens.join('/');
-		logger.info('editorPartPath = ',editorPartPath);
+		logger.info('editorPartPath = ', editorPartPath);
 		return editorPartPath;
 	}
 
-	function getViewContainer (view, file, option) {
+	function getViewContainer(view, file, option) {
 		//cellCount=2, cellIndex=-1
 		var viewContainer;
         var cellCount = editors.splitViewContainer.get('splitCount');
@@ -915,12 +989,14 @@ define(['text!./ext-to-mime.json',
 	}
 
     editors.onFileOpened = function (file) {
-    	
-    	console.log('');
-    	logger.info('editors.onFileOpened('+file+')');
-    	logger.info('file._openFileOption = ', file._openFileOption);
 
-		if (!file._openFileOption) {return;}
+        console.log('');
+        logger.info('editors.onFileOpened(' + file + ')');
+        logger.info('file._openFileOption = ', file._openFileOption);
+
+		if (!file._openFileOption) {
+            return;
+        }
         var option = file._openFileOption;
         var callback = file._openFileCallback;
         delete file._openFileOption;
@@ -977,7 +1053,7 @@ define(['text!./ext-to-mime.json',
 		var partPath = getPartPath(option.extension);
 		require([partPath], function (EditorPart) {
 
-	        var editorPart = new EditorPart(file);
+            var editorPart = new EditorPart(file);
 			editors.addPart(file, editorPart); //file to part map
 
 			var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
@@ -995,7 +1071,7 @@ define(['text!./ext-to-mime.json',
                 }
 
                 file.pendingCreator = function (c) {
-					logger.info('file.pendingCreator('+c+')');
+					logger.info('file.pendingCreator(' + c + ')');
                     function createEditor(file, editorPart, view, callback) {
                         editorPart.create(view.getContent(), function (file, editorContext) {
                             file.editorContext = editorContext;	//TODO : file.editorContext refactor
@@ -1030,9 +1106,9 @@ define(['text!./ext-to-mime.json',
                 };
 
                 if (show) {
-		            if (view.getParent()) {
-		                view.getParent().select(view);
-		            }
+                    if (view.getParent()) {
+                        view.getParent().select(view);
+                    }
                     editors.ensureCreated(file, true);
                 }
 
@@ -1108,42 +1184,55 @@ define(['text!./ext-to-mime.json',
             }
         }
     };
-
-    editors.doWithCurrentEditor = function (cb) {
-    	//TODO : refactor : too long (editorContext should be taken simply)
-        if (editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor) {
+    
+    editors.execCommandForCurrentEditorContext = function (commandKey) { 
+        // Command means a method of EditorContext which have no arguments
+        
+        if (editors.currentFile && editors.currentFile.editorContext) {
             var editorContext = editors.currentFile.editorContext;
-            return cb(editorContext, editorContext.editor);
+            return editorContext[commandKey]();
         }
     };
 
-	editors.addPart = function(file, part) {
-		logger.info('editors.addPart('+file+', '+part+')');
-		this.parts.set(file, part);
-	}
+	editors.getCurrentEditorPart = function () {
+		return this.currentEditorPart;
+	};
 
-	editors.getPart = function(file) {
-		logger.info('getPart('+file+')');
+	editors.addPart = function (file, part) {
+		logger.info('editors.addPart(' + file + ', ' + part + ')');
+		this.parts.set(file, part);
+	};
+
+	editors.getPart = function (file) {
+		logger.info('getPart(' + file + ')');
 		if (this.parts.get(file) instanceof EditorPart) {
 			return this.parts.get(file);
 		} else {
 			return null;
 		}
-	}
+	};
 
-	editors.addFile = function(path, file) {
+	//TODO : call removePart() when destroy editor panel
+	editors.removePart = function (model) {
+		if (this.getPart(model)) {
+			return this.parts.delete(model);
+		}
+		return false;
+	};
+
+	editors.addFile = function (path, file) {
 		this.files[path] = file;
-	}
+	};
 
-	editors.getFile = function(path) {
+	editors.getFile = function (path) {
 		return this.files[path];
-	}
+	};
 
-	editors.removeFile = function(path) {
+	editors.removeFile = function (path) {
 		var file = editors.files[path];
 		delete editors.files[path];
 		return file;
-	}
+	};
 
     subscribeToTopics();
 

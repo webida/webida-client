@@ -24,8 +24,8 @@
  */
 
 define(['webida-lib/webida-0.3',
-        'other-lib/underscore/lodash.min',
-        'other-lib/URIjs/URI',
+        'external/lodash/lodash.min',
+        'external/URIjs/src/URI',
         'dojo/promise/all',
         'dojo/request',
         'dojo/topic',

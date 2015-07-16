@@ -18,10 +18,10 @@ define(['require',
         'dojo/Deferred',
         'dojo/when',
         'dojo/promise/all',
-        'other-lib/underscore/lodash.min',
+        'external/lodash/lodash.min',
         'webida-lib/plugins/workbench/preference-system/store',
         'webida-lib/util/keyCode',
-        'other-lib/toastr/toastr',
+        'external/toastr/toastr.min',
         'webida-lib/util/logger/logger-client'],
 function (require, Deferred, when, all, _, prefStore, keyCode, toastr, Logger) {
     'use strict';

@@ -25,12 +25,12 @@
  */
 
 define([
-    'other-lib/underscore/lodash.min',           // _
+    'external/lodash/lodash.min',           // _
     'dojo/store/Memory',          // Memory
     'dijit/registry',             // reg
     'webida-lib/plugin-manager-0.1',             // pm
     'dojo/text!./command-list.html',   // markup
-    'other-lib/toastr/toastr',
+    'external/toastr/toastr.min',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'   // ButtonedDialog
 ],
 function (

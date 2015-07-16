@@ -17,8 +17,8 @@
 define([
     'webida-lib/app',
     'webida-lib/plugins/workspace/plugin',
-    'other-lib/underscore/lodash.min',
-    'other-lib/moment/moment.min',
+    'external/lodash/lodash.min',
+    'external/moment/min/moment.min',
     'webida-lib/util/arrays/SortedArray'
 ], function (ide, wv, _, moment, SortedArray) {
     'use strict';

@@ -20,9 +20,9 @@
  */
 
 define(['webida-lib/app',
-        'other-lib/pageDown/Markdown.Converter'
+        'showdown'
        ],
-function (app, Markdown) {
+function (app, showdown) {
     'use strict';
 
     var fsMount = app.getFSCache();
@@ -32,7 +32,7 @@ function (app, Markdown) {
             if (err) {
                 console.log(err);
             } else {
-                var converter = new Markdown.Converter();
+                var converter = new showdown.Converter();
                 $('.preview-content-panel').append(converter.makeHtml(content));
             }
         });
