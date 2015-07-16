@@ -467,7 +467,7 @@ define([
             return {
                 'Switc&h Workspace' : [ 'cmnd', 'webida-lib/plugins/workbench/workspaceSelectionDialog', 'show' ],
                 'Save Status' : [ 'cmnd', 'webida-lib/app', 'saveStatus' ],
-                '&Quit' : [ 'cmnd', 'webida-lib/app', 'quit' ]
+                '&Quit' : [ 'cmnd', 'webida-lib/plugins/editors/plugin', 'quit' ]
             };
         },
 
