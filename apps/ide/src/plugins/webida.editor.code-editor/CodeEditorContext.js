@@ -879,7 +879,7 @@ define([
         /* jshint camelcase: true */
     }
     
-    genetic.inherit(CodeEditorContext, TextEditorContext, {
+    genetic.inherits(CodeEditorContext, TextEditorContext, {
 
 	    start : function () {
 	        if (this.editor !== undefined) {

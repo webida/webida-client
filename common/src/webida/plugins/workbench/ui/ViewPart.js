@@ -33,6 +33,6 @@ define([
 	function ViewPart(){
 		Part.apply(this, arguments);
 	}
-	genetic.inherit(ViewPart, Part);
+	genetic.inherits(ViewPart, Part);
 	return ViewPart;
 });

@@ -48,7 +48,7 @@ define([
 		}
 	}
 
-	genetic.inherit(EditorPreference, Object, {
+	genetic.inherits(EditorPreference, Object, {
 		setFields : function(configs){
 			logger.info('setFields('+configs+')');
 			var that = this;

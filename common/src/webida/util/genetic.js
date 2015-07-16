@@ -27,7 +27,7 @@ define(function() {
          * Inherit prototype props from parent
          * and add new prototypes.
          */
-        inherit: function(child, parent, props) {
+        inherits: function(child, parent, props) {
             child.prototype = Object.create(parent.prototype);
             child.prototype.constructor = child;
             if ( typeof props === 'object') {
