@@ -45,9 +45,12 @@ define([
 	//logger.setConfig('level', Logger.LEVELS.log);
 	//logger.off();
 
+    var paneElement = $('<div id="editor" tabindex="0" style="position:absolute; ' +
+			'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];
+
     function getPanel() {
         var docFrag = document.createDocumentFragment();
-        docFrag.appendChild(editors.getPartContainer().getElement());
+        docFrag.appendChild(paneElement);
         return docFrag;
     }
 
@@ -95,7 +98,7 @@ define([
 
     function onPanelAppended() {
         var $elemTab = $('<div id="editor-tab" style="width:100%; height:100%" class="editor-tab"></div>');
-        $(editors.getPartContainer().getElement()).append($elemTab);
+        $(paneElement).append($elemTab);
 
         editors.splitViewContainer = new SplitViewContainer();
         editors.splitViewContainer.init({
