@@ -28,10 +28,10 @@
  */
 
 define([
-	'webida-lib/util/gene',
+	'webida-lib/util/genetic',
 	'webida-lib/util/logger/logger-client'
 ], function(
-	gene,
+	genetic,
 	Logger
 ) {
 	'use strict';
@@ -43,7 +43,7 @@ define([
 		
 	}
 
-	gene.inherit(EditorContext, Object, {
+	genetic.inherit(EditorContext, Object, {
         start : function () {
             throw new Error('start() should be implemented by subclass');
         },

@@ -692,6 +692,45 @@ define([
         });
     };
 
+    editors.quit = function (options) {
+
+        var file;
+        if (options && options.path) {
+            file = editors.getFile(options.path);
+            if (!file) {
+                toastr.error('Cannot quit the file "' + options.path + '"');
+                return;
+            }
+        } else {
+            file = editors.currentFile;
+            if (!file) {
+                toastr.error('No files to quit');
+                return;
+            }
+        }
+
+        var view = vm.getView(file.viewId);
+        var vc = view.getParent();
+
+        // event is hard-coded, because ViewContainerEvent is private.
+        var event = {
+            name: 'view.quit',
+            viewContainer: vc,
+            view: view,
+            quitable: true,
+            force: options && options.force,
+            noClose: function () {
+                this.quitable = false;
+            }
+        };
+
+        topic.publish('view.quit', event, function () {
+            if (event.quitable) {
+                vc._remove(event.view, true);
+            }
+        });
+    };
+
     editors.saveFile = function (option) {
         console.log('save');
         var file = editors.currentFile;
