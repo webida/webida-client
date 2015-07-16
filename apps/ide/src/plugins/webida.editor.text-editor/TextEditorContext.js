@@ -29,7 +29,7 @@
 
 define([
     'require',
-    'webida-lib/util/gene',
+    'webida-lib/util/genetic',
     'external/lodash/lodash.min',
     'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
@@ -37,7 +37,7 @@ define([
     'webida-lib/plugins/editors/EditorContext'
 ], function (
     require,
-    gene,
+    genetic,
     _,
     codemirror,
     editors,
@@ -234,7 +234,7 @@ define([
         cm.scrollTo(null, y);
     }
 
-    gene.inherit(TextEditorContext, EditorContext, {
+    genetic.inherit(TextEditorContext, EditorContext, {
 
         addDeferredAction: function (action) {
             if (this.editor) {

@@ -29,7 +29,7 @@
 define([
     'webida-lib/app',
     'webida-lib/util/path',
-    'webida-lib/util/gene',
+    'webida-lib/util/genetic',
     'webida-lib/plugins/workbench/ui/Part',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'dojo/topic',
@@ -38,7 +38,7 @@ define([
 ], function(
 	app,
 	pathUtil,
-	gene,
+	genetic,
 	Part,
 	EditorPart,
 	topic,
@@ -69,7 +69,7 @@ define([
         this.fileOpenedHandle = null;
     }
 
-    gene.inherit(ImageEditorPart, EditorPart, {
+    genetic.inherit(ImageEditorPart, EditorPart, {
 
 		initialize : function(){
 			logger.info('initialize()');

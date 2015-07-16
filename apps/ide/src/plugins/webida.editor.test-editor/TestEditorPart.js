@@ -26,13 +26,13 @@
  */
 
 define([
-    'webida-lib/util/gene',
+    'webida-lib/util/genetic',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'dojo/topic',
     'webida-lib/util/logger/logger-client',
     'dojo/domReady!'
 ], function(
-       gene,
+       genetic,
         EditorPart,
         topic,
         Logger
@@ -55,7 +55,7 @@ define([
         this.setFile(file);
     }
 
-    gene.inherit(TestEditor, EditorPart, {
+    genetic.inherit(TestEditor, EditorPart, {
         create: function (parent, callback) {
             console.info(this.file);
             var pre = document.createElement('pre');
