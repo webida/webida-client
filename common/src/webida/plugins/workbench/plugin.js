@@ -444,7 +444,7 @@ define([
 	//TODO : refactor this plugin into WorkBench
 	function WebidaWorkbench() {
 		Workbench.call(this);
-		this.addPage(new Page());
+		this.addPage(new Page('JavaScript'));
 	}
 
 	genetic.inherits(WebidaWorkbench, Workbench, {
