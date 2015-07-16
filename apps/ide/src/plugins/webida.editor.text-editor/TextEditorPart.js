@@ -72,7 +72,7 @@ define([
 		this.foldingStatus = null;
 	}
 
-	genetic.inherit(TextEditorPart, EditorPart, {
+	genetic.inherits(TextEditorPart, EditorPart, {
 
 		initialize : function(){
 			logger.info('initialize()');

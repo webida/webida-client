@@ -234,7 +234,7 @@ define([
         cm.scrollTo(null, y);
     }
 
-    genetic.inherit(TextEditorContext, EditorContext, {
+    genetic.inherits(TextEditorContext, EditorContext, {
 
         addDeferredAction: function (action) {
             if (this.editor) {

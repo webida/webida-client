@@ -55,7 +55,7 @@ define([
         this.setFile(file);
     }
 
-    genetic.inherit(TestEditor, EditorPart, {
+    genetic.inherits(TestEditor, EditorPart, {
         create: function (parent, callback) {
             console.info(this.file);
             var pre = document.createElement('pre');

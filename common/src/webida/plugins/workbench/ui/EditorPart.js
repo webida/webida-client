@@ -37,7 +37,7 @@ define([
 		this.editorContext = null;
 		this.file = null;
 	}
-	genetic.inherit(EditorPart, Part, {
+	genetic.inherits(EditorPart, Part, {
 		getValue : function(){
 			throw new Error('getValue() should be implemented by subclass');
 		},
