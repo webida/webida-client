@@ -26,7 +26,7 @@
 
 define([
 	'require',
-	'webida-lib/util/gene',
+	'webida-lib/util/genetic',
 	'external/lodash/lodash.min',
 	'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
@@ -35,7 +35,7 @@ define([
 	'./snippet'
 ], function (
 	require,
-	gene,
+	genetic,
 	_,
 	codemirror,
     editors,
@@ -879,7 +879,7 @@ define([
         /* jshint camelcase: true */
     }
     
-    gene.inherit(CodeEditorContext, TextEditorContext, {
+    genetic.inherit(CodeEditorContext, TextEditorContext, {
 
 	    start : function () {
 	        if (this.editor !== undefined) {

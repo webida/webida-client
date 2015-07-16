@@ -23,7 +23,7 @@
  * @author: hw.shim
  */
 
-define(['webida-lib/util/gene'], function(gene) {
+define(['webida-lib/util/genetic'], function(gene) {
 	'use strict';
 	var partId = 0;
 	function Part(){
@@ -31,7 +31,7 @@ define(['webida-lib/util/gene'], function(gene) {
 		this.parent = null;
 		this.partId = ++partId;
 	}
-	gene.inherit(Part, Object, {
+	genetic.inherit(Part, Object, {
 		create : function(parent, started){
 			throw new Error('create() should be implemented by subclass');
 		},

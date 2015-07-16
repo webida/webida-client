@@ -23,16 +23,16 @@
  */
 
 define([
-	'webida-lib/util/gene',
+	'webida-lib/util/genetic',
 	'./Part'
 ], function(
-	gene,
+	genetic,
 	Part
 ) {
 	'use strict';
 	function ViewPart(){
 		Part.apply(this, arguments);
 	}
-	gene.inherit(ViewPart, Part);
+	genetic.inherit(ViewPart, Part);
 	return ViewPart;
 });

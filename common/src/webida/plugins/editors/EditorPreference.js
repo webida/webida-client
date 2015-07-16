@@ -26,10 +26,10 @@
  */
 
 define([
-	'webida-lib/util/gene',
+	'webida-lib/util/genetic',
 	'webida-lib/util/logger/logger-client'
 ], function(
-	gene,
+	genetic,
 	Logger
 ) {
 	'use strict';
@@ -48,7 +48,7 @@ define([
 		}
 	}
 
-	gene.inherit(EditorPreference, Object, {
+	genetic.inherit(EditorPreference, Object, {
 		setFields : function(configs){
 			logger.info('setFields('+configs+')');
 			var that = this;

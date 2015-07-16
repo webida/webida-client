@@ -25,10 +25,10 @@
  */
 
 define([
-	'webida-lib/util/gene',
+	'webida-lib/util/genetic',
 	'./Part'
 ], function(
-	gene,
+	genetic,
 	Part
 ) {
 	'use strict';
@@ -37,7 +37,7 @@ define([
 		this.editorContext = null;
 		this.file = null;
 	}
-	gene.inherit(EditorPart, Part, {
+	genetic.inherit(EditorPart, Part, {
 		getValue : function(){
 			throw new Error('getValue() should be implemented by subclass');
 		},
