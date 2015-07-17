@@ -53,6 +53,8 @@ function (Logger,
     'use strict';
 
     var logger = new Logger('webida.terminal.plugin');
+	//logger.setConfig('level', Logger.LEVELS.log);
+	logger.off();
     var mod = {};
 
     function measureText(text, styleObj) {
