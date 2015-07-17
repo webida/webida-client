@@ -27,7 +27,7 @@
  */
 
 define([
-	'webida-lib/util/gene',
+	'webida-lib/util/genetic',
 	'external/lodash/lodash.min',
 	'webida-lib/plugins/workbench/ui/EditorPart',
 	'plugins/webida.editor.text-editor/TextEditorPart',
@@ -40,7 +40,7 @@ define([
 	'webida-lib/util/logger/logger-client',
 	'dojo/domReady!'
 ], function(
-	gene,
+	genetic,
 	_,
 	EditorPart,
 	TextEditorPart,
@@ -62,7 +62,7 @@ define([
 		TextEditorPart.apply(this, arguments); //super constructor
 	}
 
-	gene.inherit(CodeEditorPart, TextEditorPart, {
+	genetic.inherits(CodeEditorPart, TextEditorPart, {
 
 		/**
 		 * Initialize CodeEditorPart

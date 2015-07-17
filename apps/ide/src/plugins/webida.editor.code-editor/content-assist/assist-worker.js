@@ -61,8 +61,6 @@ function initServers(/*webidaHost, webidaLibPath, otherLibPath*/) {
     require.config({
         baseUrl: '..',
         paths: {
-            // 'other-lib': '//library3.' + webidaHost,
-            'other-lib': '../../../../../external/src',
             // 'webida-lib': '//library.' + webidaHost + '/webida',
             'webida-lib': '../../../../../common/src/webida',
             text: 'lib/text',

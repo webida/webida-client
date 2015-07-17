@@ -29,7 +29,7 @@
 
 define([
 	'external/lodash/lodash.min',
-	'webida-lib/util/gene',
+	'webida-lib/util/genetic',
 	'webida-lib/plugins/workbench/ui/Part',
 	'webida-lib/plugins/workbench/ui/EditorPart',
 	'webida-lib/plugins/workbench/preference-system/store',	// TODO: issue #12055
@@ -42,7 +42,7 @@ define([
 	'dojo/domReady!'
 ], function(
 	_,
-	gene,
+	genetic,
 	Part,
 	EditorPart,
 	store,
@@ -72,7 +72,7 @@ define([
 		this.foldingStatus = null;
 	}
 
-	gene.inherit(TextEditorPart, EditorPart, {
+	genetic.inherits(TextEditorPart, EditorPart, {
 
 		initialize : function(){
 			logger.info('initialize()');
