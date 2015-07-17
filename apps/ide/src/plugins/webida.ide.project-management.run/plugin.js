@@ -23,15 +23,23 @@
 define([
     './run-configuration-manager',
     './delegator',
+    'webida-lib/app',
+    'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/path',
     'external/lodash/lodash.min',
     'external/toastr/toastr.min'
-], function (runConfigurationManager, delegator, workspace, workbench, pathUtil, _, toastr) {
+], function (runConfigurationManager, delegator, ide, pluginManager, workspace, workbench, pathUtil, _, toastr) {
     'use strict';
 
     var module = {};
+
+    var extensionPoints = {
+        RUN_CONFIGURATION_HOOK: 'webida.ide.project-management.run:hook'
+    };
+    var extensions = pluginManager.getExtensions(extensionPoints.RUN_CONFIGURATION_HOOK);
+
     var contextRunMenuItems = [];
     var contextDebugMenuItems = [];
 
@@ -285,6 +293,27 @@ define([
         _workbenchRunBinded(runConfigurationManager.MODE.DEBUG_MODE);
     };
 
+    function _beforeRunHook(projectName, callback) {
+        ide.getProjectInfo(projectName, function (err, projectInfo) {
+            var ext;
+            if (err) {
+                console.log(err);
+                callback(err);
+            } else {
+                ext = _.find(extensions, function (ext) {
+                    return ext.type === projectInfo.type;
+                });
+                if (ext) {
+                    require([ext.module], function (mod) {
+                        mod[ext.beforeRun](projectInfo, callback);
+                    });
+                } else {
+                    callback();
+                }
+            }
+        });
+    }
+
     function _workbenchRunBinded(mode) {
         var context = workbench.getContext();
         var contextPaths;
@@ -311,13 +340,20 @@ define([
         }
 
         var projectName = parseProjectNameFromPath(contextPath);
-        var runConfigurations = runConfigurationManager.getByProjectName(projectName);
-        if (_.isEmpty(runConfigurations)) {
-            openRunConfigurationDialog(null, mode);
-        } else {
-            var latestRuns = _.where(runConfigurations, {latestRun: true});
-            _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
-        }
+
+        _beforeRunHook(projectName, function (err) {
+            if (err) {
+                toastr.error(err);
+            } else {
+                var runConfigurations = runConfigurationManager.getByProjectName(projectName);
+                if (_.isEmpty(runConfigurations)) {
+                    openRunConfigurationDialog(null, mode);
+                } else {
+                    var latestRuns = _.where(runConfigurations, {latestRun: true});
+                    _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
+                }
+            }
+        });
     }
 
     /**
@@ -427,13 +463,20 @@ define([
         }
         var nodeSplit = selectedPath.split('/');
         var projectName = nodeSplit[2];
-        var runConfigurations = runConfigurationManager.getByProjectName(projectName);
-        if (_.isEmpty(runConfigurations)) {
-            openRunConfigurationDialog(null, mode);
-        } else {
-            var latestRuns = _.where(runConfigurations, {latestRun: true});
-            _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
-        }
+
+        _beforeRunHook(projectName, function (err) {
+            if (err) {
+                toastr.error(err);
+            } else {
+                var runConfigurations = runConfigurationManager.getByProjectName(projectName);
+                if (_.isEmpty(runConfigurations)) {
+                    openRunConfigurationDialog(null, mode);
+                } else {
+                    var latestRuns = _.where(runConfigurations, {latestRun: true});
+                    _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
+                }
+            }
+        });
     }
 
     function _runBinded(runConf, mode) {
