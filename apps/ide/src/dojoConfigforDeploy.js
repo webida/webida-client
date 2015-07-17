@@ -33,9 +33,6 @@ var dojoConfig = {
     locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {
         'webida-lib': '//library.' + webidaHost + '/webida',
-        'other-lib': '//library3.' + webidaHost,
-
-
         'lib' : 'lib',
         'plugins' : 'plugins'
     },
@@ -43,6 +40,6 @@ var dojoConfig = {
         ['text', 'dojo/text'],
         ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
         // TODO: remove this.
-        ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']		
+        ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']
     ]
 };
