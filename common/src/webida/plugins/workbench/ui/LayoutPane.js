@@ -18,26 +18,27 @@
  * Constructor
  * LayoutPane
  *
- * @see 
+ * @see
  * @since: 2015.07.15
  * @author: hw.shim
  */
 
 // @formatter:off
 define([
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client',
-	'./LayoutTree'
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
+    './LayoutTree'
 ], function(
-	genetic, 
-	Logger,
-	LayoutTree
+    genetic, 
+    Logger,
+    LayoutTree
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     /**
      * @typedef {Object} DataSource
+     * @typedef {Object} PartContainer
      */
 
     var logger = new Logger();
@@ -48,45 +49,43 @@ define([
         logger.info('new LayoutPane()');
 
         /** @type {Map.<DataSource, {Array.<PartContainer>}>} */
-        this.partContainers = new Map();
+        this.containers = new Map();
     }
 
 
     genetic.inherits(LayoutPane, LayoutTree, {
 
         /**
-         * @param {DataSource} dataSource
          * @param {PartContainer} container
          */
-        addPartContainer: function(dataSource, container) {
-            var containers = this.partContainers;
-            if (containers.has(dataSource) === false) {
-                containers.set(dataSource, []);
+        addPartContainer: function(container) {
+            var dataSource = container.getDataSource();
+            var map = this.getPartContainers();
+            if (map.has(dataSource) === false) {
+                map.set(dataSource, []);
             }
-            if (containers.get(dataSource).indexOf(container) < 0) {
-                containers.get(dataSource).push(container);
+            var containers = map.get(dataSource);
+            if (containers.indexOf(container) < 0) {
+                containers.push(container);
             }
-            privateFn.registerDataSource(this, dataSource);
         },
 
         /**
-         * @param {DataSource} dataSource
          * @param {PartContainer} container
          */
-        rmovePartContainer: function(dataSource, container) {
-            var containers = this.partContainers;
-            if (containers.has(dataSource) === false) {
+        removePartContainer: function(container) {
+            var dataSource = container.getDataSource();
+            var map = this.getPartContainers();
+            if (map.has(dataSource) === false) {
                 return;
             }
-            var index = containers.get(dataSource).indexOf(container);
+            var containers = map.get(dataSource);
+            var index = containers.indexOf(container);
             if (index > 0) {
-                containers.get(dataSource).splice(index, 1);
-                if (containers.get(dataSource).length === 0) {
-                    containers['delete'](dataSource);
+                containers.splice(index, 1);
+                if (containers.length === 0) {
+                    map['delete'](dataSource);
                 }
-            }
-            if (this.getParts(dataSource).length === 0) {
-                privateFn.unregisterDataSource(this, dataSource);
             }
         },
 
@@ -94,8 +93,26 @@ define([
          * @return {Map.<DataSource, {Array.<PartContainer>}>} partContainers
          */
         getPartContainers: function() {
-            return this.partContainers;
+            return this.containers;
         },
+
+        /**
+         * Get PartContainer corresponding tabIndex
+         * @param {number} tabIndex
+         */
+        getPartContainer: function(tabIndex) {
+            //TODO
+        },
+
+        /**
+         * Move the order of PartContainer
+         *
+         * @param {PartContainer} container
+         * @param {number} tabIndex
+         */
+        movePartContainer: function(container, tabIndex) {
+            //TODO
+        }
     });
 
     return LayoutPane;
