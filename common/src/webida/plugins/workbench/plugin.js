@@ -25,15 +25,18 @@
 
 define([
 	'external/lodash/lodash.min',
+	'webida-lib/util/genetic',
 	'webida-lib/util/logger/logger-client', 
 	'require',
-    'webida-lib/plugin-manager-0.1',                         // pm
-    './job-manager', // jobManager
-    './views-controller', // jobManager
+    'webida-lib/plugin-manager-0.1',          // pm
+    './job-manager',                          // jobManager
+    './views-controller',                     // jobManager
     './command-system/MenuItemTree',          // MenuItemTree
     './command-system/context-menu',          // contextMenu
     './command-system/top-level-menu',        // menubar
     './command-system/toolbar',               // toolbar
+    './ui/Page',                              // Page
+    './ui/Workbench',                         // Workbench
     'dojo/text!./workbench.html',             // markup
     'webida-lib/widgets/views/viewmanager',   // vm
     'dijit/focus',
@@ -42,6 +45,7 @@ define([
     'dojo/dom-class',                         // domClass
 ], function (
 	_,
+	genetic,
 	Logger, 
 	require,
 	pm,
@@ -51,6 +55,8 @@ define([
 	contextMenu,
 	menubar,
 	toolbar,
+	Page,
+	Workbench,
 	markup,
 	vm,
 	focus,
@@ -435,9 +441,13 @@ define([
 
     singleLogger.log('(j) in initialization of workbench module');
 
-    singleLogger.log('initialized workbench plugin\'s module');
+	//TODO : refactor this plugin into WorkBench
+	function WebidaWorkbench() {
+		Workbench.call(this);
+		this.addPage(new Page('JavaScript'));
+	}
 
-    return {
+	genetic.inherits(WebidaWorkbench, Workbench, {
         appendView : function (view, location) {
             viewsController.appendView(view, location);
         },
@@ -598,5 +608,9 @@ define([
             viewsController.toggleFullScreen();
         }
 
-    };
+    });
+
+    singleLogger.log('initialized workbench plugin\'s module');
+
+	return new WebidaWorkbench();
 });

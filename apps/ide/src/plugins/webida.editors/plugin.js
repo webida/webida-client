@@ -32,7 +32,6 @@ define([
     'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/EditorPart',
-    'webida-lib/plugins/workbench/ui/PartContainer',
     'webida-lib/widgets/views/view',
     'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
@@ -50,7 +49,6 @@ define([
 	pm, 
 	workbench, 
 	EditorPart,
-	PartContainer,
 	View, 
 	vm, 
 	ViewFocusController,  
@@ -529,20 +527,6 @@ define([
 
 	/** @module editors */
     var editors = {
-
-		partContainer : null,
-		/**
-		 * Returns PartContainer for EditorParts
-		 * @returns {PartContainer}
-		 */
-		getPartContainer : function(){
-			logger.info('getPartContainer()');
-			if(this.partContainer === null){
-				this.partContainer = new PartContainer({id:'editor'});
-			}
-			return this.partContainer;
-		},
-
         splitViewContainer : null,
         editorTabFocusController : new ViewFocusController({'Title' : 'title', 'Path' : 'path'}),
         editorExtensions: pm.getExtensions('webida.common.editors:editor'),
