@@ -25,7 +25,7 @@
 
 // @formatter:off
 define([
-	'external/eventEmitter/EventEmitter',
+    'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
