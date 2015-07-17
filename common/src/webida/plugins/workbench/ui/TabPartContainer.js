@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * Template
+ * TabPartContainer
  *
  * @see
  * @since: 2015.07.15
@@ -25,46 +25,67 @@
 
 // @formatter:off
 define([
-    'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    './DataSource'
+    './PartContainer'
 ], function(
-    EventEmitter,
     genetic, 
     Logger,
-    DataSource
+    PartContainer
 ) {
     'use strict';
 // @formatter:on
 
     /**
-     * @typedef {Object} DataSource
+     * @typedef {Object} HTMLElement
      */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function Template() {
-        logger.info('new Template()');
+    function TabPartContainer() {
+        logger.info('new TabPartContainer()');
 
-        /** @type {Array.<DataSource>} */
-        this.bbb = [];
+        /** @type {Object} tabWidget */
+        this.tabWidget = null
     }
 
 
-    genetic.inherits(Template, Object, {
+    genetic.inherits(TabPartContainer, PartContainer, {
 
         /**
          * Explain
          * @param {}
          * @return {Array}
          */
-        aaaa: function() {
-            return this.bbb;
+        createTabWidget: function() {
+            //TODO
+        },
+
+        /**
+         * @return {Object} tabWidget
+         */
+        getTabWidget: function() {
+            return this.tabWidget;
+        },
+
+        /**
+         * Explain
+         * @return {HTMLElement}
+         */
+        getInnerElement: function() {
+            //TODO
+        },
+
+        /**
+         * Explain
+         * @return {HTMLElement}
+         */
+        getOuterElement: function() {
+            //TODO
         }
     });
 
-    return Template;
+    return TabPartContainer;
 });

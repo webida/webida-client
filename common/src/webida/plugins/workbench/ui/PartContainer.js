@@ -25,87 +25,138 @@
 
 // @formatter:off
 define([
-	'external/eventEmitter/EventEmitter',
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client'
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client'
 ], function(
-	EventEmitter,
-	genetic, 
-	Logger
+    EventEmitter,
+    genetic, 
+    Logger
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-	var _containerId = 0;
+    var _containerId = 0;
 
     function PartContainer() {
         logger.info('new PartContainer()');
         this._containerId = ++_containerId;
         this.dataSource = null;
+        this.part = null;
+        this.parent = null;
+        this.title = null;
+        this.titleImage = null;
     }
 
 
     genetic.inherits(PartContainer, EventEmitter, {
-        /**
-         * @param {aaa} bbb
-         */
-        xxx: function(yyy) {
 
-        },
-        /**
-         * @param {aaa} bbb
-         */
-        xxx: function(yyy) {
-
-        },
-        /**
-         * @param {aaa} bbb
-         */
-        xxx: function(yyy) {
-
-        },
-        /**
-         * @param {aaa} bbb
-         */
-        xxx: function(yyy) {
-
-        },
-        /**
-         * @param {aaa} bbb
-         */
-        xxx: function(yyy) {
-
-        },
-        /**
-         * @param {aaa} bbb
-         */
-        xxx: function(yyy) {
-
-        },
-        /**
-         * @param {aaa} bbb
-         */
-        xxx: function(yyy) {
-
-        },
         /**
          * @param {DataSource} dataSource
          */
         setDataSource: function(dataSource) {
+            this.dataSource = dataSource;
+        },
+
+        /**
+         * @return {DataSource} dataSource
+         */
+        getDataSource: function() {
+            return this.dataSource;
+        },
+
+        /**
+         * Initializes own Part
+         */
+        initializePart: function() {
 
         },
+
+        /**
+         * Creates new Part using DataSource
+         */
+        createPart: function() {
+
+        },
+
+        /**
+         * @return {Part} part
+         */
+        getPart: function() {
+            return this.part;
+        },
+
+        /**
+         * @param {Object} parent
+         */
+        setParent: function(parent) {
+            this.parent = parent;
+        },
+
+        /**
+         * @return {Object} parent
+         */
+        getParent: function() {
+            return this.parent;
+        },
+
+        /**
+         * @param {string} title
+         */
+        setTitle: function(title) {
+            this.title = title;
+        },
+
+        /**
+         * @return {string} title
+         */
+        getTitle: function() {
+            return this.title;
+        },
+
+        /**
+         * @param {string} title
+         */
+        setTitleImage: function(imageDescriptor) {
+            this.titleImage = imageDescriptor;
+            //TODO
+        },
+
+        /**
+         * @return {string} title
+         */
+        getTitleImage: function() {
+            return this.titleImage;
+        },
+
+        /**
+         * Explain
+         * @return {HTMLElement}
+         */
+        getInnerElement: function() {
+            throw new Error('getInnerElement() should be implemented by ' 
+            	+ this.constructor.name);
+        },
+
+        /**
+         * Explain
+         * @return {HTMLElement}
+         */
+        getOuterElement: function() {
+            throw new Error('getOuterElement() should be implemented by ' 
+            	+ this.constructor.name);
+        }
     });
 
-	/** @constant {string} */
-	PartContainer.PART_CREATED = 'partCreated';
-	/** @constant {string} */
-	PartContainer.PART_DESTROYED = 'partDestroyed';
-	/** @constant {string} */
-	PartContainer.DATA_SOURCE_ADDED = 'dataSourceAdded';
+    /** @constant {string} */
+    PartContainer.PART_CREATED = 'partCreated';
+
+    /** @constant {string} */
+    PartContainer.PART_DESTROYED = 'partDestroyed';
 
     return PartContainer;
 });

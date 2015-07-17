@@ -25,13 +25,15 @@
 
 // @formatter:off
 define([
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client'
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client'
 ], function(
-	genetic,
-	Logger
+	EventEmitter,
+    genetic,
+    Logger
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     var logger = new Logger();
@@ -48,22 +50,23 @@ define([
     }
 
 
-    genetic.inherits(Part, Object, {
-        create: function(parent, started) {
+    genetic.inherits(Part, EventEmitter, {
+
+        /**
+         * @param {string} title
+         */
+        create: function(parent) {
             throw new Error('create() should be implemented by ' + this.constructor.name);
         },
+
         destroy: function() {
             throw new Error('destroy() should be implemented by ' + this.constructor.name);
         },
-        show: function() {
-            throw new Error('show() should be implemented by ' + this.constructor.name);
+
+        getContainer: function() {
+            return this.container;
         },
-        hide: function() {
-            throw new Error('hide() should be implemented by ' + this.constructor.name);
-        },
-        focus: function() {
-            throw new Error('focus() should be implemented by ' + this.constructor.name);
-        },
+
         setFlag: function(/*int*/flag, /*boolean*/value) {
             if (!flag) {
                 throw new Error('Invalid flag name');
@@ -74,16 +77,39 @@ define([
                 this.flags &= ~flag;
             }
         },
+
         getFlag: function(/*int*/flag) {
             return (this.flags & flag) != 0;
         },
+
         setParentElement: function(/*HtmlElement*/parent) {
             this.parent = parent;
         },
+
         getParentElement: function() {
             return this.parent;
-        }
+        },
+
+        // ----------- unknowkn ----------- //
+
+        show: function() {
+            throw new Error('show() should be implemented by ' + this.constructor.name);
+        },
+
+        hide: function() {
+            throw new Error('hide() should be implemented by ' + this.constructor.name);
+        },
+
+        focus: function() {
+            throw new Error('focus() should be implemented by ' + this.constructor.name);
+        },
     });
+
+    /** @constant {number} state flag : Part created */
     Part.CREATED = 1;
+
+    /** @constant {string} */
+    Part.PROPERTY_CHANGED = 'propertyChanged';
+
     return Part;
 });
