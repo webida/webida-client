@@ -20,6 +20,14 @@
  *
  * This Class is binary tree node.
  *
+ * TODO
+ * [Layout Splitting Process]
+ *
+ * 1. setOrientation(0|1) //Select position
+ * 2. setRatio([0.5, 0.5]) //Splits into two
+ * 3. insertChild(new LayoutTree, index)
+ *    //Add new LayoutTree with specified index
+ *
  * @see
  * @since: 2015.07.15
  * @author: hw.shim
@@ -27,17 +35,17 @@
 
 // @formatter:off
 define([
-	'external/eventEmitter/EventEmitter',
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client',
-	'./DataSource'
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
+    './DataSource'
 ], function(
-	EventEmitter,
-	genetic, 
-	Logger,
-	DataSource
+    EventEmitter,
+    genetic, 
+    Logger,
+    DataSource
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     /**
@@ -50,8 +58,13 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function LayoutTree() {
-        logger.info('new LayoutTree()');
+    function LayoutTree(id) {
+        logger.info('new LayoutTree(' + id + ')');
+
+        /**
+         * @type {string}
+         */
+        this.id = id;
 
         /**
          * In the case of non-splitted LayoutTree instance,
@@ -90,28 +103,30 @@ define([
     genetic.inherits(LayoutTree, EventEmitter, {
 
         /**
+         * @example
+         * new LayoutTree('webida.layout_pane.left')
+         * @return {string} layout tree's id
+         */
+        getId: function() {
+            return this.id;
+        },
+
+        /**
          *
          *
          * @param {LayoutTree} layoutTree
-         * @param {number} [orientation] HORIZONTAL(0) | VERTICAL(1)
          * @param {number} [index] (LayoutTree.FIRST | LayoutTree.SECOND)
          */
-        insertChild: function(layoutTree, orientation, index) {
+        insertChild: function(layoutTree, index) {
             if (arguments.length === 1) {
-                var children = this.getChildren();
-                if (children.has(LayoutTree.FIRST)) {
-                    throw new Error(LayoutTree.FIRST + 'node already exists');
-                }
-                children.set(LayoutTree.FIRST, layoutTree);
-                layoutTree.setParent(this);
-            } else {
-
-                /*
-                * Splits into two LayoutTree and add new LayoutTree
-                * with specified index and orientation.
-                */
-                //TODO
+                index = LayoutTree.FIRST;
             }
+            var children = this.getChildren();
+            if (children.has(index)) {
+                throw new Error(index + 'node already exists');
+            }
+            children.set(index, layoutTree);
+            layoutTree.setParent(this);
         },
 
         /**
@@ -162,8 +177,22 @@ define([
         /**
          * @return {number} HORIZONTAL(0) | VERTICAL(1)
          */
-        getOrientation: function(index) {
+        getOrientation: function() {
             return this.orientation;
+        },
+
+        /**
+         * @param {Array.<number, number>}
+         */
+        setRatio: function(ratio) {
+            this.ratio = ratio;
+        },
+
+        /**
+         * @return {Array.<number, number>}
+         */
+        getRatio: function() {
+            return this.ratio;
         },
 
         /**

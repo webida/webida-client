@@ -25,22 +25,27 @@
 
 // @formatter:off
 define([
-	'external/eventEmitter/EventEmitter',
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client',
-	'./DataSourceRegistry'
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
+    './DataSourceRegistry',
+    './LayoutPane',
+    './Page'
 ], function(
-	EventEmitter,
-	genetic, 
-	Logger,
-	DataSourceRegistry
+    EventEmitter,
+    genetic, 
+    Logger,
+    DataSourceRegistry,
+    LayoutPane,
+    Page
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     /**
      * @typedef {Object.<Object, Object>} Map
      * @typedef {Object} DataSourceRegistry
+     * @typedef {Object} WorkbenchModel
      * @typedef {Object} Page
      */
 
@@ -66,6 +71,7 @@ define([
          */
         addPage: function(page) {
             this.pages.push(page);
+            page.setParent(this);
         },
 
         /**
@@ -74,6 +80,7 @@ define([
         removePage: function(page) {
             var index = this.pages.indexOf(page);
             if (index > 0) {
+                page.setParent(null);
                 this.pages.splice(index, 1);
             }
         },
@@ -110,6 +117,46 @@ define([
                 this.getDataSourceRegistry().registerDataSource(dataSource);
                 callback(dataSource);
             });
+        },
+
+        /**
+         * @param {WorkbenchModel} model
+         */
+        parseModel: function(workbenchModel) {
+
+            //TODO : if(!(model instanceof WorkbenchModel)){return;}
+
+            function getPages(model) {
+                var LayoutClass = {
+                    'Page': Page,
+                    'LayoutPane': LayoutPane
+                }
+                var layoutTree, split, children, child;
+                if ('type' in model) {
+                    layoutTree = new LayoutClass[model.type](model.id, model.name);
+                    if ('split' in model) {
+                        split = model.split;
+                        layoutTree.setOrientation(split.orientation);
+                        layoutTree.setRatio(split.ratio);
+                    }
+                    if ('children' in model) {
+                        children = model.children;
+                        for (var i in children) {
+                            child = getPages(children[i]);
+                            layoutTree.insertChild(child, i);
+                        }
+                    }
+                    return layoutTree;
+                }
+                return null;
+            }
+
+            if ('pages' in workbenchModel) {
+                var pages = workbenchModel.pages;
+                for (var i in pages) {
+                    this.addPage(getPages(pages[i]));
+                }
+            }
         }
     });
 

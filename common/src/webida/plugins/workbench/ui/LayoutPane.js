@@ -45,8 +45,10 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function LayoutPane() {
-        logger.info('new LayoutPane()');
+    function LayoutPane(id) {
+        logger.info('new LayoutPane(' + id + ')');
+
+        LayoutTree.call(this, id);
 
         /** @type {Map.<DataSource, {Array.<PartContainer>}>} */
         this.containers = new Map();
