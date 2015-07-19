@@ -1,28 +1,29 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 /**
  * This plug-in manages EditorParts
- * 
+ *
  * @see EditorPart
  */
 
+// @formatter:off
 define([
     'dojo/topic',
-	'text!./ext-to-mime.json',
+    'text!./ext-to-mime.json',
     'external/lodash/lodash.min',
     'external/URIjs/src/URI',
     'webida-lib/app',
@@ -33,40 +34,49 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/PartContainer',
+    'webida-lib/plugins/workbench/ui/Workbench',
     'webida-lib/widgets/views/view',
     'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
     'external/async/dist/async.min',
-    'external/toastr/toastr.min'
+    'external/toastr/toastr.min',
+    'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
+    './EditorsManager'
 ], function (
-	topic, 
-	extToMime, 
-	_, 
-	URI, 
-	ide, 
-	pathUtil, 
-	BubblingArray,
-	Logger, 
-	pm, 
-	workbench, 
-	EditorPart,
-	PartContainer,
-	View, 
-	vm, 
-	ViewFocusController,  
-	async, 
-	toastr
+    topic, 
+    extToMime, 
+    _, 
+    URI, 
+    ide, 
+    pathUtil, 
+    BubblingArray,
+    Logger, 
+    pm, 
+    workbench, 
+    EditorPart,
+    PartContainer,
+    Workbench,
+    View, 
+    vm, 
+    ViewFocusController,  
+    async, 
+    toastr,
+    FileDataSource,
+    EditorsManager
 ) {
     'use strict';
+// @formatter:on
 
-	var logger = new Logger();
-	logger.setConfig('level', Logger.LEVELS.log);
-	//logger.off();
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     logger.log('loaded modules required by editors. initializing editors plugin');
 
+    var editorsManager = new EditorsManager();
+
     function getFileClass() {
-        var File = function (path) {
+        var File = function(path) {
             this.path = path;
             this.name = pathUtil.getFileName(path);
             this.tabTitle = this.name;
@@ -74,8 +84,8 @@ define([
             this.editorName = null;
             this.savedValue = null;
         };
-           
-        File.prototype.isModified = function () {
+
+        File.prototype.isModified = function() {
             var editorPart = editors.getPart(this);
             if (editorPart) {
                 var val = editorPart.getValue();
@@ -84,28 +94,29 @@ define([
                     modifiedInEditor = !editorPart.isClean();
                 }
                 // TODO: remove the first clause
-                return  val !== undefined && val !== this.savedValue && modifiedInEditor;
+                return val !== undefined && val !== this.savedValue && modifiedInEditor;
             } else {
-                return false;	// not yet even initialized.
+                return false;
+                // not yet even initialized.
             }
         };
 
-		File.prototype.getValue = function () {
-			return this.savedValue;
-		};
-		
-		File.prototype.getPath = function () {
-			return this.path;
-		};
+        File.prototype.getValue = function() {
+            return this.savedValue;
+        };
 
-		File.prototype.toString = function () {
-			return this.path;
-		};
+        File.prototype.getPath = function() {
+            return this.path;
+        };
+
+        File.prototype.toString = function() {
+            return this.path;
+        };
 
         return File;
     }
 
-    function getFileManager() { // TODO: remove publish().
+    function getFileManager() {// TODO: remove publish().
         var FileManager = {};
         var spaces = {
             '0': '',
@@ -115,8 +126,8 @@ define([
             '4': '    '
         };
 
-        FileManager.openFile = function (file) {
-            fsCache.readFile(file.path, function (error, content) {
+        FileManager.openFile = function(file) {
+            fsCache.readFile(file.path, function(error, content) {
                 if (error) {
                     toastr.error('Failed to read file "' + file.path + '" (' + error + ')');
                     editors.onFileError(file);
@@ -128,11 +139,11 @@ define([
             });
         };
 
-        FileManager.saveFile = function (file, option) {
+        FileManager.saveFile = function(file, option) {
             logger.info('FileManager.saveFile(' + file + ', option)');
             function getSpaces(n) {
                 if (spaces[n] === undefined) {
-                    return (spaces[n] = (n ? ' ' + getSpaces(n - 1) : ''));
+                    return (spaces[n] = ( n ? ' ' + getSpaces(n - 1) : ''));
                 } else {
                     return spaces[n];
                 }
@@ -141,29 +152,27 @@ define([
             var path = file.path;
 
             var value = editors.getPart(file).getValue();
-            if (value === undefined) {		// TODO: make this check unnecessary.
-                throw new Error('tried to save a file "' + file.path +
-                                '" + whose value is not yet set');
+            if (value === undefined) {// TODO: make this check unnecessary.
+                throw new Error('tried to save a file "' + file.path + '" + whose value is not yet set');
             }
 
             console.assert(file.editorContext);
             var editorContext = file.editorContext;
 
-            if (editorContext.trimTrailingWhitespaces ||
-                editorContext.insertFinalNewLine ||
-                editorContext.retabIndentations) {
+            if (editorContext.trimTrailingWhitespaces || editorContext.insertFinalNewLine || editorContext.retabIndentations) {
                 var v = value;
                 if (editorContext.trimTrailingWhitespaces && v.match(/( |\t)+$/m)) {
                     v = v.replace(/( |\t)+$/mg, '');
                 }
                 if (editorContext.insertFinalNewLine && v.match(/.$/)) {
-                    v = v + '\n';	// TODO: consider line ending mode
+                    v = v + '\n';
+                    // TODO: consider line ending mode
                 }
                 if (editorContext.retabIndentations) {
                     //var spaces = getSpaces(editorContext.options.indentUnit);
                     var unit = editorContext.options.indentUnit, re = /^(( )*)\t/m, m;
-                    while ((m = v.match(re))) {
-                        v = v.replace(re, '$1' +  getSpaces(unit - (m[0].length - 1) % unit));
+                    while (( m = v.match(re))) {
+                        v = v.replace(re, '$1' + getSpaces(unit - (m[0].length - 1) % unit));
                     }
                 }
 
@@ -177,7 +186,7 @@ define([
                 }
             }
 
-            fsCache.writeFile(path, value, function (error) {
+            fsCache.writeFile(path, value, function(error) {
                 if (error) {
                     toastr.error('Failed to write file "' + path + '" (' + error + ')');
                     editors.onFileError(file);
@@ -203,22 +212,24 @@ define([
     function subscribeToTopics() {
 
         function onSingleDeletion(path) {
-            require(['popup-dialog'], function (PopupDialog) {
+            require(['popup-dialog'], function(PopupDialog) {
                 PopupDialog.yesno({
                     title: 'Close "' + pathUtil.getFileName(path) + '"?',
-                    message: 'File "' + path + '" was deleted. ' +
-                        'Is it OK to close the editor tab for the file?'
-                }).then(function () {
-                    editors.closeFile({ path: path, force: true });
-                }, function () {
+                    message: 'File "' + path + '" was deleted. ' + 'Is it OK to close the editor tab for the file?'
+                }).then(function() {
+                    editors.closeFile({
+                        path: path,
+                        force: true
+                    });
+                }, function() {
                 });
             });
         }
 
         function onMultiDeletion(paths) {
             var openedFilePaths = Object.keys(editors.files);
-            var toClose = openedFilePaths.filter(function (p) {
-                return paths.some(function (deleted) {
+            var toClose = openedFilePaths.filter(function(p) {
+                return paths.some(function(deleted) {
                     if (pathUtil.isDirPath(deleted)) {
                         return p.indexOf(deleted) === 0;
                     } else {
@@ -236,15 +247,18 @@ define([
                 return;
             }
 
-            require(['webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'], function (ButtonedDialog) {
+            require(['webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'], function(ButtonedDialog) {
                 var answer = {};
-                async.eachSeries(toClose, function (filePath, cb) {
+                async.eachSeries(toClose, function(filePath, cb) {
                     var file = editors.getFile(filePath);
                     if (file) {
                         if (file.isModified()) {
                             if (answer.yesToModified || answer.noToModified) {
                                 if (answer.yesToModified) {
-                                    editors.closeFile({ path: filePath, force: true });
+                                    editors.closeFile({
+                                        path: filePath,
+                                        force: true
+                                    });
                                 }
                                 cb(null);
                                 return;
@@ -252,7 +266,10 @@ define([
                         } else {
                             if (answer.yesToUnmodified || answer.noToUnmodified) {
                                 if (answer.yesToUnmodified) {
-                                    editors.closeFile({ path: filePath, force: true });
+                                    editors.closeFile({
+                                        path: filePath,
+                                        force: true
+                                    });
                                 }
                                 cb(null);
                                 return;
@@ -261,40 +278,35 @@ define([
 
                         var modified = file.isModified();
                         var qualifier = modified ? 'Modified' : 'Unmodified';
-                        var title = 'Close ' + qualifier + ' "' +
-                            pathUtil.getFileName(filePath) + '"?';
-                        var msg = ['File "' + filePath + '" was deleted.',
-                                   'Is it OK to close the ' + qualifier.toLowerCase() +
-                                   ' editor tab for the file?'];
+                        var title = 'Close ' + qualifier + ' "' + pathUtil.getFileName(filePath) + '"?';
+                        var msg = ['File "' + filePath + '" was deleted.', 'Is it OK to close the ' + qualifier.toLowerCase() + ' editor tab for the file?'];
                         msg = msg.join('</span><br><span>');
 
                         var dialog = new ButtonedDialog({
                             title: title,
                             //buttonsWidth: '120px',
-                            buttons: [
-                                {
-                                    caption: 'Yes',
-                                    methodOnClick: 'onYes'
-                                },
-                                {
-                                    caption: 'Yes to All',
-                                    methodOnClick: 'onYesToAll'
-                                },
-                                {
-                                    caption: 'No',
-                                    methodOnClick: 'hide'
-                                },
-                                {
-                                    caption: 'No to All',
-                                    methodOnClick: 'onNoToAll'
-                                }
-                            ],
+                            buttons: [{
+                                caption: 'Yes',
+                                methodOnClick: 'onYes'
+                            }, {
+                                caption: 'Yes to All',
+                                methodOnClick: 'onYesToAll'
+                            }, {
+                                caption: 'No',
+                                methodOnClick: 'hide'
+                            }, {
+                                caption: 'No to All',
+                                methodOnClick: 'onNoToAll'
+                            }],
                             methodOnEnter: null,
-                            onYes: function () {
-                                editors.closeFile({ path: filePath, force: true });
+                            onYes: function() {
+                                editors.closeFile({
+                                    path: filePath,
+                                    force: true
+                                });
                                 this.hide();
                             },
-                            onYesToAll: function () {
+                            onYesToAll: function() {
                                 if (modified) {
                                     answer.yesToModified = true;
                                 } else {
@@ -302,7 +314,7 @@ define([
                                 }
                                 this.onYes();
                             },
-                            onNoToAll: function () {
+                            onNoToAll: function() {
                                 if (modified) {
                                     answer.noToModified = true;
                                 } else {
@@ -310,23 +322,24 @@ define([
                                 }
                                 this.hide();
                             },
-                            onHide: function () {
+                            onHide: function() {
                                 dialog.destroyRecursive();
                                 workbench.focusLastWidget();
                                 cb(null);
                             }
-
                         });
                         dialog.setContentArea('<span>' + msg + '</span>');
                         dialog.show();
                     } else {
                         cb(null);
                     }
-                }, function () {});
+                }, function() {
+                });
             });
         }
 
-        topic.subscribe('fs.cache.node.deleted', function (fsUrl, dir, name, type, movedTo) {
+
+        topic.subscribe('fs.cache.node.deleted', function(fsUrl, dir, name, type, movedTo) {
 
             function fileMoved(src, dst) {
                 var file = editors.getFile(src);
@@ -356,7 +369,7 @@ define([
                             console.assert(cellIndex >= 0);
 
                             var siblingList = [];
-                            vc.getViewList().forEach(function (view) {
+                            vc.getViewList().forEach(function(view) {
                                 var f = editors.getFileByViewId(view.getId());
                                 siblingList.push(f.path);
                             });
@@ -365,12 +378,15 @@ define([
 
                             var cursor = editors.getCursor(file);
 
-                            editors.openFile(dst,
-                                             {cellIndex: cellIndex,
-                                              siblingList: siblingList,
-                                              show: editors.currentFile === file,
-                                              cursor: cursor});
-                            editors.closeFile({path: src});
+                            editors.openFile(dst, {
+                                cellIndex: cellIndex,
+                                siblingList: siblingList,
+                                show: editors.currentFile === file,
+                                cursor: cursor
+                            });
+                            editors.closeFile({
+                                path: src
+                            });
                         }
                     }
                 }
@@ -391,7 +407,7 @@ define([
                         dst = dst + '/';
                     }
                     var paths = Object.keys(editors.files);
-                    _.each(paths, function (path) {
+                    _.each(paths, function(path) {
                         if (path.substr(0, src.length) === src) {
                             var relpath = path.substr(src.length);
                             fileMoved(src + relpath, dst + relpath);
@@ -401,7 +417,7 @@ define([
                     fileMoved(src, dst);
                 }
             } else {
-                var path = dir + name + (isDir ? '/' : '');
+                var path = dir + name + ( isDir ? '/' : '');
                 var multiDel = getMultiDeletion(path);
                 if (multiDel) {
                     console.assert(multiDel.deleted.indexOf(path) < 0);
@@ -420,7 +436,7 @@ define([
                 } else if (isDir) {
                     onMultiDeletion([path]);
                 } else {
-                    Object.keys(editors.files).forEach(function (p) {
+                    Object.keys(editors.files).forEach(function(p) {
                         if (p === path) {
                             onSingleDeletion(p);
                         }
@@ -429,7 +445,7 @@ define([
             }
         });
 
-        topic.subscribe('fs.cache.file.invalidated', function (fsURL, path) {
+        topic.subscribe('fs.cache.file.invalidated', function(fsURL, path) {
             var file = editors.getFile(path);
             if (file) {
                 if (file === editors.currentFile) {
@@ -440,7 +456,7 @@ define([
             }
         });
 
-        topic.subscribe('fs.cache.file.set', function (fsUrl, target, reason) {
+        topic.subscribe('fs.cache.file.set', function(fsUrl, target, reason) {
             if (reason === 'refreshed') {
                 var file = editors.getFile(target);
                 if (file) {
@@ -453,9 +469,9 @@ define([
             }
         });
 
-        topic.subscribe('workspace.nodes.deleting', function (paths) {
+        topic.subscribe('workspace.nodes.deleting', function(paths) {
             multipleDeletions.push(paths);
-            setTimeout(function () {
+            setTimeout(function() {
                 var i = multipleDeletions.indexOf(paths);
                 if (i >= 0) {
                     multipleDeletions.splice(i, 1);
@@ -468,22 +484,23 @@ define([
             }, 10000);
         });
 
-        topic.subscribe('#REQUEST.openFile', _.bind(editors.openFile, editors));
-        topic.subscribe('#REQUEST.closeFile', _.bind(editors.closeFile, editors));
-        topic.subscribe('#REQUEST.saveFile', _.bind(editors.saveFile, editors));
-        topic.subscribe('#REQUEST.selectFile', function (path) {
+        topic.subscribe('#REQUEST.openFile', editors.openFile.bind(editors));
+        topic.subscribe('#REQUEST.closeFile', editors.closeFile.bind(editors));
+        topic.subscribe('#REQUEST.saveFile', editors.saveFile.bind(editors));
+        topic.subscribe('#REQUEST.selectFile', function(path) {
             if (editors.getFile(path)) {
                 editors.openFile(path);
             }
         });
 
         // TODO: remove the following subscriptions
-        topic.subscribe('file.saved', _.bind(editors.onFileSaved, editors));
-        topic.subscribe('file.error', _.bind(editors.onFileError, editors));
+        topic.subscribe('file.saved', editors.onFileSaved.bind(editors));
+        topic.subscribe('file.error', editors.onFileError.bind(editors));
     }
+
     var multipleDeletions = [];
     function getMultiDeletion(path) {
-        var filtered = multipleDeletions.filter(function (md) {
+        var filtered = multipleDeletions.filter(function(md) {
             return md.indexOf(path) >= 0;
         });
 
@@ -506,55 +523,57 @@ define([
 
     var asked = [];
     function askAndReload(file) {
-        require(['popup-dialog'], function (PopupDialog) {
+        require(['popup-dialog'], function(PopupDialog) {
             if (asked.indexOf(file) === -1) {
-                console.assert(asked.length === 0,
-                               'assertion fail: only one file is asked to reload at any point of time');
+                console.assert(asked.length === 0, 'assertion fail: only one file is asked to reload at any point of time');
                 asked.push(file);
                 PopupDialog.yesno({
                     title: 'Reload File',
-                    message: file.path + '<br><br>' +
-                        'File \'' + file.name + '\' has changed. <br>' +
-                        'Do you want to reload?',
+                    message: file.path + '<br><br>' + 'File \'' + file.name + '\' has changed. <br>' + 'Do you want to reload?',
                     type: 'warning'
-                }).then(function () {
+                }).then(function() {
                     asked.pop();
                     fm.openFile(file);
-                }, function () {
+                }, function() {
                     asked.pop();
                 });
             }
         });
     }
 
-	/** @module editors */
+    /** @module editors */
     var editors = {
 
-		partContainer : null,
-		/**
-		 * Returns PartContainer for EditorParts
-		 * @returns {PartContainer}
-		 */
-		getPartContainer : function(){
-			logger.info('getPartContainer()');
-			if(this.partContainer === null){
-				this.partContainer = new PartContainer({id:'editor'});
-			}
-			return this.partContainer;
-		},
+        partContainer: null,
+        /**
+         * Returns PartContainer for EditorParts
+         * @returns {PartContainer}
+         */
+        getPartContainer: function() {
+            logger.info('getPartContainer()');
+            if (this.partContainer === null) {
+                this.partContainer = new PartContainer({
+                    id: 'editor'
+                });
+            }
+            return this.partContainer;
+        },
 
-        splitViewContainer : null,
-        editorTabFocusController : new ViewFocusController({'Title' : 'title', 'Path' : 'path'}),
+        splitViewContainer: null,
+        editorTabFocusController: new ViewFocusController({
+            'Title': 'title',
+            'Path': 'path'
+        }),
         editorExtensions: pm.getExtensions('webida.common.editors:editor'),
         files: {},
         currentFile: null,
         currentFiles: new BubblingArray(),
-        recentFiles: new BubblingArray(20),	// keep history of 20 files
+        recentFiles: new BubblingArray(20), // keep history of 20 files
         onloadPendingFilesCount: 0,
         parts: new Map()
     };
 
-    editors.setCurrentFile = function (file) {
+    editors.setCurrentFile = function(file) {
 
         logger.info('editors.setCurrentFile(' + file + ')');
 
@@ -563,7 +582,8 @@ define([
             if (editors.currentFile) {
                 view = vm.getView(editors.currentFile.viewId);
                 if (view) {
-                    workbench.unregistFromViewFocusList(view);  // TODO: do it with an extension and an extension point
+                    workbench.unregistFromViewFocusList(view);
+                    // TODO: do it with an extension and an extension point
                 }
             }
             if (file) {
@@ -587,7 +607,7 @@ define([
                     topic.publish('editors.clean.current');
                 }
 
-				var editorPart = editors.getPart(file);
+                var editorPart = editors.getPart(file);
                 if (editorPart) {
                     editorPart.focus(editors.currentFile);
                 }
@@ -608,7 +628,7 @@ define([
         }
     };
 
-    editors.ensureCreated = function (file, bShowAndFocus, cb) {
+    editors.ensureCreated = function(file, bShowAndFocus, cb) {
         logger.info('ensureCreated()');
         function showAndFocus(file) {
             var editorPart = editors.getPart(file);
@@ -622,7 +642,7 @@ define([
         }
 
         if (file.pendingCreator) {
-            file.pendingCreator(bShowAndFocus ? showAndFocus : cb);
+            file.pendingCreator( bShowAndFocus ? showAndFocus : cb);
             delete file.pendingCreator;
         } else if (bShowAndFocus) {
             showAndFocus(file);
@@ -633,14 +653,16 @@ define([
         }
     };
 
-    editors.getFileByViewId = function (viewId) {
-        return _.findWhere(editors.files, {viewId: viewId});
+    editors.getFileByViewId = function(viewId) {
+        return _.findWhere(editors.files, {
+            viewId: viewId
+        });
     };
 
     function onloadFinalize() {
         logger.info('onloadFinalize()');
         var vcs = editors.splitViewContainer.getViewContainers();
-        _.each(vcs, function (vc) {
+        _.each(vcs, function(vc) {
             var selview = vc.getSelectedView();
             if (selview) {
                 var selfile = editors.getFileByViewId(selview.getId());
@@ -649,9 +671,8 @@ define([
         });
     }
 
-
     // options === { path: string }
-    editors.closeFile = function (options) {
+    editors.closeFile = function(options) {
 
         var file;
         if (options && options.path) {
@@ -678,19 +699,19 @@ define([
             view: view,
             closable: true,
             force: options && options.force,
-            noClose: function () {
+            noClose: function() {
                 this.closable = false;
             }
         };
 
-        topic.publish('view.close', event, function () {
+        topic.publish('view.close', event, function() {
             if (event.closable) {
                 vc._remove(event.view, true);
             }
         });
     };
 
-    editors.quit = function (options) {
+    editors.quit = function(options) {
 
         var file;
         if (options && options.path) {
@@ -717,19 +738,19 @@ define([
             view: view,
             quitable: true,
             force: options && options.force,
-            noClose: function () {
+            noClose: function() {
                 this.quitable = false;
             }
         };
 
-        topic.publish('view.quit', event, function () {
+        topic.publish('view.quit', event, function() {
             if (event.quitable) {
                 vc._remove(event.view, true);
             }
         });
     };
 
-    editors.saveFile = function (option) {
+    editors.saveFile = function(option) {
         console.log('save');
         var file = editors.currentFile;
         if (option) {
@@ -742,27 +763,27 @@ define([
         }
     };
 
-    editors.getAvailableEditorExtensions = function (path, editorName) {
+    editors.getAvailableEditorExtensions = function(path, editorName) {
         var thisFileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
         var thisMimeType = extToMime[thisFileExt];
 
-        var viable1 = editors.editorExtensions.filter(function (extension) {
-            return extension.handledFileExt.some(function (fileExtension) {
+        var viable1 = editors.editorExtensions.filter(function(extension) {
+            return extension.handledFileExt.some(function(fileExtension) {
                 return thisFileExt.match('^' + fileExtension + '$');
             });
         });
-        var viable2 = editors.editorExtensions.filter(function (extension) {
-            return extension.handledMimeTypes.some(function (fileMimeType) {
+        var viable2 = editors.editorExtensions.filter(function(extension) {
+            return extension.handledMimeTypes.some(function(fileMimeType) {
                 return thisMimeType && thisMimeType.match('^' + fileMimeType + '$');
             });
         });
-        var unviable1 = editors.editorExtensions.filter(function (extension) {
-            return extension.unhandledFileExt.some(function (fileExtension) {
+        var unviable1 = editors.editorExtensions.filter(function(extension) {
+            return extension.unhandledFileExt.some(function(fileExtension) {
                 return thisFileExt.match('^' + fileExtension + '$');
             });
         });
-        var unviable2 = editors.editorExtensions.filter(function (extension) {
-            return extension.unhandledMimeTypes.some(function (fileMimeType) {
+        var unviable2 = editors.editorExtensions.filter(function(extension) {
+            return extension.unhandledMimeTypes.some(function(fileMimeType) {
                 return thisMimeType && thisMimeType.match('^' + fileMimeType + '$');
             });
         });
@@ -774,7 +795,7 @@ define([
             return null;
         } else {
             if (editorName) {
-                var exts2 = _.filter(editorExtensions, function (ext) {
+                var exts2 = _.filter(editorExtensions, function(ext) {
                     return (ext.name === editorName);
                 });
                 if (exts2.length > 0) {
@@ -789,24 +810,62 @@ define([
 
     function checkFileNameHandleExtension(path) {
         var fileName = pathUtil.getFileName(path);
-		//logger.info(fileName);
+        //logger.info(fileName);
         var extensions = pm.getExtensions('webida.common.editors:editor');
         //logger.info(extensions);
-        if (extensions instanceof Array && extensions.length) {
-            for (var i = 0; i < extensions.length ; i++) {
-                if (extensions[i].handledFileNames instanceof Array && 
-                   extensions[i].handledFileNames.indexOf(fileName) >= 0) {
+        if ( extensions instanceof Array && extensions.length) {
+            for (var i = 0; i < extensions.length; i++) {
+                if (extensions[i].handledFileNames instanceof Array && extensions[i].handledFileNames.indexOf(fileName) >= 0) {
                     return extensions[i];
                 }
             }
         }
         return null;
     }
-    
-    editors.openFile = function (path, options, callback) {
+
+    /**
+     * @deprecated since version 1.3.0
+     * This method will be remove from 1.4.0
+     * Temp Code
+     */
+    editors.openFile = function(path, options, callback) {
         logger.info('editors.openFile(' + path + ', options, callback)');
         logger.info('options = ', options);
-        
+
+		var dataSourceId = path;
+
+        //1. prepare DataSource
+        var dsRegistry = workbench.getDataSourceRegistry();
+        var dataSource = dsRegistry.getDataSourceById(path);
+        if (dataSource === null) {
+            workbench.on(Workbench.CREATE_DATA_SOURCE, function(dataSource) {
+                doWithData(dataSource);
+            });
+            workbench.createDataSource(dataSourceId);
+        } else {
+            doWithData(dataSource);
+        }
+
+        function doWithData(dataSource, options, callback) {
+            logger.info('doWithData(' + dataSource + ')');
+            //2. create PartContainer
+            //3. crate Part and add to PartContainer
+            //4. dataSource.getContents(function(contents){
+            //      part.setContents(contents);
+            //   });
+            editors.openFileOld(path, options, callback);
+        }
+
+    };
+
+    /**
+     * @deprecated since version 1.3.0
+     * This method will be remove from 1.4.0
+     */
+    editors.openFileOld = function(path, options, callback) {
+        logger.info('editors.openFile(' + path + ', options, callback)');
+        logger.info('options = ', options);
+
         options = options || {};
 
         //if this file's part is showing
@@ -819,16 +878,16 @@ define([
                 callback(editors.currentFile);
             }
 
-		//new file
+            //new file
         } else {
             var fileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
 
-			//find module for this file
+            //find module for this file
             var fileNameHandleExtension = checkFileNameHandleExtension(path);
             //for handledFileNames
             if (!options.editorName && fileNameHandleExtension) {
                 options.extension = fileNameHandleExtension;
-            //for handledFileNames or handledMimeTypes
+                //for handledFileNames or handledMimeTypes
             } else {
                 var extensions = editors.getAvailableEditorExtensions(path, options.editorName);
                 options.extension = extensions && extensions[0];
@@ -839,7 +898,7 @@ define([
                 return;
             }
 
-			var file = editors.getFile(path);
+            var file = editors.getFile(path);
             var fileNotExist = !file;
 
             if (fileNotExist) {
@@ -847,8 +906,8 @@ define([
                 editors.addFile(path, file);
             }
 
-			file.editorName = options.extension.name;
-			logger.info('file.editorName = ', file.editorName);
+            file.editorName = options.extension.name;
+            logger.info('file.editorName = ', file.editorName);
             file._openFileOption = options;
             file._openFileCallback = callback;
 
@@ -860,11 +919,11 @@ define([
         }
     };
 
-    editors.hasModifiedFile = function () {
+    editors.hasModifiedFile = function() {
         var opened = _.values(editors.files);
         var hasModified = false;
 
-        _.each(opened, function (file) {
+        _.each(opened, function(file) {
             //if (editors.isModifiedFile(file)) {
             if (file.isModified()) {
                 hasModified = true;
@@ -874,7 +933,7 @@ define([
         return hasModified;
     };
 
-    editors.setCursor = function (file, pos) {
+    editors.setCursor = function(file, pos) {
         if (file.editorContext) {
             if (file.editorContext.setCursor) {
                 file.editorContext.setCursor(pos);
@@ -882,7 +941,7 @@ define([
         }
     };
 
-    editors.getCursor = function (file) {
+    editors.getCursor = function(file) {
         if (file.editorContext) {
             if (file.editorContext.getCursor) {
                 return file.editorContext.getCursor();
@@ -901,7 +960,7 @@ define([
         }
 
         var found = false;
-        for (i = 0; i < siblings.length; i++) {
+        for ( i = 0; i < siblings.length; i++) {
             sibling = siblings[i];
             if (sibling === file.path) {
                 found = true;
@@ -920,12 +979,12 @@ define([
 
         //find from nextSilings
         found = false;
-        for (i = 0; i < nextSiblings.length; i++) {
+        for ( i = 0; i < nextSiblings.length; i++) {
             sibling = nextSiblings[i];
             if (found) {
                 break;
             }
-            for (j = 0 ; j < views.length; j++) {
+            for ( j = 0; j < views.length; j++) {
                 view = views[j];
                 if (sibling === view.getId()) {
                     index = j;
@@ -937,12 +996,12 @@ define([
 
         if (!found) {
             //find from previousSiblings
-            for (i = previousSiblings.length - 1; i >= 0; i--) {
+            for ( i = previousSiblings.length - 1; i >= 0; i--) {
                 sibling = previousSiblings[i];
                 if (found) {
                     break;
                 }
-                for (j = 0 ; j < views.length; j++) {
+                for ( j = 0; j < views.length; j++) {
                     view = views[j];
                     if (sibling === view.getId()) {
                         index = j + 1;
@@ -956,18 +1015,18 @@ define([
         return index;
     }
 
-	function getPartPath(extension) {
+    function getPartPath(extension) {
         logger.info('extension.module = ' + extension.module);
-		var partPathTokens = extension.module.split('/');
-		partPathTokens[partPathTokens.length - 1] = extension.editorPart;
-		var editorPartPath = partPathTokens.join('/');
-		logger.info('editorPartPath = ', editorPartPath);
-		return editorPartPath;
-	}
+        var partPathTokens = extension.module.split('/');
+        partPathTokens[partPathTokens.length - 1] = extension.editorPart;
+        var editorPartPath = partPathTokens.join('/');
+        logger.info('editorPartPath = ', editorPartPath);
+        return editorPartPath;
+    }
 
-	function getViewContainer(view, file, option) {
-		//cellCount=2, cellIndex=-1
-		var viewContainer;
+    function getViewContainer(view, file, option) {
+        //cellCount=2, cellIndex=-1
+        var viewContainer;
         var cellCount = editors.splitViewContainer.get('splitCount');
         var cellIndex;
         if ((option.cellIndex >= 0) && (option.cellIndex < cellCount)) {
@@ -976,7 +1035,10 @@ define([
             cellIndex = -1;
         }
         var opt = {};
-        opt.fields = {title: view.getTitle(), path: file.path};
+        opt.fields = {
+            title: view.getTitle(),
+            path: file.path
+        };
         editors.editorTabFocusController.registerView(view, opt);
         if (cellIndex === -1) {
             viewContainer = editors.splitViewContainer.getFocusedViewContainer();
@@ -984,15 +1046,16 @@ define([
             viewContainer = editors.splitViewContainer.getViewContainer(cellIndex);
         }
         return viewContainer;
-	}
+    }
 
-    editors.onFileOpened = function (file) {
+
+    editors.onFileOpened = function(file) {
 
         console.log('');
         logger.info('editors.onFileOpened(' + file + ')');
         logger.info('file._openFileOption = ', file._openFileOption);
 
-		if (!file._openFileOption) {
+        if (!file._openFileOption) {
             return;
         }
         var option = file._openFileOption;
@@ -1000,24 +1063,25 @@ define([
         delete file._openFileOption;
         delete file._openFileCallback;
 
-		//Check file is already showing
-		if (editors.currentFile === file) {
-			logger.info('editors.currentFile === file');
-			return;
-		}
+        //Check file is already showing
+        if (editors.currentFile === file) {
+            logger.info('editors.currentFile === file');
+            return;
+        }
 
-		var show = option.show !== false;
+        var show = option.show !== false;
         if (show) {
             if (editors.currentFile && editors.getPart(editors.currentFile)) {
                 editors.getPart(editors.currentFile).hide();
             }
         }
 
-		//View and ViewContainer       
+        //View and ViewContainer
         var view = vm.getView(file.viewId);
         var viewContainer = null;
         if (view === null) {
-            file.viewId = _.uniqueId('view_'); //TODO file.viewId
+            file.viewId = _.uniqueId('view_');
+            //TODO file.viewId
             view = new View(file.viewId, file.name);
             viewContainer = getViewContainer(view, file, option);
         } else {
@@ -1026,15 +1090,15 @@ define([
             }
         }
 
-		//Check exsisting part
-		var part = editors.getPart(file);
-		logger.info('part = ', part);
-		if (part) {
-			logger.info('part already exists');
+        //Check exsisting part
+        var part = editors.getPart(file);
+        logger.info('part = ', part);
+        if (part) {
+            logger.info('part already exists');
             if (option.pos) {
                 editors.setCursor(file, option.pos);
             }
-            if (typeof callback === 'function') {
+            if ( typeof callback === 'function') {
                 callback(file);
             }
             editors.refreshTabTitle(file);
@@ -1044,19 +1108,20 @@ define([
                     viewContainer.select(view, true);
                 }
             }
-			return;
-		}
+            return;
+        }
 
-		// Create EditorPart and update content
-		var partPath = getPartPath(option.extension);
-		require([partPath], function (EditorPart) {
+        // Create EditorPart and update content
+        var partPath = getPartPath(option.extension);
+        require([partPath], function(EditorPart) {
 
             var editorPart = new EditorPart(file);
-			editors.addPart(file, editorPart); //file to part map
+            editors.addPart(file, editorPart);
+            //file to part map
 
-			var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
+            var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
 
-			logger.info('viewContainer = ', viewContainer);
+            logger.info('viewContainer = ', viewContainer);
 
             if (viewContainer) {
                 view.set('tooltip', file.path);
@@ -1068,17 +1133,17 @@ define([
                     viewContainer.addLast(view);
                 }
 
-                file.pendingCreator = function (c) {
-					logger.info('file.pendingCreator(' + c + ')');
+                file.pendingCreator = function(c) {
+                    logger.info('file.pendingCreator(' + c + ')');
                     function createEditor(file, editorPart, view, callback) {
-                        editorPart.create(view.getContent(), function (file, editorContext) {
-                            file.editorContext = editorContext;	//TODO : file.editorContext refactor
+                        editorPart.create(view.getContent(), function(file, editorContext) {
+                            file.editorContext = editorContext;
+                            //TODO : file.editorContext refactor
                             if (editorPart.addChangeListener) {
-                                editorPart.addChangeListener(function (file) {
-                                    _.defer(function () {
+                                editorPart.addChangeListener(function(file) {
+                                    _.defer(function() {
                                         editors.refreshTabTitle(file);
-                                        topic.publish('file.content.changed', file.path,
-                                                      editors.getPart(file).getValue());
+                                        topic.publish('file.content.changed', file.path, editors.getPart(file).getValue());
                                     });
                                 });
                             }
@@ -1093,7 +1158,7 @@ define([
                         });
                     }
 
-                    createEditor(file, editorPart, view, function (file) {
+                    createEditor(file, editorPart, view, function(file) {
                         if (callback) {
                             callback(file);
                         }
@@ -1125,15 +1190,16 @@ define([
                 editorPart.show();
             }
 
-		});
+        });
 
-    }; //end of editors.onFileOpened
+    };
+    //end of editors.onFileOpened
 
-    editors.onFileSaved = function (file) {
+    editors.onFileSaved = function(file) {
         editors.refreshTabTitle(file);
     };
 
-    editors.onFileError = function (file) {
+    editors.onFileError = function(file) {
         editors.onloadPendingFilesCount--;
         if (editors.onloadPendingFilesCount === 0) {
             onloadFinalize();
@@ -1145,7 +1211,7 @@ define([
         }
     };
 
-    editors.refreshTabTitle = function (file) {
+    editors.refreshTabTitle = function(file) {
         var title = file.name;
         //if (editors.isModifiedFile(file)) {
         if (file.isModified()) {
@@ -1182,55 +1248,55 @@ define([
             }
         }
     };
-    
-    editors.execCommandForCurrentEditorContext = function (commandKey) { 
+
+    editors.execCommandForCurrentEditorContext = function(commandKey) {
         // Command means a method of EditorContext which have no arguments
-        
+
         if (editors.currentFile && editors.currentFile.editorContext) {
             var editorContext = editors.currentFile.editorContext;
             return editorContext[commandKey]();
         }
     };
 
-	editors.getCurrentEditorPart = function () {
-		return this.currentEditorPart;
-	};
+    editors.getCurrentEditorPart = function() {
+        return this.currentEditorPart;
+    };
 
-	editors.addPart = function (file, part) {
-		logger.info('editors.addPart(' + file + ', ' + part + ')');
-		this.parts.set(file, part);
-	};
+    editors.addPart = function(file, part) {
+        logger.info('editors.addPart(' + file + ', ' + part + ')');
+        this.parts.set(file, part);
+    };
 
-	editors.getPart = function (file) {
-		logger.info('getPart(' + file + ')');
-		if (this.parts.get(file) instanceof EditorPart) {
-			return this.parts.get(file);
-		} else {
-			return null;
-		}
-	};
+    editors.getPart = function(file) {
+        logger.info('getPart(' + file + ')');
+        if (this.parts.get(file) instanceof EditorPart) {
+            return this.parts.get(file);
+        } else {
+            return null;
+        }
+    };
 
-	//TODO : call removePart() when destroy editor panel
-	editors.removePart = function (model) {
-		if (this.getPart(model)) {
-			return this.parts.delete(model);
-		}
-		return false;
-	};
+    //TODO : call removePart() when destroy editor panel
+    editors.removePart = function(model) {
+        if (this.getPart(model)) {
+            return this.parts['delete'](model);
+        }
+        return false;
+    };
 
-	editors.addFile = function (path, file) {
-		this.files[path] = file;
-	};
+    editors.addFile = function(path, file) {
+        this.files[path] = file;
+    };
 
-	editors.getFile = function (path) {
-		return this.files[path];
-	};
+    editors.getFile = function(path) {
+        return this.files[path];
+    };
 
-	editors.removeFile = function (path) {
-		var file = editors.files[path];
-		delete editors.files[path];
-		return file;
-	};
+    editors.removeFile = function(path) {
+        var file = editors.files[path];
+        delete editors.files[path];
+        return file;
+    };
 
     subscribeToTopics();
 

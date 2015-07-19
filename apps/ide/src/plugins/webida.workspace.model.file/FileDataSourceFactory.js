@@ -16,42 +16,55 @@
 
 /**
  * Constructor
- * DataSourceFactory
+ * FileDataSourceFactory
  *
- * @see EventEmitter, PartContainer, Part, Perspective
- * @since: 2015.07.12
+ * @see
+ * @since: 2015.07.15
  * @author: hw.shim
  */
 
 // @formatter:off
 define([
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client'
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/plugins/workbench/ui/DataSourceFactory',
+    './FileDataSource'
 ], function(
-	genetic, 
-	Logger
+    EventEmitter,
+    genetic, 
+    Logger,
+    DataSourceFactory,
+    FileDataSource
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
+
+    /**
+     * @typedef {Object} DataSource
+     */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function DataSourceFactory() {
-        logger.info('new DataSourceFactory()');
+    function FileDataSourceFactory() {
+        logger.info('new FileDataSourceFactory()');
+
     }
 
 
-    genetic.inherits(DataSourceFactory, Object, {
+    genetic.inherits(FileDataSourceFactory, DataSourceFactory, {
+
         /**
          * @param {Object} dataSourceId
+         * @return {Array}
          */
         create: function(dataSourceId) {
-			throw new Error('create(dataSourceId) should be implemented by ' 
-				+ this.constructor.name);
+            var fileDataSource = new FileDataSource(dataSourceId);
+            return fileDataSource;
         }
     });
 
-    return DataSourceFactory;
+    return FileDataSourceFactory;
 });
