@@ -68,7 +68,7 @@ define([
     'use strict';
 
 	var singleLogger = new Logger.getSingleton();
-	//var logger = new Logger();
+	var logger = new Logger();
 	//logger.setConfig('level', Logger.LEVELS.log);
 	//logger.off();
 
@@ -442,81 +442,114 @@ define([
     singleLogger.log('(j) in initialization of workbench module');
 
 	//TODO : refactor this plugin into WorkBench
-	function WebidaWorkbench() {
-		Workbench.call(this);
-		this.addPage(new Page('JavaScript'));
-	}
 
-	genetic.inherits(WebidaWorkbench, Workbench, {
-        appendView : function (view, location) {
+    function WebidaWorkbench() {
+        Workbench.call(this);
+
+		//TODO : split into a file to save and restore
+        var model = {
+            pages: [{
+            	name: 'JavaScript',
+            	type: 'Page',
+                id: 'webida.page.javascript',
+                split: {
+                    orientation: 0,
+                    ratio: [0.3, 0.7]
+                },
+                children: [{
+                	type: 'LayoutPane',
+                    id: 'webida.layout_pane.left'
+                }, {
+                    type: 'LayoutPane',
+                    id: 'webida.layout_pane.center_and_right',
+                    split: {
+                        orientation: 0,
+                        ratio: [0.7, 0.3]
+                    },
+                    children: [{
+                    	type: 'LayoutPane',
+                        id: 'webida.layout_pane.center'
+                    }, {
+                    	type: 'LayoutPane',
+                        id: 'webida.layout_pane.right'
+                    }]
+                }]
+            }]
+        };
+
+		this.parseModel(model);
+		logger.info(this);
+    }
+
+    genetic.inherits(WebidaWorkbench, Workbench, {
+
+        appendView: function(view, location) {
             viewsController.appendView(view, location);
         },
 
-        getMenuItemTrees : function () {
+        getMenuItemTrees: function() {
             return menuItemTrees;
         },
 
         /*
-        getNullItems : function () {
-            return null;
-        },
+         getNullItems : function () {
+         return null;
+         },
          */
 
-        getShortcutsItems : function () {
+        getShortcutsItems: function() {
             return {
-                '&Shortcut List' : [ 'cmnd', 'webida-lib/plugins/workbench/wb-commands', 'showViableShortcutKeys' ],
-                '&Command List' : [ 'cmnd', 'webida-lib/plugins/workbench/wb-commands', 'showCmdList' ]
+                '&Shortcut List': ['cmnd', 'webida-lib/plugins/workbench/wb-commands', 'showViableShortcutKeys'],
+                '&Command List': ['cmnd', 'webida-lib/plugins/workbench/wb-commands', 'showCmdList']
             };
         },
-        getBogusItems : function () {
+        getBogusItems: function() {
             return {
-                'Focus Menu Bar' : [ 'cmnd', 'webida-lib/plugins/workbench/wb-commands', 'focusTopMenubar' ]
+                'Focus Menu Bar': ['cmnd', 'webida-lib/plugins/workbench/wb-commands', 'focusTopMenubar']
             };
         },
-        getWorkspaceSeletionItem : function () {
+        getWorkspaceSeletionItem: function() {
             return {
-                'Switc&h Workspace' : [ 'cmnd', 'webida-lib/plugins/workbench/workspaceSelectionDialog', 'show' ],
-                'Save Status' : [ 'cmnd', 'webida-lib/app', 'saveStatus' ],
-                '&Quit' : [ 'cmnd', 'webida-lib/plugins/editors/plugin', 'quit' ]
+                'Switc&h Workspace': ['cmnd', 'webida-lib/plugins/workbench/workspaceSelectionDialog', 'show'],
+                'Save Status': ['cmnd', 'webida-lib/app', 'saveStatus'],
+                '&Quit': ['cmnd', 'webida-lib/plugins/editors/plugin', 'quit']
             };
         },
 
-        getItemsUnderView : function () {
+        getItemsUnderView: function() {
             var items = {};
-            items['Select View from &List'] =
-                [ 'cmnd', 'webida-lib/plugins/workbench/views-controller', 'showViewList' ];
-            items['Toggle &Menu'] =
-                [ 'cmnd', 'webida-lib/plugins/workbench/views-controller', 'toggleMenubar' ];
-            items['Toggle &Toolbar'] =
-                [ 'cmnd', 'webida-lib/plugins/workbench/views-controller', 'toggleToolbar' ];
-            items['Toggle &Full-Screen'] =
-                [ 'cmnd', 'webida-lib/plugins/workbench/views-controller', 'toggleFullScreen' ];
+            items['Select View from &List'] = ['cmnd', 'webida-lib/plugins/workbench/views-controller', 'showViewList'];
+            items['Toggle &Menu'] = ['cmnd', 'webida-lib/plugins/workbench/views-controller', 'toggleMenubar'];
+            items['Toggle &Toolbar'] = ['cmnd', 'webida-lib/plugins/workbench/views-controller', 'toggleToolbar'];
+            items['Toggle &Full-Screen'] = ['cmnd', 'webida-lib/plugins/workbench/views-controller', 'toggleFullScreen'];
 
             return items;
         },
 
-        registToViewFocusList : function (view, opt) {
+        registToViewFocusList: function(view, opt) {
             var option = {};
-            option.fields = {title: opt.title};
+            option.fields = {
+                title: opt.title
+            };
             if (opt.hasOwnProperty('key')) {
                 option.key = opt.key;
             }
             viewsController.focusController.registerView(view, option);
         },
 
-        unregistFromViewFocusList : function (view) {
+        unregistFromViewFocusList: function(view) {
             return viewsController.focusController.unregisterView(view);
         },
 
-        registToElementFocusList : function (/*element, opt*/) {
+        registToElementFocusList: function(/*element, opt*/) {
             //return focusManager.registElement(element, opt);
         },
 
-        unregistFromElementFocusList : function (/*element*/) {
+        unregistFromElementFocusList: function(/*element*/) {
 
         },
 
-        menuCallbackShowMenubar : function (index) {
+        menuCallbackShowMenubar: function(index) {
             if (index === 0) {
                 viewsController.setMenubarState('show');
             } else {
@@ -524,7 +557,7 @@ define([
             }
         },
 
-        menuCallbackShowToolbar : function (index) {
+        menuCallbackShowToolbar: function(index) {
             if (index === 0) {
                 viewsController.setToolbarState('show');
             } else {
@@ -532,47 +565,47 @@ define([
             }
         },
 
-        showTopMenubar : function () {
+        showTopMenubar: function() {
             viewsController.removeClass(viewsController.getWorkbenchTopElement(), 'workbenchMenubarHide');
         },
 
-        hideTopMenubar : function () {
+        hideTopMenubar: function() {
             domClass.addClass(viewsController.getWorkbenchTopElement(), 'workbenchMenubarHide');
         },
 
-        showTopToolbar : function () {
+        showTopToolbar: function() {
             domClass.removeClass(viewsController.getWorkbenchTopElement(), 'workbenchToolbarHide');
         },
 
-        hideTopToolbar : function () {
+        hideTopToolbar: function() {
             domClass.addClass(viewsController.getWorkbenchTopElement(), 'workbenchToolbarHide');
         },
 
-        isTopMenubarHided : function () {
+        isTopMenubarHided: function() {
             return domClass.contains(viewsController.getWorkbenchTopElement(), 'workbenchMenubarHide');
         },
 
-        isTopToolbarHided : function () {
+        isTopToolbarHided: function() {
             return domClass.contains(viewsController.getWorkbenchTopElement(), 'workbenchToolbarHide');
         },
 
-        setStatusText : function (text) {
+        setStatusText: function(text) {
             viewsController.setStatusbarText(text);
         },
 
-        addJob : function (title) {
+        addJob: function(title) {
             return jobManager.addJob(title);
         },
 
-        removeJob : function (id) {
+        removeJob: function(id) {
             jobManager.removeJob(id);
         },
 
-        getContext : function () {
+        getContext: function() {
             return context;
         },
 
-        setContext : function (paths, etc) {
+        setContext: function(paths, etc) {
             if (paths && paths.length > 0) {
                 context.paths = paths;
                 var path = paths[0].split('/');
@@ -595,20 +628,20 @@ define([
             topic.publish('workbench.context.changed', context);
         },
 
-        focusLastWidget : focusLastWidget,
+        focusLastWidget: focusLastWidget,
 
-        openWorkspaceView: function () {
+        openWorkspaceView: function() {
             // left pane is closed
             if (viewsController.isPanelCollapsed('left')) {
                 viewsController.expandPanel('left');
             }
         },
 
-        toggleFullScreen : function () {
+        toggleFullScreen: function() {
             viewsController.toggleFullScreen();
         }
+    }); 
 
-    });
 
     singleLogger.log('initialized workbench plugin\'s module');
 

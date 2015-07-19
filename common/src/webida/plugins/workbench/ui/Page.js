@@ -47,9 +47,10 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function Page(name) {
-        logger.info('new Page(' + name + ')');
+    function Page(id, name) {
+        logger.info('new Page(' + id + ', ' + name + ')');
 
+        LayoutTree.call(this, id);
         this.setName(name);
 
         /** @type {PartRegistry} */
