@@ -21,6 +21,10 @@
             { "name": "type", "type": "string", "desc": "run type id" },
             { "name": "run", "type": "function", "desc": "run a project with the specified run configuration"},
             { "name": "debug", "type": "function", "desc": "debug a project with the specified run configuration"}
+        ],
+        "webida.ide.project-management.run:hook": [
+            { "name": "type", "type": "string", "desc": "run type id" },
+            { "name": "beforeRun", "type": "function", "desc": "add a hook before run"}
         ]
     },
 

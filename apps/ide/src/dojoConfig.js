@@ -36,7 +36,6 @@ var dojoConfig = {
     locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
     paths: {
         'webida-lib': '../../../common/src/webida',
-        'other-lib': '../../../external/src',
         'lib' : 'lib',
         'plugins' : 'plugins',
         'external': '../../../bower_components'
