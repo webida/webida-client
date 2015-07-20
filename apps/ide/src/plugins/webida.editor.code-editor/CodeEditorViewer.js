@@ -931,7 +931,9 @@ define([
 	        this.editor = codemirror(this.getContainerElement(), options);
 	        
             this.editor.on("change", function(cm, change) {
-                self.getModel().update(cm.getValue());
+            	if(self.getModel()){
+            		self.getModel().update(cm.getValue());
+            	}
                 //console.log('self.getModel() = ', self.getModel());
             }); 
 
