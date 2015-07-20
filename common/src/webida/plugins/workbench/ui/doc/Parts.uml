@@ -206,10 +206,10 @@
 <XPD:OBJ name="OwnedViews[3]" type="UMLClassView" guid="i2CXLyf0h0CvkaaA/IZNlQAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Left" type="integer">741</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">1571</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">93</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">43</XPD:ATTR>
+<XPD:ATTR name="Left" type="integer">736</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">1568</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">99</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">56</XPD:ATTR>
 <XPD:REF name="Model">iSnPhSKxL0SccD9GIrkf7QAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="BnUODACFSEmuzoGR2P0AwQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="zoQo3IWrF0uY78wInhRJSgAA">
@@ -327,7 +327,7 @@
 <XPD:OBJ name="OwnedViews[7]" type="UMLGeneralizationView" guid="59CuZsTGS06/ox8VE4/c9gAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">787,1704;787,1613</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">787,1704;786,1623</XPD:ATTR>
 <XPD:REF name="Model">xRUb6xjQdE2P/pLzZz58ZgAA</XPD:REF>
 <XPD:REF name="Head">i2CXLyf0h0CvkaaA/IZNlQAA</XPD:REF>
 <XPD:REF name="Tail">P1ppqmBbSE6ueerMk070wAAA</XPD:REF>
@@ -526,8 +526,9 @@
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[12]" type="UMLClassView" guid="0K5bEl5BuECtZbKZK7a7KgAA">
-<XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
+<XPD:ATTR name="LineColor" type="string">clSilver</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
+<XPD:ATTR name="FontColor" type="string">clGray</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">303</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1524</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">96</XPD:ATTR>
@@ -716,7 +717,7 @@
 <XPD:OBJ name="OwnedViews[18]" type="UMLAssociationView" guid="E2CyxzRWuU+l3Qy3KQbdygAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">885,1592;833,1592</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">885,1593;834,1594</XPD:ATTR>
 <XPD:REF name="Model">2I755AGcxUiQK8l7CkjZDQAA</XPD:REF>
 <XPD:REF name="Head">i2CXLyf0h0CvkaaA/IZNlQAA</XPD:REF>
 <XPD:REF name="Tail">Iwa+upeMkkmjoG4eLFLL2gAA</XPD:REF>
@@ -832,7 +833,7 @@
 <XPD:ATTR name="Left" type="integer">284</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1252</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">119</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">145</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">69</XPD:ATTR>
 <XPD:ATTR name="StereotypeDisplay" type="UMLStereotypeDisplayKind">sdkNone</XPD:ATTR>
 <XPD:REF name="Model">oO9t3Emz2kWliFMGhRYvcwAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="QNKKAHR8k0yeoPpynpMQZQAA">
@@ -857,7 +858,7 @@
 <XPD:OBJ name="OwnedViews[21]" type="UMLRealizationView" guid="FF+0i1mO50SYqRPUEzEg5gAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">769,1571;614,1385</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">763,1568;613,1385</XPD:ATTR>
 <XPD:REF name="Model">5oLUDOVMZEijitDYHxhUAAAA</XPD:REF>
 <XPD:REF name="Head">gJl7SUFJ40GO2eWcPrEXTgAA</XPD:REF>
 <XPD:REF name="Tail">i2CXLyf0h0CvkaaA/IZNlQAA</XPD:REF>
@@ -881,8 +882,9 @@
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[22]" type="UMLRealizationView" guid="1ybzxmwoNUWiY+tQTf+V6gAA">
-<XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
+<XPD:ATTR name="LineColor" type="string">clSilver</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
+<XPD:ATTR name="FontColor" type="string">clGray</XPD:ATTR>
 <XPD:ATTR name="Points" type="Points">370,1524;497,1385</XPD:ATTR>
 <XPD:REF name="Model">MndUPPl8KEW200x70fNoHwAA</XPD:REF>
 <XPD:REF name="Head">gJl7SUFJ40GO2eWcPrEXTgAA</XPD:REF>
@@ -910,7 +912,7 @@
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">356</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">924</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">936</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">172</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">238</XPD:ATTR>
 <XPD:ATTR name="StereotypeDisplay" type="UMLStereotypeDisplayKind">sdkNone</XPD:ATTR>
@@ -937,7 +939,7 @@
 <XPD:OBJ name="OwnedViews[24]" type="UMLAssociationView" guid="EooBB0DJwk2Sw3juepQhzwAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">527,997;644,935</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">527,1005;644,939</XPD:ATTR>
 <XPD:REF name="Model">1sGjlykcskGGDPX+eMAvXwAA</XPD:REF>
 <XPD:REF name="Head">kc+XTU8ZREKzpZ/2itAQRgAA</XPD:REF>
 <XPD:REF name="Tail">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
@@ -1024,7 +1026,7 @@
 <XPD:OBJ name="OwnedViews[25]" type="UMLGeneralizationView" guid="+gA4FMe3lUy+T7N5XhrD+gAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">368,1252;400,1161</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">357,1252;391,1173</XPD:ATTR>
 <XPD:REF name="Model">yDyPcRjGVEmMupV2qAJ/TQAA</XPD:REF>
 <XPD:REF name="Head">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
 <XPD:REF name="Tail">+H+kxd352kS+7uWtwYaUHgAA</XPD:REF>
@@ -1050,7 +1052,7 @@
 <XPD:OBJ name="OwnedViews[26]" type="UMLGeneralizationView" guid="B52H0elPrU6J1ElXdKX+4wAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">530,1252;491,1161</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">529,1252;494,1173</XPD:ATTR>
 <XPD:REF name="Model">21qEbWmYrE+V/QEziUD32gAA</XPD:REF>
 <XPD:REF name="Head">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
 <XPD:REF name="Tail">gJl7SUFJ40GO2eWcPrEXTgAA</XPD:REF>
@@ -1074,8 +1076,9 @@
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[27]" type="UMLClassView" guid="4Sky8T9PNUupsMOVrdagHgAA">
-<XPD:ATTR name="LineColor" type="string">$00363636</XPD:ATTR>
+<XPD:ATTR name="LineColor" type="string">clSilver</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
+<XPD:ATTR name="FontColor" type="string">clGray</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">130</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1524</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">134</XPD:ATTR>
@@ -1106,8 +1109,9 @@
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[28]" type="UMLClassView" guid="CVisN1zMzEGf3dBkKUeNXQAA">
-<XPD:ATTR name="LineColor" type="string">$00363636</XPD:ATTR>
+<XPD:ATTR name="LineColor" type="string">clSilver</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
+<XPD:ATTR name="FontColor" type="string">clGray</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">8</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1524</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">83</XPD:ATTR>
@@ -1137,8 +1141,9 @@
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[29]" type="UMLAssociationView" guid="GrlI3MQaj0CxNoMr84YJrQAA">
-<XPD:ATTR name="LineColor" type="string">$00363636</XPD:ATTR>
+<XPD:ATTR name="LineColor" type="string">clSilver</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
+<XPD:ATTR name="FontColor" type="string">clGray</XPD:ATTR>
 <XPD:ATTR name="Points" type="Points">263,1545;303,1545</XPD:ATTR>
 <XPD:REF name="Model">iPVNRi71ZkWxNwi04806QgAA</XPD:REF>
 <XPD:REF name="Head">0K5bEl5BuECtZbKZK7a7KgAA</XPD:REF>
@@ -1221,8 +1226,9 @@
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[30]" type="UMLAssociationView" guid="nvaBVpIDqUGGgpNNADjLQwAA">
-<XPD:ATTR name="LineColor" type="string">$00363636</XPD:ATTR>
+<XPD:ATTR name="LineColor" type="string">clSilver</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
+<XPD:ATTR name="FontColor" type="string">clGray</XPD:ATTR>
 <XPD:ATTR name="Points" type="Points">90,1545;130,1545</XPD:ATTR>
 <XPD:REF name="Model">x68PaYAbYky+QzYmRxd1WwAA</XPD:REF>
 <XPD:REF name="Head">4Sky8T9PNUupsMOVrdagHgAA</XPD:REF>
@@ -1451,7 +1457,7 @@
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">872</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">1290</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">1284</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">179</XPD:ATTR>
 <XPD:ATTR name="Height" type="integer">212</XPD:ATTR>
 <XPD:ATTR name="StereotypeDisplay" type="UMLStereotypeDisplayKind">sdkNone</XPD:ATTR>
@@ -1478,7 +1484,7 @@
 <XPD:OBJ name="OwnedViews[35]" type="UMLRealizationView" guid="hgoYxjigekW0x5PYQPZxXAAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">960,1532;960,1501</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">960,1532;960,1495</XPD:ATTR>
 <XPD:REF name="Model">Hm7vZ4LqOka6ZKPlN6hQywAA</XPD:REF>
 <XPD:REF name="Head">zqCI6VCNZkmlcUtMIsXylwAA</XPD:REF>
 <XPD:REF name="Tail">Iwa+upeMkkmjoG4eLFLL2gAA</XPD:REF>
@@ -1675,7 +1681,7 @@
 <XPD:ATTR name="Left" type="integer">428</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1524</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">259</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">147</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">173</XPD:ATTR>
 <XPD:REF name="Model">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="Z9qmfa2afEGtSo+bz7kqVAAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="8TPKrgpkeEu8kSrU+Y41aQAA">
@@ -1761,7 +1767,7 @@
 <XPD:OBJ name="OwnedViews[41]" type="UMLGeneralizationView" guid="ktEw3j1x7UWeX2nRroBQAQAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">527,1044;840,1052;1016,840;1016,613</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">527,1054;836,1052;860,952;1016,776;1016,613</XPD:ATTR>
 <XPD:REF name="Model">Gd2o/6JTvUCYPl5aAwVSaAAA</XPD:REF>
 <XPD:REF name="Head">QTv8/bdafUO2YE7d/VvO0QAA</XPD:REF>
 <XPD:REF name="Tail">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
@@ -2003,7 +2009,7 @@
 <XPD:OBJ name="OwnedViews[48]" type="UMLAssociationView" guid="+YXQca40w0Cmcxh3uGCrZgAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">872,1419;868,1420;744,1420;634,1524</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">872,1419;868,1420;744,1420;642,1524</XPD:ATTR>
 <XPD:REF name="Model">xbPdi45U7k6yWSGxgOstWwAA</XPD:REF>
 <XPD:REF name="Head">HyExay2rfEyfhFH3mzH2mAAA</XPD:REF>
 <XPD:REF name="Tail">zqCI6VCNZkmlcUtMIsXylwAA</XPD:REF>
@@ -3038,7 +3044,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[69]" type="UMLAssociationView" guid="vTDP8rGT7kSlscrieVOT6wAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">356,1019;144,960;144,555</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">356,1027;144,960;144,555</XPD:ATTR>
 <XPD:REF name="Model">496dHQRREEKx+DuWHNRCYgAA</XPD:REF>
 <XPD:REF name="Head">nWEVBv2n/0y1h8jhgqOwBgAA</XPD:REF>
 <XPD:REF name="Tail">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
@@ -3263,7 +3269,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[75]" type="UMLAssociationView" guid="W70HasJ/Gk6Bwm99VRAy4wAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">441,924;441,875</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">441,936;441,875</XPD:ATTR>
 <XPD:REF name="Model">Hq3lmvrX9k+39c82YUaj8gAA</XPD:REF>
 <XPD:REF name="Head">EMq4yC7EMEOP9ZZiF9CzlQAA</XPD:REF>
 <XPD:REF name="Tail">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
@@ -3692,7 +3698,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:ATTR name="Left" type="integer">1080</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1304</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">184</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">134</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">147</XPD:ATTR>
 <XPD:REF name="Model">o1BNCjBXj02trNbzjEqCDwAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="VAD+I0PMf06OBK29S2bRfQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="TFkG9E2tbkqurDYLIMg/EwAA">
@@ -3720,7 +3726,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[83]" type="UMLAssociationView" guid="/3rLKquNekGwcYSklF38mgAA">
 <XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1172,1437;1172,1460;1033,1546</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1172,1450;1172,1460;1033,1546</XPD:ATTR>
 <XPD:REF name="Model">4WBwm6zZDkyFMr3+RB+Y8AAA</XPD:REF>
 <XPD:REF name="Head">Iwa+upeMkkmjoG4eLFLL2gAA</XPD:REF>
 <XPD:REF name="Tail">f/uKU/Q8/EWM1O9/9rGX6QAA</XPD:REF>
@@ -3830,7 +3836,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[85]" type="UMLGeneralizationView" guid="Ni+X8lNOkkW7tVWYAOJ3eAAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1019,1024;1060,940;1060,736;1032,613</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1043,969;1060,940;1060,736;1032,613</XPD:ATTR>
 <XPD:REF name="Model">jlewYdseEUWAUiKMbZH3jQAA</XPD:REF>
 <XPD:REF name="Head">QTv8/bdafUO2YE7d/VvO0QAA</XPD:REF>
 <XPD:REF name="Tail">Mgy/nAByZkeJCu8OF2kHxQAA</XPD:REF>
@@ -3856,7 +3862,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[86]" type="UMLAssociationView" guid="f2m1HdEqnEu3l1fWQE13qwAA">
 <XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1100,1198;1043,1175</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1104,1188;1043,1153</XPD:ATTR>
 <XPD:REF name="Model">sz7tIkQa7kauM0WpEkW8hwAA</XPD:REF>
 <XPD:REF name="Head">Mgy/nAByZkeJCu8OF2kHxQAA</XPD:REF>
 <XPD:REF name="Tail">u5C/Cu9jNU+2tydgED6OgAAA</XPD:REF>
@@ -3940,7 +3946,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[87]" type="UMLAssociationView" guid="BAL7Ri4Vu0uJvr//b0BPlwAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">872,1376;836,1368;708,1368;632,1343</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">872,1374;836,1368;708,1368;632,1343</XPD:ATTR>
 <XPD:REF name="Model">wooVkG8LNEmIPm5hwcpMCwAA</XPD:REF>
 <XPD:REF name="Head">gJl7SUFJ40GO2eWcPrEXTgAA</XPD:REF>
 <XPD:REF name="Tail">zqCI6VCNZkmlcUtMIsXylwAA</XPD:REF>
@@ -4025,9 +4031,9 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">880</XPD:ATTR>
-<XPD:ATTR name="Top" type="integer">1024</XPD:ATTR>
+<XPD:ATTR name="Top" type="integer">956</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">164</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">238</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">303</XPD:ATTR>
 <XPD:ATTR name="StereotypeDisplay" type="UMLStereotypeDisplayKind">sdkNone</XPD:ATTR>
 <XPD:REF name="Model">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="p5bb4pckhkS1+msi+/wiBwAA">
@@ -4052,7 +4058,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[89]" type="UMLGeneralizationView" guid="rX+NlHCSbkGvev1wSkxwyQAA">
 <XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">961,1290;961,1261</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">961,1284;961,1258</XPD:ATTR>
 <XPD:REF name="Model">DabV4QlII0WObnnqTWYTHgAA</XPD:REF>
 <XPD:REF name="Head">Mgy/nAByZkeJCu8OF2kHxQAA</XPD:REF>
 <XPD:REF name="Tail">zqCI6VCNZkmlcUtMIsXylwAA</XPD:REF>
@@ -4220,7 +4226,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[95]" type="UMLAssociationView" guid="k/oKoyEMQEOYWDtzo5RrBAAA">
 <XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1173,1552;1172,1500;1050,1439</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1173,1552;1172,1500;1050,1436</XPD:ATTR>
 <XPD:REF name="Model">dlEIIyCBh02uS7VOWOfdQAAA</XPD:REF>
 <XPD:REF name="Head">zqCI6VCNZkmlcUtMIsXylwAA</XPD:REF>
 <XPD:REF name="Tail">aOUajAEg1EKprad3h3peOgAA</XPD:REF>
@@ -4361,7 +4367,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:ATTR name="Left" type="integer">64</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1024</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">164</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">238</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">303</XPD:ATTR>
 <XPD:ATTR name="StereotypeDisplay" type="UMLStereotypeDisplayKind">sdkNone</XPD:ATTR>
 <XPD:REF name="Model">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="033no2JPeUODtBpCvG4GcAAA">
@@ -4386,7 +4392,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[99]" type="UMLAssociationView" guid="+IoL5ynOg0q9h+dP7+t5kAAA">
 <XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">227,1114;356,1071</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">227,1141;356,1089</XPD:ATTR>
 <XPD:REF name="Model">u95cU7u/TUeN8+RmCMV5vwAA</XPD:REF>
 <XPD:REF name="Head">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
 <XPD:REF name="Tail">21YwyTNwYE+We1Yf6TIIvgAA</XPD:REF>
@@ -4695,6 +4701,11 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="ClientDependencies[0]">5oLUDOVMZEijitDYHxhUAAAA</XPD:REF>
 <XPD:ATTR name="#Specializations" type="integer">1</XPD:ATTR>
 <XPD:REF name="Specializations[0]">xRUb6xjQdE2P/pLzZz58ZgAA</XPD:REF>
+<XPD:ATTR name="#Operations" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="Operations[0]" type="UMLOperation" guid="FgbmDDzcUU+FkiALdpf9kwAA">
+<XPD:ATTR name="Name" type="string">getViewerClass</XPD:ATTR>
+<XPD:REF name="Owner">iSnPhSKxL0SccD9GIrkf7QAA</XPD:REF>
+</XPD:OBJ>
 <XPD:ATTR name="#Associations" type="integer">1</XPD:ATTR>
 <XPD:REF name="Associations[0]">Z1pohNEM3kGmMBKXKnzJNAAA</XPD:REF>
 </XPD:OBJ>
@@ -5740,29 +5751,33 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="Views[3]">t1qtU8tzO0CX5sEqnoL2ywAA</XPD:REF>
 <XPD:ATTR name="#ClientDependencies" type="integer">1</XPD:ATTR>
 <XPD:REF name="ClientDependencies[0]">UOZwVQx4pUenb7m6gifh7AAA</XPD:REF>
-<XPD:ATTR name="#Operations" type="integer">7</XPD:ATTR>
+<XPD:ATTR name="#Operations" type="integer">8</XPD:ATTR>
 <XPD:OBJ name="Operations[0]" type="UMLOperation" guid="+ZuCnSApFkaZ71nK8il9uwAA">
 <XPD:ATTR name="Name" type="string">createViewers</XPD:ATTR>
 <XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkProtected</XPD:ATTR>
 <XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Operations[1]" type="UMLOperation" guid="Rz5SdscPeU+f8cI3hkmyFQAA">
-<XPD:ATTR name="Name" type="string">getAllViewers</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">getViewers</XPD:ATTR>
 <XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Operations[2]" type="UMLOperation" guid="UbFha8RwVUa89dJcBWBXigAA">
 <XPD:ATTR name="Name" type="string">addViewer</XPD:ATTR>
 <XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
-<XPD:ATTR name="#Parameters" type="integer">3</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="IFn1IlQ4bky44FDZ1qR1cQAA">
-<XPD:ATTR name="Name" type="string">title</XPD:ATTR>
+<XPD:ATTR name="#Parameters" type="integer">4</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="Z7mo1I+0EEmtCRkJ79kACgAA">
+<XPD:ATTR name="Name" type="string">Object id</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">UbFha8RwVUa89dJcBWBXigAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="+sov7igamUufE40rJRxIFAAA">
+<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="gihQBjA020GEJS50uMi7AQAA">
+<XPD:ATTR name="Name" type="string">String title</XPD:ATTR>
+<XPD:REF name="BehavioralFeature">UbFha8RwVUa89dJcBWBXigAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Parameters[2]" type="UMLParameter" guid="bGBRuGbMG06EnsD2iOUpxgAA">
 <XPD:ATTR name="Name" type="string">viewer</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">UbFha8RwVUa89dJcBWBXigAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Parameters[2]" type="UMLParameter" guid="Qv9LOUbvd0+TGjNx+xizfQAA">
+<XPD:OBJ name="Parameters[3]" type="UMLParameter" guid="jMsGfOsVck27oo32WF8p2AAA">
 <XPD:ATTR name="Name" type="string">index</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">UbFha8RwVUa89dJcBWBXigAA</XPD:REF>
 </XPD:OBJ>
@@ -5790,19 +5805,29 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Operations[6]" type="UMLOperation" guid="lHO+9RvPEEiwn8q/zABJTgAA">
-<XPD:ATTR name="Name" type="string">getViewerByDataSource</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">getViewerById</XPD:ATTR>
 <XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="3E2/EVyxEEada4baswquxgAA">
-<XPD:ATTR name="Name" type="string">ds</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="2GdPOv6LJ0asjMk2dWi7lgAA">
+<XPD:ATTR name="Name" type="string">Object id</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">lHO+9RvPEEiwn8q/zABJTgAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
+<XPD:OBJ name="Operations[7]" type="UMLOperation" guid="It0WRrYWl0W7cX499X63iAAA">
+<XPD:ATTR name="Name" type="string">getTabContainer</XPD:ATTR>
+<XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
+</XPD:OBJ>
 <XPD:ATTR name="#Associations" type="integer">1</XPD:ATTR>
 <XPD:REF name="Associations[0]">CZ3+FkkkQE6/h+NO7hrjEQAA</XPD:REF>
-<XPD:ATTR name="#Attributes" type="integer">1</XPD:ATTR>
-<XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="l9FBan0FTUyd1q2IoM5JUwAA">
+<XPD:ATTR name="#Attributes" type="integer">2</XPD:ATTR>
+<XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="uYJ88CpWFUG2o3elArHtKgAA">
+<XPD:ATTR name="Name" type="string">TabContainer tabContainer</XPD:ATTR>
+<XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
+<XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Attributes[1]" type="UMLAttribute" guid="l9FBan0FTUyd1q2IoM5JUwAA">
 <XPD:ATTR name="Name" type="string">Map&lt;Object ID, EditorViewer viewer&gt; viewers</XPD:ATTR>
+<XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
 <XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
@@ -7237,7 +7262,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="ClientDependencies[0]">JkUY7sp4+UGmOtzZ2siytAAA</XPD:REF>
 <XPD:ATTR name="#Generalizations" type="integer">1</XPD:ATTR>
 <XPD:REF name="Generalizations[0]">b/7syxWBdkCAjoEJ3qMR+AAA</XPD:REF>
-<XPD:ATTR name="#Operations" type="integer">6</XPD:ATTR>
+<XPD:ATTR name="#Operations" type="integer">7</XPD:ATTR>
 <XPD:OBJ name="Operations[0]" type="UMLOperation" guid="+3LXr3vwtESYAK2MjHYeygAA">
 <XPD:ATTR name="Name" type="string">getCharAt</XPD:ATTR>
 <XPD:REF name="Owner">o1BNCjBXj02trNbzjEqCDwAA</XPD:REF>
@@ -7283,6 +7308,15 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="Parameters[2]" type="UMLParameter" guid="+ZEmzkFml0u7aQWcbKWbzwAA">
 <XPD:ATTR name="Name" type="string">text</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">ZO1asug+pkqzrPIp6JzFnQAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[6]" type="UMLOperation" guid="iUgNd+XecUuxI7QFACPdwAAA">
+<XPD:ATTR name="Name" type="string">update</XPD:ATTR>
+<XPD:REF name="Owner">o1BNCjBXj02trNbzjEqCDwAA</XPD:REF>
+<XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="rduD9h5Z6UC0u84ZL6n41AAA">
+<XPD:ATTR name="Name" type="string">String text</XPD:ATTR>
+<XPD:REF name="BehavioralFeature">iUgNd+XecUuxI7QFACPdwAAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:ATTR name="#Associations" type="integer">1</XPD:ATTR>
@@ -7428,7 +7462,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="Generalizations[0]">jlewYdseEUWAUiKMbZH3jQAA</XPD:REF>
 <XPD:ATTR name="#Specializations" type="integer">1</XPD:ATTR>
 <XPD:REF name="Specializations[0]">DabV4QlII0WObnnqTWYTHgAA</XPD:REF>
-<XPD:ATTR name="#Operations" type="integer">10</XPD:ATTR>
+<XPD:ATTR name="#Operations" type="integer">14</XPD:ATTR>
 <XPD:OBJ name="Operations[0]" type="UMLOperation" guid="nlRPFjQZYUi29Sbw49v4agAA">
 <XPD:ATTR name="Name" type="string">configure</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
@@ -7451,20 +7485,37 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:ATTR name="Name" type="string">getElement</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[3]" type="UMLOperation" guid="iJSJLF4nE029jhF15XR+XwAA">
-<XPD:ATTR name="Name" type="string">setDimension</XPD:ATTR>
+<XPD:OBJ name="Operations[3]" type="UMLOperation" guid="SXomhgBjwE2wAey3MYIQmgAA">
+<XPD:ATTR name="Name" type="string">setContainerElement</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="ClE0Bf9GIUiLwiN+cwaudwAA">
-<XPD:ATTR name="Name" type="string">Dimension</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="fsYdtvH/mE2xF470b2uF9gAA">
+<XPD:ATTR name="Name" type="string">element</XPD:ATTR>
+<XPD:REF name="BehavioralFeature">SXomhgBjwE2wAey3MYIQmgAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[4]" type="UMLOperation" guid="PxK9GHyPlkupH3RMkBt28QAA">
+<XPD:ATTR name="Name" type="string">getContainerElement</XPD:ATTR>
+<XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[5]" type="UMLOperation" guid="iJSJLF4nE029jhF15XR+XwAA">
+<XPD:ATTR name="Name" type="string">setSize</XPD:ATTR>
+<XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
+<XPD:ATTR name="#Parameters" type="integer">2</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="94VNp9FI1UqNd+t8vwzaUgAA">
+<XPD:ATTR name="Name" type="string">width</XPD:ATTR>
+<XPD:REF name="BehavioralFeature">iJSJLF4nE029jhF15XR+XwAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="PCbdO38VzEWudTwPLKXGmwAA">
+<XPD:ATTR name="Name" type="string">height</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">iJSJLF4nE029jhF15XR+XwAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[4]" type="UMLOperation" guid="u+AUZ2dIQEae+hZwIw8lwQAA">
-<XPD:ATTR name="Name" type="string">getDimension</XPD:ATTR>
+<XPD:OBJ name="Operations[6]" type="UMLOperation" guid="u+AUZ2dIQEae+hZwIw8lwQAA">
+<XPD:ATTR name="Name" type="string">getSize</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[5]" type="UMLOperation" guid="WGwZ3fHIe0uI3L3BHi/TmAAA">
+<XPD:OBJ name="Operations[7]" type="UMLOperation" guid="WGwZ3fHIe0uI3L3BHi/TmAAA">
 <XPD:ATTR name="Name" type="string">setContainer</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
@@ -7473,11 +7524,11 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="BehavioralFeature">WGwZ3fHIe0uI3L3BHi/TmAAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[6]" type="UMLOperation" guid="ZTCSK/CPSkGPqVWkZ7yc0gAA">
+<XPD:OBJ name="Operations[8]" type="UMLOperation" guid="ZTCSK/CPSkGPqVWkZ7yc0gAA">
 <XPD:ATTR name="Name" type="string">getContainer</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[7]" type="UMLOperation" guid="6dYv/RyLqEm+58O9FMmMugAA">
+<XPD:OBJ name="Operations[9]" type="UMLOperation" guid="6dYv/RyLqEm+58O9FMmMugAA">
 <XPD:ATTR name="Name" type="string">setModel</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
@@ -7486,18 +7537,26 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="BehavioralFeature">6dYv/RyLqEm+58O9FMmMugAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[8]" type="UMLOperation" guid="L+gD8Ns0OE6MlDK819BHOgAA">
+<XPD:OBJ name="Operations[10]" type="UMLOperation" guid="L+gD8Ns0OE6MlDK819BHOgAA">
 <XPD:ATTR name="Name" type="string">getModel</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[9]" type="UMLOperation" guid="V4K3tfrQPUCwOLgDXJus4QAA">
+<XPD:OBJ name="Operations[11]" type="UMLOperation" guid="V4K3tfrQPUCwOLgDXJus4QAA">
 <XPD:ATTR name="Name" type="string">refresh</XPD:ATTR>
+<XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[12]" type="UMLOperation" guid="YbROSnEd90Ou0jfzu0RrwQAA">
+<XPD:ATTR name="Name" type="string">create</XPD:ATTR>
+<XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[13]" type="UMLOperation" guid="laPuYdcGJkKU4chPWLpOXQAA">
+<XPD:ATTR name="Name" type="string">destroy</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 </XPD:OBJ>
 <XPD:ATTR name="#Associations" type="integer">2</XPD:ATTR>
 <XPD:REF name="Associations[0]">fTNHMbfBiUuD4DBkEKuH7wAA</XPD:REF>
 <XPD:REF name="Associations[1]">mQ6erjndXESmgBfhv7BPcAAA</XPD:REF>
-<XPD:ATTR name="#Attributes" type="integer">4</XPD:ATTR>
+<XPD:ATTR name="#Attributes" type="integer">5</XPD:ATTR>
 <XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="SuObBio2SEazWJFCB5GNbAAA">
 <XPD:ATTR name="Name" type="string">model</XPD:ATTR>
 <XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
@@ -7514,7 +7573,12 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Attributes[3]" type="UMLAttribute" guid="USGPvjjKJEWaRzn+LfYp8wAA">
+<XPD:OBJ name="Attributes[3]" type="UMLAttribute" guid="rU7X4z6gKkm4WTSyV8hqWAAA">
+<XPD:ATTR name="Name" type="string">HTMLElement containerElement</XPD:ATTR>
+<XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
+<XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Attributes[4]" type="UMLAttribute" guid="USGPvjjKJEWaRzn+LfYp8wAA">
 <XPD:ATTR name="Name" type="string">Part container</XPD:ATTR>
 <XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
@@ -7668,8 +7732,8 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="Participant">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">AflvcNeXxEKWOBgmg++BtwAA</XPD:REF>
-<XPD:REF name="Views[1]">AFXUTILyN0akX1gkeNPK8AAA</XPD:REF>
-<XPD:REF name="Views[2]">tdd4hu31lECfpJvbOjrjOgAA</XPD:REF>
+<XPD:REF name="Views[1]">tdd4hu31lECfpJvbOjrjOgAA</XPD:REF>
+<XPD:REF name="Views[2]">AFXUTILyN0akX1gkeNPK8AAA</XPD:REF>
 <XPD:REF name="Views[3]">TXal8kac10eYBwwYmizS2QAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Connections[1]" type="UMLAssociationEnd" guid="2kV+Ab0xaEe/RPQ3xIfjlwAA">
@@ -7678,8 +7742,8 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="Participant">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">JJQtVy8O4EyvEAlR9XmxeQAA</XPD:REF>
-<XPD:REF name="Views[1]">ALal3tns2UGHQ+hNyBVukQAA</XPD:REF>
-<XPD:REF name="Views[2]">vgFYhZZofU2o5GmiGdSUdAAA</XPD:REF>
+<XPD:REF name="Views[1]">vgFYhZZofU2o5GmiGdSUdAAA</XPD:REF>
+<XPD:REF name="Views[2]">ALal3tns2UGHQ+hNyBVukQAA</XPD:REF>
 <XPD:REF name="Views[3]">xb4xRrJ/ZECiKqDKhtVQ3QAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>

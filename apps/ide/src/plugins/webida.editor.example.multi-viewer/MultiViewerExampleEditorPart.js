@@ -34,18 +34,26 @@ define([
     'webida-lib/util/genetic', 
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/loadCSSList',
+    'webida-lib/plugins/editors/Document',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/MultiViewerEditorPart',
+    'webida-lib/plugins/workbench/ui/ViewerModel',
     'plugins/webida.editor.code-editor/CodeEditorViewer',
+    'plugins/webida.editor.text-editor/TextEditorPart',
+    './FormEditorViewer',
     'dojo/domReady!'
 ], function(
     ContentPane,
     genetic, 
     Logger,
     loadCSSList,
+    Document,
     EditorPart, 
     MultiViewerEditorPart,
-    CodeEditorViewer
+    ViewerModel,
+    CodeEditorViewer,
+    TextEditorPart,
+    FormEditorViewer
 ) {
     'use strict';
 // @formatter:on
@@ -64,41 +72,118 @@ define([
 
     genetic.inherits(MultiPageExampleEditorPart, MultiViewerEditorPart, {
 
+        getCodeEditor: function() {
+            var callback = this.createCallback;
+            var viewer = new CodeEditorViewer(null, this.file, function(file, viewer) {
+                viewer.addChangeListener(function(viewer, change) {
+                    if (viewer._changeCallback) {
+                        viewer._changeCallback(file, change);
+                    }
+                });
+                if (callback) {
+                    _.defer(function() {
+                        callback(file, viewer);
+                    });
+                }
+            });
+            return viewer;
+        },
+
+        initCodeEditor: function() {
+            var viewer = this.getViewerById('CodeEditor');
+            var container = viewer.getContainerElement();
+            viewer.setValue(this.file.getContents());
+            viewer.clearHistory();
+            viewer.markClean();
+            viewer.setSize(container.offsetWidth, container.offsetHeight);
+            viewer.setMatchBrackets(true);
+            var that = this;
+            var setStatusBarText = function() {
+                var workbench = require('webida-lib/plugins/workbench/plugin');
+                var file = that.file;
+                var viewer = that.getViewerById('CodeEditor');
+                var cursor = viewer.getCursor();
+                workbench.__editor = viewer;
+                workbench.setContext([file.path], {
+                    cursor: (cursor.row + 1) + ':' + (cursor.col + 1)
+                });
+            };
+            viewer.addCursorListener(setStatusBarText);
+            viewer.addFocusListener(setStatusBarText);
+            viewer.addCursorListener(function(viewer) {
+                TextEditorPart.pushCursorLocation(viewer.file, viewer.getCursor());
+            });
+            viewer.addExtraKeys({
+                'Ctrl-Alt-Left': function() {
+                    TextEditorPart.moveBack();
+                },
+                'Ctrl-Alt-Right': function() {
+                    TextEditorPart.moveForth();
+                }
+            });
+            viewer.setMode(this.file.extension);
+            viewer.setTheme('webida');
+        },
+
+        getFormEditor: function() {
+            var viewer = new FormEditorViewer();
+            return viewer;
+        },
+
+        /**
+         * @param {Document} doc
+         */
+        codeListener: function(doc) {
+            this.getViewerById('CodeEditor').refresh();
+        },
+
+        /**
+         * @param {Document} doc
+         */
+        formListener: function(doc) {
+            this.getViewerById('FormEditor').refresh();
+        },
+
         /**
          * Create EditorViewers
          * @override
          */
         createViewers: function() {
 
-			//1. 1st context
-            var childPane = new ContentPane({
-                title: 'CodeEditor'
-            });
-            childPane.startup();
-            var callback = this.createCallback;
-            var context = new CodeEditorViewer(childPane.domNode, this.file, function(file, context) {
-                context.addChangeListener(function(context, change) {
-                    if (context._changeCallback) {
-                        context._changeCallback(file, change);
-                    }
-                });
-                if (callback) {
-                    _.defer(function() {
-                        callback(file, context);
-                    });
-                }
-            });
-            this.tabContainer.addChild(childPane);
-			context.setValue(this.file.getContents());
+            var that = this;
 
-            //2. 2nd context
-            var childPane = new ContentPane({
-                title: 'FormEditor'
+            //TODO : this.getContainer().getDataSource()
+            var workbench = require('webida-lib/plugins/workbench/plugin');
+            var dsRegistry = workbench.getDataSourceRegistry();
+            var dataSource = dsRegistry.getDataSourceById(this.file.path);
+            dataSource.getContents(function(contents) {
+
+                //1. Create Model from DataSource
+                var doc = new Document(contents);
+
+                //2. codeEditor
+                var codeEditor = that.getCodeEditor();
+                that.addViewer('CodeEditor', 'Code Editor', codeEditor, 0);
+                that.initCodeEditor();
+
+                //3. formEditor
+                var formEditor = that.getFormEditor();
+                that.addViewer('FormEditor', 'Form Editor', formEditor, 1);
+                formEditor.create();
+
+                //4. set model
+                codeEditor.setModel(doc);
+                formEditor.setModel(doc);
+
+                //4. Listen to model
+                doc.on(ViewerModel.CONTENTS_CHANGE, that.codeListener.bind(that));
+                doc.on(ViewerModel.CONTENTS_CHANGE, that.formListener.bind(that));
             });
-            childPane.startup();
-            this.tabContainer.addChild(childPane);
-            
-            //this.addViewer('CodeEditor', context, 0);
+        },
+
+        destroy: function() {
+            MultiViewerEditorPart.prototype.destroy.call(this);
+            this.getViewerById('CodeEditor').destroy();
         },
 
         getValue: function() {

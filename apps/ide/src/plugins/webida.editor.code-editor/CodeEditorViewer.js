@@ -24,6 +24,7 @@
  * @refactor: hw.shim (2015.06.25)
  */
 
+// @formatter:off
 define([
 	'require',
 	'webida-lib/util/genetic',
@@ -31,6 +32,7 @@ define([
 	'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
 	'webida-lib/util/loadCSSList',
+	'webida-lib/util/logger/logger-client',
 	'plugins/webida.editor.text-editor/TextEditorViewer',
 	'./snippet'
 ], function (
@@ -40,10 +42,16 @@ define([
 	codemirror,
     editors,
 	loadCSSList,
+	Logger,
 	TextEditorViewer,
 	Snippet
 ) {
     'use strict';
+// @formatter:on
+
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     var settings = {
         useWorker: true,
@@ -663,10 +671,9 @@ define([
     }
 
     function CodeEditorViewer(elem, file, startedListener) {
-
         var self = this;
-
         this.elem = elem;
+        this.setContainerElement(elem);
         this.file = file;
         this.options = {};
         this.options.extraKeys = {
@@ -701,7 +708,11 @@ define([
                      'external/codemirror/addon/edit/closebrackets',
                      'external/codemirror/addon/edit/closetag',
                      'external/codemirror/addon/edit/matchbrackets'], function () {
-                self.start();
+                setTimeout(function(self){
+                	if (self.getContainerElement()) {
+                		self.create();
+                	}
+                }, 0, self);
             });
         });
     }
@@ -881,7 +892,7 @@ define([
     
     genetic.inherits(CodeEditorViewer, TextEditorViewer, {
 
-	    start : function () {
+	    create: function () {
 	        if (this.editor !== undefined) {
 	            return;
 	        }
@@ -917,7 +928,14 @@ define([
 	        setOption('extraKeys', this.options.extraKeys);
 	        setOption('lineWrapping', this.options.lineWrapping);
 
-	        this.editor = codemirror(this.elem, options);
+	        this.editor = codemirror(this.getContainerElement(), options);
+	        
+            this.editor.on("change", function(cm, change) {
+                self.getModel().update(cm.getValue());
+                //console.log('self.getModel() = ', self.getModel());
+            }); 
+
+	        
 	        this.editor.setOption('showCursorWhenSelecting', true);
 	        this.editor.__instance = this;
 	        $(this.editor.getWrapperElement()).addClass('maincodeeditor');

@@ -107,7 +107,7 @@ define([
 		 * @returns CodeEditorViewer
 		 * @override
 		 */
-		getContextClass : function(){
+		getViewerClass : function(){
 			return CodeEditorViewer;
 		},
 

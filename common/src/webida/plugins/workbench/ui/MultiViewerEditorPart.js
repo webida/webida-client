@@ -57,7 +57,8 @@ define([
         logger.info('new MultiViewerEditorPart(' + file + ')');
         EditorPart.apply(this, arguments);
 
-		this.setFile(file); //TODO : refactor
+        this.setFile(file);
+        //TODO : refactor
 
         /** @type {Map.<Object, EditorViewer>} */
         this.viewers = new Map();
@@ -65,15 +66,6 @@ define([
 
 
     genetic.inherits(MultiViewerEditorPart, EditorPart, {
-
-        initialize: function() {
-            logger.info('initialize()');
-            var parent = this.getParentElement();
-            this.createTabContainer(parent);
-            this.createViewers();
-            //this.initializeListeners();
-            //this.initializePreferences();
-        },
 
         /**
          * @override
@@ -85,54 +77,50 @@ define([
             }
             this.setParentElement(parent);
             this.createCallback = callback;
-            this.file.elem = parent;	//TODO : remove
+            this.file.elem = parent;
             this.initialize();
             this.setFlag(Part.CREATED, true);
         },
 
-        destroy: function () {
-        	logger.info('destroy()');
-            if (this.editorViewer) {
-                this.editorViewer.destroy();
-                this.editorViewer = null;
-            }else{
-				logger.info('this.editorViewer not found');
-				logger.trace();
-			}
-			//unset preferences
-			if(this.preferences){
-				this.preferences.unsetFields();
-			}
-			//unsubscribe topic
-			if(this.fileOpenedHandle){
-				logger.info('this.fileOpenedHandle.remove()', this.fileOpenedHandle);
-				this.fileOpenedHandle.remove();
-			}
-			if(this.fileSavedHandle){
-				this.fileSavedHandle.remove();
-			}
-			//clear state
-			this.setFlag(Part.CREATED, false);
+        destroy: function() {
+            logger.info('destroy()');
+            //unset preferences
+            if (this.preferences) {
+                this.preferences.unsetFields();
+            }
+            //unsubscribe topic
+            if (this.fileOpenedHandle) {
+                logger.info('this.fileOpenedHandle.remove()', this.fileOpenedHandle);
+                this.fileOpenedHandle.remove();
+            }
+            if (this.fileSavedHandle) {
+                this.fileSavedHandle.remove();
+            }
+            //clear state
+            this.setFlag(Part.CREATED, false);
+        },
+
+        initialize: function() {
+            logger.info('initialize()');
+            this.createTabContainer();
+            this.createViewers();
         },
 
         /**
-         * Create EditorViewers
+         * Create TabContainer
          */
-        createTabContainer: function(parent) {
-            this.tabContainer = new TabContainer({
+        createTabContainer: function() {
+            var parent = this.getParentElement();
+            var container = new TabContainer({
                 style: 'width: 100%; height: 100%;',
                 tabPosition: 'bottom',
                 tabStrip: true,
-                nested: true,
-                getChildPaneWidget: function(name) {
-                    return _.find(this.getChildren(), function(child) {
-                        return child.get('title') === name;
-                    });
-                }
+                nested: true
             });
-            this.tabContainer.startup();
-            parent.appendChild(this.tabContainer.domNode);
-            this.tabContainer.resize();
+            container.startup();
+            parent.appendChild(container.domNode);
+            container.resize();
+            this.tabContainer = container;
         },
 
         /**
@@ -145,22 +133,24 @@ define([
         /**
          * @return {Map.<Object, EditorViewer>}
          */
-        getAllViewers: function() {
-
+        getViewers: function() {
+            return this.viewers;
         },
 
         /**
+         * @param {Object} id
          * @param {string} title
          * @param {EditorViewer} viewer
          * @param {number} index
          */
-        addViewer: function(title, viewer, index) {
-            var childPane = new ContentPane({
+        addViewer: function(id, title, viewer, index) {
+            var pane = new ContentPane({
                 title: title
             });
-            childPane.startup();
-            viewer.elem = childPane.domNode;
-            this.tabContainer.addChild(childPane, index);
+            pane.startup();
+            viewer.setContainerElement(pane.domNode);
+            this.getTabContainer().addChild(pane, index);
+            this.getViewers().set(id, viewer);
         },
 
         /**
@@ -185,10 +175,17 @@ define([
         },
 
         /**
-         * @param {EditorViewer} viewer
+         * @param {Object} id
          */
-        getViewerByDataSource: function(ds) {
+        getViewerById: function(id) {
+            return this.getViewers().get(id);
+        },
 
+        /**
+         * @return {TabContainer}
+         */
+        getTabContainer: function() {
+            return this.tabContainer;
         }
     });
 

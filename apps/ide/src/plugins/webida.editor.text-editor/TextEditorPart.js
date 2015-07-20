@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 /**
  * Constructor function
@@ -27,296 +27,310 @@
  * file.__elemId removed
  */
 
+// @formatter:off
 define([
-	'external/lodash/lodash.min',
-	'webida-lib/util/genetic',
-	'webida-lib/plugins/workbench/ui/Part',
-	'webida-lib/plugins/workbench/ui/EditorPart',
-	'webida-lib/plugins/workbench/preference-system/store',	// TODO: issue #12055
-	'webida-lib/plugins/editors/plugin',
-	'webida-lib/plugins/editors/EditorPreference',
-	'./preferences/preference-config',
-	'./TextEditorViewer',
-	'dojo/topic',
-	'webida-lib/util/logger/logger-client',
-	'dojo/domReady!'
+    'external/lodash/lodash.min', 
+    'webida-lib/util/genetic', 
+    'webida-lib/plugins/workbench/ui/Part', 
+    'webida-lib/plugins/workbench/ui/EditorPart', 
+    'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
+    'webida-lib/plugins/editors/plugin', 
+    'webida-lib/plugins/editors/EditorPreference', 
+    './preferences/preference-config', 
+    './TextEditorViewer', 
+    'dojo/topic', 
+    'webida-lib/util/logger/logger-client', 
+    'dojo/domReady!'
 ], function(
-	_,
-	genetic,
-	Part,
-	EditorPart,
-	store,
-	editors,
-	EditorPreference,
-	preferenceConfig,
-	TextEditorViewer,
-	topic,
-	Logger
+    _, 
+    genetic, 
+    Part, 
+    EditorPart, 
+    store, 
+    editors, 
+    EditorPreference, 
+    preferenceConfig, 
+    TextEditorViewer, 
+    topic, 
+    Logger
 ) {
 	'use strict';
+// @formatter:on
 
-	//TODO : this.viewer -> this.getViewer()
-			//See File.prototype.isModified = function () {
-	//TODO : this.file -> this.getFile()
+    //TODO : this.viewer -> this.getViewer()
+    //See File.prototype.isModified = function () {
+    //TODO : this.file -> this.getFile()
 
-	var logger = new Logger();
-	logger.off();
+    var logger = new Logger();
+    logger.off();
 
-	function TextEditorPart(file){
-		logger.info('new TextEditorPart('+file+')');
-		EditorPart.apply(this, arguments);
-		this.setFile(file);
-		this.fileOpenedHandle = null;
-		this.fileSavedHandle = null;
-		this.preferences = null;
-		this.foldingStatus = null;
-	}
+    function TextEditorPart(file) {
+        logger.info('new TextEditorPart(' + file + ')');
+        EditorPart.apply(this, arguments);
+        this.setFile(file);
+        this.fileOpenedHandle = null;
+        this.fileSavedHandle = null;
+        this.preferences = null;
+        this.foldingStatus = null;
+    }
 
-	genetic.inherits(TextEditorPart, EditorPart, {
 
-		initialize : function(){
-			logger.info('initialize()');
-			this.initializeContext();
-			this.initializeListeners();
+    genetic.inherits(TextEditorPart, EditorPart, {
+
+        initialize: function() {
+            logger.info('initialize()');
+            this.initializeContext();
+            this.initializeListeners();
             this.initializePreferences();
-		},
+        },
 
-		initializeContext : function(){
-			logger.info('initializeContext()');
-			var context = this.getViewer();
-			var parent = this.getParentElement();
-			context.setValue(this.file.savedValue);
-			context.clearHistory();
-			context.markClean();
-			context.setSize(parent.offsetWidth, parent.offsetHeight);
-			context.setMatchBrackets(true);
+        initializeContext: function() {
+            logger.info('initializeContext()');
+            var context = this.getViewer();
+            var parent = this.getParentElement();
+            context.setValue(this.file.savedValue);
+            context.clearHistory();
+            context.markClean();
+            context.setSize(parent.offsetWidth, parent.offsetHeight);
+            context.setMatchBrackets(true);
 
             /* Invalid direct css manipulation. This causes ODP-423 bug.
              (ODP-423) Ocassional no contents display in newly created TextEditor
 
-            viewer.addDeferredAction(function (editor) {
-                console.log("-tmep--------- addDeferredAction wrapper css");
-                var wrapper = editor.editor.getWrapperElement();
-                $(wrapper).css({
-                    height: 'auto',
-                    position: 'absolute',
-                    left: '0px',
-                    right: '0px',
-                    top: '0px',
-                    bottom: '0px'
-                });
-            });*/
-			var that = this;
-            var setStatusBarText = function () {
-            	var workbench = require('webida-lib/plugins/workbench/plugin');
-            	var file = that.file;
-            	var viewer = that.getViewer();
+             viewer.addDeferredAction(function (editor) {
+             console.log("-tmep--------- addDeferredAction wrapper css");
+             var wrapper = editor.editor.getWrapperElement();
+             $(wrapper).css({
+             height: 'auto',
+             position: 'absolute',
+             left: '0px',
+             right: '0px',
+             top: '0px',
+             bottom: '0px'
+             });
+             });*/
+            var that = this;
+            var setStatusBarText = function() {
+                var workbench = require('webida-lib/plugins/workbench/plugin');
+                var file = that.file;
+                var viewer = that.getViewer();
                 var cursor = viewer.getCursor();
-                workbench.__editor = viewer; //TODO : refactor
-                workbench.setContext([file.path], {cursor: (cursor.row + 1) + ':' + (cursor.col + 1)});
+                workbench.__editor = viewer;
+                //TODO : refactor
+                workbench.setContext([file.path], {
+                    cursor: (cursor.row + 1) + ':' + (cursor.col + 1)
+                });
             };
             context.addCursorListener(setStatusBarText);
             context.addFocusListener(setStatusBarText);
-            context.addCursorListener(function (viewer) {
+            context.addCursorListener(function(viewer) {
                 TextEditorPart.pushCursorLocation(context.file, context.getCursor());
             });
             context.addExtraKeys({
-                'Ctrl-Alt-Left': function () {
+                'Ctrl-Alt-Left': function() {
                     TextEditorPart.moveBack();
                 },
-                'Ctrl-Alt-Right': function () {
+                'Ctrl-Alt-Right': function() {
                     TextEditorPart.moveForth();
                 }
             });
-		},
+        },
 
-		/**
-		 * To initialize listeners you want
-		 * override this
-		 */
-		initializeListeners : function(){
-			logger.info('initializeListeners()');
-			var that = this;
-			//subscribe topic
+        /**
+         * To initialize listeners you want
+         * override this
+         */
+        initializeListeners: function() {
+            logger.info('initializeListeners()');
+            var that = this;
+            //subscribe topic
 
-            this.fileOpenedHandle = topic.subscribe('file.opened', function (file, content) {
+            this.fileOpenedHandle = topic.subscribe('file.opened', function(file, content) {
                 if (that.file === file) {
                     that.viewer.setValue(content);
                 }
             });
 
-            this.fileSavedHandle = topic.subscribe('file.saved', function (file) {
-	            that.foldingStatus = that.getViewer().getFoldings();
-		    });
-            this.viewer.addEventListener('save', function () {
-                require(['dojo/topic'], function (topic) {
+            this.fileSavedHandle = topic.subscribe('file.saved', function(file) {
+                that.foldingStatus = that.getViewer().getFoldings();
+            });
+            this.viewer.addEventListener('save', function() {
+                require(['dojo/topic'], function(topic) {
                     topic.publish('#REQUEST.saveFile');
                 });
             });
-		},
+        },
 
-		initializePreferences : function(){
-			logger.info('initializePreferences()');
-			if(this.viewer && this.file){
+        initializePreferences: function() {
+            logger.info('initializePreferences()');
+            if (this.viewer && this.file) {
 
-				//preferences
-				this.preferences = new EditorPreference(store, this.viewer);
-				this.preferences.setFields(this.getPreferences());
-			}
-		},
+                //preferences
+                this.preferences = new EditorPreference(store, this.viewer);
+                this.preferences.setFields(this.getPreferences());
+            }
+        },
 
-		/**
-		 * To use the Preferences you want, override this method
-		 * and return Preferences you want use
-		 *
-		 * @returns preferenceConfig for TextEditor
-		 */
-		getPreferences : function(){
-			return preferenceConfig;
-		},
+        /**
+         * To use the Preferences you want, override this method
+         * and return Preferences you want use
+         *
+         * @returns preferenceConfig for TextEditor
+         */
+        getPreferences: function() {
+            return preferenceConfig;
+        },
 
-		/**
-		 * To use the Context you want, override this method
-		 * and return Class you want use
-		 *
-		 * @returns TextEditorViewer
-		 */
-		getContextClass : function(){
-			return TextEditorViewer;
-		},
+        /**
+         * To use the Context you want, override this method
+         * and return Class you want use
+         *
+         * @returns TextEditorViewer
+         */
+        getViewerClass: function() {
+            return TextEditorViewer;
+        },
 
-		getViewer : function(){
-			//TODO : parent, callback in case of none
-			if(this.viewer !== null){
-				return this.viewer;
-			}
-			var parent = this.getParentElement();
-			var callback = this.createCallback;
-			var ContextClass = this.getContextClass();
-            var context = new (ContextClass)(parent, this.file, function (file, context) {
-                context.addChangeListener(function (context, change) {
+        /**
+         * @override
+         */
+        getViewer: function() {
+            //TODO : parent, callback in case of none
+            if (this.viewer !== null) {
+                return this.viewer;
+            }
+            var parent = this.getParentElement();
+            var callback = this.createCallback;
+            var ViewerClass = this.getViewerClass();
+            var context = new (ViewerClass)(parent, this.file, function(file, context) {
+                context.addChangeListener(function(context, change) {
                     if (context._changeCallback) {
                         context._changeCallback(file, change);
                     }
                 });
                 if (callback) {
-                    _.defer(function () {
+                    _.defer(function() {
                         callback(file, context);
                     });
                 }
             });
             this.setViewer(context);
             return this.viewer;
-		},
+        },
 
-        getFoldingStatus: function () {
+        getFoldingStatus: function() {
             return this.foldingStatus;
         },
 
-        create: function (parent, callback) {
-			logger.info('create('+parent.tagName+', callback)');
-			if (this.getFlag(Part.CREATED) === true) {
-				return;
-			}
-			this.setParentElement(parent);
-			this.createCallback = callback;
-            this.file.elem = parent;	//TODO : remove
+        create: function(parent, callback) {
+            logger.info('create(' + parent.tagName + ', callback)');
+            if (this.getFlag(Part.CREATED) === true) {
+                return;
+            }
+            this.setParentElement(parent);
+            this.createCallback = callback;
+            this.file.elem = parent;
+            //TODO : remove
             this.initialize();
             this.setFlag(Part.CREATED, true);
         },
 
-        destroy: function () {
-        	logger.info('destroy()');
+        destroy: function() {
+            logger.info('destroy()');
             if (this.viewer) {
                 this.viewer.destroy();
                 this.viewer = null;
-            }else{
-				logger.info('this.viewer not found');
-				logger.trace();
-			}
-			//unset preferences
-			if(this.preferences){
-				this.preferences.unsetFields();
-			}
-			//unsubscribe topic
-			if(this.fileOpenedHandle !== null){
-				logger.info('this.fileOpenedHandle.remove()');
-				this.fileOpenedHandle.remove();
-			}
-			if(this.fileSavedHandle !== null){
-				this.fileSavedHandle.remove();
-			}
-			//clear state
-			this.setFlag(Part.CREATED, false);
+            } else {
+                logger.info('this.viewer not found');
+                logger.trace();
+            }
+            //unset preferences
+            if (this.preferences) {
+                this.preferences.unsetFields();
+            }
+            //unsubscribe topic
+            if (this.fileOpenedHandle !== null) {
+                logger.info('this.fileOpenedHandle.remove()');
+                this.fileOpenedHandle.remove();
+            }
+            if (this.fileSavedHandle !== null) {
+                this.fileSavedHandle.remove();
+            }
+            //clear state
+            this.setFlag(Part.CREATED, false);
         },
 
-        show: function () {
-			logger.info('show()');
-			this.getViewer().refresh();
-		},
-
-        hide: function () {
-        	logger.info('hide()');
+        show: function() {
+            logger.info('show()');
+            this.getViewer().refresh();
         },
 
-        getValue: function () {
-        	if(this.viewer){
-        		return this.viewer.getValue(); //TODO : getViewer()
-        	}else{
-				logger.info('this.viewer not found');
-        		logger.trace();
-        	}
+        hide: function() {
+            logger.info('hide()');
         },
 
-        addChangeListener: function (callback) {
-			this.viewer._changeCallback = callback;
+        getValue: function() {
+            if (this.viewer) {
+                return this.viewer.getValue();
+                //TODO : getViewer()
+            } else {
+                logger.info('this.viewer not found');
+                logger.trace();
+            }
         },
 
-        focus: function () {
-        	if(this.viewer){
-        		this.viewer.focus(); //TODO : getViewer()
-        	}else{
-				logger.info('this.viewer not found');
-        		logger.trace();
-        	}
+        addChangeListener: function(callback) {
+            this.viewer._changeCallback = callback;
         },
 
-        markClean: function () {
+        focus: function() {
+            if (this.viewer) {
+                this.viewer.focus();
+                //TODO : getViewer()
+            } else {
+                logger.info('this.viewer not found');
+                logger.trace();
+            }
+        },
+
+        markClean: function() {
             this.getViewer().markClean();
         },
 
-        isClean: function () {
-        	if(this.viewer){
-        		return this.viewer.isClean(); //TODO : getViewer()
-        	}else{
-				logger.info('this.viewer not found');
-        		logger.trace();
-        		return true;
-        	}
+        isClean: function() {
+            if (this.viewer) {
+                return this.viewer.isClean();
+                //TODO : getViewer()
+            } else {
+                logger.info('this.viewer not found');
+                logger.trace();
+                return true;
+            }
         }
-
     });
 
-	//Static functions
+    //Static functions
 
     var cursorStacks = {
         back: [],
         forth: []
     };
 
-	TextEditorPart.moveTo = function (location) {
-        editors.openFile(location.filepath, {show: true}, function (file) {
+    TextEditorPart.moveTo = function(location) {
+        editors.openFile(location.filepath, {
+            show: true
+        }, function(file) {
             if (editors.getPart(file) === null) {
-            	return;
+                return;
             }
             var part = editors.getPart(file);
-        	var context = part.viewer;
+            var context = part.viewer;
             if (location.start && location.end) {
                 context.setSelection(location.start, location.end);
             } else {
                 context.setCursor(location.cursor);
             }
-            context.addDeferredAction(function (viewer) {
+            context.addDeferredAction(function(viewer) {
                 if (viewer.editor) {
                     viewer.editor.focus();
                 }
@@ -324,27 +338,27 @@ define([
         });
     };
 
-	TextEditorPart.moveBack = function () {
-		if (cursorStacks.back.length > 1) {
-			var popped = cursorStacks.back.pop();
-			if (popped) {
-				cursorStacks.forth.push(popped);
-			}
-			TextEditorPart.moveTo(cursorStacks.back[cursorStacks.back.length - 1]);
-		}
-	};
+    TextEditorPart.moveBack = function() {
+        if (cursorStacks.back.length > 1) {
+            var popped = cursorStacks.back.pop();
+            if (popped) {
+                cursorStacks.forth.push(popped);
+            }
+            TextEditorPart.moveTo(cursorStacks.back[cursorStacks.back.length - 1]);
+        }
+    };
 
-	TextEditorPart.moveForth = function () {
-		var popped = cursorStacks.forth.pop();
-		if (popped) {
-			cursorStacks.back.push(popped);
-			TextEditorPart.moveTo(popped);
-		}
-	};
+    TextEditorPart.moveForth = function() {
+        var popped = cursorStacks.forth.pop();
+        if (popped) {
+            cursorStacks.back.push(popped);
+            TextEditorPart.moveTo(popped);
+        }
+    };
 
-	TextEditorPart.pushCursorLocation = function (file, cursor, forced) {
-		logger.info('pushCursorLocation(file, '+cursor+', forced)');
-        var filepath = (typeof file === 'string') ? file : file.path;
+    TextEditorPart.pushCursorLocation = function(file, cursor, forced) {
+        logger.info('pushCursorLocation(file, ' + cursor + ', forced)');
+        var filepath = ( typeof file === 'string') ? file : file.path;
         var thisLocation = {
             filepath: filepath,
             cursor: cursor,
@@ -354,9 +368,7 @@ define([
 
         function compareLocations(cursor1, cursor2, colspan, rowspan, timespan) {
             if (cursor1.filepath === cursor2.filepath) {
-                if (((!colspan || (Math.abs(cursor1.cursor.col - cursor2.cursor.col) < colspan)) &&
-                    (!rowspan || (Math.abs(cursor1.cursor.row - cursor2.cursor.row) < rowspan))) ||
-                    (!timespan || (Math.abs(cursor1.timestamp - cursor2.timestamp) < timespan))) {
+                if (((!colspan || (Math.abs(cursor1.cursor.col - cursor2.cursor.col) < colspan)) && (!rowspan || (Math.abs(cursor1.cursor.row - cursor2.cursor.row) < rowspan))) || (!timespan || (Math.abs(cursor1.timestamp - cursor2.timestamp) < timespan))) {
                     return true;
                 }
                 return false;
@@ -364,16 +376,18 @@ define([
                 return false;
             }
         }
+
         function similarLocations(cursor1, cursor2) {
             return compareLocations(cursor1, cursor2, 5, 5, 3000);
         }
+
         function identicalLocations(cursor1, cursor2) {
             return compareLocations(cursor1, cursor2, 1, 1, false);
         }
+
         if (cursorStacks.back.length > 0) {
             var latest = cursorStacks.back.pop();
-            if (((forced || latest.forced) && !identicalLocations(thisLocation, latest)) ||
-                (!similarLocations(thisLocation, latest))) {
+            if (((forced || latest.forced) && !identicalLocations(thisLocation, latest)) || (!similarLocations(thisLocation, latest))) {
                 cursorStacks.back.push(latest);
                 cursorStacks.forth = [];
             }
@@ -382,5 +396,5 @@ define([
         return thisLocation;
     };
 
-	return TextEditorPart;
+    return TextEditorPart;
 });
