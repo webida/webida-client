@@ -1,5 +1,6 @@
 {
     "plugins" : [
+    	"plugins/webida.editor.example.multi-viewer",
         "plugins/webida.editor.text-editor",
         "plugins/webida.editor.code-editor",
         "plugins/webida.editor.test-editor",

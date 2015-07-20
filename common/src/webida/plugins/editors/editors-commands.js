@@ -30,115 +30,115 @@ define([
     'use strict';
 
 	function undo() {		
-        editors.execCommandForCurrentEditorContext('undo');
+        editors.execCommandForCurrentEditorViewer('undo');
 	}
 
 	function redo() {		
-        editors.execCommandForCurrentEditorContext('redo');
+        editors.execCommandForCurrentEditorViewer('redo');
 	}
 
 	function cursorLineToMiddle() {		
-        editors.execCommandForCurrentEditorContext('cursorLineToMiddle');
+        editors.execCommandForCurrentEditorViewer('cursorLineToMiddle');
 	}
 
 	function cursorLineToTop() {		
-        editors.execCommandForCurrentEditorContext('cursorLineToTop');
+        editors.execCommandForCurrentEditorViewer('cursorLineToTop');
 	}
 
 	function cursorLineToBottom() {		
-        editors.execCommandForCurrentEditorContext('cursorLineToBottom');
+        editors.execCommandForCurrentEditorViewer('cursorLineToBottom');
 	}
 
 	function del() {		
-        editors.execCommandForCurrentEditorContext('del');
+        editors.execCommandForCurrentEditorViewer('del');
 	}
 
 	function selectAll() {		
-        editors.execCommandForCurrentEditorContext('selectAll');
+        editors.execCommandForCurrentEditorViewer('selectAll');
 	}
 
 	function selectLine() {		
-        editors.execCommandForCurrentEditorContext('selectLine');
+        editors.execCommandForCurrentEditorViewer('selectLine');
 	}
 
 	function lineIndent() {		
-        editors.execCommandForCurrentEditorContext('lineIndent');
+        editors.execCommandForCurrentEditorViewer('lineIndent');
 	}
 
 	function lineDedent() {		
-        editors.execCommandForCurrentEditorContext('lineDedent');
+        editors.execCommandForCurrentEditorViewer('lineDedent');
 	}
 
 	function lineMoveUp() {		
-        editors.execCommandForCurrentEditorContext('lineMoveUp');
+        editors.execCommandForCurrentEditorViewer('lineMoveUp');
 	}
 
 	function lineMoveDown() {		
-        editors.execCommandForCurrentEditorContext('lineMoveDown');
+        editors.execCommandForCurrentEditorViewer('lineMoveDown');
 	}
 
 	function lineDelete() {		
-        editors.execCommandForCurrentEditorContext('lineDelete');
+        editors.execCommandForCurrentEditorViewer('lineDelete');
 	}
 
 	function lineComment() {		
-        editors.execCommandForCurrentEditorContext('lineComment');
+        editors.execCommandForCurrentEditorViewer('lineComment');
 	}
 
 	function blockComment() {		
-        editors.execCommandForCurrentEditorContext('blockComment');
+        editors.execCommandForCurrentEditorViewer('blockComment');
 	}
 
 	function commentOutSelection() {		
-        editors.execCommandForCurrentEditorContext('commentOutSelection');
+        editors.execCommandForCurrentEditorViewer('commentOutSelection');
 	}
 
 	function foldCode() {		
-        editors.execCommandForCurrentEditorContext('foldCode');
+        editors.execCommandForCurrentEditorViewer('foldCode');
 	}
 
 	function beautifyCode() {		
-        editors.execCommandForCurrentEditorContext('beautifyCode');
+        editors.execCommandForCurrentEditorViewer('beautifyCode');
 	}
 
 	function beautifyAllCode() {		
-        editors.execCommandForCurrentEditorContext('beautifyAllCode');
+        editors.execCommandForCurrentEditorViewer('beautifyAllCode');
 	}
 
 	function rename() {		
-        editors.execCommandForCurrentEditorContext('rename');
+        editors.execCommandForCurrentEditorViewer('rename');
 	}
     
     function replace() {        
-        editors.execCommandForCurrentEditorContext('replace');
+        editors.execCommandForCurrentEditorViewer('replace');
     }
 
     function find() {        
-        editors.execCommandForCurrentEditorContext('find');
+        editors.execCommandForCurrentEditorViewer('find');
     }
 
     function quickFind() {        
-        editors.execCommandForCurrentEditorContext('quickFind');
+        editors.execCommandForCurrentEditorViewer('quickFind');
     }
 
     function findNext() {        
-        editors.execCommandForCurrentEditorContext('findNext');
+        editors.execCommandForCurrentEditorViewer('findNext');
     }
 
     function findPrev() {        
-        editors.execCommandForCurrentEditorContext('findPrev');
+        editors.execCommandForCurrentEditorViewer('findPrev');
     }
 
     function gotoDefinition() {        
-        editors.execCommandForCurrentEditorContext('gotoDefinition');
+        editors.execCommandForCurrentEditorViewer('gotoDefinition');
     }
 
     function gotoLine() {        
-        editors.execCommandForCurrentEditorContext('gotoLine');
+        editors.execCommandForCurrentEditorViewer('gotoLine');
     }
 
     function gotoMatchingBrace() {        
-        editors.execCommandForCurrentEditorContext('gotoMatchingBrace');
+        editors.execCommandForCurrentEditorViewer('gotoMatchingBrace');
     }
 
 	function switchEditorTabToExSelected() {

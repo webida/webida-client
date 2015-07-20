@@ -37,7 +37,6 @@ define([
 
     function EditorPart() {
         Part.apply(this, arguments);
-        this.editorContext = null;
         this.file = null;
     }
 
@@ -54,12 +53,6 @@ define([
         },
         addChangeListener: function() {
             throw new Error('addChangeListener() should be implemented by ' + this.constructor.name);
-        },
-        setEditorContext: function(editorContext) {
-            this.editorContext = editorContext;
-        },
-        getEditorContext: function() {
-            return this.editorContext;
         },
         setFile: function(file) {
             this.file = file;

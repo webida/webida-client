@@ -58,9 +58,9 @@ define(['./plugin',
             return null;
         }
 
-        var editorContext = editors.currentFile && editors.currentFile.editorContext;
-        if (editorContext) {
-            editorContext.getMenuItemsUnderEdit(items, menuItems, deferred);
+        var viewer = editors.currentFile && editors.currentFile.viewer;
+        if (viewer) {
+            viewer.getMenuItemsUnderEdit(items, menuItems, deferred);
         }       
 
         return deferred;
@@ -75,7 +75,7 @@ define(['./plugin',
             items['&Replace'] = menuItems.findMenuItems['&Replace'];
             items['F&ind'] = menuItems.findMenuItems['F&ind'];
             items['&Highlight to Find'] = menuItems.findMenuItems['&Highlight to Find'];            
-            if (editors.execCommandForCurrentEditorContext('existSearchQuery')) {
+            if (editors.execCommandForCurrentEditorViewer('existSearchQuery')) {
                 items['Find &Next'] = menuItems.findMenuItems['Find &Next'];
                 items['Find &Previous'] = menuItems.findMenuItems['Find &Previous'];
             }
@@ -147,11 +147,11 @@ define(['./plugin',
         if (opened && opened.length >= 1) {
             items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];            
             
-            if (editors.execCommandForCurrentEditorContext('isDefaultKeyMap')) {
+            if (editors.execCommandForCurrentEditorViewer('isDefaultKeyMap')) {
                 items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
             }            
            
-            if (editors.execCommandForCurrentEditorContext('isThereMatchingBracket')) {
+            if (editors.execCommandForCurrentEditorViewer('isThereMatchingBracket')) {
                 items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
             }
         }
@@ -187,9 +187,9 @@ define(['./plugin',
             return null;
         }
         
-        var editorContext = editors.currentFile && editors.currentFile.editorContext;
-        if (editorContext) {
-            editorContext.getContextMenuItems(opened, items, menuItems, deferred);
+        var viewer = editors.currentFile && editors.currentFile.viewer;
+        if (viewer) {
+            viewer.getContextMenuItems(opened, items, menuItems, deferred);
         }       
 
         return deferred;

@@ -16,12 +16,12 @@
 
 /**
  * Interface
- * An ancestor of all EditorContexts.
+ * An ancestor of all EditorViewers.
  * This gives an interface of editor implements
  * (such as codemirror, ace) to the EditorPart.
  *
  * @constructor
- * @see TextEditorContext, CodeEditorContext
+ * @see TextEditorViewer, CodeEditorViewer
  * @since: 2015.06.25
  * @author: hw.shim
  * 
@@ -38,12 +38,12 @@ define([
 
 	var logger = new Logger();
 
-	function EditorContext() {
-		logger.info('new EditorContext()');
+	function EditorViewer() {
+		logger.info('new EditorViewer()');
 		
 	}
 
-	genetic.inherits(EditorContext, Object, {
+	genetic.inherits(EditorViewer, Object, {
         start : function () {
             throw new Error('start() should be implemented by subclass');
         },
@@ -129,5 +129,5 @@ define([
         }
 	});
 
-	return EditorContext;
+	return EditorViewer;
 });

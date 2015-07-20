@@ -15,9 +15,9 @@
  */
 
 /**
- * TextTextEditorContext is an wrapper(or adapter) object that encapsulates
+ * TextTextEditorViewer is an wrapper(or adapter) object that encapsulates
  * web based text editors, such as codemirror, ace editor,.. etc.
- * Now TextTextEditorContext supports codemirror only, but we will
+ * Now TextTextEditorViewer supports codemirror only, but we will
  * support other editors like ace sooner or later.
  *
  * Still needs refactoring (2015.06.25, hw.shim)
@@ -34,7 +34,7 @@ define([
     'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
     'webida-lib/util/loadCSSList',
-    'webida-lib/plugins/editors/EditorContext'
+    'webida-lib/plugins/workbench/ui/EditorViewer'
 ], function (
     require,
     genetic,
@@ -42,7 +42,7 @@ define([
     codemirror,
     editors,
     loadCSSList,
-    EditorContext
+    EditorViewer
 ) {
     'use strict';
 
@@ -172,7 +172,7 @@ define([
         cm.__instance.triggerEvent('save');
     };
 
-    function TextEditorContext(elem, file, startedListener) {
+    function TextEditorViewer(elem, file, startedListener) {
         var self = this;
         this.elem = elem;
         this.file = file;
@@ -234,7 +234,7 @@ define([
         cm.scrollTo(null, y);
     }
 
-    genetic.inherits(TextEditorContext, EditorContext, {
+    genetic.inherits(TextEditorViewer, EditorViewer, {
 
         addDeferredAction: function (action) {
             if (this.editor) {
@@ -721,11 +721,11 @@ define([
             this.showingInvisibles = showingInvisibles;
             if (showingInvisibles) {
                 this.addDeferredAction(function (self) {
-                    self.editor.addOverlay(TextEditorContext._whitespaceOverlay);
+                    self.editor.addOverlay(TextEditorViewer._whitespaceOverlay);
                 });
             } else {
                 this.addDeferredAction(function (self) {
-                    self.editor.removeOverlay(TextEditorContext._whitespaceOverlay);
+                    self.editor.removeOverlay(TextEditorViewer._whitespaceOverlay);
                 });
             }
         },
@@ -1554,7 +1554,7 @@ define([
 
     //Static
 
-    TextEditorContext.getAvailableThemes = function () {
+    TextEditorViewer.getAvailableThemes = function () {
         return [
             'default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant',
             'erlang-dark', 'lesser-dark',
@@ -1563,11 +1563,11 @@ define([
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
     };
-    TextEditorContext.getAvailableKeymaps = function () {
+    TextEditorViewer.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
     };
 
-    TextEditorContext._whitespaceOverlay = {
+    TextEditorViewer._whitespaceOverlay = {
         token: function (stream) {
             if (stream.eatWhile(/\S/)) {
                 return null;
@@ -1584,11 +1584,11 @@ define([
         }
     };
 
-    TextEditorContext.getEnclosingDOMElem = function () {
+    TextEditorViewer.getEnclosingDOMElem = function () {
         return document.getElementById('editor');
     };
 
-    TextEditorContext.getShortcuts = function () {
+    TextEditorViewer.getShortcuts = function () {
         return [{
             keys: 'shift+alt+P',
             title: 'TEST C, viable',
@@ -1606,5 +1606,5 @@ define([
         }];
     };
 
-    return TextEditorContext;
+    return TextEditorViewer;
 });

@@ -79,10 +79,13 @@ define([
         var File = function(path) {
             this.path = path;
             this.name = pathUtil.getFileName(path);
+            this.basename = this.name.replace(/(.*)\.(.*)$/, "$1");
+            this.extension = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
             this.tabTitle = this.name;
             this.editor = null;
             this.editorName = null;
             this.savedValue = null;
+            this.contents = null;
         };
 
         File.prototype.isModified = function() {
@@ -101,7 +104,11 @@ define([
             }
         };
 
-        File.prototype.getValue = function() {
+        File.prototype.setContents = function(contents) {
+            this.savedValue = contents;
+        };
+
+        File.prototype.getContents = function() {
             return this.savedValue;
         };
 
@@ -156,33 +163,33 @@ define([
                 throw new Error('tried to save a file "' + file.path + '" + whose value is not yet set');
             }
 
-            console.assert(file.editorContext);
-            var editorContext = file.editorContext;
+            console.assert(file.viewer);
+            var viewer = file.viewer;
 
-            if (editorContext.trimTrailingWhitespaces || editorContext.insertFinalNewLine || editorContext.retabIndentations) {
+            if (viewer.trimTrailingWhitespaces || viewer.insertFinalNewLine || viewer.retabIndentations) {
                 var v = value;
-                if (editorContext.trimTrailingWhitespaces && v.match(/( |\t)+$/m)) {
+                if (viewer.trimTrailingWhitespaces && v.match(/( |\t)+$/m)) {
                     v = v.replace(/( |\t)+$/mg, '');
                 }
-                if (editorContext.insertFinalNewLine && v.match(/.$/)) {
+                if (viewer.insertFinalNewLine && v.match(/.$/)) {
                     v = v + '\n';
                     // TODO: consider line ending mode
                 }
-                if (editorContext.retabIndentations) {
-                    //var spaces = getSpaces(editorContext.options.indentUnit);
-                    var unit = editorContext.options.indentUnit, re = /^(( )*)\t/m, m;
+                if (viewer.retabIndentations) {
+                    //var spaces = getSpaces(viewer.options.indentUnit);
+                    var unit = viewer.options.indentUnit, re = /^(( )*)\t/m, m;
                     while (( m = v.match(re))) {
                         v = v.replace(re, '$1' + getSpaces(unit - (m[0].length - 1) % unit));
                     }
                 }
 
                 if (v !== value) {
-                    var cursor = editorContext.getCursor();
-                    var scrollInfo = editorContext.getScrollInfo();
+                    var cursor = viewer.getCursor();
+                    var scrollInfo = viewer.getScrollInfo();
                     value = v;
-                    editorContext.setValue(value);
-                    editorContext.setCursor(cursor);
-                    editorContext.scrollToScrollInfo(scrollInfo);
+                    viewer.setValue(value);
+                    viewer.setCursor(cursor);
+                    viewer.scrollToScrollInfo(scrollInfo);
                 }
             }
 
@@ -543,22 +550,6 @@ define([
 
     /** @module editors */
     var editors = {
-
-        partContainer: null,
-        /**
-         * Returns PartContainer for EditorParts
-         * @returns {PartContainer}
-         */
-        getPartContainer: function() {
-            logger.info('getPartContainer()');
-            if (this.partContainer === null) {
-                this.partContainer = new PartContainer({
-                    id: 'editor'
-                });
-            }
-            return this.partContainer;
-        },
-
         splitViewContainer: null,
         editorTabFocusController: new ViewFocusController({
             'Title': 'title',
@@ -832,7 +823,7 @@ define([
         logger.info('editors.openFile(' + path + ', options, callback)');
         logger.info('options = ', options);
 
-		var dataSourceId = path;
+        var dataSourceId = path;
 
         //1. prepare DataSource
         var dsRegistry = workbench.getDataSourceRegistry();
@@ -854,6 +845,7 @@ define([
             //      part.setContents(contents);
             //   });
             editors.openFileOld(path, options, callback);
+            logger.info('dsRegistry = ', dsRegistry);
         }
 
     };
@@ -934,17 +926,17 @@ define([
     };
 
     editors.setCursor = function(file, pos) {
-        if (file.editorContext) {
-            if (file.editorContext.setCursor) {
-                file.editorContext.setCursor(pos);
+        if (file.viewer) {
+            if (file.viewer.setCursor) {
+                file.viewer.setCursor(pos);
             }
         }
     };
 
     editors.getCursor = function(file) {
-        if (file.editorContext) {
-            if (file.editorContext.getCursor) {
-                return file.editorContext.getCursor();
+        if (file.viewer) {
+            if (file.viewer.getCursor) {
+                return file.viewer.getCursor();
             }
         }
     };
@@ -1136,9 +1128,9 @@ define([
                 file.pendingCreator = function(c) {
                     logger.info('file.pendingCreator(' + c + ')');
                     function createEditor(file, editorPart, view, callback) {
-                        editorPart.create(view.getContent(), function(file, editorContext) {
-                            file.editorContext = editorContext;
-                            //TODO : file.editorContext refactor
+                        editorPart.create(view.getContent(), function(file, viewer) {
+                            file.viewer = viewer;
+                            //TODO : file.viewer refactor
                             if (editorPart.addChangeListener) {
                                 editorPart.addChangeListener(function(file) {
                                     _.defer(function() {
@@ -1249,12 +1241,12 @@ define([
         }
     };
 
-    editors.execCommandForCurrentEditorContext = function(commandKey) {
-        // Command means a method of EditorContext which have no arguments
+    editors.execCommandForCurrentEditorViewer = function(commandKey) {
+        // Command means a method of EditorViewer which have no arguments
 
-        if (editors.currentFile && editors.currentFile.editorContext) {
-            var editorContext = editors.currentFile.editorContext;
-            return editorContext[commandKey]();
+        if (editors.currentFile && editors.currentFile.viewer) {
+            var viewer = editors.currentFile.viewer;
+            return viewer[commandKey]();
         }
     };
 

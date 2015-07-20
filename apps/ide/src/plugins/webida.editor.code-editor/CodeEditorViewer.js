@@ -15,7 +15,7 @@
  */
 
 /**
- * CodeEditorContext for code-base EditorParts
+ * CodeEditorViewer for code-base EditorParts
  *
  * Still needs refactoring (2015.06.25, hw.shim)
  *
@@ -31,7 +31,7 @@ define([
 	'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
 	'webida-lib/util/loadCSSList',
-	'plugins/webida.editor.text-editor/TextEditorContext',
+	'plugins/webida.editor.text-editor/TextEditorViewer',
 	'./snippet'
 ], function (
 	require,
@@ -40,7 +40,7 @@ define([
 	codemirror,
     editors,
 	loadCSSList,
-	TextEditorContext,
+	TextEditorViewer,
 	Snippet
 ) {
     'use strict';
@@ -662,7 +662,7 @@ define([
         }
     }
 
-    function CodeEditorContext(elem, file, startedListener) {
+    function CodeEditorViewer(elem, file, startedListener) {
 
         var self = this;
 
@@ -879,7 +879,7 @@ define([
         /* jshint camelcase: true */
     }
     
-    genetic.inherits(CodeEditorContext, TextEditorContext, {
+    genetic.inherits(CodeEditorViewer, TextEditorViewer, {
 
 	    start : function () {
 	        if (this.editor !== undefined) {
@@ -1015,7 +1015,7 @@ define([
 	        });
 	    },
 
-	    //TODO : inherit from TextEditorContext
+	    //TODO : inherit from TextEditorViewer
 	    /**
 	     * @override
 	     */
@@ -1157,7 +1157,7 @@ define([
 	                            this.editor.setOption('lint', {
 	                                async: true,
 	                                getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-	                                    CodeEditorContext.jsHintWorker(editorValue, jshintrc, function (data) {
+	                                    CodeEditorViewer.jsHintWorker(editorValue, jshintrc, function (data) {
 	                                        updateLinting(editor, data.annotations);
 	                                    });
 	                                }
@@ -1166,7 +1166,7 @@ define([
 	                            this.editor.setOption('lint', {
 	                                async: true,
 	                                getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-	                                    CodeEditorContext.jsHintWorker(editorValue, false, function (data) {
+	                                    CodeEditorViewer.jsHintWorker(editorValue, false, function (data) {
 	                                        updateLinting(editor, data.annotations);
 	                                    });
 	                                }
@@ -1658,7 +1658,7 @@ define([
         }
     });
 
-    CodeEditorContext._whitespaceOverlay = {
+    CodeEditorViewer._whitespaceOverlay = {
         token: function (stream) {
             if (stream.eatWhile(/\S/)) { return null; }
 
@@ -1673,11 +1673,11 @@ define([
         }
     };
 
-    CodeEditorContext.getEnclosingDOMElem = function () {
+    CodeEditorViewer.getEnclosingDOMElem = function () {
         return document.getElementById('editor');
     };
 
-    CodeEditorContext.getShortcuts = function () {
+    CodeEditorViewer.getShortcuts = function () {
         return [
             { keys : 'shift+alt+P', title : 'TEST C, viable', desc: 'TEST, viable', viable: true },
             { keys : 'ctrl+shift+alt+V', title : 'TEST C 2, viable', desc: 'TEST, viable', viable: true },
@@ -1685,7 +1685,7 @@ define([
         ];
     };
 
-    CodeEditorContext.jsHintWorker = (function () {
+    CodeEditorViewer.jsHintWorker = (function () {
         var listeners = {};
         var worker = null;
         return function (code, options, listener) {
@@ -1705,21 +1705,21 @@ define([
             listeners[reqId] = listener;
         };
     })();
-    CodeEditorContext.getAvailableModes = function () {
+    CodeEditorViewer.getAvailableModes = function () {
         return [
             'js', 'json', 'ts', 'html', 'css', 'less'
         ];
     };
-    CodeEditorContext.getAvailableThemes = function () {
+    CodeEditorViewer.getAvailableThemes = function () {
         return [
             'default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
             'midnight', 'monokai', 'neat', 'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight',
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
     };
-    CodeEditorContext.getAvailableKeymaps = function () {
+    CodeEditorViewer.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
     };
 
-    return CodeEditorContext;
+    return CodeEditorViewer;
 });

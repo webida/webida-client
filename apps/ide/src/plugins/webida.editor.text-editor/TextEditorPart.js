@@ -36,7 +36,7 @@ define([
 	'webida-lib/plugins/editors/plugin',
 	'webida-lib/plugins/editors/EditorPreference',
 	'./preferences/preference-config',
-	'./TextEditorContext',
+	'./TextEditorViewer',
 	'dojo/topic',
 	'webida-lib/util/logger/logger-client',
 	'dojo/domReady!'
@@ -49,13 +49,13 @@ define([
 	editors,
 	EditorPreference,
 	preferenceConfig,
-	TextEditorContext,
+	TextEditorViewer,
 	topic,
 	Logger
 ) {
 	'use strict';
 
-	//TODO : this.editorContext -> this.getEditorContext()
+	//TODO : this.viewer -> this.getViewer()
 			//See File.prototype.isModified = function () {
 	//TODO : this.file -> this.getFile()
 
@@ -83,7 +83,7 @@ define([
 
 		initializeContext : function(){
 			logger.info('initializeContext()');
-			var context = this.getEditorContext();
+			var context = this.getViewer();
 			var parent = this.getParentElement();
 			context.setValue(this.file.savedValue);
 			context.clearHistory();
@@ -94,7 +94,7 @@ define([
             /* Invalid direct css manipulation. This causes ODP-423 bug.
              (ODP-423) Ocassional no contents display in newly created TextEditor
 
-            editorContext.addDeferredAction(function (editor) {
+            viewer.addDeferredAction(function (editor) {
                 console.log("-tmep--------- addDeferredAction wrapper css");
                 var wrapper = editor.editor.getWrapperElement();
                 $(wrapper).css({
@@ -110,14 +110,14 @@ define([
             var setStatusBarText = function () {
             	var workbench = require('webida-lib/plugins/workbench/plugin');
             	var file = that.file;
-            	var editorContext = that.getEditorContext();
-                var cursor = editorContext.getCursor();
-                workbench.__editor = editorContext; //TODO : refactor
+            	var viewer = that.getViewer();
+                var cursor = viewer.getCursor();
+                workbench.__editor = viewer; //TODO : refactor
                 workbench.setContext([file.path], {cursor: (cursor.row + 1) + ':' + (cursor.col + 1)});
             };
             context.addCursorListener(setStatusBarText);
             context.addFocusListener(setStatusBarText);
-            context.addCursorListener(function (editorContext) {
+            context.addCursorListener(function (viewer) {
                 TextEditorPart.pushCursorLocation(context.file, context.getCursor());
             });
             context.addExtraKeys({
@@ -141,14 +141,14 @@ define([
 
             this.fileOpenedHandle = topic.subscribe('file.opened', function (file, content) {
                 if (that.file === file) {
-                    that.editorContext.setValue(content);
+                    that.viewer.setValue(content);
                 }
             });
 
             this.fileSavedHandle = topic.subscribe('file.saved', function (file) {
-	            that.foldingStatus = that.getEditorContext().getFoldings();
+	            that.foldingStatus = that.getViewer().getFoldings();
 		    });
-            this.editorContext.addEventListener('save', function () {
+            this.viewer.addEventListener('save', function () {
                 require(['dojo/topic'], function (topic) {
                     topic.publish('#REQUEST.saveFile');
                 });
@@ -157,10 +157,10 @@ define([
 
 		initializePreferences : function(){
 			logger.info('initializePreferences()');
-			if(this.editorContext && this.file){
+			if(this.viewer && this.file){
 
 				//preferences
-				this.preferences = new EditorPreference(store, this.editorContext);
+				this.preferences = new EditorPreference(store, this.viewer);
 				this.preferences.setFields(this.getPreferences());
 			}
 		},
@@ -179,16 +179,16 @@ define([
 		 * To use the Context you want, override this method
 		 * and return Class you want use
 		 *
-		 * @returns TextEditorContext
+		 * @returns TextEditorViewer
 		 */
 		getContextClass : function(){
-			return TextEditorContext;
+			return TextEditorViewer;
 		},
 
-		getEditorContext : function(){
+		getViewer : function(){
 			//TODO : parent, callback in case of none
-			if(this.editorContext !== null){
-				return this.editorContext;
+			if(this.viewer !== null){
+				return this.viewer;
 			}
 			var parent = this.getParentElement();
 			var callback = this.createCallback;
@@ -205,8 +205,8 @@ define([
                     });
                 }
             });
-            this.setEditorContext(context);
-            return this.editorContext;
+            this.setViewer(context);
+            return this.viewer;
 		},
 
         getFoldingStatus: function () {
@@ -227,11 +227,11 @@ define([
 
         destroy: function () {
         	logger.info('destroy()');
-            if (this.editorContext) {
-                this.editorContext.destroy();
-                this.editorContext = null;
+            if (this.viewer) {
+                this.viewer.destroy();
+                this.viewer = null;
             }else{
-				logger.info('this.editorContext not found');
+				logger.info('this.viewer not found');
 				logger.trace();
 			}
 			//unset preferences
@@ -252,7 +252,7 @@ define([
 
         show: function () {
 			logger.info('show()');
-			this.getEditorContext().refresh();
+			this.getViewer().refresh();
 		},
 
         hide: function () {
@@ -260,36 +260,36 @@ define([
         },
 
         getValue: function () {
-        	if(this.editorContext){
-        		return this.editorContext.getValue(); //TODO : getEditorContext()
+        	if(this.viewer){
+        		return this.viewer.getValue(); //TODO : getViewer()
         	}else{
-				logger.info('this.editorContext not found');
+				logger.info('this.viewer not found');
         		logger.trace();
         	}
         },
 
         addChangeListener: function (callback) {
-			this.editorContext._changeCallback = callback;
+			this.viewer._changeCallback = callback;
         },
 
         focus: function () {
-        	if(this.editorContext){
-        		this.editorContext.focus(); //TODO : getEditorContext()
+        	if(this.viewer){
+        		this.viewer.focus(); //TODO : getViewer()
         	}else{
-				logger.info('this.editorContext not found');
+				logger.info('this.viewer not found');
         		logger.trace();
         	}
         },
 
         markClean: function () {
-            this.getEditorContext().markClean();
+            this.getViewer().markClean();
         },
 
         isClean: function () {
-        	if(this.editorContext){
-        		return this.editorContext.isClean(); //TODO : getEditorContext()
+        	if(this.viewer){
+        		return this.viewer.isClean(); //TODO : getViewer()
         	}else{
-				logger.info('this.editorContext not found');
+				logger.info('this.viewer not found');
         		logger.trace();
         		return true;
         	}
@@ -310,15 +310,15 @@ define([
             	return;
             }
             var part = editors.getPart(file);
-        	var context = part.editorContext;
+        	var context = part.viewer;
             if (location.start && location.end) {
                 context.setSelection(location.start, location.end);
             } else {
                 context.setCursor(location.cursor);
             }
-            context.addDeferredAction(function (editorContext) {
-                if (editorContext.editor) {
-                    editorContext.editor.focus();
+            context.addDeferredAction(function (viewer) {
+                if (viewer.editor) {
+                    viewer.editor.focus();
                 }
             });
         });
