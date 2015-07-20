@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['../CodeEditorContext'], function (CodeEditorContext) {
+define(['../CodeEditorViewer'], function (CodeEditorViewer) {
     'use strict';
 
     return {

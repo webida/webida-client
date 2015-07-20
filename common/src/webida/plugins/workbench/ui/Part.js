@@ -47,16 +47,19 @@ define([
         this._partId = ++_partId;
         this.flags = null;
         this.parent = null;
+        this.container = null;
+        this.viewer = null;
     }
 
 
     genetic.inherits(Part, EventEmitter, {
 
         /**
-         * @param {string} title
+         * @param {HTMLElement} parent
+         * @param {Function} callback
          */
-        create: function(parent) {
-            throw new Error('create() should be implemented by ' + this.constructor.name);
+        create: function(parent, callback) {
+            throw new Error('create(parent, callback) should be implemented by ' + this.constructor.name);
         },
 
         destroy: function() {
@@ -65,6 +68,20 @@ define([
 
         getContainer: function() {
             return this.container;
+        },
+
+        /**
+         * @param {Viewer} viewer
+         */
+        setViewer: function(viewer) {
+            this.viewer = viewer;
+        },
+
+        /**
+         * @return {Viewer}
+         */
+        getViewer: function() {
+            return this.viewer;
         },
 
         setFlag: function(/*int*/flag, /*boolean*/value) {
@@ -91,6 +108,7 @@ define([
         },
 
         // ----------- unknowkn ----------- //
+        //TODO refactor the follwings
 
         show: function() {
             throw new Error('show() should be implemented by ' + this.constructor.name);

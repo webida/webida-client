@@ -37,12 +37,12 @@ define([
 	var logger = new Logger();
 	logger.off();
 
-	function EditorPreference(storage, editorContext) {
-		logger.info('new EditorPreference('+storage+', '+editorContext+')');
+	function EditorPreference(storage, viewer) {
+		logger.info('new EditorPreference('+storage+', '+viewer+')');
 		var that = this;
 		this.configs = null;
 		this.storage = storage;
-		this.editorContext = editorContext;
+		this.viewer = viewer;
 		this.listener = function (value, key) {
 			that.setField(key, value);
 		}
@@ -52,7 +52,7 @@ define([
 		setFields : function(configs){
 			logger.info('setFields('+configs+')');
 			var that = this;
-			var editorContext = this.editorContext;
+			var viewer = this.viewer;
 			this.configs = configs;
 	        this.storage.addLoadedListener(function () {
 	            Object.keys(that.configs).forEach(function (key) {
@@ -79,7 +79,7 @@ define([
 	        if (value === undefined && config.length > 1) {
 	            value = config[1];
 	        }
-	        this.editorContext[setter](value);
+	        this.viewer[setter](value);
 		}
 	});
 

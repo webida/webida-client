@@ -50,25 +50,36 @@ define([
 
 
     genetic.inherits(DataSource, EventEmitter, {
+
         /**
          * @param {DataSource} dataSource
          */
         equals: function(dataSource) {
             throw new Error('equals(dataSource) should be implemented by ' + this.constructor.name);
         },
+
+        /**
+         * @param {Function} callback
+         */
+        getContents: function(callback) {
+            throw new Error('getContents(callback) should be implemented by ' + this.constructor.name);
+        },
+
         /**
          * @return {Object}
          */
         getId: function() {
             return this.dataSourceId;
         },
+
         toString: function() {
             var res = '<' + this.constructor.name + '>#' + this._dataSourceId;
             return res;
         }
     });
 
-    DataSource.CONTENT_CHANGED = 'contentChanged';
+    DataSource.CONTENTS_CHANGE = 'contentsChange';
+    DataSource.CONTENTS_LOAD = 'contentsLoad';
 
     return DataSource;
 });

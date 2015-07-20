@@ -16,42 +16,59 @@
 
 /**
  * Constructor
- * DataSourceFactory
+ * Document
  *
- * @see EventEmitter, PartContainer, Part, Perspective
- * @since: 2015.07.12
+ * @see
+ * @since: 2015.07.15
  * @author: hw.shim
  */
 
 // @formatter:off
 define([
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client'
+    'webida-lib/plugins/workbench/ui/ViewerModel',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client'
 ], function(
-	genetic, 
-	Logger
+    ViewerModel,
+    genetic, 
+    Logger
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
+
+    /**
+     * @typedef {Object} DataSource
+     */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function DataSourceFactory() {
-        logger.info('new DataSourceFactory()');
+    function Document(text) {
+        logger.info('new Document(' + text + ')');
+
+        /** @type {string} */
+        this.text = text;
     }
 
 
-    genetic.inherits(DataSourceFactory, Object, {
+    genetic.inherits(Document, ViewerModel, {
+
         /**
-         * @param {Object} dataSourceId
+         * @return {string}
          */
-        create: function(dataSourceId) {
-			throw new Error('create(dataSourceId) should be implemented by ' 
-				+ this.constructor.name);
+        getText: function() {
+            return this.text;
+        },
+
+        /**
+         * @param {string} text
+         */
+        update: function(text) {
+            this.text = text;
+            this.emit(ViewerModel.CONTENTS_CHANGE, this);
         }
     });
 
-    return DataSourceFactory;
+    return Document;
 });

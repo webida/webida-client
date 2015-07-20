@@ -30,14 +30,16 @@ define([
     'webida-lib/util/logger/logger-client',
     './DataSourceRegistry',
     './LayoutPane',
-    './Page'
+    './Page',
+    './WorkspaceModel'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
     DataSourceRegistry,
     LayoutPane,
-    Page
+    Page,
+    WorkspaceModel
 ) {
     'use strict';
 // @formatter:on
@@ -46,6 +48,7 @@ define([
      * @typedef {Object.<Object, Object>} Map
      * @typedef {Object} DataSourceRegistry
      * @typedef {Object} WorkbenchModel
+     * @typedef {Object} WorkspaceModel
      * @typedef {Object} Page
      */
 
@@ -61,6 +64,8 @@ define([
         this.pages = [];
         /** @type {DataSourceRegistry} */
         this.dataSourceRegistry = new DataSourceRegistry();
+        /** @type {WorkspaceModel} */
+        this.workspaceModel = new WorkspaceModel();
     }
 
 
@@ -107,16 +112,29 @@ define([
         },
 
         /**
-         * @param {string} factoryId
          * @param {Object} dataSourceId
          * @param {Function} callback
          */
-        createDataSource: function(factoryId, dataSourceId, callback) {
+        createDataSource: function(dataSourceId) {
+            logger.info('createDataSource(' + dataSourceId + ', callback)');
+            var dsRegistry = this.getDataSourceRegistry();
+            var wsModel = this.getWorkspaceModel();
+            var factoryId = wsModel.getDataSourceFactory(dataSourceId);
+            var that = this;
             require([factoryId], function(DataSourceFactory) {
-                var dataSource = DataSourceFactory.create(dataSourceId);
-                this.getDataSourceRegistry().registerDataSource(dataSource);
-                callback(dataSource);
+                var factory = new DataSourceFactory();
+                var dataSource = factory.create(dataSourceId);
+                dsRegistry.registerDataSource(dataSource);
+                logger.info('dsRegistry = ', dsRegistry);
+                that.emit(Workbench.CREATE_DATA_SOURCE, dataSource);
             });
+        },
+
+        /**
+         * @param {WorkspaceModel}
+         */
+        getWorkspaceModel: function() {
+            return this.workspaceModel;
         },
 
         /**
@@ -159,6 +177,8 @@ define([
             }
         }
     });
+
+    Workbench.CREATE_DATA_SOURCE = 'createDataSource';
 
     return Workbench;
 });
