@@ -60,11 +60,11 @@ define([
             buttons: [
                 {
                     caption: 'Save and ' + title,
-                    methodOnClick: 'saveAnd' + title
+                    methodOnClick: 'saveAndAction'
                 },
                 {
                     caption: title + ' without Saving',
-                    methodOnClick: title + 'WithoutSaving'
+                    methodOnClick: 'actionWithoutSaving'
                 },
                 {
                     caption: 'Cancel',
@@ -72,16 +72,16 @@ define([
                 }
                 ],
                 methodOnEnter: 'saveAnd' + title,
-                saveAndQuit: function () {
+                saveAndAction: function () {
                     editors.saveFile({
                         path: file.path,
                         callback: function () {
                             action();
-                            dialde();
+                            dialog.hide();
                         }
                     });
                 },
-                quitWithoutSaving: function () {
+                actionWithoutSaving: function () {
                     action();
                     this.hide();
                 },
@@ -92,7 +92,7 @@ define([
                 }
         });
         dialog.setContentArea('<span> File "' + file.name  + '" has unsaved changes. </span>' +
-                '<span> Save and '+ name + ' this file? </span>');
+                '<span> Save and '+ title + ' this file? </span>');
         dialog.show();
     }
 
@@ -224,7 +224,7 @@ define([
 
             var action = function closeFile() {
                 if (event.closable) {
-                	var editorPart = editors.getPart(file);
+                    var editorPart = editors.getPart(file);
                     editorPart.hide();
                     editorPart.destroy();
                     editors.removeFile(file.path);
@@ -245,7 +245,7 @@ define([
                     topic.publish('editors.closed', file.path);
                     close();
                 }
-            }
+            };
 
             var view = event.view;
             var vc = event.viewContainer;
