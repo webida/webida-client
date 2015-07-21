@@ -100,24 +100,33 @@ function (pm,
         domAttr.set(item, 'title', tooltip);
     }
 
-    function setItemIcons(item, icons) {
+    function setItemIcons(item, icons, iconClass) {
         // normal icon setting
         //var iconNormal = icons.normal;
         var iconNormal = icons;
+        var imgClass;
+        var img = '';
 
-        if (iconNormal) {
+        // If an extension specifies a 'class' property, it precedes icons.
+        // For example, an extension can use a sprite image in its class.
+        if (iconClass) {
+            imgClass = iconClass;
+        }
+        else if (iconNormal) {
             var menuitem = item.attr('data-menuitem');
             // convert id to valid class name e.g. /&File/&New/&File -> __File__New__File
             var iconClass = menuitem.replace(/&/g, '').replace(/\//g, '__').replace(/ /g, '_') + '_wticons';
-            var img = '<style type="text/css">' +
-                        '.' + iconClass + ' {' +
-                            'background-image: url("' + iconNormal + '");' +
-                        '}' +
-                      '</style>';
-            var imgClasses = iconClass + ' webida-tool-bar-icon ' +
-                             'webida-tool-bar-icon-normal';
+            img = '<style type="text/css">' +
+                      '.' + iconClass + ' {' +
+                          'background-image: url("' + iconNormal + '");' +
+                      '}' +
+                    '</style>';
+            imgClass = iconClass;
+        }
 
-            img = img + '<img class="' + imgClasses + '"' +
+        if (imgClass) {
+            imgClass += ' webida-tool-bar-icon webida-tool-bar-icon-normal';
+            img = img + '<img class="' + imgClass + '"' +
                              'src="./styles/webida-images/icons/transparent.png" draggable="false" />';
             item.attr('label', img);
 
@@ -211,13 +220,13 @@ function (pm,
                             tooltip = cmndInfo.toolbar.tooltip ?
                                 cmndInfo.toolbar.tooltip : menuItemName.replace(/&/gi, '');
                             if (cmndInfo.shortcut && cmndInfo.shortcut.keys) {
-                                tooltip += '/' + cmndInfo.shortcut.keys;
+                                tooltip += ' (' + cmndInfo.shortcut.keys + ')';
                             }
                             setItemTooltip(item, tooltip);
 
                             // icon setting
                             if (cmndInfo.toolbar.icons) {
-                                setItemIcons(item, cmndInfo.toolbar.icons);
+                                setItemIcons(item, cmndInfo.toolbar.icons, cmndInfo.toolbar.iconClass);
                             }
 
                             // enable, disable event setting
@@ -271,7 +280,7 @@ function (pm,
 
                             // icon setting
                             if (cmndInfo.toolbar.icons) {
-                                setItemIcons(item, cmndInfo.toolbar.icons);
+                                setItemIcons(item, cmndInfo.toolbar.icons, cmndInfo.toolbar.iconClass);
                             }
 
                             // enable, disable event setting
