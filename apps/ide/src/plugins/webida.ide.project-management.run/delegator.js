@@ -304,14 +304,14 @@ define([
      * Make a new run configuration
      * @param {DojoWidget} content - dojo object of content widget
      * @param {String} type - the type of configuration
-     * @param {String} [project] - project name
+     * @param {String} [projectName] - project name
      * @param {contentCreationCallback} [callback]
      */
-    module.newConf = function (content, type, project, callback) {
+    module.newConf = function (content, type, projectName, callback) {
         var runConf = {
             type: type,
-            name: _makeConfigurationName(project),
-            project: project,
+            name: _makeConfigurationName(projectName),
+            project: projectName,
             unsaved: true
         };
         console.log('newConf', arguments);
