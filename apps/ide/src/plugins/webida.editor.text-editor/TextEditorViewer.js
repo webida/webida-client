@@ -181,6 +181,8 @@ define([
     };
 
     function TextEditorViewer(elem, file, startedListener) {
+    	logger.info('new TextEditorViewer()');
+    	EditorViewer.apply(this, arguments);
         var self = this;
         this.elem = elem;
         this.setContainerElement(elem);
@@ -204,19 +206,12 @@ define([
             });
         }
 
-        loadCSSList([require.toUrl('./css/webida.css'), 
-        		require.toUrl('external/codemirror/lib/codemirror.css'), 
-        		require.toUrl('external/codemirror/addon/dialog/dialog.css')], function() {
-            require(['external/codemirror/addon/dialog/dialog', 
-            		'external/codemirror/addon/search/searchcursor', 
-            		'./search-addon', 
-            		'external/codemirror/addon/edit/closebrackets', 
-            		'external/codemirror/addon/edit/closetag', 
-            		'external/codemirror/addon/edit/matchbrackets'], function() {
-                setTimeout(function(self){
-                	if (self.getContainerElement()) {
-                		self.create();
-                	}
+        loadCSSList([require.toUrl('./css/webida.css'), require.toUrl('external/codemirror/lib/codemirror.css'), require.toUrl('external/codemirror/addon/dialog/dialog.css')], function() {
+            require(['external/codemirror/addon/dialog/dialog', 'external/codemirror/addon/search/searchcursor', './search-addon', 'external/codemirror/addon/edit/closebrackets', 'external/codemirror/addon/edit/closetag', 'external/codemirror/addon/edit/matchbrackets'], function() {
+                setTimeout(function(self) {
+                    if (self.getContainerElement()) {
+                        self.create();
+                    }
                 }, 0, self);
             });
         });
@@ -822,12 +817,14 @@ define([
         },
 
         refresh: function() {
-        	logger.info('> refresh()');
-        	if (this.getModel()) {
-        		this.setValue(this.getModel().getText());
-        	}
+            logger.info('> refresh()');
+            if (this.getModel()) {
+                this.setValue(this.getModel().getText());
+            }
             if (this.editor) {
-                this.editor.refresh();
+                setTimeout(function(engine) {
+                    engine.refresh();
+                }, 1000, this.editor);
             }
         },
 
