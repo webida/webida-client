@@ -58,7 +58,7 @@ define([
         /**
          * Creates Viewer Element
          */
-        createEngine: function() {
+        create: function() {
         	var that = this;
             var container = this.getContainerElement();
             if (container) {
