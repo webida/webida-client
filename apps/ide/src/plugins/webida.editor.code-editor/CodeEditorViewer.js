@@ -932,7 +932,7 @@ define([
 	        
             this.editor.on("change", function(cm, change) {
             	if(self.getModel()){
-            		self.getModel().update(cm.getValue());
+            		self.getModel().update(cm.getValue(), self);
             	}
                 //console.log('self.getModel() = ', self.getModel());
             }); 
