@@ -24,7 +24,7 @@
         ],
         "webida.ide.project-management.run:hook": [
             { "name": "type", "type": "string", "desc": "run type id" },
-            { "name": "beforeRun", "type": "function", "desc": "add a hook before run"}
+            { "name": "beforeLaunch", "type": "function", "desc": "add a hook before run"}
         ]
     },
 
