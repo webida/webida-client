@@ -181,8 +181,8 @@ define([
     };
 
     function TextEditorViewer(elem, file, startedListener) {
-    	logger.info('new TextEditorViewer()');
-    	EditorViewer.apply(this, arguments);
+        logger.info('new TextEditorViewer()');
+        EditorViewer.apply(this, arguments);
         var self = this;
         this.elem = elem;
         this.setContainerElement(elem);
@@ -822,9 +822,7 @@ define([
                 this.setValue(this.getModel().getText());
             }
             if (this.editor) {
-                setTimeout(function(engine) {
-                    engine.refresh();
-                }, 1000, this.editor);
+                this.editor.refresh();
             }
         },
 
