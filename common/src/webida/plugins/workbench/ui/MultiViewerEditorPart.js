@@ -62,6 +62,12 @@ define([
 
         /** @type {Map.<Object, EditorViewer>} */
         this.viewers = new Map();
+
+        /** @type {Object.<string, EditorViewer>} */
+        this.tabToViewerMap = {};
+
+        /** @type {EditorViewer} */
+        this.activeViewer = null;
     }
 
 
@@ -110,6 +116,7 @@ define([
          * Create TabContainer
          */
         createTabContainer: function() {
+        	var that = this;
             var parent = this.getParentElement();
             var container = new TabContainer({
                 style: 'width: 100%; height: 100%;',
@@ -120,6 +127,13 @@ define([
             container.startup();
             parent.appendChild(container.domNode);
             container.resize();
+            container.watch('selectedChildWidget', function(name, oldTab, newTab) {
+            	console.log('selectedChildWidget', name, oldTab, newTab);
+                var viewer = that.getViewerByTabId(newTab.id);
+                if(viewer){
+                	that.setActiveViewer(viewer);
+                }
+            });
             this.tabContainer = container;
         },
 
@@ -151,6 +165,7 @@ define([
             viewer.setContainerElement(pane.domNode);
             this.getTabContainer().addChild(pane, index);
             this.getViewers().set(id, viewer);
+            this.tabToViewerMap[pane.id] = viewer;
         },
 
         /**
@@ -164,14 +179,16 @@ define([
          * @param {EditorViewer} viewer
          */
         setActiveViewer: function(viewer) {
-
+        	logger.info('setActiveViewer('+viewer+')');
+            this.activeViewer = viewer;
+            viewer.refresh();
         },
 
         /**
          * @return {EditorViewer} viewer
          */
         getActiveViewer: function() {
-
+            return this.activeViewer;
         },
 
         /**
@@ -179,6 +196,13 @@ define([
          */
         getViewerById: function(id) {
             return this.getViewers().get(id);
+        },
+
+        /**
+         * @param {string} id
+         */
+        getViewerByTabId: function(tabId) {
+			return this.tabToViewerMap[tabId];
         },
 
         /**

@@ -48,6 +48,7 @@ define([
 
     function FormEditorViewer() {
         logger.info('new FormEditorViewer()');
+        EditorViewer.apply(this, arguments);
         this.form = null;
     }
 
@@ -78,7 +79,6 @@ define([
 
         refresh: function() {
             logger.info('refresh()', this.getModel().getText());
-            logger.info('this.form = ', this.form);
             this.form.value = this.getModel().getText();
         }
     });

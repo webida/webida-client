@@ -44,7 +44,7 @@ define([
 
     function EditorViewer() {
         logger.info('new EditorViewer()');
-
+		Viewer.apply(this, arguments);
     }
 
 

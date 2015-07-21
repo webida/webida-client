@@ -1681,7 +1681,7 @@
 <XPD:ATTR name="Left" type="integer">428</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1524</XPD:ATTR>
 <XPD:ATTR name="Width" type="integer">259</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">173</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">186</XPD:ATTR>
 <XPD:REF name="Model">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="Z9qmfa2afEGtSo+bz7kqVAAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="8TPKrgpkeEu8kSrU+Y41aQAA">
@@ -2009,7 +2009,7 @@
 <XPD:OBJ name="OwnedViews[48]" type="UMLAssociationView" guid="+YXQca40w0Cmcxh3uGCrZgAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">872,1419;868,1420;744,1420;642,1524</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">872,1419;868,1420;744,1420;645,1524</XPD:ATTR>
 <XPD:REF name="Model">xbPdi45U7k6yWSGxgOstWwAA</XPD:REF>
 <XPD:REF name="Head">HyExay2rfEyfhFH3mzH2mAAA</XPD:REF>
 <XPD:REF name="Tail">zqCI6VCNZkmlcUtMIsXylwAA</XPD:REF>
@@ -5819,7 +5819,7 @@ A factoryId is a path of the DataSourceFactory module.
 </XPD:OBJ>
 <XPD:ATTR name="#Associations" type="integer">1</XPD:ATTR>
 <XPD:REF name="Associations[0]">CZ3+FkkkQE6/h+NO7hrjEQAA</XPD:REF>
-<XPD:ATTR name="#Attributes" type="integer">2</XPD:ATTR>
+<XPD:ATTR name="#Attributes" type="integer">3</XPD:ATTR>
 <XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="uYJ88CpWFUG2o3elArHtKgAA">
 <XPD:ATTR name="Name" type="string">TabContainer tabContainer</XPD:ATTR>
 <XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
@@ -5827,6 +5827,11 @@ A factoryId is a path of the DataSourceFactory module.
 </XPD:OBJ>
 <XPD:OBJ name="Attributes[1]" type="UMLAttribute" guid="l9FBan0FTUyd1q2IoM5JUwAA">
 <XPD:ATTR name="Name" type="string">Map&lt;Object ID, EditorViewer viewer&gt; viewers</XPD:ATTR>
+<XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
+<XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Attributes[2]" type="UMLAttribute" guid="nGfBWdH94EOqh1AMQC90QgAA">
+<XPD:ATTR name="Name" type="string">Viewer activeViewer</XPD:ATTR>
 <XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
 <XPD:REF name="Owner">SP0JDmz5R0uL2gDy4lm8YgAA</XPD:REF>
 </XPD:OBJ>

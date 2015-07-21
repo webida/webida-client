@@ -671,6 +671,8 @@ define([
     }
 
     function CodeEditorViewer(elem, file, startedListener) {
+    	logger.info('new CodeEditorViewer()');
+    	TextEditorViewer.apply(this, arguments);
         var self = this;
         this.elem = elem;
         this.setContainerElement(elem);
