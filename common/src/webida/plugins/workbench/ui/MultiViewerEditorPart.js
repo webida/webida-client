@@ -25,18 +25,20 @@
 
 // @formatter:off
 define([
-    'dijit/layout/TabContainer', 
+    'dojo/aspect',
+    'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './EditorPart',
     './Part'
-], function(
+], function (
+    aspect,
     TabContainer,
     ContentPane,
     EventEmitter,
-    genetic, 
+    genetic,
     Logger,
     EditorPart,
     Part
@@ -116,7 +118,7 @@ define([
          * Create TabContainer
          */
         createTabContainer: function() {
-        	var that = this;
+            var that = this;
             var parent = this.getParentElement();
             var container = new TabContainer({
                 style: 'width: 100%; height: 100%;',
@@ -127,13 +129,16 @@ define([
             container.startup();
             parent.appendChild(container.domNode);
             container.resize();
-            container.watch('selectedChildWidget', function(name, oldTab, newTab) {
-            	console.log('selectedChildWidget', name, oldTab, newTab);
+
+            // bind select child event
+            container.own(aspect.before(container, 'selectChild', function (newTab) {
+                console.log('before, selectChild', newTab);
                 var viewer = that.getViewerByTabId(newTab.id);
-                if(viewer){
-                	that.setActiveViewer(viewer);
+                if (viewer) {
+                    that.setActiveViewer(viewer);
                 }
-            });
+            }));
+
             this.tabContainer = container;
         },
 
@@ -179,7 +184,7 @@ define([
          * @param {EditorViewer} viewer
          */
         setActiveViewer: function(viewer) {
-        	logger.info('setActiveViewer('+viewer+')');
+            logger.info('setActiveViewer('+viewer+')');
             this.activeViewer = viewer;
             viewer.refresh();
         },
@@ -202,7 +207,7 @@ define([
          * @param {string} id
          */
         getViewerByTabId: function(tabId) {
-			return this.tabToViewerMap[tabId];
+            return this.tabToViewerMap[tabId];
         },
 
         /**
