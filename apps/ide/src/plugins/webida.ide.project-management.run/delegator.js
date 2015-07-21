@@ -224,8 +224,8 @@ define([
         handle = null;
     }
 
-    function _makeConfigurationName() {
-        var defaultValue = 'New run configuration';
+    function _makeConfigurationName(project) {
+        var defaultValue = project || 'New run configuration';
         var result = defaultValue;
         var allRunConfs = runConfigurationManager.getAll();
         if (!_.isEmpty(allRunConfs)) {
@@ -310,7 +310,7 @@ define([
     module.newConf = function (content, type, project, callback) {
         var runConf = {
             type: type,
-            name: _makeConfigurationName(),
+            name: _makeConfigurationName(project),
             project: project,
             unsaved: true
         };
