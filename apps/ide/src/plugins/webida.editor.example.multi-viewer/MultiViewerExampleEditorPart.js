@@ -135,6 +135,7 @@ define([
          * @param {Viewer} sender
          */
         codeListener: function(doc, sender) {
+            logger.info('codeListener(doc, ' + sender + ')');
             if (sender === this.getViewerById('FormEditor')) {
                 this.getViewerById('CodeEditor').refresh();
             }
@@ -145,6 +146,7 @@ define([
          * @param {Viewer} sender
          */
         formListener: function(doc, sender) {
+            logger.info('formListener(doc, ' + sender + ')');
             if (sender === this.getViewerById('CodeEditor')) {
                 this.getViewerById('FormEditor').refresh();
             }
@@ -181,10 +183,24 @@ define([
                 codeEditor.setModel(doc);
                 formEditor.setModel(doc);
 
-                //4. Listen to model
+                //4. For the concurrent editing, listen to the model
+                // Note that, when user select the tab,
+                // the tabContainer make the new viewer as a active viewer.
+                // Then the viewer will be refreshed automatically.
+                /*
                 doc.on(ViewerModel.CONTENTS_CHANGE, that.codeListener.bind(that));
                 doc.on(ViewerModel.CONTENTS_CHANGE, that.formListener.bind(that));
+                */
             });
+        },
+
+        /**
+         * @override
+         */
+        setActiveViewer: function(viewer) {
+            MultiViewerEditorPart.prototype.setActiveViewer.call(this, viewer);
+            //TODO refactor followings
+            //TODO do with editors.currentViewer
         },
 
         destroy: function() {

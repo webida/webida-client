@@ -46,8 +46,11 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    var _viewerId = 0;
+
     function Viewer() {
         logger.info('new Viewer()');
+        this._viewerId = ++_viewerId;
 
         /** @type {HTMLElement} */
         this.containerElement = null
@@ -97,6 +100,11 @@ define([
                 width: width,
                 height: height
             };
+        },
+
+        toString: function() {
+            var res = '<' + this.constructor.name + '>#' + this._viewerId;
+            return res;
         }
     });
 
