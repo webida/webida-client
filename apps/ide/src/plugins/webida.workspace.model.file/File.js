@@ -48,7 +48,7 @@ define([
         logger.info('new File(' + path + ')');
 
         if (path.slice(-1) === '/') {
-			throw new Error('Path should be end with file name');
+            throw new Error('Path should be end with file name');
         }
 
         /** @type {string} a/b/c.d.e */
@@ -57,7 +57,7 @@ define([
         /** @type {string} c.d.e */
         this.name = path.split(/[\\/]/).pop();
 
-		/** @type {string} c.d */
+        /** @type {string} c.d */
         this.basename = this.name.replace(/(.*)\.(.*)$/, "$1");
 
         /** @type {string} e */
@@ -65,7 +65,7 @@ define([
 
         /** @type {string} */
         this.contents = null;
-        
+
         this.state = 0;
     }
 
@@ -85,7 +85,7 @@ define([
         getContents: function() {
             return this.contents;
         },
-        
+
         setFlag: function(/*int*/flag, /*boolean*/value) {
             if (!flag) {
                 throw new Error('Invalid flag name');
@@ -99,11 +99,15 @@ define([
 
         getFlag: function(/*int*/flag) {
             return (this.flags & flag) != 0;
+        },
+
+        toString: function() {
+        	return '<' + this.constructor.name + '>#' + this.path;
         }
     });
 
-	/** @constant {number} state flag : Read File Done */
-	File.READ = 1;
+    /** @constant {number} state flag : Read File Done */
+    File.READ = 1;
 
     return File;
 });
