@@ -54,7 +54,7 @@ define([
         return docFrag;
     }
 
-    function createDialog (file, title, action) {
+    function createDialog(file, title, action, canceled) {
         var dialog = new ButtonedDialog({
             title: 'Unsaved Changes in the File to ' + title,
             buttons: [
@@ -68,11 +68,26 @@ define([
                 },
                 {
                     caption: 'Cancel',
-                    methodOnClick: 'hide'
+                    methodOnClick: 'canceled'
                 }
                 ],
-                methodOnEnter: 'saveAnd' + title,
-                saveAndAction: function () {
+            methodOnEnter: 'saveAnd' + title,
+            saveAndAction: function () {
+                if (title === 'Quit') {
+                    var keys = Object.keys(editors.files);
+                    var len = keys.length;
+                    for (var i = 0; i < len; i++) {
+                        var key = keys[i];
+                        var file = editors.files[key];
+                        if (file.isModified()) {
+                            editors.saveFile({
+                                path: file.path,
+                            });
+                        }
+                    }
+                    action();
+                    dialog.hide();
+                } else {
                     editors.saveFile({
                         path: file.path,
                         callback: function () {
@@ -80,16 +95,22 @@ define([
                             dialog.hide();
                         }
                     });
-                },
-                actionWithoutSaving: function () {
-                    action();
-                    this.hide();
-                },
-
-                buttonsWidth: '140px',
-                onHide: function () {
-                    dialog.destroyRecursive();
                 }
+            },
+            actionWithoutSaving: function () {
+                action();
+                this.hide();
+            },
+            canceled: function () {
+                if (canceled) {
+                    canceled();
+                }
+                this.hide();
+            },
+            buttonsWidth: '140px',
+            onHide: function () {
+                dialog.destroyRecursive();
+            }
         });
         dialog.setContentArea('<span> File "' + file.name  + '" has unsaved changes. </span>' +
                 '<span> Save and '+ title + ' this file? </span>');
@@ -266,6 +287,8 @@ define([
         });
 
         topic.subscribe('view.quit', function (event, quit) {
+
+            ide.unregisterBeforeUnloadChecker('checkModifiedFiles');
             var keys = Object.keys(editors.files);
             var modifiedFileNames = [];
             var len = keys.length;
@@ -278,19 +301,24 @@ define([
             }
 
             var action = function closeWindow() {
+                quit();
                 window.focus();
                 window.opener = window;
                 window.close();
             };
 
+            var cancel = function cancelSaveBeforeUnload() {
+                ide.registerBeforeUnloadChecker('checkModifiedFiles', checkModifiedFiles);
+            };
+
             if (modifiedFileNames.length > 0) {
-                createDialog(modifiedFileNames.join(', '), 'Quit', action);
+                createDialog(modifiedFileNames.join(', '), 'Quit', action, cancel);
             } else {
                 action();
             }
         });
 
-        ide.registerBeforeUnloadChecker(function () {
+        function checkModifiedFiles() {
 
             var keys = Object.keys(editors.files);
             var modifiedFileNames = [];
@@ -298,7 +326,6 @@ define([
             for (var i = 0; i < len; i++) {
                 var key = keys[i];
                 var file = editors.files[key];
-                //if (editors.isModifiedFile(file)) {
                 if (file.isModified()) {
                     modifiedFileNames.push(file.name);
                 }
@@ -307,7 +334,9 @@ define([
             if (modifiedFileNames.length > 0) {
                 return 'You have unsaved changes in files: ' + modifiedFileNames.join(', ');
             }
-        });
+        }
+
+        ide.registerBeforeUnloadChecker('checkModifiedFiles', checkModifiedFiles);
 
         var lastStatus = ide.registerStatusContributorAndGetLastStatus('editor-view', function () {
             var status = {};

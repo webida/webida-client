@@ -578,10 +578,12 @@ define(['webida-lib/util/browserInfo',
      *      (e.g. unsaved changes in a file).
      * @returns {undefined}
      */
-
-    function registerBeforeUnloadChecker(checker) {
-        var key = 'key' + Object.keys(beforeUnloadCheckers).length;
+    function registerBeforeUnloadChecker(key, checker) {
         beforeUnloadCheckers[key] = checker;
+    }
+
+    function unregisterBeforeUnloadChecker(key) {
+        delete beforeUnloadCheckers[key];
     }
 
     /**
@@ -788,6 +790,13 @@ define(['webida-lib/util/browserInfo',
      * @type {register_before_unload_checker}
      */
     exports.registerBeforeUnloadChecker = registerBeforeUnloadChecker;
+
+
+    /**
+     * A function that unregisters a callback which checks whether Webida App can safely be unloaded
+     * @type {unregister_before_unload_checker}
+     */
+    exports.unregisterBeforeUnloadChecker = unregisterBeforeUnloadChecker;
 
     /**
      * A function that registers a callback which produces an object encoding a status of a part of Webida App.
