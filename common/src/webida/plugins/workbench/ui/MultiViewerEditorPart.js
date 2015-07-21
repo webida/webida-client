@@ -118,6 +118,7 @@ define([
          * Create TabContainer
          */
         createTabContainer: function() {
+            logger.info('createTabContainer()');
             var that = this;
             var parent = this.getParentElement();
             var container = new TabContainer({
@@ -131,8 +132,8 @@ define([
             container.resize();
 
             // bind select child event
-            container.own(aspect.before(container, 'selectChild', function (newTab) {
-                console.log('before, selectChild', newTab);
+            container.own(aspect.before(container, 'selectChild', function(newTab) {
+                logger.info('before, selectChild', newTab);
                 var viewer = that.getViewerByTabId(newTab.id);
                 if (viewer) {
                     that.setActiveViewer(viewer);
@@ -163,6 +164,7 @@ define([
          * @param {number} index
          */
         addViewer: function(id, title, viewer, index) {
+            logger.info('addViewer(' + id + ', ' + title + ', ' + viewer + ', ' + index + ')');
             var pane = new ContentPane({
                 title: title
             });
@@ -177,14 +179,14 @@ define([
          * @param {EditorViewer} viewer
          */
         removeViewer: function(viewer) {
-
+			//TODO
         },
 
         /**
          * @param {EditorViewer} viewer
          */
         setActiveViewer: function(viewer) {
-            logger.info('setActiveViewer('+viewer+')');
+            logger.info('setActiveViewer(' + viewer + ')');
             this.activeViewer = viewer;
             viewer.refresh();
         },
@@ -198,13 +200,15 @@ define([
 
         /**
          * @param {Object} id
+         * @return {EditorViewer}
          */
         getViewerById: function(id) {
             return this.getViewers().get(id);
         },
 
         /**
-         * @param {string} id
+         * @param {string} tabId
+         * @return {EditorViewer}
          */
         getViewerByTabId: function(tabId) {
             return this.tabToViewerMap[tabId];

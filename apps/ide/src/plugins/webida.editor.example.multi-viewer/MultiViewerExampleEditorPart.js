@@ -186,11 +186,13 @@ define([
                 //4. For the concurrent editing, listen to the model
                 // Note that, when user select the tab,
                 // the tabContainer make the new viewer as a active viewer.
-                // Then the viewer will be refreshed automatically.
+                // Then the active viewer will be refreshed automatically.
                 /*
-                doc.on(ViewerModel.CONTENTS_CHANGE, that.codeListener.bind(that));
-                doc.on(ViewerModel.CONTENTS_CHANGE, that.formListener.bind(that));
-                */
+                 doc.on(ViewerModel.CONTENTS_CHANGE,
+                that.codeListener.bind(that));
+                 doc.on(ViewerModel.CONTENTS_CHANGE,
+                that.formListener.bind(that));
+                 */
             });
         },
 
@@ -209,7 +211,6 @@ define([
         },
 
         getValue: function() {
-            console.info('this.file.getContents(); = ', this.file.getContents());
             return this.file.getContents();
         },
 

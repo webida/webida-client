@@ -115,18 +115,16 @@ define([
          * @param {Object} dataSourceId
          * @param {Function} callback
          */
-        createDataSource: function(dataSourceId) {
+        createDataSource: function(dataSourceId, callback) {
             logger.info('createDataSource(' + dataSourceId + ', callback)');
             var dsRegistry = this.getDataSourceRegistry();
             var wsModel = this.getWorkspaceModel();
             var factoryId = wsModel.getDataSourceFactory(dataSourceId);
-            var that = this;
             require([factoryId], function(DataSourceFactory) {
                 var factory = new DataSourceFactory();
                 var dataSource = factory.create(dataSourceId);
                 dsRegistry.registerDataSource(dataSource);
-                logger.info('dsRegistry = ', dsRegistry);
-                that.emit(Workbench.CREATE_DATA_SOURCE, dataSource);
+                callback(dataSource);
             });
         },
 

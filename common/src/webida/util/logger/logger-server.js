@@ -21,7 +21,7 @@
 
 'use strict';
 
-var LoggerInterface = require('./logger-interface');
+var LoggerInterface = require('./logger');
 var FileAppender = require('./appenders/file-appender');
 var singlton;
 
