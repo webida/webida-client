@@ -34,11 +34,11 @@ define([
     'webida-lib/util/genetic', 
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/loadCSSList',
-    'webida-lib/plugins/editors/Document',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/MultiViewerEditorPart',
     'webida-lib/plugins/workbench/ui/ViewerModel',
     'plugins/webida.editor.code-editor/CodeEditorViewer',
+    'plugins/webida.editor.text-editor/Document',
     'plugins/webida.editor.text-editor/TextEditorPart',
     './FormEditorViewer',
     'dojo/domReady!'
@@ -47,11 +47,11 @@ define([
     genetic, 
     Logger,
     loadCSSList,
-    Document,
     EditorPart, 
     MultiViewerEditorPart,
     ViewerModel,
     CodeEditorViewer,
+    Document,
     TextEditorPart,
     FormEditorViewer
 ) {
@@ -189,9 +189,9 @@ define([
                 // Then the active viewer will be refreshed automatically.
                 /*
                  doc.on(ViewerModel.CONTENTS_CHANGE,
-                that.codeListener.bind(that));
+                 that.codeListener.bind(that));
                  doc.on(ViewerModel.CONTENTS_CHANGE,
-                that.formListener.bind(that));
+                 that.formListener.bind(that));
                  */
             });
         },
