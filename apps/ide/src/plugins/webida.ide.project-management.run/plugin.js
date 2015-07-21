@@ -293,7 +293,7 @@ define([
         _workbenchRunBinded(runConfigurationManager.MODE.DEBUG_MODE);
     };
 
-    function _beforeRunHook(projectName, callback) {
+    function _beforeLaunchHook(projectName, mode, callback) {
         ide.getProjectInfo(projectName, function (err, projectInfo) {
             var ext;
             if (err) {
@@ -305,7 +305,7 @@ define([
                 });
                 if (ext) {
                     require([ext.module], function (mod) {
-                        mod[ext.beforeRun](projectInfo, callback);
+                        mod[ext.beforeLaunch](projectInfo, mode, callback);
                     });
                 } else {
                     callback();
@@ -341,7 +341,7 @@ define([
 
         var projectName = parseProjectNameFromPath(contextPath);
 
-        _beforeRunHook(projectName, function (err) {
+        _beforeLaunchHook(projectName, mode, function (err) {
             if (err) {
                 toastr.error(err);
             } else {
@@ -464,7 +464,7 @@ define([
         var nodeSplit = selectedPath.split('/');
         var projectName = nodeSplit[2];
 
-        _beforeRunHook(projectName, function (err) {
+        _beforeLaunchHook(projectName, mode, function (err) {
             if (err) {
                 toastr.error(err);
             } else {
