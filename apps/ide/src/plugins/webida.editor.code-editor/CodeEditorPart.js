@@ -34,7 +34,7 @@ define([
 	'webida-lib/plugins/workbench/preference-system/store',
 	'webida-lib/plugins/editors/EditorPreference',
 	'./preferences/preference-config',
-	'./CodeEditorContext',
+	'./CodeEditorViewer',
 	'./configloader',
 	'dojo/topic',
 	'webida-lib/util/logger/logger-client',
@@ -47,7 +47,7 @@ define([
 	store,
 	EditorPreference,
 	preferenceConfig,
-	CodeEditorContext,
+	CodeEditorViewer,
 	configloader,
 	topic,
 	Logger
@@ -76,7 +76,7 @@ define([
 
 		initializeCodeEditorPart : function(){
 			logger.info('initializeCodeEditorPart()');
-			var context = this.getEditorContext();
+			var context = this.getViewer();
 			var file = this.file;
             //context.addDeferredAction(function (context) {
              //   context.editor.setOption('overviewRuler', false);
@@ -96,7 +96,7 @@ define([
 		initializeContext : function(){
 			logger.info('initializeContext()');
 			TextEditorPart.prototype.initializeContext.call(this);
-			var context = this.getEditorContext();
+			var context = this.getViewer();
 			if(context && this.file){
 				var mode = this.file.name.split('.').pop().toLowerCase();
 				this.setMode(mode);
@@ -104,11 +104,11 @@ define([
 		},
 
 		/**
-		 * @returns CodeEditorContext
+		 * @returns CodeEditorViewer
 		 * @override
 		 */
-		getContextClass : function(){
-			return CodeEditorContext;
+		getViewerClass : function(){
+			return CodeEditorViewer;
 		},
 
 		/**
@@ -120,7 +120,7 @@ define([
 		},
 
 	    setMode : function(mode) {
-			var context = this.getEditorContext();
+			var context = this.getViewer();
 			if(!context) {
 				return;
 			}

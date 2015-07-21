@@ -45,10 +45,11 @@ define([
 
     genetic.inherits(DataSourceFactory, Object, {
         /**
-         * @param {Object} id
+         * @param {Object} dataSourceId
          */
-        create: function(id) {
-			throw new Error('create() should be implemented by subclass ' + this.constructor.name);
+        create: function(dataSourceId) {
+			throw new Error('create(dataSourceId) should be implemented by ' 
+				+ this.constructor.name);
         }
     });
 

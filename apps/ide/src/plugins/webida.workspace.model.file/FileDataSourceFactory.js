@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * Template
+ * FileDataSourceFactory
  *
  * @see
  * @since: 2015.07.15
@@ -28,12 +28,14 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    './DataSource'
+    'webida-lib/plugins/workbench/ui/DataSourceFactory',
+    './FileDataSource'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
-    DataSource
+    DataSourceFactory,
+    FileDataSource
 ) {
     'use strict';
 // @formatter:on
@@ -46,25 +48,23 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function Template() {
-        logger.info('new Template()');
+    function FileDataSourceFactory() {
+        logger.info('new FileDataSourceFactory()');
 
-        /** @type {Array.<DataSource>} */
-        this.bbb = [];
     }
 
 
-    genetic.inherits(Template, Object, {
+    genetic.inherits(FileDataSourceFactory, DataSourceFactory, {
 
         /**
-         * Explain
-         * @param {}
+         * @param {Object} dataSourceId
          * @return {Array}
          */
-        aaaa: function() {
-            return this.bbb;
+        create: function(dataSourceId) {
+            var fileDataSource = new FileDataSource(dataSourceId);
+            return fileDataSource;
         }
     });
 
-    return Template;
+    return FileDataSourceFactory;
 });

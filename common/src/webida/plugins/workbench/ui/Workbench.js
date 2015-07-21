@@ -25,22 +25,30 @@
 
 // @formatter:off
 define([
-	'external/eventEmitter/EventEmitter',
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client',
-	'./DataSourceRegistry'
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
+    './DataSourceRegistry',
+    './LayoutPane',
+    './Page',
+    './WorkspaceModel'
 ], function(
-	EventEmitter,
-	genetic, 
-	Logger,
-	DataSourceRegistry
+    EventEmitter,
+    genetic, 
+    Logger,
+    DataSourceRegistry,
+    LayoutPane,
+    Page,
+    WorkspaceModel
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     /**
      * @typedef {Object.<Object, Object>} Map
      * @typedef {Object} DataSourceRegistry
+     * @typedef {Object} WorkbenchModel
+     * @typedef {Object} WorkspaceModel
      * @typedef {Object} Page
      */
 
@@ -56,6 +64,8 @@ define([
         this.pages = [];
         /** @type {DataSourceRegistry} */
         this.dataSourceRegistry = new DataSourceRegistry();
+        /** @type {WorkspaceModel} */
+        this.workspaceModel = new WorkspaceModel();
     }
 
 
@@ -66,6 +76,7 @@ define([
          */
         addPage: function(page) {
             this.pages.push(page);
+            page.setParent(this);
         },
 
         /**
@@ -74,6 +85,7 @@ define([
         removePage: function(page) {
             var index = this.pages.indexOf(page);
             if (index > 0) {
+                page.setParent(null);
                 this.pages.splice(index, 1);
             }
         },
@@ -100,18 +112,73 @@ define([
         },
 
         /**
-         * @param {string} factoryId
          * @param {Object} dataSourceId
          * @param {Function} callback
          */
-        createDataSource: function(factoryId, dataSourceId, callback) {
+        createDataSource: function(dataSourceId) {
+            logger.info('createDataSource(' + dataSourceId + ', callback)');
+            var dsRegistry = this.getDataSourceRegistry();
+            var wsModel = this.getWorkspaceModel();
+            var factoryId = wsModel.getDataSourceFactory(dataSourceId);
+            var that = this;
             require([factoryId], function(DataSourceFactory) {
-                var dataSource = DataSourceFactory.create(dataSourceId);
-                this.getDataSourceRegistry().registerDataSource(dataSource);
-                callback(dataSource);
+                var factory = new DataSourceFactory();
+                var dataSource = factory.create(dataSourceId);
+                dsRegistry.registerDataSource(dataSource);
+                logger.info('dsRegistry = ', dsRegistry);
+                that.emit(Workbench.CREATE_DATA_SOURCE, dataSource);
             });
+        },
+
+        /**
+         * @param {WorkspaceModel}
+         */
+        getWorkspaceModel: function() {
+            return this.workspaceModel;
+        },
+
+        /**
+         * @param {WorkbenchModel} model
+         */
+        parseModel: function(workbenchModel) {
+
+            //TODO : if(!(model instanceof WorkbenchModel)){return;}
+
+            function getPages(model) {
+                var LayoutClass = {
+                    'Page': Page,
+                    'LayoutPane': LayoutPane
+                }
+                var layoutTree, split, children, child;
+                if ('type' in model) {
+                    layoutTree = new LayoutClass[model.type](model.id, model.name);
+                    if ('split' in model) {
+                        split = model.split;
+                        layoutTree.setOrientation(split.orientation);
+                        layoutTree.setRatio(split.ratio);
+                    }
+                    if ('children' in model) {
+                        children = model.children;
+                        for (var i in children) {
+                            child = getPages(children[i]);
+                            layoutTree.insertChild(child, i);
+                        }
+                    }
+                    return layoutTree;
+                }
+                return null;
+            }
+
+            if ('pages' in workbenchModel) {
+                var pages = workbenchModel.pages;
+                for (var i in pages) {
+                    this.addPage(getPages(pages[i]));
+                }
+            }
         }
     });
+
+    Workbench.CREATE_DATA_SOURCE = 'createDataSource';
 
     return Workbench;
 });

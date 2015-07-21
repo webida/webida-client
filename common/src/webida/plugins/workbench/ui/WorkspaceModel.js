@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * Template
+ * WorkspaceModel
  *
  * @see
  * @since: 2015.07.15
@@ -46,25 +46,22 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function Template() {
-        logger.info('new Template()');
-
-        /** @type {Array.<DataSource>} */
-        this.bbb = [];
+    function WorkspaceModel() {
+        logger.info('new WorkspaceModel()');
     }
 
 
-    genetic.inherits(Template, Object, {
+    genetic.inherits(WorkspaceModel, Object, {
 
         /**
-         * Explain
-         * @param {}
-         * @return {Array}
+         * @param {object} dataSourceId
+         * @return {string} DataSourceFactory module's path
          */
-        aaaa: function() {
-            return this.bbb;
+        getDataSourceFactory: function(dataSourceId) {
+        	//TODO : refactor when implementing webida.workspace.model.file plugin
+            return 'plugins/webida.workspace.model.file/FileDataSourceFactory';
         }
     });
 
-    return Template;
+    return WorkspaceModel;
 });

@@ -15,10 +15,10 @@
  */
 
 /**
- * Editor adapter interface
+ * EngineAdapter interface
  *
  * @constructor
- * @see EditorContext, EditorAdapterFactory
+ * @see EditorViewer, EngineAdapterFactory
  * @constructor
  * @since: 2015.07.11
  * @author: h.m.kwon
@@ -26,19 +26,19 @@
  */
 
 define([
-    'webida-lib/util/gene',
+    'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function (
-       gene,
+       genetic,
         logger
        ) {
     'use strict';
 
-    function EditorAdapter() {
-        logger.info('new EditorAdapter()');
+    function EngineAdapter() {
+        logger.info('new EngineAdapter()');
     }
 
-    gene.inherit(EditorAdapter, Object, {
+    genetic.inherits(EngineAdapter, Object, {
         start : function () {
             throw new Error('start() should be implemented by subclass');
         },
@@ -124,5 +124,5 @@ define([
         }
     });
 
-    return EditorAdapter;
+    return EngineAdapter;
 });

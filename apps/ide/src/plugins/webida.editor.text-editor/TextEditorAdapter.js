@@ -18,7 +18,7 @@
  * TextEditor adapter interface
  *
  * @constructor
- * @see TextEditorContext, EditorAdapterFactory
+ * @see TextEditorViewer, EngineAdapterFactory
  * @constructor
  * @since: 2015.07.11
  * @author: h.m.kwon
@@ -26,13 +26,13 @@
  */
 
 define([
-    'webida-lib/util/gene',
+    'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugins/editors/EditorAdapter'
+    'webida-lib/plugins/editors/EngineAdapter'
 ], function (
-        gene,
+        genetic,
         logger,
-        EditorAdapter
+        EngineAdapter
        ) {
     'use strict';
 
@@ -40,7 +40,7 @@ define([
         logger.info('new TextEditorAdapter()');
     }
     
-    gene.inherit(TextEditorAdapter, EditorAdapter, {
+    genetic.inherits(TextEditorAdapter, EngineAdapter, {
 
         addDeferredAction: function (action) {
             throw new Error('addDeferredAction() should be implemented by subclass');

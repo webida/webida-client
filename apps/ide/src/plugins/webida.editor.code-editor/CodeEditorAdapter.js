@@ -18,7 +18,7 @@
  * CodeEditor adapter interface
  *
  * @constructor
- * @see CodeEditorContext, EditorAdapterFactory
+ * @see CodeEditorViewer, EngineAdapterFactory
  * @constructor
  * @since: 2015.07.11
  * @author: h.m.kwon
@@ -26,11 +26,11 @@
  */
 
 define([
-    'webida-lib/util/gene',
+    'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'plugins/webida.editor.text-editor/TextEditorAdapter'
 ], function (      
-    gene,
+    genetic,
     logger,
     TextEditorAdapter
 ) {
@@ -40,7 +40,7 @@ define([
         logger.info('new CodeEditorAdapter()');
     }   
 
-    gene.inherit(CodeEditorAdapter, TextEditorAdapter, {
+    genetic.inherits(CodeEditorAdapter, TextEditorAdapter, {
         
         getMode : function () {
             throw new Error('getMode() should be implemented by subclass');

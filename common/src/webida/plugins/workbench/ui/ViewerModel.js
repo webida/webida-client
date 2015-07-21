@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * Template
+ * ViewerModel
  *
  * @see
  * @since: 2015.07.15
@@ -46,25 +46,22 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function Template() {
-        logger.info('new Template()');
-
-        /** @type {Array.<DataSource>} */
-        this.bbb = [];
+    function ViewerModel() {
+        logger.info('new ViewerModel()');
     }
 
 
-    genetic.inherits(Template, Object, {
+    genetic.inherits(ViewerModel, EventEmitter, {
 
         /**
-         * Explain
-         * @param {}
-         * @return {Array}
+         * update
          */
-        aaaa: function() {
-            return this.bbb;
+        update: function() {
+        	throw new Error('update() should be implemented by ' + this.constructor.name);
         }
     });
 
-    return Template;
+	ViewerModel.CONTENTS_CHANGE = 'contentsChange';
+
+    return ViewerModel;
 });

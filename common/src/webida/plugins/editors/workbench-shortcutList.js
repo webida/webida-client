@@ -99,9 +99,9 @@ define(['./plugin',
             'emmet.reflect_css_value': 'Reflect css value',
             'emmet.insert_formatted_line_break_only': 'Insert formatted line break only'
         };
-        if (editors && editors.currentFile && editors.currentFile.editorContext && editors.currentFile.editorContext.editor) {
-            var editorContext = editors.currentFile.editorContext;
-            return editorContext.getWorkbenchShortcuts(desc);
+        if (editors && editors.currentFile && editors.currentFile.viewer && editors.currentFile.viewer.editor) {
+            var viewer = editors.currentFile.viewer;
+            return viewer.getWorkbenchShortcuts(desc);
             
         } else {
             return [];

@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * Template
+ * FormEditorViewer
  *
  * @see
  * @since: 2015.07.15
@@ -28,12 +28,12 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    './DataSource'
+    'webida-lib/plugins/workbench/ui/EditorViewer'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
-    DataSource
+    EditorViewer
 ) {
     'use strict';
 // @formatter:on
@@ -46,25 +46,41 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function Template() {
-        logger.info('new Template()');
-
-        /** @type {Array.<DataSource>} */
-        this.bbb = [];
+    function FormEditorViewer() {
+        logger.info('new FormEditorViewer()');
+        this.form = null;
     }
 
 
-    genetic.inherits(Template, Object, {
+    genetic.inherits(FormEditorViewer, EditorViewer, {
 
         /**
-         * Explain
-         * @param {}
-         * @return {Array}
+         * Creates Viewer Element
          */
-        aaaa: function() {
-            return this.bbb;
+        create: function() {
+        	var that = this;
+            var container = this.getContainerElement();
+            if (container) {
+                this.form = $("<textarea style='width:90%; height:90%'></textarea>")[0];
+                container.appendChild(this.form);
+                this.form.addEventListener('keyup', function(e) {
+					if(e.target.value !== that.getModel().getText()){
+						that.getModel().update(e.target.value);
+					}
+                });
+            }
+        },
+
+        setModel: function(doc) {
+            EditorViewer.prototype.setModel.call(this, doc);
+            this.refresh();
+        },
+
+        refresh: function() {
+            logger.info('refresh()', this.getModel().getText());
+            this.form.innerHTML = this.getModel().getText();
         }
     });
 
-    return Template;
+    return FormEditorViewer;
 });

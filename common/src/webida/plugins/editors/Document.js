@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * Template
+ * Document
  *
  * @see
  * @since: 2015.07.15
@@ -25,15 +25,13 @@
 
 // @formatter:off
 define([
-    'external/eventEmitter/EventEmitter',
+    'webida-lib/plugins/workbench/ui/ViewerModel',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './DataSource'
+    'webida-lib/util/logger/logger-client'
 ], function(
-    EventEmitter,
+    ViewerModel,
     genetic, 
-    Logger,
-    DataSource
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -46,25 +44,31 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function Template() {
-        logger.info('new Template()');
+    function Document(text) {
+        logger.info('new Document(' + text + ')');
 
-        /** @type {Array.<DataSource>} */
-        this.bbb = [];
+        /** @type {string} */
+        this.text = text;
     }
 
 
-    genetic.inherits(Template, Object, {
+    genetic.inherits(Document, ViewerModel, {
 
         /**
-         * Explain
-         * @param {}
-         * @return {Array}
+         * @return {string}
          */
-        aaaa: function() {
-            return this.bbb;
+        getText: function() {
+            return this.text;
+        },
+
+        /**
+         * @param {string} text
+         */
+        update: function(text) {
+            this.text = text;
+            this.emit(ViewerModel.CONTENTS_CHANGE, this);
         }
     });
 
-    return Template;
+    return Document;
 });

@@ -15,16 +15,14 @@
  */
 
 /**
- * TextTextEditorContext is an wrapper(or adapter) object that encapsulates
- * web based text editors, such as codemirror, ace editor,.. etc.
- * Now TextTextEditorContext supports codemirror only, but we will
- * support other editors like ace sooner or later.
- *
- * Still needs refactoring (2015.06.25, hw.shim)
+ * CodeMirror adapter for TextEditor 
  *
  * @constructor
- * @see TextEditor
- * @refactor: hw.shim (2015.06.11)
+ * @see TextEditorViewer, EngineAdapterFactory
+ * @constructor
+ * @since: 2015.07.10
+ * @author: h.m.kwon
+ * 
  */
 
 define([
@@ -34,16 +32,16 @@ define([
     'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
     'webida-lib/util/loadCSSList',
-    'webida-lib/plugins/editors/EditorContext'
+    './TextEditorAdapter'
 ], function (
-    require,
-    genetic,
-    _,
-    codemirror,
-    editors,
-    loadCSSList,
-    EditorContext
-) {
+       require,
+        genetic,
+        _,
+        codemirror,
+        editors,
+        loadCSSList,
+        TextEditorAdapter
+       ) {
     'use strict';
 
     function foldCode(cm, start, end) {
@@ -66,17 +64,17 @@ define([
             var dialog =
                 'Go to line: <input type="text" style="width: 10em"/> <span style="color: #888"></span>';
             loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css')],
-                function () {
-                    require(['external/codemirror/addon/dialog/dialog'], function () {
-                        cm.openDialog(dialog, function (query) {
-                            var line = Math.floor(+query - 1);
-                            cm.__instance.setCursor({
-                                row: line,
-                                col: 0
-                            });
+                        function () {
+                require(['external/codemirror/addon/dialog/dialog'], function () {
+                    cm.openDialog(dialog, function (query) {
+                        var line = Math.floor(+query - 1);
+                        cm.__instance.setCursor({
+                            row: line,
+                            col: 0
                         });
                     });
                 });
+            });
         } else {
             return codemirror.Pass;
         }
@@ -172,7 +170,7 @@ define([
         cm.__instance.triggerEvent('save');
     };
 
-    function TextEditorContext(elem, file, startedListener) {
+    function CodeMirrorAdapterForTextEditor(elem, file, startedListener) {
         var self = this;
         this.elem = elem;
         this.file = file;
@@ -196,16 +194,16 @@ define([
         }
 
         loadCSSList([require.toUrl('./css/webida.css'),
-            require.toUrl('external/codemirror/lib/codemirror.css'),
-            require.toUrl('external/codemirror/addon/dialog/dialog.css')
-        ], function () {
+                     require.toUrl('external/codemirror/lib/codemirror.css'),
+                     require.toUrl('external/codemirror/addon/dialog/dialog.css')
+                    ], function () {
             require(['external/codemirror/addon/dialog/dialog',
-                'external/codemirror/addon/search/searchcursor',
-                './search-addon',
-                'external/codemirror/addon/edit/closebrackets',
-                'external/codemirror/addon/edit/closetag',
-                'external/codemirror/addon/edit/matchbrackets'
-            ], function () {
+                     'external/codemirror/addon/search/searchcursor',
+                     './search-addon',
+                     'external/codemirror/addon/edit/closebrackets',
+                     'external/codemirror/addon/edit/closetag',
+                     'external/codemirror/addon/edit/matchbrackets'
+                    ], function () {
                 self.start();
             });
         });
@@ -221,20 +219,20 @@ define([
         var y = charCoords.top;
         var lineHeight = charCoords.bottom - y;
         switch (position) {
-        case 'center':
-            y = y - (height / 2) + lineHeight;
-            break;
-        case 'bottom':
-            y = y - height + lineHeight * 1.4;
-            break;
-        case 'top':
-            y = y + lineHeight * 0.4;
-            break;
+            case 'center':
+                y = y - (height / 2) + lineHeight;
+                break;
+            case 'bottom':
+                y = y - height + lineHeight * 1.4;
+                break;
+            case 'top':
+                y = y + lineHeight * 0.4;
+                break;
         }
         cm.scrollTo(null, y);
     }
 
-    genetic.inherits(TextEditorContext, EditorContext, {
+    genetic.inherits(CodeMirrorAdapterForTextEditor, TextEditorAdapter, {
 
         addDeferredAction: function (action) {
             if (this.editor) {
@@ -319,7 +317,7 @@ define([
 
                     var width = parentElem.offsetWidth;
                     var height = parentElem.offsetHeight - (boundingClientRect.top -
-                        parentBoundingClientRect.top);
+                                                            parentBoundingClientRect.top);
                     if (this.__width !== width || this.__height !== height || this.__visible !==
                         visible) {
 
@@ -463,7 +461,7 @@ define([
                     self.editor.setSize(width, height);
                     var borderCorrection = wrapper.offsetHeight - wrapper.clientHeight;
                     self.editor.setSize(wrapper.clientWidth, wrapper.clientHeight -
-                        borderCorrection);
+                                        borderCorrection);
                 } else {
                     self.editor.setSize(width, height);
                 }
@@ -490,16 +488,16 @@ define([
                 var self = this;
                 var csspath = 'external/codemirror/theme/' + theme + '.css';
                 switch (theme) {
-                case 'webida-dark':
-                    csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
-                    break;
-                case 'webida-light':
-                    csspath = 'webida-lib/plugins/editors/themes/webida-light.css';
-                    break;
-                case 'solarized dark':
-                case 'solarized light':
-                    csspath = 'external/codemirror/theme/solarized.css';
-                    break;
+                    case 'webida-dark':
+                        csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
+                        break;
+                    case 'webida-light':
+                        csspath = 'webida-lib/plugins/editors/themes/webida-light.css';
+                        break;
+                    case 'solarized dark':
+                    case 'solarized light':
+                        csspath = 'external/codemirror/theme/solarized.css';
+                        break;
                 }
                 loadCSSList([require.toUrl(csspath)], function () {
                     addAvailable('theme', theme);
@@ -520,29 +518,29 @@ define([
             }
             var self = this;
             switch (keymap) {
-            case '':
-            case 'default':
-                this.keymap = keymap;
-                if (this.editor) {
-                    this.editor.setOption('keyMap', 'default');
-                    this.editor.setOption('autoCloseBrackets', true);
-                }
-                break;
-            case 'vim':
-                //case 'emacs':
-                if (this.editor) {
-                    this.editor.setOption('autoCloseBrackets', false);
-                }
-                this.keymap = keymap;
-                require(['external/codemirror/keymap/' + keymap], function () {
-                    addAvailable('keymap', keymap);
-                    if (self.editor) {
-                        self.editor.setOption('keyMap', keymap);
+                case '':
+                case 'default':
+                    this.keymap = keymap;
+                    if (this.editor) {
+                        this.editor.setOption('keyMap', 'default');
+                        this.editor.setOption('autoCloseBrackets', true);
                     }
-                });
-                break;
-            default:
-                throw new Error('Not supported keymap "' + keymap + '"');
+                    break;
+                case 'vim':
+                    //case 'emacs':
+                    if (this.editor) {
+                        this.editor.setOption('autoCloseBrackets', false);
+                    }
+                    this.keymap = keymap;
+                    require(['external/codemirror/keymap/' + keymap], function () {
+                        addAvailable('keymap', keymap);
+                        if (self.editor) {
+                            self.editor.setOption('keyMap', keymap);
+                        }
+                    });
+                    break;
+                default:
+                    throw new Error('Not supported keymap "' + keymap + '"');
             }
         },
 
@@ -577,8 +575,8 @@ define([
                 if (!_.contains(gutters, gutterName)) {
                     var i, newgutters = [];
                     var order = ['CodeMirror-linenumbers', 'CodeMirror-lint-markers',
-                        'CodeMirror-foldgutter'
-                    ];
+                                 'CodeMirror-foldgutter'
+                                ];
                     for (i = 0; i < order.length; i++) {
                         if (_.contains(gutters, order[i]) || order[i] === gutterName) {
                             newgutters.push(order[i]);
@@ -607,11 +605,11 @@ define([
                 if (highlight) {
                     var self = this;
                     require(['external/codemirror/addon/selection/active-line'],
-                        function () {
-                            self.addDeferredAction(function (self) {
-                                self.editor.setOption('styleActiveLine', highlight);
-                            });
+                            function () {
+                        self.addDeferredAction(function (self) {
+                            self.editor.setOption('styleActiveLine', highlight);
                         });
+                    });
                 } else if (this.editor) {
                     this.addDeferredAction(function (self) {
                         self.editor.setOption('styleActiveLine', highlight);
@@ -721,11 +719,11 @@ define([
             this.showingInvisibles = showingInvisibles;
             if (showingInvisibles) {
                 this.addDeferredAction(function (self) {
-                    self.editor.addOverlay(TextEditorContext._whitespaceOverlay);
+                    self.editor.addOverlay(CodeMirrorAdapterForTextEditor._whitespaceOverlay);
                 });
             } else {
                 this.addDeferredAction(function (self) {
-                    self.editor.removeOverlay(TextEditorContext._whitespaceOverlay);
+                    self.editor.removeOverlay(CodeMirrorAdapterForTextEditor._whitespaceOverlay);
                 });
             }
         },
@@ -743,13 +741,13 @@ define([
                 var self = this;
                 loadCSSList([require.toUrl('./css/codefolding.css')], function () {
                     require(['external/codemirror/addon/fold/foldcode',
-                        'external/codemirror/addon/fold/foldgutter',
-                        'external/codemirror/addon/fold/brace-fold'
-                    ], function () {
+                             'external/codemirror/addon/fold/foldgutter',
+                             'external/codemirror/addon/fold/brace-fold'
+                            ], function () {
                         self.addDeferredAction(function (self) {
                             self._gutterOn('CodeMirror-foldgutter');
                             var rf = new codemirror.fold.combine(codemirror
-                                .fold.brace);
+                                                                 .fold.brace);
                             self.editor.setOption('foldGutter', {
                                 rangeFinder: rf
                             });
@@ -1392,7 +1390,7 @@ define([
                 return [];
             }
         },
-        
+
         existSearchQuery: function () {
             if (this.editor) {
                 var editor = this.editor;    
@@ -1406,7 +1404,7 @@ define([
                 return false;
             }
         },
-        
+
         getMenuItemsUnderEdit: function (items, menuItems, deferred) {
             var editor = this.editor;
 
@@ -1450,15 +1448,15 @@ define([
 
                 // Source
                 var sourceItems = {};
-                
+
                 // Code Folding
                 sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];               
-               
-                
+
+
                 items['&Source'] = sourceItems;
-               
+
                 deferred.resolve(items);
-                
+
             } else {
                 deferred.resolve(items);
             }
@@ -1524,10 +1522,10 @@ define([
 
                 // Source
                 var sourceItems = {};
-                
+
                 // Code Folding
                 sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-                
+
                 // Source
                 if (_.values(sourceItems).length > 0) {
                     items['So&urce'] = sourceItems;
@@ -1554,7 +1552,7 @@ define([
 
     //Static
 
-    TextEditorContext.getAvailableThemes = function () {
+    CodeMirrorAdapterForTextEditor.getAvailableThemes = function () {
         return [
             'default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant',
             'erlang-dark', 'lesser-dark',
@@ -1563,32 +1561,32 @@ define([
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
     };
-    TextEditorContext.getAvailableKeymaps = function () {
+    CodeMirrorAdapterForTextEditor.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
     };
 
-    TextEditorContext._whitespaceOverlay = {
+    CodeMirrorAdapterForTextEditor._whitespaceOverlay = {
         token: function (stream) {
             if (stream.eatWhile(/\S/)) {
                 return null;
             }
 
             switch (stream.next()) {
-            case ' ':
-                return 'whitespace-space';
-            case '\t':
-                return 'whitespace-tab';
+                case ' ':
+                    return 'whitespace-space';
+                case '\t':
+                    return 'whitespace-tab';
             }
 
             return 'whitespace';
         }
     };
 
-    TextEditorContext.getEnclosingDOMElem = function () {
+    CodeMirrorAdapterForTextEditor.getEnclosingDOMElem = function () {
         return document.getElementById('editor');
     };
 
-    TextEditorContext.getShortcuts = function () {
+    CodeMirrorAdapterForTextEditor.getShortcuts = function () {
         return [{
             keys: 'shift+alt+P',
             title: 'TEST C, viable',
@@ -1606,5 +1604,5 @@ define([
         }];
     };
 
-    return TextEditorContext;
+    return CodeMirrorAdapterForTextEditor;
 });
