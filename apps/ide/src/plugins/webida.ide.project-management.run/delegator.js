@@ -224,8 +224,8 @@ define([
         handle = null;
     }
 
-    function _makeConfigurationName(project) {
-        var defaultValue = project || 'New run configuration';
+    function _makeConfigurationName(projectName) {
+        var defaultValue = projectName || 'New run configuration';
         var result = defaultValue;
         var allRunConfs = runConfigurationManager.getAll();
         if (!_.isEmpty(allRunConfs)) {
