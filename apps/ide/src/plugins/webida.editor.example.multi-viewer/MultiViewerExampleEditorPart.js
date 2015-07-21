@@ -132,16 +132,22 @@ define([
 
         /**
          * @param {Document} doc
+         * @param {Viewer} sender
          */
-        codeListener: function(doc) {
-            this.getViewerById('CodeEditor').refresh();
+        codeListener: function(doc, sender) {
+            if (sender === this.getViewerById('FormEditor')) {
+                this.getViewerById('CodeEditor').refresh();
+            }
         },
 
         /**
          * @param {Document} doc
+         * @param {Viewer} sender
          */
-        formListener: function(doc) {
-            this.getViewerById('FormEditor').refresh();
+        formListener: function(doc, sender) {
+            if (sender === this.getViewerById('CodeEditor')) {
+                this.getViewerById('FormEditor').refresh();
+            }
         },
 
         /**

@@ -63,10 +63,11 @@ define([
 
         /**
          * @param {string} text
+         * @param {Viewer} viewer
          */
-        update: function(text) {
+        update: function(text, viewer) {
             this.text = text;
-            this.emit(ViewerModel.CONTENTS_CHANGE, this);
+            this.emit(ViewerModel.CONTENTS_CHANGE, this, viewer);
         }
     });
 

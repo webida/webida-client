@@ -61,11 +61,11 @@ define([
         	var that = this;
             var container = this.getContainerElement();
             if (container) {
-                this.form = $("<textarea style='width:90%; height:90%'></textarea>")[0];
+                this.form = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
                 container.appendChild(this.form);
                 this.form.addEventListener('keyup', function(e) {
 					if(e.target.value !== that.getModel().getText()){
-						that.getModel().update(e.target.value);
+						that.getModel().update(e.target.value, that);
 					}
                 });
             }
@@ -78,7 +78,8 @@ define([
 
         refresh: function() {
             logger.info('refresh()', this.getModel().getText());
-            this.form.innerHTML = this.getModel().getText();
+            logger.info('this.form = ', this.form);
+            this.form.value = this.getModel().getText();
         }
     });
 
