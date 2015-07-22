@@ -1049,8 +1049,9 @@ define([
 	            theme = 'webida-dark';
 	        }
 	        this.theme = theme;
-	        if (theme === 'default') {
-	            if (this.editor) {
+            if (theme === 'codemirror-default') {
+                theme = this.theme = 'default';
+                if (this.editor) {
 	                this.editor.setOption('theme', this.theme);
 	            }
 	        } else {
@@ -1734,7 +1735,7 @@ define([
     };
     CodeEditorViewer.getAvailableThemes = function () {
         return [
-            'default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
+            'codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
             'midnight', 'monokai', 'neat', 'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight',
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];

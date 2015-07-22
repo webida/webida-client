@@ -480,7 +480,8 @@ define([
                 theme = 'webida-dark';
             }
             this.theme = theme;
-            if (theme === 'default') {
+            if (theme === 'codemirror-default') {
+                theme = this.theme = 'default';
                 if (this.editor) {
                     this.editor.setOption('theme', this.theme);
                 }
@@ -1554,7 +1555,7 @@ define([
 
     CodeMirrorAdapterForTextEditor.getAvailableThemes = function () {
         return [
-            'default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant',
+            'codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant',
             'erlang-dark', 'lesser-dark',
             'midnight', 'monokai', 'neat', 'night', 'rubyblue', 'solarized dark', 'solarized light',
             'twilight',
