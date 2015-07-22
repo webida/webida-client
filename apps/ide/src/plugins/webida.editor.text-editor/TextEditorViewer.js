@@ -822,7 +822,9 @@ define([
                 this.setValue(this.getModel().getText());
             }
             if (this.editor) {
-                this.editor.refresh();
+                setTimeout(function(editor) {
+                    editor.refresh();
+                }, 0, this.editor)
             }
         },
 
