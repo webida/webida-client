@@ -43,23 +43,23 @@ define([
     'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
     './EditorsManager'
 ], function (
-    topic, 
-    extToMime, 
-    _, 
-    URI, 
-    ide, 
-    pathUtil, 
+    topic,
+    extToMime,
+    _,
+    URI,
+    ide,
+    pathUtil,
     BubblingArray,
-    Logger, 
-    pm, 
-    workbench, 
+    Logger,
+    pm,
+    workbench,
     EditorPart,
     PartContainer,
     Workbench,
-    View, 
-    vm, 
-    ViewFocusController,  
-    async, 
+    View,
+    vm,
+    ViewFocusController,
+    async,
     toastr,
     FileDataSource,
     EditorsManager
@@ -819,7 +819,7 @@ define([
         logger.info('do nothing');
     };
 
-	//Tmp Code during version 1.3.0
+    //Tmp Code during version 1.3.0
     editors.bundle = {};
 
     /**
@@ -1188,7 +1188,8 @@ define([
                 }
             } else {
                 console.log('editor open failed : ' + file.path);
-                view.destroy();
+                // FIXME: MultiViewerEditorPart first open always in this line
+                //view.destroy();
             }
 
             editors.refreshTabTitle(file);
