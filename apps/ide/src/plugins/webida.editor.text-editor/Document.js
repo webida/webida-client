@@ -47,12 +47,26 @@ define([
     function Document(text) {
         logger.info('new Document(' + text + ')');
 
+        if ( typeof text === 'undefined' || text === null) {
+            text = '';
+        }
+        if ( typeof text === 'object') {
+            text = text.toString();
+        }
+
         /** @type {string} */
         this.text = text;
     }
 
 
     genetic.inherits(Document, ViewerModel, {
+
+        /**
+         * @param {string} text
+         */
+        setText: function(text) {
+            this.text = text;
+        },
 
         /**
          * @return {string}
@@ -62,11 +76,32 @@ define([
         },
 
         /**
+         * @return {number}
+         */
+        getLength: function() {
+            return this.text.length;
+        },
+
+        /**
+         * @return {string}
+         */
+        getCharAt: function(position) {
+            return this.text.charAt(position);
+        },
+
+        /**
+         * @return {number}
+         */
+        getNumberOfLines: function() {
+            return this.text.split(/\r\n|\r|\n/).length;
+        },
+
+        /**
          * @param {string} text
          * @param {Viewer} viewer
          */
         update: function(text, viewer) {
-            this.text = text;
+            this.setText(text);
             this.emit(ViewerModel.CONTENTS_CHANGE, this, viewer);
         }
     });

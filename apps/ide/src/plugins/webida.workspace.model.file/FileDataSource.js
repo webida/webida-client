@@ -131,7 +131,7 @@ define([
          * @override
          */
         toString: function() {
-            var res = '<' + this.constructor.name + '>#' + this.file;
+            var res = '<' + this.constructor.name + '>#' + this.file.path;
             return res;
         }
     });

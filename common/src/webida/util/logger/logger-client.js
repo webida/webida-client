@@ -20,7 +20,7 @@
  */
 'use strict';
 define([
-    './logger-interface',
+    './logger',
     './config/client-config'
 ], function (
        LoggerInterface,

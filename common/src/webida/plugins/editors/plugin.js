@@ -814,6 +814,14 @@ define([
         return null;
     }
 
+
+    editors.openFile__ = function() {
+        logger.info('do nothing');
+    };
+
+	//Tmp Code during version 1.3.0
+    editors.bundle = {};
+
     /**
      * @deprecated since version 1.3.0
      * This method will be remove from 1.4.0
@@ -821,31 +829,38 @@ define([
      */
     editors.openFile = function(path, options, callback) {
         logger.info('editors.openFile(' + path + ', options, callback)');
-        logger.info('options = ', options);
+        //logger.info('options = ', options);
 
         var dataSourceId = path;
+
+        //Tmp
+        editors.bundle[path] = {
+            options: options,
+            callback: callback
+        };
 
         //1. prepare DataSource
         var dsRegistry = workbench.getDataSourceRegistry();
         var dataSource = dsRegistry.getDataSourceById(path);
         if (dataSource === null) {
-            workbench.on(Workbench.CREATE_DATA_SOURCE, function(dataSource) {
+            workbench.createDataSource(dataSourceId, function(dataSource) {
                 doWithData(dataSource);
             });
-            workbench.createDataSource(dataSourceId);
         } else {
             doWithData(dataSource);
         }
 
-        function doWithData(dataSource, options, callback) {
+        function doWithData(dataSource) {
             logger.info('doWithData(' + dataSource + ')');
             //2. create PartContainer
-            //3. crate Part and add to PartContainer
+            //3. create Part and add to PartContainer
             //4. dataSource.getContents(function(contents){
             //      part.setContents(contents);
             //   });
+            var path = dataSource.getId();
+            var options = editors.bundle[path].options;
+            var callback = editors.bundle[path].callback;
             editors.openFileOld(path, options, callback);
-            logger.info('dsRegistry = ', dsRegistry);
         }
 
     };
@@ -855,7 +870,7 @@ define([
      * This method will be remove from 1.4.0
      */
     editors.openFileOld = function(path, options, callback) {
-        logger.info('editors.openFile(' + path + ', options, callback)');
+        logger.info('editors.openFileOld(' + path + ', ' + options + ', ' + typeof callback + ')');
         logger.info('options = ', options);
 
         options = options || {};
