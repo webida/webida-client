@@ -160,7 +160,7 @@ define([
                         toastr.error('"' + email + '" is already used!');
                         $('#email').focus();
                     }
-                    else if (err === 'Signup is forbidden') {
+                    else if (err.indexOf('Signup is forbidden') > -1) {
                         toastr.error('Sorry, but signing up is currently blocked by the administrator.');
                     }
                     else {
