@@ -116,7 +116,7 @@ define([
 
         // create toolbar menu
         toolbar.init(menuItemTree);
-        toolbar.startup();
+        //toolbar.startup();
 
         /*
         window.setTimeout(function() {
