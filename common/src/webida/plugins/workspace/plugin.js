@@ -826,36 +826,25 @@ define(['webida-lib/app',
             }
 
             function setContentsForExternalDnD(nodes, dt) {
-                var str;
                 var len = nodes.length;
-                var authToken = webida.auth.getToken();
+                var sources = '';
+                var downloadFileName = '';
                 //console.log('hina temp: auth token used in download by dragging = ' + authToken);
                 if (len > 1) {
-                    var sources = '';
                     nodes.forEach(function (node) {
                         sources += node.getPath() + ';';
                     });
                     sources = sources.substring(0, sources.lastIndexOf(';'));
-                    str = 'application/octet-stream:' + nodes[0].getParentNode().name + '.zip:' +
-                        webida.conf.fsServer + '/webida/api/fs/archive/' + ide.getFsid() +
-                        '/?mode=export&source=' + sources + '&access_token=' + authToken;
+                    downloadFileName = nodes[0].getParentNode().name + '.zip';
                 } else {
-                    if (nodes[0].isInternal) {
-                        str = 'application/octet-stream:' + nodes[0].name + '.zip:' +
-                            webida.conf.fsServer + '/webida/api/fs/archive/' + ide.getFsid() +
-                            '/?mode=export&source=' + nodes[0].getPath() +
-                            '&access_token=' + authToken;
-
-                    } else {
-                        str = 'application/octet-stream:' + nodes[0].name + ':' +
-                            webida.conf.fsServer + '/webida/api/fs/file/' +
-                            ide.getFsid() + nodes[0].getPath() +
-                            '?access_token=' + authToken;
+                    sources = nodes[0].getPath();
+                    downloadFileName = nodes[0].name;
+                    if (nodes[0].isInternal) {      // directory
+                        downloadFileName += '.zip';
                     }
                 }
-                dt.setData('DownloadURL', str);
-                fsCache.deleteAlias('', function (err) {
-                    console.log('called a FS API function just to update the auth token: ' + err);
+                ide.getMount().makeDnDDownloadUrl((len > 1 || nodes[0].isInternal), sources, downloadFileName, function (err, downloadUrl) {
+                    dt.setData('DownloadURL', downloadUrl);
                 });
             }
 
