@@ -2145,6 +2145,31 @@ var ENV_TYPE;
         api.apply(this, params);
     };
 
+
+    /**
+     * get External Drag & Drop's download URL for dataTransfer object including authorized token
+     * @param {boolean} archiving - whether it needs archiving download files or not
+     * @param {string} sources - file path(s) relative with file system to download
+     *      Semicolon(';') can be used to present multiple paths.
+     * @param {string} downloadFileName - the file name to be downloaded (including file extension)
+     * @param callback
+     * @memberOf module:webida.FSService.FileSystem
+     */
+    FileSystem.prototype.makeDnDDownloadUrl = function(archiving, sources, downloadFileName, callback) {
+        var self = this;
+        ensureAuthorize(function () {
+            var downloadUrl = 'application/octet-stream:' + downloadFileName + ':' +
+                mod.conf.fsApiBaseUrl;
+            if (archiving) {
+                downloadUrl += '/archive/' + self.fsid + '/?mode=export&source=' + sources +
+                    '&access_token=' + mod.auth.getToken();
+            } else {
+                downloadUrl += '/file/' + self.fsid + sources + '?access_token=' + mod.auth.getToken();
+            }
+            callback(null, downloadUrl);
+        });
+    }
+
     /**
     * Get FileSystem object indicating the given Webida file system url
     *
