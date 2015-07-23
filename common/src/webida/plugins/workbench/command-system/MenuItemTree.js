@@ -1431,6 +1431,11 @@ function (require, Deferred, when, all, _, prefStore, keyCode, toastr, Logger) {
     };
 
     MenuItemTree.normalizeKeysStr = normalizeKeysStr;
+    MenuItemTree.isTerminal = isTerminal;
+    MenuItemTree.isNonterminal = isNonterminal;
+    MenuItemTree.isDelimeter = isDelimeter;
+    MenuItemTree.isItem = isItem;
+    
 
     return MenuItemTree;
 });

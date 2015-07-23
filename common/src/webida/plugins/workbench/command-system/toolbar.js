@@ -26,6 +26,7 @@
 
 define(['webida-lib/plugin-manager-0.1', // pm
         'external/lodash/lodash.min',    // _
+        './MenuItemTree',               // MenuItemTree
         'dojo',                          // dojo
         'dojo/on',                       // on
         'dojo/dom-style',                // domStyle
@@ -45,11 +46,11 @@ define(['webida-lib/plugin-manager-0.1', // pm
         'dijit/DropDownMenu',            // DropDownMenu
         'dijit/MenuItem',                // MenuItem
         'dijit/MenuSeparator',           // MenuSeparator
-        './MenuItemTree',                // MenuItemTree
-        'external/toastr/toastr.min'     // toastr
+        'dijit/ToolbarSeparator',           // ToolbarSeparator
        ],
 function (pm,
           _,
+           MenuItemTree, 
           dojo,
           on,
           domStyle,
@@ -68,32 +69,14 @@ function (pm,
           Menu,
           DropDownMenu,
           MenuItem,
-          MenuSeparator,
-          MenuItemTree,
-          toastr
+          MenuSeparator, 
+          ToolbarSeparator
          )
 {
     'use strict';
     //console.log('mira: toolbar module loaded...');
 
     var menuItemTree;
-    var toolbarItems;
-
-    function setMenuItemTree(tree) {
-        if (tree) {
-            menuItemTree = tree;
-        }
-    }
-
-    function setToolbarItems(items) {
-        if (items && _.isArray(items)) {
-            toolbarItems = items;
-        }
-    }
-
-    function getToolbarItems() {
-        return toolbarItems;
-    }
 
     function setItemTooltip(item, tooltip) {
         domAttr.set(item, 'rel', 'tooltip');
@@ -132,7 +115,7 @@ function (pm,
 
             // icon changed setting
             on(item, 'mouseover', function () {
-                if (!!this.get('disabled')) {
+                if (this.get('disabled')) {
                     return;
                 }
 
@@ -144,7 +127,7 @@ function (pm,
             });
 
             on(item, 'mouseout', function () {
-                if (!!this.get('disabled')) {
+                if (this.get('disabled')) {
                     return;
                 }
 
@@ -156,7 +139,7 @@ function (pm,
             });
 
             on(item, 'mousedown', function () {
-                if (!!this.get('disabled')) {
+                if (this.get('disabled')) {
                     return;
                 }
 
@@ -168,7 +151,7 @@ function (pm,
             });
 
             on(item, 'mouseup', function () {
-                if (!!this.get('disabled')) {
+                if (this.get('disabled')) {
                     return;
                 }
 
@@ -181,296 +164,254 @@ function (pm,
         }
     }
 
-    function createToolbarMenu(treeSrc) {
-        var items = treeSrc;
-        var loc = '/'; // root loc is '/'
-        setToolbarItems(createToolbarItmes(items, loc));
-    }
-
     function clearMenu(menu) {
         var children = menu.getChildren();
-        _.each(children, function (child) {
+        children.forEach(function (child) {
             child.destroyRecursive();
         });
     }
 
-    function createToolbarItmes(itemSrc, ploc) {
-        var items = itemSrc;
-        var toolbarItemList = [];
+   
+    function handleTerminalItem(menuItem, loc, bag) { 
+        
+        var item, tooltip;
+        var cmndInfo = menuItem[1];
+        function enableToolbarItem() { 
+            //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
+            // enable toolbar item
+            this.set('disabled', false);
 
-        _.each(items, function (menuItem, menuItemName) {
-            var loc = ploc + menuItemName + '/';
-            var item;
+            $(this.containerNode).find('.webida-tool-bar-icon')
+            .addClass('webida-tool-bar-icon-normal')
+            .removeClass('webida-tool-bar-icon-hover')
+            .removeClass('webida-tool-bar-icon-disabled')
+            .removeClass('webida-tool-bar-icon-clicked');        
+        } 
+        
+        function disableToolbarItem() { 
+            //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
+            // disable toolbar item
+            this.set('disabled', true);
 
-            if (_.isArray(menuItem)) {
-                var type = _.first(menuItem);
-                var cmndInfo;
-                var tooltip;
-                switch (type) {
-                case 'cmnd':
-                    if (menuItem.length > 1) {
-                        cmndInfo = _.last(menuItem);
-                        if (cmndInfo && cmndInfo.toolbar) {
-                            // create toolbar item
-                            item = new Button();
-                            // set unique identifier for toolbar icon
-                            item.attr('data-menuitem', ploc + menuItemName);
+            $(this.containerNode).find('.webida-tool-bar-icon')
+            .addClass('webida-tool-bar-icon-disabled')
+            .removeClass('webida-tool-bar-icon-normal')
+            .removeClass('webida-tool-bar-icon-hover')
+            .removeClass('webida-tool-bar-icon-clicked');        
+        } 
+        
+        function doCommonJobsForToolbarItem() { 
+            // set unique identifier for toolbar icon
+            item.attr('data-menuitem', loc);
 
-                            // tooltip setting
-                            tooltip = cmndInfo.toolbar.tooltip ?
-                                cmndInfo.toolbar.tooltip : menuItemName.replace(/&/gi, '');
-                            if (cmndInfo.shortcut && cmndInfo.shortcut.keys) {
-                                tooltip += ' (' + cmndInfo.shortcut.keys + ')';
-                            }
-                            setItemTooltip(item, tooltip);
-
-                            // icon setting
-                            if (cmndInfo.toolbar.icons) {
-                                setItemIcons(item, cmndInfo.toolbar.icons, cmndInfo.toolbar.iconClass);
-                            }
-
-                            // enable, disable event setting
-                            if (!!cmndInfo.toolbar.enabledOn) {
-                                topic.subscribe(cmndInfo.toolbar.enabledOn, dojo.hitch(item, function () {
-                                    //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
-                                    // enable toolbar item
-                                    this.set('disabled', false);
-
-                                    $(this.containerNode).find('.webida-tool-bar-icon')
-                                    .addClass('webida-tool-bar-icon-normal')
-                                    .removeClass('webida-tool-bar-icon-hover')
-                                    .removeClass('webida-tool-bar-icon-disabled')
-                                    .removeClass('webida-tool-bar-icon-clicked');
-                                }));
-                            }
-                            if (!!cmndInfo.toolbar.disabledOn) {
-                                topic.subscribe(cmndInfo.toolbar.disabledOn, dojo.hitch(item, function () {
-                                    //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
-                                    // disable toolbar item
-                                    this.set('disabled', true);
-
-                                    $(this.containerNode).find('.webida-tool-bar-icon')
-                                    .addClass('webida-tool-bar-icon-disabled')
-                                    .removeClass('webida-tool-bar-icon-normal')
-                                    .removeClass('webida-tool-bar-icon-hover')
-                                    .removeClass('webida-tool-bar-icon-clicked');
-                                }));
-                            }
-
-                            // cmnd handle bind
-                            on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, ''));
-                        }
-                    }
-                    break;
-                case 'enum':
-                    if (menuItem.length > 1) {
-                        cmndInfo = menuItem[1];
-                        if (cmndInfo && cmndInfo.toolbar) {
-                            // create toolbar item
-                            item = new ComboButton();
-                            item.attr('data-menuitem', ploc + menuItemName);
-
-                            // tooltip setting
-                            tooltip = cmndInfo.toolbar.tooltip ?
-                                cmndInfo.toolbar.tooltip : menuItemName.replace(/&/gi, '');
-                            if (cmndInfo.shortcut && cmndInfo.shortcut.keys) {
-                                tooltip += '/' + cmndInfo.shortcut.keys;
-                            }
-                            setItemTooltip(item, tooltip);
-
-                            // icon setting
-                            if (cmndInfo.toolbar.icons) {
-                                setItemIcons(item, cmndInfo.toolbar.icons, cmndInfo.toolbar.iconClass);
-                            }
-
-                            // enable, disable event setting
-                            if (!!cmndInfo.toolbar.enabledOn) {
-                                topic.subscribe(cmndInfo.toolbar.enabledOn, function () {
-                                    // enable toolbar item
-                                    item.set('disabled', false);
-
-                                    $(item.containerNode).find('.webida-tool-bar-icon')
-                                    .addClass('webida-tool-bar-icon-normal')
-                                    .removeClass('webida-tool-bar-icon-hover')
-                                    .removeClass('webida-tool-bar-icon-disabled')
-                                    .removeClass('webida-tool-bar-icon-clicked');
-                                });
-                            }
-                            if (!!cmndInfo.toolbar.disabledOn) {
-                                topic.subscribe(cmndInfo.toolbar.disabledOn, function () {
-                                    // disable toolbar item
-                                    item.set('disabled', true);
-
-                                    $(item.containerNode).find('.webida-tool-bar-icon')
-                                    .addClass('webida-tool-bar-icon-disabled')
-                                    .removeClass('webida-tool-bar-icon-normal')
-                                    .removeClass('webida-tool-bar-icon-hover')
-                                    .removeClass('webida-tool-bar-icon-clicked');
-                                });
-                            }
-
-                            // Events on clicking icon and selecting the first item of dropdown list
-                            // should be distinguishable. (index: 0 -> -1)
-                            on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, -1));
-
-                            var menu = new Menu({ style: 'display: none;'});
-                            item.dropDown = menu;
-                            aspect.before(item, 'openDropDown', function () {
-                                //console.debug('before openDropDown... ok');
-                                var _self = this;
-                                var menu = _self.dropDown;
-                                menu.noChild = true;
-
-                                // clear previous list
-                                clearMenu(menu);
-
-                                // create new list
-                                // get menu item list (get dynamic enum list)
-                                function asyncProcess() {
-                                    var deferred = new Deferred();
-
-                                    menuItemTree.getViableItems(function (items) {
-                                        var arryLoc = loc.split('/');
-                                        arryLoc = _.without(arryLoc, '');
-
-                                        var findItem = items;
-                                        if (arryLoc.length > 0) {
-                                            arryLoc.forEach(function (key) {
-                                                findItem = findItem[key];
-                                            });
-                                        }
-
-                                        if (findItem && _.isArray(findItem) && _.first(findItem) === 'enum') {
-                                            var itemList = findItem[3];
-                                            if (itemList && itemList.length > 0) {
-                                                clearMenu(menu);
-                                                menu.noChild = false;
-                                            }
-
-                                            var disableList = findItem[4];
-
-                                            _.each(itemList, function (item, index) {
-                                                var mItem;
-                                                if (item === '---') {
-                                                    mItem = new MenuSeparator();
-                                                } else {
-                                                    /// add item
-                                                    mItem = new MenuItem({
-                                                        label: item
-                                                    });
-
-                                                    // add event handle
-                                                    mItem.set('onClick',
-                                                              menuItemTree.invoke.bind(menuItemTree, loc, index));
-                                                }
-
-                                                // disabled
-                                                if (_.contains(disableList, index)) {
-                                                    mItem.set('disabled', true);
-                                                }
-
-                                                // add new list
-                                                menu.addChild(mItem);
-                                            });
-                                        } else {
-                                            nothing();
-                                        }
-
-                                        deferred.resolve();
-                                    });
-
-                                    setTimeout(function () {
-                                        deferred.progress();
-                                    }, 10);
-
-                                    return deferred.promise;
-                                }
-
-                                var nothing = function () {
-                                    var nothingItem = new MenuItem({
-                                        label: 'nothing',
-                                        disabled: true
-                                    });
-                                    // add new list
-                                    clearMenu(menu);
-                                    menu.addChild(nothingItem);
-                                    menu.noChild = false;
-                                };
-                                nothing();
-
-                                var process = asyncProcess();
-                                process.then(function () {
-                                    //console.debug('defer async... ok');
-                                    // close drop down menu
-                                    if (menu.noChild && _self._opened) {
-                                        _self.closeDropDown();
-                                    }
-                                }, null, function () {
-                                    var lodingItem = new MenuItem({
-                                        label: 'please wait, now loading...',
-                                        disabled: true
-                                    });
-
-                                    //console.debug('defer async... progress');
-                                    clearMenu(menu);
-                                    menu.addChild(lodingItem);
-                                });
-                            });
-                        }
-                    }
-                    break;
-                }
+            // tooltip setting
+            tooltip = cmndInfo.toolbar.tooltip || loc.split('/').pop().replace(/&/gi, '');
+            if (cmndInfo.shortcut && cmndInfo.shortcut.keys) {
+                tooltip += ' (' + cmndInfo.shortcut.keys + ')';
             }
-            else if (_.isObject(menuItem)) {
-                if (_.keys(menuItem).length > 0) { // have sub info
-                    // each sub info check and create toolbar item
-                    var itemList = createToolbarItmes(menuItem, loc);
-                    _.each(itemList, function (item) {
-                        toolbarItemList.push(item);
-                    });
-                }
+            setItemTooltip(item, tooltip);
+
+            // icon setting
+            if (cmndInfo.toolbar.icons) {
+                setItemIcons(item, cmndInfo.toolbar.icons, cmndInfo.toolbar.iconClass);
             }
 
-            if (item) {
-                toolbarItemList.push(item);
+            // enable, disable event setting
+            if (cmndInfo.toolbar.enabledOn) {
+                topic.subscribe(cmndInfo.toolbar.enabledOn, enableToolbarItem.bind(item));
             }
-        });
+            if (cmndInfo.toolbar.disabledOn) {
+                topic.subscribe(cmndInfo.toolbar.disabledOn, disableToolbarItem.bind(item));
+            }
 
-        return toolbarItemList;
-    }
-
-    function init(menuItemTree) {
-        if (!menuItemTree || menuItemTree instanceof Error) {
-            toastr.error('Failed to initialize the toolbar: \n' + menuItemTree.message);
-        } else {
-            setMenuItemTree(menuItemTree);
-            var treeSrc = menuItemTree.getWholeItems();
-            createToolbarMenu(treeSrc);
+            // Events on clicking icon and selecting the first item of dropdown list
+            // should be distinguishable. (index: 0 -> -1).
+            // -1 has no effect when the item is for a 'cmnd'
+            on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, -1));
         }
-    }
 
-    function startup() {
-        var items = getToolbarItems();
-        var toolbar = new Toolbar({
-            class: 'app-workbench-toolbar'
-        }, 'app-workbench-toolbar');
+        console.assert(cmndInfo && cmndInfo.toolbar);
+        switch (menuItem[0]) {
+        case 'cmnd':
+            // create toolbar item
+            item = new Button();
+            doCommonJobsForToolbarItem();     
+            break;
 
-        if (toolbar) {
-            // append each items
-            _.each(items, function (item) {
-                // append items
-                toolbar.addChild(item);
+        case 'enum':
+            // create toolbar item
+            item = new ComboButton();
+            doCommonJobsForToolbarItem();
+
+            var locSegments = loc.split('/');
+            locSegments = _.without(locSegments, '');
+
+            var menu = new Menu({ style: 'display: none;' });
+            item.dropDown = menu;
+            aspect.before(item, 'openDropDown', function () {
+                //console.debug('before openDropDown... ok');
+
+                // clear previous list
+                clearMenu(menu);
+                menu.addChild(new MenuItem({
+                    label: 'loading ...',
+                    disabled: true
+                }));
+
+                // create new list
+                // get menu item list (get dynamic enum list)
+                menuItemTree.getViableItems(function (items) {
+
+                    locSegments.forEach(function (key) {
+                        if (items) { 
+                            items = items[key];
+                        } 
+                    });
+                    var foundItem = items;
+
+                    var labels;
+                    if (foundItem && MenuItemTree.isTerminal(foundItem) && 
+                        foundItem[0] === 'enum' && (labels = foundItem[3]) && labels.length > 0) {
+
+                        var disabledIndexes = foundItem[4];
+
+                        clearMenu(menu);
+                        labels.forEach(function (label, index) {
+                            var mItem;
+                            if (label === '---') {
+                                mItem = new MenuSeparator();
+                            } else {
+                                mItem = new MenuItem({ label: label });
+                                mItem.set('onClick', menuItemTree.invoke.bind(menuItemTree, loc, index));
+                            }
+
+                            // disabled
+                            if (disabledIndexes && _.contains(disabledIndexes, index)) {
+                                mItem.set('disabled', true);
+                            }
+
+                            // add new list
+                            menu.addChild(mItem);
+                        });
+                    } else {
+                        clearMenu(menu);
+                        menu.addChild(new MenuItem({
+                            label: '<no items>',
+                            disabled: true
+                        }));
+                    }
+
+                });
             });
 
-            toolbar = dojo.byId('app-workbench-toolbar');
-            domStyle.set(toolbar, 'padding-left', '12px');
+            break;
+                
+        default: 
+            console.assert(false, 'assertion fail: unreachable');
+                
         }
+
+        console.assert(item); 
+        bag.push(item);
+    } 
+
+    function toPutOnToolbar(menuItem) { 
+        if (MenuItemTree.isTerminal(menuItem)) { 
+            var type = menuItem[0];
+            if (type === 'cmnd' || type === 'enum') { 
+                var cmndInfo = menuItem[1];
+                if (cmndInfo && cmndInfo.toolbar) { 
+                    return true;
+                } 
+            } 
+        }
+        return false;
+    }
+    
+    function init(menuItemTreeArg, predefinedToolbarItems) {
+    
+        var toPutSeparator = false;
+        var warnUnlistedItems = predefinedToolbarItems.list.length > 0;
+        
+        function getItemsInPredefinedOrder(wholeMenuItems, predefinedList, bag) { 
+            predefinedList.forEach(function (item) { 
+                
+                if (item === '---') { 
+                    bag.push(new ToolbarSeparator());
+                    toPutSeparator = false;
+                } else { 
+                    
+                    var segments = item.split('/');
+                    segments.shift();
+                    var menuItem = wholeMenuItems;
+                    segments.forEach(function (seg) { 
+                        if (menuItem) { 
+                            menuItem = menuItem[seg];
+                        } 
+                    });
+                    
+                    if (menuItem) { 
+                        if (toPutOnToolbar(menuItem)) { 
+                            handleTerminalItem(menuItem, item, bag);
+                            toPutSeparator = true;
+                        } else { 
+                            console.warn('A menu item "' + item + '" specified in the predefined order of ' + 
+                                         'toolbar items does not have a configuratoin to be put on the toolbar, ' + 
+                                         'and is ignored');
+                        } 
+                    } else { 
+                        console.warn('A location "' + item + '" in the predefined order of toolbar items ' + 
+                                     'does not have a matching menu item, and is ignored');
+                    } 
+                } 
+            });
+        } 
+        
+        function getRemainingItems(items, ploc, predefinedList, bag) {
+            Object.keys(items).forEach(function (menuItemName) {
+                var menuItem = items[menuItemName]; 
+                var loc = ploc + menuItemName;
+
+                if (MenuItemTree.isTerminal(menuItem)) {
+                    if (predefinedList.indexOf(loc) < 0 && toPutOnToolbar(menuItem)) { 
+                        if (toPutSeparator) { 
+                            bag.push(new ToolbarSeparator());
+                            toPutSeparator = false;
+                        } 
+                        handleTerminalItem(menuItem, loc, bag);
+                        if (warnUnlistedItems) { 
+                            console.warn('A menu item at "' + loc + 
+                                         '" adds a toolbar item which is not in the predefined list.');
+                        } 
+                    } 
+                } else if (MenuItemTree.isNonterminal(menuItem)) {
+                    getRemainingItems(menuItem, loc + '/', predefinedList, bag);
+                }
+            });
+        }
+
+        menuItemTree = menuItemTreeArg;
+
+        var toolbar = new Toolbar({
+            style: 'padding-left: 12px', 
+            class: 'app-workbench-toolbar', 
+        }, 'app-workbench-toolbar');
+
+        // append each items
+        var toolbarItems = [];
+        var wholeMenuItems = menuItemTreeArg.getWholeItems();
+        
+        getItemsInPredefinedOrder(wholeMenuItems, predefinedToolbarItems.list, toolbarItems);
+        if (predefinedToolbarItems.options.indexOf('restrictToList') < 0) { 
+            getRemainingItems(wholeMenuItems, '/', predefinedToolbarItems.list, toolbarItems);
+        }
+        toolbarItems.forEach(function (item) {
+            // append items
+            toolbar.addChild(item);
+        });
     }
 
-    var toolbarda = {
+    return {
         init: init,
-        startup: startup
     };
-
-    return toolbarda;
 });

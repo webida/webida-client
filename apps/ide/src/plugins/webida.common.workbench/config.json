@@ -9,6 +9,25 @@
         }
     },
     "webida.common.workbench:menu" : {
+        "toolbar-items": { 
+            "options": [], 
+            "list" : [ 
+                "/&File/&New/&File", 
+                "/&File/&Save", 
+                "/&File/Sav&e All", 
+                "---", 
+                "/F&ind/&Find in Files", 
+                "/&Navigate/Go to &File", 
+                "---", 
+                "/&Project/Run &with", 
+                "/&Project/Debug with",
+                "/&Project/Deplo&y",
+                "---", 
+                "/&Help/&Shortcut List", 
+                "/&Help/&Command List", 
+                "/&Help/&Preferences"
+            ] 
+        }, 
         "hierarchy": {
             "&File" : {
                 "&New" : {
