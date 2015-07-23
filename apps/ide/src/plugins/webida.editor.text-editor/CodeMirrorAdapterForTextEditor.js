@@ -293,9 +293,7 @@ define([
             }           
             
             topic.subscribe('editor-panel-resize-finished', function () {
-                setTimeout(function () {
-                    self.__checkSizeChange();
-                }, 0);                
+                self.__checkSizeChange();
             });
 
             // conditionally indent on paste
