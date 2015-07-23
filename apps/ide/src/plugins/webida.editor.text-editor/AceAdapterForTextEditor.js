@@ -32,6 +32,7 @@ define([
     'webida-lib/plugins/editors/plugin',
     'webida-lib/util/loadCSSList',
     './TextEditorAdapter',
+    'dojo/topic',
     'external/ace-builds-1.2.0/src-noconflict/ace'
 ], function (
        require,
@@ -40,6 +41,7 @@ define([
         editors,
         loadCSSList,
         TextEditorAdapter,
+        topic,
         aceTemp
        ) {
     'use strict';
@@ -180,10 +182,12 @@ define([
                 });
                 delete this.deferredActions;
             }            
-
-            this.sizeChangePoller = setInterval(function () {
-                self.__checkSizeChange();
-            }, 500);
+            
+            topic.subscribe('editor-panel-resize-finished', function () {
+                setTimeout(function () {
+                    self.__checkSizeChange();
+                }, 0);                
+            });
 
             // conditionally indent on paste
             /*
@@ -199,8 +203,7 @@ define([
             */
         },
 
-        __checkSizeChange: function () {
-            //TODO : Remove this polling routine and refactor sizechange checker.
+        __checkSizeChange: function () {            
             if (this.editor) {
                 var visible = $(this.parentElem).is(':visible');
                 if (visible) {
@@ -224,9 +227,7 @@ define([
 
         destroy: function () {
             $(this.elem).html('');
-            if (this.sizeChangePoller !== undefined) {
-                clearInterval(this.sizeChangePoller);
-            }
+            
             if (this.editor) {
                 this.editor.destroy();
                 this.editor = null;

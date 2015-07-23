@@ -563,6 +563,10 @@ define([
             aspect.before(leftSplitter, '_startDrag', function () {
                 topic.publish('editor-panel-resize');
             });
+            
+            aspect.after(leftSplitter, '_stopDrag', function () {
+                topic.publish('editor-panel-resize-finished');
+            });
 
             aspect.before(rightSplitter, '_handleOnChange', function () {
                 topic.publish('editor-panel-resize');
@@ -571,6 +575,10 @@ define([
             aspect.before(rightSplitter, '_startDrag', function () {
                 topic.publish('editor-panel-resize');
             });
+            
+            aspect.after(rightSplitter, '_stopDrag', function () {
+                topic.publish('editor-panel-resize-finished');
+            });
 
             aspect.before(bottomSplitter, '_handleOnChange', function () {
                 topic.publish('editor-panel-resize');
@@ -578,6 +586,10 @@ define([
 
             aspect.before(bottomSplitter, '_startDrag', function () {
                 topic.publish('editor-panel-resize');
+            });
+            
+            aspect.after(bottomSplitter, '_stopDrag', function () {
+                topic.publish('editor-panel-resize-finished');
             });
 
             var vcList;

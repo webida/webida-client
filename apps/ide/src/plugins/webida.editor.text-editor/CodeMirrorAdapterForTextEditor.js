@@ -32,7 +32,8 @@ define([
     'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
     'webida-lib/util/loadCSSList',
-    './TextEditorAdapter'
+    './TextEditorAdapter',
+    'dojo/topic'
 ], function (
        require,
         genetic,
@@ -40,7 +41,8 @@ define([
         codemirror,
         editors,
         loadCSSList,
-        TextEditorAdapter
+        TextEditorAdapter,
+        topic
        ) {
     'use strict';
 
@@ -288,11 +290,13 @@ define([
                     action(self);
                 });
                 delete this.deferredActions;
-            }
-
-            this.sizeChangePoller = setInterval(function () {
-                self.__checkSizeChange();
-            }, 500);
+            }           
+            
+            topic.subscribe('editor-panel-resize-finished', function () {
+                setTimeout(function () {
+                    self.__checkSizeChange();
+                }, 0);                
+            });
 
             // conditionally indent on paste
             self.editor.on('change', function (cm, e) {
@@ -330,10 +334,7 @@ define([
         },
 
         destroy: function () {
-            $(this.elem).html('');
-            if (this.sizeChangePoller !== undefined) {
-                clearInterval(this.sizeChangePoller);
-            }
+            $(this.elem).html('');            
         },
 
         addChangeListener: function (listener) {
@@ -824,11 +825,17 @@ define([
             }
         },
 
-        refresh: function () {
-            if (this.editor) {
-                this.editor.refresh();
+        refresh: function () {            
+            if (this.getModel()) {
+                this.setValue(this.getModel().getText());
             }
-        },
+            if (this.editor) {
+                setTimeout(function (self) {
+                    self.editor.refresh();
+                    self.__checkSizeChange();
+                }, 0, this);
+            }
+        },        
 
         //methods from editors-commands
         undo: function () {
