@@ -230,7 +230,7 @@ define([
         var allRunConfs = runConfigurationManager.getAll();
         if (!_.isEmpty(allRunConfs)) {
             if (allRunConfs[result]) {
-                var numbering = 2;
+                var numbering = 1;
                 while (true) {
                     result = defaultValue + ' (' + (numbering++) + ')';
                     if (!allRunConfs[result]) {
