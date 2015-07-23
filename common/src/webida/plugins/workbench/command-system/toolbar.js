@@ -46,6 +46,7 @@ define(['webida-lib/plugin-manager-0.1', // pm
         'dijit/DropDownMenu',            // DropDownMenu
         'dijit/MenuItem',                // MenuItem
         'dijit/MenuSeparator',           // MenuSeparator
+        'dijit/ToolbarSeparator',           // ToolbarSeparator
        ],
 function (pm,
           _,
@@ -68,7 +69,8 @@ function (pm,
           Menu,
           DropDownMenu,
           MenuItem,
-          MenuSeparator
+          MenuSeparator, 
+          ToolbarSeparator
          )
 {
     'use strict';
@@ -170,7 +172,7 @@ function (pm,
     }
 
    
-    function handleTerminalItem(menuItemName, menuItem, ploc, loc, toolbarItemList) { 
+    function handleTerminalItem(menuItem, loc, bag) { 
         
         var item, tooltip;
         var cmndInfo = menuItem[1];
@@ -200,10 +202,10 @@ function (pm,
         
         function doCommonJobsForToolbarItem() { 
             // set unique identifier for toolbar icon
-            item.attr('data-menuitem', ploc + menuItemName);
+            item.attr('data-menuitem', loc);
 
             // tooltip setting
-            tooltip = cmndInfo.toolbar.tooltip || menuItemName.replace(/&/gi, '');
+            tooltip = cmndInfo.toolbar.tooltip || loc.split('/').pop().replace(/&/gi, '');
             if (cmndInfo.shortcut && cmndInfo.shortcut.keys) {
                 tooltip += ' (' + cmndInfo.shortcut.keys + ')';
             }
@@ -228,111 +230,165 @@ function (pm,
             on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, -1));
         }
 
-        if (cmndInfo && cmndInfo.toolbar) { 
-            switch (menuItem[0]) {
-            case 'cmnd':
-                // create toolbar item
-                item = new Button();
-                doCommonJobsForToolbarItem();     
-                break;
-                    
-            case 'enum':
-                // create toolbar item
-                item = new ComboButton();
-                doCommonJobsForToolbarItem();
+        console.assert(cmndInfo && cmndInfo.toolbar);
+        switch (menuItem[0]) {
+        case 'cmnd':
+            // create toolbar item
+            item = new Button();
+            doCommonJobsForToolbarItem();     
+            break;
 
-                var locSegments = loc.split('/');
-                locSegments = _.without(locSegments, '');
+        case 'enum':
+            // create toolbar item
+            item = new ComboButton();
+            doCommonJobsForToolbarItem();
 
-                var menu = new Menu({ style: 'display: none;' });
-                item.dropDown = menu;
-                aspect.before(item, 'openDropDown', function () {
-                    //console.debug('before openDropDown... ok');
-                    
-                    // clear previous list
-                    clearMenu(menu);
-                    menu.addChild(new MenuItem({
-                        label: 'loading ...',
-                        disabled: true
-                    }));
+            var locSegments = loc.split('/');
+            locSegments = _.without(locSegments, '');
 
-                    // create new list
-                    // get menu item list (get dynamic enum list)
-                    menuItemTree.getViableItems(function (items) {
-                        
-                        locSegments.forEach(function (key) {
-                            if (items) { 
-                                items = items[key];
-                            } 
-                        });
-                        var foundItem = items;
+            var menu = new Menu({ style: 'display: none;' });
+            item.dropDown = menu;
+            aspect.before(item, 'openDropDown', function () {
+                //console.debug('before openDropDown... ok');
 
-                        var labels;
-                        if (foundItem && MenuItemTree.isTerminal(foundItem) && 
-                            foundItem[0] === 'enum' && (labels = foundItem[3]) && labels.length > 0) {
-                            
-                            var disabledIndexes = foundItem[4];
+                // clear previous list
+                clearMenu(menu);
+                menu.addChild(new MenuItem({
+                    label: 'loading ...',
+                    disabled: true
+                }));
 
-                            clearMenu(menu);
-                            labels.forEach(function (label, index) {
-                                var mItem;
-                                if (label === '---') {
-                                    mItem = new MenuSeparator();
-                                } else {
-                                    mItem = new MenuItem({ label: label });
-                                    mItem.set('onClick', menuItemTree.invoke.bind(menuItemTree, loc, index));
-                                }
+                // create new list
+                // get menu item list (get dynamic enum list)
+                menuItemTree.getViableItems(function (items) {
 
-                                // disabled
-                                if (disabledIndexes && _.contains(disabledIndexes, index)) {
-                                    mItem.set('disabled', true);
-                                }
-
-                                // add new list
-                                menu.addChild(mItem);
-                            });
-                        } else {
-                            clearMenu(menu);
-                            menu.addChild(new MenuItem({
-                                label: '<no items>',
-                                disabled: true
-                            }));
-                        }
-
+                    locSegments.forEach(function (key) {
+                        if (items) { 
+                            items = items[key];
+                        } 
                     });
-                });
-                    
-                break;
-            }
+                    var foundItem = items;
 
-            if (item) {
-                toolbarItemList.push(item);
-            }
+                    var labels;
+                    if (foundItem && MenuItemTree.isTerminal(foundItem) && 
+                        foundItem[0] === 'enum' && (labels = foundItem[3]) && labels.length > 0) {
+
+                        var disabledIndexes = foundItem[4];
+
+                        clearMenu(menu);
+                        labels.forEach(function (label, index) {
+                            var mItem;
+                            if (label === '---') {
+                                mItem = new MenuSeparator();
+                            } else {
+                                mItem = new MenuItem({ label: label });
+                                mItem.set('onClick', menuItemTree.invoke.bind(menuItemTree, loc, index));
+                            }
+
+                            // disabled
+                            if (disabledIndexes && _.contains(disabledIndexes, index)) {
+                                mItem.set('disabled', true);
+                            }
+
+                            // add new list
+                            menu.addChild(mItem);
+                        });
+                    } else {
+                        clearMenu(menu);
+                        menu.addChild(new MenuItem({
+                            label: '<no items>',
+                            disabled: true
+                        }));
+                    }
+
+                });
+            });
+
+            break;
+                
+        default: 
+            console.assert(false, 'assertion fail: unreachable');
+                
         }
+
+        console.assert(item); 
+        bag.push(item);
     } 
-    
-    function createToolbarItems(items, ploc) {
-        var toolbarItemList = [];
 
-        Object.keys(items).forEach(function (menuItemName) {
-            var menuItem = items[menuItemName]; 
-            var loc = ploc + menuItemName + '/';
-
-            if (MenuItemTree.isTerminal(menuItem)) {
-                handleTerminalItem(menuItemName, menuItem, ploc, loc, toolbarItemList);
-            } else if (MenuItemTree.isNonterminal(menuItem)) {
-                // each sub info check and create toolbar item
-                var itemList = createToolbarItems(menuItem, loc);
-                itemList.forEach(function (i) {
-                    toolbarItemList.push(i);
-                });
-            }
-        });
-
-        return toolbarItemList;
+    function toPutOnToolbar(menuItem) { 
+        if (MenuItemTree.isTerminal(menuItem)) { 
+            var type = menuItem[0];
+            if (type === 'cmnd' || type === 'enum') { 
+                var cmndInfo = menuItem[1];
+                if (cmndInfo && cmndInfo.toolbar) { 
+                    return true;
+                } 
+            } 
+        }
+        return false;
     }
+    
+    function init(menuItemTreeArg, predefinedToolbarItems) {
+    
+        var toPutSeparator = false;
+        var warnUnlistedItems = predefinedToolbarItems.list.length > 0;
+        
+        function getItemsInPredefinedOrder(wholeMenuItems, predefinedList, bag) { 
+            predefinedList.forEach(function (item) { 
+                
+                if (item === '---') { 
+                    bag.push(new ToolbarSeparator());
+                    toPutSeparator = false;
+                } else { 
+                    
+                    var segments = item.split('/');
+                    segments.shift();
+                    var menuItem = wholeMenuItems;
+                    segments.forEach(function (seg) { 
+                        if (menuItem) { 
+                            menuItem = menuItem[seg];
+                        } 
+                    });
+                    
+                    if (menuItem) { 
+                        if (toPutOnToolbar(menuItem)) { 
+                            handleTerminalItem(menuItem, item, bag);
+                            toPutSeparator = true;
+                        } else { 
+                            console.warn('A menu item "' + item + '" specified in the predefined order of ' + 
+                                         'toolbar items does not have a configuratoin to be put on the toolbar, ' + 
+                                         'and is ignored');
+                        } 
+                    } else { 
+                        console.warn('A location "' + item + '" in the predefined order of toolbar items ' + 
+                                     'does not have a matching menu item, and is ignored');
+                    } 
+                } 
+            });
+        } 
+        
+        function getRemainingItems(items, ploc, predefinedList, bag) {
+            Object.keys(items).forEach(function (menuItemName) {
+                var menuItem = items[menuItemName]; 
+                var loc = ploc + menuItemName;
 
-    function init(menuItemTreeArg) {
+                if (MenuItemTree.isTerminal(menuItem)) {
+                    if (predefinedList.indexOf(loc) < 0 && toPutOnToolbar(menuItem)) { 
+                        if (toPutSeparator) { 
+                            bag.push(new ToolbarSeparator());
+                            toPutSeparator = false;
+                        } 
+                        handleTerminalItem(menuItem, loc, bag);
+                        if (warnUnlistedItems) { 
+                            console.warn('A menu item at "' + loc + 
+                                         '" adds a toolbar item which is not in the predefined list.');
+                        } 
+                    } 
+                } else if (MenuItemTree.isNonterminal(menuItem)) {
+                    getRemainingItems(menuItem, loc + '/', predefinedList, bag);
+                }
+            });
+        }
 
         menuItemTree = menuItemTreeArg;
 
@@ -342,7 +398,13 @@ function (pm,
         }, 'app-workbench-toolbar');
 
         // append each items
-        var toolbarItems = createToolbarItems(menuItemTreeArg.getWholeItems(), '/');
+        var toolbarItems = [];
+        var wholeMenuItems = menuItemTreeArg.getWholeItems();
+        
+        getItemsInPredefinedOrder(wholeMenuItems, predefinedToolbarItems.list, toolbarItems);
+        if (predefinedToolbarItems.options.indexOf('restrictToList') < 0) { 
+            getRemainingItems(wholeMenuItems, '/', predefinedToolbarItems.list, toolbarItems);
+        }
         toolbarItems.forEach(function (item) {
             // append items
             toolbar.addChild(item);

@@ -100,7 +100,8 @@ define([
     // extensions of webida.common.workbench:menu
     var exts = pm.getExtensions('webida.common.workbench:menu');
     var menuConfig = pm.getAppConfig('webida.common.workbench')['webida.common.workbench:menu'];
-    var predefinedHierarchy = menuConfig ? menuConfig.hierarchy : {};
+    var predefinedHierarchy = (menuConfig && menuConfig.hierarchy) || {};
+    var predefinedToolbarItems = (menuConfig && menuConfig['toolbar-items']) || { options: [], list: [] };
     var menuItemTree = new MenuItemTree(predefinedHierarchy, exts, topElem, 'workbench',
                                        pm.getAppConfig('webida.common.workbench').menuSystem);
 
@@ -111,24 +112,14 @@ define([
     } else {
         menuItemTrees.workbench = menuItemTree;
 
-        // create top level menu
         menubar.init(menuItemTree);
+        toolbar.init(menuItemTree, predefinedToolbarItems);
 
-        // create toolbar menu
-        toolbar.init(menuItemTree);
-        //toolbar.startup();
-
-        /*
-        window.setTimeout(function() {
-            menuItemTree.getViableItems(function () {
-                singleLogger.log('(Y) loading modules contributing to the top-level menu done');
-            });
-        }, 7);
-         */
         topic.subscribe('app.showing', function () {
             menuItemTree.getViableItems(function () {
                 singleLogger.log('(Y) loading modules contributing to the top-level menu done');
-                singleLogger.log('%c*** Loading Time = '+singleLogger.getDuration()+' ***', 'color:green');
+                singleLogger.log('%c*** Loading Time = ' + singleLogger.getDuration() + 
+                                 ' ***', 'color:green');
             });
         });
     }
