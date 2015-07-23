@@ -15,43 +15,36 @@
  */
 
 /**
- * CodeEditorViewer for code-base EditorParts
- *
- * Still needs refactoring (2015.06.25, hw.shim)
+ * CodeEditor adapter for CodeMirror
  *
  * @constructor
- * @see CodeEditorPart
- * @refactor: hw.shim (2015.06.25)
+ * @see TextEditorViewer, EngineAdapterFactory
+ * @constructor
+ * @since: 2015.07.10
+ * @author: h.m.kwon
+ * 
  */
 
-// @formatter:off
 define([
-	'require',
-	'webida-lib/util/genetic',
-	'external/lodash/lodash.min',
-	'external/codemirror/lib/codemirror',
+    'require',
+    'webida-lib/util/genetic',
+    'external/lodash/lodash.min',
+    'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
-	'webida-lib/util/loadCSSList',
-	'webida-lib/util/logger/logger-client',
-	'plugins/webida.editor.text-editor/TextEditorViewer',
-	'./snippet'
+    'webida-lib/util/loadCSSList',
+    'plugins/webida.editor.text-editor/CodeMirrorAdapterForTextEditor',
+    './snippet'
 ], function (
-	require,
-	genetic,
-	_,
-	codemirror,
-    editors,
-	loadCSSList,
-	Logger,
-	TextEditorViewer,
-	Snippet
-) {
+       require,
+        genetic,
+        _,
+        codemirror,
+        editors,
+        loadCSSList,
+        CodeMirrorAdapterForTextEditor,
+        Snippet
+       ) {
     'use strict';
-// @formatter:on
-
-    var logger = new Logger();
-    //logger.setConfig('level', Logger.LEVELS.log);
-    //logger.off();
 
     var settings = {
         useWorker: true,
@@ -670,12 +663,11 @@ define([
         }
     }
 
-    function CodeEditorViewer(elem, file, startedListener) {
-    	logger.info('new CodeEditorViewer()');
-    	TextEditorViewer.apply(this, arguments);
+    function CodeMirrorAdapterForCodeEditor(elem, file, startedListener) {
+
         var self = this;
+
         this.elem = elem;
-        this.setContainerElement(elem);
         this.file = file;
         this.options = {};
         this.options.extraKeys = {
@@ -710,11 +702,7 @@ define([
                      'external/codemirror/addon/edit/closebrackets',
                      'external/codemirror/addon/edit/closetag',
                      'external/codemirror/addon/edit/matchbrackets'], function () {
-                setTimeout(function(self){
-                	if (self.getContainerElement()) {
-                		self.create();
-                	}
-                }, 0, self);
+                self.start();
             });
         });
     }
@@ -859,7 +847,7 @@ define([
              )
             );
     }
-    
+
     function getBeautifier(editor, callback) {
         var currentModeName = editor.getMode().name;
         var beautifierModuleID;
@@ -891,423 +879,414 @@ define([
         }
         /* jshint camelcase: true */
     }
-    
-    genetic.inherits(CodeEditorViewer, TextEditorViewer, {
 
-	    create: function () {
-	        if (this.editor !== undefined) {
-	            return;
-	        }
-	        var self = this;
-	        var options = {
-	            //electricChars: false,
-	            flattenSpans: false,
-	            autoCloseBrackets: this.keymap !== 'vim',
-	            autoCloseTags: true
-	        };
+    genetic.inherits(CodeMirrorAdapterForCodeEditor, CodeMirrorAdapterForTextEditor, {
 
-	        function setOption(name, value, condition, defaultValue) {
-	            if (condition === undefined) {
-	                if (value !== undefined) {
-	                    options[name] = value;
-	                }
-	            } else {
-	                if (condition) {
-	                    options[name] = value;
-	                } else {
-	                    options[name] = defaultValue;
-	                }
-	            }
-	        }
-	        setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
-	        setOption('mode', this.mappedMode, isAvailable('mode', this.mode), 'text/plain');
-	        setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
-	        setOption('lineNumbers', this.options.lineNumbers, true);
-	        setOption('tabSize', this.options.tabSize);
-	        setOption('indentUnit', this.options.indentUnit);
-	        setOption('indentWithTabs', this.options.indentWithTabs);
-	        setOption('indentOnPaste', this.options.indentOnPaste);
-	        setOption('extraKeys', this.options.extraKeys);
-	        setOption('lineWrapping', this.options.lineWrapping);
+        start : function () {
+            if (this.editor !== undefined) {
+                return;
+            }
+            var self = this;
+            var options = {
+                //electricChars: false,
+                flattenSpans: false,
+                autoCloseBrackets: this.keymap !== 'vim',
+                autoCloseTags: true
+            };
 
-	        this.editor = codemirror(this.getContainerElement(), options);
-	        
-            this.editor.on("change", function(cm, change) {
-            	if(self.getModel()){
-            		self.getModel().update(cm.getValue(), self);
-            	}
-                //console.log('self.getModel() = ', self.getModel());
-            }); 
+            function setOption(name, value, condition, defaultValue) {
+                if (condition === undefined) {
+                    if (value !== undefined) {
+                        options[name] = value;
+                    }
+                } else {
+                    if (condition) {
+                        options[name] = value;
+                    } else {
+                        options[name] = defaultValue;
+                    }
+                }
+            }
+            setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
+            setOption('mode', this.mappedMode, isAvailable('mode', this.mode), 'text/plain');
+            setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
+            setOption('lineNumbers', this.options.lineNumbers, true);
+            setOption('tabSize', this.options.tabSize);
+            setOption('indentUnit', this.options.indentUnit);
+            setOption('indentWithTabs', this.options.indentWithTabs);
+            setOption('indentOnPaste', this.options.indentOnPaste);
+            setOption('extraKeys', this.options.extraKeys);
+            setOption('lineWrapping', this.options.lineWrapping);
 
-	        
-	        this.editor.setOption('showCursorWhenSelecting', true);
-	        this.editor.__instance = this;
-	        $(this.editor.getWrapperElement()).addClass('maincodeeditor');
-	        this.__applyLinter();
+            this.editor = codemirror(this.elem, options);
+            this.editor.setOption('showCursorWhenSelecting', true);
+            this.editor.__instance = this;
+            $(this.editor.getWrapperElement()).addClass('maincodeeditor');
+            this.__applyLinter();
 
-	        if (this.deferredActions) {
-	            _.each(this.deferredActions, function (action) {
-	                action(self);
-	            });
-	            delete this.deferredActions;
-	        }
+            if (this.deferredActions) {
+                _.each(this.deferredActions, function (action) {
+                    action(self);
+                });
+                delete this.deferredActions;
+            }
 
-	        this.sizeChangePoller = setInterval(function () {
-	            self.__checkSizeChange();
-	        }, 500);
+            this.sizeChangePoller = setInterval(function () {
+                self.__checkSizeChange();
+            }, 500);
 
-	        this.editor.on('mousedown', function (cm, e) {
-	            if (settings.gotoLinkEnabled) {
-	                require(['./content-assist/goto-link'], function (gotolink) {
-	                    gotolink.onMouseDown(cm, e);
-	                });
-	            }
-	        });
+            this.editor.on('mousedown', function (cm, e) {
+                if (settings.gotoLinkEnabled) {
+                    require(['./content-assist/goto-link'], function (gotolink) {
+                        gotolink.onMouseDown(cm, e);
+                    });
+                }
+            });
 
-	        this.editor.on('keydown', function (cm, e) {
-	            if (settings.gotoLinkEnabled) {
-	                require(['./content-assist/goto-link'], function (gotolink) {
-	                    gotolink.onKeyDown(cm, e);
-	                });
-	            }
-	        });
+            this.editor.on('keydown', function (cm, e) {
+                if (settings.gotoLinkEnabled) {
+                    require(['./content-assist/goto-link'], function (gotolink) {
+                        gotolink.onKeyDown(cm, e);
+                    });
+                }
+            });
 
-	        // conditionally indent on paste
-	        self.editor.on('change', function (cm, e) {
-	            if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
-	                for (var i = 0; i <= e.text.length; i++) {
-	                    cm.indentLine(e.from.line + i);
-	                }
-	            }
-	        });
+            // conditionally indent on paste
+            self.editor.on('change', function (cm, e) {
+                if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
+                    for (var i = 0; i <= e.text.length; i++) {
+                        cm.indentLine(e.from.line + i);
+                    }
+                }
+            });
 
-	        Snippet.init(self.editor);
-	    },
+            Snippet.init(self.editor);
+        },
 
-	    getMode : function () {
-	        return this.mode;
-	    },
+        getMode : function () {
+            return this.mode;
+        },
 
-	    setMode : function (mode) {
-	        if (mode === undefined || this.mode === mode) {
-	            return;
-	        }
-	        this.mode = mode;
+        setMode : function (mode) {
+            if (mode === undefined || this.mode === mode) {
+                return;
+            }
+            this.mode = mode;
 
-	        var self = this;
+            var self = this;
 
-	        this.mappedMode = mapMode(mode);
-	        loadMode(mode, function () {
-	            if (self.editor) {
-	                self.editor.setOption('mode', self.mappedMode);
-	            }
-	            self.__applyLinter();
-	            self.addDeferredAction(function () {
-	                require(['./emmet'], function () {
-	                    // Nothing to do
-	                });
-	            });
-	        });
+            this.mappedMode = mapMode(mode);
+            loadMode(mode, function () {
+                if (self.editor) {
+                    self.editor.setOption('mode', self.mappedMode);
+                }
+                self.__applyLinter();
+                self.addDeferredAction(function () {
+                    require(['./emmet'], function () {
+                        // Nothing to do
+                    });
+                });
+            });
 
-	        loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css'),
-	             require.toUrl('external/codemirror/addon/hint/show-hint.css'),
-	             require.toUrl('external/codemirror/addon/tern/tern.css'),
-	        ], function () {
-	            require(['external/codemirror/addon/dialog/dialog',
-	                'external/codemirror/addon/hint/show-hint',
-	                'external/codemirror/addon/tern/tern'
-	            ], function () {
-	                self.addDeferredAction(function () {
-	                    if (mode === 'js') {
-	                        _.defer(function () {
-	                            startJavaScriptAssist(self, self.editor);
-	                        });
-	                    } else if (mode === 'html' || mode === 'htmlmixed') {
-	                        var options = {};
-	                        options.async = true;
-	                        options.useWorker = settings.useWorker;
-	                        require(['./content-assist/html-hint'], function (htmlhint) {
-	                            self.assister = htmlhint;
-	                            htmlhint.addFile(self.file.path, self.editor.getDoc().getValue(), options);
-	                        });
-	                    }
-	                    self.editor.on('change', onChangeForAutoHint);
-	                });
-	            });
-	        });
-	    },
+            loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css'),
+                         require.toUrl('external/codemirror/addon/hint/show-hint.css'),
+                         require.toUrl('external/codemirror/addon/tern/tern.css'),
+                        ], function () {
+                require(['external/codemirror/addon/dialog/dialog',
+                         'external/codemirror/addon/hint/show-hint',
+                         'external/codemirror/addon/tern/tern'
+                        ], function () {
+                    self.addDeferredAction(function () {
+                        if (mode === 'js') {
+                            _.defer(function () {
+                                startJavaScriptAssist(self, self.editor);
+                            });
+                        } else if (mode === 'html' || mode === 'htmlmixed') {
+                            var options = {};
+                            options.async = true;
+                            options.useWorker = settings.useWorker;
+                            require(['./content-assist/html-hint'], function (htmlhint) {
+                                self.assister = htmlhint;
+                                htmlhint.addFile(self.file.path, self.editor.getDoc().getValue(), options);
+                            });
+                        }
+                        self.editor.on('change', onChangeForAutoHint);
+                    });
+                });
+            });
+        },
 
-	    //TODO : inherit from TextEditorViewer
-	    /**
+        //TODO : inherit from CodeMirrorAdapterForTextEditor
+        /**
 	     * @override
 	     */
-	    setTheme : function (theme) {
-	        if (theme === undefined) {
-	            return;
-	        }
-	        if (theme === 'webida') {
-	            theme = 'webida-dark';
-	        }
-	        this.theme = theme;
+        setTheme : function (theme) {
+            if (theme === undefined) {
+                return;
+            }
+            if (theme === 'webida') {
+                theme = 'webida-dark';
+            }
+            this.theme = theme;
             if (theme === 'codemirror-default') {
                 theme = this.theme = 'default';
                 if (this.editor) {
-	                this.editor.setOption('theme', this.theme);
-	            }
-	        } else {
-	            var self = this;
-	            var csspath = 'external/codemirror/theme/' + theme + '.css';
-	            switch (theme) {
-	            case 'webida-dark':
-	                csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
-	                break;
-	            case 'webida-light':
-	                csspath = 'webida-lib/plugins/editors/themes/webida-light.css';
-	                break;
-	            case 'solarized dark':
-	            case 'solarized light':
-	                csspath = 'external/codemirror/theme/solarized.css';
-	                break;
-	            }
-	            loadCSSList([require.toUrl(csspath)], function () {
-	                addAvailable('theme', theme);
-	                if (self.editor) {
-	                    self.editor.setOption('theme', self.theme);
-	                }
-	            });
-	        }
-	    },
+                    this.editor.setOption('theme', this.theme);
+                }
+            } else {
+                var self = this;
+                var csspath = 'external/codemirror/theme/' + theme + '.css';
+                switch (theme) {
+                    case 'webida-dark':
+                        csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
+                        break;
+                    case 'webida-light':
+                        csspath = 'webida-lib/plugins/editors/themes/webida-light.css';
+                        break;
+                    case 'solarized dark':
+                    case 'solarized light':
+                        csspath = 'external/codemirror/theme/solarized.css';
+                        break;
+                }
+                loadCSSList([require.toUrl(csspath)], function () {
+                    addAvailable('theme', theme);
+                    if (self.editor) {
+                        self.editor.setOption('theme', self.theme);
+                    }
+                });
+            }
+        },
 
-	    setLinter : function (type, option) {
-	        if (type === undefined || option === undefined) {
-	            return;
-	        }
-	        if (! this.linters) {
-	            this.linters = {};
-	        }
-	        var self = this;
-	        switch (type) {
-	        case 'js':
-	            this.linters.js = option;
-	            if (option) {
-	                loadCSSList([
-	                    require.toUrl('external/codemirror/addon/lint/lint.css'),
-	                ], function () {
-	                    require([
-	                        'external/codemirror/addon/lint/lint',
-	                        'external/codemirror/addon/lint/javascript-lint'
-	                    ], function () {
-	                        addAvailable('addon', 'lint');
-	                        addAvailable('addon', 'javascript-lint');
-	                        self.__applyLinter();
-	                    });
-	                });
-	            } else {
-	                this.__applyLinter();
-	            }
-	            break;
-	        case 'json':
-	            this.linters.json = option;
-	            if (option) {
-	                require(['./lib/lints/jsonlint'], function () {
-	                    loadCSSList([
-	                        require.toUrl('external/codemirror/addon/lint/lint.css')
-	                    ], function () {
-	                        require([
-	                            'external/codemirror/addon/lint/lint',
-	                            'external/codemirror/addon/lint/json-lint'
-	                        ], function () {
-	                            addAvailable('addon', 'lint');
-	                            addAvailable('addon', 'json-lint');
-	                            self.__applyLinter();
-	                        });
-	                    });
-	                });
-	            } else {
-	                this.__applyLinter();
-	            }
-	            break;
-	        case 'html':
-	            this.linters.html = option;
-	            if (option) {
-	                loadCSSList([
-	                    require.toUrl('external/codemirror/addon/lint/lint.css')
-	                ], function () {
-	                    require([
-	                        'external/codemirror/addon/lint/lint',
-	                    ], function () {
-	                        require(['./content-assist/html-lint'], function () {
-	                            addAvailable('addon', 'lint');
-	                            addAvailable('addon', 'html-lint');
-	                            self.__applyLinter();
-	                        });
-	                    });
-	                });
-	            }
-	            break;
-	        case 'css':
-	            this.linters.css = option;
-	            if (option) {
-	                require(['./lib/lints/csslint'], function () {
-	                    loadCSSList([
-	                        require.toUrl('external/codemirror/addon/lint/lint.css')
-	                    ], function () {
-	                        require([
-	                            'external/codemirror/addon/lint/lint',
-	                            'external/codemirror/addon/lint/css-lint'
-	                        ], function () {
-	                            addAvailable('addon', 'lint');
-	                            addAvailable('addon', 'css-lint');
-	                            self.__applyLinter();
-	                        });
-	                    });
-	                });
-	            } else {
-	                this.__applyLinter();
-	            }
-	            break;
-	        }
-	    },
-	    __applyLinter : function () {
-	        if (this.editor && this.linters && _.contains(['js', 'json', 'css', 'html'], this.mode)) {
-	            if (this.linters[this.mode]) {
-	                this._gutterOn('CodeMirror-lint-markers');
-	                switch (this.mode) {
-	                case 'js':
-	                    if (isAvailable('addon', 'lint') && isAvailable('addon', 'javascript-lint')) {
-	                        if ((typeof this.linters[this.mode]) === 'object') {
-	                            var jshintrc = this.linters.js;
-	                            this.editor.setOption('lint', {
-	                                async: true,
-	                                getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-	                                    CodeEditorViewer.jsHintWorker(editorValue, jshintrc, function (data) {
-	                                        updateLinting(editor, data.annotations);
-	                                    });
-	                                }
-	                            });
-	                        } else {
-	                            this.editor.setOption('lint', {
-	                                async: true,
-	                                getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-	                                    CodeEditorViewer.jsHintWorker(editorValue, false, function (data) {
-	                                        updateLinting(editor, data.annotations);
-	                                    });
-	                                }
-	                            });
-	                        }
-	                    }
-	                    break;
-	                case 'json':
-	                    if (isAvailable('addon', 'lint') && isAvailable('addon', 'json-lint')) {
-	                        this.editor.setOption('lint', true);
-	                    }
-	                    break;
-	                case 'html':
-	                    if (isAvailable('addon', 'lint') && isAvailable('addon', 'html-lint')) {
-	                        this.editor.setOption('lint', true);
-	                    }
-	                    break;
-	                case 'css':
-	                    if (isAvailable('addon', 'lint') && isAvailable('addon', 'css-lint')) {
-	                        this.editor.setOption('lint', true);
-	                    }
-	                    break;
-	                }
-	            } else {
-	                this.editor.setOption('lint', false);
-	                this._gutterOff('CodeMirror-lint-markers');
-	            }
-	        }
-	    },
+        setLinter : function (type, option) {
+            if (type === undefined || option === undefined) {
+                return;
+            }
+            if (! this.linters) {
+                this.linters = {};
+            }
+            var self = this;
+            switch (type) {
+                case 'js':
+                    this.linters.js = option;
+                    if (option) {
+                        loadCSSList([
+                            require.toUrl('external/codemirror/addon/lint/lint.css'),
+                        ], function () {
+                            require([
+                                'external/codemirror/addon/lint/lint',
+                                'external/codemirror/addon/lint/javascript-lint'
+                            ], function () {
+                                addAvailable('addon', 'lint');
+                                addAvailable('addon', 'javascript-lint');
+                                self.__applyLinter();
+                            });
+                        });
+                    } else {
+                        this.__applyLinter();
+                    }
+                    break;
+                case 'json':
+                    this.linters.json = option;
+                    if (option) {
+                        require(['./lib/lints/jsonlint'], function () {
+                            loadCSSList([
+                                require.toUrl('external/codemirror/addon/lint/lint.css')
+                            ], function () {
+                                require([
+                                    'external/codemirror/addon/lint/lint',
+                                    'external/codemirror/addon/lint/json-lint'
+                                ], function () {
+                                    addAvailable('addon', 'lint');
+                                    addAvailable('addon', 'json-lint');
+                                    self.__applyLinter();
+                                });
+                            });
+                        });
+                    } else {
+                        this.__applyLinter();
+                    }
+                    break;
+                case 'html':
+                    this.linters.html = option;
+                    if (option) {
+                        loadCSSList([
+                            require.toUrl('external/codemirror/addon/lint/lint.css')
+                        ], function () {
+                            require([
+                                'external/codemirror/addon/lint/lint',
+                            ], function () {
+                                require(['./content-assist/html-lint'], function () {
+                                    addAvailable('addon', 'lint');
+                                    addAvailable('addon', 'html-lint');
+                                    self.__applyLinter();
+                                });
+                            });
+                        });
+                    }
+                    break;
+                case 'css':
+                    this.linters.css = option;
+                    if (option) {
+                        require(['./lib/lints/csslint'], function () {
+                            loadCSSList([
+                                require.toUrl('external/codemirror/addon/lint/lint.css')
+                            ], function () {
+                                require([
+                                    'external/codemirror/addon/lint/lint',
+                                    'external/codemirror/addon/lint/css-lint'
+                                ], function () {
+                                    addAvailable('addon', 'lint');
+                                    addAvailable('addon', 'css-lint');
+                                    self.__applyLinter();
+                                });
+                            });
+                        });
+                    } else {
+                        this.__applyLinter();
+                    }
+                    break;
+            }
+        },
+        __applyLinter : function () {
+            if (this.editor && this.linters && _.contains(['js', 'json', 'css', 'html'], this.mode)) {
+                if (this.linters[this.mode]) {
+                    this._gutterOn('CodeMirror-lint-markers');
+                    switch (this.mode) {
+                        case 'js':
+                            if (isAvailable('addon', 'lint') && isAvailable('addon', 'javascript-lint')) {
+                                if ((typeof this.linters[this.mode]) === 'object') {
+                                    var jshintrc = this.linters.js;
+                                    this.editor.setOption('lint', {
+                                        async: true,
+                                        getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
+                                            CodeMirrorAdapterForCodeEditor.jsHintWorker(editorValue, jshintrc, function (data) {
+                                                updateLinting(editor, data.annotations);
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    this.editor.setOption('lint', {
+                                        async: true,
+                                        getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
+                                            CodeMirrorAdapterForCodeEditor.jsHintWorker(editorValue, false, function (data) {
+                                                updateLinting(editor, data.annotations);
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                            break;
+                        case 'json':
+                            if (isAvailable('addon', 'lint') && isAvailable('addon', 'json-lint')) {
+                                this.editor.setOption('lint', true);
+                            }
+                            break;
+                        case 'html':
+                            if (isAvailable('addon', 'lint') && isAvailable('addon', 'html-lint')) {
+                                this.editor.setOption('lint', true);
+                            }
+                            break;
+                        case 'css':
+                            if (isAvailable('addon', 'lint') && isAvailable('addon', 'css-lint')) {
+                                this.editor.setOption('lint', true);
+                            }
+                            break;
+                    }
+                } else {
+                    this.editor.setOption('lint', false);
+                    this._gutterOff('CodeMirror-lint-markers');
+                }
+            }
+        },
 
-	    setHinters : function (mode, hinterNames) {
-	        if (mode && hinterNames) {
-	            var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
-	            var paths = ['external/codemirror/addon/hint/show-hint'];
-	            _.each(hinterSchms, function (x) {
-	                paths = _.union(paths, x.requires);
-	            });
-	            loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
-	                require(paths, function () {
-	                    _localHinterSchemes[mode] = hinterSchms;
-	                });
-	            });
-	        }
-	    },
+        setHinters : function (mode, hinterNames) {
+            if (mode && hinterNames) {
+                var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
+                var paths = ['external/codemirror/addon/hint/show-hint'];
+                _.each(hinterSchms, function (x) {
+                    paths = _.union(paths, x.requires);
+                });
+                loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
+                    require(paths, function () {
+                        _localHinterSchemes[mode] = hinterSchms;
+                    });
+                });
+            }
+        },
 
-	    setGlobalHinters : function (hinterNames) {
-	        _globalHinterSchemes = [];
-	        if (hinterNames) {
-	            var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
-	            var paths = [];
-	            _.each(hinterSchms, function (x) {
-	                paths = _.union(paths, x.requires);
-	            });
-	            require(paths, function () {
-	                _globalHinterSchemes = hinterSchms;
-	            });
-	        }
-	    },
+        setGlobalHinters : function (hinterNames) {
+            _globalHinterSchemes = [];
+            if (hinterNames) {
+                var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
+                var paths = [];
+                _.each(hinterSchms, function (x) {
+                    paths = _.union(paths, x.requires);
+                });
+                require(paths, function () {
+                    _globalHinterSchemes = hinterSchms;
+                });
+            }
+        },
 
-	    setAnywordHint : function (anywordHint) {
-	        if (anywordHint) {
-	            this.setGlobalHinters(['word']);
-	        } else {
-	            this.setGlobalHinters([]);
-	        }
-	    },
+        setAnywordHint : function (anywordHint) {
+            if (anywordHint) {
+                this.setGlobalHinters(['word']);
+            } else {
+                this.setGlobalHinters([]);
+            }
+        },
 
-		/**
+        /**
 		 * @override
 		 */
-	    setCodeFolding : function (codeFolding) {
-	        this.options.setCodeFolding = codeFolding;
-	        if (codeFolding) {
-	            var self = this;
-	            loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/codefolding.css')], function () {
-	                require(['external/codemirror/addon/fold/foldcode',
-	                         'external/codemirror/addon/fold/foldgutter',
-	                         'external/codemirror/addon/fold/brace-fold',
-	                         'external/codemirror/addon/fold/xml-fold',
-	                         'external/codemirror/addon/fold/comment-fold'], function () {
-	                    self.addDeferredAction(function (self) {
-	                        self._gutterOn('CodeMirror-foldgutter');
-	                        var rf = new codemirror.fold.combine(codemirror.fold.brace, codemirror.fold.comment,
-	                                                             codemirror.fold.xml);
-	                        self.editor.setOption('foldGutter', {
-	                            rangeFinder: rf
-	                        });
-	                    });
-	                });
-	            });
-	        } else {
-	            this.addDeferredAction(function (self) {
-	                self.editor.setOption('foldGutter', false);
-	                self._gutterOff('CodeMirror-foldgutter');
-	            });
-	        }
-	    },
-	    setSnippetEnabled : function (enabled) {
-	        this.options.setSnippetEnabled = enabled;
-	        if (!enabled) {
-	            this.addDeferredAction(function (self) {
-	                Snippet.clearSnippets(self.editor);
-	            });
-	        }
-	    },
+        setCodeFolding : function (codeFolding) {
+            this.options.setCodeFolding = codeFolding;
+            if (codeFolding) {
+                var self = this;
+                loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/codefolding.css')], function () {
+                    require(['external/codemirror/addon/fold/foldcode',
+                             'external/codemirror/addon/fold/foldgutter',
+                             'external/codemirror/addon/fold/brace-fold',
+                             'external/codemirror/addon/fold/xml-fold',
+                             'external/codemirror/addon/fold/comment-fold'], function () {
+                        self.addDeferredAction(function (self) {
+                            self._gutterOn('CodeMirror-foldgutter');
+                            var rf = new codemirror.fold.combine(codemirror.fold.brace, codemirror.fold.comment,
+                                                                 codemirror.fold.xml);
+                            self.editor.setOption('foldGutter', {
+                                rangeFinder: rf
+                            });
+                        });
+                    });
+                });
+            } else {
+                this.addDeferredAction(function (self) {
+                    self.editor.setOption('foldGutter', false);
+                    self._gutterOff('CodeMirror-foldgutter');
+                });
+            }
+        },
+        setSnippetEnabled : function (enabled) {
+            this.options.setSnippetEnabled = enabled;
+            if (!enabled) {
+                this.addDeferredAction(function (self) {
+                    Snippet.clearSnippets(self.editor);
+                });
+            }
+        },
 
-	    setAutoCompletion : function (autoCompletion) {
-	        settings.autoHint = autoCompletion;
-	    },
+        setAutoCompletion : function (autoCompletion) {
+            settings.autoHint = autoCompletion;
+        },
 
-	    setAutoCompletionDelay : function (delay) {
-	        var num = typeof delay === 'string' ? parseFloat(delay, 10) : delay;
-	        num *= 1000;
-	        settings.autoHintDelay = num;
+        setAutoCompletionDelay : function (delay) {
+            var num = typeof delay === 'string' ? parseFloat(delay, 10) : delay;
+            num *= 1000;
+            settings.autoHintDelay = num;
 
-	        setChangeForAutoHintDebounced();
-	    },
-        
+            setChangeForAutoHintDebounced();
+        },
+
         lineComment: function () {
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
@@ -1442,7 +1421,7 @@ define([
                 });
             });
         },
-        
+
         gotoDefinition: function () {
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
@@ -1540,7 +1519,7 @@ define([
                 deferred.resolve(items);
             }
         },
-        
+
         getContextMenuItems: function (opened, items, menuItems, deferred) {
 
             function selectionCommentable(editor) {
@@ -1562,7 +1541,7 @@ define([
                     mode1.blockCommentEnd === mode2.blockCommentEnd &&
                     (comments = getEnclosingBlockComments(mode1, editor, from, to)) && comments.length === 0;
             }
-                       
+
             var editor = this.editor;
             if (editor) {
                 var selected = editor.getSelection();
@@ -1681,26 +1660,26 @@ define([
         }
     });
 
-    CodeEditorViewer._whitespaceOverlay = {
+    CodeMirrorAdapterForCodeEditor._whitespaceOverlay = {
         token: function (stream) {
             if (stream.eatWhile(/\S/)) { return null; }
 
             switch (stream.next()) {
-            case ' ':
-                return 'whitespace-space';
-            case '\t':
-                return 'whitespace-tab';
+                case ' ':
+                    return 'whitespace-space';
+                case '\t':
+                    return 'whitespace-tab';
             }
 
             return 'whitespace';
         }
     };
 
-    CodeEditorViewer.getEnclosingDOMElem = function () {
+    CodeMirrorAdapterForCodeEditor.getEnclosingDOMElem = function () {
         return document.getElementById('editor');
     };
 
-    CodeEditorViewer.getShortcuts = function () {
+    CodeMirrorAdapterForCodeEditor.getShortcuts = function () {
         return [
             { keys : 'shift+alt+P', title : 'TEST C, viable', desc: 'TEST, viable', viable: true },
             { keys : 'ctrl+shift+alt+V', title : 'TEST C 2, viable', desc: 'TEST, viable', viable: true },
@@ -1708,7 +1687,7 @@ define([
         ];
     };
 
-    CodeEditorViewer.jsHintWorker = (function () {
+    CodeMirrorAdapterForCodeEditor.jsHintWorker = (function () {
         var listeners = {};
         var worker = null;
         return function (code, options, listener) {
@@ -1728,21 +1707,21 @@ define([
             listeners[reqId] = listener;
         };
     })();
-    CodeEditorViewer.getAvailableModes = function () {
+    CodeMirrorAdapterForCodeEditor.getAvailableModes = function () {
         return [
             'js', 'json', 'ts', 'html', 'css', 'less'
         ];
     };
-    CodeEditorViewer.getAvailableThemes = function () {
+    CodeMirrorAdapterForCodeEditor.getAvailableThemes = function () {
         return [
             'codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
             'midnight', 'monokai', 'neat', 'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight',
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
     };
-    CodeEditorViewer.getAvailableKeymaps = function () {
+    CodeMirrorAdapterForCodeEditor.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
     };
 
-    return CodeEditorViewer;
+    return CodeMirrorAdapterForCodeEditor;
 });
