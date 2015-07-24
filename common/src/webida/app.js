@@ -687,7 +687,7 @@ define(['webida-lib/util/browserInfo',
                 return callback(err);
             } else {
                 if(exist){
-                    fsCache.exist(projectInfoDir, function(err, exist){
+                    fsCache.exists(projectInfoDir, function(err, exist){
                         if(err) {
                             return callback(err);
                         } else {
