@@ -302,8 +302,12 @@ define([
                 delete this.deferredActions;
             }            
             
-            topic.subscribe('editor-panel-resize-finished', function () {
+            this.resizeTopicHandler = topic.subscribe('editor-panel-resize-finished', function () {
                 self.__checkSizeChange();
+            });
+            
+            this.closeTopicHandler = topic.subscribe('editors.closed', function (path) {
+                self.refresh();
             });
 
             // conditionally indent on paste
@@ -338,7 +342,15 @@ define([
         },
 
         destroy: function() {
-            $(this.elem).html('');            
+            //unsubscribing topics
+            
+            this.resizeTopicHandler.remove();
+            this.resizeTopicHandler = null;
+            
+            this.closeTopicHandler.remove();
+            this.closeTopicHandler = null;
+            
+            $(this.elem).html('');
         },
 
         addChangeListener: function(listener) {
