@@ -954,8 +954,12 @@ define([
 	            delete this.deferredActions;
 	        }	        
             
-            topic.subscribe('editor-panel-resize-finished', function () {
+            this.resizeTopicHandler = topic.subscribe('editor-panel-resize-finished', function () {
                 self.__checkSizeChange();
+            });
+            
+            this.closeTopicHandler = topic.subscribe('editors.closed', function (path) {
+                self.refresh();
             });
 
 	        this.editor.on('mousedown', function (cm, e) {
