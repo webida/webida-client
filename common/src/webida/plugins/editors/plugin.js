@@ -734,11 +734,7 @@ define([
             }
         };
 
-        topic.publish('view.quit', event, function() {
-            if (event.quitable) {
-                vc._remove(event.view, true);
-            }
-        });
+        topic.publish('view.quit', event, function () {});
     };
 
     editors.saveFile = function(option) {
