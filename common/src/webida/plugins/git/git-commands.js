@@ -1198,7 +1198,7 @@ define(['require',
                 if (value === '' || TargetTextBox.get('value') === '') {
                     cloneButton.set('disabled', true);
                 } else if (value.match(/^ssh:.*/)) {
-                    fsCache.exists('.userinfo/id_rsa', function (err, exists) {
+                    fsCache.exists('/.userinfo/id_rsa', function (err, exists) {
                         if (err) {
                             gitviewlog.error(GIT_DIR, 'clone', err);
                         } else {
