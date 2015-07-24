@@ -33,7 +33,8 @@ define([
     'webida-lib/plugins/editors/plugin',
     'webida-lib/util/loadCSSList',
     'plugins/webida.editor.text-editor/CodeMirrorAdapterForTextEditor',
-    './snippet'
+    './snippet',
+    'dojo/topic'
 ], function (
        require,
         genetic,
@@ -42,7 +43,8 @@ define([
         editors,
         loadCSSList,
         CodeMirrorAdapterForTextEditor,
-        Snippet
+        Snippet,
+        topic
        ) {
     'use strict';
 
@@ -929,11 +931,11 @@ define([
                     action(self);
                 });
                 delete this.deferredActions;
-            }
-
-            this.sizeChangePoller = setInterval(function () {
+            }            
+            
+            topic.subscribe('editor-panel-resize-finished', function () {
                 self.__checkSizeChange();
-            }, 500);
+            });
 
             this.editor.on('mousedown', function (cm, e) {
                 if (settings.gotoLinkEnabled) {

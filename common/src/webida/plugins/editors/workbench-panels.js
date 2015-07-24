@@ -163,7 +163,8 @@ define([
                     }
                     domStyle.set(child.domNode, 'height', ratioH);
                 }
-            }
+            }            
+        
         });
 
         /* viewcontainer supports 'dblclick' event
