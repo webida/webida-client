@@ -16,7 +16,7 @@
 
 define([
 	'external/lodash/lodash.min',
-	'external/toastr/toastr.min',
+	'plugins/webida.notification/notification-message',
 	'webida-lib/util/logger/logger-client'
 ], function (
 	_, 

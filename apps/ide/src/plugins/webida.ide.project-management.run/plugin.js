@@ -29,7 +29,7 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/path',
     'external/lodash/lodash.min',
-    'external/toastr/toastr.min'
+    'plugins/webida.notification/notification-message'
 ], function (runConfigurationManager, delegator, ide, pluginManager, workspace, workbench, pathUtil, _, toastr) {
     'use strict';
 

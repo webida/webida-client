@@ -25,7 +25,7 @@ define(['webida-lib/plugins/workspace/plugin',            // wv
         'external/lodash/lodash.min',           //_
         'dojo/topic',                               // topic
         'webida-lib/util/path',                                     // pathUtil
-        'external/toastr/toastr.min'                                    // Toastr
+        'plugins/webida.notification/notification-message'          // Toastr
         ],
 function (wv, pm, editors, _, topic, pathUtil, toastr)
 {

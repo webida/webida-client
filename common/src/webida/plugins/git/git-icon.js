@@ -21,7 +21,7 @@ define([
     './git-core',
     'webida-lib/app',
     'webida-lib/util/path',
-    'external/toastr/toastr.min',
+    'plugins/webida.notification/notification-message',
     'webida-lib/util/logger/logger-client'
 ], function (
 	require, 

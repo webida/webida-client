@@ -25,7 +25,7 @@
  */
 define(['webida-lib/webida-0.3',
         'webida-lib/app',
-        'external/toastr/toastr.min',
+        'plugins/webida.notification/notification-message',
         'external/lodash/lodash.min',
         'showdown',
         'lib/image-slide/sly.wrapper',

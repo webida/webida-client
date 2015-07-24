@@ -30,7 +30,7 @@ define([
     'dijit/registry',             // reg
     'webida-lib/plugin-manager-0.1',             // pm
     'dojo/text!./command-list.html',   // markup
-    'external/toastr/toastr.min',
+    'plugins/webida.notification/notification-message',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'   // ButtonedDialog
 ],
 function (

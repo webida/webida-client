@@ -19,7 +19,7 @@
  *
  */
 
-define(['webida-lib/app', 'external/toastr/toastr.min'],
+define(['webida-lib/app', 'plugins/webida.notification/notification-message'],
 function (app, toastr) {
     'use strict';
 
