@@ -61,6 +61,7 @@ define([
          * @param {PartContainer} container
          */
         addPartContainer: function(container) {
+            logger.info('addPartContainer(' + container + ')');
             var dataSource = container.getDataSource();
             var map = this.getPartContainers();
             if (map.has(dataSource) === false) {
