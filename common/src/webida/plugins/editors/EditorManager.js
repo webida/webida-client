@@ -64,7 +64,7 @@ define([
         /** @type {Object} */
         this.subscribed = {};
 
-        this.subscribe();
+        //this.subscribe();
     }
 
 
@@ -86,6 +86,15 @@ define([
             }
         },
 
+        getPartClassName: function(dataSource) {
+            var path = this.getPartClassPath(dataSource);
+            return path.split(/[\\/]/).pop();
+        },
+
+        getPartClassPath: function(dataSource) {
+            return 'plugins/webida.editor.example.codemirror/CmEditorPart';
+        },
+
         /**
          * @param {DataSource} dataSourceId
          * @param {Object} options
@@ -96,31 +105,60 @@ define([
          * @param {Part} part
          */
         requestOpen: function(dataSourceId, options, callback) {
-            logger.info('requestOpen(' + dataSourceId + ', ' + options + ', callback)');
+            logger.info('> requestOpen(' + dataSourceId + ', ' + options + ', callback)');
+
+            var that = this;
+            options = options || {};
 
             //1. prepare DataSource
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             if (dataSource === null) {
                 workbench.createDataSource(dataSourceId, function(dataSource) {
-                    createPartContainer(dataSource);
+                    that._showPart(dataSource, options, callback);
                 });
             } else {
-                createPartContainer(dataSource);
+                this._showPart(dataSource, options, callback);
             }
+        },
 
-            //2. create PartContainer
-            function createPartContainer(dataSource) {
-                logger.info('createPartContainer(' + dataSource + ')');
+        /**
+         * @private
+         */
+        _showPart: function(dataSource, options, callback) {
+            logger.info('_showPart(' + dataSource + ', ' + options + ', callback)');
 
-                var page = workbench.getCurrentPage();
+            var page = workbench.getCurrentPage();
+            var registry = page.getPartRegistry();
+            var ClassName = this.getPartClassName(dataSource);
+            var parts = registry.getPartsByClassName(dataSource, ClassName);
 
-                //3. crate Part and add to PartContainer
-                //4. dataSource.getContents(function(contents){
-                //      part.setContents(contents);
-                //   });
+            //'open with specific editor' or 'default editor' not opened yet
+            if (options.unlimitedOpen === true || parts.length === 0) {
+                this._createPart(dataSource, options, callback);
+            } else {
+                //'default editor' already exists
+                if (parts.length > 0) {
+                    logger.log('show existing editor');
+                }
             }
+        },
 
+        /**
+         * @private
+         */
+        _createPart: function(dataSource, options, callback) {
+            logger.info('_createPart(' + dataSource + ', ' + options + ', callback)');
+
+            var page = workbench.getCurrentPage();
+            var layoutPane = page.getChildById('webida.layout_pane.center');
+
+            //3. create Tab & add to Pane
+            var tabPartContainer = new TabPartContainer(dataSource);
+            layoutPane.addPartContainer(tabPartContainer);
+
+            //4. create Part
+            tabPartContainer.createPart(options, callback);
         }
     });
 
