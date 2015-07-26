@@ -17,9 +17,9 @@
 /**
  * Constructor
  *
- * EditorsManager is a Mediator for EditorParts
+ * EditorManager is a Mediator for EditorParts
  * EditorParts do not know each other,
- * only know their Mediator EditorsManager.
+ * only know their Mediator EditorManager.
  *
  * @see
  * @since: 2015.07.19
@@ -28,19 +28,21 @@
 
 // @formatter:off
 define([
-	'external/eventEmitter/EventEmitter',
-	'dojo/topic',
-	'webida-lib/plugins/workbench/plugin', //TODO : refactor
-	'webida-lib/plugins/workbench/ui/Workbench',
-	'webida-lib/plugins/workbench/ui/DataSource',
+    'dojo/topic',
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/plugins/workbench/plugin', //TODO : refactor
+    'webida-lib/plugins/workbench/ui/DataSource',
+    'webida-lib/plugins/workbench/ui/TabPartContainer',
+    'webida-lib/plugins/workbench/ui/Workbench',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
 ], function(
-	EventEmitter,
-	topic,
-	workbench,
-	Workbench,
-	DataSource,
+    topic,
+    EventEmitter,
+    workbench,
+    DataSource,
+    TabPartContainer,
+    Workbench,
     genetic, 
     Logger
 ) {
@@ -49,23 +51,24 @@ define([
 
     /**
      * @typedef {Object} DataSource
+     * @typedef {Object} Part
      */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function EditorsManager() {
-        logger.info('new EditorsManager()');
+    function EditorManager() {
+        logger.info('new EditorManager()');
 
         /** @type {Object} */
         this.subscribed = {};
 
-        //this.subscribe();
+        this.subscribe();
     }
 
 
-    genetic.inherits(EditorsManager, EventEmitter, {
+    genetic.inherits(EditorManager, EventEmitter, {
 
         /**
          * subscribe to topic
@@ -73,7 +76,7 @@ define([
         // @formatter:off
         subscribe: function() {
             this.subscribed['#REQUEST.openFile'] = topic.subscribe(
-            	'#REQUEST.openFile', this.requestOpen.bind(this));
+                '#REQUEST.openFile', this.requestOpen.bind(this));
         },
         // @formatter:on
 
@@ -83,26 +86,35 @@ define([
             }
         },
 
-        requestOpen: function(dataSourceId) {
-            logger.info('requestOpen(' + dataSourceId + ')');
-
-            var that = this;
-            var dsRegistry = workbench.getDataSourceRegistry();
+        /**
+         * @param {DataSource} dataSourceId
+         * @param {Object} options
+         * @param {requestOpenCallback} callback
+         */
+        /**
+         * @callback requestOpenCallback
+         * @param {Part} part
+         */
+        requestOpen: function(dataSourceId, options, callback) {
+            logger.info('requestOpen(' + dataSourceId + ', ' + options + ', callback)');
 
             //1. prepare DataSource
+            var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             if (dataSource === null) {
-                workbench.on(Workbench.CREATE_DATA_SOURCE, function(dataSource) {
-                    doWithData(dataSource);
+                workbench.createDataSource(dataSourceId, function(dataSource) {
+                    createPartContainer(dataSource);
                 });
-                workbench.createDataSource(dataSourceId);
             } else {
-                doWithData(dataSource);
+                createPartContainer(dataSource);
             }
 
-            function doWithData(dataSource) {
-                logger.info('doWithData(' + dataSource + ')');
-                //2. create PartContainer
+            //2. create PartContainer
+            function createPartContainer(dataSource) {
+                logger.info('createPartContainer(' + dataSource + ')');
+
+                var page = workbench.getCurrentPage();
+
                 //3. crate Part and add to PartContainer
                 //4. dataSource.getContents(function(contents){
                 //      part.setContents(contents);
@@ -112,8 +124,8 @@ define([
         }
     });
 
-    EditorsManager.DATA_SOURCE_OPENED = 'dataSourceOpened';
+    EditorManager.DATA_SOURCE_OPENED = 'dataSourceOpened';
 
-    return EditorsManager;
+    return EditorManager;
 });
 
