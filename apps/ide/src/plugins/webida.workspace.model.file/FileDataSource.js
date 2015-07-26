@@ -97,7 +97,7 @@ define([
             if ( typeof target.getFile === 'function') {
                 var file = target.getFile();
                 var thisFile = this.getFile();
-                if (file.path === thisFile.path) {
+                if (file.getPath() === thisFile.getPath()) {
                     return true;
                 } else {
                     return false;
@@ -113,9 +113,9 @@ define([
             var that = this;
             var file = this.file;
             if (file.getFlag(File.READ) === false) {
-                fsCache.readFile(file.path, function(error, contents) {
+                fsCache.readFile(file.getPath(), function(error, contents) {
                     if (error) {
-                        toastr.error('Failed to read file "' + file.path + '" (' + error + ')');
+                        toastr.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
                     } else {
                         file.setContents(contents);
                         file.setFlag(File.READ, true);
@@ -130,8 +130,31 @@ define([
         /**
          * @override
          */
+        getTitle: function() {
+            return this.file.getName();
+        },
+
+        /**
+         * @override
+         */
+        getToolTip: function() {
+            return this.file.getPath();
+        },
+
+        /**
+         * @override
+         */
+        getTitleImage: function() {
+        	//TODO
+        	//var desc = new ImageDescriptor(this.file.getExtension());
+            return null;
+        },
+
+        /**
+         * @override
+         */
         toString: function() {
-            var res = '<' + this.constructor.name + '>#' + this.file.path;
+            var res = '<' + this.constructor.name + '>#' + this.file.getPath();
             return res;
         }
     });
