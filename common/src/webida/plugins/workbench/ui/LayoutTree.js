@@ -89,9 +89,9 @@ define([
 
         /**
          * A layout model to be rendered
-         * @type {Map.<number, LayoutTree>}
+         * @type {Array.<LayoutTree>}
          */
-        this.children = new Map();
+        this.children = [];
 
         /**
          * @type {Rectangle}
@@ -115,17 +115,18 @@ define([
          *
          *
          * @param {LayoutTree} layoutTree
-         * @param {number} [index] (LayoutTree.FIRST | LayoutTree.SECOND)
+         * @param {number} [index=LayoutTree.FIRST] (LayoutTree.FIRST |
+         * LayoutTree.SECOND)
          */
         insertChild: function(layoutTree, index) {
             if (arguments.length === 1) {
                 index = LayoutTree.FIRST;
             }
             var children = this.getChildren();
-            if (children.has(index)) {
+            if (children[index]) {
                 throw new Error(index + 'node already exists');
             }
-            children.set(index, layoutTree);
+            children[index] = layoutTree;
             layoutTree.setParent(this);
         },
 
@@ -135,7 +136,7 @@ define([
         removeChild: function(index) {
             var children = this.getChildren();
             this.getChild(index).setParent(null);
-            children['delete'](index);
+            children.splice(index, 1);
         },
 
         /**
@@ -150,7 +151,7 @@ define([
          * @return {LayoutTree}
          */
         getChild: function(index) {
-            return this.children.get(index);
+            return this.getChildren()[index];
         },
 
         /**
@@ -208,6 +209,29 @@ define([
          */
         getBounds: function() {
             return this.bounds;
+        },
+
+        /**
+         * Retrive child from this LayoutTree by assigned id
+         * @param {string} layout tree's id
+         * @return {LayoutTree}
+         */
+        getChildById: function(id) {
+            var child;
+            var result;
+            var children = this.getChildren();
+            for (var i in children) {
+                child = children[i];
+                if (child.getId() === id) {
+                    return child;
+                } else {
+                    result = child.getChildById(id);
+                    if ( result instanceof LayoutTree) {
+                        return result;
+                    }
+                }
+            }
+            return null;
         }
     });
 

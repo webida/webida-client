@@ -142,7 +142,7 @@ define([
 
             //TODO : if(!(model instanceof WorkbenchModel)){return;}
 
-            function getPages(model) {
+            function getLayoutTree(model) {
                 var LayoutClass = {
                     'Page': Page,
                     'LayoutPane': LayoutPane
@@ -158,7 +158,7 @@ define([
                     if ('children' in model) {
                         children = model.children;
                         for (var i in children) {
-                            child = getPages(children[i]);
+                            child = getLayoutTree(children[i]);
                             layoutTree.insertChild(child, i);
                         }
                     }
@@ -168,10 +168,12 @@ define([
             }
 
             if ('pages' in workbenchModel) {
-                var pages = workbenchModel.pages;
+                var page = [], pages = workbenchModel.pages;
                 for (var i in pages) {
-                    this.addPage(getPages(pages[i]));
+                	page[i] = getLayoutTree(pages[i]);
+                    this.addPage(page[i]);
                 }
+                this.setCurrentPage(page[0]);
             }
         }
     });

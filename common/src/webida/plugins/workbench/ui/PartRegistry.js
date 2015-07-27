@@ -115,9 +115,27 @@ define([
             var partsOfDs = this.getPartsByDataSource(dataSource);
             var result = [];
             if (partsOfDs) {
-                partsOfDs.forEach(function(value) {
-                    if ( value instanceof PartClass) {
-                        result.push(value);
+                partsOfDs.forEach(function(part) {
+                    if ( part instanceof PartClass) {
+                        result.push(part);
+                    }
+                });
+            }
+            return result;
+        },
+
+        /**
+         * @param {DataSource} dataSource
+         * @param {string} PartClassName
+         * @return {Array} Parts with DataSource and PartClass
+         */
+        getPartsByClassName: function(dataSource, PartClassName) {
+            var partsOfDs = this.getPartsByDataSource(dataSource);
+            var result = [];
+            if (partsOfDs) {
+                partsOfDs.forEach(function(part) {
+                    if (part.constructor === PartClassName) {
+                        result.push(part);
                     }
                 });
             }

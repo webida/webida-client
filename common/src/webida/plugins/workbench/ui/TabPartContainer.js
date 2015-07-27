@@ -44,11 +44,15 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function TabPartContainer() {
-        logger.info('new TabPartContainer()');
+    function TabPartContainer(dataSource) {
+        logger.info('new TabPartContainer(' + dataSource + ')');
 
         /** @type {Object} tabWidget */
         this.tabWidget = null
+
+        PartContainer.call(this, dataSource);
+
+        this.createTabWidget();
     }
 
 
@@ -60,6 +64,7 @@ define([
          * @return {Array}
          */
         createTabWidget: function() {
+        	logger.info('createTabWidget()');
             //TODO
         },
 
