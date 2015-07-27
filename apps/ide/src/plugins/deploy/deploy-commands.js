@@ -18,7 +18,7 @@ define(['webida-lib/app',
         'webida-lib/util/path',
         'webida-lib/plugins/workspace/plugin',
         'webida-lib/webida-0.3',
-        'external/toastr/toastr.min'
+        'plugins/webida.notification/notification-message'
        ],
 
 function (ide, pathUtil, wv, webida, toastr) {

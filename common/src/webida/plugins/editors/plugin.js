@@ -39,7 +39,7 @@ define([
     'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
     'external/async/dist/async.min',
-    'external/toastr/toastr.min',
+    'plugins/webida.notification/notification-message',
     'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
     './EditorManager'
 ], function (

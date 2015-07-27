@@ -27,7 +27,7 @@ define([
     'dojo/topic',
     './run-configuration-manager',
     'webida-lib/plugins/workspace/plugin',
-    'external/toastr/toastr.min',
+    'plugins/webida.notification/notification-message',
     'external/lodash/lodash.min'
 ], function (ide, pluginManager, pathUtil, topic, runConfigurationManager, workspace, toastr, _) {
 

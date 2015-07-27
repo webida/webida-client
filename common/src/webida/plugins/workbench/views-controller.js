@@ -35,7 +35,7 @@ define([
     'webida-lib/widgets/views/viewmanager',         // vm
     'webida-lib/widgets/views/viewFocusController', // ViewFocusController
     'webida-lib/widgets/views/splitviewcontainer',  // SplitViewContainer
-    'external/toastr/toastr.min',
+    'plugins/webida.notification/notification-message',
     'external/lodash/lodash.min',
     'dojo/topic',                             // topic
     'dojo/dom-geometry',                      // geometry
