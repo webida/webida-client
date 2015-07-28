@@ -959,8 +959,13 @@ define([
             });
             
             this.closeTopicHandler = topic.subscribe('editors.closed', function (path) {
-                self.refresh();
+                self.__checkSizeChange();
             });
+            
+            this.resizeCallback = function () {
+                self.__checkSizeChange();                                
+            };
+            codemirror.on(window, 'resize', this.resizeCallback);
 
 	        this.editor.on('mousedown', function (cm, e) {
 	            if (settings.gotoLinkEnabled) {
