@@ -307,8 +307,13 @@ define([
             });
             
             this.closeTopicHandler = topic.subscribe('editors.closed', function (path) {
-                self.refresh();
+                self.__checkSizeChange();
             });
+            
+            this.resizeCallback = function () {
+                self.__checkSizeChange();                                
+            };
+            codemirror.on(window, 'resize', this.resizeCallback);
 
             // conditionally indent on paste
             self.editor.on('change', function(cm, e) {
@@ -349,6 +354,8 @@ define([
             
             this.closeTopicHandler.remove();
             this.closeTopicHandler = null;
+            
+            codemirror.off(window, 'resize', this.resizeCallback);
             
             $(this.elem).html('');
         },
@@ -834,8 +841,7 @@ define([
             }
             if (this.editor) {
                 setTimeout(function (self) {
-                    self.editor.refresh();
-                    self.__checkSizeChange();
+                    self.editor.refresh();                    
                 }, 0, this);
             }
         },
