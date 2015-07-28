@@ -562,11 +562,7 @@ define([
 
             aspect.before(leftSplitter, '_startDrag', function () {
                 topic.publish('editor-panel-resize');
-            });
-            
-            aspect.after(leftSplitter, '_stopDrag', function () {
-                topic.publish('editor-panel-resize-finished');
-            });
+            });            
 
             aspect.before(rightSplitter, '_handleOnChange', function () {
                 topic.publish('editor-panel-resize');
@@ -574,11 +570,7 @@ define([
 
             aspect.before(rightSplitter, '_startDrag', function () {
                 topic.publish('editor-panel-resize');
-            });
-            
-            aspect.after(rightSplitter, '_stopDrag', function () {
-                topic.publish('editor-panel-resize-finished');
-            });
+            });           
 
             aspect.before(bottomSplitter, '_handleOnChange', function () {
                 topic.publish('editor-panel-resize');
@@ -588,10 +580,10 @@ define([
                 topic.publish('editor-panel-resize');
             });
             
-            aspect.after(bottomSplitter, '_stopDrag', function () {
-                topic.publish('editor-panel-resize-finished');
+            aspect.after(this._topContainer, '_layoutChildren', function () {
+                topic.publish('editor-container-layout-changed');
             });
-
+            
             var vcList;
 
             if (leftPanelState.viewContainerLayouts &&

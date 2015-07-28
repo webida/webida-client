@@ -954,19 +954,10 @@ define([
 	            delete this.deferredActions;
 	        }	        
             
-            this.resizeTopicHandler = topic.subscribe('editor-panel-resize-finished', function () {
-                self.__checkSizeChange();
+            this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function () {
+                self.checkSizeChange();
             });
-            
-            this.closeTopicHandler = topic.subscribe('editors.closed', function (path) {
-                self.__checkSizeChange();
-            });
-            
-            this.resizeCallback = function () {
-                self.__checkSizeChange();                                
-            };
-            codemirror.on(window, 'resize', this.resizeCallback);
-
+                        
 	        this.editor.on('mousedown', function (cm, e) {
 	            if (settings.gotoLinkEnabled) {
 	                require(['./content-assist/goto-link'], function (gotolink) {

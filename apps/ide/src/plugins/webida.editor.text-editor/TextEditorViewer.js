@@ -302,18 +302,9 @@ define([
                 delete this.deferredActions;
             }            
             
-            this.resizeTopicHandler = topic.subscribe('editor-panel-resize-finished', function () {
-                self.__checkSizeChange();
-            });
-            
-            this.closeTopicHandler = topic.subscribe('editors.closed', function (path) {
-                self.__checkSizeChange();
-            });
-            
-            this.resizeCallback = function () {
-                self.__checkSizeChange();                                
-            };
-            codemirror.on(window, 'resize', this.resizeCallback);
+            this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function () {
+                self.checkSizeChange();
+            }); 
 
             // conditionally indent on paste
             self.editor.on('change', function(cm, e) {
@@ -325,7 +316,7 @@ define([
             });
         },
 
-        __checkSizeChange: function() {
+        checkSizeChange: function() {
             if (this.editor) {
                 var visible = $(this.elem).is(':visible');
                 if (visible) {
@@ -350,13 +341,8 @@ define([
             //unsubscribing topics
             
             this.resizeTopicHandler.remove();
-            this.resizeTopicHandler = null;
-            
-            this.closeTopicHandler.remove();
-            this.closeTopicHandler = null;
-            
-            codemirror.off(window, 'resize', this.resizeCallback);
-            
+            this.resizeTopicHandler = null;       
+          
             $(this.elem).html('');
         },
 
