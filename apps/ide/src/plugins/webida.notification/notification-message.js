@@ -55,7 +55,7 @@ define([
         info : info,
         subscribe : subscribe,
         success : success,
-        warring : warning,
+        warning : warning,
         clear : clear,
         remove : remove
     };
