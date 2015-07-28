@@ -263,6 +263,7 @@ define([
         show: function() {
             logger.info('show()');
             this.getViewer().refresh();
+            this.getViewer().checkSizeChange();
         },
 
         hide: function() {
