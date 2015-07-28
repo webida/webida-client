@@ -305,7 +305,9 @@ define([
                 });
                 if (ext) {
                     require([ext.module], function (mod) {
-                        mod[ext.beforeLaunch](projectInfo, mode, callback);
+                        if (mod[ext.beforeLaunch]) {
+                            mod[ext.beforeLaunch].call(mod, projectInfo, mode, callback);
+                        }
                     });
                 } else {
                     callback();
