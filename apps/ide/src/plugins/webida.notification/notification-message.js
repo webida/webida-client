@@ -1,5 +1,5 @@
 define([
-    'plugins/webida.notification/notification-message'
+    'external/toastr/toastr.min'
 ], function (
     Toastr
 ) {
@@ -7,7 +7,7 @@ define([
 
     var notification = { log : ''};
 
-    function setNotification (message, title, optionsOverride) {
+    function setNotification(message, title, optionsOverride) {
         var d = new Date();
         notification.log += '[' + d.toString() + '] ' + '[' + title + '] ' + (message ? message : '') + '<br>';
         $('#log').html(notification.log);
@@ -36,9 +36,9 @@ define([
         Toastr.success(message, title, optionsOverride);
     }
 
-    function warring(message, title, optionsOverride) {
+    function warning(message, title, optionsOverride) {
         setNotification(message, title, optionsOverride);
-        Toastr.warring(message, title, optionsOverride);
+        Toastr.warning(message, title, optionsOverride);
     }
 
     function clear($toastElement, clearOptions) {
@@ -46,7 +46,7 @@ define([
     }
 
     function remove($toastElement) {
-        Toastr.remove($toastElemet);
+        Toastr.remove($toastElement);
     }
 
     return {
@@ -55,8 +55,9 @@ define([
         info : info,
         subscribe : subscribe,
         success : success,
-        warring : warring,
+        warring : warning,
         clear : clear,
         remove : remove
     };
 });
+
