@@ -78,10 +78,10 @@ define([
                     var len = keys.length;
                     for (var i = 0; i < len; i++) {
                         var key = keys[i];
-                        var files = editors.files[key];
-                        if (files.isModified()) {
+                        var savingFile = editors.files[key];
+                        if (savingFile.isModified()) {
                             editors.saveFile({
-                                path: files.path,
+                                path: savingFile.path,
                             });
                         }
                     }
