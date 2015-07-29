@@ -26,9 +26,10 @@ define(['external/lodash/lodash.min',
         './viewmanager',
         'dojo/topic',
         'dojo/dom-geometry',
+        'dojo/aspect',
         'dojo/domReady!', ],
 function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
-           ViewContainer, View, vm, topic, geometry) {
+           ViewContainer, View, vm, topic, geometry, aspect) {
     'use strict';
 
     var splitViewContainer = function () {
@@ -127,6 +128,10 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
                         _self.hideContainer(vc);
                     }
                 }
+            });
+            
+            aspect.after(bc, '_layoutChildren', function () {
+                topic.publish('editor-container-layout-changed');
             });
 
             bc.resize();
