@@ -15,38 +15,38 @@
  */
 
 define([
-	'./plugin',
-	'webida-lib/plugins/workbench/plugin',
-	'webida-lib/app',
-	'webida-lib/widgets/views/splitviewcontainer',
-	'webida-lib/widgets/views/viewmanager',
-	'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-	'dojo/dom-style',
-	'dojo/dom-geometry',
-	'dojo/topic',
-	'external/lodash/lodash.min',
-	'webida-lib/util/logger/logger-client'
+    './plugin',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/app',
+    'webida-lib/widgets/views/splitviewcontainer',
+    'webida-lib/widgets/views/viewmanager',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'dojo/dom-style',
+    'dojo/dom-geometry',
+    'dojo/topic',
+    'external/lodash/lodash.min',
+    'webida-lib/util/logger/logger-client'
 ], function (
-	editors, 
-	workbench, 
-	ide, 
-	SplitViewContainer, 
-	vm,
-	ButtonedDialog,
-	domStyle,
-    geometry, 
-    topic, 
+    editors,
+    workbench,
+    ide,
+    SplitViewContainer,
+    vm,
+    ButtonedDialog,
+    domStyle,
+    geometry,
+    topic,
     _,
     Logger
 ) {
     'use strict';
 
-	var logger = new Logger();
-	//logger.setConfig('level', Logger.LEVELS.log);
-	//logger.off();
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     var paneElement = $('<div id="editor" tabindex="0" style="position:absolute; ' +
-			'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];
+            'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];
 
     function getPanel() {
         var docFrag = document.createDocumentFragment();
@@ -70,7 +70,7 @@ define([
                     caption: 'Cancel',
                     methodOnClick: 'canceled'
                 }
-                ],
+            ],
             methodOnEnter: 'saveAnd' + title,
             saveAndAction: function () {
                 if (title === 'Quit') {
@@ -78,10 +78,10 @@ define([
                     var len = keys.length;
                     for (var i = 0; i < len; i++) {
                         var key = keys[i];
-                        var file = editors.files[key];
-                        if (file.isModified()) {
+                        var files = editors.files[key];
+                        if (files.isModified()) {
                             editors.saveFile({
-                                path: file.path,
+                                path: files.path,
                             });
                         }
                     }
@@ -112,8 +112,13 @@ define([
                 dialog.destroyRecursive();
             }
         });
-        dialog.setContentArea('<span> File "' + file.name  + '" has unsaved changes. </span>' +
-                '<span> Save and '+ title + ' this file? </span>');
+
+        var name = file.name;
+        if (title === 'Quit') {
+            name = file;
+        }
+        dialog.setContentArea('<span> File "' + name  + '" has unsaved changes. </span>' +
+                '<span> Save and ' + title + ' this file? </span>');
         dialog.show();
     }
 
