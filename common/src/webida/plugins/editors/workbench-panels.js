@@ -54,6 +54,8 @@ define([
         return docFrag;
     }
 
+    var QUIT = 'Quit';
+
     function createDialog(file, title, action, canceled) {
         var dialog = new ButtonedDialog({
             title: 'Unsaved Changes in the File to ' + title,
@@ -73,7 +75,7 @@ define([
             ],
             methodOnEnter: 'saveAnd' + title,
             saveAndAction: function () {
-                if (title === 'Quit') {
+                if (title === QUIT) {
                     var keys = Object.keys(editors.files);
                     var len = keys.length;
                     for (var i = 0; i < len; i++) {
@@ -114,7 +116,7 @@ define([
         });
 
         var name = file.name;
-        if (title === 'Quit') {
+        if (title === QUIT) {
             name = file;
         }
         dialog.setContentArea('<span> File "' + name  + '" has unsaved changes. </span>' +
