@@ -320,7 +320,7 @@ define([
             };
 
             if (modifiedFileNames.length > 0) {
-                createDialog(modifiedFileNames.join(', '), 'Quit', action, cancel);
+                createDialog(modifiedFileNames.join(', '), QUIT, action, cancel);
             } else {
                 action();
             }
