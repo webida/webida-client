@@ -583,7 +583,7 @@ define([
             aspect.after(this._topContainer, '_layoutChildren', function () {
                 topic.publish('editor-container-layout-changed');
             });
-            
+
             var vcList;
 
             if (leftPanelState.viewContainerLayouts &&
