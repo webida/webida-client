@@ -578,11 +578,7 @@ define([
 
             aspect.before(bottomSplitter, '_startDrag', function () {
                 topic.publish('editor-panel-resize');
-            });
-            
-            aspect.after(this._topContainer, '_layoutChildren', function () {
-                topic.publish('editor-container-layout-changed');
-            });
+            });         
 
             var vcList;
 
