@@ -263,6 +263,7 @@ define([
         show: function() {
             logger.info('show()');
             this.getViewer().refresh();
+            this.getViewer().checkSizeChange();
         },
 
         hide: function() {
@@ -330,10 +331,9 @@ define([
             } else {
                 context.setCursor(location.cursor);
             }
+
             context.addDeferredAction(function(viewer) {
-                if (viewer.editor) {
-                    viewer.editor.focus();
-                }
+                viewer.editor.focus();                
             });
         });
     };

@@ -25,7 +25,7 @@ define(['webida-lib/app',
         'dojo/topic',
         'webida-lib/plugins/workspace/plugin',
         'external/lodash/lodash.min',
-        'external/toastr/toastr.min'
+        'plugins/webida.notification/notification-message'
 ], function (ide, pathutil, topic, workspace, _, toastr) {
     'use strict';
 

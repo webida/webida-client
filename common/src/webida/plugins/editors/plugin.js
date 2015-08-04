@@ -39,9 +39,9 @@ define([
     'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
     'external/async/dist/async.min',
-    'external/toastr/toastr.min',
+    'plugins/webida.notification/notification-message',
     'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
-    './EditorsManager'
+    './EditorManager'
 ], function (
     topic, 
     extToMime, 
@@ -62,7 +62,7 @@ define([
     async, 
     toastr,
     FileDataSource,
-    EditorsManager
+    EditorManager
 ) {
     'use strict';
 // @formatter:on
@@ -73,7 +73,7 @@ define([
 
     logger.log('loaded modules required by editors. initializing editors plugin');
 
-    var editorsManager = new EditorsManager();
+    var editorsManager = new EditorManager();
 
     function getFileClass() {
         var File = function(path) {
@@ -734,11 +734,7 @@ define([
             }
         };
 
-        topic.publish('view.quit', event, function() {
-            if (event.quitable) {
-                vc._remove(event.view, true);
-            }
-        });
+        topic.publish('view.quit', event, function () {});
     };
 
     editors.saveFile = function(option) {

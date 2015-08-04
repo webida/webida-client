@@ -125,5 +125,10 @@
                 "getViableItems" : "getViableItemsForWorkspaceView"
             }
         ]
+    }, 
+    "subscriptions" : { 
+        "workspace.node.selected" : { 
+            "handler": "onNodeSelected"
+        } 
     }
 }

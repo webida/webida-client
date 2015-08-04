@@ -25,62 +25,14 @@ define(['webida-lib/plugins/workspace/plugin',            // wv
         'external/lodash/lodash.min',           //_
         'dojo/topic',                               // topic
         'webida-lib/util/path',                                     // pathUtil
-        'external/toastr/toastr.min'                                    // Toastr
+        'plugins/webida.notification/notification-message'          // Toastr
         ],
 function (wv, pm, editors, _, topic, pathUtil, toastr)
 {
     'use strict';
 
     //console.log('hina: Loading fs-commands module');
-    var bInit = false;
-    var EVT_TOOLBAR_GOTOFILE_ENABLE = 'toolbar.gotofile.enable';
-    var EVT_TOOLBAR_GOTOFILE_DISABLE = 'toolbar.gotofile.disable';
-    var EVT_TOOLBAR_FINDINFILES_ENABLE = 'toolbar.findinfiles.enable';
-    var EVT_TOOLBAR_FINDINFILES_DISABLE = 'toolbar.findinfiles.disable';
-    var EVT_TOOLBAR_NEWFILE_ENABLE = 'toolbar.newfile.enable';
-    var EVT_TOOLBAR_NEWFILE_DISABLE = 'toolbar.newfile.disable';
-    var EVT_NODE_ALL_DESELECTED = 'workspace.node.alldeselected';
-    var EVT_NODE_SELECTED = 'workspace.node.selected'; 
     var openWithEditorNames = [];
-   
-    
-
-    function init() {
-        if (bInit === false) {
-            bInit = true;
-
-            topic.subscribe(EVT_NODE_ALL_DESELECTED, function () {
-                topic.publish(EVT_TOOLBAR_GOTOFILE_DISABLE);
-                topic.publish(EVT_TOOLBAR_FINDINFILES_DISABLE);
-                topic.publish(EVT_TOOLBAR_NEWFILE_DISABLE);
-            });
-
-            topic.subscribe(EVT_NODE_SELECTED, function (node) {
-                if (!!node && !!node.isInternal) {
-                    topic.publish(EVT_TOOLBAR_GOTOFILE_ENABLE);
-                    topic.publish(EVT_TOOLBAR_FINDINFILES_ENABLE);
-                    topic.publish(EVT_TOOLBAR_NEWFILE_ENABLE);
-                } else {
-                    topic.publish(EVT_TOOLBAR_GOTOFILE_DISABLE);
-                    topic.publish(EVT_TOOLBAR_FINDINFILES_DISABLE);
-                    topic.publish(EVT_TOOLBAR_NEWFILE_DISABLE);
-                }
-            });
-
-            // init time toolbar handle
-            var paths = wv.getSelectedPaths();
-            if (paths.length !== 1 || !pathUtil.isDirPath(paths[0])) {
-                topic.publish(EVT_TOOLBAR_GOTOFILE_DISABLE);
-                topic.publish(EVT_TOOLBAR_FINDINFILES_DISABLE);
-                topic.publish(EVT_TOOLBAR_NEWFILE_DISABLE);
-            }
-            
-        }
-    }
-    init();
-
-
-    //
     //
 
     var module = {
@@ -385,7 +337,25 @@ function (wv, pm, editors, _, topic, pathUtil, toastr)
             } else {
                 return null;
             }
-        }
+        }, 
+
+        onNodeSelected: function (path) { 
+            setTimeout(function () {    // Without this setTimeout, the following getSelectedPaths sometimes wrongly returns an empty array
+                                        // when the IDE starts and a node is selected for the first time.
+                                        // Maybe this setTimeout has the effect of waiting for the Workspace view tree to be, say, stabilized.
+                var paths = wv.getSelectedPaths();
+                if (paths.length === 1 && pathUtil.isDirPath(paths[0])) {
+                    topic.publish('toolbar.newfile.enable');
+                    topic.publish('toolbar.findinfiles.enable');
+                    topic.publish('toolbar.gotofile.enable');
+                } else { 
+                    topic.publish('toolbar.newfile.disable');
+                    topic.publish('toolbar.findinfiles.disable');
+                    topic.publish('toolbar.gotofile.disable');
+                } 
+            }, 1);
+        } 
+
     };
 
     return module;

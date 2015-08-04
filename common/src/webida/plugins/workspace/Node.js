@@ -43,7 +43,7 @@ define(['require',
         'webida-lib/plugins/workbench/plugin',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
         'webida-lib/util/path',
-        'external/toastr/toastr.min'
+        'plugins/webida.notification/notification-message'
 ], function (require, _, registry, ide, FSCache, dom, domAttr, domStyle, domClass,
               domGeom, on, topic, Deferred, all, keys, workbench, ButtonedDialog,
               pathUtil, toastr) {

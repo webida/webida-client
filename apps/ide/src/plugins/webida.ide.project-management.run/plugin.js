@@ -29,7 +29,7 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/path',
     'external/lodash/lodash.min',
-    'external/toastr/toastr.min'
+    'plugins/webida.notification/notification-message'
 ], function (runConfigurationManager, delegator, ide, pluginManager, workspace, workbench, pathUtil, _, toastr) {
     'use strict';
 
@@ -316,7 +316,9 @@ define([
                 });
                 if (ext) {
                     require([ext.module], function (mod) {
-                        mod[ext.beforeLaunch](projectInfo, mode, callback);
+                        if (mod[ext.beforeLaunch]) {
+                            mod[ext.beforeLaunch].call(mod, projectInfo, mode, callback);
+                        }
                     });
                 } else {
                     callback();

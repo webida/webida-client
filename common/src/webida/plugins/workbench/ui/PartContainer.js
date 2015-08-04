@@ -42,14 +42,19 @@ define([
 
     var _containerId = 0;
 
-    function PartContainer() {
-        logger.info('new PartContainer()');
+    function PartContainer(dataSource) {
+        logger.info('new PartContainer(' + dataSource + ')');
         this._containerId = ++_containerId;
         this.dataSource = null;
         this.part = null;
         this.parent = null;
         this.title = null;
+        this.toolTip = null;
         this.titleImage = null;
+        this.setDataSource(dataSource);
+        this.setTitle(dataSource.getTitle());
+        this.setToolTip(dataSource.getToolTip());
+        this.setTitleImage(dataSource.getTitleImage());
     }
 
 
@@ -79,8 +84,12 @@ define([
         /**
          * Creates new Part using DataSource
          */
-        createPart: function() {
-
+        createPart: function(options, callback) {
+            logger.info('createPart('+options+', callback)');
+            logger.info(this.getDataSource());
+            //get Part module by dataSource using plugin manager
+            //this.part = new Part()
+            //this.part.create(parent);
         },
 
         /**
@@ -119,7 +128,7 @@ define([
         },
 
         /**
-         * @param {string} title
+         * @param {ImageDescriptor} imageDescriptor
          */
         setTitleImage: function(imageDescriptor) {
             this.titleImage = imageDescriptor;
@@ -127,10 +136,24 @@ define([
         },
 
         /**
-         * @return {string} title
+         * @return {ImageDescriptor} imageDescriptor
          */
         getTitleImage: function() {
-            return this.titleImage;
+            //TODO
+        },
+
+        /**
+         * @param {string} toolTip
+         */
+        setToolTip: function(toolTip) {
+            this.toolTip = toolTip;
+        },
+
+        /**
+         * @return {string} title
+         */
+        getToolTip: function() {
+            return this.toolTip;
         },
 
         /**
@@ -138,8 +161,7 @@ define([
          * @return {HTMLElement}
          */
         getInnerElement: function() {
-            throw new Error('getInnerElement() should be implemented by ' 
-            	+ this.constructor.name);
+            throw new Error('getInnerElement() should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -147,8 +169,15 @@ define([
          * @return {HTMLElement}
          */
         getOuterElement: function() {
-            throw new Error('getOuterElement() should be implemented by ' 
-            	+ this.constructor.name);
+            throw new Error('getOuterElement() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @override
+         */
+        toString: function() {
+            var res = '<' + this.constructor.name + '>#' + this.getTitle();
+            return res;
         }
     });
 

@@ -73,6 +73,38 @@ define([
     genetic.inherits(File, Object, {
 
         /**
+         * a/b/c.d.txt
+         * @return {string} file's path
+         */
+        getPath: function() {
+            return this.path;
+        },
+
+        /**
+         * c.d.txt
+         * @return {string} file's name
+         */
+        getName: function() {
+            return this.name;
+        },
+
+        /**
+         * c.d
+         * @return {string} file's basename
+         */
+        getBaseName: function() {
+            return this.basename;
+        },
+
+        /**
+         * txt
+         * @return {string} file's extension
+         */
+        getExtension: function() {
+            return this.extension;
+        },
+
+        /**
          * @param {string} contents
          */
         setContents: function(contents) {
@@ -102,7 +134,7 @@ define([
         },
 
         toString: function() {
-        	return '<' + this.constructor.name + '>#' + this.path;
+            return '<' + this.constructor.name + '>#' + this.path;
         }
     });
 

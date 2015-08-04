@@ -37,7 +37,7 @@ define([
     'text!./run-configuration.html',
     'text!./default-run-configuration.html',
     'external/lodash/lodash.min',
-    'external/toastr/toastr.min',
+    'plugins/webida.notification/notification-message',
     'xstyle/css!./style.css'
 ], function (ide, workbench, workspace, pluginManager, runConfManager, delegator,
              topic, on, Memory, Observable, registry,

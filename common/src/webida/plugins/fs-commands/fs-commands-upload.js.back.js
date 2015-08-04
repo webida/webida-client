@@ -42,7 +42,7 @@ define(['external/lodash/lodash.min',          // _
         'dijit/Tree',                               // Tree
         'dijit/registry',                           // reg
         'dijit/Tooltip',                            // Tooltip
-        'external/toastr/toastr.min',                  // Toastr
+        'plugins/webida.notification/notification-message',            // Toastr
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
         ],

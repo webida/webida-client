@@ -34,7 +34,7 @@ define(['require',
     './lib/jsdifflib/difflib',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/arrays/BubblingArray',
-    'external/toastr/toastr.min',
+    'plugins/webida.notification/notification-message',
     'popup-dialog',
     'dijit/registry',
     'dojo/store/Memory',
@@ -1198,7 +1198,7 @@ define(['require',
                 if (value === '' || TargetTextBox.get('value') === '') {
                     cloneButton.set('disabled', true);
                 } else if (value.match(/^ssh:.*/)) {
-                    fsCache.exists('.userinfo/id_rsa', function (err, exists) {
+                    fsCache.exists('/.userinfo/id_rsa', function (err, exists) {
                         if (err) {
                             gitviewlog.error(GIT_DIR, 'clone', err);
                         } else {

@@ -14,6 +14,7 @@
         "plugins/webida.ide.project-management.run.java",
         "plugins/uid-menu-items",
         "plugins/webida.terminal",
+        "plugins/webida.notification",
         "webida-lib/plugins/editors",
         "webida-lib/plugins/fs-commands",
         "webida-lib/plugins/git",

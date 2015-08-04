@@ -23,7 +23,7 @@ define([
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
         'dijit/layout/ContentPane',
         'dijit/registry',
-        'external/toastr/toastr.min'
+        'plugins/webida.notification/notification-message'
     ],
     function (ide, template, topic, on, Select, FileDialog, ContentPane, registry, toastr) {
         'use strict';

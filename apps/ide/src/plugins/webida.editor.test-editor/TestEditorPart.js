@@ -61,7 +61,7 @@ define([
             var pre = document.createElement('pre');
             pre.contentEditable = true;
             pre.style.fontSize = '8pt';
-            pre.innerText = this.getFile().getValue();
+            pre.innerText = this.getFile().getContents();
             parent.appendChild(pre);
             return pre;
         },

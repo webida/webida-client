@@ -21,7 +21,7 @@ define(['require',
         'external/lodash/lodash.min',
         'webida-lib/plugins/workbench/preference-system/store',
         'webida-lib/util/keyCode',
-        'external/toastr/toastr.min',
+        'plugins/webida.notification/notification-message',
         'webida-lib/util/logger/logger-client'],
 function (require, Deferred, when, all, _, prefStore, keyCode, toastr, Logger) {
     'use strict';
@@ -1431,6 +1431,11 @@ function (require, Deferred, when, all, _, prefStore, keyCode, toastr, Logger) {
     };
 
     MenuItemTree.normalizeKeysStr = normalizeKeysStr;
+    MenuItemTree.isTerminal = isTerminal;
+    MenuItemTree.isNonterminal = isNonterminal;
+    MenuItemTree.isDelimeter = isDelimeter;
+    MenuItemTree.isItem = isItem;
+    
 
     return MenuItemTree;
 });

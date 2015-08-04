@@ -26,7 +26,7 @@ define(['webida-lib/app',
         'webida-lib/plugins/workspace/plugin',
         'external/async/dist/async.min',
         'external/lodash/lodash.min',
-        'external/toastr/toastr.min',
+        'plugins/webida.notification/notification-message',
         'webida-lib/util/logger/logger-client'
 ], function (ide, pathutil, topic, workspace, async, _, toastr, Logger) {
     'use strict';

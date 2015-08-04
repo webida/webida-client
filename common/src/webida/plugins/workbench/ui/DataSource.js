@@ -52,6 +52,13 @@ define([
     genetic.inherits(DataSource, EventEmitter, {
 
         /**
+         * @return {Object}
+         */
+        getId: function() {
+            return this.dataSourceId;
+        },
+
+        /**
          * @param {DataSource} dataSource
          */
         equals: function(dataSource) {
@@ -66,10 +73,24 @@ define([
         },
 
         /**
-         * @return {Object}
+         * @return {string} title
          */
-        getId: function() {
-            return this.dataSourceId;
+        getTitle: function() {
+            throw new Error('getTitle() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @return {string} toolTip
+         */
+        getToolTip: function() {
+            throw new Error('getToolTip() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @return {ImageDescriptor} imageDescriptor
+         */
+        getTitleImage: function() {
+            throw new Error('getTitleImage() should be implemented by ' + this.constructor.name);
         },
 
         toString: function() {
