@@ -90,9 +90,7 @@ define(['webida-lib/app',
     function selectNode(node) {
         if (typeof node === 'string') {
             node = getNode(node);
-        } /*else {
-            console.warn('node is not a path string');
-        } */
+        } 
         if (!node) {
             return;
         }
