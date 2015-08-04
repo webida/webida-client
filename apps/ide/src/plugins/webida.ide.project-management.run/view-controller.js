@@ -50,6 +50,12 @@ define([
     var ui;
     var windowOpened = false;
 
+    var PATTERN_QUERY_STRING = /^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/;
+    
+    var EVENT_CHANGE = 'webida.ide.project-management.run:configuration.changed';
+    var EVENT_TYPE_SAVE = 'save';
+    var EVENT_TYPE_VALID = 'valid';
+
     var extensionPoints = {
         RUN_CONFIGURATION_TYPE: 'webida.ide.project-management.run:type',
         RUN_CONFIGURATION: 'webida.ide.project-management.run:configuration',
@@ -186,7 +192,7 @@ define([
         ui.dialog = new ButtonedDialog({
             buttons: [
                 {id: 'dialogRunButton', caption: caption, methodOnClick: 'runConf'},
-                {id: 'dialogOkButton', caption: 'OK', methodOnClick: 'okOnRunConf'}
+                {id: 'dialogOkButton', caption: 'Close', methodOnClick: 'okOnRunConf'}
             ],
             methodOnEnter: null,
             okOnRunConf: function () {
@@ -204,15 +210,19 @@ define([
                 }
             },
             runConf: function () {
-                switch (mode) {
-                    case runConfManager.MODE.RUN_MODE:
-                        delegator.run(selected.runConf);
-                        break;
-                    case runConfManager.MODE.DEBUG_MODE:
-                        delegator.debug(selected.runConf);
-                        break;
-                }
-                ui.dialog.hide();
+                delegator.saveConf(selected.runConf, function (err, runConf) {
+                    if (!err) {
+                        switch (mode) {
+                            case runConfManager.MODE.RUN_MODE:
+                                delegator.run(runConf);
+                                break;
+                            case runConfManager.MODE.DEBUG_MODE:
+                                delegator.debug(runConf);
+                                break;
+                        }
+                        ui.dialog.hide();
+                    }
+                });
             },
             refocus: false,
             title: title,
@@ -373,6 +383,9 @@ define([
                 var pathSplit = fileSelected[0].split(root);
                 if (pathSplit.length > 0) {
                     pathInputBox.value = pathSplit[1];
+                    
+                    topic.publish(EVENT_CHANGE, EVENT_TYPE_VALID, !_checkInvalidField());
+                    
                     if (!nameInputBox) {
                         return;
                     }
@@ -385,30 +398,18 @@ define([
             }
         });
     }
-
-    function _saveButtonClicked() {
-        // validation of the common required fields are handled by delegator module
-        /*if (!ui.forms.inputBoxes[0].value) {
-            toastr.error('Enter a name.');
-            return;
+    
+    function _checkInvalidField() {
+        if (!ui.forms.inputBoxes[0].value) {
+            return 'Enter a name.';
         }
-
-        if (isDuplicateRunName(ui.forms.inputBoxes[0].value)) {
-            toastr.error('Duplicate name');
-            return;
-        }*/
-
         if (!ui.forms.readonlyInputBoxes[0].value) {
-            toastr.error('Select a path');
-            return;
+            return 'Select a path.';
         }
-
-        if (!/^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/
-                .test(ui.forms.inputBoxes[1].value)) {
-            toastr.error('Invalid arguments');
-            return;
+        if (!PATTERN_QUERY_STRING.test(ui.forms.inputBoxes[1].value)) {
+            return 'Invalid query string';
         }
-
+        
         selected.runConf.name = ui.forms.inputBoxes[0].value;
         selected.runConf.path = ui.forms.readonlyInputBoxes[0].value;
         selected.runConf.argument = ui.forms.inputBoxes[1].value;
@@ -417,7 +418,17 @@ define([
 
         selected.runConf.liveReload = (ui.forms.checkBoxes[0].checked) ? true : false;
         selected.runConf.project = ui.forms.select.get('value');
-        topic.publish('webida.ide.project-management.run:configuration.changed', 'save', selected.runConf);
+
+        return;
+    }
+
+    function _saveButtonClicked() {
+        var invalidMsg = _checkInvalidField();
+        if (invalidMsg) {
+            toastr.error(invalidMsg);
+            return;
+        }
+        topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, selected.runConf);
     }
 
     function _drawContentPane(runConf) {
@@ -443,13 +454,13 @@ define([
 
         ui.btns.saveButton = registry.byId('rcw-action-save');
         ui.content.own(
-            on(ui.btns.saveButton, 'click', function () {
-                _saveButtonClicked();
-            }),
-            on(ui.btns.pathButton, 'click', function () {
-                _pathButtonClicked();
-            })
+            on(ui.btns.saveButton, 'click', _saveButtonClicked),
+            on(ui.btns.pathButton, 'click', _pathButtonClicked)
         );
+        on(ui.content, 'input, select:change', function () {
+            var invalid = _checkInvalidField();
+            topic.publish(EVENT_CHANGE, EVENT_TYPE_VALID, !invalid);
+        });
 
         ide.getWorkspaceInfo(function (err, workspaceInfo) {
             if (err) {
@@ -488,6 +499,10 @@ define([
     module.reload = function () {
         _addContentArea(new ContentPane());
         delegator.loadConf(ui.content, selected.runConf);
+    };
+    
+    module.changeValidationState = function (valid) {
+        ui.btns.runButton.setDisabled(!valid);
     };
 
     return module;

@@ -27,11 +27,42 @@ define([
     ],
     function (ide, template, topic, on, Select, FileDialog, ContentPane, registry, toastr) {
         'use strict';
+    
+        var EVENT_CHANGE = 'webida.ide.project-management.run:configuration.changed';
+        var EVENT_TYPE_SAVE = 'save';
+        var EVENT_TYPE_VALID = 'valid';
+
+        var PATTERN_MAIN_FILE = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
+    
         var FS = ide.getMount();
         var SRC_DIR = 'src';
         var currentRunConf;
         var ui = {};
 
+    
+        function _checkInvalidField() {
+            var fullPath;
+            var matchResult;
+            if (!ui.inputBoxNodes[0].value) {
+                return 'Enter a name.';
+            }
+            fullPath = ui.readonlyInputBoxes[0].value;
+            if (!fullPath) {
+                return 'Select a path.';
+            }
+            matchResult = PATTERN_MAIN_FILE.exec(fullPath);
+            if (matchResult === null) {
+                return 'Invalid selected path';
+            }
+
+            currentRunConf.name = ui.inputBoxNodes[0].value;
+            currentRunConf.project = ui.select.get('value');
+            currentRunConf.outputDir = 'target';
+            currentRunConf.srcDir = SRC_DIR;
+            currentRunConf.path = matchResult[1].split('/').join('.') + matchResult[2];
+            return;
+        }
+    
         function _pathButtonClicked() {
             var pathInputBox = ui.readonlyInputBoxes[0];
             var nameInputBox = ui.inputBoxNodes[0];
@@ -71,6 +102,8 @@ define([
                     pathSplit = selected[0].split(root);
                     if (pathSplit.length > 0) {
                         pathInputBox.value = pathSplit[1];
+                        topic.publish(EVENT_CHANGE, EVENT_TYPE_VALID, !_checkInvalidField());
+                        
                         if (!nameInputBox) {
                             return;
                         }
@@ -114,39 +147,26 @@ define([
                 ui.saveButton = registry.byId('rcw-action-save');
                 ui.pathButton = $(child).find('.rcw-action-path').get(0);
 
+                on(ui.content, 'input, select:change', function () {
+                    var invalidMsg = _checkInvalidField();
+                    console.log('!!!!!!!input change', invalidMsg);
+                    topic.publish(EVENT_CHANGE, EVENT_TYPE_VALID, !invalidMsg);
+                });
+
                 ui.content.own(
                     on(ui.saveButton, 'click', function () {
-                        if (_doSave()) {
-                            topic.publish('webida.ide.project-management.run:configuration.changed',
-                                'save', currentRunConf);
+                        var invalidMsg = _checkInvalidField();
+                        if (!invalidMsg) {
+                            topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, currentRunConf);
                         } else {
-                            toastr.error('Invalid Run Configuration.');
+                            toastr.error(invalidMsg);
                         }
                     }),
-                    on(ui.pathButton, 'click', function () {
-                        _pathButtonClicked();
-                    })
+                    on(ui.pathButton, 'click', _pathButtonClicked)
                 );
             }
         }
 
-        var srcRegex = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
-        function _doSave() {
-            var fullPath;
-            var matchResult;
-            // validation on currentRunConf
-            currentRunConf.name = ui.inputBoxNodes[0].value;
-            currentRunConf.project = ui.select.get('value');
-            currentRunConf.outputDir = 'target';
-            currentRunConf.srcDir = SRC_DIR;
-            fullPath = ui.readonlyInputBoxes[0].value;
-            matchResult = srcRegex.exec(fullPath);
-            if (matchResult === null) {
-                return false;
-            }
-            currentRunConf.path = matchResult[1].split('/').join('.') + matchResult[2];
-            return true;
-        }
 
         return {
             run: function (runConf, callback) {
@@ -181,10 +201,11 @@ define([
             },
             saveConf: function (runConf, callback) {
                 // validation
-                if (_doSave()) {
+                var invalidMsg = _checkInvalidField();
+                if (!invalidMsg) {
                     callback(null, runConf);
                 } else {
-                    callback('validation failed');
+                    callback(invalidMsg);
                 }
             },
             deleteConf: function (runConfName, callback) {
