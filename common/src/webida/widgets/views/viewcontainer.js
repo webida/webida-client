@@ -15,9 +15,9 @@
  */
 
 define([
-	'external/lodash/lodash.min',
+    'external/lodash/lodash.min',
     'webida-lib/util/browserUtil',
-    'dijit/layout/TabContainer',
+    './viewTabContainer',
     'dijit/layout/ContentPane',
     'dijit/registry',
     './viewmanager',
@@ -29,8 +29,9 @@ define([
     'dojo/topic',
     'dojo/_base/lang',
     'webida-lib/util/logger/logger-client',
-    'dojo/domReady!'],
-function (_,
+    'dojo/domReady!'
+], function (
+    _,
     BrowserUtil,
     TabContainer,
     ContentPane,
@@ -56,6 +57,7 @@ function (_,
 
     ViewContainerEvent.SELECTED = 'view.selected';
     ViewContainerEvent.CLOSE = 'view.close';
+    ViewContainerEvent.QUIT = 'view.quit';
     ViewContainerEvent.ADDED = 'view.added';
     ViewContainerEvent.ADDED_BEFORE = 'view.added-before';
     ViewContainerEvent.REMOVED = 'view.removed';
@@ -167,7 +169,7 @@ function (_,
                                     }
                                 } else */
                                 if ((ev.button === 1) && view.get('closable')) {
-                                    _self._contentPaneClose(view.contentPane);
+                                    _self._contentPaneClose(view.contentPane, true);
                                 }
                             }
                             ev.stopPropagation();
@@ -354,8 +356,8 @@ function (_,
             topic.publish(ViewContainerEvent.ADDED, event);
 
             var cbClose = dojo.connect(view.contentPane, 'onClose', function (tabContainer, contentPane) {
-                _self._contentPaneClose(contentPane);
-                return false;
+                _self._contentPaneClose(contentPane, true);
+                //return false;
             });
 
             var cbFocus = dojo.connect(view.contentPane, 'onFocus', function () {
@@ -602,12 +604,12 @@ function (_,
             }
         },
 
-        _contentPaneClose : function (pane) {
+        _contentPaneClose : function (pane, closable) {
             var _self = this;
             var event = new ViewContainerEvent(ViewContainerEvent.CLOSE);
             event.view = _self._getViewByContentPane(pane);
             event.viewContainer = _self;
-            event.closable = true;
+            event.closable = closable;
             event.noClose = function () {
                 event.closable = false;
             };
@@ -617,6 +619,19 @@ function (_,
                     this._remove(event.view, true);
                 }
             }));
+        },
+
+        _contentPaneQuit : function (pane) {
+            var _self = this;
+            var event = new ViewContainerEvent(ViewContainerEvent.QUIT);
+            event.view = _self._getViewByContentPane(pane);
+            event.viewContainer = _self;
+            event.closable = true;
+            event.noClose = function () {
+                event.closable = false;
+            };
+
+            topic.publish(ViewContainerEvent.QUIT, event);
         },
 
         _viewFocused : function (view) {
