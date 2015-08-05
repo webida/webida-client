@@ -25,19 +25,22 @@ define([
 ], function (_, TabContainer, ContentPane, Tooltip, BorderContainer, vm) {
     'use strict';
 
-    var view = function (id, title) {
+    var view = function (id, title, option) {
+
+        option = option || {};
         this._parent = null;
         this._tabDragable = true;	// Default : true
         this.contentPane = null;
         this._viewContainer = null;
         this.id = id;
         if (id && title) {
-            this.contentPane = new ContentPane({
+            var options = _.extend({
                 id : id,
                 title: title,
                 closable: false,
                 style: 'width:100%; height:100%; padding: 0; border: 1px solid #dadfe4 !important'
-            });
+            }, option);
+            this.contentPane = new ContentPane(options);
         } else {
             console.log('id or title is null');
         }
