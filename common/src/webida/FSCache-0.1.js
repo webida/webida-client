@@ -1147,8 +1147,12 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
             },
 
             // readFile
-            readFile : function (target, cb) {
+            readFile : function (target, responseType, cb) {
                 var targetNode;
+                if (!cb) {
+                    cb = responseType;
+                    responseType = '';
+                }
                 function checkValidReadFile() {
                     var ret = checkTargetPath(target, true);
                     if (isError(ret)) {
@@ -1188,18 +1192,19 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 if (err) {
                     setTimeout(cb.bind(null, err), 0);
                 } else {
+                    // FIXME: cache and compare responseType too
                     if (withinCache(target)) {
                         var content;
                         if (targetNode === undefined ||
                             (content = targetNode.content) === undefined ||
                             targetNode.contentInvalidated) {
-                            mount.readFile(target, callback);
+                            mount.readFile(target, responseType, callback);
                         } else {
                             console.assert(content !== null);
                             setTimeout(cb.bind(null, null, content), 0);
                         }
                     } else {
-                        mount.readFile(target, cb);
+                        mount.readFile(target, responseType, cb);
                     }
                 }
             },
