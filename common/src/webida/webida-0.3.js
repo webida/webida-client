@@ -92,9 +92,13 @@ var ENV_TYPE;
         return hostUrl;
     }
 
+    function getHostFromLocation() {
+        return location.protocol + '//' + location.host;
+    }
+
     var mod = {};
     var webidaHost = (typeof window !== 'undefined' && window && window.webida_host) ||
-        getParamByName('webida.host') || readCookie('webida.host') || 'https://webida.org';
+        getParamByName('webida.host') || readCookie('webida.host') || getHostFromLocation() || 'https://webida.org';
     var fsServer = getHostParam('webida.fsHostUrl', 'fs', webidaHost);
     var authServer = getHostParam('webida.authHostUrl', 'auth', webidaHost);
     var appServer = getHostParam('webida.appHostUrl', 'app', webidaHost);
@@ -1609,14 +1613,23 @@ var ENV_TYPE;
     *
     * @method readFile
     * @param {module:webida.path} target - Read file path
+    * @param {module:webida.responseType} [responseType=""] -
+    *        Response type to be used for XMLHttpRequest call.
+    *        If not specified, the default is empty string that means response is assumed text.
+    *        'text', 'arraybuffer', 'blob', etc are supported by most browsers.
+    *        See https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest#Properties
     * @param {module:webida.request_callback_with_file_data} callback -
     *        (error:callback_error, [content:string]) → undefined
     *        <br>If function finished successfully then error is undefined.
     *        And contents is file contents.
     * @memberOf module:webida.FSService.FileSystem
     */
-    FileSystem.prototype.readFile = function (path, callback) {
+    FileSystem.prototype.readFile = function (path, responseType, callback) {
         var self = this;
+        if (!callback) {
+            callback = responseType;
+            responseType = '';
+        }
         function restApi() {
             path = encodeURI(path);
 
@@ -1625,6 +1638,7 @@ var ENV_TYPE;
                 callbackWithRawData: function (data) {
                     callback(null, data);
                 },
+                responseType: responseType,
                 callback: callback
             });
         }
@@ -2168,7 +2182,7 @@ var ENV_TYPE;
             }
             callback(null, downloadUrl);
         });
-    }
+    };
 
     /**
     * Get FileSystem object indicating the given Webida file system url
@@ -4098,6 +4112,9 @@ var ENV_TYPE;
         //console.log('ajaxCall', opts);
         var xhr = new XHR();
         xhr.open(method, url, true);
+        if (opts.responseType) {
+            xhr.responseType = opts.responseType;
+        }
         xhr.withCredentials = true; // Should be after xhr.open(). Otherwise InvalidStateError occurs in IE11.
         if (!isAnonymousMode) {
             xhr.setRequestHeader('Authorization', token.data);
@@ -4115,7 +4132,11 @@ var ENV_TYPE;
                 var successful = status >= 200 && status < 300 || status === 304;
                 // if opts.success exists and request succeeded, call it with whole response text.
                 if (successful && opts.callbackWithRawData) {
-                    opts.callbackWithRawData(xhr.responseText);
+                    if (opts.responseType === '' || opts.responseType === 'text') {
+                        opts.callbackWithRawData(xhr.responseText);
+                    } else {
+                        opts.callbackWithRawData(xhr.response);
+                    }
                     return;
                 }
 
