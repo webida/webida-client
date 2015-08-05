@@ -36,6 +36,11 @@
     cursor: pointer;
 }
 
+.cm-s-webida-light span.cm-searching {
+    background-color: #0596DA;
+    color: #FFFFFF;
+}
+
 .cm-s-webida-light div.CodeMirror-gutter {background: #dedede;}
 
 .cm-s-webida-light .CodeMirror-matchingbracket {

@@ -1,6 +1,7 @@
 
 .cm-s-webida-dark.CodeMirror {
-    background: #031b3a; color: #d4e2fa;
+    background: #101010;
+    color: #d4e2fa;
     border-top : 5px solid RGB(65,72,80);
 }
 
@@ -40,16 +41,17 @@
 /* Used "inline-block" and "height" to fit a border with the line */
 /*
 .cm-s-webida-dark span.cm-searching {
-    background-color: none;
-    background: none;
-    box-shadow: 0 0 0 1px #ffffec;
-    border-radius: 2px;
-    display: inline-block;
-    height: inherit;
+background-color: none;
+background: none;
+box-shadow: 0 0 0 1px #ffffec;
+border-radius: 2px;
+display: inline-block;
+height: inherit;
 }
 */
 .cm-s-webida-dark span.cm-searching {
-    background: rgba(255, 255, 0, .2);
+    background-color: #0172A7;
+    color: #FFFFFF;
 }
 
 .cm-s-webida-dark div.CodeMirror-gutter {background: #3a4757;}
