@@ -251,10 +251,9 @@ define([
                     refreshRunConfigurationTree();
                 }
             });
-        } else if (action === 'valid' && arguments[1] !== undefined) { 
-            var valid = arguments[1];
-            changeValidationState(valid);
-            
+        } else if (action === 'state' && arguments[1] && arguments[2]) { 
+            changeCurrentState(arguments[1], arguments[2]);
+            refreshRunConfigurationTree();
         }
     };
 
@@ -280,9 +279,9 @@ define([
         });
     }
     
-    function changeValidationState(valid) {
+    function changeCurrentState(runConf, state) {
         require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
-            viewController.changeValidationState(valid);
+            viewController.changeCurrentState(runConf, state);
         });
     }
 

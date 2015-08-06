@@ -40,21 +40,21 @@ define([
     'plugins/webida.notification/notification-message',
     'xstyle/css!./style.css'
 ], function (ide, workbench, workspace, pluginManager, runConfManager, delegator,
-             topic, on, Memory, Observable, registry,
-             pathUtil, ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
-             windowTemplate, contentTemplate, _, toastr) {
+              topic, on, Memory, Observable, registry,
+              pathUtil, ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
+              windowTemplate, contentTemplate, _, toastr) {
     'use strict';
 
     var module = {};
-    var selected;
+    var current;
     var ui;
     var windowOpened = false;
 
     var PATTERN_QUERY_STRING = /^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/;
-    
+
     var EVENT_CHANGE = 'webida.ide.project-management.run:configuration.changed';
     var EVENT_TYPE_SAVE = 'save';
-    var EVENT_TYPE_VALID = 'valid';
+    var EVENT_TYPE_STATE = 'state';
 
     var extensionPoints = {
         RUN_CONFIGURATION_TYPE: 'webida.ide.project-management.run:type',
@@ -71,9 +71,13 @@ define([
         return [{id: '', name: 'General Web Application'}].concat(availableTypesInUI);
     }
 
-    selected = {
+    current = {
         type: _getAllTypes()[0].id,
-        runConf: undefined
+        runConf: undefined,
+        state: {
+            isValid: true,
+            isDirty: false
+        }
     };
 
     ui = {
@@ -115,12 +119,20 @@ define([
 
     function _setSelection(typeOrRunConf) {
         if (typeof typeOrRunConf === 'string') {
-            selected.runConf = undefined;
-            selected.type = typeOrRunConf;
+            current.runConf = undefined;
+            current.type = typeOrRunConf;
         } else if (typeOrRunConf) {
-            selected.runConf = typeOrRunConf;
-            selected.type = typeOrRunConf.type;
+            current.runConf = typeOrRunConf;
+            current.type = typeOrRunConf.type;
         }
+    }
+
+    function _checkUnsavedConf() {
+        var runConfs = runConfManager.getAll();
+        var unsavedConfs = _.filter(runConfs, function (runConf) {
+            return runConf._dirty;
+        });
+        return _.isEmpty(unsavedConfs) ? '' : 'not been saved';
     }
 
     module.refreshTree = function () {
@@ -131,16 +143,19 @@ define([
             var $listElem = $('<li></li>');
             var $listLink = $('<a href data-type-id="' + type.id + '">' + type.name + '</a>');
             $listElem.append($listLink);
-            if (type.id === selected.type) {
+            if (type.id === current.type) {
                 $listLink.addClass('selected');
             }
             var $subListElem = $('<ul></ul>');
             _.each(runByType[type.id], function (runObj) {
+                if (runObj._deleted) {
+                    return; //continue
+                }
                 var $runItemElem = $('<li></li>');
                 var $runItemLink = $('<a href data-run-id="' + runObj.name + '" data-type-id="' + type.id + '">' +
-                    runObj.name + (runObj.unsaved ? ' *' : '') + '</a>');
+                                     runObj.name + (runObj._dirty ? ' *' : '') + '</a>');
                 $runItemElem.append($runItemLink);
-                if (selected.runConf && runObj.name === selected.runConf.name) {
+                if (current.runConf && runObj.name === current.runConf.name) {
                     $runItemLink.addClass('selected');
                 }
                 $subListElem.append($runItemElem);
@@ -154,9 +169,10 @@ define([
                 var runName = $(this).attr('data-run-id');
                 var typeId = $(this).attr('data-type-id');
                 if (runName) {
-                    _setSelection(runConfManager.getByName(runName));
+                    var runConf = runConfManager.getByName(runName);
+                    _setSelection(runConf);
                     _addContentArea(new ContentPane());
-                    delegator.loadConf(ui.content, selected.runConf);
+                    delegator.loadConf(ui.content, runConf);
                 } else {
                     _setSelection(typeId);
                 }
@@ -167,7 +183,7 @@ define([
         });
 
         if (windowOpened && ui.btns.runButton) {
-            if (!selected.runConf || selected.runConf.unsaved) {
+            if (!current.runConf || !current.state.isValid) {
                 ui.btns.runButton.setDisabled(true);
             } else {
                 ui.btns.runButton.setDisabled(false);
@@ -196,7 +212,7 @@ define([
             ],
             methodOnEnter: null,
             okOnRunConf: function () {
-                var unSaveMsg = checkUnsavedConf();
+                var unSaveMsg = _checkUnsavedConf();
                 if (unSaveMsg) {
                     PopupDialog.yesno({
                         title: title,
@@ -210,7 +226,7 @@ define([
                 }
             },
             runConf: function () {
-                delegator.saveConf(selected.runConf, function (err, runConf) {
+                delegator.saveConf(current.runConf, function (err, runConf) {
                     if (!err) {
                         switch (mode) {
                             case runConfManager.MODE.RUN_MODE:
@@ -239,11 +255,6 @@ define([
             },
             onLoad: function () {
                 ui.contentArea = registry.byId('run-configuration-list-contentpane');
-                if (selected.runConf) {
-                    _addContentArea(new ContentPane());
-                    delegator.loadConf(ui.content, selected.runConf);
-                }
-
                 ui.btns.createNewButton = registry.byId('run-configuration-create-button');
                 ui.btns.deleteButton = registry.byId('run-configuration-delete-button');
 
@@ -252,21 +263,21 @@ define([
                         // get project from selected context
                         var projectName;
                         var runConfs = runConfManager.getAll();
-                        var unsaved = _.where(runConfs, {unsaved: true});
+                        var dirty = _.where(runConfs, {_dirty: true});
 
                         var context = workbench.getContext();
                         if (context.projectPath) {
                             projectName = pathUtil.getName(context.projectPath) || undefined;
                         }
 
-                        if (!_.isEmpty(unsaved)) {
+                        if (!_.isEmpty(dirty)) {
                             PopupDialog.yesno({
                                 title: title,
                                 message: 'You will may lose unsaved data. Are you sure to continue?',
                                 type: 'info'
                             }).then(function () {
                                 _addContentArea(new ContentPane());
-                                delegator.newConf(ui.content, selected.type, projectName, function (err, runConf) {
+                                delegator.newConf(ui.content, current.type, projectName, function (err, runConf) {
                                     if (!err) {
                                         _setSelection(runConf);
                                         module.refreshTree();
@@ -275,7 +286,7 @@ define([
                             });
                         } else {
                             _addContentArea(new ContentPane());
-                            delegator.newConf(ui.content, selected.type, projectName, function (error, newConf) {
+                            delegator.newConf(ui.content, current.type, projectName, function (error, newConf) {
                                 if (!error) {
                                     _setSelection(newConf);
                                     module.refreshTree();
@@ -283,16 +294,16 @@ define([
                             });
                         }
                     }),
-                    on(ui.btns.deleteButton, 'click', function() {
-                        if (selected.runConf) {
+                    on(ui.btns.deleteButton, 'click', function () {
+                        if (current.runConf) {
                             PopupDialog.yesno({
                                 title: 'Delete ' + title,
                                 message: 'Are you sure you want to delete this configuration?',
                                 type: 'info'
                             }).then(function () {
-                                delegator.deleteConf(selected.runConf.name, function (error) {
+                                delegator.deleteConf(current.runConf.name, function (error) {
                                     if (!error) {
-                                        _setSelection(selected.runConf.type);
+                                        _setSelection(current.runConf.type);
                                         module.refreshTree();
                                         _removeContentArea();
                                     }
@@ -305,8 +316,13 @@ define([
                 );
 
                 ui.btns.runButton = registry.byId('dialogRunButton');
-                if (!selected.runConf || selected.runConf.unsaved) {
+                if (!current.runConf) {
                     ui.btns.runButton.setDisabled(true);
+                }
+
+                if (current.runConf) {
+                    _addContentArea(new ContentPane());
+                    delegator.loadConf(ui.content, current.runConf);
                 }
 
                 topic.publish('webida.ide.project-management.run:configuration.show');
@@ -315,20 +331,37 @@ define([
         ui.dialog.set('doLayout', true);
         ui.dialog.setContentArea(windowTemplate);
 
-        module.refreshTree();
         ui.dialog.show();
+        module.refreshTree();
         windowOpened = true;
     };
 
-    function checkUnsavedConf() {
-        var runConfs = runConfManager.getAll();
-        var unsavedConfs = _.filter(runConfs, function(runConf){
-            return runConf.unsaved;
-        });
-        return _.isEmpty(unsavedConfs) ? '' : 'not been saved';
-    }
+    module.getWindowOpened = function () {
+        return windowOpened;
+    };
 
-    function addButtonCssClass(container, button, size) {
+    module.reload = function () {
+        _addContentArea(new ContentPane());
+        delegator.loadConf(ui.content, current.runConf);
+    };
+
+    module.changeCurrentState = function (runConf, state) {
+        current.state = state;
+        if (ui.btns.runButton) {
+            ui.btns.runButton.setDisabled(!state.isValid);
+        }
+        runConf._dirty = state.isDirty;
+    };
+
+
+
+    /***************************************
+     * General web type  
+     ***************************************/
+
+    var currentRunConf = {};
+    
+    function _addButtonCssClass(container, button, size) {
         container.own(
             on(button, 'mouseover', function () {
                 $(button).addClass('rcw-button-hover-' + size);
@@ -349,7 +382,7 @@ define([
     function _pathButtonClicked() {
         var pathInputBox = ui.forms.readonlyInputBoxes[0];
         var nameInputBox = ui.forms.inputBoxes[0];
-        var runConf = selected.runConf;
+        var runConf = currentRunConf;
         var project = ui.forms.select.get('value');
         if (!runConf || !project || !pathInputBox) {
             toastr.error('Cannot find root path');
@@ -383,41 +416,42 @@ define([
                 var pathSplit = fileSelected[0].split(root);
                 if (pathSplit.length > 0) {
                     pathInputBox.value = pathSplit[1];
-                    
-                    topic.publish(EVENT_CHANGE, EVENT_TYPE_VALID, !_checkInvalidField());
-                    
-                    if (!nameInputBox) {
-                        return;
-                    }
-                    if (!nameInputBox.value || selected.runConf.unsaved) {
-                        nameInputBox.value = pathInputBox.value;
-                    }
+
+//                    if (nameInputBox && !domAttr.get(nameInputBox, 'user-input')) {
+//                        // It is only called when the current run configuration is new and never get any user inputs
+//                        nameInputBox.value = pathInputBox.value;
+//                    }
+                    var isValid = !_checkInvalidField();
+                    topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {isValid: isValid, isDirty: true});
                 } else {
                     toastr.warning('Select a file.');
                 }
             }
         });
     }
-    
-    function _checkInvalidField() {
-        if (!ui.forms.inputBoxes[0].value) {
+
+    function _checkInvalidField(runConf) {
+        var runConfToCheck = runConf || {
+            name: ui.forms.inputBoxes[0].value,
+            path: ui.forms.readonlyInputBoxes[0].value,
+            argument: ui.forms.inputBoxes[1].value,
+            fragment: ui.forms.inputBoxes[2].value,
+            openArgument: ui.forms.inputBoxes[3].value,
+            liveReload: (ui.forms.checkBoxes[0].checked) ? true : false,
+            project: ui.forms.select.get('value')
+        };
+
+        if (!runConfToCheck.name) {
             return 'Enter a name.';
         }
-        if (!ui.forms.readonlyInputBoxes[0].value) {
+        if (!runConfToCheck.path) {
             return 'Select a path.';
         }
-        if (!PATTERN_QUERY_STRING.test(ui.forms.inputBoxes[1].value)) {
+        if (!PATTERN_QUERY_STRING.test(runConfToCheck.argument)) {
             return 'Invalid query string';
         }
-        
-        selected.runConf.name = ui.forms.inputBoxes[0].value;
-        selected.runConf.path = ui.forms.readonlyInputBoxes[0].value;
-        selected.runConf.argument = ui.forms.inputBoxes[1].value;
-        selected.runConf.fragment = ui.forms.inputBoxes[2].value;
-        selected.runConf.openArgument = ui.forms.inputBoxes[3].value;
 
-        selected.runConf.liveReload = (ui.forms.checkBoxes[0].checked) ? true : false;
-        selected.runConf.project = ui.forms.select.get('value');
+        currentRunConf = _.extend(currentRunConf, runConfToCheck);
 
         return;
     }
@@ -426,19 +460,20 @@ define([
         var invalidMsg = _checkInvalidField();
         if (invalidMsg) {
             toastr.error(invalidMsg);
-            return;
+        } else {
+            topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, currentRunConf);
         }
-        topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, selected.runConf);
     }
 
-    function _drawContentPane(runConf) {
+    function _drawContentPane() {
+        var runConf = currentRunConf;
         var child;
         var projects = [];
         ui.content.setContent(contentTemplate);
         child = ui.content.domNode;
 
         ui.btns.pathButton = $(child).find('.rcw-action-path').get(0);
-        addButtonCssClass(ui.content, ui.btns.pathButton, '20');
+        _addButtonCssClass(ui.content, ui.btns.pathButton, '20');
 
         ui.forms.inputBoxes = $(child).find('.rcw-content-table-inputbox-edit');
         ui.forms.inputBoxes[0].value = runConf.name ? runConf.name : '';
@@ -458,8 +493,7 @@ define([
             on(ui.btns.pathButton, 'click', _pathButtonClicked)
         );
         on(ui.content, 'input, select:change', function () {
-            var invalid = _checkInvalidField();
-            topic.publish(EVENT_CHANGE, EVENT_TYPE_VALID, !invalid);
+            topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, {isValid: !_checkInvalidField(), isDirty: true});
         });
 
         ide.getWorkspaceInfo(function (err, workspaceInfo) {
@@ -479,9 +513,14 @@ define([
         });
     }
 
-    module.loadConf = function (content, runConfiguration, callback) {
-        _drawContentPane(runConfiguration);
-        callback(null, runConfiguration);
+    module.loadConf = function (content, runConf, callback) {
+        currentRunConf = runConf;
+        _drawContentPane();
+        topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+            isValid: !_checkInvalidField(runConf), 
+            isDirty: runConf._dirty ? true : false
+        });
+        callback(null, runConf);
     };
 
     module.saveConf = function (runConf, callback) {
@@ -490,19 +529,6 @@ define([
 
     module.deleteConf = function (runConfName, callback) {
         callback(null, runConfName);
-    };
-
-    module.getWindowOpened = function () {
-        return windowOpened;
-    };
-
-    module.reload = function () {
-        _addContentArea(new ContentPane());
-        delegator.loadConf(ui.content, selected.runConf);
-    };
-    
-    module.changeValidationState = function (valid) {
-        ui.btns.runButton.setDisabled(!valid);
     };
 
     return module;

@@ -308,11 +308,13 @@ define([
      * @param {contentCreationCallback} [callback]
      */
     module.newConf = function (content, type, projectName, callback) {
+        var name = _makeConfigurationName(projectName);
         var runConf = {
             type: type,
-            name: _makeConfigurationName(projectName),
+            name: name,
+            originalName: name,
             project: projectName,
-            unsaved: true
+            _dirty: true
         };
         console.log('newConf', arguments);
         if (!_.isFunction(Delegator.get(type).newConf)) {
@@ -338,11 +340,12 @@ define([
     /**
      * Load the selected run configuration
      * @param {DojoWidget} content - dojo object of content widget
-     * @param {Object} runConf
+     * @param {Object} runConf - selected run configuration
      * @param {contentCreationCallback} callback
      */
     module.loadConf = function (content, runConf, callback) {
         console.log('loadConf', arguments);
+        
         if (!_.isFunction(Delegator.get(runConf.type).loadConf)) {
             console.warn('loadConf function hasn\'t be implemented for the run configurator type(' +
                 runConf.type + ')');
@@ -370,7 +373,7 @@ define([
             return false;
         }
         dupRunConf = runConfigurationManager.getByName(name);
-        return (dupRunConf && !dupRunConf.unsaved);
+        return (dupRunConf && !dupRunConf._dirty);
     }
 
     function _resolveDuplication(runConf) {

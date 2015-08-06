@@ -105,16 +105,25 @@ define(['webida-lib/app',
      * flush updated run configurations to workspace.json file
      */
     function flushRunConfigurations(callback) {
+        var originalRun = JSON.parse(runConfigurationFileCache).run;
         isFlushing = true;
+        
         _.each(runConfigurations, function (runConf) {
-            if (runConf.unsaved) {
-                delete runConfigurations[runConf.name];
+            if (runConf._dirty) {
+                if (originalRun[runConf.originalName]) {
+                    runConfigurations[runConf.originalName] = originalRun[runConf.originalName];
+                } else {
+                    runConf._deleted = true;
+                }
             }
         });
-        var content = JSON.stringify({
-            run: runConfigurations
+        
+        runConfigurations = _.omit(runConfigurations, function (runConf) {
+            return runConf._deleted;
         });
-        fsMount.writeFile(PATH_RUN_CONFIG, content, function (err) {
+
+        runConfigurationFileCache = JSON.stringify({ run: runConfigurations });
+        fsMount.writeFile(PATH_RUN_CONFIG, runConfigurationFileCache, function (err) {
             isFlushing = false;
             if (err) {
                 toastr.error(err);
@@ -266,8 +275,8 @@ define(['webida-lib/app',
             runConfigurations[runConfiguration.name] = runConfiguration;
         };
         this.save = function (runConfiguration) {
-
-            delete runConfiguration.unsaved;
+            delete runConfiguration._dirty;
+            delete runConfiguration._deleted;
             delete runConfiguration.originalName;
             runConfigurations[runConfiguration.name] = runConfiguration;
 
@@ -301,7 +310,7 @@ define(['webida-lib/app',
         };
         this.delete = function (runConfigurationName) {
             if (runConfigurations[runConfigurationName]) {
-                delete runConfigurations[runConfigurationName];
+                runConfigurations[runConfigurationName]._deleted = true;
             }
             flushRunConfigurations();
         };
