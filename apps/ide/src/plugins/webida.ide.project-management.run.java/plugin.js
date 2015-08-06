@@ -23,18 +23,62 @@ define([
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
         'dijit/layout/ContentPane',
         'dijit/registry',
-        'plugins/webida.notification/notification-message'
+        'plugins/webida.notification/notification-message',
+        'external/lodash/lodash.min'
     ],
-    function (ide, template, topic, on, Select, FileDialog, ContentPane, registry, toastr) {
+    function (ide, template, topic, on, Select, FileDialog, ContentPane, registry, toastr, _) {
         'use strict';
+    
+        var EVENT_CHANGE = 'webida.ide.project-management.run:configuration.changed';
+        var EVENT_TYPE_SAVE = 'save';
+        var EVENT_TYPE_STATE = 'state';
+
+        var PATTERN_MAIN_FILE = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
+    
         var FS = ide.getMount();
         var SRC_DIR = 'src';
+        var TARGET_DIR = 'target';
         var currentRunConf;
         var ui = {};
 
+    
+        function _checkInvalidField(runConf) {
+            var runConfToCheck = runConf;
+            if (!runConf) {
+                var fullPath = ui.readonlyInputBoxes[0].value;
+                var path;
+                if (fullPath) {
+                    var matchResult = PATTERN_MAIN_FILE.exec(fullPath);
+                    if (matchResult === null) {
+                        return 'Invalid selected path';
+                    } else {
+                        path = matchResult[1].split('/').join('.') + matchResult[2];
+                    }
+                }
+                runConfToCheck = {
+                    name: ui.inputBoxNodes[0].value,
+                    project: ui.select.get('value'),
+                    path: path,
+                    outputDir : TARGET_DIR,
+                    srcDir: SRC_DIR
+                };
+            }
+
+            if (!runConfToCheck.name) {
+                return 'Enter a name.';
+            }
+            if (!runConfToCheck.path) {
+                return 'Select a path.';
+            }
+
+            currentRunConf = _.extend(currentRunConf, runConfToCheck);
+
+            return;
+        }
+    
         function _pathButtonClicked() {
             var pathInputBox = ui.readonlyInputBoxes[0];
-            var nameInputBox = ui.inputBoxNodes[0];
+            //var nameInputBox = ui.inputBoxNodes[0];
             var project = ui.select.get('value');
             var initialPath;
             var root;
@@ -71,12 +115,15 @@ define([
                     pathSplit = selected[0].split(root);
                     if (pathSplit.length > 0) {
                         pathInputBox.value = pathSplit[1];
-                        if (!nameInputBox) {
-                            return;
-                        }
-                        if (!nameInputBox.value || currentRunConf.unsaved) {
-                            nameInputBox.value = pathInputBox.value;
-                        }
+                        
+//                        if (!nameInputBox) {
+//                            return;
+//                        }
+//                        if (!nameInputBox.value || currentRunConf.unsaved) {
+//                            nameInputBox.value = pathInputBox.value;
+//                        }
+                        var isValid = !_checkInvalidField();
+                        topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {isValid: isValid, isDirty: true});
                     } else {
                         toastr.warning('Select a java file.');
                     }
@@ -114,39 +161,24 @@ define([
                 ui.saveButton = registry.byId('rcw-action-save');
                 ui.pathButton = $(child).find('.rcw-action-path').get(0);
 
+                on(ui.content, 'input, select:change', function () {
+                    topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {isValid: !_checkInvalidField(), isDirty: true});
+                });
+
                 ui.content.own(
                     on(ui.saveButton, 'click', function () {
-                        if (_doSave()) {
-                            topic.publish('webida.ide.project-management.run:configuration.changed',
-                                'save', currentRunConf);
+                        var invalidMsg = _checkInvalidField();
+                        if (!invalidMsg) {
+                            topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, currentRunConf);
                         } else {
-                            toastr.error('Invalid Run Configuration.');
+                            toastr.error(invalidMsg);
                         }
                     }),
-                    on(ui.pathButton, 'click', function () {
-                        _pathButtonClicked();
-                    })
+                    on(ui.pathButton, 'click', _pathButtonClicked)
                 );
             }
         }
 
-        var srcRegex = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
-        function _doSave() {
-            var fullPath;
-            var matchResult;
-            // validation on currentRunConf
-            currentRunConf.name = ui.inputBoxNodes[0].value;
-            currentRunConf.project = ui.select.get('value');
-            currentRunConf.outputDir = 'target';
-            currentRunConf.srcDir = SRC_DIR;
-            fullPath = ui.readonlyInputBoxes[0].value;
-            matchResult = srcRegex.exec(fullPath);
-            if (matchResult === null) {
-                return false;
-            }
-            currentRunConf.path = matchResult[1].split('/').join('.') + matchResult[2];
-            return true;
-        }
 
         return {
             run: function (runConf, callback) {
@@ -172,19 +204,22 @@ define([
             newConf: function (content, runConf, callback) {
                 ui.content = content;
                 _setTemplate(runConf);
+                topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {isValid: !_checkInvalidField(runConf), isDirty: true});
                 callback(null, runConf);
             },
             loadConf: function (content, runConf, callback) {
                 ui.content = content;
                 _setTemplate(runConf);
+                topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {isValid: !_checkInvalidField(runConf), isDirty: false});
                 callback(null, runConf);
             },
             saveConf: function (runConf, callback) {
                 // validation
-                if (_doSave()) {
+                var invalidMsg = _checkInvalidField();
+                if (!invalidMsg) {
                     callback(null, runConf);
                 } else {
-                    callback('validation failed');
+                    callback(invalidMsg);
                 }
             },
             deleteConf: function (runConfName, callback) {
