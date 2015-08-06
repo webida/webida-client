@@ -85,13 +85,13 @@ define([
         /**
          * @param {HTMLElement} element
          */
-        setContainerElement: function(element) {
+        setParentNode: function(element) {
             //TODO remove this.elem
             this.elem = element;
             this.containerElement = element;
         },
 
-        getContainerElement: function() {
+        getParentNode: function() {
             return this.containerElement;
         },
 

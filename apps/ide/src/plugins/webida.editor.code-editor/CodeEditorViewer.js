@@ -677,7 +677,7 @@ define([
     	TextEditorViewer.apply(this, arguments);
         var self = this;
         this.elem = elem;
-        this.setContainerElement(elem);
+        this.setParentNode(elem);
         this.file = file;
         this.options = {};
         this.options.extraKeys = {
@@ -713,7 +713,7 @@ define([
                      'external/codemirror/addon/edit/closetag',
                      'external/codemirror/addon/edit/matchbrackets'], function () {
                 setTimeout(function(self){
-                	if (self.getContainerElement()) {
+                	if (self.getParentNode()) {
                 		self.create();
                 	}
                 }, 0, self);
@@ -932,7 +932,7 @@ define([
 	        setOption('extraKeys', this.options.extraKeys);
 	        setOption('lineWrapping', this.options.lineWrapping);
 
-	        this.editor = codemirror(this.getContainerElement(), options);
+	        this.editor = codemirror(this.getParentNode(), options);
 	        
             this.editor.on("change", function(cm, change) {
             	if(self.getModel()){
