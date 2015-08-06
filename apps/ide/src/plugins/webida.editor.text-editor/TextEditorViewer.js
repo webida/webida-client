@@ -187,7 +187,7 @@ define([
         EditorViewer.apply(this, arguments);
         var self = this;
         this.elem = elem;
-        this.setContainerElement(elem);
+        this.setParentNode(elem);
         this.file = file;
         this.options = {};
         this.options.extraKeys = {
@@ -211,7 +211,7 @@ define([
         loadCSSList([require.toUrl('./css/webida.css'), require.toUrl('external/codemirror/lib/codemirror.css'), require.toUrl('external/codemirror/addon/dialog/dialog.css')], function() {
             require(['external/codemirror/addon/dialog/dialog', 'external/codemirror/addon/search/searchcursor', './search-addon', 'external/codemirror/addon/edit/closebrackets', 'external/codemirror/addon/edit/closetag', 'external/codemirror/addon/edit/matchbrackets'], function() {
                 setTimeout(function(self) {
-                    if (self.getContainerElement()) {
+                    if (self.getParentNode()) {
                         self.create();
                     }
                 }, 0, self);
@@ -290,7 +290,7 @@ define([
             setOption('extraKeys', this.options.extraKeys);
             setOption('lineWrapping', this.options.lineWrapping);
 
-            this.editor = codemirror(this.getContainerElement(), options);
+            this.editor = codemirror(this.getParentNode(), options);
             this.editor.setOption('showCursorWhenSelecting', true);
             this.editor.__instance = this;
             $(this.editor.getWrapperElement()).addClass('maincodeeditor');
