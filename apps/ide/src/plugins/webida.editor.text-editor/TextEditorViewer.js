@@ -822,8 +822,8 @@ define([
 
         refresh: function() {
             logger.info('> refresh()');
-            if (this.getModel()) {
-                this.setValue(this.getModel().getText());
+            if (this.getContents()) {
+                this.setValue(this.getContents().getText());
             }
             if (this.editor) {
                 setTimeout(function (self) {

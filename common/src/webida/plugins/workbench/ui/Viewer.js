@@ -53,10 +53,13 @@ define([
         this._viewerId = ++_viewerId;
 
         /** @type {HTMLElement} */
-        this.containerElement = null
+        this.parentNode = null
 
         /** @type {width:number|string, height:number|string} */
         this.dimension = null;
+
+        /** @type {Object} */
+        this.contents = null;
     }
 
 
@@ -74,12 +77,12 @@ define([
             throw new Error('refresh() should be implemented by ' + this.constructor.name);
         },
 
-        setModel: function(model) {
-            this.model = model;
+        setContents: function(contents) {
+            this.contents = contents;
         },
 
-        getModel: function(model) {
-            return this.model;
+        getContents: function(contents) {
+            return this.contents;
         },
 
         /**
@@ -88,11 +91,11 @@ define([
         setParentNode: function(element) {
             //TODO remove this.elem
             this.elem = element;
-            this.containerElement = element;
+            this.parentNode = element;
         },
 
         getParentNode: function() {
-            return this.containerElement;
+            return this.parentNode;
         },
 
         setSize: function(width, height) {

@@ -935,10 +935,10 @@ define([
 	        this.editor = codemirror(this.getParentNode(), options);
 	        
             this.editor.on("change", function(cm, change) {
-            	if(self.getModel()){
-            		self.getModel().update(cm.getValue(), self);
+            	if(self.getContents()){
+            		self.getContents().update(cm.getValue(), self);
             	}
-                //console.log('self.getModel() = ', self.getModel());
+                //console.log('self.getContents() = ', self.getContents());
             }); 
 
 	        

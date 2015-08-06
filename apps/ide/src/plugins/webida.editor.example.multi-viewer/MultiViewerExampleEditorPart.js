@@ -180,8 +180,8 @@ define([
                 formEditor.create();
 
                 //4. set model
-                codeEditor.setModel(doc);
-                formEditor.setModel(doc);
+                codeEditor.setContents(doc);
+                formEditor.setContents(doc);
 
                 //4. For the concurrent editing, listen to the model
                 // Note that, when user select the tab,
