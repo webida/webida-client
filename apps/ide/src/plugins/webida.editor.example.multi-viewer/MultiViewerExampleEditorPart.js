@@ -91,7 +91,7 @@ define([
 
         initCodeEditor: function() {
             var viewer = this.getViewerById('CodeEditor');
-            var container = viewer.getContainerElement();
+            var container = viewer.getParentNode();
             viewer.setValue(this.file.getContents());
             viewer.clearHistory();
             viewer.markClean();

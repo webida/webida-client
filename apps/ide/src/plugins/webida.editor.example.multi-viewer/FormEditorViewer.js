@@ -60,7 +60,7 @@ define([
          */
         create: function() {
         	var that = this;
-            var container = this.getContainerElement();
+            var container = this.getParentNode();
             if (container) {
                 this.form = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
                 container.appendChild(this.form);

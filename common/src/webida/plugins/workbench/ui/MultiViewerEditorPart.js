@@ -169,7 +169,7 @@ define([
                 title: title
             });
             pane.startup();
-            viewer.setContainerElement(pane.domNode);
+            viewer.setParentNode(pane.domNode);
             this.getTabContainer().addChild(pane, index);
             this.getViewers().set(id, viewer);
             this.tabToViewerMap[pane.id] = viewer;
