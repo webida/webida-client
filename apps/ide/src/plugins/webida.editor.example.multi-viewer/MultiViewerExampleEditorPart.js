@@ -177,7 +177,7 @@ define([
                 //3. formEditor
                 var formEditor = that.getFormEditor();
                 that.addViewer('FormEditor', 'Form Editor', formEditor, 1);
-                formEditor.create();
+                formEditor.createAdapter();
 
                 //4. set model
                 codeEditor.setContents(doc);
@@ -207,7 +207,7 @@ define([
 
         destroy: function() {
             MultiViewerEditorPart.prototype.destroy.call(this);
-            this.getViewerById('CodeEditor').destroy();
+            this.getViewerById('CodeEditor').destroyAdapter();
         },
 
         getValue: function() {

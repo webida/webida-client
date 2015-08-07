@@ -65,12 +65,15 @@ define([
 
     genetic.inherits(Viewer, Object, {
 
-        create: function() {
-            throw new Error('create() should be implemented by ' + this.constructor.name);
+        /**
+         * @param {HTMLElement} parentNode
+         */
+        createAdapter: function(parentNode) {
+            throw new Error('createAdapter(parentNode) should be implemented by ' + this.constructor.name);
         },
 
-        destroy: function() {
-            throw new Error('destroy() should be implemented by ' + this.constructor.name);
+        destroyAdapter: function() {
+            throw new Error('destroyAdapter() should be implemented by ' + this.constructor.name);
         },
 
         refresh: function() {

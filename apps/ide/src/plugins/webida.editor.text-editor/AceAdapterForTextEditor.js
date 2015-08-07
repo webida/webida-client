@@ -227,7 +227,7 @@ define([
             $(this.elem).html('');
             
             if (this.editor) {
-                this.editor.destroy();
+                this.editor.destroyAdapter();
                 this.editor = null;
             }
         },

@@ -212,7 +212,7 @@ define([
             require(['external/codemirror/addon/dialog/dialog', 'external/codemirror/addon/search/searchcursor', './search-addon', 'external/codemirror/addon/edit/closebrackets', 'external/codemirror/addon/edit/closetag', 'external/codemirror/addon/edit/matchbrackets'], function() {
                 setTimeout(function(self) {
                     if (self.getParentNode()) {
-                        self.create();
+                        self.createAdapter();
                     }
                 }, 0, self);
             });
@@ -253,7 +253,7 @@ define([
             }
         },
 
-        create: function() {
+        createAdapter: function() {
             if (this.editor !== undefined) {
                 return;
             }
@@ -337,7 +337,7 @@ define([
             }
         },
 
-        destroy: function() {
+        destroyAdapter: function() {
             //unsubscribing topics
             
             this.resizeTopicHandler.remove();

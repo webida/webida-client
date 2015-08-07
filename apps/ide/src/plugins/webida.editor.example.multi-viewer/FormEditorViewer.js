@@ -58,7 +58,7 @@ define([
         /**
          * Creates Viewer Element
          */
-        create: function() {
+        createAdapter: function() {
         	var that = this;
             var container = this.getParentNode();
             if (container) {
