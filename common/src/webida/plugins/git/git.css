@@ -1,37 +1,15 @@
 /* git status icon style */
-.gitModifiedFile {width:16px;height:16px;background:url(icons/status/gitStatus.png) -100px 0 no-repeat}
-.gitAddedFile {width:16px;height:16px;background:url(icons/status/gitStatus.png) 0 0 no-repeat}
-.gitRemovedFile {width:16px;height:16px;background:url(icons/status/gitStatus.png) -100px -20px no-repeat}
-.gitChangedFile {width:16px;height:16px;background:url(icons/status/gitStatus.png) -20px 0 no-repeat}
-.gitConflictedFile {width:16px;height:16px;background:url(icons/status/gitStatus.png) 0 -20px no-repeat}
-.gitUntrackedFile {width:16px;height:16px;background:url(icons/status/gitStatus.png) -100px -60px no-repeat}
-.gitIgnoredFile{width:16px;height:16px;background:url(icons/status/gitStatus.png) -60px -80px no-repeat}
-.gitTrackedFile {width:16px;height:16px;background:url(icons/status/gitStatus.png) -100px -40px no-repeat}
-.gitMissingFile {width:16px;height:16px;background:url(icons/status/gitStatus.png) -80px -80px no-repeat}
-
-.gitModifiedDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) -40px -40px no-repeat}
-.gitAddedDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) -20px -20px no-repeat}
-.gitRemovedDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) -60px -20px no-repeat}
-.gitChangedDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) -40px 0 no-repeat}
-.gitConflictedDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) -40px -20px no-repeat}
-.gitUntrackedDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) 0 -60px no-repeat}
-.gitIgnoredDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) 0 -40px no-repeat}
-.gitTrackedDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) -60px -40px no-repeat}
-.gitMissingDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) -20px -40px no-repeat}
-.gitRepoTopDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) -60px 0 no-repeat}
-.gitSubmoduleDirCollapsed {width:16px;height:16px;background:url(icons/status/gitStatus.png) 0 -100px no-repeat}
-
-.gitModifiedDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -80px 0 no-repeat}
-.gitAddedDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -80px -60px no-repeat}
-.gitRemovedDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -80px -40px no-repeat}
-.gitChangedDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) 0 -80px no-repeat}
-.gitConflictedDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -20px -60px no-repeat}
-.gitUntrackedDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -40px -80px no-repeat}
-.gitIgnoredDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -40px -60px no-repeat}
-.gitTrackedDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -20px -80px no-repeat}
-.gitMissingDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -60px -60px no-repeat}
-.gitRepoTopDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -80px -20px no-repeat}
-.gitSubmoduleDirExpanded {width:16px;height:16px;background:url(icons/status/gitStatus.png) -100px -80px no-repeat}
+.gitModified {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -80px 0 no-repeat}
+.gitAdded {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -80px -60px no-repeat}
+.gitRemoved {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -80px -40px no-repeat}
+.gitChanged {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) 0 -80px no-repeat}
+.gitConflicted {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -20px -60px no-repeat}
+.gitUntracked {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -40px -80px no-repeat}
+.gitIgnored {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -40px -60px no-repeat}
+.gitTracked {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -20px -80px no-repeat}
+.gitMissing {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -60px -60px no-repeat}
+.gitRepoTop {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -80px -20px no-repeat}
+.gitSubmodule {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -100px -80px no-repeat}
 
 /* git compare sytle */
 #GitHistoryDiffInfo .GitHitoryGreen {background-color: #ddffdd;}

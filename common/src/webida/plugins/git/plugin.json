@@ -106,7 +106,25 @@
                 "handler": "view",
                 "visible": "false"
             }
-        ]
+        ],
+        
+        "webida.common.workspace:overlayIcons" : {
+            "stateMap" : {
+                "gitStatus": {
+                    "gitModified" : "gitModified",
+                    "gitAdded" : "gitAdded",
+                    "gitRemoved" : "gitRemoved",
+                    "gitChanged" : "gitChanged",
+                    "gitConflicted" : "gitConflicted",
+                    "gitUntracked" : "gitUntracked",
+                    "gitIgnoredFile" : "gitIgnoredFile",
+                    "gitTracked" : "gitTracked",                                    
+                    "gitMissing" : "gitMissing",
+                    "gitRepoTop" : "gitRepoTop",
+                    "gitSubmodule" : "gitSubmodule"
+                }
+            }
+        }
     },
     "subscriptions" : {
         "workspace.node.added": [

@@ -29,6 +29,23 @@
                 "name": "Content Assists",
                 "handler": "editor"
             }
+        ],
+        
+        "webida.common.workspace:icons" : [
+            {
+                "projectType" : "",
+                "fileExtension" : {
+                    "c" : "codeEditorCFileIcon",
+                    "java" : "codeEditorJavaFileIcon",
+                    "php" : "codeEditorPhpFileIcon",
+                    "js" : "codeEditorJavaScriptFileIcon",
+                    "html" : "codeEditorHtmlFileIcon",
+                    "xml" : "codeEditorXmlFileIcon"
+                 },
+                "specificFileName" : {
+                    "plugin.json" : "codeEditorPluginJsonFileIcon"                   
+                }
+            }
         ]
     }
 }

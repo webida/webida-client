@@ -23,6 +23,7 @@
  */
 
 define(['webida-lib/app',
+        'webida-lib/plugin-manager-0.1',
         'webida-lib/plugins/workbench/preference-system/store',	// TODO: issue #12055
         'webida-lib/plugins/workbench/plugin',
         'webida-lib/webida-0.3',
@@ -58,7 +59,7 @@ define(['webida-lib/app',
         'external/async/dist/async.min',
         'require',
         'webida-lib/util/logger/logger-client'
-], function (ide, preferences, workbench, webida, dijit, registry, Tree,
+], function (ide, pluginManager, preferences, workbench, webida, dijit, registry, Tree,
               ObjectStoreModel, aspect, array, connect, lang, declare, Deferred, dom,
               domAttr, domClass, domConstruct, domGeom, domStyle, on, all,
              Memory, Observable, topic, win, Node, markup, View, pathUtil,
@@ -86,6 +87,39 @@ define(['webida-lib/app',
 
     var EVT_NODE_ALL_DESELECTED = 'workspace.node.alldeselected';
     var MIME_TYPE_WEBIDA_RESOURCE_PATH = 'text/x-webida-resource-path';
+    
+    var extensionPoints = {
+        WORKSPACE_NODE_ICONS: 'webida.common.workspace:icons',
+        WORKSPACE_NODE_OVERLAY_ICONS: 'webida.common.workspace:overlayIcons'
+    };
+    
+    var iconsExtensions = pluginManager.getExtensions(extensionPoints.WORKSPACE_NODE_ICONS);
+    var overlayIconsExtensions = pluginManager.getExtensions(extensionPoints.WORKSPACE_NODE_OVERLAY_ICONS);
+    var fileExtensionIconClassMap = {};
+    var fileNameIconClassMap = {};
+    var stateSetIconClassMap = {};
+
+    iconsExtensions.forEach(function (ext) {
+        for (var extName in ext.fileExtension) {
+            if (typeof extName === 'string') {
+                fileExtensionIconClassMap[extName] = ext.fileExtension[extName];
+            }
+        }
+
+        for (var fileName in ext.specificFileName) {
+            if (typeof fileName === 'string') {
+                fileNameIconClassMap[fileName] = ext.specificFileName[fileName];
+            }
+        }
+    });
+
+    overlayIconsExtensions.forEach(function (ext) {
+        for (var stateSet in ext.stateMap) {
+            if (typeof stateSet === 'string') {
+                stateSetIconClassMap[stateSet] = ext.stateMap[stateSet];
+            }
+        }
+    });    
 
     function selectNode(node) {
         if (typeof node === 'string') {
@@ -191,17 +225,24 @@ define(['webida-lib/app',
             tabindex : 0,
             getIconClass: function (item, opened) {
                 //console.log('hina temp: entered getIconClass() with ' + (item ? item.id: item));
-                var iconInfo;
+                setTimeout(function () {
+                    item.updateOverlayIcon(); 
+                }, 0);
                 if (!item || item.isInternal) {
                     // directory
-                    if (!item || !(iconInfo = item.iconInfo)) {
-                        return (opened ? 'dijitFolderOpened' : 'dijitFolderClosed');
-                    } else {
-                        return iconInfo + (opened ? 'DirExpanded' : 'DirCollapsed');
-                    }
+                    return (opened ? 'dijitFolderOpened' : 'dijitFolderClosed');                    
                 } else {
                     // file
-                    return (iconInfo = item.iconInfo) ? iconInfo + 'File' : 'wvFile';
+                    if (fileNameIconClassMap.hasOwnProperty(item.name)) {
+                        return fileNameIconClassMap[item.name];                        
+                    } else {
+                        var extName = item.name.indexOf('.') >= 0 ? item.name.split('.').pop() : '';
+                        if (fileExtensionIconClassMap.hasOwnProperty(extName)) {
+                            return fileExtensionIconClassMap[extName];
+                        } else {
+                            return 'wvFile';
+                        }
+                    }
                 }
             },
 
@@ -1395,19 +1436,24 @@ define(['webida-lib/app',
         }
     }
 
-    function setNodeIconInfo(path, info) {
+    function setNodeOverlayIconInfo(path, stateSet, state) {
         var node = getNode(path);
         if (node) {
-            node.setIconInfo(info);
+            node.setOverlayIconInfo(stateSet, state);
         } else {
             throw new Error('assertion fail: unreachable');
         }
     }
 
-    function getNodeIconInfo(path) {
+    function getNodeOverlayIconInfo(path, stateSet) {
         var node = getNode(path);
         if (node) {
-            return node.iconInfo;
+            if (stateSetIconClassMap.hasOwnProperty(stateSet)) {
+                return node.overlayIconInfo[stateSet];
+            } else {
+                return undefined;
+            }               
+        
         } else {
             throw new Error('assertion fail: unreachable');
         }
@@ -1422,7 +1468,7 @@ define(['webida-lib/app',
             throw new Error('assertion fail: unreachable');
         }
     }
-
+        
     var workspaceView = {
         // for webida.common.workbench:views extension point
         getView: function () {
@@ -1462,6 +1508,10 @@ define(['webida-lib/app',
                     tree.focus();
                 }
             });
+            
+            topic.subscribe('workspace.node.overlayicon.state.changed', function (path, stateSet, state) {
+                setNodeOverlayIconInfo(path, stateSet, state);
+            });
         },
 
         // copy, cut, and paste
@@ -1482,8 +1532,7 @@ define(['webida-lib/app',
         collapseNode: collapseNode,
         expandNode: expandNode,
         refreshRecursively: refreshRecursively,
-        getNodeIconInfo: getNodeIconInfo,
-        setNodeIconInfo: setNodeIconInfo,
+        getNodeOverlayIconInfo: getNodeOverlayIconInfo,
         getChildrenPaths: getChildrenPaths,
 
         removeInteractively : removeInteractively,
@@ -1492,7 +1541,17 @@ define(['webida-lib/app',
         selectNode: selectNode,
 
         expandAncestors: expandAncestors, 
-        upload: upload
+        upload: upload,
+        
+        getFileExtensionIconClassMap : function () {
+            return fileExtensionIconClassMap;
+        },        
+        getFileNameIconClassMap : function () {
+            return fileNameIconClassMap;
+        },        
+        getStateSetIconClassMap : function () {
+            return stateSetIconClassMap;
+        }
     };
 
     singleLogger.log('initialized workspace plugin\'s module');

@@ -43,6 +43,7 @@ define([
 
     var THROTTLE_DELAY = 100;
     var EMPTY_MAP = {};
+    var GIT_OVERLAY_ICON_STATE_MAP_KEY = 'gitStatus';
     var pendingIconUpdates = {};
     var lastGitStatusResults = {};
     var fsCache = ide.getFSCache();
@@ -83,20 +84,24 @@ define([
             }
         }
     }
+    
+    function setGitOverlayIconState(nodePath, newState) {
+        topic.publish('workspace.node.overlayicon.state.changed', nodePath, GIT_OVERLAY_ICON_STATE_MAP_KEY, newState); 
+    }
 
     function unsetIconInfoWithin(path, repoPath) {
         console.assert(pathUtil.isDirPath(path));
 
         var myRepoPath = git.findGitRootPath(path);
         if (myRepoPath === repoPath) {
-            wv.setNodeIconInfo(path, undefined);
+            setGitOverlayIconState(path, undefined);
             var subpaths;
             if ((subpaths = wv.getChildrenPaths(path))) {
                 subpaths.forEach(function (subpath) {
                     if (pathUtil.isDirPath(subpath)) {
                         unsetIconInfoWithin(subpath, repoPath);
-                    } else {
-                        wv.setNodeIconInfo(subpath, undefined);
+                    } else {                        
+                        setGitOverlayIconState(subpath, undefined);
                     }
                 });
             }
@@ -104,16 +109,16 @@ define([
     }
 
     function unsetIconInfo(repoPath) {
-        if (wv.exists(repoPath) && pathUtil.isDirPath(repoPath)) {
-            wv.setNodeIconInfo(repoPath, undefined);
+        if (wv.exists(repoPath) && pathUtil.isDirPath(repoPath)) {            
+            setGitOverlayIconState(repoPath, undefined);
             var subpaths = wv.getChildrenPaths(repoPath);
             if (subpaths) {
                 subpaths.forEach(function (subpath) {
                     if (pathUtil.getName(subpath) !== '.git') {
                         if (pathUtil.isDirPath(subpath)) {
                             unsetIconInfoWithin(subpath, repoPath);
-                        } else {
-                            wv.setNodeIconInfo(subpath, undefined);
+                        } else {                            
+                            setGitOverlayIconState(subpath, undefined);
                         }
                     }
                 });
@@ -156,8 +161,8 @@ define([
             if (absPath === repoPath + '.git') {
                 if (pathUtil.isDirPath(path)) {
                     unsetIconInfoWithin(path, repoPath);
-                } else {
-                    wv.setNodeIconInfo(path, undefined);
+                } else {                    
+                    setGitOverlayIconState(path, undefined);
                 }
             } else {
                 var relPath = absPath.substr(repoPath.length);
@@ -174,17 +179,17 @@ define([
                     var modified = false;
                     if (pathUtil.isDirPath(path)) {
                         modified = setIconInfoOfSubnodes(path);
-                        if (modified) {
-                            wv.setNodeIconInfo(path, 'gitModified');
-                        } else {
-                            wv.setNodeIconInfo(path, 'gitTracked');
+                        if (modified) {                            
+                            setGitOverlayIconState(path, 'gitModified');
+                        } else {                            
+                            setGitOverlayIconState(path, 'gitTracked');
                         }
                     } else {
                         if (code) {
-                            modified = true;
-                            wv.setNodeIconInfo(path, codeToIconInfo(code));
+                            modified = true;                            
+                            setGitOverlayIconState(path, codeToIconInfo(code));
                         } else {
-                            wv.setNodeIconInfo(path, 'gitTracked');
+                            setGitOverlayIconState(path, 'gitTracked');
                         }
                     }
                     return modified;
@@ -193,7 +198,7 @@ define([
         }
 
         function setFixedIconInfoWithin(path, iconInfo) {
-            wv.setNodeIconInfo(path, iconInfo);
+            setGitOverlayIconState(path, iconInfo);
             if (pathUtil.isDirPath(path)) {
                 var subpaths = wv.getChildrenPaths(path);
                 subpaths.forEach(function (p) {
@@ -295,7 +300,7 @@ define([
                         lastGitStatusResults[parentPath] = pathToCode;
                         if (pathUtil.isDirPath(path)) {
                             git.recordGitRepoPath(parentPath);
-                            wv.setNodeIconInfo(parentPath, 'gitRepoTop');
+                            setGitOverlayIconState(parentPath, 'gitRepoTop');
                             throttleIconInfoSetting(parentPath, path + '@A', pathToCode);
                             var subpaths = wv.getChildrenPaths(parentPath);
                             if (subpaths) {
@@ -334,13 +339,14 @@ define([
                                     if (repoTopPath) {
                                         //console.log('hina temp: found a git repo top: ' +
                                         //            repoTopNode.getPath());
-                                        git.recordGitRepoPath(parentPath, repoTopPath);
-                                        wv.setNodeIconInfo(parentPath, 'gitSubmodule');
+                                        git.recordGitRepoPath(parentPath, repoTopPath);                                        
+                                        setGitOverlayIconState(parentPath, 'gitSubmodule');
+                                        
                                     } else {
                                         console.warn('Expected ' + path + ' to be a git submodule, ' +
                                                      'but could not find its top repository');
-                                        git.recordGitRepoPath(parentPath);
-                                        wv.setNodeIconInfo(parentPath, 'gitRepoTop');
+                                        git.recordGitRepoPath(parentPath);                                        
+                                        setGitOverlayIconState(parentPath, 'gitRepoTop');
                                     }
                                     throttleIconInfoSetting(parentPath, path + '@A-Sub', pathToCode);
                                 }
@@ -386,7 +392,7 @@ define([
     // mainly for the case when a directory node is expanded and its subentries appear.
     function detectNodeWithoutIcon(path, maybeCreated) {
         var repoPath = git.findGitRootPath(path);
-        if (repoPath && !git.isInDotGitDir(path) && !wv.getNodeIconInfo(path)) {
+        if (repoPath && !git.isInDotGitDir(path) && !wv.getNodeOverlayIconInfo(path, GIT_OVERLAY_ICON_STATE_MAP_KEY)) {
             throttleIconInfoSetting(repoPath, path + '@B',
                                     maybeCreated ? undefined : lastGitStatusResults[repoPath]);
         }
@@ -412,7 +418,7 @@ define([
         var repoPath = git.findGitRootPath(path);
         if (repoPath && !git.isInDotGitDir(path)) {
             if (wv.exists(path) && pathUtil.getName(path) !== '.gitignore') {
-                var iconInfo = wv.getNodeIconInfo(path);
+                var iconInfo = wv.getNodeOverlayIconInfo(path, GIT_OVERLAY_ICON_STATE_MAP_KEY);
                 if (iconInfo === 'gitIgnored' ||
                     (iconInfo === 'gitUntracked' && !mayConvertUntrackedToTracked)) {
                     return;		// do nothing. just ignore
