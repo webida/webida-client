@@ -145,6 +145,8 @@ define([
 
         /**
          * Create EditorViewers
+         *
+         * @abstract
          */
         createViewers: function() {
             throw new Error('createViewers() should be implemented by ' + this.constructor.name);
@@ -162,24 +164,29 @@ define([
          * @param {string} title
          * @param {EditorViewer} viewer
          * @param {number} index
+         * @param {MultiViewerEditorPart~addViewerCallback} callback
          */
-        addViewer: function(id, title, viewer, index) {
+        /**
+         * @callback MultiViewerEditorPart~addViewerCallback
+         * @param {HTMLElement} parentNode
+         */
+        addViewer: function(id, title, viewer, index, callback) {
             logger.info('addViewer(' + id + ', ' + title + ', ' + viewer + ', ' + index + ')');
             var pane = new ContentPane({
                 title: title
             });
             pane.startup();
-            viewer.setParentNode(pane.domNode);
             this.getTabContainer().addChild(pane, index);
             this.getViewers().set(id, viewer);
             this.tabToViewerMap[pane.id] = viewer;
+            callback(pane.domNode);
         },
 
         /**
          * @param {EditorViewer} viewer
          */
         removeViewer: function(viewer) {
-			//TODO
+            //TODO
         },
 
         /**
