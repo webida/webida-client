@@ -171,17 +171,19 @@ define([
 
                 //2. codeEditor
                 var codeEditor = that.getCodeEditor();
-                that.addViewer('CodeEditor', 'Code Editor', codeEditor, 0);
-                that.initCodeEditor();
+                that.addViewer('CodeEditor', 'Code Editor', codeEditor, 0, function(parentNode) {
+                    codeEditor.setParentNode(parentNode);
+                    that.initCodeEditor();
+                    codeEditor.setContents(doc);
+                });
 
                 //3. formEditor
                 var formEditor = that.getFormEditor();
-                that.addViewer('FormEditor', 'Form Editor', formEditor, 1);
-                formEditor.createAdapter();
-
-                //4. set model
-                codeEditor.setContents(doc);
-                formEditor.setContents(doc);
+                that.addViewer('FormEditor', 'Form Editor', formEditor, 1, function(parentNode) {
+                    formEditor.setParentNode(parentNode);
+                    formEditor.createAdapter();
+                    formEditor.setContents(doc);
+                });
 
                 //4. For the concurrent editing, listen to the model
                 // Note that, when user select the tab,
