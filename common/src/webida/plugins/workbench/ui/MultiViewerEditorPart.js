@@ -26,6 +26,7 @@
 // @formatter:off
 define([
     'dojo/aspect',
+    'dojo/topic',
     'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',
     'external/eventEmitter/EventEmitter',
@@ -35,6 +36,7 @@ define([
     './Part'
 ], function (
     aspect,
+    topic,
     TabContainer,
     ContentPane,
     EventEmitter,
@@ -207,6 +209,7 @@ define([
             logger.info('setActiveViewer(' + viewer + ')');
             this.activeViewer = viewer;
             viewer.refresh();
+            topic.publish('editor-container-layout-changed');
         },
 
         /**
