@@ -36,6 +36,10 @@ define([
     'use strict';
 // @formatter:on
 
+    /**
+     * @typedef {Object} PartModel
+     */
+
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
@@ -78,10 +82,36 @@ define([
         },
 
         /**
+         * @abstract
+         */
+        createViewer: function() {
+            throw new Error('createViewer() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
          * @return {Viewer}
          */
         getViewer: function() {
+            //TODO : parent, callback in case of none
+            if (this.viewer !== null) {
+                return this.viewer;
+            }
+            this.createViewer();
             return this.viewer;
+        },
+
+        /**
+         * @param {PartModel} model
+         */
+        setModel: function(model) {
+            this.model = model;
+        },
+
+        /**
+         * @return {PartModel} model
+         */
+        getModel: function() {
+            return this.model;
         },
 
         setFlag: function(/*int*/flag, /*boolean*/value) {

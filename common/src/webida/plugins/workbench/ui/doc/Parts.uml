@@ -3945,7 +3945,7 @@ A factoryId is a path of the DataSourceFactory module.
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedViews[87]" type="UMLInterfaceView" guid="Mgy/nAByZkeJCu8OF2kHxQAA">
-<XPD:ATTR name="LineColor" type="string">$005A5A5A</XPD:ATTR>
+<XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00E4E4E4</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">929</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">1044</XPD:ATTR>

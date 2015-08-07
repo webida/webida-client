@@ -192,30 +192,30 @@ define([
         },
 
         /**
+         * If viewer does not exist when calling getViewer(),
+         * this method is called to create new viewer.
+         * 
+         * @see Part.js getViewer()
          * @override
          */
-        getViewer: function() {
+        createViewer: function() {
             //TODO : parent, callback in case of none
-            if (this.viewer !== null) {
-                return this.viewer;
-            }
             var parent = this.getParentElement();
             var callback = this.createCallback;
             var ViewerClass = this.getViewerClass();
-            var context = new (ViewerClass)(parent, this.file, function(file, context) {
-                context.addChangeListener(function(context, change) {
-                    if (context._changeCallback) {
-                        context._changeCallback(file, change);
+            var viewer = new (ViewerClass)(parent, this.file, function(file, viewer) {
+                viewer.addChangeListener(function(viewer, change) {
+                    if (viewer._changeCallback) {
+                        viewer._changeCallback(file, change);
                     }
                 });
                 if (callback) {
                     _.defer(function() {
-                        callback(file, context);
+                        callback(file, viewer);
                     });
                 }
             });
-            this.setViewer(context);
-            return this.viewer;
+            this.setViewer(viewer);
         },
 
         getFoldingStatus: function() {
@@ -333,7 +333,7 @@ define([
             }
 
             context.addDeferredAction(function(viewer) {
-                viewer.editor.focus();                
+                viewer.editor.focus();
             });
         });
     };
