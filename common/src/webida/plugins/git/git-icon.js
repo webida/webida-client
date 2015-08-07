@@ -84,20 +84,24 @@ define([
             }
         }
     }
+    
+    function setGitOverlayIconState(nodePath, newState) {
+        topic.publish('workspace.node.overlayicon.state.changed', nodePath, GIT_OVERLAY_ICON_STATE_MAP_KEY, newState); 
+    }
 
     function unsetIconInfoWithin(path, repoPath) {
         console.assert(pathUtil.isDirPath(path));
 
         var myRepoPath = git.findGitRootPath(path);
         if (myRepoPath === repoPath) {
-            topic.publish('workspace.node.overlayicon.state.changed', path, GIT_OVERLAY_ICON_STATE_MAP_KEY, undefined); 
+            setGitOverlayIconState(path, undefined);
             var subpaths;
             if ((subpaths = wv.getChildrenPaths(path))) {
                 subpaths.forEach(function (subpath) {
                     if (pathUtil.isDirPath(subpath)) {
                         unsetIconInfoWithin(subpath, repoPath);
                     } else {                        
-                        topic.publish('workspace.node.overlayicon.state.changed', subpath, GIT_OVERLAY_ICON_STATE_MAP_KEY, undefined);
+                        setGitOverlayIconState(subpath, undefined);
                     }
                 });
             }
@@ -105,8 +109,8 @@ define([
     }
 
     function unsetIconInfo(repoPath) {
-        if (wv.exists(repoPath) && pathUtil.isDirPath(repoPath)) {
-            topic.publish('workspace.node.overlayicon.state.changed', repoPath, GIT_OVERLAY_ICON_STATE_MAP_KEY, undefined);
+        if (wv.exists(repoPath) && pathUtil.isDirPath(repoPath)) {            
+            setGitOverlayIconState(repoPath, undefined);
             var subpaths = wv.getChildrenPaths(repoPath);
             if (subpaths) {
                 subpaths.forEach(function (subpath) {
@@ -114,7 +118,7 @@ define([
                         if (pathUtil.isDirPath(subpath)) {
                             unsetIconInfoWithin(subpath, repoPath);
                         } else {                            
-                            topic.publish('workspace.node.overlayicon.state.changed', subpath, GIT_OVERLAY_ICON_STATE_MAP_KEY, undefined);
+                            setGitOverlayIconState(subpath, undefined);
                         }
                     }
                 });
@@ -158,7 +162,7 @@ define([
                 if (pathUtil.isDirPath(path)) {
                     unsetIconInfoWithin(path, repoPath);
                 } else {                    
-                    topic.publish('workspace.node.overlayicon.state.changed', path, GIT_OVERLAY_ICON_STATE_MAP_KEY, undefined);
+                    setGitOverlayIconState(path, undefined);
                 }
             } else {
                 var relPath = absPath.substr(repoPath.length);
@@ -176,16 +180,16 @@ define([
                     if (pathUtil.isDirPath(path)) {
                         modified = setIconInfoOfSubnodes(path);
                         if (modified) {                            
-                            topic.publish('workspace.node.overlayicon.state.changed', path, GIT_OVERLAY_ICON_STATE_MAP_KEY, 'gitModified');
+                            setGitOverlayIconState(path, 'gitModified');
                         } else {                            
-                            topic.publish('workspace.node.overlayicon.state.changed', path, GIT_OVERLAY_ICON_STATE_MAP_KEY, 'gitTracked');
+                            setGitOverlayIconState(path, 'gitTracked');
                         }
                     } else {
                         if (code) {
                             modified = true;                            
-                            topic.publish('workspace.node.overlayicon.state.changed', path, GIT_OVERLAY_ICON_STATE_MAP_KEY, codeToIconInfo(code));
+                            setGitOverlayIconState(path, codeToIconInfo(code));
                         } else {
-                            topic.publish('workspace.node.overlayicon.state.changed', path, GIT_OVERLAY_ICON_STATE_MAP_KEY, 'gitTracked');
+                            setGitOverlayIconState(path, 'gitTracked');
                         }
                     }
                     return modified;
@@ -194,7 +198,7 @@ define([
         }
 
         function setFixedIconInfoWithin(path, iconInfo) {
-            topic.publish('workspace.node.overlayicon.state.changed', path, GIT_OVERLAY_ICON_STATE_MAP_KEY, iconInfo);
+            setGitOverlayIconState(path, iconInfo);
             if (pathUtil.isDirPath(path)) {
                 var subpaths = wv.getChildrenPaths(path);
                 subpaths.forEach(function (p) {
@@ -295,8 +299,8 @@ define([
                     if (pathToCode) {
                         lastGitStatusResults[parentPath] = pathToCode;
                         if (pathUtil.isDirPath(path)) {
-                            git.recordGitRepoPath(parentPath);                            
-                            topic.publish('workspace.node.overlayicon.state.changed', parentPath, GIT_OVERLAY_ICON_STATE_MAP_KEY, 'gitRepoTop');
+                            git.recordGitRepoPath(parentPath);
+                            setGitOverlayIconState(parentPath, 'gitRepoTop');
                             throttleIconInfoSetting(parentPath, path + '@A', pathToCode);
                             var subpaths = wv.getChildrenPaths(parentPath);
                             if (subpaths) {
@@ -336,13 +340,13 @@ define([
                                         //console.log('hina temp: found a git repo top: ' +
                                         //            repoTopNode.getPath());
                                         git.recordGitRepoPath(parentPath, repoTopPath);                                        
-                                        topic.publish('workspace.node.overlayicon.state.changed', parentPath, GIT_OVERLAY_ICON_STATE_MAP_KEY, 'gitSubmodule');
+                                        setGitOverlayIconState(parentPath, 'gitSubmodule');
                                         
                                     } else {
                                         console.warn('Expected ' + path + ' to be a git submodule, ' +
                                                      'but could not find its top repository');
                                         git.recordGitRepoPath(parentPath);                                        
-                                        topic.publish('workspace.node.overlayicon.state.changed', parentPath, GIT_OVERLAY_ICON_STATE_MAP_KEY, 'gitRepoTop');
+                                        setGitOverlayIconState(parentPath, 'gitRepoTop');
                                     }
                                     throttleIconInfoSetting(parentPath, path + '@A-Sub', pathToCode);
                                 }

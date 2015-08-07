@@ -33,7 +33,7 @@
         
         "webida.common.workspace:icons" : [
             {
-                "projectType" : "Tizen",
+                "projectType" : "",
                 "fileExtension" : {
                     "c" : "codeEditorCFileIcon",
                     "java" : "codeEditorJavaFileIcon",
