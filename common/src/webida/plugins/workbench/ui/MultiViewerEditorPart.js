@@ -119,7 +119,6 @@ define([
          */
         createTabContainer: function() {
             logger.info('createTabContainer()');
-            var that = this;
             var parent = this.getParentElement();
             var container = new TabContainer({
                 style: 'width: 100%; height: 100%;',
@@ -131,16 +130,23 @@ define([
             parent.appendChild(container.domNode);
             container.resize();
 
-            // bind select child event
-            container.own(aspect.before(container, 'selectChild', function(newTab) {
-                logger.info('before, selectChild', newTab);
+            this.setContainerEvent(container);
+            this.tabContainer = container;
+        },
+
+        /**
+         * Set Container Event
+         *
+         * If you want different event binding, override this method.
+         */
+        setContainerEvent: function(container) {
+            var that = this;
+            container.watch('selectedChildWidget', function(name, oldTab, newTab) {
                 var viewer = that.getViewerByTabId(newTab.id);
                 if (viewer) {
                     that.setActiveViewer(viewer);
                 }
-            }));
-
-            this.tabContainer = container;
+            });
         },
 
         /**
@@ -171,7 +177,7 @@ define([
          * @param {HTMLElement} parentNode
          */
         addViewer: function(id, title, viewer, index, callback) {
-            logger.info('addViewer(' + id + ', ' + title + ', ' + viewer + ', ' + index + ')');
+            logger.info('addViewer(' + id + ', ' + title + ', ' + viewer + ', ' + index + ', callback)');
             var pane = new ContentPane({
                 title: title
             });
@@ -179,7 +185,12 @@ define([
             this.getTabContainer().addChild(pane, index);
             this.getViewers().set(id, viewer);
             this.tabToViewerMap[pane.id] = viewer;
-            callback(pane.domNode);
+            if ( typeof callback === 'function') {
+                callback(pane.domNode);
+            }
+            if (this.getViewers().size === 1) {
+                this.setActiveViewer(viewer);
+            }
         },
 
         /**
