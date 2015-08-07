@@ -237,6 +237,13 @@ define([
          */
         getTabContainer: function() {
             return this.tabContainer;
+        },
+        
+        getContextMenuItems: function (opened, items, menuItems, deferred) {
+            var activeViewer = this.getActiveViewer();
+            if (activeViewer) {
+                activeViewer.getContextMenuItems(opened, items, menuItems, deferred);
+            }                       
         }
     });
 
