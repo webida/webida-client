@@ -72,7 +72,7 @@ define([
 
     genetic.inherits(MultiPageExampleEditorPart, MultiViewerEditorPart, {
 
-        getCodeEditor: function() {
+        getCodeViewer: function() {
             var callback = this.createCallback;
             var viewer = new CodeEditorViewer(null, this.file, function(file, viewer) {
                 viewer.addChangeListener(function(viewer, change) {
@@ -125,7 +125,7 @@ define([
             viewer.setTheme('webida');
         },
 
-        getFormEditor: function() {
+        getFormViewer: function() {
             var viewer = new FormEditorViewer();
             return viewer;
         },
@@ -160,6 +160,10 @@ define([
 
             var that = this;
 
+			setTimeout(function(){
+				console.info(that.getActiveViewer());
+			}, 1000);
+
             //TODO : this.getContainer().getDataSource()
             var workbench = require('webida-lib/plugins/workbench/plugin');
             var dsRegistry = workbench.getDataSourceRegistry();
@@ -169,20 +173,20 @@ define([
                 //1. Create Model from DataSource
                 var doc = new Document(contents);
 
-                //2. codeEditor
-                var codeEditor = that.getCodeEditor();
-                that.addViewer('CodeEditor', 'Code Editor', codeEditor, 0, function(parentNode) {
-                    codeEditor.setParentNode(parentNode);
-                    that.initCodeEditor();
-                    codeEditor.setContents(doc);
+                //2. formViewer
+                var formViewer = that.getFormViewer();
+                that.addViewer('FormEditor', 'Form Editor', formViewer, 0, function(parentNode) {
+                    formViewer.setParentNode(parentNode);
+                    formViewer.createAdapter();
+                    formViewer.setContents(doc);
                 });
 
-                //3. formEditor
-                var formEditor = that.getFormEditor();
-                that.addViewer('FormEditor', 'Form Editor', formEditor, 1, function(parentNode) {
-                    formEditor.setParentNode(parentNode);
-                    formEditor.createAdapter();
-                    formEditor.setContents(doc);
+                //3. codeViewer
+                var codeViewer = that.getCodeViewer();
+                that.addViewer('CodeEditor', 'Code Editor', codeViewer, 1, function(parentNode) {
+                    codeViewer.setParentNode(parentNode);
+                    that.initCodeEditor();
+                    codeViewer.setContents(doc);
                 });
 
                 //4. For the concurrent editing, listen to the model
