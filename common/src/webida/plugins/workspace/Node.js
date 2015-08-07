@@ -85,6 +85,7 @@ define(['require',
         this.parent = pathToId(pair[0]);
         this.name = decodeURI(pair[1]).replace(/ /g, '&nbsp;');
         this.isInternal = isInternal;
+        this.overlayIconInfo = {};
     }
 
     Node.prototype.deleteRecursively = function () {
@@ -1509,34 +1510,34 @@ define(['require',
         }
     };
 
-    Node.prototype.setIconInfo = function (iconInfo) {
-        if (this.iconInfo !== iconInfo) {
-            this.iconInfo = iconInfo;
-            var iconClass;
-            if (iconInfo) {
-                iconClass = iconInfo +
-                    (!this.isInternal ? 'File' : this.isExpanded() ? 'DirExpanded' : 'DirCollapsed');
-            } else if (iconInfo === undefined) {
-                iconClass = (!this.isInternal) ? 'wvFile' :
-                            this.isExpanded() ? 'dijitFolderOpened' : 'dijitFolderClosed';
-            } else {
-                console.error('unreachable');
-                throw new Error('unreachable');
-            }
-            this.updateIcon(iconClass);
+    Node.prototype.setOverlayIconInfo = function (stateSet, state) {
+        if (!this.overlayIconInfo.hasOwnProperty(stateSet)) {
+            this.overlayIconInfo[stateSet] = undefined;
+        }
+        if (this.overlayIconInfo[stateSet] !== state) {
+            this.overlayIconInfo[stateSet] = state;
+
+            this.updateOverlayIcon();
         }
     };
 
-    var defaultDirIconClasses = ['dijitFolderOpened', 'dijitFolderClosed'];
-    Node.prototype.updateIcon = function (newIconClass) {
+    Node.prototype.updateOverlayIcon = function () {
         var nodes = tree().getNodesByItem(this);
         var node = nodes && nodes[0];
         if (node && node.iconNode) {
-            var splitClasses = node.iconNode.className.split(' ');
-            var classesToRemove = splitClasses.filter(function (cl) {
-                return cl.indexOf('dijit') !== 0 || defaultDirIconClasses.indexOf(cl) >= 0;
+            var that = this;
+            require(['./plugin'], function (wv) {
+                node.iconNode.innerHTML = '';
+                var stateSetIconClassMap = wv.getStateSetIconClassMap();
+                for (var stateSet in stateSetIconClassMap) {
+                    var overlayIconClass = stateSetIconClassMap[stateSet][that.overlayIconInfo[stateSet]];
+                    if (overlayIconClass) {
+                        var overlayElement = document.createElement('span');
+                        overlayElement.className = overlayIconClass;
+                        node.iconNode.appendChild(overlayElement);
+                    }
+                }
             });
-            domClass.replace(node.iconNode, newIconClass, classesToRemove);
         }
     };
 
