@@ -58,28 +58,28 @@ define([
         /**
          * Creates Viewer Element
          */
-        create: function() {
+        createAdapter: function() {
         	var that = this;
             var container = this.getParentNode();
             if (container) {
                 this.form = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
                 container.appendChild(this.form);
                 this.form.addEventListener('keyup', function(e) {
-					if(e.target.value !== that.getModel().getText()){
-						that.getModel().update(e.target.value, that);
+					if(e.target.value !== that.getContents().getText()){
+						that.getContents().update(e.target.value, that);
 					}
                 });
             }
         },
 
-        setModel: function(doc) {
-            EditorViewer.prototype.setModel.call(this, doc);
+        setContents: function(doc) {
+            EditorViewer.prototype.setContents.call(this, doc);
             this.refresh();
         },
 
         refresh: function() {
-            logger.info('refresh()', this.getModel().getText());
-            this.form.value = this.getModel().getText();
+            logger.info('refresh()', this.getContents().getText());
+            this.form.value = this.getContents().getText();
         }
     });
 

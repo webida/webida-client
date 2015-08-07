@@ -177,11 +177,11 @@ define([
                 //3. formEditor
                 var formEditor = that.getFormEditor();
                 that.addViewer('FormEditor', 'Form Editor', formEditor, 1);
-                formEditor.create();
+                formEditor.createAdapter();
 
                 //4. set model
-                codeEditor.setModel(doc);
-                formEditor.setModel(doc);
+                codeEditor.setContents(doc);
+                formEditor.setContents(doc);
 
                 //4. For the concurrent editing, listen to the model
                 // Note that, when user select the tab,
@@ -207,7 +207,7 @@ define([
 
         destroy: function() {
             MultiViewerEditorPart.prototype.destroy.call(this);
-            this.getViewerById('CodeEditor').destroy();
+            this.getViewerById('CodeEditor').destroyAdapter();
         },
 
         getValue: function() {

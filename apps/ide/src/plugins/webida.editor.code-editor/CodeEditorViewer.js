@@ -714,7 +714,7 @@ define([
                      'external/codemirror/addon/edit/matchbrackets'], function () {
                 setTimeout(function(self){
                 	if (self.getParentNode()) {
-                		self.create();
+                		self.createAdapter();
                 	}
                 }, 0, self);
             });
@@ -896,7 +896,7 @@ define([
     
     genetic.inherits(CodeEditorViewer, TextEditorViewer, {
 
-	    create: function () {
+	    createAdapter: function () {
 	        if (this.editor !== undefined) {
 	            return;
 	        }
@@ -935,10 +935,10 @@ define([
 	        this.editor = codemirror(this.getParentNode(), options);
 	        
             this.editor.on("change", function(cm, change) {
-            	if(self.getModel()){
-            		self.getModel().update(cm.getValue(), self);
+            	if(self.getContents()){
+            		self.getContents().update(cm.getValue(), self);
             	}
-                //console.log('self.getModel() = ', self.getModel());
+                //console.log('self.getContents() = ', self.getContents());
             }); 
 
 	        

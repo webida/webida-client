@@ -238,7 +238,7 @@ define([
         destroy: function() {
             logger.info('destroy()');
             if (this.viewer) {
-                this.viewer.destroy();
+                this.viewer.destroyAdapter();
                 this.viewer = null;
             } else {
                 logger.info('this.viewer not found');
