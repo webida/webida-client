@@ -113,10 +113,10 @@ define([
         getMenuItemsUnderEdit: function(items, menuItems, deferred) {
             throw new Error('getWorkbenchShortcuts() should be implemented by subclass');
         },
-
+        
         getContextMenuItems: function(opened, items, menuItems, deferred) {
-            throw new Error('getWorkbenchShortcuts() should be implemented by subclass');
-        }
+            deferred.resolve(items);
+        },
     });
 
     return EditorViewer;

@@ -307,6 +307,13 @@ define([
                 logger.trace();
                 return true;
             }
+        },
+        
+        getContextMenuItems: function (opened, items, menuItems, deferred) {
+            var viewer = this.getViewer();
+            if (viewer) {
+                viewer.getContextMenuItems(opened, items, menuItems, deferred);
+            }
         }
     });
 

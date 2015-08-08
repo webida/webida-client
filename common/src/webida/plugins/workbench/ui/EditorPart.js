@@ -40,7 +40,6 @@ define([
         this.file = null;
     }
 
-
     genetic.inherits(EditorPart, Part, {
         getValue: function() {
             throw new Error('getValue() should be implemented by ' + this.constructor.name);
@@ -59,7 +58,11 @@ define([
         },
         getFile: function() {
             return this.file;
+        },        
+        getContextMenuItems: function(opened, items, menuItems, deferred) {
+            deferred.resolve(items);
         },
+
         toString: function() {
             var res = '<' + this.constructor.name + '>#' + this._partId;
             if (this.file) {

@@ -187,10 +187,10 @@ define(['./plugin',
             return null;
         }
         
-        var viewer = editors.currentFile && editors.currentFile.viewer;
-        if (viewer) {
-            viewer.getContextMenuItems(opened, items, menuItems, deferred);
-        }       
+        var editorPart = editors.getPart(editors.currentFile);
+        if (editorPart) {
+            editorPart.getContextMenuItems(opened, items, menuItems, deferred);
+        }    
 
         return deferred;
     }
