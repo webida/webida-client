@@ -44,7 +44,8 @@
                  },
                 "specificFileName" : {
                     "plugin.json" : "codeEditorPluginJsonFileIcon"                   
-                }
+                },
+                "iconCssFilePath" : "./icons.css"
             }
         ]
     }

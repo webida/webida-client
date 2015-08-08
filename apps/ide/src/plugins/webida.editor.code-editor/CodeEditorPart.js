@@ -38,7 +38,6 @@ define([
 	'./configloader',
 	'dojo/topic',
 	'webida-lib/util/logger/logger-client',
-    'webida-lib/util/loadCSSList',
 	'dojo/domReady!'
 ], function(
 	genetic,
@@ -51,8 +50,7 @@ define([
 	CodeEditorViewer,
 	configloader,
 	topic,
-    Logger,
-    loadCSSList
+    Logger
 ) {
 	'use strict';
 
@@ -63,10 +61,6 @@ define([
 		logger.info('new CodeEditorPart('+file+')');
 		TextEditorPart.apply(this, arguments); //super constructor
 	}
-    
-    loadCSSList([
-        require.toUrl('plugins/webida.editor.code-editor/icons.css')
-    ], function () {});
 
 	genetic.inherits(CodeEditorPart, TextEditorPart, {
 

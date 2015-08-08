@@ -1,0 +1,12 @@
+/* git status icon style */
+.gitModified {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -80px 0 no-repeat}
+.gitAdded {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -80px -60px no-repeat}
+.gitRemoved {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -80px -40px no-repeat}
+.gitChanged {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) 0 -80px no-repeat}
+.gitConflicted {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -20px -60px no-repeat}
+.gitUntracked {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -40px -80px no-repeat}
+.gitIgnored {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -40px -60px no-repeat}
+.gitTracked {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -20px -80px no-repeat}
+.gitMissing {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -60px -60px no-repeat}
+.gitRepoTop {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -80px -20px no-repeat}
+.gitSubmodule {position:absolute;width:16px;height:16px;background:url(icons/status/git_status_transparent.png) -100px -80px no-repeat}

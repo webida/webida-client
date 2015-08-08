@@ -8,10 +8,12 @@
         "webida.common.workspace:icons" : [
             { "name" : "projectType", "type" : "string", "desc" : "project type name" },
             { "name" : "fileExtension", "type" : "object", "desc" : "Map from file extensions to icon class names" },
-            { "name" : "specificFileName", "type" : "object", "desc" : "Map from specific file names to icon class names" }
+            { "name" : "specificFileName", "type" : "object", "desc" : "Map from specific file names to icon class names" },
+            { "name" : "iconCssFilePath", "type" : "string", "desc" : " Relative path of icon describing CSS file from plugin position" }
         ],
-        "webida.common.workspace:overlayIcons" : [
-            { "name" : "stateMap", "type" : "object", "desc" : "Map from state set names to a map from state names to icon class names" }
+        "webida.common.workspace:overlayIcons" : [            
+            { "name" : "stateMap", "type" : "object", "desc" : "Map from state set names to a map from state names to icon class names" },
+            { "name" : "iconCssFilePath", "type" : "string", "desc" : " Relative path of icon describing CSS file from plugin position" }
         ]
     },
     "extensions" : {

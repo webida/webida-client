@@ -53,17 +53,19 @@ define(['webida-lib/app',
         'text!./layer/workspace.html',
         'webida-lib/widgets/views/view',
         'webida-lib/util/path',
+        'webida-lib/util/loadCSSList',
         'popup-dialog',
         'plugins/webida.notification/notification-message',
         'external/lodash/lodash.min',
         'external/async/dist/async.min',
+        'external/URIjs/src/URI',
         'require',
         'webida-lib/util/logger/logger-client'
 ], function (ide, pluginManager, preferences, workbench, webida, dijit, registry, Tree,
               ObjectStoreModel, aspect, array, connect, lang, declare, Deferred, dom,
               domAttr, domClass, domConstruct, domGeom, domStyle, on, all,
-             Memory, Observable, topic, win, Node, markup, View, pathUtil,
-              PopupDialog, toastr, _, async, require, Logger) {
+             Memory, Observable, topic, win, Node, markup, View, pathUtil, loadCSSList,
+              PopupDialog, toastr, _, async, URI, require, Logger) {
     'use strict';
 
 	var singleLogger = new Logger.getSingleton();
@@ -98,11 +100,12 @@ define(['webida-lib/app',
     var fileExtensionIconClassMap = {};
     var fileNameIconClassMap = {};
     var stateSetIconClassMap = {};
+    var cssFilePathList = []; 
 
     iconsExtensions.forEach(function (ext) {
         for (var extName in ext.fileExtension) {
             if (typeof extName === 'string') {
-                fileExtensionIconClassMap[extName] = ext.fileExtension[extName];
+                fileExtensionIconClassMap[extName] = ext.fileExtension[extName];             
             }
         }
 
@@ -111,6 +114,9 @@ define(['webida-lib/app',
                 fileNameIconClassMap[fileName] = ext.specificFileName[fileName];
             }
         }
+        var pluginLoc = require.toUrl(ext.__plugin__.loc) + '/';
+        var absolutePath = URI(ext.iconCssFilePath).absoluteTo(pluginLoc).toString();
+        cssFilePathList.push(absolutePath);
     });
 
     overlayIconsExtensions.forEach(function (ext) {
@@ -119,7 +125,12 @@ define(['webida-lib/app',
                 stateSetIconClassMap[stateSet] = ext.stateMap[stateSet];
             }
         }
+        var pluginLoc = require.toUrl(ext.__plugin__.loc) + '/';
+        var absolutePath = URI(ext.iconCssFilePath).absoluteTo(pluginLoc).toString();
+        cssFilePathList.push(absolutePath);
     });    
+
+    loadCSSList(cssFilePathList, function () {});
 
     function selectNode(node) {
         if (typeof node === 'string') {
