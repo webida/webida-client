@@ -63,8 +63,8 @@ define([
         /** @type {Map.<Object, EditorViewer>} */
         this.viewers = new Map();
 
-        /** @type {Object.<string, EditorViewer>} */
-        this.tabToViewerMap = {};
+        /** @type {Map.<Object, EditorViewer>} */
+        this.tabToViewerMap = new Map();
 
         /** @type {EditorViewer} */
         this.activeViewer = null;
@@ -83,6 +83,7 @@ define([
             }
             this.setParentElement(parent);
             this.createCallback = callback;
+            //TODO remove this.file.elem
             this.file.elem = parent;
             this.initialize();
             this.setFlag(Part.CREATED, true);
@@ -140,7 +141,7 @@ define([
         setContainerEvent: function(container) {
             var that = this;
             container.watch('selectedChildWidget', function(name, oldTab, newTab) {
-                var viewer = that.getViewerByTabId(newTab.id);
+                var viewer = that.getViewerByTab(newTab);
                 if (viewer) {
                     that.setActiveViewer(viewer);
                 }
@@ -164,6 +165,13 @@ define([
         },
 
         /**
+         * @return {Map.<Object, EditorViewer>}
+         */
+        getTabToViewerMap: function() {
+            return this.tabToViewerMap;
+        },
+
+        /**
          * @param {Object} id
          * @param {string} title
          * @param {EditorViewer} viewer
@@ -182,7 +190,7 @@ define([
             pane.startup();
             this.getTabContainer().addChild(pane, index);
             this.getViewers().set(id, viewer);
-            this.tabToViewerMap[pane.id] = viewer;
+            this.getTabToViewerMap().set(pane, viewer);
             if ( typeof callback === 'function') {
                 callback(pane.domNode);
             }
@@ -205,6 +213,7 @@ define([
             logger.info('setActiveViewer(' + viewer + ')');
             this.activeViewer = viewer;
             viewer.refresh();
+            this.emit(MultiViewerEditorPart.TAB_SELECT, viewer);
         },
 
         /**
@@ -223,11 +232,11 @@ define([
         },
 
         /**
-         * @param {string} tabId
+         * @param {Object} tab
          * @return {EditorViewer}
          */
-        getViewerByTabId: function(tabId) {
-            return this.tabToViewerMap[tabId];
+        getViewerByTab: function(tab) {
+            return this.getTabToViewerMap().get(tab);
         },
 
         /**
@@ -247,6 +256,8 @@ define([
             }
         }
     });
+
+    MultiViewerEditorPart.TAB_SELECT = 'tabSelect';
 
     return MultiViewerEditorPart;
 });

@@ -153,9 +153,10 @@ define([
                 fileNameIconClassMap[fileName] = ext.specificFileName[fileName];
             }
         }
-        var pluginLoc = ext.__plugin__.loc + '/';
-        var absolutePath = URI(ext.iconCssFilePath).absoluteTo(pluginLoc).toString();
-        cssFilePathList.push(absolutePath);
+
+        var cssPath = URI(ext.iconCssFilePath).absoluteTo(ext.__plugin__.loc + '/').toString();
+        var resolvedCssPath = require.toUrl(cssPath);
+        cssFilePathList.push(resolvedCssPath);
     });
 
     overlayIconsExtensions.forEach(function(ext) {
@@ -164,9 +165,10 @@ define([
                 stateSetIconClassMap[stateSet] = ext.stateMap[stateSet];
             }
         }
-        var pluginLoc = ext.__plugin__.loc + '/';
-        var absolutePath = URI(ext.iconCssFilePath).absoluteTo(pluginLoc).toString();
-        cssFilePathList.push(absolutePath);
+
+        var cssPath = URI(ext.iconCssFilePath).absoluteTo(ext.__plugin__.loc + '/').toString();
+        var resolvedCssPath = require.toUrl(cssPath);
+        cssFilePathList.push(resolvedCssPath);
     });
 
     loadCSSList(cssFilePathList, function() {
