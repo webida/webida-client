@@ -44,78 +44,79 @@ define([
 
     function EditorViewer() {
         logger.info('new EditorViewer()');
-		Viewer.apply(this, arguments);
+        Viewer.apply(this, arguments);
     }
 
 
     genetic.inherits(EditorViewer, Viewer, {
 
         addChangeListener: function(listener) {
-            throw new Error('addChangeListener() should be implemented by subclass');
+            throw new Error('addChangeListener() should be implemented by ' + this.constructor.name);
         },
 
         addFocusListener: function(listener) {
-            throw new Error('addFocusListener() should be implemented by subclass');
+            throw new Error('addFocusListener() should be implemented by ' + this.constructor.name);
         },
 
         addBlurListener: function(listener) {
-            throw new Error('addBlurListener() should be implemented by subclass');
+            throw new Error('addBlurListener() should be implemented by ' + this.constructor.name);
         },
 
         addEventListener: function(type, listener) {
-            throw new Error('addEventListener() should be implemented by subclass');
+            throw new Error('addEventListener() should be implemented by ' + this.constructor.name);
         },
 
         triggerEvent: function(type, event) {
-            throw new Error('triggerEvent() should be implemented by subclass');
+            throw new Error('triggerEvent() should be implemented by ' + this.constructor.name);
         },
 
         getKeymap: function() {
-            throw new Error('getKeymap() should be implemented by subclass');
+            throw new Error('getKeymap() should be implemented by ' + this.constructor.name);
         },
 
         setKeymap: function(keymap) {
-            throw new Error('setKeymap() should be implemented by subclass');
+            throw new Error('setKeymap() should be implemented by ' + this.constructor.name);
         },
 
         isClean: function() {
-            throw new Error('isClean() should be implemented by subclass');
+            throw new Error('isClean() should be implemented by ' + this.constructor.name);
         },
 
         clearHistory: function() {
-            throw new Error('clearHistory() should be implemented by subclass');
+            throw new Error('clearHistory() should be implemented by ' + this.constructor.name);
         },
 
         markClean: function() {
-            throw new Error('markClean() should be implemented by subclass');
+            throw new Error('markClean() should be implemented by ' + this.constructor.name);
         },
 
         focus: function() {
-            throw new Error('focus() should be implemented by subclass');
+            throw new Error('focus() should be implemented by ' + this.constructor.name);
         },
 
         undo: function() {
-            throw new Error('undo() should be implemented by subclass');
+            throw new Error('undo() should be implemented by ' + this.constructor.name);
         },
 
         redo: function() {
-            throw new Error('redo() should be implemented by subclass');
+            throw new Error('redo() should be implemented by ' + this.constructor.name);
         },
 
         isDefaultKeyMap: function() {
-            throw new Error('isDefaultKeyMap() should be implemented by subclass');
+            throw new Error('isDefaultKeyMap() should be implemented by ' + this.constructor.name);
         },
 
         getWorkbenchShortcuts: function(desc) {
-            throw new Error('getWorkbenchShortcuts() should be implemented by subclass');
+            throw new Error('getWorkbenchShortcuts() should be implemented by ' + this.constructor.name);
         },
 
         getMenuItemsUnderEdit: function(items, menuItems, deferred) {
-            throw new Error('getWorkbenchShortcuts() should be implemented by subclass');
+            throw new Error('getMenuItemsUnderEdit() should be implemented by ' + this.constructor.name);
         },
 
         getContextMenuItems: function(opened, items, menuItems, deferred) {
-            throw new Error('getWorkbenchShortcuts() should be implemented by subclass');
+        	//TODO refactor the location of the implementaion
+            deferred.resolve(items);
         }
     });
 

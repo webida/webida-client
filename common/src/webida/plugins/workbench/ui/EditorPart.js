@@ -60,6 +60,9 @@ define([
         getFile: function() {
             return this.file;
         },
+        getContextMenuItems: function(opened, items, menuItems, deferred) {
+            deferred.resolve(items);
+        },
         toString: function() {
             var res = '<' + this.constructor.name + '>#' + this._partId;
             if (this.file) {
