@@ -59,15 +59,15 @@ define([
          * Creates Viewer Element
          */
         createAdapter: function() {
-        	var that = this;
+            var that = this;
             var container = this.getParentNode();
             if (container) {
                 this.form = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
                 container.appendChild(this.form);
                 this.form.addEventListener('keyup', function(e) {
-					if(e.target.value !== that.getContents().getText()){
-						that.getContents().update(e.target.value, that);
-					}
+                    if (e.target.value !== that.getContents().getText()) {
+                        that.getContents().update(e.target.value, that);
+                    }
                 });
             }
         },
@@ -80,6 +80,16 @@ define([
         refresh: function() {
             logger.info('refresh()', this.getContents().getText());
             this.form.value = this.getContents().getText();
+        },
+
+        getContextMenuItems: function(opened, items, menuItems, deferred) {
+            logger.info('getContextMenuItems(' + opened + ', items, menuItems, deferred)', items, menuItems);
+            items['Select &All'] = menuItems.editMenuItems['Select &All'];
+            deferred.resolve(items);
+        },
+
+        selectAll: function() {
+            this.form.select();
         }
     });
 

@@ -67,6 +67,21 @@ define([
     function MultiPageExampleEditorPart(file) {
         logger.info('new MulitiTabEditorPart(' + file + ')');
         MultiViewerEditorPart.apply(this, arguments);
+
+        var that = this;
+        this.on(MultiViewerEditorPart.TAB_SELECT, function(viewer) {
+            //To implment context menu
+            //TODO : this strange code will be removed before webida-client 1.5.0
+            //This is due to file.pendingCreator() of editors plugin.
+            //file.pendingCreator() will be removed sooner or later.
+            that.getFile().viewer = viewer;
+        });
+
+        //To implment context menu
+        //TODO : this strange code will be removed before webida-client 1.5.0
+        setTimeout(function() {
+            that.getFile().viewer = that.getActiveViewer();
+        }, 200);
     }
 
 
@@ -160,10 +175,6 @@ define([
 
             var that = this;
 
-			setTimeout(function(){
-				console.info(that.getActiveViewer());
-			}, 1000);
-
             //TODO : this.getContainer().getDataSource()
             var workbench = require('webida-lib/plugins/workbench/plugin');
             var dsRegistry = workbench.getDataSourceRegistry();
@@ -221,7 +232,7 @@ define([
         },
 
         addChangeListener: function(callback) {
-
+            logger.info('addChangeListener(' + callback + ')');
         },
 
         show: function() {
@@ -244,4 +255,3 @@ define([
 
     return MultiPageExampleEditorPart;
 });
-

@@ -734,7 +734,8 @@ define([
             }
         };
 
-        topic.publish('view.quit', event, function () {});
+        topic.publish('view.quit', event, function() {
+        });
     };
 
     editors.saveFile = function(option) {
@@ -815,7 +816,7 @@ define([
         logger.info('do nothing');
     };
 
-	//Tmp Code during version 1.3.0
+    //Tmp Code during version 1.3.0
     editors.bundle = {};
 
     /**
@@ -1253,8 +1254,8 @@ define([
     };
 
     editors.execCommandForCurrentEditorViewer = function(commandKey) {
+        logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');
         // Command means a method of EditorViewer which have no arguments
-
         if (editors.currentFile && editors.currentFile.viewer) {
             var viewer = editors.currentFile.viewer;
             return viewer[commandKey]();
