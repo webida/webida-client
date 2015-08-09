@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 /**
  * @fileoverview webida - workspace view
@@ -22,54 +22,95 @@
  *
  */
 
-define(['webida-lib/app',
-        'webida-lib/plugin-manager-0.1',
-        'webida-lib/plugins/workbench/preference-system/store',	// TODO: issue #12055
-        'webida-lib/plugins/workbench/plugin',
-        'webida-lib/webida-0.3',
-        'dijit',
-        'dijit/registry',
-        'dijit/Tree',
-        'dijit/tree/ObjectStoreModel',
-        'dojo/aspect',
-        'dojo/_base/array',
-        'dojo/_base/connect',
-        'dojo/_base/lang',
-        'dojo/_base/declare',
-        'dojo/Deferred',
-        'dojo/dom',
-        'dojo/dom-attr',
-        'dojo/dom-class',
-        'dojo/dom-construct',
-        'dojo/dom-geometry',
-        'dojo/dom-style',
-        'dojo/on',
-        'dojo/promise/all',
-        'dojo/store/Memory',
-        'dojo/store/Observable',
-        'dojo/topic',
-        'dojo/window',
-        './Node',
-        'text!./layer/workspace.html',
-        'webida-lib/widgets/views/view',
-        'webida-lib/util/path',
-        'popup-dialog',
-        'plugins/webida.notification/notification-message',
-        'external/lodash/lodash.min',
-        'external/async/dist/async.min',
-        'require',
-        'webida-lib/util/logger/logger-client'
-], function (ide, pluginManager, preferences, workbench, webida, dijit, registry, Tree,
-              ObjectStoreModel, aspect, array, connect, lang, declare, Deferred, dom,
-              domAttr, domClass, domConstruct, domGeom, domStyle, on, all,
-             Memory, Observable, topic, win, Node, markup, View, pathUtil,
-              PopupDialog, toastr, _, async, require, Logger) {
+// @formatter:off
+define([
+    'webida-lib/app',
+    'webida-lib/plugin-manager-0.1',
+    'webida-lib/plugins/workbench/preference-system/store',    // TODO: issue #12055
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/webida-0.3',
+    'dijit',
+    'dijit/registry',
+    'dijit/Tree',
+    'dijit/tree/ObjectStoreModel',
+    'dojo/aspect',
+    'dojo/_base/array',
+    'dojo/_base/connect',
+    'dojo/_base/lang',
+    'dojo/_base/declare',
+    'dojo/Deferred',
+    'dojo/dom',
+    'dojo/dom-attr',
+    'dojo/dom-class',
+    'dojo/dom-construct',
+    'dojo/dom-geometry',
+    'dojo/dom-style',
+    'dojo/on',
+    'dojo/promise/all',
+    'dojo/store/Memory',
+    'dojo/store/Observable',
+    'dojo/topic',
+    'dojo/window',
+    './Node',
+    'text!./layer/workspace.html',
+    'webida-lib/widgets/views/view',
+    'webida-lib/util/path',
+    'webida-lib/util/loadCSSList',
+    'popup-dialog',
+    'plugins/webida.notification/notification-message',
+    'external/lodash/lodash.min',
+    'external/async/dist/async.min',
+    'external/URIjs/src/URI',
+    'require',
+    'webida-lib/util/logger/logger-client'
+], function (
+    ide, 
+    pluginManager, 
+    preferences, 
+    workbench, 
+    webida, 
+    dijit, 
+    registry, 
+    Tree,
+    ObjectStoreModel, 
+    aspect, 
+    array, 
+    connect, 
+    lang, 
+    declare, 
+    Deferred, 
+    dom,
+    domAttr, 
+    domClass, 
+    domConstruct, 
+    domGeom, 
+    domStyle, 
+    on, 
+    all,
+    Memory, 
+    Observable, 
+    topic, 
+    win, 
+    Node, 
+    markup, 
+    View, 
+    pathUtil, 
+    loadCSSList,
+    PopupDialog, 
+    toastr, 
+    _, 
+    async, 
+    URI,
+    require,
+    Logger
+) {
     'use strict';
+// @formatter:on
 
-	var singleLogger = new Logger.getSingleton();
-	//var logger = new Logger();
-	//logger.setConfig('level', Logger.LEVELS.log);
-	//logger.off();
+    var singleLogger = new Logger.getSingleton();
+    //var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     singleLogger.log('loaded modules required by workspace. initializing workspace plugin\'s module');
 
@@ -87,44 +128,54 @@ define(['webida-lib/app',
 
     var EVT_NODE_ALL_DESELECTED = 'workspace.node.alldeselected';
     var MIME_TYPE_WEBIDA_RESOURCE_PATH = 'text/x-webida-resource-path';
-    
+
     var extensionPoints = {
         WORKSPACE_NODE_ICONS: 'webida.common.workspace:icons',
         WORKSPACE_NODE_OVERLAY_ICONS: 'webida.common.workspace:overlayIcons'
     };
-    
+
     var iconsExtensions = pluginManager.getExtensions(extensionPoints.WORKSPACE_NODE_ICONS);
     var overlayIconsExtensions = pluginManager.getExtensions(extensionPoints.WORKSPACE_NODE_OVERLAY_ICONS);
     var fileExtensionIconClassMap = {};
     var fileNameIconClassMap = {};
     var stateSetIconClassMap = {};
+    var cssFilePathList = [];
 
-    iconsExtensions.forEach(function (ext) {
+    iconsExtensions.forEach(function(ext) {
         for (var extName in ext.fileExtension) {
-            if (typeof extName === 'string') {
+            if ( typeof extName === 'string') {
                 fileExtensionIconClassMap[extName] = ext.fileExtension[extName];
             }
         }
 
         for (var fileName in ext.specificFileName) {
-            if (typeof fileName === 'string') {
+            if ( typeof fileName === 'string') {
                 fileNameIconClassMap[fileName] = ext.specificFileName[fileName];
             }
         }
+        var pluginLoc = ext.__plugin__.loc + '/';
+        var absolutePath = URI(ext.iconCssFilePath).absoluteTo(pluginLoc).toString();
+        cssFilePathList.push(absolutePath);
     });
 
-    overlayIconsExtensions.forEach(function (ext) {
+    overlayIconsExtensions.forEach(function(ext) {
         for (var stateSet in ext.stateMap) {
-            if (typeof stateSet === 'string') {
+            if ( typeof stateSet === 'string') {
                 stateSetIconClassMap[stateSet] = ext.stateMap[stateSet];
             }
         }
-    });    
+        var pluginLoc = ext.__plugin__.loc + '/';
+        var absolutePath = URI(ext.iconCssFilePath).absoluteTo(pluginLoc).toString();
+        cssFilePathList.push(absolutePath);
+    });
+
+    loadCSSList(cssFilePathList, function() {
+    });
 
     function selectNode(node) {
-        if (typeof node === 'string') {
+        if ( typeof node === 'string') {
             node = getNode(node);
-        } 
+        }
         if (!node) {
             return;
         }
@@ -161,12 +212,13 @@ define(['webida-lib/app',
         workspacePath = ide.getPath();
 
         // get last status
-        var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace', function () {
+        var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace', function() {
             var ret = {};
 
             var selected = getSelectedPath();
             if (selected) {
-                ret.selected = pathUtil.detachSlash(selected); // TODO: keep multi-selection
+                ret.selected = pathUtil.detachSlash(selected);
+                // TODO: keep multi-selection
             }
 
             var expanded = getExpandedNodes();
@@ -176,7 +228,8 @@ define(['webida-lib/app',
 
             return ret;
         });
-        //console.log('hina temp: lastStatus of workspace is ' + (lastStatus ? 'truthy' : 'falsy'));
+        //console.log('hina temp: lastStatus of workspace is ' + (lastStatus ?
+        // 'truthy' : 'falsy'));
 
         if (lastStatus) {
             lastExpanded = lastStatus.expanded;
@@ -192,8 +245,12 @@ define(['webida-lib/app',
         var store = new Memory();
         //store.setData([tempRoot]);
         store.setData(data);
-        store.getChildren = function (node) {
-            return this.query({ parent: node.id }, { sort: Node.compare });
+        store.getChildren = function(node) {
+            return this.query({
+                parent: node.id
+            }, {
+                sort: Node.compare
+            });
         };
         var observableModel = new Observable(store);
 
@@ -203,38 +260,43 @@ define(['webida-lib/app',
             query: {
                 id: workspacePath
             },
-            mayHaveChildren: function (node) {
+            mayHaveChildren: function(node) {
                 return node.isInternal;
             }
         });
 
         var focusedNode = null;
 
-        // Custom TreeNode class (based on dijit.TreeNode) that allows rich text labels
+        // Custom TreeNode class (based on dijit.TreeNode) that allows rich text
+        // labels
         var TreeNode = declare(Tree._TreeNode, {
-            _setLabelAttr: {node: "labelNode", type: "innerHTML"}
+            _setLabelAttr: {
+                node: "labelNode",
+                type: "innerHTML"
+            }
         });
 
         // create tree
         tree = new Tree({
             model: model,
-            _createTreeNode: function(args){
+            _createTreeNode: function(args) {
                 return new TreeNode(args);
             },
             openOnDblClick: true,
-            tabindex : 0,
-            getIconClass: function (item, opened) {
-                //console.log('hina temp: entered getIconClass() with ' + (item ? item.id: item));
-                setTimeout(function () {
-                    item.updateOverlayIcon(); 
+            tabindex: 0,
+            getIconClass: function(item, opened) {
+                //console.log('hina temp: entered getIconClass() with ' + (item ?
+                // item.id: item));
+                setTimeout(function() {
+                    item.updateOverlayIcon();
                 }, 0);
                 if (!item || item.isInternal) {
                     // directory
-                    return (opened ? 'dijitFolderOpened' : 'dijitFolderClosed');                    
+                    return ( opened ? 'dijitFolderOpened' : 'dijitFolderClosed');
                 } else {
                     // file
                     if (fileNameIconClassMap.hasOwnProperty(item.name)) {
-                        return fileNameIconClassMap[item.name];                        
+                        return fileNameIconClassMap[item.name];
                     } else {
                         var extName = item.name.indexOf('.') >= 0 ? item.name.split('.').pop() : '';
                         if (fileExtensionIconClassMap.hasOwnProperty(extName)) {
@@ -246,7 +308,7 @@ define(['webida-lib/app',
                 }
             },
 
-            onDblClick: function (item) {
+            onDblClick: function(item) {
                 if (item) {
                     if (item.isInternal) {
                         var nodes = this.getNodesByItem(item);
@@ -262,17 +324,17 @@ define(['webida-lib/app',
                 }
             },
 
-            onFocus : function () {
+            onFocus: function() {
                 this.focus();
             },
 
-            onBlur : function () {
+            onBlur: function() {
                 if (focusedNode) {
                     $(focusedNode).removeClass('focused');
                 }
             },
 
-            checkItemAcceptance: function (target, source) {
+            checkItemAcceptance: function(target, source) {
                 var treeNode = registry.byId(dijit.getEnclosingWidget(target).id);
                 if (treeNode && treeNode.item) {
                     var targetNode = treeNode.item;
@@ -285,7 +347,7 @@ define(['webida-lib/app',
                 }
             },
 
-            onMouseDown: function (event) {
+            onMouseDown: function(event) {
                 var id = dijit.getEnclosingWidget(event.target).id;
                 if (id === 'wv-tree' || id === 'workspace') {
                     return;
@@ -313,8 +375,7 @@ define(['webida-lib/app',
             }
         }, 'wv-tree');
 
-
-        aspect.after(tree, 'focusNode', function () {
+        aspect.after(tree, 'focusNode', function() {
             if (focusedNode) {
                 $(focusedNode).removeClass('focused');
             }
@@ -338,8 +399,8 @@ define(['webida-lib/app',
         tree.dndController.events[4].splice(0, 1);
         tree.dndController.events.splice(4, 1);
 
-        aspect.around(tree, '_getNext', function () {
-            return function (node) {
+        aspect.around(tree, '_getNext', function() {
+            return function(node) {
                 if (node.isExpandable && node.isExpanded && node.hasChildren()) {
                     // if this is an expanded node, get the first child
                     var children = node.getChildren();
@@ -348,7 +409,8 @@ define(['webida-lib/app',
                             return children[i];
                         }
                     }
-                    return null; // TreeNode
+                    return null;
+                    // TreeNode
                 } else {
                     // find a parent node with a sibling
                     while (node && node.isTreeNode) {
@@ -357,7 +419,8 @@ define(['webida-lib/app',
                             while (!returnNode.isFocusable()) {
                                 returnNode = returnNode.getNextSibling();
                             }
-                            return returnNode; // TreeNode
+                            return returnNode;
+                            // TreeNode
                         }
                         node = node.getParent();
                     }
@@ -366,8 +429,8 @@ define(['webida-lib/app',
             };
         });
 
-        aspect.around(tree, '_onRightArrow', function () {
-            return function (event, node) {
+        aspect.around(tree, '_onRightArrow', function() {
+            return function(event, node) {
                 if (node.isExpandable && !node.isExpanded) {
                     this._expandNode(node);
                 } else if (node.hasChildren()) {
@@ -385,8 +448,8 @@ define(['webida-lib/app',
             };
         });
 
-        aspect.around(tree, '_onUpArrow', function () {
-            return function (event, node) {
+        aspect.around(tree, '_onUpArrow', function() {
+            return function(event, node) {
                 var previousSibling = node.getPreviousSibling();
                 if (previousSibling) {
                     while (!previousSibling.isFocusable()) {
@@ -424,10 +487,11 @@ define(['webida-lib/app',
             };
         });
 
-        aspect.around(tree.dndController, 'onClickPress', function () {
-            return function (e) {
+        aspect.around(tree.dndController, 'onClickPress', function() {
+            return function(e) {
                 // summary:
-                //		Event processor for onmousedown/ontouchstart/onkeydown corresponding to a click event
+                //		Event processor for onmousedown/ontouchstart/onkeydown
+                // corresponding to a click event
                 // e: Event
                 //		onmousedown/ontouchstart/onkeydown event
                 // tags:
@@ -441,15 +505,18 @@ define(['webida-lib/app',
                 var treeNode = e.type === 'keydown' ? this.tree.focusedChild : this.current;
 
                 if (!treeNode) {
-                    // Click must be on the Tree but not on a TreeNode, happens especially when Tree is
+                    // Click must be on the Tree but not on a TreeNode, happens
+                    // especially when Tree is
                     // stretched to fill a pane of a BorderContainer, etc.
                     return;
                 }
 
                 var copy = connect.isCopyKey(e), id = treeNode.id;
 
-                // if shift key is not pressed, and the node is already in the selection,
-                // delay deselection until onmouseup so in the case of DND, deselection
+                // if shift key is not pressed, and the node is already in the
+                // selection,
+                // delay deselection until onmouseup so in the case of DND,
+                // deselection
                 // will be canceled by onmousemove.
                 if (!this.singular && !e.shiftKey && this.selection[id]) {
                     this._doDeselect = true;
@@ -461,13 +528,13 @@ define(['webida-lib/app',
             };
         });
 
-        aspect.around(tree.dndController, '_onDragMouse', function (original) {
-            return function () {
+        aspect.around(tree.dndController, '_onDragMouse', function(original) {
+            return function() {
                 if (this.current.item && this.current.item.isInternal) {
                     var currentItem = this.current.item;
                     if (dragEnterNode !== this.current.item) {
                         dragEnterNode = this.current.item;
-                        setTimeout(function () {
+                        setTimeout(function() {
                             if (dragEnterNode === currentItem) {
                                 currentItem.expandItem();
                             }
@@ -478,8 +545,8 @@ define(['webida-lib/app',
             };
         });
 
-        aspect.around(tree.dndController, 'onMouseUp', function (original) {
-            return function () {
+        aspect.around(tree.dndController, 'onMouseUp', function(original) {
+            return function() {
                 if (this.mouseDown) {
                     dragEnterNode = null;
                 }
@@ -488,8 +555,8 @@ define(['webida-lib/app',
         });
 
         // multi selection limit : all selected nodes have a same parent.
-        aspect.around(tree.dndController, 'userSelect', function (original) {
-            return function (node, multi, range) {
+        aspect.around(tree.dndController, 'userSelect', function(original) {
+            return function(node, multi, range) {
                 if (multi || range) {
                     var anchorItem;
                     if (this.anchor) {
@@ -511,15 +578,15 @@ define(['webida-lib/app',
                         return;
                     }
 
-                    // can't range select from below node if selected node was expanded
+                    // can't range select from below node if selected node was
+                    // expanded
                     if (range) {
-                        var result = this._compareNodes(this.anchor.rowNode, node.rowNode),
-                            begin, end, anchor = this.anchor;
+                        var result = this._compareNodes(this.anchor.rowNode, node.rowNode), begin, end, anchor = this.anchor;
 
-                        if (result < 0) { //current is after anchor
+                        if (result < 0) {//current is after anchor
                             begin = anchor;
                             end = node;
-                        } else { //current is before anchor
+                        } else {//current is before anchor
                             begin = node;
                             end = anchor;
                         }
@@ -538,7 +605,7 @@ define(['webida-lib/app',
         });
 
         // context menu handle
-        on(tree, 'contextmenu', function (event) {
+        on(tree, 'contextmenu', function(event) {
             var id = dijit.getEnclosingWidget(event.target).id;
             var treeNode = registry.byId(id);
             if (!treeNode || !treeNode.item) {
@@ -558,7 +625,7 @@ define(['webida-lib/app',
             selectNode(rootNode);
         }
 
-        tree.onOpen = function (item) {
+        tree.onOpen = function(item) {
             var self = this;
             function expandNode() {
                 //console.log('hina temp: onOpen on node ' + item.id);
@@ -567,27 +634,31 @@ define(['webida-lib/app',
                     return;
                 }
 
-                //var t = timedLogger.log('expanding directory "' + item.id + '"');
-                item.fetchChildren(function (/*alreadyFetched*/) {
+                //var t = timedLogger.log('expanding directory "' + item.id +
+                // '"');
+                item.fetchChildren(function(/*alreadyFetched*/) {
                     //console.log('hina temp: callback of fetchChildren ');
                     /*
-                    switch (alreadyFetched) {
-                        case 0:
-                            timedLogger.log('newly fetched the children of directory "' + item.id + '"', t);
-                            break;
-                        case 1:
-                            timedLogger.log('already fetched the children of directory "' + item.id + '"', t);
-                            break;
-                        case 2:
-                            timedLogger.log('already fetched the children of directory (case 2) "' + item.id + '"', t);
-                            break;
-                        default:
-                            console.assert(false, 'unreachable');
-                    }
+                     switch (alreadyFetched) {
+                     case 0:
+                     timedLogger.log('newly fetched the children of directory "'
+                     + item.id + '"', t);
+                     break;
+                     case 1:
+                     timedLogger.log('already fetched the children of directory
+                     "' + item.id + '"', t);
+                     break;
+                     case 2:
+                     timedLogger.log('already fetched the children of directory
+                     (case 2) "' + item.id + '"', t);
+                     break;
+                     default:
+                     console.assert(false, 'unreachable');
+                     }
                      */
                     if (item.isShown()) {
                         var children = self.model.store.getChildren(item);
-                        for (var i = 0; i < children.length ; i++) {
+                        for (var i = 0; i < children.length; i++) {
                             var child = children[i];
                             topic.publish('workspace.node.shown', child.getPath());
 
@@ -596,8 +667,7 @@ define(['webida-lib/app',
                             }
 
                             var j;
-                            if (lastExpanded && lastExpanded.length > 0 &&
-                                (j = lastExpanded.indexOf(child.id)) >= 0) {
+                            if (lastExpanded && lastExpanded.length > 0 && ( j = lastExpanded.indexOf(child.id)) >= 0) {
                                 lastExpanded.splice(j, 1);
                                 child.expandItem();
                             }
@@ -614,7 +684,9 @@ define(['webida-lib/app',
 
             if (item.toRefresh) {
                 item.toRefresh = false;
-                fsCache.refreshHierarchy(item.id, { level: 1 }, expandNode);
+                fsCache.refreshHierarchy(item.id, {
+                    level: 1
+                }, expandNode);
             } else {
                 expandNode();
             }
@@ -655,55 +727,53 @@ define(['webida-lib/app',
 
                 var dragged, c = getDnDCase(dt.types);
                 switch (c) {
-                case 'innerToInner':
-                    dragged = getSelectedNodes();
-                    var droppable = dragged && dragged.length && dragged.every(function (n) {
-                        return  n !== target &&
-                            n.getParentNode() !== target &&
-                            !n.isAncestorOf(target);
-                    });
-                    if (!droppable) {
-                        return;
-                    }
+                    case 'innerToInner':
+                        dragged = getSelectedNodes();
+                        var droppable = dragged && dragged.length && dragged.every(function(n) {
+                            return n !== target && n.getParentNode() !== target && !n.isAncestorOf(target);
+                        });
+                        if (!droppable) {
+                            return;
+                        }
 
-                    if (event.ctrlKey) {
-                        dt.dropEffect = 'copy';
-                    } else {
-                        dt.dropEffect = 'move';
-                    }
+                        if (event.ctrlKey) {
+                            dt.dropEffect = 'copy';
+                        } else {
+                            dt.dropEffect = 'move';
+                        }
 
                     /*falls through*/
-                case 'outerToInner':
-                    if (c === 'outerToInner') {
-                        dt.dropEffect = 'copy';
-                    }
-
-                    if (treeNode.item.isInternal) {
-                        dragEnterNode = treeNode;
-                        if (!isTimerInstalled) {
-                            setTimeout(function () {
-                                if (dragEnterNode === treeNode) {
-                                    dragEnterNode.item.expandItem();
-                                }
-                            }, 1000);
-                            isTimerInstalled = true;
+                    case 'outerToInner':
+                        if (c === 'outerToInner') {
+                            dt.dropEffect = 'copy';
                         }
-                    } else {
-                        var parent = treeNode.item.getParentNode();
-                        var nodes = tree.getNodesByItem(parent);
-                        if (nodes[0]) {
-                            treeNode = nodes[0];
+
+                        if (treeNode.item.isInternal) {
+                            dragEnterNode = treeNode;
+                            if (!isTimerInstalled) {
+                                setTimeout(function() {
+                                    if (dragEnterNode === treeNode) {
+                                        dragEnterNode.item.expandItem();
+                                    }
+                                }, 1000);
+                                isTimerInstalled = true;
+                            }
+                        } else {
+                            var parent = treeNode.item.getParentNode();
+                            var nodes = tree.getNodesByItem(parent);
+                            if (nodes[0]) {
+                                treeNode = nodes[0];
+                            }
                         }
-                    }
 
-                    if (treeNode && treeNode.domNode.className.indexOf('dijitTree') !== -1) {
-                        domClass.add(treeNode.domNode.firstChild, 'dijitTreeRowHover');
-                    }
+                        if (treeNode && treeNode.domNode.className.indexOf('dijitTree') !== -1) {
+                            domClass.add(treeNode.domNode.firstChild, 'dijitTreeRowHover');
+                        }
 
-                    break;
-                default:
-                    // download by dragging falls to this default case.
-                    break;
+                        break;
+                    default:
+                        // download by dragging falls to this default case.
+                        break;
                 }
             }
         }
@@ -744,7 +814,7 @@ define(['webida-lib/app',
                         srcPath = pathUtil.detachSlash(srcPath);
 
                         var srcNodes = [], quit = false;
-                        paths.forEach(function (path) {
+                        paths.forEach(function(path) {
                             if (quit) {
                                 return;
                             }
@@ -755,15 +825,13 @@ define(['webida-lib/app',
                                 srcPath = pathUtil.detachSlash(srcPath);
                                 var srcNode = tree.model.store.query({id: srcPath})[0];
                                 if (srcNode.getParentNode() === targetNode) {
-                                    toastr.error('Cannot copy or move "' + srcNode.getPath() +
-                                                 '" to its parent directory');
+                                    toastr.error('Cannot copy or move "' + srcNode.getPath() + '" to its parent directory');
                                     quit = true;
                                 } else {
                                     srcNodes.push(srcNode);
                                 }
                             } else {
-                                toastr.info('Source fsid is different from the current one, ' +
-                                            'which is currently not supported');
+                                toastr.info('Source fsid is different from the current one, ' + 'which is currently not supported');
                                 quit = true;
                             }
                         });
@@ -790,12 +858,11 @@ define(['webida-lib/app',
                     } else {
                         // DnD from the outside to worksapce
                         var i, selected = [];
-                        if (dt.items && dt.items[0] &&
-                            dt.items[0].webkitGetAsEntry && dt.items[0].kind === 'file') {
+                        if (dt.items && dt.items[0] && dt.items[0].webkitGetAsEntry && dt.items[0].kind === 'file') {
 
                             // Chrome or future Firefox
 
-                            for (i = 0; i < dt.items.length ; i++) {
+                            for ( i = 0; i < dt.items.length; i++) {
                                 selected.push(dt.items[i].webkitGetAsEntry());
                             }
                             targetNode.upload(selected);
@@ -803,7 +870,7 @@ define(['webida-lib/app',
 
                             // Firefox 31.x
 
-                            for (i = 0; i < dt.files.length; i++) {
+                            for ( i = 0; i < dt.files.length; i++) {
                                 selected.push(dt.files[i]);
                             }
                             targetNode.upload(selected);
@@ -858,7 +925,7 @@ define(['webida-lib/app',
             function setContentsForInternalDnD(nodes, dt) {
                 var nodePath = '';
                 var fsid = ide.getFsid();
-                nodes.forEach(function (node) {
+                nodes.forEach(function(node) {
                     nodePath += fsid + node.getPath() + ':';
                 });
                 dt.setData(MIME_TYPE_WEBIDA_RESOURCE_PATH, nodePath);
@@ -868,9 +935,10 @@ define(['webida-lib/app',
                 var len = nodes.length;
                 var sources = '';
                 var downloadFileName = '';
-                //console.log('hina temp: auth token used in download by dragging = ' + authToken);
+                //console.log('hina temp: auth token used in download by dragging
+                // = ' + authToken);
                 if (len > 1) {
-                    nodes.forEach(function (node) {
+                    nodes.forEach(function(node) {
                         sources += node.getPath() + ';';
                     });
                     sources = sources.substring(0, sources.lastIndexOf(';'));
@@ -878,11 +946,11 @@ define(['webida-lib/app',
                 } else {
                     sources = nodes[0].getPath();
                     downloadFileName = nodes[0].name;
-                    if (nodes[0].isInternal) {      // directory
+                    if (nodes[0].isInternal) {// directory
                         downloadFileName += '.zip';
                     }
                 }
-                ide.getMount().makeDnDDownloadUrl((len > 1 || nodes[0].isInternal), sources, downloadFileName, function (err, downloadUrl) {
+                ide.getMount().makeDnDDownloadUrl((len > 1 || nodes[0].isInternal), sources, downloadFileName, function(err, downloadUrl) {
                     dt.setData('DownloadURL', downloadUrl);
                 });
             }
@@ -933,22 +1001,24 @@ define(['webida-lib/app',
             title: 'Delete',
             message: msg,
             type: 'error'
-        }).then(function () {
+        }).then(function() {
             if (nodes.length > 1) {
-                var toDelete = nodes.map(function (n) { return n.getPath(); });
+                var toDelete = nodes.map(function(n) {
+                    return n.getPath();
+                });
                 toDelete.deleted = [];
                 topic.publish('workspace.nodes.deleting', toDelete);
             }
             var parentNode = nodes[0].getParentNode();
-            async.each(nodes, function (node, callback) {
-                fsCache.delete(node.id, node.isInternal, function (err) {
+            async.each(nodes, function(node, callback) {
+                fsCache['delete'](node.id, node.isInternal, function(err) {
                     if (err) {
                         callback(err);
                     } else {
                         callback();
                     }
                 });
-            }, function (err) {
+            }, function(err) {
                 if (err) {
                     console.log('Failed to delete (' + err + ')');
                     toastr.error('Failed to delete');
@@ -959,15 +1029,16 @@ define(['webida-lib/app',
                     toastr.success('All files have been deleted successfully');
                 }
             });
-        }, function () {
+        }, function() {
             workbench.focusLastWidget();
         });
     }
 
     function copySelected() {
         var targetNodes = getSelectedNodes();
-        if (targetNodes && targetNodes.length > 0 &&
-            targetNodes.every(function (node) { return !node.isRoot(); })) {
+        if (targetNodes && targetNodes.length > 0 && targetNodes.every(function(node) {
+            return !node.isRoot();
+        })) {
             copied = targetNodes;
             cut = null;
         }
@@ -975,8 +1046,9 @@ define(['webida-lib/app',
 
     function cutSelected() {
         var targetNodes = getSelectedNodes();
-        if (targetNodes && targetNodes.length > 0 &&
-            targetNodes.every(function (node) { return !node.isRoot(); })) {
+        if (targetNodes && targetNodes.length > 0 && targetNodes.every(function(node) {
+            return !node.isRoot();
+        })) {
             copied = null;
             cut = targetNodes;
         }
@@ -984,7 +1056,8 @@ define(['webida-lib/app',
 
     function pasteToSelected() {
         var targetNodes = getSelectedNodes();
-        if (targetNodes && targetNodes.length === 1) { // TODO: remove length 1 constraint later
+        if (targetNodes && targetNodes.length === 1) {// TODO: remove length 1
+            // constraint later
             var targetNode = targetNodes[0];
             if (!targetNode.isInternal) {
                 targetNode = targetNode.getParentNode();
@@ -1009,7 +1082,9 @@ define(['webida-lib/app',
 
     function getSelectedPaths() {
         var arr = tree ? (tree.selectedItems || []) : [];
-        return arr.map(function (i) { return i.getPath(); });
+        return arr.map(function(i) {
+            return i.getPath();
+        });
     }
 
     function exists(path) {
@@ -1025,6 +1100,7 @@ define(['webida-lib/app',
     function getSelectedNodes() {
         return tree ? (tree.selectedItems || []) : [];
     }
+
     function getNode(path) {
         var relPath = path.substr(rootNode.getPath().length);
         return rootNode.getSubnode(relPath);
@@ -1035,18 +1111,17 @@ define(['webida-lib/app',
         function expandAncestorInner(node, segments) {
             var deferred = new Deferred();
 
-            node.expandItem().then(function (result) {
+            node.expandItem().then(function(result) {
                 if (result === true) {
                     if (segments.length > 0) {
                         var s = node.getSubnode(segments[0]);
                         if (s) {
                             segments.shift();
-                            expandAncestorInner(s, segments).then(function (val) {
+                            expandAncestorInner(s, segments).then(function(val) {
                                 deferred.resolve(val);
                             });
                         } else {
-                            deferred.resolve(node.getPath() + ' does not have a child named ' +
-                                             segments[0]);
+                            deferred.resolve(node.getPath() + ' does not have a child named ' + segments[0]);
                         }
                     } else {
                         deferred.resolve(true);
@@ -1072,11 +1147,11 @@ define(['webida-lib/app',
         var targetNode = getNode(path);
         return targetNode.upload(files);
     }
-    
+
     function initializeSyncEditorFocus() {
-        topic.subscribe('editors.selected', function (path) {
+        topic.subscribe('editors.selected', function(path) {
             if (syncingWithEditor) {
-                expandAncestors(path).then(function (result) {
+                expandAncestors(path).then(function(result) {
                     if (result === true) {
                         var node = tree.model.store.get(path);
                         if (node) {
@@ -1085,23 +1160,21 @@ define(['webida-lib/app',
                             toastr.error('No such file "' + path + '" in the workspace');
                         }
                     } else {
-                        toastr.error('Error while expanding to "' + path +
-                                     '": ' + result);
+                        toastr.error('Error while expanding to "' + path + '": ' + result);
                     }
                 });
             }
             editorsSelection = path;
         });
 
-        topic.subscribe('editors.closed', function (path) {
+        topic.subscribe('editors.closed', function(path) {
             if (editorsSelection === path) {
                 editorsSelection = null;
             }
         });
 
-        topic.subscribe('workspace.node.selected', function (path) {
-            if (syncingWithEditor && !pathUtil.isDirPath(path) &&
-                getSelectedNodes().length === 1) {
+        topic.subscribe('workspace.node.selected', function(path) {
+            if (syncingWithEditor && !pathUtil.isDirPath(path) && getSelectedNodes().length === 1) {
                 topic.publish('#REQUEST.selectFile', path);
             }
         });
@@ -1124,7 +1197,6 @@ define(['webida-lib/app',
         domAttr.set(item, 'rel', 'tooltip');
         domAttr.set(item, 'title', tooltip);
 
-
         // default icon
         if (options.isToggle) {
             if (toggleFlags[options.id]) {
@@ -1145,7 +1217,7 @@ define(['webida-lib/app',
         domStyle.set(item, 'margin-top', '4px');
         domStyle.set(item, 'margin-right', '4px');
 
-        on(item, 'mouseover', function () {
+        on(item, 'mouseover', function() {
             if (options.isToggle) {
                 if (toggleFlags[options.id]) {
                     domClass.replace(item, options.iconHover + 'Toggled');
@@ -1156,7 +1228,7 @@ define(['webida-lib/app',
                 domClass.replace(item, options.iconHover);
             }
         });
-        on(item, 'mouseout', function () {
+        on(item, 'mouseout', function() {
             if (options.isToggle) {
                 if (toggleFlags[options.id]) {
                     domClass.replace(item, options.iconNormal + 'Toggled');
@@ -1167,7 +1239,7 @@ define(['webida-lib/app',
                 domClass.replace(item, options.iconNormal);
             }
         });
-        on(item, 'mousedown', function () {
+        on(item, 'mousedown', function() {
             if (options.isToggle) {
                 toggleFlags[options.id] = !toggleFlags[options.id];
                 var tooltip = (toggleFlags[options.id] === true) ? options.tooltip.toggle : options.tooltip.normal;
@@ -1184,7 +1256,7 @@ define(['webida-lib/app',
             }
             item._mousePushed = true;
         });
-        on(item, 'mouseup', function () {
+        on(item, 'mouseup', function() {
             item.mousepushed = false;
             if (options.isToggle) {
                 if (toggleFlags[options.id]) {
@@ -1196,7 +1268,7 @@ define(['webida-lib/app',
                 domClass.replace(item, options.iconNormal);
             }
         });
-        on(item, 'click', function () {
+        on(item, 'click', function() {
             options.onClick();
         });
 
@@ -1205,7 +1277,7 @@ define(['webida-lib/app',
 
     function initializeToolbar() {
 
-        var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace:Toolbar', function () {
+        var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace:Toolbar', function() {
             var ret = {};
             ret.syncingWithEditor = syncingWithEditor;
             return ret;
@@ -1222,11 +1294,14 @@ define(['webida-lib/app',
             iconHover: 'wvIconSyncHover',
             isToggle: true,
             toggled: !syncingWithEditor,
-            tooltip: {normal: 'Stop Sync', toggle: 'Sync with Editor'},
-            onClick: function () {
+            tooltip: {
+                normal: 'Stop Sync',
+                toggle: 'Sync with Editor'
+            },
+            onClick: function() {
                 syncingWithEditor = !syncingWithEditor;
                 if (syncingWithEditor && editorsSelection) {
-                    expandAncestors(editorsSelection).then(function (result) {
+                    expandAncestors(editorsSelection).then(function(result) {
                         if (result === true) {
                             var node = tree.model.store.get(editorsSelection);
                             if (node) {
@@ -1235,8 +1310,7 @@ define(['webida-lib/app',
                                 toastr.error('No such file "' + editorsSelection + '" in the workspace');
                             }
                         } else {
-                            toastr.error('Error while expanding to "' +
-                                         editorsSelection + '": ' + result);
+                            toastr.error('Error while expanding to "' + editorsSelection + '": ' + result);
                         }
                     });
                 }
@@ -1248,19 +1322,22 @@ define(['webida-lib/app',
             iconPushed: 'wvIconCollapseAll',
             iconHover: 'wvIconCollapseAll',
             isToggle: false,
-            tooltip: {normal: 'Collapse All', toggle: 'Collapse All'},
-            onClick: function () {
+            tooltip: {
+                normal: 'Collapse All',
+                toggle: 'Collapse All'
+            },
+            onClick: function() {
                 tree.collapseAll();
             }
         });
     }
 
     function initializeFocus() {
-        topic.subscribe('workspace.node.selected', function () {
+        topic.subscribe('workspace.node.selected', function() {
             var nodes = getSelectedNodes();
             if (nodes && nodes.length > 0) {
                 var paths = [];
-                nodes.forEach(function (node) {
+                nodes.forEach(function(node) {
                     paths.push(node.id);
                 });
                 workbench.setContext(paths);
@@ -1268,11 +1345,10 @@ define(['webida-lib/app',
         });
     }
 
-
     function initializeFiltering() {
         function hideNodes(filterFunc, bHide) {
             var data = tree.model.store.data;
-            data.forEach(function (elem) {
+            data.forEach(function(elem) {
                 if (filterFunc(elem)) {
                     if (bHide) {
                         elem.hide();
@@ -1337,7 +1413,7 @@ define(['webida-lib/app',
             filters['workspace:filter:.*'] = isHidden;
             filters['workspace:filter:.w.p'] = isSystemRes;
             var keys = Object.keys(filters);
-            keys.forEach(function (key) {
+            keys.forEach(function(key) {
                 if (key !== 'filterFuncs') {
                     applyPreferences(filters[key], key);
                 }
@@ -1364,8 +1440,9 @@ define(['webida-lib/app',
                 removeFilterFunc(filters.filterFuncs[id]);
             }
         }
+
         //console.log('addLoadedListener');
-        preferences.addLoadedListener(function () {
+        preferences.addLoadedListener(function() {
             initPreferences();
             preferences.addFieldChangeListener('workspace:filter:.*', applyPreferences);
             preferences.addFieldChangeListener('workspace:filter:.w.p', applyPreferences);
@@ -1452,8 +1529,8 @@ define(['webida-lib/app',
                 return node.overlayIconInfo[stateSet];
             } else {
                 return undefined;
-            }               
-        
+            }
+
         } else {
             throw new Error('assertion fail: unreachable');
         }
@@ -1463,15 +1540,17 @@ define(['webida-lib/app',
     function getChildrenPaths(path) {
         var node = getNode(path);
         if (node) {
-            return (node.getSubnodes() || []).map(function (n) { return n.getPath(); });
+            return (node.getSubnodes() || []).map(function(n) {
+                return n.getPath();
+            });
         } else {
             throw new Error('assertion fail: unreachable');
         }
     }
-        
+
     var workspaceView = {
         // for webida.common.workbench:views extension point
-        getView: function () {
+        getView: function() {
             if (!view) {
                 view = new View('workspaceView', 'Workspace');
                 view.setContent(domConstruct.toDom(markup));
@@ -1480,7 +1559,7 @@ define(['webida-lib/app',
         },
 
         // for webida.common.workbench:views extension point
-        onViewAppended: function () {
+        onViewAppended: function() {
             function _loadCss(url) {
                 var link = document.createElement('link');
                 link.type = 'text/css';
@@ -1488,6 +1567,7 @@ define(['webida-lib/app',
                 link.href = url;
                 document.getElementsByTagName('head')[0].appendChild(link);
             }
+
             _loadCss(require.toUrl('webida-lib/plugins/workspace/wv.css'));
 
             initializeTree();
@@ -1502,23 +1582,23 @@ define(['webida-lib/app',
             opt.key = 'W';
             workbench.registToViewFocusList(view, opt);
 
-            topic.subscribe('view.selected', function (event) {
+            topic.subscribe('view.selected', function(event) {
                 var view = event.view;
                 if (view.getId() === 'workspaceView') {
                     tree.focus();
                 }
             });
-            
-            topic.subscribe('workspace.node.overlayicon.state.changed', function (path, stateSet, state) {
+
+            topic.subscribe('workspace.node.overlayicon.state.changed', function(path, stateSet, state) {
                 setNodeOverlayIconInfo(path, stateSet, state);
             });
         },
 
         // copy, cut, and paste
-        copySelected : copySelected,
-        cutSelected : cutSelected,
-        pasteToSelected : pasteToSelected,
-        isCopiedOrCut: function () {
+        copySelected: copySelected,
+        cutSelected: cutSelected,
+        pasteToSelected: pasteToSelected,
+        isCopiedOrCut: function() {
             return copied || cut;
         },
 
@@ -1535,21 +1615,21 @@ define(['webida-lib/app',
         getNodeOverlayIconInfo: getNodeOverlayIconInfo,
         getChildrenPaths: getChildrenPaths,
 
-        removeInteractively : removeInteractively,
+        removeInteractively: removeInteractively,
         renameNodeInteractively: renameNodeInteractively,
 
         selectNode: selectNode,
 
-        expandAncestors: expandAncestors, 
+        expandAncestors: expandAncestors,
         upload: upload,
-        
-        getFileExtensionIconClassMap : function () {
+
+        getFileExtensionIconClassMap: function() {
             return fileExtensionIconClassMap;
-        },        
-        getFileNameIconClassMap : function () {
+        },
+        getFileNameIconClassMap: function() {
             return fileNameIconClassMap;
-        },        
-        getStateSetIconClassMap : function () {
+        },
+        getStateSetIconClassMap: function() {
             return stateSetIconClassMap;
         }
     };
