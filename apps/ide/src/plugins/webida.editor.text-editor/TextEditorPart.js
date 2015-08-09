@@ -54,7 +54,7 @@ define([
     topic, 
     Logger
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     //TODO : this.viewer -> this.getViewer()
@@ -194,7 +194,7 @@ define([
         /**
          * If viewer does not exist when calling getViewer(),
          * this method is called to create new viewer.
-         * 
+         *
          * @see Part.js getViewer()
          * @override
          */
@@ -306,6 +306,13 @@ define([
                 logger.info('this.viewer not found');
                 logger.trace();
                 return true;
+            }
+        },
+
+        getContextMenuItems: function(opened, items, menuItems, deferred) {
+            var viewer = this.getViewer();
+            if (viewer) {
+                viewer.getContextMenuItems(opened, items, menuItems, deferred);
             }
         }
     });

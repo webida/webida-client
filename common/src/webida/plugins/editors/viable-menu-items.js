@@ -1,28 +1,34 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
-define(['./plugin',
-        './menu-items',
-        'dojo/Deferred',
-        'external/lodash/lodash.min'
-], function (editors, menuItems, Deferred, _) {
-    'use strict';    
+// @formatter:off
+define([
+    './plugin', 
+    './menu-items', 
+    'dojo/Deferred', 
+    'external/lodash/lodash.min'
+], function(
+    editors, 
+    menuItems, 
+    Deferred, 
+    _
+) {
+    'use strict';
+// @formatter:on
 
-
-    
     function getItemsUnderFile() {
         var items = {};
         var opened = _.values(editors.files);
@@ -61,7 +67,7 @@ define(['./plugin',
         var viewer = editors.currentFile && editors.currentFile.viewer;
         if (viewer) {
             viewer.getMenuItemsUnderEdit(items, menuItems, deferred);
-        }       
+        }
 
         return deferred;
     }
@@ -74,7 +80,7 @@ define(['./plugin',
             var items = {};
             items['&Replace'] = menuItems.findMenuItems['&Replace'];
             items['F&ind'] = menuItems.findMenuItems['F&ind'];
-            items['&Highlight to Find'] = menuItems.findMenuItems['&Highlight to Find'];            
+            items['&Highlight to Find'] = menuItems.findMenuItems['&Highlight to Find'];
             if (editors.execCommandForCurrentEditorViewer('existSearchQuery')) {
                 items['Find &Next'] = menuItems.findMenuItems['Find &Next'];
                 items['Find &Previous'] = menuItems.findMenuItems['Find &Previous'];
@@ -133,10 +139,10 @@ define(['./plugin',
         // Navigate Editors
         var naviEditorsItems = {};
 
-        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab',
-                         'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
+        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 
+            'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
 
-        _.each(itemsList, function (item) {
+        _.each(itemsList, function(item) {
             if (getViewRunnableMenuItems(item)) {
                 naviEditorsItems[item] = menuItems.navMenuItems['&Navigate Editors'][item];
             }
@@ -145,12 +151,12 @@ define(['./plugin',
         items['&Navigate Editors'] = naviEditorsItems;
 
         if (opened && opened.length >= 1) {
-            items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];            
-            
+            items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];
+
             if (editors.execCommandForCurrentEditorViewer('isDefaultKeyMap')) {
                 items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
-            }            
-           
+            }
+
             if (editors.execCommandForCurrentEditorViewer('isThereMatchingBracket')) {
                 items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
             }
@@ -178,7 +184,7 @@ define(['./plugin',
         return items;
     }
 
-    function getContextMenuItems() {   
+    function getContextMenuItems() {
         var deferred = new Deferred();
         var items = {};
 
@@ -186,11 +192,11 @@ define(['./plugin',
         if (!opened || opened.length < 1) {
             return null;
         }
-        
-        var viewer = editors.currentFile && editors.currentFile.viewer;
-        if (viewer) {
-            viewer.getContextMenuItems(opened, items, menuItems, deferred);
-        }       
+
+        var editorPart = editors.getPart(editors.currentFile);
+        if (editorPart) {
+            editorPart.getContextMenuItems(opened, items, menuItems, deferred);
+        }
 
         return deferred;
     }
