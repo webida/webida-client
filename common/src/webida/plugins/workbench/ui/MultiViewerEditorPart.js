@@ -25,7 +25,6 @@
 
 // @formatter:off
 define([
-    'dojo/aspect',
     'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',
     'external/eventEmitter/EventEmitter',
@@ -34,7 +33,6 @@ define([
     './EditorPart',
     './Part'
 ], function (
-    aspect,
     TabContainer,
     ContentPane,
     EventEmitter,
@@ -237,6 +235,16 @@ define([
          */
         getTabContainer: function() {
             return this.tabContainer;
+        },
+
+        /**
+         * TODO refactor
+         */
+        getContextMenuItems: function(opened, items, menuItems, deferred) {
+            var activeViewer = this.getActiveViewer();
+            if (activeViewer) {
+                activeViewer.getContextMenuItems(opened, items, menuItems, deferred);
+            }
         }
     });
 
