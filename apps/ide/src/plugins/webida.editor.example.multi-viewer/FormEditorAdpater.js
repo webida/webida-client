@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * ViewerModel
+ * FormEditorAdpater
  *
  * @see
  * @since: 2015.07.15
@@ -28,12 +28,14 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    './DataSource'
+    'webida-lib/plugins/workbench/ui/EditorAdpater',
+    'webida-lib/plugins/workbench/ui/Viewer'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
-    DataSource
+    EditorAdpater,
+    Viewer
 ) {
     'use strict';
 // @formatter:on
@@ -46,22 +48,28 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function ViewerModel() {
-        logger.info('new ViewerModel()');
+    function FormEditorAdpater(viewer) {
+        logger.info('new FormEditorAdpater()');
+
+        var that = this;
+        var widget = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
+        widget.addEventListener('keyup', function(e) {
+            viewer.emit(Viewer.CONTENT_CHANGE, that.getContents());
+        });
+        this.setWidget(widget);
     }
 
 
-    genetic.inherits(ViewerModel, EventEmitter, {
+    genetic.inherits(FormEditorAdpater, EditorAdpater, {
 
-        /**
-         * update
-         */
-        update: function() {
-        	throw new Error('update() should be implemented by ' + this.constructor.name);
+        setContents: function(contents) {
+            this.getWidget().value = contents;
+        },
+
+        getContents: function() {
+            return this.getWidget().value;
         }
     });
 
-	ViewerModel.CONTENTS_CHANGE = 'contentsChange';
-
-    return ViewerModel;
+    return FormEditorAdpater;
 });

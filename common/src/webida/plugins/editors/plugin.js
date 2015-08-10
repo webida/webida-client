@@ -1215,6 +1215,10 @@ define([
         }
     };
 
+    editors.setTitle = function(title) {
+
+    };
+
     editors.refreshTabTitle = function(file) {
         var title = file.name;
         //if (editors.isModifiedFile(file)) {
@@ -1272,6 +1276,7 @@ define([
     };
 
     editors.getPart = function(file) {
+        logger.trace();
         logger.info('getPart(' + file + ')');
         if (this.parts.get(file) instanceof EditorPart) {
             return this.parts.get(file);

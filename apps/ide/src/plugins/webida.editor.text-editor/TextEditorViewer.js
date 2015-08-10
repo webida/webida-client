@@ -212,7 +212,7 @@ define([
             require(['external/codemirror/addon/dialog/dialog', 'external/codemirror/addon/search/searchcursor', './search-addon', 'external/codemirror/addon/edit/closebrackets', 'external/codemirror/addon/edit/closetag', 'external/codemirror/addon/edit/matchbrackets'], function() {
                 setTimeout(function(self) {
                     if (self.getParentNode()) {
-                        self.createAdapter();
+                        self.createAdapter(self.getParentNode());
                     }
                 }, 0, self);
             });
@@ -253,7 +253,7 @@ define([
             }
         },
 
-        createAdapter: function() {
+        createAdapter: function(parentNode) {
             if (this.editor !== undefined) {
                 return;
             }
@@ -290,7 +290,7 @@ define([
             setOption('extraKeys', this.options.extraKeys);
             setOption('lineWrapping', this.options.lineWrapping);
 
-            this.editor = codemirror(this.getParentNode(), options);
+            this.editor = codemirror(parentNode, options);
             this.editor.setOption('showCursorWhenSelecting', true);
             this.editor.__instance = this;
             $(this.editor.getWrapperElement()).addClass('maincodeeditor');
@@ -821,7 +821,7 @@ define([
         },
 
         refresh: function() {
-            logger.info('> refresh()');
+            logger.info('refresh()');
             if (this.getContents()) {
                 this.setValue(this.getContents().getText());
             }

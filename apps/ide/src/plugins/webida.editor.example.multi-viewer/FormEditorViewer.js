@@ -28,12 +28,16 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugins/workbench/ui/EditorViewer'
+    'webida-lib/plugins/workbench/ui/EditorViewer',
+    'webida-lib/plugins/workbench/ui/Viewer',
+    './FormEditorAdpater'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
-    EditorViewer
+    EditorViewer,
+    Viewer,
+    FormEditorAdpater
 ) {
     'use strict';
 // @formatter:on
@@ -58,17 +62,12 @@ define([
         /**
          * Creates Viewer Element
          */
-        createAdapter: function() {
-            var that = this;
-            var container = this.getParentNode();
-            if (container) {
-                this.form = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
-                container.appendChild(this.form);
-                this.form.addEventListener('keyup', function(e) {
-                    if (e.target.value !== that.getContents().getText()) {
-                        that.getContents().update(e.target.value, that);
-                    }
-                });
+        createAdapter: function(parentNode) {
+            if (parentNode) {
+                var adapter = new FormEditorAdpater(this);
+                this.setAdapter(adapter);
+                this.setParentNode(parentNode);
+                parentNode.appendChild(adapter.getWidget());
             }
         },
 
@@ -79,7 +78,7 @@ define([
 
         refresh: function() {
             logger.info('refresh()', this.getContents().getText());
-            this.form.value = this.getContents().getText();
+            this.getAdapter().setContents(this.getContents().getText());
         },
 
         getContextMenuItems: function(opened, items, menuItems, deferred) {
@@ -90,6 +89,32 @@ define([
 
         selectAll: function() {
             this.form.select();
+        },
+
+        getFoldings: function() {
+
+        },
+
+        /**
+         * @override
+         */
+        getMenuItemsUnderEdit: function() {
+
+        },
+
+        /**
+         * @override
+         */
+        isDefaultKeyMap: function() {
+
+        },
+
+        existSearchQuery: function() {
+
+        },
+
+        isThereMatchingBracket: function() {
+
         }
     });
 

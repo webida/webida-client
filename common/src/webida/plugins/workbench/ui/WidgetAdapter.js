@@ -29,9 +29,11 @@
 
 // @formatter:off
 define([
+    'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
+    EventEmitter,
     genetic, 
     Logger
 ) {
@@ -59,6 +61,14 @@ define([
 
 
     genetic.inherits(WidgetAdapter, Object, {
+
+        /**
+         * Set widget instance to adapt.
+         * @param {Object}
+         */
+        setWidget: function(widget) {
+            this.widget = widget;
+        },
 
         /**
          * Retrive widget instance.
@@ -96,6 +106,24 @@ define([
          */
         resetPlugins: function() {
             throw new Error('destroy() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Set contents for the widget
+         * @abstract
+         * @param {Object} contents
+         */
+        setContents: function(contents) {
+            throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Retrive contents of the widget
+         * @abstract
+         * @return {Object} contents
+         */
+        getContents: function() {
+            throw new Error('getContents() should be implemented by ' + this.constructor.name);
         }
     });
 
