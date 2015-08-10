@@ -20,20 +20,30 @@
  * Src:
  *   plugins/webida.ide.project-management.run/run-configuration-manager.js
  */
-define(['webida-lib/app',
-        'webida-lib/util/path',
-        'dojo/topic',
-        'webida-lib/plugins/workspace/plugin',
-        'external/async/dist/async.min',
-        'external/lodash/lodash.min',
-        'plugins/webida.notification/notification-message',
-        'webida-lib/util/logger/logger-client'
-], function (ide, pathutil, topic, workspace, async, _, toastr, Logger) {
+define([
+    'webida-lib/app',
+    'webida-lib/util/path',
+    'dojo/topic',
+    'webida-lib/plugins/workspace/plugin',
+    'external/async/dist/async.min',
+    'external/lodash/lodash.min',
+    'plugins/webida.notification/notification-message',
+    'webida-lib/util/logger/logger-client'
+], function (
+    ide,
+    pathutil,
+    topic,
+    workspace,
+    async,
+    _,
+    toastr,
+    Logger
+) {
     'use strict';
 
-	var logger = new Logger();
-	//logger.setConfig('level', Logger.LEVELS.log);
-	logger.off();
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    logger.off();
 
     var PATH_WORKSPACE = ide.getPath();
     var WORKSPACE_INFO_DIR_NAME = '.workspace';
@@ -52,9 +62,8 @@ define(['webida-lib/app',
 
     var fsMount = ide.getFSCache();
 
+    var runConfigurationFileCache;
     var runConfigurations = {};
-    var runConfigurationsByProject = {};
-    var allProjects = [];
 
     var isFlushing = false;
 
@@ -62,60 +71,43 @@ define(['webida-lib/app',
      * load run configurations of all project from workspace.json file
      */
     function loadRunConfigurations(callback) {
-
-        function readRunConfigurationFile(next) {
-            fsMount.exists(PATH_RUN_CONFIG, function (err, exist) {
-                if (err) {
-                    logger.error('loadRunConfigurations:exist:' + PATH_RUN_CONFIG, err);
-                    next(err);
-                } else if (exist) {
+        if (!isFlushing) {
+            async.waterfall([
+                function (next) {
+                    fsMount.exists(PATH_RUN_CONFIG, function (err, exist) {
+                        if (err) {
+                            next(err);
+                        } else if (!exist) {
+                            next(PATH_RUN_CONFIG + ' is not exists');
+                        } else {
+                            next();
+                        }
+                    });
+                },
+                function (next) {
                     fsMount.readFile(PATH_RUN_CONFIG, function (err, content) {
                         var workspaceObj;
                         if (err) {
-                            next(err);
-                            logger.error('loadRunConfigurations:readFile:' + PATH_RUN_CONFIG, err);
+                            return next(err);
                         } else if (content) {
+                            runConfigurationFileCache = content;
                             workspaceObj = JSON.parse(content);
                             if (workspaceObj.run && Object.getOwnPropertyNames(workspaceObj.run).length > 0) {
-                                next(null, workspaceObj.run);
-                            } else {
-                                next(null, {});
+                                runConfigurations = workspaceObj.run;
+                                return next();
                             }
-                        } else {
-                            next(null, {});
                         }
+                        next(PATH_RUN_CONFIG + ' hasn\'t run configuration info');
                     });
-                } else {
-                    next(null, {});
+                }
+            ], function (err) {
+                if (err) {
+                    logger.error('loadRunConfigurations', err);
+                }
+                if (callback) {
+                    callback(err);
                 }
             });
-        }
-
-        if (!isFlushing) {
-            async.parallel(
-                [readRunConfigurationFile, ide.getWorkspaceInfo],
-                function (err, results) {
-                    if (err) {
-                        toastr.error(err);
-                    } else {
-                        runConfigurationsByProject = {};
-                        runConfigurations = results[0];
-                        allProjects = results[1].projects;
-                        if (!_.isEmpty(allProjects)) {
-                            runConfigurationsByProject = _.groupBy(runConfigurations, 'project');
-                            _.each(allProjects, function (project) {
-                                if (!runConfigurationsByProject[project]) {
-                                    runConfigurationsByProject[project] = [];
-                                }
-                            });
-                        }
-                        //logger.log('loadRunConfigurations success', runConfigurations, runConfigurationsByProject);
-                    }
-                    if (callback) {
-                        callback(err);
-                    }
-                }
-            );
         }
     }
 
@@ -123,19 +115,43 @@ define(['webida-lib/app',
      * flush updated run configurations to workspace.json file
      */
     function flushRunConfigurations(callback) {
+        var originalRun = JSON.parse(runConfigurationFileCache).run;
         isFlushing = true;
+
         _.each(runConfigurations, function (runConf) {
-            if (runConf.unsaved) {
-                if(runConf.project) {
-                    var runConfsByProject = runConfigurationsByProject[runConf.project];
-                    runConfigurationsByProject[runConf.project] = _.without(runConfsByProject,
-                        _.findWhere(runConfsByProject, {name: runConf.name}));
+            if (runConf._dirty) {
+                if (originalRun[runConf.originalName]) {
+                    runConfigurations[runConf.originalName] = originalRun[runConf.originalName];
+                } else {
+                    runConf._deleted = true;
                 }
-                delete runConfigurations[runConf.name];
+            }
+            delete runConf._dirty;
+            delete runConf.originalName;
+        });
+
+        runConfigurations = _.omit(runConfigurations, function (runConf) {
+            return runConf._deleted;
+        });
+        
+        var unsyncedItems = [];
+        _.map(runConfigurations, function (runConf, name) {
+            if (runConf.name !== name) {
+                unsyncedItems.push({
+                    oldName: name,
+                    newName: runConf.name
+                });
             }
         });
-        var content = JSON.stringify({run: runConfigurations});
-        fsMount.writeFile(PATH_RUN_CONFIG, content, function (err) {
+
+        _.each(unsyncedItems, function (item) {
+            runConfigurations[item.newName] = runConfigurations[item.oldName];
+            delete runConfigurations[item.oldName];
+        });
+
+
+        runConfigurationFileCache = JSON.stringify({ run: runConfigurations });
+        fsMount.writeFile(PATH_RUN_CONFIG, runConfigurationFileCache, function (err) {
             isFlushing = false;
             if (err) {
                 toastr.error(err);
@@ -183,33 +199,22 @@ define(['webida-lib/app',
     }
 
     var projectActions = {
-        replaceProject: function(oldProjectName, newProjectName){
+        replaceProject: function (oldProjectName, newProjectName) {
             // change runConfigurations object
-            _.each(_.where(runConfigurations, {project: oldProjectName}), function(runConf){
+            _.each(_.where(runConfigurations, {
+                project: oldProjectName
+            }), function (runConf) {
                 runConf.project = newProjectName;
             });
             // change runConfigurationsByProject object
-            runConfigurationsByProject[newProjectName] = runConfigurationsByProject[oldProjectName];
-            allProjects[allProjects.indexOf(oldProjectName)] = newProjectName;
-            delete runConfigurationsByProject[oldProjectName];
+
             flushRunConfigurations();
         },
-        addNewProject: function(projectName){
-            // change runConfigurationsByProject object
-            if(!runConfigurationsByProject[projectName]) {
-                runConfigurationsByProject[projectName] = [];
-            }
-            allProjects.push(projectName);
-        },
-        deleteProject: function(projectName){
+        deleteProject: function (projectName) {
             // change runConfigurations object
-            var runConfs = runConfigurationsByProject[projectName];
-            _.each(runConfs, function(runConf){
-                delete runConfigurations[runConf.name];
+            runConfigurations = _.omit(runConfigurations, function (runConf) {
+                return runConf.project === projectName;
             });
-            // change runConfigurationsByProject object
-            delete runConfigurationsByProject[projectName];
-            allProjects.splice(allProjects.indexOf(projectName), 1);
             flushRunConfigurations();
         }
     };
@@ -229,33 +234,16 @@ define(['webida-lib/app',
             }
         });
 
-        topic.subscribe('fs.cache.file.set', function (fsURL, target/*, type, maybeModified*/) {
+        topic.subscribe('fs.cache.file.set', function (fsURL, target /*, type, maybeModified*/ ) {
             logger.log('fs.cache.file.set', arguments);
             var targetPathInfo = _getPathInfo(target);
-            if(targetPathInfo.type === 'runConfig'){
-                require(['plugins/webida.ide.project-management.run/view-controller'], function(viewController){
-                    if(!viewController.getWindowOpened()) {
+            if (targetPathInfo.type === 'runConfig') {
+                require(['plugins/webida.ide.project-management.run/view-controller'], function (
+                    viewController) {
+                    if (!viewController.getWindowOpened()) {
                         loadRunConfigurations();
                     }
                 });
-
-            }
-        });
-
-        topic.subscribe('projectWizard.created', function (targetDir, projectName) {
-            logger.log('projectWizard.created', arguments);
-            projectActions.addNewProject(projectName);
-        });
-
-        topic.subscribe('fs.cache.node.added', function (fsURL, targetDir, name, type, created) {
-            logger.log('fs.cache.node.added', arguments);
-            if (!created || type !== 'dir') {
-                return;
-            }
-            var targetPathInfo = _getPathInfo(targetDir);
-            if(targetPathInfo.type === 'workspace'){
-                // new added dir is a project
-                projectActions.addNewProject(name);
             }
         });
 
@@ -273,34 +261,37 @@ define(['webida-lib/app',
         });
     }
 
-    (function initialize(){
+    (function initialize() {
         loadRunConfigurations();
         addListeners();
     })();
 
-    function RunConfigurationManager(){
+    function RunConfigurationManager() {
         var self = this;
 
         this.MODE = MODE;
 
         this.flushRunConfigurations = flushRunConfigurations;
-        this.getByPath = function(path) {
+        this.getByPath = function (path) {
             var pathInfo = _getPathInfo(path);
-            if(pathInfo.projectName){
+            if (pathInfo.projectName) {
                 return self.getByProjectName(pathInfo.projectName);
             }
             return;
         };
-        this.getByProjectName = function(projectName, callback) {
-            var conf = runConfigurationsByProject[projectName];
-            if(callback) {
-                callback(conf);
+        this.getByProjectName = function (projectName, callback) {
+            var confList = _.pick(runConfigurations, function (runConf) {
+                return runConf.project === projectName;
+            });
+
+            if (callback) {
+                callback(confList);
             }
-            return conf;
+            return confList;
         };
-        this.getByName = function(runConfigurationName, callback){
+        this.getByName = function (runConfigurationName, callback) {
             var conf = runConfigurations[runConfigurationName];
-            if(callback) {
+            if (callback) {
                 callback(conf);
             }
             return conf;
@@ -308,84 +299,57 @@ define(['webida-lib/app',
         this.getAll = function () {
             return runConfigurations;
         };
-        this.add = function(runConfiguration){
+        this.add = function (runConfiguration) {
             runConfigurations[runConfiguration.name] = runConfiguration;
-            if(runConfiguration.project) {
-                if(!runConfigurationsByProject[runConfiguration.project]){
-                    runConfigurationsByProject[runConfiguration.project] = [];
-                }
-                runConfigurationsByProject[runConfiguration.project].push(runConfiguration);
-            }
         };
-        this.save = function(runConfiguration){
-
-            delete runConfiguration.unsaved;
-            delete runConfiguration.originalName;
+        this.save = function (runConfiguration) {
+            delete runConfiguration._dirty;
             runConfigurations[runConfiguration.name] = runConfiguration;
 
-            var unsyncedItems = [];
-            _.map(runConfigurations, function(runConf, name){
-                if(runConf.name !== name){
-                    unsyncedItems.push({oldName: name, newName: runConf.name});
-                }
-            });
-
-            _.each(unsyncedItems, function(item){
-                runConfigurations[item.newName] = runConfigurations[item.oldName];
-                delete runConfigurations[item.oldName];
-            });
-
-            runConfigurationsByProject = _.extend(runConfigurationsByProject, _.groupBy(runConfigurations, 'project'));
             flushRunConfigurations();
         };
-        this.set = function(projectName, runConfigurations, callback){
-            _.each(runConfigurations, function(runConf){
-               runConfigurations[runConf.name] = runConf;
+        this.set = function (projectName, runConfigurations, callback) {
+            _.each(runConfigurations, function (runConf) {
+                runConfigurations[runConf.name] = runConf;
             });
-            if(projectName) {
-                runConfigurationsByProject[projectName] = runConfigurations;
-            }
 
-            flushRunConfigurations(function(err){
-                if(!err){
+            flushRunConfigurations(function (err) {
+                if (!err) {
                     loadRunConfigurations(callback);
                 }
             });
         };
-        this.delete = function(runConfigurationName) {
-            if(runConfigurations[runConfigurationName]){
-                var project = runConfigurations[runConfigurationName].project;
-                runConfigurationsByProject[project] = _.reject(runConfigurationsByProject[project], function(conf){
-                    return conf.project === project;
-                });
-                delete runConfigurations[runConfigurationName];
+        this.delete = function (runConfigurationName) {
+            if (runConfigurations[runConfigurationName]) {
+                runConfigurations[runConfigurationName]._deleted = true;
             }
             flushRunConfigurations();
         };
-        this.setLatestRun = function(runConfigurationName) {
-            if(runConfigurations[runConfigurationName]){
+        this.setLatestRun = function (runConfigurationName) {
+            if (runConfigurations[runConfigurationName]) {
                 var project = runConfigurations[runConfigurationName].project;
-                _.each(runConfigurationsByProject[project], function(conf){
-                    conf.latestRun = false;
-                    if(conf.name === runConfigurationName){
-                        conf.latestRun = true;
+                _.each(runConfigurations, function (runConf) {
+                    if (runConf.project === project) {
+                        runConf.latestRun = false;
                     }
                 });
+                runConfigurations[runConfigurationName].latestRun = true;
                 flushRunConfigurations();
             }
         };
         this.getProjectRootHtml = function (filePath, callback) {
             var pathInfo = _getPathInfo(filePath);
-            if(pathInfo.projectName){
-                var runConfs = runConfigurationsByProject[pathInfo.projectName];
-                var htmlPaths = [];
-                _.each(runConfs, function(runConf){
-                    if(!runConf.type && pathutil.isHtml(runConf.path)){
+            var htmlPaths = [];
+            if (pathInfo.projectName) {
+                _.each(runConfigurations, function (runConf) {
+                    if (runConf.project === pathInfo.projectName &&
+                        runConf.type === '' &&
+                        pathutil.isHtml(runConf.path)) {
                         htmlPaths.push(pathutil.combine(PATH_WORKSPACE + '/' + pathInfo.projectName, runConf.path));
                     }
                 });
-                callback(htmlPaths);
             }
+            callback(htmlPaths);
         };
     }
 

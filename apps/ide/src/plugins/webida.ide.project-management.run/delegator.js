@@ -19,6 +19,8 @@
  *
  * Src:
  *   plugins/webida.ide.project-management.run/delegator.js
+ *
+ * @module webida.ide.project-management.run.delegator
  */
 define([
     'webida-lib/app',
@@ -29,8 +31,16 @@ define([
     'webida-lib/plugins/workspace/plugin',
     'plugins/webida.notification/notification-message',
     'external/lodash/lodash.min'
-], function (ide, pluginManager, pathUtil, topic, runConfigurationManager, workspace, toastr, _) {
-
+], function (
+    ide,
+    pluginManager,
+    pathUtil,
+    topic,
+    runConfigurationManager,
+    workspace,
+    toastr,
+    _
+) {
     'use strict';
 
     var delegators = {};
@@ -46,6 +56,7 @@ define([
     var runConfActions = pluginManager.getExtensions(extensionPoints.RUN_CONFIGURATION);
     var runConfRunner = pluginManager.getExtensions(extensionPoints.RUN_CONFIGURATION_RUNNER);
 
+    // TODO defaultDelegator mapping is needed to be seperated to other file
     var defaultDelegator = {
         'newConf': undefined,
         'loadConf': undefined,
@@ -73,6 +84,7 @@ define([
      * @param error
      * @param runConf
      * @param content {Object} dojo object of
+     * @memberOf webida.ide.project-management.run.delegator
      */
 
     /**
@@ -81,12 +93,13 @@ define([
      * @param {Object} newRunConf - default run configuration
      * @param {contentCreationCallback} callback
      * @type {Function}
+     * @memberOf webida.ide.project-management.run.delegator
      */
     defaultDelegator.newConf = function (content, newRunConf, callback) {
         // draw ui
         newRunConf.path = '';   // initialize path value
         require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
-            viewController.loadConf(content, newRunConf, callback);
+            viewController.newConf(content, newRunConf, callback);
         });
     };
 
@@ -96,6 +109,7 @@ define([
      * @param {Object} newRunConf - default run configuration
      * @param {contentCreationCallback} callback
      * @type {Function}
+     * @memberOf webida.ide.project-management.run.delegator
      */
     defaultDelegator.loadConf = function (content, newRunConf, callback) {
         // draw ui
@@ -108,6 +122,7 @@ define([
      * Default run delegator
      * @param {Object} runObject - run configuration to execute
      * @param callback
+     * @memberOf webida.ide.project-management.run.delegator
      */
     defaultDelegator.run = function (runObject, callback) {
         var projectPath = workspace.getRootPath() + runObject.project;
@@ -161,6 +176,7 @@ define([
      *      Delegator.get(type).action(...)
      * @param {String} type - the type of run configuration
      * @constructor
+     * @memberOf webida.ide.project-management.run.delegator
      */
     function Delegator(type) {
         this.type = type;
@@ -192,10 +208,10 @@ define([
                                 if (args.length > 0) {
                                     var callback = args[args.length - 1];
                                     callback(delegatorType + ' hasn\'t be implemented at run configurator type(' +
-                                        type + ')');
+                                    type + ')');
                                 }
                                 console.error(delegatorType + ' hasn\'t be implemented at run configurator type(' +
-                                    type + ')');
+                                type + ')');
                             }
                         });
                     };
@@ -211,6 +227,7 @@ define([
      * Get a delegators by its type
      * @param type
      * @returns {*}
+     * @memberOf webida.ide.project-management.run.delegator
      */
     Delegator.get = function (type) {
         if (!delegators[(type ? type : '_default')]) {
@@ -246,6 +263,7 @@ define([
      * Execute selected run configuration
      * @param {Object} runConf - selected run configuration
      * @param [callback]
+     * @memberOf webida.ide.project-management.run.delegator
      */
     module.run = function (runConf, callback) {
         console.log('run', arguments);
@@ -262,7 +280,7 @@ define([
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
                     toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
-                        '\' was successfully launched');
+                    '\' was successfully launched');
                 }
                 if (callback) {
                     callback(err, runConf);
@@ -275,6 +293,7 @@ define([
      * Start to debug for selected run configuration
      * @param {Object} runConf - selected run configuration
      * @param [callback]
+     * @memberOf webida.ide.project-management.run.delegator
      */
     module.debug = function (runConf, callback) {
         console.log('debug', arguments);
@@ -291,7 +310,7 @@ define([
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
                     toastr.success('Debug configuration \'' + runConf.project + ':' + runConf.name +
-                                   '\' was successfully launched');
+                    '\' was successfully launched');
                 }
                 if (callback) {
                     callback(err, runConf);
@@ -306,13 +325,16 @@ define([
      * @param {String} type - the type of configuration
      * @param {String} [projectName] - project name
      * @param {contentCreationCallback} [callback]
+     * @memberOf webida.ide.project-management.run.delegator
      */
     module.newConf = function (content, type, projectName, callback) {
+        var name = _makeConfigurationName(projectName);
         var runConf = {
             type: type,
-            name: _makeConfigurationName(projectName),
+            name: name,
+            originalName: name,
             project: projectName,
-            unsaved: true
+            _dirty: true
         };
         console.log('newConf', arguments);
         if (!_.isFunction(Delegator.get(type).newConf)) {
@@ -338,19 +360,23 @@ define([
     /**
      * Load the selected run configuration
      * @param {DojoWidget} content - dojo object of content widget
-     * @param {Object} runConf
+     * @param {Object} runConf - selected run configuration
      * @param {contentCreationCallback} callback
+     * @memberOf webida.ide.project-management.run.delegator
      */
     module.loadConf = function (content, runConf, callback) {
         console.log('loadConf', arguments);
+
         if (!_.isFunction(Delegator.get(runConf.type).loadConf)) {
             console.warn('loadConf function hasn\'t be implemented for the run configurator type(' +
-                runConf.type + ')');
+            runConf.type + ')');
             if (callback) {
                 callback(null, runConf);
             }
         } else {
-            runConf.originalName = runConf.name;
+            if (!runConf.originalName) {
+                runConf.originalName = runConf.name;
+            }
             Delegator.get(runConf.type).loadConf(content, runConf, function (err, runConf) {
                 if (err) {
                     toastr.error(err);
@@ -370,7 +396,7 @@ define([
             return false;
         }
         dupRunConf = runConfigurationManager.getByName(name);
-        return (dupRunConf && !dupRunConf.unsaved);
+        return (dupRunConf && !dupRunConf._dirty && !dupRunConf._deleted);
     }
 
     function _resolveDuplication(runConf) {
@@ -391,6 +417,7 @@ define([
      * @param callback
      * @returns {*}
      * @private
+     * @memberOf webida.ide.project-management.run.delegator
      */
     function _validation(runConf, callback) {
         if (!runConf.name) {
@@ -406,6 +433,7 @@ define([
      * Save properties of the selected run configuration
      * @param {Object} runConf - selected run configuration
      * @param callback
+     * @memberOf webida.ide.project-management.run.delegator
      */
     module.saveConf = function (runConf, callback) {
         console.log('saveConf', arguments);
@@ -428,7 +456,7 @@ define([
                                     runConfigurationManager.save(runConf);
                                     viewController.reload();
                                     toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
-                                        '\' was successfully saved');
+                                    '\' was successfully saved');
                                 }
                                 callback(errMsg, runConf);
                             });
@@ -449,6 +477,7 @@ define([
      * Remove the selected run configuration
      * @param {String} runConfName - run configuration's name to remove
      * @param [callback]
+     * @memberOf webida.ide.project-management.run.delegator
      */
     module.deleteConf = function (runConfName, callback) {
         var runConf = runConfigurationManager.getByName(runConfName);
@@ -466,7 +495,7 @@ define([
                 } else {
                     runConfigurationManager.delete(runConfName);
                     toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
-                        '\' was successfully removed');
+                    '\' was successfully removed');
                 }
                 if (callback) {
                     callback(err, runConfName);
