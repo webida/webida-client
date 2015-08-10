@@ -58,12 +58,12 @@ define([
         /**
          * Creates Viewer Element
          */
-        createAdapter: function() {
+        createAdapter: function(parentNode) {
             var that = this;
-            var container = this.getParentNode();
-            if (container) {
+            if (parentNode) {
+                this.setParentNode(parentNode);
                 this.form = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
-                container.appendChild(this.form);
+                parentNode.appendChild(this.form);
                 this.form.addEventListener('keyup', function(e) {
                     if (e.target.value !== that.getContents().getText()) {
                         that.getContents().update(e.target.value, that);

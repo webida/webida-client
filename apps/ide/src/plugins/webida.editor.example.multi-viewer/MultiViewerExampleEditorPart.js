@@ -187,8 +187,7 @@ define([
                 //2. formViewer
                 var formViewer = that.getFormViewer();
                 that.addViewer('FormEditor', 'Form Editor', formViewer, 0, function(parentNode) {
-                    formViewer.setParentNode(parentNode);
-                    formViewer.createAdapter();
+                    formViewer.createAdapter(parentNode);
                     formViewer.setContents(doc);
                 });
 
