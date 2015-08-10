@@ -16,7 +16,7 @@
 
 define([
     'webida-lib/app',
-    'text!./java-run-configuration.html',
+    'text!./layout/java-run-configuration.html',
     'dojo/topic',
     'dojo/on',
     'dijit/form/Select',
@@ -25,7 +25,18 @@ define([
     'dijit/registry',
     'plugins/webida.notification/notification-message',
     'external/lodash/lodash.min'
-], function (ide, template, topic, on, Select, FileDialog, ContentPane, registry, toastr, _) {
+], function (
+    ide,
+    template,
+    topic,
+    on,
+    Select,
+    FileDialog,
+    ContentPane,
+    registry,
+    toastr,
+    _
+) {
     'use strict';
 
     var EVENT_CHANGE = 'webida.ide.project-management.run:configuration.changed';
