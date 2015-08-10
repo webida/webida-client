@@ -23,7 +23,7 @@
     margin:8px;
     width:9px;
     height:9px;
-    background:url("images/runconfig_icon_title_arrow.png") 9px 0;
+    background:url("./image/runconfig_icon_title_arrow.png") 9px 0;
     cursor:pointer;
 }
 
@@ -45,7 +45,7 @@
     margin:5px;
     width:20px;
     height:20px;
-    background:url("images/runconfig_icon_run.png") 0 0;
+    background:url("./image/runconfig_icon_run.png") 0 0;
     cursor:pointer;
 }
 
@@ -55,7 +55,7 @@
     margin:5px;
     width:20px;
     height:20px;
-    background:url("images/runconfig_icon_delete.png") 0 0;
+    background:url("./image/runconfig_icon_delete.png") 0 0;
     cursor:pointer;
 }
 
@@ -116,7 +116,7 @@
     right:5px;
     width:20px;
     height:20px;
-    background:url('images/runconfig_icon_modify.png') 0 0;
+    background:url('./image/runconfig_icon_modify.png') 0 0;
     cursor:pointer;
 }
 
@@ -126,7 +126,7 @@
     right:18px;
     width:20px;
     height:20px;
-    background:url('images/runconfig_icon_path.png') 0 0;
+    background:url('./image/runconfig_icon_path.png') 0 0;
     cursor:pointer;
     overflow: hidden;
 }
@@ -137,7 +137,7 @@
     right:5px;*/
     width:20px;
     height:20px;
-    background:url('images/runconfig_icon_save.png') 0 0;
+    background:url('./image/runconfig_icon_save.png') 0 0;
     cursor:pointer;
     margin-top: 10px;
     margin-right: 10px;
@@ -150,7 +150,7 @@
     right:5px;
     width:20px;
     height:20px;
-    background:url('images/runconfig_icon_save.png') 0 0;
+    background:url('./image/runconfig_icon_save.png') 0 0;
     cursor:pointer;
 }
 
@@ -160,7 +160,7 @@
     right:32px;
     width:20px;
     height:20px;
-    background:url('images/runconfig_icon_cancel.png') 0 0;
+    background:url('./image/runconfig_icon_cancel.png') 0 0;
     cursor:pointer;
 }
 
@@ -170,7 +170,7 @@
     right:32px;
     width:20px;
     height:20px;
-    background:url('images/runconfig_icon_cancel.png') 0 0;
+    background:url('./image/runconfig_icon_cancel.png') 0 0;
     cursor:pointer;
 }
 

@@ -38,15 +38,36 @@ define([
     'dijit/tree/ForestStoreModel',
     'dijit/form/Select',
     'popup-dialog',
-    'text!./run-configuration.html',
-    'text!./default-run-configuration.html',
+    'text!./layout/run-configuration.html',
+    'text!./layout/default-run-configuration.html',
     'external/lodash/lodash.min',
     'plugins/webida.notification/notification-message',
-    'xstyle/css!./style.css'
-], function (ide, workbench, workspace, pluginManager, runConfManager, delegator,
-             topic, on, Memory, Observable, registry,
-             pathUtil, ButtonedDialog, FileDialog, ContentPane, Tree, ForestStoreModel, Select, PopupDialog,
-             windowTemplate, contentTemplate, _, toastr) {
+    'xstyle/css!./style/style.css'
+], function (
+    ide,
+    workbench,
+    workspace,
+    pluginManager,
+    runConfManager,
+    delegator,
+    topic,
+    on,
+    Memory,
+    Observable,
+    registry,
+    pathUtil,
+    ButtonedDialog,
+    FileDialog,
+    ContentPane,
+    Tree,
+    ForestStoreModel,
+    Select,
+    PopupDialog,
+    windowTemplate,
+    contentTemplate,
+    _,
+    toastr
+) {
     'use strict';
 
     var module = {};

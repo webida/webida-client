@@ -31,8 +31,16 @@ define([
     'webida-lib/plugins/workspace/plugin',
     'plugins/webida.notification/notification-message',
     'external/lodash/lodash.min'
-], function (ide, pluginManager, pathUtil, topic, runConfigurationManager, workspace, toastr, _) {
-
+], function (
+    ide,
+    pluginManager,
+    pathUtil,
+    topic,
+    runConfigurationManager,
+    workspace,
+    toastr,
+    _
+) {
     'use strict';
 
     var delegators = {};

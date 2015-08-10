@@ -32,7 +32,17 @@ define([
     'webida-lib/util/path',
     'external/lodash/lodash.min',
     'plugins/webida.notification/notification-message'
-], function (runConfigurationManager, delegator, ide, pluginManager, workspace, workbench, pathUtil, _, toastr) {
+], function (
+    runConfigurationManager,
+    delegator,
+    ide,
+    pluginManager,
+    workspace,
+    workbench,
+    pathUtil,
+    _,
+    toastr
+) {
     'use strict';
 
     var module = {};

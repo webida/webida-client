@@ -29,7 +29,16 @@ define([
     'external/lodash/lodash.min',
     'plugins/webida.notification/notification-message',
     'webida-lib/util/logger/logger-client'
-], function (ide, pathutil, topic, workspace, async, _, toastr, Logger) {
+], function (
+    ide,
+    pathutil,
+    topic,
+    workspace,
+    async,
+    _,
+    toastr,
+    Logger
+) {
     'use strict';
 
     var logger = new Logger();
