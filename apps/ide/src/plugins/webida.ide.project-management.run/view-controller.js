@@ -556,7 +556,10 @@ define([
             })
         );
         on(ui.content, 'input, select:change', function () {
-            topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, {isValid: !_checkInvalidField(), isDirty: true});
+            topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {
+                isValid: !_checkInvalidField(),
+                isDirty: true
+            });
         });
 
         ide.getWorkspaceInfo(function (err, workspaceInfo) {

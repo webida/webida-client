@@ -121,7 +121,7 @@ define([
         _.each(runConfigurations, function (runConf) {
             if (runConf._dirty) {
                 if (originalRun[runConf.originalName]) {
-                    runConfigurations[runConf.name] = originalRun[runConf.originalName];
+                    runConfigurations[runConf.originalName] = originalRun[runConf.originalName];
                 } else {
                     runConf._deleted = true;
                 }
@@ -133,6 +133,22 @@ define([
         runConfigurations = _.omit(runConfigurations, function (runConf) {
             return runConf._deleted;
         });
+        
+        var unsyncedItems = [];
+        _.map(runConfigurations, function (runConf, name) {
+            if (runConf.name !== name) {
+                unsyncedItems.push({
+                    oldName: name,
+                    newName: runConf.name
+                });
+            }
+        });
+
+        _.each(unsyncedItems, function (item) {
+            runConfigurations[item.newName] = runConfigurations[item.oldName];
+            delete runConfigurations[item.oldName];
+        });
+
 
         runConfigurationFileCache = JSON.stringify({ run: runConfigurations });
         fsMount.writeFile(PATH_RUN_CONFIG, runConfigurationFileCache, function (err) {
@@ -289,21 +305,6 @@ define([
         this.save = function (runConfiguration) {
             delete runConfiguration._dirty;
             runConfigurations[runConfiguration.name] = runConfiguration;
-
-            var unsyncedItems = [];
-            _.map(runConfigurations, function (runConf, name) {
-                if (runConf.name !== name) {
-                    unsyncedItems.push({
-                        oldName: name,
-                        newName: runConf.name
-                    });
-                }
-            });
-
-            _.each(unsyncedItems, function (item) {
-                runConfigurations[item.newName] = runConfigurations[item.oldName];
-                delete runConfigurations[item.oldName];
-            });
 
             flushRunConfigurations();
         };

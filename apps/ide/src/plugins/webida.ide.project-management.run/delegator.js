@@ -374,7 +374,7 @@ define([
                 callback(null, runConf);
             }
         } else {
-            if(!runConf.originalName) {
+            if (!runConf.originalName) {
                 runConf.originalName = runConf.name;
             }
             Delegator.get(runConf.type).loadConf(content, runConf, function (err, runConf) {
