@@ -19,6 +19,8 @@
  *
  * Src:
  *   plugins/webida.ide.project-management.run/plugin.js
+ *
+ * @module webida.ide.project-management.run
  */
 define([
     './run-configuration-manager',
@@ -30,7 +32,17 @@ define([
     'webida-lib/util/path',
     'external/lodash/lodash.min',
     'plugins/webida.notification/notification-message'
-], function (runConfigurationManager, delegator, ide, pluginManager, workspace, workbench, pathUtil, _, toastr) {
+], function (
+    runConfigurationManager,
+    delegator,
+    ide,
+    pluginManager,
+    workspace,
+    workbench,
+    pathUtil,
+    _,
+    toastr
+) {
     'use strict';
 
     var module = {};
@@ -242,14 +254,18 @@ define([
      * @method runObjectChanged
      * @memberOf module:webida.ide.project-management.run
      */
-    module.runObjectChanged = function (action, runConf) {
-        console.log('webida.ide.project-management.run:configuration.changed', action, runConf);
-        if (action === 'save') {
+    module.runObjectChanged = function (action) {
+        console.log('webida.ide.project-management.run:configuration.changed', arguments);
+        if (action === 'save' && arguments[1]) {
+            var runConf = arguments[1];
             delegator.saveConf(runConf, function (err) {
                 if (!err) {
                     refreshRunConfigurationTree();
                 }
             });
+        } else if (action === 'state' && arguments[1] && arguments[2]) {
+            changeCurrentState(arguments[1], arguments[2]);
+            refreshRunConfigurationTree();
         }
     };
 
@@ -272,6 +288,12 @@ define([
     function refreshRunConfigurationTree() {
         require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
             viewController.refreshTree();
+        });
+    }
+
+    function changeCurrentState(runConf, state) {
+        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+            viewController.changeCurrentState(runConf, state);
         });
     }
 
