@@ -821,7 +821,7 @@ define([
         },
 
         refresh: function() {
-            logger.info('> refresh()');
+            logger.info('refresh()');
             if (this.getContents()) {
                 this.setValue(this.getContents().getText());
             }

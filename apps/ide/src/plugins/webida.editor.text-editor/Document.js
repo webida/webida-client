@@ -25,11 +25,11 @@
 
 // @formatter:off
 define([
-    'webida-lib/plugins/workbench/ui/ViewerModel',
+    'webida-lib/plugins/workbench/ui/PartModel',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
-    ViewerModel,
+    PartModel,
     genetic, 
     Logger
 ) {
@@ -59,7 +59,7 @@ define([
     }
 
 
-    genetic.inherits(Document, ViewerModel, {
+    genetic.inherits(Document, PartModel, {
 
         /**
          * @param {string} text
@@ -102,7 +102,7 @@ define([
          */
         update: function(text, viewer) {
             this.setText(text);
-            this.emit(ViewerModel.CONTENTS_CHANGE, this, viewer);
+            this.emit(PartModel.CONTENTS_CHANGE, this, viewer);
         }
     });
 

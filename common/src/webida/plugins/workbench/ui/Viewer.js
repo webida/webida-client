@@ -40,6 +40,7 @@ define([
 
     /**
      * @typedef {Object} HTMLElement
+     * @typedef {Object} WidgetAdapter
      */
 
     var logger = new Logger();
@@ -60,10 +61,13 @@ define([
 
         /** @type {Object} */
         this.contents = null;
+
+        /** @type {WidgetAdapter} */
+        this.adapter = null;
     }
 
 
-    genetic.inherits(Viewer, Object, {
+    genetic.inherits(Viewer, EventEmitter, {
 
         /**
          * @param {HTMLElement} parentNode
@@ -72,10 +76,32 @@ define([
             throw new Error('createAdapter(parentNode) should be implemented by ' + this.constructor.name);
         },
 
+        /**
+         * Destroy WidgetAdapter for this View.
+         * You can clean up the registered events here.
+         */
         destroyAdapter: function() {
             throw new Error('destroyAdapter() should be implemented by ' + this.constructor.name);
         },
 
+        /**
+         * @param {WidgetAdapter} adapter
+         */
+        setAdapter: function(adapter) {
+            this.adapter = adapter;
+        },
+
+        /**
+         * @return {WidgetAdapter}
+         */
+        getAdapter: function() {
+            return this.adapter;
+        },
+
+        /**
+         * Using getContents() update WidgetAdapter.
+         * If it is needed, update WidgetAdapter's size.
+         */
         refresh: function() {
             throw new Error('refresh() should be implemented by ' + this.constructor.name);
         },
@@ -97,6 +123,9 @@ define([
             this.parentNode = element;
         },
 
+        /**
+         * @return {HTMLElement}
+         */
         getParentNode: function() {
             return this.parentNode;
         },
@@ -113,6 +142,9 @@ define([
             return res;
         }
     });
+
+    /** @constant {string} */
+    Viewer.CONTENT_CHANGE = 'contentChange';
 
     return Viewer;
 });
