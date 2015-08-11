@@ -374,8 +374,7 @@ define([
                     openRunConfigurationDialog(null, mode);
                 } else {
                     var latestRuns = _.where(runConfigurations, {latestRun: true});
-                    _runBinded(_.isEmpty(latestRuns) ?
-                               runConfigurations[Object.keys(runConfigurations)[0]] : latestRuns[0], mode);
+                    _runBound(_.isEmpty(latestRuns) ? _.values(runConfigurations)[0] : latestRuns[0], mode);
                 }
             }
         });
@@ -498,14 +497,13 @@ define([
                     openRunConfigurationDialog(null, mode);
                 } else {
                     var latestRuns = _.where(runConfigurations, {latestRun: true});
-                    _runBinded(_.isEmpty(latestRuns) ?
-                               runConfigurations[Object.keys(runConfigurations)[0]] : latestRuns[0], mode);
+                    _runBound(_.isEmpty(latestRuns) ? _.values(runConfigurations)[0] : latestRuns[0], mode);
                 }
             }
         });
     }
 
-    function _runBinded(runConf, mode) {
+    function _runBound(runConf, mode) {
         switch (mode) {
             case runConfigurationManager.MODE.RUN_MODE:
                 if (!runConf) {
