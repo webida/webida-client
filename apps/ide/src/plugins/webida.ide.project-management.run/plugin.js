@@ -374,7 +374,8 @@ define([
                     openRunConfigurationDialog(null, mode);
                 } else {
                     var latestRuns = _.where(runConfigurations, {latestRun: true});
-                    _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
+                    _runBinded(_.isEmpty(latestRuns) ?
+                               runConfigurations[Object.keys(runConfigurations)[0]] : latestRuns[0], mode);
                 }
             }
         });
@@ -497,7 +498,8 @@ define([
                     openRunConfigurationDialog(null, mode);
                 } else {
                     var latestRuns = _.where(runConfigurations, {latestRun: true});
-                    _runBinded(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
+                    _runBinded(_.isEmpty(latestRuns) ?
+                               runConfigurations[Object.keys(runConfigurations)[0]] : latestRuns[0], mode);
                 }
             }
         });
