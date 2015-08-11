@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * EditorAdpater
+ * EditorAdapter
  *
  * @see
  * @since: 2015.07.15
@@ -46,15 +46,15 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function EditorAdpater() {
-        logger.info('new EditorAdpater()');
+    function EditorAdapter() {
+        logger.info('new EditorAdapter()');
 
     }
 
 
-    genetic.inherits(EditorAdpater, WidgetAdapter, {
+    genetic.inherits(EditorAdapter, WidgetAdapter, {
 
     });
 
-    return EditorAdpater;
+    return EditorAdapter;
 });

@@ -30,14 +30,14 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/EditorViewer',
     'webida-lib/plugins/workbench/ui/Viewer',
-    './FormEditorAdpater'
+    './FormEditorAdapter'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
     EditorViewer,
     Viewer,
-    FormEditorAdpater
+    FormEditorAdapter
 ) {
     'use strict';
 // @formatter:on
@@ -64,7 +64,7 @@ define([
          */
         createAdapter: function(parentNode) {
             if (parentNode) {
-                var adapter = new FormEditorAdpater(this);
+                var adapter = new FormEditorAdapter(this);
                 this.setAdapter(adapter);
                 this.setParentNode(parentNode);
                 parentNode.appendChild(adapter.getWidget());
