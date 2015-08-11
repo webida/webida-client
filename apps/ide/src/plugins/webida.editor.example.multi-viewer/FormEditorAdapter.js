@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * FormEditorAdpater
+ * FormEditorAdapter
  *
  * @see
  * @since: 2015.07.15
@@ -28,13 +28,13 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugins/workbench/ui/EditorAdpater',
+    'webida-lib/plugins/workbench/ui/EditorAdapter',
     'webida-lib/plugins/workbench/ui/Viewer'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
-    EditorAdpater,
+    EditorAdapter,
     Viewer
 ) {
     'use strict';
@@ -48,8 +48,8 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function FormEditorAdpater(viewer) {
-        logger.info('new FormEditorAdpater()');
+    function FormEditorAdapter(viewer) {
+        logger.info('new FormEditorAdapter()');
 
         var that = this;
         var widget = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
@@ -60,7 +60,7 @@ define([
     }
 
 
-    genetic.inherits(FormEditorAdpater, EditorAdpater, {
+    genetic.inherits(FormEditorAdapter, EditorAdapter, {
 
         setContents: function(contents) {
             this.getWidget().value = contents;
@@ -71,5 +71,5 @@ define([
         }
     });
 
-    return FormEditorAdpater;
+    return FormEditorAdapter;
 });

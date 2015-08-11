@@ -4010,7 +4010,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="CTo6Ag1Rt0annuGPABVL1wAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="0ncEi0LMQUWQS7LGP8f3SAAA">
 <XPD:ATTR name="FontStyle" type="integer">3</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">EditorAdpater</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">EditorAdapter</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="7ABGm4EKA0+hgl3s064RmAAA">
 <XPD:ATTR name="Text" type="string">&lt;&lt;interface&gt;&gt;</XPD:ATTR>
@@ -7782,7 +7782,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="Views[3]">nLxOG4HrBEmp7dpiSsRMggAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedElements[108]" type="UMLInterface" guid="pIno9Xcly0S1cGUUFccN4wAA">
-<XPD:ATTR name="Name" type="string">EditorAdpater</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">EditorAdapter</XPD:ATTR>
 <XPD:ATTR name="IsAbstract" type="boolean">True</XPD:ATTR>
 <XPD:REF name="Namespace">8CvsSm5BDkiDCtV5vFo/EgAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">3</XPD:ATTR>
