@@ -261,10 +261,6 @@ define([
             this.getViewerById('CodeEditor').destroyAdapter();
         },
 
-        getValue: function() {
-            return this.file.getContents();
-        },
-
         addChangeListener: function(callback) {
             logger.info('addChangeListener(' + callback + ')');
         },
