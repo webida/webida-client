@@ -294,7 +294,7 @@ define([
 
         });
 
-        topic.subscribe('view.quit', function (event, quit) {
+        topic.subscribe('view.quit', function () {
 
             ide.unregisterBeforeUnloadChecker('checkModifiedFiles');
             var keys = Object.keys(editors.files);
@@ -309,10 +309,21 @@ define([
             }
 
             var action = function closeWindow() {
-                quit();
-                window.focus();
-                window.opener = window;
-                window.close();
+
+                try {
+                    window.focus();
+                    window.opener = window;
+                    window.close();
+                } catch (e) {
+                    logger.log('First try to close App failed', e);
+
+                    try {
+                        window.open('', '_self', '');
+                        window.close();
+                    } catch (e) {
+                        logger.log('Second try to close App failed', e);
+                    }
+                }
             };
 
             var cancel = function cancelSaveBeforeUnload() {

@@ -15,7 +15,7 @@
  */
 
 define([
-	'external/lodash/lodash.min',
+    'external/lodash/lodash.min',
     'webida-lib/util/browserUtil',
     'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',
@@ -28,9 +28,11 @@ define([
     'dojo/dom-style',
     'dojo/topic',
     'dojo/_base/lang',
+    'dojo/_base/declare',
     'webida-lib/util/logger/logger-client',
-    'dojo/domReady!'],
-function (_,
+    'dojo/domReady!'
+], function (
+    _,
     BrowserUtil,
     TabContainer,
     ContentPane,
@@ -43,6 +45,7 @@ function (_,
     domstyle,
     topic,
     lang,
+    declare,
     Logger
 ) {
     'use strict';
@@ -56,11 +59,21 @@ function (_,
 
     ViewContainerEvent.SELECTED = 'view.selected';
     ViewContainerEvent.CLOSE = 'view.close';
+    ViewContainerEvent.QUIT = 'view.quit';
     ViewContainerEvent.ADDED = 'view.added';
     ViewContainerEvent.ADDED_BEFORE = 'view.added-before';
     ViewContainerEvent.REMOVED = 'view.removed';
     ViewContainerEvent.FOCUSED = 'view.focused';
     ViewContainerEvent.MAXIMIZE = 'view.maximize';
+
+    var ViewTabContainer = declare(TabContainer, {
+        //override
+        _onKeyDown: function (e) {
+            if (e.keyCode !== 'W'.charCodeAt(0)) {
+                this.inherited(arguments);
+            }
+        }
+    });
 
     var viewContainer = function () {
         this._parent = null;
@@ -70,7 +83,7 @@ function (_,
         this.topContainer = new ContentPane({
             style: 'border:0; margin:0; padding:1px;'
         });
-        this.tabContainer = new TabContainer({
+        this.tabContainer = new ViewTabContainer({
             style: 'border:0; margin:0; padding:0px;'
         });
         this.topContainer.addChild(this.tabContainer);
@@ -167,7 +180,7 @@ function (_,
                                     }
                                 } else */
                                 if ((ev.button === 1) && view.get('closable')) {
-                                    _self._contentPaneClose(view.contentPane);
+                                    _self._contentPaneClose(view.contentPane, true);
                                 }
                             }
                             ev.stopPropagation();
@@ -354,8 +367,8 @@ function (_,
             topic.publish(ViewContainerEvent.ADDED, event);
 
             var cbClose = dojo.connect(view.contentPane, 'onClose', function (tabContainer, contentPane) {
-                _self._contentPaneClose(contentPane);
-                return false;
+                _self._contentPaneClose(contentPane, true);
+                //return false;
             });
 
             var cbFocus = dojo.connect(view.contentPane, 'onFocus', function () {
@@ -602,12 +615,12 @@ function (_,
             }
         },
 
-        _contentPaneClose : function (pane) {
+        _contentPaneClose : function (pane, closable) {
             var _self = this;
             var event = new ViewContainerEvent(ViewContainerEvent.CLOSE);
             event.view = _self._getViewByContentPane(pane);
             event.viewContainer = _self;
-            event.closable = true;
+            event.closable = closable;
             event.noClose = function () {
                 event.closable = false;
             };
@@ -617,6 +630,19 @@ function (_,
                     this._remove(event.view, true);
                 }
             }));
+        },
+
+        _contentPaneQuit : function (pane) {
+            var _self = this;
+            var event = new ViewContainerEvent(ViewContainerEvent.QUIT);
+            event.view = _self._getViewByContentPane(pane);
+            event.viewContainer = _self;
+            event.closable = true;
+            event.noClose = function () {
+                event.closable = false;
+            };
+
+            topic.publish(ViewContainerEvent.QUIT, event);
         },
 
         _viewFocused : function (view) {
