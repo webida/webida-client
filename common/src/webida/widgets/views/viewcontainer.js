@@ -17,7 +17,7 @@
 define([
     'external/lodash/lodash.min',
     'webida-lib/util/browserUtil',
-    './ViewTabContainer',
+    'dijit/layout/TabContainer',
     'dijit/layout/ContentPane',
     'dijit/registry',
     './viewmanager',
@@ -28,6 +28,7 @@ define([
     'dojo/dom-style',
     'dojo/topic',
     'dojo/_base/lang',
+    'dojo/_base/declare',
     'webida-lib/util/logger/logger-client',
     'dojo/domReady!'
 ], function (
@@ -44,6 +45,7 @@ define([
     domstyle,
     topic,
     lang,
+    declare,
     Logger
 ) {
     'use strict';
@@ -64,6 +66,15 @@ define([
     ViewContainerEvent.FOCUSED = 'view.focused';
     ViewContainerEvent.MAXIMIZE = 'view.maximize';
 
+    var ViewTabContainer = declare(TabContainer, {
+        //override
+        _onKeyDown: function (e) {
+            if (e.keyCode !== 'W'.charCodeAt(0)) {
+                this.inherited(arguments);
+            }
+        }
+    });
+
     var viewContainer = function () {
         this._parent = null;
         this.viewList = [];
@@ -72,7 +83,7 @@ define([
         this.topContainer = new ContentPane({
             style: 'border:0; margin:0; padding:1px;'
         });
-        this.tabContainer = new TabContainer({
+        this.tabContainer = new ViewTabContainer({
             style: 'border:0; margin:0; padding:0px;'
         });
         this.topContainer.addChild(this.tabContainer);
