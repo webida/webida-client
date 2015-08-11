@@ -626,7 +626,11 @@ function (require, fh, _,
                     topic.publish('#REQUEST.openFile', text);
                     this.hide();
                 } else {
-                    toastr.error(text + ': No such file.');
+                    if (text === '') {
+                        toastr.error('No such file.');
+                    else {
+                        toastr.error(text + ': No such file.');
+                    }
                 }
             },
 
