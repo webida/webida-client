@@ -628,7 +628,7 @@ function (require, fh, _,
                 } else {
                     if (text === '') {
                         toastr.error('No such file.');
-                    else {
+                    } else {
                         toastr.error(text + ': No such file.');
                     }
                 }
