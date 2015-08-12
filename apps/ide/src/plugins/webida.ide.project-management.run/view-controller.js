@@ -369,13 +369,13 @@ define([
                 }
 
                 topic.publish('webida.ide.project-management.run:configuration.show');
+                module.refreshTree();
             }
         });
         ui.dialog.set('doLayout', true);
         ui.dialog.setContentArea(windowTemplate);
-
         ui.dialog.show();
-        module.refreshTree();
+
         windowOpened = true;
     };
 
