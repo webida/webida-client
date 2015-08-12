@@ -368,7 +368,7 @@ define([
 
             var cbClose = dojo.connect(view.contentPane, 'onClose', function (tabContainer, contentPane) {
                 _self._contentPaneClose(contentPane, true);
-                //return false;
+                return false;
             });
 
             var cbFocus = dojo.connect(view.contentPane, 'onFocus', function () {
