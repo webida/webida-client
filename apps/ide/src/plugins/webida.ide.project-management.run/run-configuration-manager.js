@@ -133,7 +133,7 @@ define([
         runConfigurations = _.omit(runConfigurations, function (runConf) {
             return runConf._deleted;
         });
-        
+
         var unsyncedItems = [];
         _.map(runConfigurations, function (runConf, name) {
             if (runConf.name !== name) {
@@ -280,7 +280,7 @@ define([
             return;
         };
         this.getByProjectName = function (projectName, callback) {
-            var confList = _.pick(runConfigurations, function (runConf) {
+            var confList = _.filter(_.values(runConfigurations), function (runConf) {
                 return runConf.project === projectName;
             });
 
