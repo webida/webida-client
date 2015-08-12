@@ -316,6 +316,10 @@ define([
             });
         },
 
+        getMode : function () {
+            return this.mode;
+        },
+
         checkSizeChange: function() {
             if (this.editor) {
                 var visible = $(this.elem).is(':visible');
@@ -1558,9 +1562,9 @@ define([
 
     TextEditorViewer.getAvailableThemes = function() {
         // @formatter:off
-        return ['codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 
-        'elegant', 'erlang-dark', 'lesser-dark', 'midnight', 'monokai', 'neat', 
-        'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight', 
+        return ['codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse',
+        'elegant', 'erlang-dark', 'lesser-dark', 'midnight', 'monokai', 'neat',
+        'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight',
         'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'];
         // @formatter:on
     };

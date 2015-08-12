@@ -861,7 +861,7 @@ define([
              )
             );
     }
-    
+
     function getBeautifier(editor, callback) {
         var currentModeName = editor.getMode().name;
         var beautifierModuleID;
@@ -893,7 +893,7 @@ define([
         }
         /* jshint camelcase: true */
     }
-    
+
     genetic.inherits(CodeEditorViewer, TextEditorViewer, {
 
 	    createAdapter: function (parentNode) {
@@ -933,15 +933,15 @@ define([
 	        setOption('lineWrapping', this.options.lineWrapping);
 
 	        this.editor = codemirror(parentNode, options);
-	        
+
             this.editor.on("change", function(cm, change) {
             	if(self.getContents()){
             		self.getContents().update(cm.getValue(), self);
             	}
                 //console.log('self.getContents() = ', self.getContents());
-            }); 
+            });
 
-	        
+
 	        this.editor.setOption('showCursorWhenSelecting', true);
 	        this.editor.__instance = this;
 	        $(this.editor.getWrapperElement()).addClass('maincodeeditor');
@@ -952,12 +952,12 @@ define([
 	                action(self);
 	            });
 	            delete this.deferredActions;
-	        }	        
-            
+	        }
+
             this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function () {
                 self.checkSizeChange();
             });
-                        
+
 	        this.editor.on('mousedown', function (cm, e) {
 	            if (settings.gotoLinkEnabled) {
 	                require(['./content-assist/goto-link'], function (gotolink) {
@@ -984,10 +984,6 @@ define([
 	        });
 
 	        Snippet.init(self.editor);
-	    },
-
-	    getMode : function () {
-	        return this.mode;
 	    },
 
 	    setMode : function (mode) {
@@ -1309,7 +1305,7 @@ define([
 
 	        setChangeForAutoHintDebounced();
 	    },
-        
+
         lineComment: function () {
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
@@ -1444,7 +1440,7 @@ define([
                 });
             });
         },
-        
+
         gotoDefinition: function () {
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
@@ -1542,7 +1538,7 @@ define([
                 deferred.resolve(items);
             }
         },
-        
+
         getContextMenuItems: function (opened, items, menuItems, deferred) {
 
             function selectionCommentable(editor) {
@@ -1564,7 +1560,7 @@ define([
                     mode1.blockCommentEnd === mode2.blockCommentEnd &&
                     (comments = getEnclosingBlockComments(mode1, editor, from, to)) && comments.length === 0;
             }
-                       
+
             var editor = this.editor;
             if (editor) {
                 var selected = editor.getSelection();
@@ -1654,8 +1650,8 @@ define([
                 items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];
 
                 if (this.isDefaultKeyMap()) {
-                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];               
-                }            
+                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
+                }
 
                 if (this.isThereMatchingBracket()) {
                     items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
@@ -1679,7 +1675,7 @@ define([
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
                 deferred.resolve(items);
-            }            
+            }
         }
     });
 
