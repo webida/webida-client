@@ -384,13 +384,14 @@ define([
                             siblingList.splice(idx, 0, dst);
 
                             var cursor = editors.getCursor(file);
-
-                            editors.openFile(dst, {
+                            
+                            topic.publish('#REQUEST.openFile', dst, {
                                 cellIndex: cellIndex,
                                 siblingList: siblingList,
                                 show: editors.currentFile === file,
                                 cursor: cursor
                             });
+
                             editors.closeFile({
                                 path: src
                             });
@@ -496,7 +497,7 @@ define([
         topic.subscribe('#REQUEST.saveFile', editors.saveFile.bind(editors));
         topic.subscribe('#REQUEST.selectFile', function(path) {
             if (editors.getFile(path)) {
-                editors.openFile(path);
+                topic.publish('#REQUEST.openFile', path);
             }
         });
 
@@ -779,11 +780,6 @@ define([
         }
         return null;
     }
-
-
-    editors.openFile__ = function() {
-        logger.info('do nothing');
-    };
 
     //Tmp Code during version 1.3.0
     editors.bundle = {};

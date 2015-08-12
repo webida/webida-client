@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-define(['webida-lib/util/path',
-        'webida-lib/plugins/editors/plugin'],
-function (path, editors) {
+// @formatter:off
+define([
+    'dojo/topic',
+    'webida-lib/util/path',
+    'webida-lib/plugins/editors/plugin'
+], function(
+    topic,
+    path,
+    editors
+) {
     'use strict';
+// @formatter:on
 
     var _gotoLinkActivated = false;
 
@@ -33,7 +41,7 @@ function (path, editors) {
             $wrapper.find('span.cm-link').addClass('cm-link-active');
             _gotoLinkActivated = true;
 
-            var onKeyUp = function (e) {
+            var onKeyUp = function(e) {
                 if (e.keyCode === 18) {
                     $wrapper.find('span.cm-link').removeClass('cm-link-active');
                     _gotoLinkActivated = false;
@@ -53,7 +61,10 @@ function (path, editors) {
      */
     function onMouseDown(cm, e) {
         if (e.altKey && _gotoLinkActivated) {
-            var pos = cm.coordsChar({left: e.x, top: e.y});
+            var pos = cm.coordsChar({
+                left: e.x,
+                top: e.y
+            });
             var token = cm.getTokenAt(pos);
             if (token.type === 'link') {
                 var currentpath = cm.__instance.file.path;
@@ -63,7 +74,7 @@ function (path, editors) {
                 }
                 var abspath = path.combine(path.getDirPath(currentpath), linkpath);
                 abspath = path.flatten(abspath);
-                editors.openFile(abspath);
+                topic.publish('#REQUEST.openFile', abspath);
 
                 // to move focus to the opened file... (WTC-312)
                 e.stopPropagation();
@@ -73,7 +84,7 @@ function (path, editors) {
     }
 
     return {
-        onKeyDown : onKeyDown,
-        onMouseDown : onMouseDown
+        onKeyDown: onKeyDown,
+        onMouseDown: onMouseDown
     };
 });

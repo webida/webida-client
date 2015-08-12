@@ -316,7 +316,7 @@ define([
             });
         },
 
-        getMode : function () {
+        getMode: function() {
             return this.mode;
         },
 
@@ -344,8 +344,10 @@ define([
         destroyAdapter: function() {
             //unsubscribing topics
 
-            this.resizeTopicHandler.remove();
-            this.resizeTopicHandler = null;
+            if (this.resizeTopicHandler) {
+                this.resizeTopicHandler.remove();
+                this.resizeTopicHandler = null;
+            }
 
             $(this.elem).html('');
         },

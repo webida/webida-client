@@ -436,9 +436,8 @@ define([
 
                 var tab;
                 var openFileWithNamespace = function (path, opt, pos, foldings) {
-                    editors.openFile(path, opt, function (file) {
-                        //console.log('hina: file opend. pos.col = ' + pos.col);
-                        //console.log('hina: file opend. pos.row = ' + pos.row);
+                	topic.publish('#REQUEST.openFile', path, opt, function (file) {
+                        logger.info('pos = ', pos);
 
                         _.defer(function () {
                             if (file.viewer && file.viewer.setCursor) {

@@ -70,7 +70,8 @@ define([
         //override
         _onKeyDown: function (e) {
             if (e.keyCode !== 'W'.charCodeAt(0)) {
-                this.inherited(arguments);
+                //this.inherited(arguments);
+                TabContainer.prototype._onKeyDown.call(this, e);
             }
         }
     });
