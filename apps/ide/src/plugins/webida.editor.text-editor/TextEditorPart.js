@@ -88,7 +88,7 @@ define([
             logger.info('initializeContext()');
             var context = this.getViewer();
             var parent = this.getParentElement();
-            context.setValue(this.file.savedValue);
+            context.setValue(this.file.getContents());
             context.clearHistory();
             context.markClean();
             context.setSize(parent.offsetWidth, parent.offsetHeight);
