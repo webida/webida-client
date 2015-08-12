@@ -312,7 +312,7 @@ define([
 
 	function openRecentFile(index) {
 		var path = editors.recentFiles[index];
-		editors.openFile(path);
+		topic.publish('#REQUEST.openFile', path);
 	}
 
 	return {

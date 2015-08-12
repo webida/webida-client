@@ -29,30 +29,30 @@
 
 // @formatter:off
 define([
+    'dojo/topic',
     'external/lodash/lodash.min', 
     'webida-lib/util/genetic', 
+    'webida-lib/util/logger/logger-client', 
+    'webida-lib/plugins/editors/plugin', 
+    'webida-lib/plugins/editors/EditorPreference',
     'webida-lib/plugins/workbench/ui/Part', 
     'webida-lib/plugins/workbench/ui/EditorPart', 
     'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
-    'webida-lib/plugins/editors/plugin', 
-    'webida-lib/plugins/editors/EditorPreference', 
     './preferences/preference-config', 
     './TextEditorViewer', 
-    'dojo/topic', 
-    'webida-lib/util/logger/logger-client', 
     'dojo/domReady!'
 ], function(
-    _, 
-    genetic, 
-    Part, 
-    EditorPart, 
-    store, 
-    editors, 
-    EditorPreference, 
-    preferenceConfig, 
-    TextEditorViewer, 
-    topic, 
-    Logger
+    topic,
+    _,
+    genetic,
+    Logger,
+    editors,
+    EditorPreference,
+    Part,
+    EditorPart,
+    store,
+    preferenceConfig,
+    TextEditorViewer
 ) {
     'use strict';
 // @formatter:on
@@ -88,7 +88,7 @@ define([
             logger.info('initializeContext()');
             var context = this.getViewer();
             var parent = this.getParentElement();
-            context.setValue(this.file.savedValue);
+            context.setValue(this.file.getContents());
             context.clearHistory();
             context.markClean();
             context.setSize(parent.offsetWidth, parent.offsetHeight);
@@ -325,21 +325,21 @@ define([
     };
 
     TextEditorPart.moveTo = function(location) {
-        editors.openFile(location.filepath, {
+        topic.publish('#REQUEST.openFile', location.filepath, {
             show: true
         }, function(file) {
             if (editors.getPart(file) === null) {
                 return;
             }
             var part = editors.getPart(file);
-            var context = part.viewer;
+            var viewer = part.getViewer();
             if (location.start && location.end) {
-                context.setSelection(location.start, location.end);
+                viewer.setSelection(location.start, location.end);
             } else {
-                context.setCursor(location.cursor);
+                viewer.setCursor(location.cursor);
             }
 
-            context.addDeferredAction(function(viewer) {
+            viewer.addDeferredAction(function(viewer) {
                 viewer.editor.focus();
             });
         });

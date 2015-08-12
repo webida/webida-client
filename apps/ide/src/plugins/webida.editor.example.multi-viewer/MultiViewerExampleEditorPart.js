@@ -294,7 +294,7 @@ define([
         },
 
         /**
-         * @deprcated
+         * @deprecated
          */
         getValue: function() {
             if (this.getModel()) {

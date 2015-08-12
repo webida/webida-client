@@ -84,7 +84,7 @@ define([
             this.tabTitle = this.name;
             this.editor = null;
             this.editorName = null;
-            this.savedValue = null;
+            this.contents = null;
             this.contents = null;
         };
 
@@ -97,7 +97,7 @@ define([
                     modifiedInEditor = !editorPart.isClean();
                 }
                 // TODO: remove the first clause
-                return val !== undefined && val !== this.savedValue && modifiedInEditor;
+                return val !== undefined && val !== this.getContents() && modifiedInEditor;
             } else {
                 return false;
                 // not yet even initialized.
@@ -105,11 +105,11 @@ define([
         };
 
         File.prototype.setContents = function(contents) {
-            this.savedValue = contents;
+            this.contents = contents;
         };
 
         File.prototype.getContents = function() {
-            return this.savedValue;
+            return this.contents;
         };
 
         File.prototype.getPath = function() {
@@ -139,7 +139,7 @@ define([
                     toastr.error('Failed to read file "' + file.path + '" (' + error + ')');
                     editors.onFileError(file);
                 } else {
-                    file.savedValue = content;
+                    file.getContents() = content;
                     editors.onFileOpened(file);
                     topic.publish('file.opened', file, content);
                 }
@@ -198,7 +198,7 @@ define([
                     toastr.error('Failed to write file "' + path + '" (' + error + ')');
                     editors.onFileError(file);
                 } else {
-                    file.savedValue = value;
+                    file.getContents() = value;
                     var editorPart = editors.getPart(file);
                     if (editorPart && editorPart.markClean) {
                         editorPart.markClean();
@@ -384,13 +384,14 @@ define([
                             siblingList.splice(idx, 0, dst);
 
                             var cursor = editors.getCursor(file);
-
-                            editors.openFile(dst, {
+                            
+                            topic.publish('#REQUEST.openFile', dst, {
                                 cellIndex: cellIndex,
                                 siblingList: siblingList,
                                 show: editors.currentFile === file,
                                 cursor: cursor
                             });
+
                             editors.closeFile({
                                 path: src
                             });
@@ -496,7 +497,7 @@ define([
         topic.subscribe('#REQUEST.saveFile', editors.saveFile.bind(editors));
         topic.subscribe('#REQUEST.selectFile', function(path) {
             if (editors.getFile(path)) {
-                editors.openFile(path);
+                topic.publish('#REQUEST.openFile', path);
             }
         });
 
@@ -779,11 +780,6 @@ define([
         }
         return null;
     }
-
-
-    editors.openFile__ = function() {
-        logger.info('do nothing');
-    };
 
     //Tmp Code during version 1.3.0
     editors.bundle = {};
