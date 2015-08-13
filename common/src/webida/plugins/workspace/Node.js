@@ -1131,6 +1131,8 @@ define(['require',
         } else if (newName.indexOf('/') > -1) {
             toastr.warning('Slashes are not allowed in a file or directory name.');
             return false;
+        } else if (/^(\.|\.\.)$/.test(newName)) {
+            toastr.warning('"' + newName + '" is not allowed as a file or directory name.');
         } else if (dirNode && dirNode.hasSubnode(newName)) {
             toastr.error('A file or directory with the name "' + newName + '" already exists.');
             return false;
