@@ -36,6 +36,10 @@ define([
 	'use strict';
 // @formatter:on
 
+    /**
+     * @typedef {Object} Persistence
+     */
+
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
@@ -45,7 +49,12 @@ define([
     function DataSource(dataSourceId) {
         logger.info('new DataSource(' + dataSourceId + ')');
         this._dataSourceId = ++_dataSourceId;
+
+        /** @type {Object} */
         this.dataSourceId = dataSourceId;
+
+        /** @type {Persistence} */
+        this.persistence = null;
     }
 
 
@@ -56,6 +65,20 @@ define([
          */
         getId: function() {
             return this.dataSourceId;
+        },
+
+        /**
+         * @param {Persistence}
+         */
+        setPersistence: function(persistence) {
+            return this.persistence = persistence;
+        },
+
+        /**
+         * @return {Persistence}
+         */
+        getPersistence: function() {
+            return this.persistence;
         },
 
         /**

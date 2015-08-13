@@ -31,6 +31,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/DataSource',
+    'webida-lib/plugins/workbench/ui/Persistence',
     'plugins/webida.notification/notification-message',
     './File'
 ], function(
@@ -40,6 +41,7 @@ define([
     genetic, 
     Logger,
     DataSource,
+    Persistence,
     toastr,
     File
 ) {
@@ -61,8 +63,7 @@ define([
 
         DataSource.call(this, dataSourceId);
 
-        /** @type {File} */
-        this.file = new File(dataSourceId);
+        this.setPersistence(new File(dataSourceId));
 
         /*
          var that = this;
@@ -83,20 +84,13 @@ define([
     genetic.inherits(FileDataSource, DataSource, {
 
         /**
-         * @return {File}
-         */
-        getFile: function() {
-            return this.file;
-        },
-
-        /**
          * @override
          * @param {DataSource} target
          */
         equals: function(target) {
-            if ( typeof target.getFile === 'function') {
-                var file = target.getFile();
-                var thisFile = this.getFile();
+            if ( typeof target.getPersistence === 'function') {
+                var file = target.getPersistence();
+                var thisFile = this.getPersistence();
                 if (file.getPath() === thisFile.getPath()) {
                     return true;
                 } else {
@@ -111,14 +105,14 @@ define([
          */
         getContents: function(callback) {
             var that = this;
-            var file = this.file;
-            if (file.getFlag(File.READ) === false) {
+            var file = this.getPersistence();
+            if (file.getFlag(Persistence.READ) === false) {
                 fsCache.readFile(file.getPath(), function(error, contents) {
                     if (error) {
                         toastr.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
                     } else {
                         file.setContents(contents);
-                        file.setFlag(File.READ, true);
+                        file.setFlag(Persistence.READ, true);
                         callback(file.getContents());
                     }
                 });
@@ -131,22 +125,22 @@ define([
          * @override
          */
         getTitle: function() {
-            return this.file.getName();
+            return this.getPersistence().getName();
         },
 
         /**
          * @override
          */
         getToolTip: function() {
-            return this.file.getPath();
+            return this.getPersistence().getPath();
         },
 
         /**
          * @override
          */
         getTitleImage: function() {
-        	//TODO
-        	//var desc = new ImageDescriptor(this.file.getExtension());
+            //TODO
+            //var desc = new ImageDescriptor(this.file.getExtension());
             return null;
         },
 
@@ -154,7 +148,7 @@ define([
          * @override
          */
         toString: function() {
-            var res = '<' + this.constructor.name + '>#' + this.file.getPath();
+            var res = '<' + this.constructor.name + '>#' + this.getPersistence().getPath();
             return res;
         }
     });
