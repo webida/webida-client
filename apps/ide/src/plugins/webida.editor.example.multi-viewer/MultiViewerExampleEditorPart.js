@@ -238,7 +238,7 @@ define([
                 doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
                     //TODO getFile() will be removed in webida 1.5.0
                     //Temp Code
-                    var file = dataSource.getFile();
+                    var file = dataSource.getPersistence();
                     editors.refreshTabTitle(that.getFile());
                     topic.publish('file.content.changed', file.getPath(), file.getContents());
                 });
@@ -289,7 +289,7 @@ define([
             if (this.getModel()) {
                 var doc = this.getModel();
                 var dataSource = this._getDataSource();
-                var file = dataSource.getFile();
+                var file = dataSource.getPersistence();
                 if (doc.getText() === file.getContents()) {
                     return true;
                 } else {
@@ -314,7 +314,7 @@ define([
             var dataSource = this._getDataSource();
             var codeViewer = this.getViewerById('CodeEditor');
             if (doc && dataSource) {
-                var file = dataSource.getFile();
+                var file = dataSource.getPersistence();
                 file.setContents(doc.getText());
             }
             if (codeViewer) {

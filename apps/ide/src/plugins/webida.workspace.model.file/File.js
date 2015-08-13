@@ -27,11 +27,13 @@
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/plugins/workbench/ui/Persistence'
 ], function(
     EventEmitter,
     genetic, 
-    Logger
+    Logger,
+    Persistence
 ) {
     'use strict';
 // @formatter:on
@@ -46,6 +48,8 @@ define([
 
     function File(path) {
         logger.info('new File(' + path + ')');
+
+        Persistence.call(this, path);
 
         if (path.slice(-1) === '/') {
             throw new Error('Path should be end with file name');
@@ -62,15 +66,10 @@ define([
 
         /** @type {string} e */
         this.extension = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
-
-        /** @type {string} */
-        this.contents = null;
-
-        this.state = 0;
     }
 
 
-    genetic.inherits(File, Object, {
+    genetic.inherits(File, Persistence, {
 
         /**
          * a/b/c.d.txt
@@ -104,42 +103,10 @@ define([
             return this.extension;
         },
 
-        /**
-         * @param {string} contents
-         */
-        setContents: function(contents) {
-            return this.contents = contents;
-        },
-
-        /**
-         * @return {string} contents
-         */
-        getContents: function() {
-            return this.contents;
-        },
-
-        setFlag: function(/*int*/flag, /*boolean*/value) {
-            if (!flag) {
-                throw new Error('Invalid flag name');
-            }
-            if (value) {
-                this.flags |= flag;
-            } else {
-                this.flags &= ~flag;
-            }
-        },
-
-        getFlag: function(/*int*/flag) {
-            return (this.flags & flag) != 0;
-        },
-
         toString: function() {
             return '<' + this.constructor.name + '>#' + this.path;
         }
     });
-
-    /** @constant {number} state flag : Read File Done */
-    File.READ = 1;
 
     return File;
 });
