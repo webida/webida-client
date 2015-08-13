@@ -85,7 +85,6 @@ define([
             this.editor = null;
             this.editorName = null;
             this.contents = null;
-            this.contents = null;
         };
 
         File.prototype.isModified = function() {
@@ -116,6 +115,18 @@ define([
             return this.path;
         };
 
+        File.prototype.getName = function() {
+            return this.name;
+        };
+
+        File.prototype.getBaseName = function() {
+            return this.basename;
+        };
+
+        File.prototype.getExtension = function() {
+            return this.extension;
+        };
+
         File.prototype.toString = function() {
             return this.path;
         };
@@ -139,7 +150,7 @@ define([
                     toastr.error('Failed to read file "' + file.path + '" (' + error + ')');
                     editors.onFileError(file);
                 } else {
-                    file.getContents() = content;
+                    file.setContents(content);
                     editors.onFileOpened(file);
                     topic.publish('file.opened', file, content);
                 }
@@ -384,7 +395,7 @@ define([
                             siblingList.splice(idx, 0, dst);
 
                             var cursor = editors.getCursor(file);
-                            
+
                             topic.publish('#REQUEST.openFile', dst, {
                                 cellIndex: cellIndex,
                                 siblingList: siblingList,
