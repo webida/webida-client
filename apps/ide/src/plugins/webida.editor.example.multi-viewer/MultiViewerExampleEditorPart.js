@@ -32,7 +32,7 @@
 define([
     'dojo/topic',
     'dijit/layout/ContentPane',
-    'webida-lib/util/genetic', 
+    'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/loadCSSList',
     'webida-lib/plugins/editors/plugin',
@@ -48,11 +48,11 @@ define([
 ], function(
     topic,
     ContentPane,
-    genetic, 
+    genetic,
     Logger,
     loadCSSList,
     editors,
-    EditorPart, 
+    EditorPart,
     MultiViewerEditorPart,
     Viewer,
     PartModel,
@@ -217,14 +217,17 @@ define([
                     formViewer.createAdapter(parentNode);
                     that.initFormViewer();
                     formViewer.setContents(doc);
-                });
 
-                //3. codeViewer
-                var codeViewer = that.getCodeViewer();
-                that.addViewer('CodeEditor', 'Code Editor', codeViewer, 1, function(parentNode) {
-                    codeViewer.setParentNode(parentNode);
-                    that.initCodeEditor();
-                    codeViewer.setContents(doc);
+                    //3. codeViewer
+                    var codeViewer = that.getCodeViewer();
+                    that.addViewer('CodeEditor', 'Code Editor', codeViewer, 1, function(parentNode) {
+                        codeViewer.setParentNode(parentNode);
+                        that.initCodeEditor();
+                        codeViewer.setContents(doc);
+
+                        // startup tabcontainer
+                        that.startupTabContainer();
+                    });
                 });
 
                 //4. Listen to model

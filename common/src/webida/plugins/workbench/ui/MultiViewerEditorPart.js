@@ -116,21 +116,47 @@ define([
         /**
          * Create TabContainer
          */
-        createTabContainer: function() {
+        createTabContainer: function () {
             logger.info('createTabContainer()');
-            var parent = this.getParentElement();
             var container = new TabContainer({
                 style: 'width: 100%; height: 100%;',
                 tabPosition: 'bottom',
                 tabStrip: true,
                 nested: true
             });
-            container.startup();
-            parent.appendChild(container.domNode);
-            container.resize();
 
             this.setContainerEvent(container);
             this.tabContainer = container;
+
+            // tabcontainer's right step
+            // 1. create tabcontainer
+            // 2. add tabconatiner's child
+            // 3. tabcontainer placing it in the document
+            // 4. tabcontainer startup (in this time child widget automatically starup)
+            // 5. if tabcontainer's parent is not dojo layout widget then resize
+        },
+
+        /**
+         * Startup TabContainer
+         */
+        startupTabContainer: function () {
+            logger.info('startupTabContainer');
+            var parent = this.getParentElement();
+            var container = this.getTabContainer();
+
+            if (parent && container) {
+                // always call the widget's startup() method after placing it in the document
+                // ref: https://dojotoolkit.org/documentation/tutorials/1.10/understanding_widgetbase/index.html
+                parent.appendChild(container.domNode);
+                container.startup();
+
+                // if tabcontainer's parent is layout container widget it's not nessary
+                // ref: https://github.com/dojo/dijit/blob/master/layout/_LayoutWidget.js
+                // but our tabcontainer's parent is just <div> node so we must call resize method
+                container.resize();
+
+                logger.info('startupTabContainer > ' + container.id);
+            }
         },
 
         /**
@@ -187,7 +213,9 @@ define([
             var pane = new ContentPane({
                 title: title
             });
-            pane.startup();
+            // child widget's startup is called in parent widget's startup method
+            // ref: https://github.com/dojo/dijit/blob/master/_WidgetBase.js
+            //pane.startup(); is not needed
             this.getTabContainer().addChild(pane, index);
             this.getViewers().set(id, viewer);
             this.getTabToViewerMap().set(pane, viewer);
