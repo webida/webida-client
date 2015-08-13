@@ -209,7 +209,7 @@ define([
                     toastr.error('Failed to write file "' + path + '" (' + error + ')');
                     editors.onFileError(file);
                 } else {
-                    file.getContents() = value;
+                    file.setContents(value);
                     var editorPart = editors.getPart(file);
                     if (editorPart && editorPart.markClean) {
                         editorPart.markClean();
