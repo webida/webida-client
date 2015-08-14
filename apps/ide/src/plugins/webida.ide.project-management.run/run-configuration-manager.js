@@ -88,16 +88,17 @@ define([
                     fsMount.readFile(PATH_RUN_CONFIG, function (err, content) {
                         var workspaceObj;
                         if (err) {
-                            return next(err);
-                        } else if (content) {
-                            runConfigurationFileCache = content;
+                            next(err);
+                        } else {
+                            runConfigurationFileCache = content || '{}';
                             workspaceObj = JSON.parse(content);
                             if (workspaceObj.run && Object.getOwnPropertyNames(workspaceObj.run).length > 0) {
                                 runConfigurations = workspaceObj.run;
-                                return next();
+                                next();
+                            } else {
+                                next(PATH_RUN_CONFIG + ' hasn\'t run configuration info');
                             }
                         }
-                        next(PATH_RUN_CONFIG + ' hasn\'t run configuration info');
                     });
                 }
             ], function (err) {
