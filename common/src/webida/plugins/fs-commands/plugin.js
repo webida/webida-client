@@ -47,6 +47,7 @@ define([
     //logger.off();
 
     var openWithEditorNames = [];
+    var openWithParts = [];
 
     var module = {
 
@@ -128,12 +129,18 @@ define([
             return openWithEditorNames;
         },
 
+        getOpenWithParts: function() {
+            return openWithParts;
+        },
+
         getViableItemsForWorkspaceView: function() {
             var paths = wv.getSelectedPaths();
             var i = 0;
+            var ext;
 
             // processing for open with
             openWithEditorNames = [];
+            openWithParts = [];
             if (paths && paths.length > 0 && paths.every(function(n) {
                 return !pathUtil.isDirPath(n);
             })) {
@@ -155,7 +162,9 @@ define([
 
                 if (availableEditorExtensions) {
                     for ( i = 0; i < availableEditorExtensions.length; i++) {
-                        openWithEditorNames.push(availableEditorExtensions[i].name);
+                        ext = availableEditorExtensions[i];
+                        openWithEditorNames.push(ext.name);
+                        openWithParts.push(ext.__plugin__.loc + '/' + ext.editorPart);
                     }
                 }
             }
