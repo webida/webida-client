@@ -73,7 +73,7 @@ define([
 
     logger.log('loaded modules required by editors. initializing editors plugin');
 
-    var editorsManager = new EditorManager();
+    var editorManager = new EditorManager();
 
     function getFileClass() {
         var File = function(path) {
@@ -209,7 +209,7 @@ define([
                     toastr.error('Failed to write file "' + path + '" (' + error + ')');
                     editors.onFileError(file);
                 } else {
-                    file.setContents(value);
+                    file.getContents(value);
                     var editorPart = editors.getPart(file);
                     if (editorPart && editorPart.markClean) {
                         editorPart.markClean();
@@ -503,7 +503,7 @@ define([
             }, 10000);
         });
 
-        topic.subscribe('#REQUEST.openFile', editors.openFile.bind(editors));
+        topic.subscribe('#REQUEST.openFile', editorManager.requestOpen.bind(editorManager));
         topic.subscribe('#REQUEST.closeFile', editors.closeFile.bind(editors));
         topic.subscribe('#REQUEST.saveFile', editors.saveFile.bind(editors));
         topic.subscribe('#REQUEST.selectFile', function(path) {
@@ -735,6 +735,10 @@ define([
     editors.getAvailableEditorExtensions = function(path, editorName) {
         var thisFileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
         var thisMimeType = extToMime[thisFileExt];
+        logger.info('thisFileExt = ', thisFileExt);
+        logger.info('thisMimeType = ', thisMimeType);
+		logger.info('editors.editorExtensions = ', editors.editorExtensions);
+
 
         var viable1 = editors.editorExtensions.filter(function(extension) {
             return extension.handledFileExt.some(function(fileExtension) {
@@ -792,51 +796,24 @@ define([
         return null;
     }
 
-    //Tmp Code during version 1.3.0
-    editors.bundle = {};
+    /**
+     * Decide whether create new Part or show existing Part.
+     *
+     * @private
+     * @Override
+     */
+    editorManager._showPart0 = function(dataSource, options, callback) {
+        logger.info('_showPart(' + dataSource + ', ' + options + ', callback)');
+
+        editors.openFileOld(dataSource.getId(), options, callback);
+    };
 
     /**
      * @deprecated since version 1.3.0
      * This method will be remove from 1.4.0
      * Temp Code
      */
-    editors.openFile = function(path, options, callback) {
-        logger.info('editors.openFile(' + path + ', options, callback)');
-        //logger.info('options = ', options);
-
-        var dataSourceId = path;
-
-        //Tmp
-        editors.bundle[path] = {
-            options: options,
-            callback: callback
-        };
-
-        //1. prepare DataSource
-        var dsRegistry = workbench.getDataSourceRegistry();
-        var dataSource = dsRegistry.getDataSourceById(path);
-        if (dataSource === null) {
-            workbench.createDataSource(dataSourceId, function(dataSource) {
-                doWithData(dataSource);
-            });
-        } else {
-            doWithData(dataSource);
-        }
-
-        function doWithData(dataSource) {
-            logger.info('doWithData(' + dataSource + ')');
-            //2. create PartContainer
-            //3. create Part and add to PartContainer
-            //4. dataSource.getContents(function(contents){
-            //      part.setContents(contents);
-            //   });
-            var path = dataSource.getId();
-            var options = editors.bundle[path].options;
-            var callback = editors.bundle[path].callback;
-            editors.openFileOld(path, options, callback);
-        }
-
-    };
+    editors.openFile = editorManager.requestOpen;
 
     /**
      * @deprecated since version 1.3.0

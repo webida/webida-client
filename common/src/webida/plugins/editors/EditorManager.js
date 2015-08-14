@@ -30,21 +30,27 @@
 define([
     'dojo/topic',
     'external/eventEmitter/EventEmitter',
+    'external/lodash/lodash.min',
+    'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/plugin', //TODO : refactor
     'webida-lib/plugins/workbench/ui/DataSource',
     'webida-lib/plugins/workbench/ui/TabPartContainer',
     'webida-lib/plugins/workbench/ui/Workbench',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
+    'text!./ext-to-mime.json'
 ], function(
     topic,
     EventEmitter,
+    _,
+    pluginManager,
     workbench,
     DataSource,
     TabPartContainer,
     Workbench,
     genetic, 
-    Logger
+    Logger,
+    extToMime
 ) {
     'use strict';
 // @formatter:on
@@ -64,7 +70,14 @@ define([
         /** @type {Object} */
         this.subscribed = {};
 
-        //this.subscribe();
+        /** @type {Object} */
+        this.mimeType = JSON.parse(extToMime);
+
+        /** @type {Array} */
+        this.extensions = pluginManager.getExtensions('webida.common.editors:editor');
+        logger.info('this.extensions = ', this.extensions);
+
+        //this._subscribe();
     }
 
 
@@ -72,31 +85,157 @@ define([
 
         /**
          * subscribe to topic
+         * @private
          */
         // @formatter:off
-        subscribe: function() {
+        _subscribe: function() {
             this.subscribed['#REQUEST.openFile'] = topic.subscribe(
                 '#REQUEST.openFile', this.requestOpen.bind(this));
         },
         // @formatter:on
 
-        unsubscribe: function() {
+        /**
+         * unsubscribe topics
+         * @private
+         */
+        _unsubscribe: function() {
             for (var prop in this.subscribed) {
                 this.subscribed[prop].remove();
             }
         },
 
-        getPartClassName: function(dataSource) {
-            var path = this.getPartClassPath(dataSource);
-            return path.split(/[\\/]/).pop();
-        },
-
-        getPartClassPath: function(dataSource) {
-            return 'plugins/webida.editor.example.codemirror/CmEditorPart';
+        /**
+         * @private
+         * @return {Array}
+         */
+        _getExtensions: function() {
+            if (this.extensions instanceof Array) {
+                return this.extensions;
+            } else {
+                return [];
+            }
         },
 
         /**
-         * @param {DataSource} dataSourceId
+         * TODO This should be refactored after Refactoring Plugin Manager.
+         * This method should be called by plugin object itself.
+         * For example, something like this..
+         * plugin.getPartPath() or plugin.getAttr('partPath');
+         */
+        _getPathByExt: function(ext) {
+            return ext.__plugin__.loc + '/' + ext.editorPart;
+        },
+
+        /**
+         * Retrieve Part Module Path for a specific resource name.
+         * Only one plugin should exist for a specific resource name.
+         *
+         * @return {string} Part's Class Path
+         * @private
+         */
+        _getPathForName: function(dataSource) {
+            logger.info('_getPathForName(' + dataSource + ')');
+            var persistence = dataSource.getPersistence();
+            var ext, extensions = this._getExtensions();
+            //Case 2. specific resource name
+            for (var i = 0; i < extensions.length; i++) {
+                ext = extensions[i];
+                if (ext.handledFileNames.indexOf(persistence.getName()) >= 0) {
+                    return this._getPathByExt(ext);
+                }
+            }
+            return null;
+        },
+
+        /**
+         * @return {string} Mime Type
+         * @private
+         */
+        _getMimeType: function(resourceExt) {
+            return this.mimeType[resourceExt];
+        },
+
+        /**
+         * Retrieve Part Module Path for a specific resource extension.
+         * This method works when a DataSource's Persistence has an extension
+         * (such as a File).
+         * @see File, Persistence, DataSource
+         *
+         * @return {string} Part's Class Path
+         * @private
+         */
+        _getPathForExtension: function(dataSource) {
+            logger.info('_getPathForExtension(' + dataSource + ')');
+            var extensions = this._getExtensions();
+            var persistence = dataSource.getPersistence();
+            var resourceExt = persistence.getExtension();
+            var mime = this._getMimeType(resourceExt);
+
+            var viable1 = extensions.filter(function(ext) {
+                return ext.handledFileExt.some(function(supportedExt) {
+                    return resourceExt.match('^' + supportedExt + '$');
+                });
+            });
+            var viable2 = extensions.filter(function(ext) {
+                return ext.handledMimeTypes.some(function(supportedMime) {
+                    return mime && mime.match('^' + supportedMime + '$');
+                });
+            });
+            var unviable1 = extensions.filter(function(ext) {
+                return ext.unhandledFileExt.some(function(supportedExt) {
+                    return resourceExt.match('^' + supportedExt + '$');
+                });
+            });
+            var unviable2 = extensions.filter(function(ext) {
+                return ext.unhandledMimeTypes.some(function(supportedMime) {
+                    return mime && mime.match('^' + supportedMime + '$');
+                });
+            });
+
+            var results = _.union(viable1, viable2);
+            results = _.difference(results, unviable1, unviable2);
+
+            if (results.length === 0) {
+                return null;
+            } else {
+                return this._getPathByExt(results[0]);
+            }
+        },
+
+        /**
+         * Retrieve Part Module Path for specified a DataSource with options
+         *
+         * Case 1. 'open with specific editor' case
+         * Case 2. specific resource name (should exist only one plugin)
+         * Case 3. specific resource extension (if extension exists).
+         *
+         * @return {string} Part's Class Path
+         * @private
+         */
+        _getPartPath: function(dataSource, options) {
+            logger.info('_getPartPath(' + dataSource + ', options)');
+            //Case 1. 'open with specific editor' case
+            if ('openWithPart' in options) {
+                return options.openWithPart;
+            } else {
+                //Case 2. specific resource name
+                var pathForName = this._getPathForName(dataSource);
+                if (pathForName) {
+                    return pathForName;
+                }
+                //Case 3. specific resource extension (if extension exists).
+                var pathForExtension = this._getPathForExtension(dataSource);
+                if (pathForExtension) {
+                    return pathForExtension;
+                }
+                return null;
+            }
+        },
+
+        /**
+         * Creates a new DataSource if not exist then show Part.
+         *
+         * @param {Object} dataSourceId
          * @param {Object} options
          * @param {requestOpenCallback} callback
          */
@@ -105,7 +244,7 @@ define([
          * @param {Part} part
          */
         requestOpen: function(dataSourceId, options, callback) {
-            logger.info('> requestOpen(' + dataSourceId + ', ' + options + ', callback)');
+            logger.info('> requestOpen(' + dataSourceId + ', ', options, ', ' + typeof callback + ')');
 
             var that = this;
             options = options || {};
@@ -123,25 +262,31 @@ define([
         },
 
         /**
+         * Decide whether create new Part or show existing Part.
+         *
          * @private
          */
         _showPart: function(dataSource, options, callback) {
             logger.info('_showPart(' + dataSource + ', ' + options + ', callback)');
 
-            var page = workbench.getCurrentPage();
-            var registry = page.getPartRegistry();
-            var ClassName = this.getPartClassName(dataSource);
-            var parts = registry.getPartsByClassName(dataSource, ClassName);
+            var that = this;
+            var partClassPath = this._getPartPath(dataSource, options);
+            logger.info('%cpartClassPath = '+partClassPath, 'color:green');
+            require([partClassPath], function(PartClass) {
+                var page = workbench.getCurrentPage();
+                var registry = page.getPartRegistry();
+                var parts = registry.getPartsByClass(dataSource, PartClass);
 
-            //'open with specific editor' or 'default editor' not opened yet
-            if (options.unlimitedOpen === true || parts.length === 0) {
-                this._createPart(dataSource, options, callback);
-            } else {
-                //'default editor' already exists
-                if (parts.length > 0) {
-                    logger.log('show existing editor');
+                //'open with specific editor' or 'default editor' not opened yet
+                if ('openWithPart' in options || parts.length === 0) {
+                    that._createPart(dataSource, options, callback);
+                } else {
+                    //'default editor' already exists
+                    if (parts.length > 0) {
+                        logger.log('find existing last part and show');
+                    }
                 }
-            }
+            });
         },
 
         /**

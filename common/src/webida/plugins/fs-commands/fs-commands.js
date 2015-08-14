@@ -552,8 +552,8 @@ function (require, fh, _,
                     if (pathUtil.isDirPath(path)) {
                         console.error('assertion fail: "' + path + '" must be a file');
                     } else {
-                        var editorNames = fh.getOpenWithEditorsArray(); 
-                        var options = {editorName: editorNames[selectionIndex]};
+                        var editorParts = fh.getOpenWithParts(); 
+                        var options = {openWithPart: editorParts[selectionIndex]};
                         topic.publish('#REQUEST.openFile', path, options);
                     }
                 });
