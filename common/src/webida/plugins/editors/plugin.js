@@ -146,19 +146,6 @@ define([
             '4': '    '
         };
 
-        FileManager.openFile = function(file, PartClass) {
-            fsCache.readFile(file.path, function(error, content) {
-                if (error) {
-                    toastr.error('Failed to read file "' + file.path + '" (' + error + ')');
-                    editors.onFileError(file);
-                } else {
-                    file.setContents(content);
-                    editors.onFileOpened(file, PartClass);
-                    topic.publish('file.opened', file, content);
-                }
-            });
-        };
-
         FileManager.saveFile = function(file, option) {
             logger.info('FileManager.saveFile(' + file + ', option)');
             function getSpaces(n) {
@@ -554,7 +541,7 @@ define([
                     type: 'warning'
                 }).then(function() {
                     asked.pop();
-                    fm.openFile(file);
+                    topic.publish('#REQUEST.openFile', file.getPersistenceId());
                 }, function() {
                     asked.pop();
                 });
@@ -741,24 +728,18 @@ define([
     editorManager._createPart = function(partClassPath, PartClass, dataSource, options, callback) {
         logger.info('_createPart(' + partClassPath + ', ' + PartClass + ', ' + dataSource + ', ' + options + ', callback)');
 
+		var persistence = dataSource.getPersistence();
+		
         var path = dataSource.getId();
-        var file = editors.getFile(path);
-        var fileNotExist = !file;
-
-        if (fileNotExist) {
-            file = new File(path);
-            editors.addFile(path, file);
+        if (!editors.getFile(path)) {
+            editors.addFile(path, persistence);
         }
 
-        file.openWithPart = partClassPath;
-        file._openFileOption = options;
-        file._openFileCallback = callback;
+        persistence.openWithPart = partClassPath;
+        persistence._openFileOption = options;
+        persistence._openFileCallback = callback;
 
-        if (fileNotExist) {
-            fm.openFile(file, PartClass);
-        } else {
-            editors.onFileOpened(file, PartClass);
-        }
+        editors.onFileOpened(persistence, PartClass);
     };
 
     /**
