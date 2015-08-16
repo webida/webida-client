@@ -19,7 +19,8 @@
  * ExtensionManager
  *
  * This class manages 'webida.common.editors:editor' extension point.
- * 
+ * This class is Singleton.
+ *
  * @see
  * @since: 2015.08.14
  * @author: hw.shim
@@ -44,14 +45,17 @@ define([
 
     /**
      * @typedef {Object} DataSource
+     * @typedef {Object} Persistence
+     * @typedef {Object} ExtensionManager
      */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    var singleton = null;
+
     function ExtensionManager() {
-        logger.info('new ExtensionManager()');
 
         /** @type {Object} */
         this.mimeType = JSON.parse(extToMime);
@@ -61,6 +65,15 @@ define([
         logger.info('this.extensions = ', this.extensions);
     }
 
+    /**
+     * @return {ExtensionManager}
+     */
+    ExtensionManager.getInstance = function() {
+        if (singleton === null) {
+            singleton = new this();
+        }
+        return singleton;
+    }
 
     genetic.inherits(ExtensionManager, Object, {
 
@@ -98,7 +111,7 @@ define([
          *
          * Case 1. 'open with specific editor' case
          * Case 2. specific resource name (should exist only one plugin)
-         * Case 3. specific resource extension (if extension exists).
+         * Case 3. specific resource type (if resource extension exists).
          *
          * @return {string} Part's Class Path
          */
@@ -108,19 +121,19 @@ define([
             if ('openWithPart' in options) {
                 return options.openWithPart;
             } else {
+                var persistence = dataSource.getPersistence();
                 //Case 2. specific resource name
-                var pathForName = this._getPathForName(dataSource);
+                var pathForName = this._getPathForName(persistence);
                 if (pathForName) {
                     return pathForName;
                 }
-                //Case 3. specific resource extension (if extension exists).
-                var pathForExtension = this._getPathForExtension(dataSource);
+                //Case 3. specific resource type (if resource extension exists).
+                var pathForExtension = this._getPathForType(persistence);
                 if (pathForExtension) {
                     return pathForExtension;
                 }
                 //Case 4. Nothing found
-                var resourceName = dataSource.getPersistence().getName();
-                throw new Error('None of the plugins contribute for the resource ' + resourceName);
+                throw new Error('None of the plugins contribute for the resource ' + persistence.getName());
             }
         },
 
@@ -128,12 +141,12 @@ define([
          * Retrieve Part Module Path for a specific resource name.
          * Only one plugin should exist for a specific resource name.
          *
+         * @param {Persistence} persistence
          * @return {string} Part's Class Path
          * @private
          */
-        _getPathForName: function(dataSource) {
-            logger.info('_getPathForName(' + dataSource + ')');
-            var persistence = dataSource.getPersistence();
+        _getPathForName: function(persistence) {
+            logger.info('_getPathForName(' + persistence + ')');
             var ext, extensions = this.getExtensions();
             //Case 2. specific resource name
             for (var i = 0; i < extensions.length; i++) {
@@ -151,14 +164,32 @@ define([
          * (such as a File).
          * @see File, Persistence, DataSource
          *
+         * @param {Persistence} persistence
          * @return {string} Part's Class Path
          * @private
          */
-        _getPathForExtension: function(dataSource) {
-            logger.info('_getPathForExtension(' + dataSource + ')');
-            var extensions = this.getExtensions();
-            var persistence = dataSource.getPersistence();
+        _getPathForType: function(persistence) {
+            logger.info('_getPathForType(' + persistence + ')');
             var resourceExt = persistence.getExtension();
+            var results = this.getExtensionsForType(resourceExt);
+            if (results.length === 0) {
+                return null;
+            } else {
+                return this._getPathByExt(results[0]);
+            }
+        },
+
+        /**
+         * Returns Editor Extensions array for a DataSource's extension
+         * and Mime-type.
+         *
+         * @param {string} resourceExt
+         * @return {Array}
+         */
+        getExtensionsForType: function(resourceExt) {
+            logger.info('getExtensionsForType(' + resourceExt + ')');
+
+            var extensions = this.getExtensions();
             var mime = this._getMimeType(resourceExt);
 
             var viable1 = extensions.filter(function(ext) {
@@ -185,12 +216,8 @@ define([
             var results = _.union(viable1, viable2);
             results = _.difference(results, unviable1, unviable2);
 
-            if (results.length === 0) {
-                return null;
-            } else {
-                return this._getPathByExt(results[0]);
-            }
-        },
+            return results || [];
+        }
     });
 
     return ExtensionManager;
