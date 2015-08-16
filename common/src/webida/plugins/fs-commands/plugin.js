@@ -22,8 +22,6 @@
 // @formatter:off
 define([
     'webida-lib/plugins/workspace/plugin', // wv
-    'webida-lib/plugin-manager-0.1', //pm
-    'webida-lib/plugins/editors/plugin', //editors
     'webida-lib/plugins/editors/ExtensionManager', //ExtensionManager
     'external/lodash/lodash.min', //_
     'dojo/topic', // topic
@@ -32,8 +30,6 @@ define([
     'plugins/webida.notification/notification-message' // Toastr
 ], function(
     wv,
-    pm,
-    editors,
     ExtensionManager,
     _,
     topic,
