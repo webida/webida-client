@@ -397,7 +397,7 @@ define([
                         var foldings = file.viewer ? file.viewer.getFoldings() : [];
                                 // temporary solution
                                 // TODO: see why file.viewer sometimes is null.
-                        tabs.push([cursor.col, cursor.row, file.path, foldings, file.editorName]);
+                        tabs.push([cursor.col, cursor.row, file.path, foldings, file.openWithPart]);
                         console.log('--* path : ' + file.path);
                     }
                     selfile = editors.getFileByViewId(vc.getSelectedView().getId());
@@ -493,7 +493,7 @@ define([
                         }
                         opt.cellIndex = i;
                         opt.siblingList = siblingList;
-                        opt.editorName = tab[4];
+                        opt.openWithPart = tab[4];
                         pos = {};
                         pos.col = tab[0];
                         pos.row = tab[1];

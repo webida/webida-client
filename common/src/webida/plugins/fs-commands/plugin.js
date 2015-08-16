@@ -24,19 +24,21 @@ define([
     'webida-lib/plugins/workspace/plugin', // wv
     'webida-lib/plugin-manager-0.1', //pm
     'webida-lib/plugins/editors/plugin', //editors
+    'webida-lib/plugins/editors/ExtensionManager', //ExtensionManager
     'external/lodash/lodash.min', //_
     'dojo/topic', // topic
     'webida-lib/util/path', // pathUtil
     'webida-lib/util/logger/logger-client',
     'plugins/webida.notification/notification-message' // Toastr
 ], function(
-    wv, 
-    pm, 
-    editors, 
-    _, 
-    topic, 
+    wv,
+    pm,
+    editors,
+    ExtensionManager,
+    _,
+    topic,
     pathUtil,
-    Logger, 
+    Logger,
     toastr
 ) {
     'use strict';
@@ -46,6 +48,7 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    var extensionManager = ExtensionManager.getInstance();
     var openWithEditorNames = [];
     var openWithParts = [];
 
@@ -144,15 +147,15 @@ define([
             if (paths && paths.length > 0 && paths.every(function(n) {
                 return !pathUtil.isDirPath(n);
             })) {
-                var availableEditorExtensions = editors.getAvailableEditorExtensions(paths[0]);
+                var availableExtensions = extensionManager.getExtensionsForType(pathUtil.getFileExt(paths[0]));
                 for ( i = 0; i < paths.length; i++) {
                     if (i > 0) {
-                        if (availableEditorExtensions) {
-                            var availableEditorExtensions2 = editors.getAvailableEditorExtensions(paths[i]);
-                            if (availableEditorExtensions2) {
-                                availableEditorExtensions = _.intersection(availableEditorExtensions, availableEditorExtensions2);
+                        if (availableExtensions) {
+                            var availableExtensions2 = extensionManager.getExtensionsForType(pathUtil.getFileExt(paths[i]));
+                            if (availableExtensions2) {
+                                availableExtensions = _.intersection(availableExtensions, availableExtensions2);
                             } else {
-                                availableEditorExtensions = null;
+                                availableExtensions = null;
                             }
                         } else {
                             break;
@@ -160,9 +163,9 @@ define([
                     }
                 }
 
-                if (availableEditorExtensions) {
-                    for ( i = 0; i < availableEditorExtensions.length; i++) {
-                        ext = availableEditorExtensions[i];
+                if (availableExtensions) {
+                    for ( i = 0; i < availableExtensions.length; i++) {
+                        ext = availableExtensions[i];
                         openWithEditorNames.push(ext.name);
                         openWithParts.push(ext.__plugin__.loc + '/' + ext.editorPart);
                     }

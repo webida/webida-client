@@ -30,6 +30,7 @@ define([
     'webida-lib/util/path',
     'webida-lib/util/arrays/BubblingArray',
     'webida-lib/util/logger/logger-client',
+    'webida-lib/util/notify',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/EditorPart',
@@ -51,6 +52,7 @@ define([
     pathUtil, 
     BubblingArray,
     Logger, 
+    notify,
     pm, 
     workbench, 
     EditorPart,
@@ -83,7 +85,7 @@ define([
             this.extension = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
             this.tabTitle = this.name;
             this.editor = null;
-            this.editorName = null;
+            this.openWithPart = null;
             this.contents = null;
         };
 
@@ -144,14 +146,14 @@ define([
             '4': '    '
         };
 
-        FileManager.openFile = function(file) {
+        FileManager.openFile = function(file, PartClass) {
             fsCache.readFile(file.path, function(error, content) {
                 if (error) {
                     toastr.error('Failed to read file "' + file.path + '" (' + error + ')');
                     editors.onFileError(file);
                 } else {
                     file.setContents(content);
-                    editors.onFileOpened(file);
+                    editors.onFileOpened(file, PartClass);
                     topic.publish('file.opened', file, content);
                 }
             });
@@ -732,100 +734,39 @@ define([
         }
     };
 
-    editors.getAvailableEditorExtensions = function(path, editorName) {
-        var thisFileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
-        var thisMimeType = extToMime[thisFileExt];
-        logger.info('thisFileExt = ', thisFileExt);
-        logger.info('thisMimeType = ', thisMimeType);
-		logger.info('editors.editorExtensions = ', editors.editorExtensions);
-
-
-        var viable1 = editors.editorExtensions.filter(function(extension) {
-            return extension.handledFileExt.some(function(fileExtension) {
-                return thisFileExt.match('^' + fileExtension + '$');
-            });
-        });
-        var viable2 = editors.editorExtensions.filter(function(extension) {
-            return extension.handledMimeTypes.some(function(fileMimeType) {
-                return thisMimeType && thisMimeType.match('^' + fileMimeType + '$');
-            });
-        });
-        var unviable1 = editors.editorExtensions.filter(function(extension) {
-            return extension.unhandledFileExt.some(function(fileExtension) {
-                return thisFileExt.match('^' + fileExtension + '$');
-            });
-        });
-        var unviable2 = editors.editorExtensions.filter(function(extension) {
-            return extension.unhandledMimeTypes.some(function(fileMimeType) {
-                return thisMimeType && thisMimeType.match('^' + fileMimeType + '$');
-            });
-        });
-
-        var editorExtensions = _.union(viable1, viable2);
-        editorExtensions = _.difference(editorExtensions, unviable1, unviable2);
-
-        if (editorExtensions.length === 0) {
-            return null;
-        } else {
-            if (editorName) {
-                var exts2 = _.filter(editorExtensions, function(ext) {
-                    return (ext.name === editorName);
-                });
-                if (exts2.length > 0) {
-                    return exts2;
-                } else {
-                    return null;
-                }
-            }
-            return editorExtensions;
-        }
-    };
-
-    function checkFileNameHandleExtension(path) {
-        var fileName = pathUtil.getFileName(path);
-        //logger.info(fileName);
-        var extensions = pm.getExtensions('webida.common.editors:editor');
-        //logger.info(extensions);
-        if ( extensions instanceof Array && extensions.length) {
-            for (var i = 0; i < extensions.length; i++) {
-                if (extensions[i].handledFileNames instanceof Array && extensions[i].handledFileNames.indexOf(fileName) >= 0) {
-                    return extensions[i];
-                }
-            }
-        }
-        return null;
-    }
-
     /**
-     * Decide whether create new Part or show existing Part.
-     *
      * @private
      * @Override
      */
-    editorManager._showPart0 = function(dataSource, options, callback) {
-        logger.info('_showPart(' + dataSource + ', ' + options + ', callback)');
+    editorManager._createPart = function(partClassPath, PartClass, dataSource, options, callback) {
+        logger.info('_createPart(' + partClassPath + ', ' + PartClass + ', ' + dataSource + ', ' + options + ', callback)');
 
-        editors.openFileOld(dataSource.getId(), options, callback);
+        var path = dataSource.getId();
+        var file = editors.getFile(path);
+        var fileNotExist = !file;
+
+        if (fileNotExist) {
+            file = new File(path);
+            editors.addFile(path, file);
+        }
+
+        file.openWithPart = partClassPath;
+        file._openFileOption = options;
+        file._openFileCallback = callback;
+
+        if (fileNotExist) {
+            fm.openFile(file, PartClass);
+        } else {
+            editors.onFileOpened(file, PartClass);
+        }
     };
 
     /**
-     * @deprecated since version 1.3.0
-     * This method will be remove from 1.4.0
-     * Temp Code
+     * @private
+     * @Override
      */
-    editors.openFile = editorManager.requestOpen;
-
-    /**
-     * @deprecated since version 1.3.0
-     * This method will be remove from 1.4.0
-     */
-    editors.openFileOld = function(path, options, callback) {
-        logger.info('editors.openFileOld(' + path + ', ' + options + ', ' + typeof callback + ')');
-        logger.info('options = ', options);
-
-        options = options || {};
-
-        //if this file's part is showing
+    editorManager._showExistingPart = function(dataSource, options, callback) {
+        logger.info('_showExistingPart(' + dataSource + ', ' + options + ', callback)');
         if (editors.currentFile && editors.currentFile.path === path) {
             if (options.pos) {
                 editors.setCursor(editors.currentFile, options.pos);
@@ -834,47 +775,15 @@ define([
             if (callback) {
                 callback(editors.currentFile);
             }
-
-            //new file
-        } else {
-            var fileExt = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
-
-            //find module for this file
-            var fileNameHandleExtension = checkFileNameHandleExtension(path);
-            //for handledFileNames
-            if (!options.editorName && fileNameHandleExtension) {
-                options.extension = fileNameHandleExtension;
-                //for handledFileNames or handledMimeTypes
-            } else {
-                var extensions = editors.getAvailableEditorExtensions(path, options.editorName);
-                options.extension = extensions && extensions[0];
-            }
-
-            if (!options.extension) {
-                toastr.error('No editors found for the file extension "' + fileExt + '"');
-                return;
-            }
-
-            var file = editors.getFile(path);
-            var fileNotExist = !file;
-
-            if (fileNotExist) {
-                file = new File(path);
-                editors.addFile(path, file);
-            }
-
-            file.editorName = options.extension.name;
-            logger.info('file.editorName = ', file.editorName);
-            file._openFileOption = options;
-            file._openFileCallback = callback;
-
-            if (fileNotExist && options.extension.fileValueRequired) {
-                fm.openFile(file);
-            } else {
-                editors.onFileOpened(file);
-            }
         }
     };
+
+    /**
+     * @deprecated since version 1.3.0
+     * This method will be remove from 1.4.0
+     * Temp Code
+     */
+    editors.openFile = editorManager.requestOpen;
 
     editors.hasModifiedFile = function() {
         var opened = _.values(editors.files);
@@ -972,15 +881,6 @@ define([
         return index;
     }
 
-    function getPartPath(extension) {
-        logger.info('extension.module = ' + extension.module);
-        var partPathTokens = extension.module.split('/');
-        partPathTokens[partPathTokens.length - 1] = extension.editorPart;
-        var editorPartPath = partPathTokens.join('/');
-        logger.info('editorPartPath = ', editorPartPath);
-        return editorPartPath;
-    }
-
     function getViewContainer(view, file, option) {
         //cellCount=2, cellIndex=-1
         var viewContainer;
@@ -1006,10 +906,10 @@ define([
     }
 
 
-    editors.onFileOpened = function(file) {
+    editors.onFileOpened = function(file, PartClass) {
 
         console.log('');
-        logger.info('editors.onFileOpened(' + file + ')');
+        logger.info('editors.onFileOpened(' + file + ', ' + PartClass + ')');
         logger.info('file._openFileOption = ', file._openFileOption);
 
         if (!file._openFileOption) {
@@ -1069,85 +969,80 @@ define([
         }
 
         // Create EditorPart and update content
-        var partPath = getPartPath(option.extension);
-        require([partPath], function(EditorPart) {
+        var editorPart = new PartClass(file);
+        editors.addPart(file, editorPart);
+        //file to part map
 
-            var editorPart = new EditorPart(file);
-            editors.addPart(file, editorPart);
-            //file to part map
+        var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
 
-            var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
+        logger.info('viewContainer = ', viewContainer);
 
-            logger.info('viewContainer = ', viewContainer);
+        if (viewContainer) {
+            view.set('tooltip', file.path);
+            view.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
+            view.set('closable', true);
+            if (index >= 0) {
+                viewContainer.addAt(view, index);
+            } else {
+                viewContainer.addLast(view);
+            }
 
-            if (viewContainer) {
-                view.set('tooltip', file.path);
-                view.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
-                view.set('closable', true);
-                if (index >= 0) {
-                    viewContainer.addAt(view, index);
-                } else {
-                    viewContainer.addLast(view);
-                }
-
-                file.pendingCreator = function(c) {
-                    logger.info('file.pendingCreator(' + c + ')');
-                    function createEditor(file, editorPart, view, callback) {
-                        editorPart.create(view.getContent(), function(file, viewer) {
-                            file.viewer = viewer;
-                            //TODO : file.viewer refactor
-                            if (editorPart.addChangeListener) {
-                                editorPart.addChangeListener(function(file) {
-                                    _.defer(function() {
-                                        editors.refreshTabTitle(file);
-                                        topic.publish('file.content.changed', file.path, editors.getPart(file).getValue());
-                                    });
+            file.pendingCreator = function(c) {
+                logger.info('file.pendingCreator(' + c + ')');
+                function createEditor(file, editorPart, view, callback) {
+                    editorPart.create(view.getContent(), function(file, viewer) {
+                        file.viewer = viewer;
+                        //TODO : file.viewer refactor
+                        if (editorPart.addChangeListener) {
+                            editorPart.addChangeListener(function(file) {
+                                _.defer(function() {
+                                    editors.refreshTabTitle(file);
+                                    topic.publish('file.content.changed', file.path, editors.getPart(file).getValue());
                                 });
-                            }
+                            });
+                        }
 
-                            if (option.pos) {
-                                editors.setCursor(file, option.pos);
-                            }
+                        if (option.pos) {
+                            editors.setCursor(file, option.pos);
+                        }
 
-                            if (callback) {
-                                callback(file);
-                            }
-                        });
-                    }
-
-                    createEditor(file, editorPart, view, function(file) {
                         if (callback) {
                             callback(file);
                         }
-                        if (c) {
-                            c(file);
-                        }
                     });
-                };
+                }
 
-                if (show) {
-                    if (view.getParent()) {
-                        view.getParent().select(view);
+                createEditor(file, editorPart, view, function(file) {
+                    if (callback) {
+                        callback(file);
                     }
-                    editors.ensureCreated(file, true);
-                }
+                    if (c) {
+                        c(file);
+                    }
+                });
+            };
 
-                editors.onloadPendingFilesCount--;
-                if (editors.onloadPendingFilesCount === 0) {
-                    onloadFinalize();
-                }
-            } else {
-                console.log('editor open failed : ' + file.path);
-                view.destroy();
-            }
-
-            editors.refreshTabTitle(file);
             if (show) {
-                editors.setCurrentFile(file);
-                editorPart.show();
+                if (view.getParent()) {
+                    view.getParent().select(view);
+                }
+                editors.ensureCreated(file, true);
             }
 
-        });
+            editors.onloadPendingFilesCount--;
+            if (editors.onloadPendingFilesCount === 0) {
+                onloadFinalize();
+            }
+        } else {
+            console.log('editor open failed : ' + file.path);
+            view.destroy();
+        }
+
+        editors.refreshTabTitle(file);
+        if (show) {
+            editors.setCurrentFile(file);
+            editorPart.show();
+        }
 
     };
     //end of editors.onFileOpened
