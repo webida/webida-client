@@ -78,10 +78,12 @@ define([
                 if (title === QUIT) {
                     var keys = Object.keys(editors.files);
                     var len = keys.length;
+                    var part;
                     for (var i = 0; i < len; i++) {
                         var key = keys[i];
                         var savingFile = editors.files[key];
-                        if (savingFile.isModified()) {
+                        part = editors.getPart(savingFile);
+                        if (part.isDirty()) {
                             editors.saveFile({
                                 path: savingFile.path,
                             });
@@ -258,6 +260,7 @@ define([
                     editorPart.hide();
                     editorPart.destroy();
                     editors.removeFile(file.path);
+                    editors.removePart(file);
 
                     var i = editors.currentFiles.indexOf(file);
                     if (i >= 0) {
@@ -287,7 +290,8 @@ define([
 
             editors.editorTabFocusController.unregisterView(view);
 
-            if (!event.force && file.isModified()) {
+			var part = editors.getPart(file);
+            if (!event.force && part.isDirty()) {
                 createDialog(file, 'Close', action);
             } else {
                 action();
@@ -301,10 +305,12 @@ define([
             var keys = Object.keys(editors.files);
             var modifiedFileNames = [];
             var len = keys.length;
+            var part;
             for (var i = 0; i < len; i++) {
                 var key = keys[i];
                 var file = editors.files[key];
-                if (file.isModified()) {
+                part = editors.getPart(file);
+                if (part.isDirty()) {
                     modifiedFileNames.push(file.name);
                 }
             }
@@ -349,10 +355,12 @@ define([
             var keys = Object.keys(editors.files);
             var modifiedFileNames = [];
             var len = keys.length;
+            var part;
             for (var i = 0; i < len; i++) {
                 var key = keys[i];
                 var file = editors.files[key];
-                if (file.isModified()) {
+                part = editors.getPart(file);
+                if (part.isDirty()) {
                     modifiedFileNames.push(file.name);
                 }
             }

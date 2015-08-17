@@ -48,6 +48,10 @@ define([
         markClean: function() {
             throw new Error('markClean() should be implemented by ' + this.constructor.name);
         },
+        isDirty: function() {
+            var modelManager = this.getModelManager();
+            return modelManager === null ? false : modelManager.canSaveModel();
+        },
         isClean: function() {
             throw new Error('isClean() should be implemented by ' + this.constructor.name);
         },

@@ -39,13 +39,6 @@ define([
        ) {
     'use strict';
 
-    topic.subscribe('file.opened', function(/*file*/){
-
-    });
-    topic.subscribe('file.saved', function(/*file*/){
-
-    });
-
     var logger = new Logger();
 
     function TestEditor(file){

@@ -209,10 +209,7 @@ define([
          * @override
          */
         createViewers: function() {
-
             var that = this;
-
-            var dataSource = this._getDataSource();
             var modelManager = this.getModelManager();
             modelManager.createModel(function(doc) {
 
@@ -236,6 +233,7 @@ define([
                 doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
                     //TODO getFile() will be removed in webida 1.5.0
                     //Temp Code
+                    var dataSource = that._getDataSource();
                     var file = dataSource.getPersistence();
                     editors.refreshTabTitle(dataSource);
                     topic.publish('file.content.changed', file.getPath(), file.getContents());
