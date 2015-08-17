@@ -64,20 +64,6 @@ define([
         DataSource.call(this, dataSourceId);
 
         this.setPersistence(new File(dataSourceId));
-
-        /*
-         var that = this;
-         var file = this.file;
-         fsCache.readFile(file.path, function(error, contents) {
-         if (error) {
-         toastr.error('Failed to read file "' + file.path + '" (' + error + ')');
-         } else {
-         file.setContents(contents);
-         topic.publish('file.opened', file, contents);
-         that.emit(DataSource.CONTENT_LOAD, that);
-         }
-         });
-         */
     }
 
 
@@ -119,6 +105,26 @@ define([
             } else {
                 callback(file.getContents());
             }
+        },
+
+        /**
+         * @param {Object} contents
+         * @param {Function} callback
+         */
+        setContents: function(contents, callback) {
+            var file = this.getPersistence();
+            file.setFlag(Persistence.READ, false);
+            fsCache.writeFile(file.getPath(), contents, function(error) {
+                if (error) {
+                    toastr.error('Failed to write file "' + file.getPath() + '" (' + error + ')');
+                } else {
+                    file.setContents(contents);
+                    file.setFlag(Persistence.READ, true);
+                    callback(file.getContents());
+                    //TODO remove the following
+                    topic.publish('file.saved', file);
+                }
+            });
         },
 
         /**
