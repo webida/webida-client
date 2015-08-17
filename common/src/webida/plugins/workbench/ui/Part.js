@@ -37,7 +37,7 @@ define([
 // @formatter:on
 
     /**
-     * @typedef {Object} PartModel
+     * @typedef {Object} ModelManager
      */
 
     var logger = new Logger();
@@ -53,6 +53,7 @@ define([
         this.parent = null;
         this.container = null;
         this.viewer = null;
+        this.modelManager = null;
     }
 
 
@@ -101,17 +102,17 @@ define([
         },
 
         /**
-         * @param {PartModel} model
+         * @param {ModelManager} modelManager
          */
-        setModel: function(model) {
-            this.model = model;
+        setModelManager: function(modelManager) {
+            this.modelManager = modelManager;
         },
 
         /**
-         * @return {PartModel} model
+         * @return {ModelManager}
          */
-        getModel: function() {
-            return this.model;
+        getModelManager: function() {
+            return this.modelManager;
         },
 
         setFlag: function(/*int*/flag, /*boolean*/value) {
