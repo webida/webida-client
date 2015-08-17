@@ -42,7 +42,7 @@ define([
     'webida-lib/plugins/workbench/ui/Viewer',
     'webida-lib/plugins/workbench/ui/PartModel',
     'plugins/webida.editor.code-editor/CodeEditorViewer',
-    'plugins/webida.editor.text-editor/Document',
+    'plugins/webida.editor.text-editor/DocumentManager',
     'plugins/webida.editor.text-editor/TextEditorPart',
     './FormEditorViewer',
     'dojo/domReady!'
@@ -59,7 +59,7 @@ define([
     Viewer,
     PartModel,
     CodeEditorViewer,
-    Document,
+    DocumentManager,
     TextEditorPart,
     FormEditorViewer
 ) {
@@ -77,6 +77,10 @@ define([
         MultiViewerEditorPart.apply(this, arguments);
 
         var that = this;
+
+        var dataSource = this._getDataSource();
+        this.setModelManager(new DocumentManager(dataSource));
+
         this.on(MultiViewerEditorPart.TAB_SELECT, function(viewer) {
             //To implment context menu
             //TODO : this strange code will be removed before webida-client 1.5.0
@@ -162,11 +166,8 @@ define([
             logger.info('initFormViewer()');
             var that = this;
             var formViewer = this.getViewerById('FormEditor');
-            formViewer.on(Viewer.CONTENT_CHANGE, function(content) {
-                var doc = that.getModel();
-                if (content !== doc.getText()) {
-                    doc.update(content, formViewer);
-                }
+            formViewer.on(Viewer.CONTENT_CHANGE, function(contents) {
+                that.getModelManager().setContents(contents, formViewer);
             });
         },
 
@@ -212,13 +213,10 @@ define([
             var that = this;
 
             var dataSource = this._getDataSource();
-            dataSource.getContents(function(contents) {
+            var modelManager = this.getModelManager();
+            modelManager.createModel(function(doc) {
 
-                //1. Create Model from DataSource
-                var doc = new Document(contents);
-                that.setModel(doc);
-
-                //2. formViewer
+                //1. formViewer
                 var formViewer = that.getFormViewer();
                 that.addViewer('FormEditor', 'Form Editor', formViewer, 0, function(parentNode) {
                     formViewer.createAdapter(parentNode);
@@ -226,7 +224,7 @@ define([
                     formViewer.setContents(doc);
                 });
 
-                //3. codeViewer
+                //2. codeViewer
                 var codeViewer = that.getCodeViewer();
                 that.addViewer('CodeEditor', 'Code Editor', codeViewer, 1, function(parentNode) {
                     codeViewer.setParentNode(parentNode);
@@ -234,16 +232,16 @@ define([
                     codeViewer.setContents(doc);
                 });
 
-                //4. Listen to model
+                //3. Listen to model
                 doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
                     //TODO getFile() will be removed in webida 1.5.0
                     //Temp Code
                     var file = dataSource.getPersistence();
-                    editors.refreshTabTitle(that.getFile());
+                    editors.refreshTabTitle(dataSource);
                     topic.publish('file.content.changed', file.getPath(), file.getContents());
                 });
 
-                //5. For the concurrent editing, listen to the model
+                //4. For the concurrent editing, listen to the model
                 // Note that, when user select the tab,
                 // the tabContainer make the new viewer as a active viewer.
                 // Then the active viewer will be refreshed automatically.
@@ -286,31 +284,23 @@ define([
         },
 
         isClean: function() {
-            if (this.getModel()) {
-                var doc = this.getModel();
-                var dataSource = this._getDataSource();
-                var file = dataSource.getPersistence();
-                if (doc.getText() === file.getContents()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
+            var docMan = this.getModelManager();
+            return !docMan.canSaveModel();
         },
 
         /**
          * @deprecated
          */
         getValue: function() {
-            if (this.getModel()) {
-                return this.getModel().getText();
-            }
+            return this.getModelManager().getContents();
         },
 
+        /**
+         * @deprecated
+         */
         markClean: function() {
-            var doc = this.getModel();
+            var docMan = this.getModelManager();
+            var doc = docMan.getModel();
             var dataSource = this._getDataSource();
             var codeViewer = this.getViewerById('CodeEditor');
             if (doc && dataSource) {
