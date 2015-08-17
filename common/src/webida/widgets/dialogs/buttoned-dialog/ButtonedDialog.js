@@ -24,10 +24,16 @@
 
 define(['dojo/_base/declare',
         'dojo/aspect',
+        'dojo/on',
         'dijit/Dialog',
         'dijit/registry',
-        'dojo/domReady!'],
-function (declare, aspect, Dialog, registry) {
+        'dojo/domReady!'
+], function (
+       declare,
+       aspect,
+       on,
+       Dialog,
+       registry) {
     'use strict';
 
     var dialogNum = 0;
@@ -153,6 +159,14 @@ function (declare, aspect, Dialog, registry) {
                     }
                 });
             }
+
+            on(document.body, 'keydown', function (evt) {
+                if (evt.keyCode === 27) {   // ESC
+                    if (Dialog._DialogLevelManager.isTop(self) === true) {
+                        self.hide();
+                    }
+                }
+            });
 
             aspect.before(this, 'onLoad', function () {
                 function setWidthsAndClickHandlers(buttonSpecs, level) {

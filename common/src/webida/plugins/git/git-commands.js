@@ -4041,7 +4041,13 @@ define(['require',
                 readOnly: true,
                 styleActiveLine: true,
                 mode: 'scheme',
-                theme: theme
+                theme: theme,
+                extraKeys: {
+                    "Esc": function (c) {
+                        compareDialog.destroyRecursive();
+                        workbench.focusLastWidget();
+                    }
+                }
             });
 
             mergeView.rightOriginal().setSize('100%', height);
@@ -4500,7 +4506,13 @@ define(['require',
                         value: result,
                         styleActiveLine: true,
                         mode: 'scheme',
-                        theme: theme
+                        theme: theme,
+                        extraKeys: {
+                            "Esc": function (c) {
+                                blameDialog.destroyRecursive();
+                                workbench.focusLastWidget();
+                            }
+                        }
                     });
 
                     blameLog.forEach(function (blame, idx) {
