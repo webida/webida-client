@@ -445,7 +445,6 @@ define([
 
         // TODO: remove the following subscriptions
         topic.subscribe('file.saved', editors.onFileSaved.bind(editors));
-        topic.subscribe('file.error', editors.onFileError.bind(editors));
     }
 
     var multipleDeletions = [];
@@ -662,53 +661,6 @@ define([
         }
     };
 
-    /**
-     * @private
-     * @Override
-     */
-    editorManager._createPart = function(partClassPath, PartClass, dataSource, options, callback) {
-        logger.info('_createPart(' + partClassPath + ', PartClass, ' + dataSource + ', ' + options + ', callback)');
-
-        var persistence = dataSource.getPersistence();
-        logger.info('persistence = ', persistence);
-
-        var path = dataSource.getId();
-        if (!editors.getFile(path)) {
-            editors.addFile(path, persistence);
-            persistence.tabTitle = dataSource.getTitle();
-        }
-
-        persistence.openWithPart = partClassPath;
-        persistence._openFileOption = options;
-        persistence._openFileCallback = callback;
-
-        editors.onFileOpened(persistence, PartClass, dataSource);
-    };
-
-    /**
-     * @private
-     * @Override
-     */
-    editorManager._showExistingPart = function(dataSource, options, callback) {
-        logger.info('_showExistingPart(' + dataSource + ', ' + options + ', callback)');
-        if (editors.currentFile && editors.currentFile.path === path) {
-            if (options.pos) {
-                editors.setCursor(editors.currentFile, options.pos);
-            }
-            editors.getCurrentPart().focus();
-            if (callback) {
-                callback(editors.currentFile);
-            }
-        }
-    };
-
-    /**
-     * @deprecated since version 1.3.0
-     * This method will be remove from 1.4.0
-     * Temp Code
-     */
-    editors.openFile = editorManager.requestOpen;
-
     editors.hasModifiedFile = function() {
         logger.info('hasModifiedFile()');
         var opened = _.values(editors.files);
@@ -832,20 +784,54 @@ define([
         return viewContainer;
     }
 
-
-    editors.onFileOpened = function(file, PartClass, dataSource) {
-
-        console.log('');
-        logger.info('editors.onFileOpened(' + file + ', PartClass, dataSource)');
-        logger.info('file._openFileOption = ', file._openFileOption);
-
-        if (!file._openFileOption) {
-            return;
+    /**
+     * @private
+     * @Override
+     */
+    editorManager._showExistingPart = function(dataSource, options, callback) {
+        logger.info('_showExistingPart(' + dataSource + ', ' + options + ', callback)');
+        if (editors.currentFile && editors.currentFile.path === path) {
+            if (options.pos) {
+                editors.setCursor(editors.currentFile, options.pos);
+            }
+            editors.getCurrentPart().focus();
+            if (callback) {
+                callback(editors.currentFile);
+            }
         }
-        var option = file._openFileOption;
-        var callback = file._openFileCallback;
-        delete file._openFileOption;
-        delete file._openFileCallback;
+    };
+
+    /**
+     * @private
+     * @Override
+     */
+    editorManager._createPart = function(partClassPath, PartClass, dataSource, options, callback) {
+        logger.info('_createPart(' + partClassPath + ', PartClass, ' + dataSource + ', ' + options + ', callback)');
+
+        var persistence = dataSource.getPersistence();
+        var path = dataSource.getId();
+        if (!editors.getFile(path)) {
+            editors.addFile(path, persistence);
+            persistence.tabTitle = dataSource.getTitle();
+        }
+
+        persistence.openWithPart = partClassPath;
+
+        editors.onFileOpened(persistence, PartClass, dataSource, options, callback);
+    };
+
+    /**
+     * @deprecated since version 1.3.0
+     * This method will be remove from 1.4.0
+     * Temp Code
+     */
+    editors.openFile = editorManager.requestOpen;
+
+    editors.onFileOpened = function(file, PartClass, dataSource, options, callback) {
+
+        logger.info('editors.onFileOpened(' + file + ', PartClass, dataSource)');
+
+        var option = options;
 
         //Check file is already showing
         if (editors.currentFile === file) {
@@ -972,7 +958,6 @@ define([
         }
 
     };
-    //end of editors.onFileOpened
 
     editors.onFileSaved = function(file) {
         editors.refreshTabTitle(editors.getDataSource(file));
@@ -982,12 +967,6 @@ define([
         editors.onloadPendingFilesCount--;
         if (editors.onloadPendingFilesCount === 0) {
             onloadFinalize();
-        }
-        if (file._openFileOption) {
-            if (editors.getFile(file.path)) {
-                editors.removeFile(file.path);
-                editors.removePart(file);
-            }
         }
     };
 
