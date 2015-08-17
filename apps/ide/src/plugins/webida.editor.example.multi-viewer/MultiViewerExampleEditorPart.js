@@ -142,6 +142,13 @@ define([
                     TextEditorPart.moveForth();
                 }
             });
+            
+            viewer.addEventListener('save', function() {
+                require(['dojo/topic'], function(topic) {
+                    topic.publish('#REQUEST.saveFile');
+                });
+            });
+
             viewer.setMode(this.file.extension);
             viewer.setTheme('webida');
         },
