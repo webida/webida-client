@@ -4044,7 +4044,7 @@ define(['require',
                 theme: theme,
                 extraKeys: {
                     "Esc": function (c) {
-                        blameDialog.destroyRecursive();
+                        compareDialog.destroyRecursive();
                         workbench.focusLastWidget();
                     }
                 }
