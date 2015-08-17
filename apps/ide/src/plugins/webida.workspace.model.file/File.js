@@ -55,21 +55,29 @@ define([
             throw new Error('Path should be end with file name');
         }
 
-        /** @type {string} a/b/c.d.e */
-        this.path = path;
-
-        /** @type {string} c.d.e */
-        this.name = path.split(/[\\/]/).pop();
-
-        /** @type {string} c.d */
-        this.basename = this.name.replace(/(.*)\.(.*)$/, "$1");
-
-        /** @type {string} e */
-        this.extension = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
+        this.setPath(path);
     }
 
 
     genetic.inherits(File, Persistence, {
+
+        /**
+         * @param {string} file's path
+         */
+        setPath: function(path) {
+
+            /** @type {string} a/b/c.d.e */
+            this.path = path;
+
+            /** @type {string} c.d.e */
+            this.name = path.split(/[\\/]/).pop();
+
+            /** @type {string} c.d */
+            this.basename = this.name.replace(/(.*)\.(.*)$/, "$1");
+
+            /** @type {string} e */
+            this.extension = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
+        },
 
         /**
          * a/b/c.d.txt
