@@ -162,7 +162,7 @@ define(['dojo/_base/declare',
 
             on(document.body, 'keydown', function (evt) {
                 if (evt.keyCode === 27) {   // ESC
-                    if (self.domNode.clientTop === 1) {
+                    if (Dialog._DialogLevelManager.isTop(self) === true) {
                         self.hide();
                     }
                 }
