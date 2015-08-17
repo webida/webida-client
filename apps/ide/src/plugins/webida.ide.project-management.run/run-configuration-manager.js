@@ -68,6 +68,16 @@ define([
     var isFlushing = false;
 
     /**
+     * Create sorted object in ascending order by keys
+     */
+    function sortKeysBy(obj) {
+        var keys = _.sortBy(_.keys(obj));
+        return _.object(keys, _.map(keys, function (key) {
+            return obj[key];
+        }));
+    }
+
+    /**
      * load run configurations of all project from workspace.json file
      */
     function loadRunConfigurations(callback) {
@@ -88,16 +98,17 @@ define([
                     fsMount.readFile(PATH_RUN_CONFIG, function (err, content) {
                         var workspaceObj;
                         if (err) {
-                            return next(err);
-                        } else if (content) {
-                            runConfigurationFileCache = content;
+                            next(err);
+                        } else {
+                            runConfigurationFileCache = content || '{}';
                             workspaceObj = JSON.parse(content);
                             if (workspaceObj.run && Object.getOwnPropertyNames(workspaceObj.run).length > 0) {
-                                runConfigurations = workspaceObj.run;
-                                return next();
+                                runConfigurations = sortKeysBy(workspaceObj.run);
+                                next();
+                            } else {
+                                next(PATH_RUN_CONFIG + ' hasn\'t run configuration info');
                             }
                         }
-                        next(PATH_RUN_CONFIG + ' hasn\'t run configuration info');
                     });
                 }
             ], function (err) {
@@ -149,8 +160,7 @@ define([
             delete runConfigurations[item.oldName];
         });
 
-
-        runConfigurationFileCache = JSON.stringify({ run: runConfigurations });
+        runConfigurationFileCache = JSON.stringify({ run: sortKeysBy(runConfigurations) });
         fsMount.writeFile(PATH_RUN_CONFIG, runConfigurationFileCache, function (err) {
             isFlushing = false;
             if (err) {
