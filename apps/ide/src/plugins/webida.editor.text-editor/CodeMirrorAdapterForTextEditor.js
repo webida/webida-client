@@ -1470,7 +1470,7 @@ define([
         getContextMenuItems: function (opened, items, menuItems, deferred) {         
 
             var editor = this.editor;
-            var part = editors.getPart(editors.currentFile);
+            var part = editors.getCurrentPart();
             if (editor) {
                 var selected = editor.getSelection();
 

@@ -200,7 +200,7 @@ define([
                 async.eachSeries(toClose, function(filePath, cb) {
                     var file = editors.getFile(filePath);
                     if (file) {
-                    	var part = editors.getPart(file);
+                        var part = editors.getPart(file);
                         if (part.isDirty()) {
                             if (answer.yesToModified || answer.noToModified) {
                                 if (answer.yesToModified) {
@@ -507,7 +507,7 @@ define([
     };
 
     editors.setCurrentFile = function(file) {
-		logger.trace();
+        logger.trace();
         logger.info('editors.setCurrentFile(' + file + ')');
 
         if (editors.currentFile !== file) {
@@ -656,7 +656,7 @@ define([
             var path = option.path;
             file = editors.getFile(path);
         }
-		var part = editors.getPart(file);
+        var part = editors.getPart(file);
         if (file && part && part.isDirty()) {
             fm.saveFile(file, option);
         }
@@ -695,7 +695,7 @@ define([
             if (options.pos) {
                 editors.setCursor(editors.currentFile, options.pos);
             }
-            editors.getPart(editors.currentFile).focus();
+            editors.getCurrentPart().focus();
             if (callback) {
                 callback(editors.currentFile);
             }
@@ -855,8 +855,8 @@ define([
 
         var show = option.show !== false;
         if (show) {
-            if (editors.currentFile && editors.getPart(editors.currentFile)) {
-                editors.getPart(editors.currentFile).hide();
+            if (editors.currentFile && editors.getCurrentPart()) {
+                editors.getCurrentPart().hide();
             }
         }
 
@@ -1048,6 +1048,14 @@ define([
         return this.currentEditorPart;
     };
 
+    editors.getCurrentPart = function() {
+        if (this.currentFile) {
+            return this.getPart(this.currentFile);
+        } else {
+            return null;
+        }
+    };
+
     editors.addPart = function(file, part) {
         logger.info('editors.addPart(' + file + ', ' + part + ')');
         this.parts.set(file, part);
@@ -1065,7 +1073,7 @@ define([
 
     //TODO : call removePart() when destroy editor panel
     editors.removePart = function(file) {
-    	logger.info('removePart(' + file + ')');
+        logger.info('removePart(' + file + ')');
         if (this.getPart(file)) {
             return this.parts['delete'](file);
         }

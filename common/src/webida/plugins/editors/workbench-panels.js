@@ -206,8 +206,8 @@ define([
             if (file) {
                 var changed = editors.currentFile !== file;
                 if (changed) {
-                    if (editors.currentFile && editors.getPart(editors.currentFile)) {
-                        editors.getPart(editors.currentFile).hide();
+                    if (editors.currentFile && editors.getCurrentPart()) {
+                        editors.getCurrentPart().hide();
                     }
                     editors.setCurrentFile(file);
                 }
