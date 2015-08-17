@@ -33,7 +33,7 @@ define([
         var items = {};
         var opened = _.values(editors.files);
         if (editors.currentFile && opened && opened.length > 0) {
-        	var currentPart = editors.getPart(editors.currentFile);
+        	var currentPart = editors.getCurrentPart();
             if (currentPart.isDirty()) {
                 items['&Save'] = menuItems.fileMenuItems['&Save'];
             }
@@ -193,7 +193,7 @@ define([
             return null;
         }
 
-        var editorPart = editors.getPart(editors.currentFile);
+        var editorPart = editors.getCurrentPart();
         if (editorPart) {
             editorPart.getContextMenuItems(opened, items, menuItems, deferred);
         }
