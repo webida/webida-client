@@ -1562,6 +1562,7 @@ define([
             }
 
             var editor = this.editor;
+            var part = editors.getPart(editors.currentFile);
             if (editor) {
                 var selected = editor.getSelection();
 
@@ -1583,8 +1584,7 @@ define([
                 }
 
                 // Save
-                //if (editors.isModifiedFile(editors.currentFile)) {
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
 
@@ -1671,7 +1671,7 @@ define([
                 }
             } else {
                 // FIXME: this is temp code, must fix this coe when editor plugin refactoring
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
                 deferred.resolve(items);

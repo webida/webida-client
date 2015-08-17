@@ -33,8 +33,8 @@ define([
         var items = {};
         var opened = _.values(editors.files);
         if (editors.currentFile && opened && opened.length > 0) {
-            //if (editors.isModifiedFile(editors.currentFile)) {
-            if (editors.currentFile.isModified()) {
+        	var currentPart = editors.getPart(editors.currentFile);
+            if (currentPart.isDirty()) {
                 items['&Save'] = menuItems.fileMenuItems['&Save'];
             }
             if (editors.hasModifiedFile()) {

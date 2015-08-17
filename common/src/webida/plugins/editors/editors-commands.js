@@ -274,9 +274,11 @@ define([
 		// editors.files is currently opened file list
 		var opened = _.values(editors.files);
 		var currentFile = editors.currentFile;
+		var part;
 
 		_.each(opened, function (file) {
-			if (file.isModified()) {
+			part = editors.getPart(file);
+			if (part.isDirty()) {
 				editors.setCurrentFile(file);
 				editors.saveFile();
 			}

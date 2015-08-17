@@ -77,65 +77,6 @@ define([
 
     var editorManager = new EditorManager();
 
-    function getFileClass() {
-        var File = function(path) {
-            this.path = path;
-            this.name = pathUtil.getFileName(path);
-            this.basename = this.name.replace(/(.*)\.(.*)$/, "$1");
-            this.extension = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
-            this.tabTitle = this.name;
-            this.editor = null;
-            this.openWithPart = null;
-            this.contents = null;
-        };
-
-        File.prototype.isModified = function() {
-            var editorPart = editors.getPart(this);
-            if (editorPart) {
-                var val = editorPart.getValue();
-                var modifiedInEditor = false;
-                if (editorPart.isClean) {
-                    modifiedInEditor = !editorPart.isClean();
-                }
-                // TODO: remove the first clause
-                return val !== undefined && val !== this.getContents() && modifiedInEditor;
-            } else {
-                return false;
-                // not yet even initialized.
-            }
-        };
-
-        File.prototype.setContents = function(contents) {
-            this.contents = contents;
-        };
-
-        File.prototype.getContents = function() {
-            return this.contents;
-        };
-
-        File.prototype.getPath = function() {
-            return this.path;
-        };
-
-        File.prototype.getName = function() {
-            return this.name;
-        };
-
-        File.prototype.getBaseName = function() {
-            return this.basename;
-        };
-
-        File.prototype.getExtension = function() {
-            return this.extension;
-        };
-
-        File.prototype.toString = function() {
-            return this.path;
-        };
-
-        return File;
-    }
-
     function getFileManager() {// TODO: remove publish().
         var FileManager = {};
         var spaces = {
@@ -259,7 +200,8 @@ define([
                 async.eachSeries(toClose, function(filePath, cb) {
                     var file = editors.getFile(filePath);
                     if (file) {
-                        if (file.isModified()) {
+                    	var part = editors.getPart(file);
+                        if (part.isDirty()) {
                             if (answer.yesToModified || answer.noToModified) {
                                 if (answer.yesToModified) {
                                     editors.closeFile({
@@ -283,7 +225,7 @@ define([
                             }
                         }
 
-                        var modified = file.isModified();
+                        var modified = part.isDirty();
                         var qualifier = modified ? 'Modified' : 'Unmodified';
                         var title = 'Close ' + qualifier + ' "' + pathUtil.getFileName(filePath) + '"?';
                         var msg = ['File "' + filePath + '" was deleted.', 'Is it OK to close the ' + qualifier.toLowerCase() + ' editor tab for the file?'];
@@ -354,19 +296,19 @@ define([
                     if (isDir) {
                         file.path = dst;
                         editors.removeFile(src);
+                        editors.removePart(file);
                         editors.addFile(dst, file);
                     } else {
                         var newName = pathUtil.getFileName(dst);
                         var oldExt = pathUtil.getFileExt(file.name);
                         var newExt = pathUtil.getFileExt(newName);
                         if (oldExt === newExt) {
-                            file.path = dst;
+                            file.setPath(dst);
                             editors.removeFile(src);
+                            editors.removePart(file);
                             editors.addFile(dst, file);
-                            file.name = newName;
-                            editors.refreshTabTitle(file);
+                            editors.refreshTabTitle(editors.getDataSource(file));
                         } else {
-                            //var isModified = file.isModified();
 
                             var view = vm.getView(file.viewId);
                             var vc = view.getParent();
@@ -525,7 +467,6 @@ define([
     topic.publish('editors.clean.all');
 
     var fsCache = ide.getFSCache();
-    var File = getFileClass();
     var fm = getFileManager();
     extToMime = JSON.parse(extToMime);
 
@@ -566,7 +507,7 @@ define([
     };
 
     editors.setCurrentFile = function(file) {
-
+		logger.trace();
         logger.info('editors.setCurrentFile(' + file + ')');
 
         if (editors.currentFile !== file) {
@@ -715,8 +656,8 @@ define([
             var path = option.path;
             file = editors.getFile(path);
         }
-
-        if (file && file.isModified()) {
+		var part = editors.getPart(file);
+        if (file && part && part.isDirty()) {
             fm.saveFile(file, option);
         }
     };
@@ -726,20 +667,22 @@ define([
      * @Override
      */
     editorManager._createPart = function(partClassPath, PartClass, dataSource, options, callback) {
-        logger.info('_createPart(' + partClassPath + ', ' + PartClass + ', ' + dataSource + ', ' + options + ', callback)');
+        logger.info('_createPart(' + partClassPath + ', PartClass, ' + dataSource + ', ' + options + ', callback)');
 
-		var persistence = dataSource.getPersistence();
-		
+        var persistence = dataSource.getPersistence();
+        logger.info('persistence = ', persistence);
+
         var path = dataSource.getId();
         if (!editors.getFile(path)) {
             editors.addFile(path, persistence);
+            persistence.tabTitle = dataSource.getTitle();
         }
 
         persistence.openWithPart = partClassPath;
         persistence._openFileOption = options;
         persistence._openFileCallback = callback;
 
-        editors.onFileOpened(persistence, PartClass);
+        editors.onFileOpened(persistence, PartClass, dataSource);
     };
 
     /**
@@ -767,16 +710,19 @@ define([
     editors.openFile = editorManager.requestOpen;
 
     editors.hasModifiedFile = function() {
+        logger.info('hasModifiedFile()');
         var opened = _.values(editors.files);
         var hasModified = false;
+        var part, modelManager;
 
         _.each(opened, function(file) {
-            //if (editors.isModifiedFile(file)) {
-            if (file.isModified()) {
+            var part = editors.getPart(file);
+            if (part.isDirty()) {
+                logger.info('here!');
                 hasModified = true;
             }
         });
-
+        logger.info('hasModifiedFile() --> ' + hasModified);
         return hasModified;
     };
 
@@ -887,10 +833,10 @@ define([
     }
 
 
-    editors.onFileOpened = function(file, PartClass) {
+    editors.onFileOpened = function(file, PartClass, dataSource) {
 
         console.log('');
-        logger.info('editors.onFileOpened(' + file + ', ' + PartClass + ')');
+        logger.info('editors.onFileOpened(' + file + ', PartClass, dataSource)');
         logger.info('file._openFileOption = ', file._openFileOption);
 
         if (!file._openFileOption) {
@@ -939,7 +885,7 @@ define([
             if ( typeof callback === 'function') {
                 callback(file);
             }
-            editors.refreshTabTitle(file);
+            editors.refreshTabTitle(dataSource);
             if (show) {
                 editors.setCurrentFile(file);
                 if (viewContainer) {
@@ -950,7 +896,7 @@ define([
         }
 
         // Create EditorPart and update content
-        var editorPart = new PartClass(file);
+        var editorPart = new PartClass(file, dataSource);
         editors.addPart(file, editorPart);
         //file to part map
 
@@ -977,7 +923,7 @@ define([
                         if (editorPart.addChangeListener) {
                             editorPart.addChangeListener(function(file) {
                                 _.defer(function() {
-                                    editors.refreshTabTitle(file);
+                                    editors.refreshTabTitle(editors.getDataSource(file));
                                     topic.publish('file.content.changed', file.path, editors.getPart(file).getValue());
                                 });
                             });
@@ -1019,7 +965,7 @@ define([
             view.destroy();
         }
 
-        editors.refreshTabTitle(file);
+        editors.refreshTabTitle(dataSource);
         if (show) {
             editors.setCurrentFile(file);
             editorPart.show();
@@ -1029,7 +975,7 @@ define([
     //end of editors.onFileOpened
 
     editors.onFileSaved = function(file) {
-        editors.refreshTabTitle(file);
+        editors.refreshTabTitle(editors.getDataSource(file));
     };
 
     editors.onFileError = function(file) {
@@ -1040,6 +986,7 @@ define([
         if (file._openFileOption) {
             if (editors.getFile(file.path)) {
                 editors.removeFile(file.path);
+                editors.removePart(file);
             }
         }
     };
@@ -1048,10 +995,12 @@ define([
 
     };
 
-    editors.refreshTabTitle = function(file) {
+    editors.refreshTabTitle = function(dataSource) {
+        logger.trace();
+        var file = dataSource.getPersistence();
+        var part = this.getPart(file);
         var title = file.name;
-        //if (editors.isModifiedFile(file)) {
-        if (file.isModified()) {
+        if (part.isDirty()) {
             title = '*' + title;
         }
 
@@ -1105,8 +1054,8 @@ define([
     };
 
     editors.getPart = function(file) {
-        logger.trace();
-        logger.info('getPart(' + file + ')');
+        //logger.trace();
+        //logger.info('getPart(' + file + ')');
         if (this.parts.get(file) instanceof EditorPart) {
             return this.parts.get(file);
         } else {
@@ -1115,9 +1064,10 @@ define([
     };
 
     //TODO : call removePart() when destroy editor panel
-    editors.removePart = function(model) {
-        if (this.getPart(model)) {
-            return this.parts['delete'](model);
+    editors.removePart = function(file) {
+    	logger.info('removePart(' + file + ')');
+        if (this.getPart(file)) {
+            return this.parts['delete'](file);
         }
         return false;
     };
@@ -1134,6 +1084,14 @@ define([
         var file = editors.files[path];
         delete editors.files[path];
         return file;
+    };
+
+    //TODO remove
+    editors.getDataSource = function(persistence) {
+        var workbench = require('webida-lib/plugins/workbench/plugin');
+        var dsRegistry = workbench.getDataSourceRegistry();
+        var dataSource = dsRegistry.getDataSourceById(persistence.getPersistenceId());
+        return dataSource;
     };
 
     subscribeToTopics();

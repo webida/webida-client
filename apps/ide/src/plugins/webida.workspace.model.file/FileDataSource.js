@@ -90,6 +90,7 @@ define([
          * @param {Function} callback
          */
         getContents: function(callback) {
+        	logger.info('getContents(callback)');
             var that = this;
             var file = this.getPersistence();
             if (file.getFlag(Persistence.READ) === false) {

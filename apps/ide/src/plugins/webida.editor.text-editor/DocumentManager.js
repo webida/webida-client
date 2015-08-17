@@ -66,10 +66,11 @@ define([
          * @param {Document} doc
          */
         createModel: function(callback) {
+        	logger.info('createModel(callback)');
             var that = this;
             var dataSource = this.getDataSource();
             dataSource.getContents(function(contents) {
-                this.savedContents = contents;
+                that.savedContents = contents;
                 //Creates a Document(Model) from a DataSource
                 var doc = new Document(contents);
                 that.setModel(doc);

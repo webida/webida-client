@@ -183,7 +183,7 @@ define([
     };
 
     function TextEditorViewer(elem, file, startedListener) {
-        logger.info('new TextEditorViewer()');
+        logger.info('%cnew TextEditorViewer(' + elem + ', file, startedListener)', 'color:green');
         EditorViewer.apply(this, arguments);
         var self = this;
         this.elem = elem;
@@ -208,15 +208,26 @@ define([
             });
         }
 
-        loadCSSList([require.toUrl('./css/webida.css'), require.toUrl('external/codemirror/lib/codemirror.css'), require.toUrl('external/codemirror/addon/dialog/dialog.css')], function() {
-            require(['external/codemirror/addon/dialog/dialog', 'external/codemirror/addon/search/searchcursor', './search-addon', 'external/codemirror/addon/edit/closebrackets', 'external/codemirror/addon/edit/closetag', 'external/codemirror/addon/edit/matchbrackets'], function() {
-                setTimeout(function(self) {
+        // @formatter:off
+        loadCSSList([
+                require.toUrl('./css/webida.css'), 
+                require.toUrl('external/codemirror/lib/codemirror.css'), 
+                require.toUrl('external/codemirror/addon/dialog/dialog.css')
+            ], function() {
+                require([
+                    'external/codemirror/addon/dialog/dialog', 
+                    'external/codemirror/addon/search/searchcursor', 
+                    './search-addon', 
+                    'external/codemirror/addon/edit/closebrackets', 
+                    'external/codemirror/addon/edit/closetag', 
+                    'external/codemirror/addon/edit/matchbrackets'
+                ], function() {
                     if (self.getParentNode()) {
                         self.createAdapter(self.getParentNode());
                     }
-                }, 0, self);
-            });
+                });
         });
+        // @formatter:on
     }
 
     function scrollToCursor(cm, position) {
@@ -254,6 +265,7 @@ define([
         },
 
         createAdapter: function(parentNode) {
+            logger.info('createAdapter(' + parentNode + ')');
             if (this.editor !== undefined) {
                 return;
             }
@@ -777,6 +789,7 @@ define([
         },
 
         setValue: function(value) {
+            logger.info('setValue(' + value + ')')
             this.addDeferredAction(function(self) {
                 self.editor.setValue(value);
             });
@@ -1472,6 +1485,7 @@ define([
         getContextMenuItems: function(opened, items, menuItems, deferred) {
 
             var editor = this.editor;
+            var part = editors.getPart(editors.currentFile);
             if (editor) {
                 var selected = editor.getSelection();
 
@@ -1493,8 +1507,7 @@ define([
                 }
 
                 // Save
-                //if (editors.isModifiedFile(editors.currentFile)) {
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
 
@@ -1552,7 +1565,7 @@ define([
             } else {
                 // FIXME: this is temp code, must fix this coe when editor plugin
                 // refactoring
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
             }

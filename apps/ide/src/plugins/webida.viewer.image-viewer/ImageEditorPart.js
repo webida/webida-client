@@ -66,7 +66,6 @@ define([
         logger.info('new ImageEditorPart('+file+')');
         EditorPart.apply(this, arguments);
         this.setFile(file);
-        this.fileOpenedHandle = null;
     }
 
     genetic.inherits(ImageEditorPart, EditorPart, {
@@ -80,9 +79,6 @@ define([
 			logger.info('initializeListeners()');
 			var that = this;
 			//subscribe topic
-		    this.fileOpenedHandle = topic.subscribe('file.opened', function(file, content){
-		    	//do something with file.opened topic
-		    });
 		},
 
 		renderImage : function(){
@@ -136,10 +132,6 @@ define([
         destroy: function () {
             logger.info('destroy()');
 			//unsubscribe topic
-			if(this.fileOpenedHandle !== null){
-				logger.info('this.fileOpenedHandle.remove()');
-				this.fileOpenedHandle.remove();
-			}
 			//clear state
 			this.setFlag(Part.CREATED, false);
         },
