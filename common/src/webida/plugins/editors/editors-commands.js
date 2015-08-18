@@ -17,17 +17,23 @@
 define([
 	'./plugin', 
 	'webida-lib/plugins/workbench/plugin', 
-	'webida-lib/widgets/views/viewmanager', 
+	'webida-lib/widgets/views/viewmanager',
+	'webida-lib/util/logger/logger-client', 
 	'dojo/topic', 
 	'external/lodash/lodash.min'
 ], function (
 	editors, 
 	workbench, 
 	vm, 
+	Logger,
 	topic, 
 	_
 ) {
     'use strict';
+
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
 	function undo() {		
         editors.execCommandForCurrentEditorViewer('undo');
