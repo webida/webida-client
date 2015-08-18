@@ -32,6 +32,7 @@
 define([
     'dojo/topic',
     'dijit/layout/ContentPane',
+    'external/lodash/lodash.min',
     'webida-lib/util/genetic', 
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/loadCSSList',
@@ -48,6 +49,7 @@ define([
 ], function(
     topic,
     ContentPane,
+    _,
     genetic, 
     Logger,
     loadCSSList,
@@ -142,6 +144,11 @@ define([
                     TextEditorPart.moveForth();
                 }
             });
+
+            viewer.addEventListener('save', function () {
+                topic.publish('#REQUEST.saveFile');                
+            });
+
             viewer.setMode(this.file.extension);
             viewer.setTheme('webida');
         },
