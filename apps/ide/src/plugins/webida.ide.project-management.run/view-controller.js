@@ -364,6 +364,7 @@ define([
                 }
 
                 if (current.runConf) {
+                    current.state.isDirty = false;
                     _addContentArea(new ContentPane());
                     delegator.loadConf(ui.content, current.runConf);
                 }
@@ -407,11 +408,11 @@ define([
      * @memberOf module:webida.ide.project-management.run.viewController
      */
     module.changeCurrentState = function (runConf, state) {
-        current.state = state;
+        current.state = _.extend(current.state, state);
         if (ui.btns.runButton) {
-            ui.btns.runButton.setDisabled(!state.isValid);
+            ui.btns.runButton.setDisabled(!current.state.isValid);
         }
-        runConf._dirty = state.isDirty;
+        runConf._dirty = current.state.isDirty;
     };
 
     /***************************************
@@ -594,14 +595,16 @@ define([
         currentRunConf = runConf;
         _drawContentPane();
         topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
-            isValid: !_checkInvalidField(runConf),
-            isDirty: !!runConf._dirty
+            isValid: !_checkInvalidField(runConf)
         });
         callback(null, runConf);
     };
 
     module.saveConf = function (runConf, callback) {
         delete currentRunConf.__nameGen;
+        topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+            isDirty: false
+        });
         callback(null, runConf);
     };
 

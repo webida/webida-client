@@ -231,8 +231,7 @@ define([
             ui.content = content;
             _setTemplate();
             topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
-                isValid: !_checkInvalidField(runConf),
-                isDirty: !!runConf._dirty
+                isValid: !_checkInvalidField(runConf)
             });
             callback(null, runConf);
         },
@@ -240,10 +239,14 @@ define([
             // validation
             var invalidMsg = _checkInvalidField();
             if (!invalidMsg) {
+                topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+                    isDirty: false
+                });
                 callback(null, runConf);
             } else {
                 callback(invalidMsg);
             }
+            
         },
         deleteConf: function (runConfName, callback) {
             callback(null, currentRunConf);
