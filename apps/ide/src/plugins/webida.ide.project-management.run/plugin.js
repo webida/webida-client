@@ -265,7 +265,9 @@ define([
             });
         } else if (action === 'state' && arguments[1] && arguments[2]) {
             changeCurrentState(arguments[1], arguments[2]);
-            refreshRunConfigurationTree();
+            if (arguments[2].isDirty !== undefined) {
+                refreshRunConfigurationTree();
+            }
         }
     };
 
