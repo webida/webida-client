@@ -57,6 +57,7 @@ define([
 
     /**
      * @typedef {Object} DataSource
+     * @typedef {Object} EditorManager
      * @typedef {Object} ExtensionManager
      * @typedef {Object} Part
      */
@@ -64,6 +65,8 @@ define([
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
+
+    var singleton = null;
 
     function EditorManager() {
         logger.info('new EditorManager()');
@@ -76,6 +79,15 @@ define([
         //this._subscribe();
     }
 
+    /**
+     * @return {EditorManager}
+     */
+    EditorManager.getInstance = function() {
+        if (singleton === null) {
+            singleton = new this();
+        }
+        return singleton;
+    }
 
     genetic.inherits(EditorManager, EventEmitter, {
 

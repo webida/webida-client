@@ -75,7 +75,7 @@ define([
 
     logger.log('loaded modules required by editors. initializing editors plugin');
 
-    var editorManager = new EditorManager();
+    var editorManager = EditorManager.getInstance();
 
     function getFileManager() {// TODO: remove publish().
         var FileManager = {};
