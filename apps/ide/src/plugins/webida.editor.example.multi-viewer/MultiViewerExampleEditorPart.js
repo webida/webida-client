@@ -32,6 +32,7 @@
 define([
     'dojo/topic',
     'dijit/layout/ContentPane',
+    'external/lodash/lodash.min',
     'webida-lib/util/genetic', 
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/loadCSSList',
@@ -48,6 +49,7 @@ define([
 ], function(
     topic,
     ContentPane,
+    _,
     genetic, 
     Logger,
     loadCSSList,
@@ -235,6 +237,7 @@ define([
                 });
 
                 //4. Listen to model
+                /* jshint ignore:start */
                 doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
                     //TODO getFile() will be removed in webida 1.5.0
                     //Temp Code
@@ -242,6 +245,7 @@ define([
                     editors.refreshTabTitle(that.getFile());
                     topic.publish('file.content.changed', file.getPath(), file.getContents());
                 });
+                /* jshint ignore:end */
 
                 //5. For the concurrent editing, listen to the model
                 // Note that, when user select the tab,
