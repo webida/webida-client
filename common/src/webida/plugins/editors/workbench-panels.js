@@ -206,9 +206,6 @@ define([
             if (file) {
                 var changed = editors.currentFile !== file;
                 if (changed) {
-                    if (editors.currentFile && editors.getCurrentPart()) {
-                        editors.getCurrentPart().hide();
-                    }
                     editors.setCurrentFile(file);
                 }
 
@@ -257,7 +254,6 @@ define([
             var action = function closeFile() {
                 if (event.closable) {
                     var editorPart = editors.getPart(file);
-                    editorPart.hide();
                     editorPart.destroy();
                     editors.removeFile(file.path);
                     editors.removePart(file);

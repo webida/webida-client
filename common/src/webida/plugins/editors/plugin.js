@@ -825,11 +825,6 @@ define([
         var registry = page.getPartRegistry();
 
         var show = options.show !== false;
-        if (show) {
-            if (editors.currentFile && editors.getCurrentPart()) {
-                editors.getCurrentPart().hide();
-            }
-        }
 
         //View and ViewContainer
         var view = vm.getView(persistence.viewId);
