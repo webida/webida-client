@@ -167,6 +167,21 @@ define([
          */
         getParts: function() {
             return this.parts;
+        },
+
+        /**
+         * @return {Array.<Part>} Dirty state Part array
+         */
+        getDirtyParts: function() {
+            var parts = [];
+            this.getParts().forEach(function(parts, dataSource) {
+                parts.forEach(function(part) {
+                    if (part.isDirty()) {
+                        parts.push(part);
+                    }
+                });
+            });
+            return parts;
         }
     });
 
