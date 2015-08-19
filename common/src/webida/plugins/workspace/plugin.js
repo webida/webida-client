@@ -273,8 +273,8 @@ define([
         // labels
         var TreeNode = declare(Tree._TreeNode, {
             _setLabelAttr: {
-                node: "labelNode",
-                type: "innerHTML"
+                node: 'labelNode',
+                type: 'innerHTML'
             }
         });
 
@@ -583,7 +583,8 @@ define([
                     // can't range select from below node if selected node was
                     // expanded
                     if (range) {
-                        var result = this._compareNodes(this.anchor.rowNode, node.rowNode), begin, end, anchor = this.anchor;
+                        var result = this._compareNodes(this.anchor.rowNode, node.rowNode),
+                                     begin, end, anchor = this.anchor;
 
                         if (result < 0) {//current is after anchor
                             begin = anchor;
@@ -827,13 +828,15 @@ define([
                                 srcPath = pathUtil.detachSlash(srcPath);
                                 var srcNode = tree.model.store.query({id: srcPath})[0];
                                 if (srcNode.getParentNode() === targetNode) {
-                                    toastr.error('Cannot copy or move "' + srcNode.getPath() + '" to its parent directory');
+                                    toastr.error('Cannot copy or move "' + 
+                                                 srcNode.getPath() + '" to its parent directory');
                                     quit = true;
                                 } else {
                                     srcNodes.push(srcNode);
                                 }
                             } else {
-                                toastr.info('Source fsid is different from the current one, ' + 'which is currently not supported');
+                                toastr.info('Source fsid is different from the current one, ' + 
+                                            'which is currently not supported');
                                 quit = true;
                             }
                         });
@@ -952,7 +955,9 @@ define([
                         downloadFileName += '.zip';
                     }
                 }
-                ide.getMount().makeDnDDownloadUrl((len > 1 || nodes[0].isInternal), sources, downloadFileName, function(err, downloadUrl) {
+                ide.getMount().makeDnDDownloadUrl(
+                    (len > 1 || nodes[0].isInternal), sources, downloadFileName,
+                    function(err, downloadUrl) {
                     dt.setData('DownloadURL', downloadUrl);
                 });
             }
@@ -1069,7 +1074,13 @@ define([
                     console.assert(false, 'copied and cut simultaneously when pasting');
                 } else if (copied || cut) {
                     var srcs = copied || cut;
-                    targetNode.paste(srcs, copied ? 'copy' : 'move');
+                    if (targetNode === srcs[0].getParentNode()) {
+                        srcs.forEach(function (value) {
+                            value.duplicate();
+                        });
+                    } else {
+                        targetNode.paste(srcs, copied ? 'copy' : 'move');
+                    }
                     if (cut) {
                         cut = null;
                     }
