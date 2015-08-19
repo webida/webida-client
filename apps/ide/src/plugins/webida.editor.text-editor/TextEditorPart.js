@@ -35,8 +35,11 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/editors/plugin',
     'webida-lib/plugins/editors/EditorPreference',
-    'webida-lib/plugins/workbench/ui/Part',
-    'webida-lib/plugins/workbench/ui/EditorPart',
+    'webida-lib/plugins/workbench/ui/Part', 
+    'webida-lib/plugins/workbench/ui/EditorPart', 
+    'webida-lib/plugins/workbench/ui/PartModel',
+    'webida-lib/plugins/workbench/ui/Viewer',
+    'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
     './preferences/preference-config',
     './TextEditorViewer',
     'dojo/domReady!'
@@ -49,6 +52,9 @@ define([
     EditorPreference,
     Part,
     EditorPart,
+    PartModel,
+    Viewer,
+    store,
     preferenceConfig,
     TextEditorViewer
 ) {
@@ -191,6 +197,14 @@ define([
             return TextEditorViewer;
         },
 
+        initViewer: function() {
+            var that = this;
+            var viewer = this.getViewer();
+            viewer.on(Viewer.CONTENT_CHANGE, function(contents) {
+                that.getModelManager().setContents(contents, viewer);
+            });
+        },
+
         /**
          * If viewer does not exist when calling getViewer(),
          * this method is called to create new viewer.
@@ -216,6 +230,7 @@ define([
                 }
             });
             this.setViewer(viewer);
+            this.initViewer();
         },
 
         getFoldingStatus: function() {
@@ -230,8 +245,19 @@ define([
             this.setParentElement(parent);
             this.createCallback = callback;
             this.file.elem = parent;
-            //TODO : remove
-            this.initialize();
+
+            var that = this;
+            var modelManager = this.getModelManager();
+            modelManager.createModel(function(doc) {
+                doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
+                    var dataSource = that.getModelManager().getDataSource();
+                    var file = dataSource.getPersistence();
+                    editors.refreshTabTitle(dataSource);
+                    topic.publish('file.content.changed', file.getPath(), file.getContents());
+                });
+                that.initialize();
+            });
+
             this.setFlag(Part.CREATED, true);
         },
 
@@ -295,18 +321,19 @@ define([
         },
 
         markClean: function() {
+            var docMan = this.getModelManager();
+            var dataSource = docMan.getDataSource();
+            var doc = docMan.getModel();
+            if (doc && dataSource) {
+                var file = dataSource.getPersistence();
+                file.setContents(doc.getText());
+            }
             this.getViewer().markClean();
         },
 
         isClean: function() {
-            if (this.viewer) {
-                return this.viewer.isClean();
-                //TODO : getViewer()
-            } else {
-                logger.info('this.viewer not found');
-                logger.trace();
-                return true;
-            }
+            var docMan = this.getModelManager();
+            return !docMan.canSaveModel();
         },
 
         getContextMenuItems: function(opened, items, menuItems, deferred) {
