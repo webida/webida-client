@@ -47,10 +47,10 @@ define([
     function TabPartContainer(dataSource) {
         logger.info('new TabPartContainer(' + dataSource + ')');
 
+        PartContainer.call(this, dataSource);
+
         /** @type {Object} tabWidget */
         this.tabWidget = null
-
-        PartContainer.call(this, dataSource);
 
         this.createTabWidget();
     }
@@ -64,8 +64,15 @@ define([
          * @return {Array}
          */
         createTabWidget: function() {
-        	logger.info('createTabWidget()');
+            logger.info('createTabWidget()');
             //TODO
+        },
+
+        /**
+         * @param {Object} tabWidget
+         */
+        setTabWidget: function(tabWidget) {
+            this.tabWidget = tabWidget;
         },
 
         /**
