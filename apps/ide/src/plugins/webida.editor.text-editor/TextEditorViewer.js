@@ -37,6 +37,7 @@ define([
     'webida-lib/util/loadCSSList',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/EditorViewer',
+    'webida-lib/plugins/workbench/ui/Viewer',
     'dojo/topic'
 ], function (
     require,
@@ -47,6 +48,7 @@ define([
     loadCSSList,
     Logger,
     EditorViewer,
+    Viewer,
     topic
 ) {
     'use strict';
@@ -195,6 +197,7 @@ define([
             'Ctrl--': 'foldselection',
             'Ctrl-D': 'gotoLine',
         };
+        this.cmOptions = {};
         this.cursorListeners = [];
         this.focusListeners = [];
         this.blurListeners = [];
@@ -264,45 +267,56 @@ define([
             }
         },
 
+        setOption: function(key, value, condition, defaultValue) {
+            if (condition === undefined) {
+                if (value !== undefined) {
+                    this.cmOptions[key] = value;
+                }
+            } else {
+                if (condition) {
+                    this.cmOptions[key] = value;
+                } else {
+                    this.cmOptions[key] = defaultValue;
+                }
+            }
+        },
+
+        addOptions: function() {
+            this.setOption('electricChars', false);
+            this.setOption('flattenSpans', false);
+            this.setOption('autoCloseBrackets', this.keymap !== 'vim');
+            this.setOption('autoCloseTags', true);
+            this.setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
+            this.setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
+            this.setOption('lineNumbers', this.options.lineNumbers, true);
+            this.setOption('tabSize', this.options.tabSize);
+            this.setOption('indentUnit', this.options.indentUnit);
+            this.setOption('indentWithTabs', this.options.indentWithTabs);
+            this.setOption('indentOnPaste', this.options.indentOnPaste);
+            this.setOption('extraKeys', this.options.extraKeys);
+            this.setOption('lineWrapping', this.options.lineWrapping);
+            this.setOption('mode', 'text/plain');
+        },
+
         createAdapter: function(parentNode) {
-            logger.info('createAdapter(' + parentNode + ')');
             if (this.editor !== undefined) {
                 return;
             }
             var self = this;
-            var options = {
-                //electricChars: false,
-                flattenSpans: false,
-                autoCloseBrackets: this.keymap !== 'vim',
-                autoCloseTags: true
-            };
 
-            function setOption(name, value, condition, defaultValue) {
-                if (condition === undefined) {
-                    if (value !== undefined) {
-                        options[name] = value;
-                    }
-                } else {
-                    if (condition) {
-                        options[name] = value;
-                    } else {
-                        options[name] = defaultValue;
-                    }
-                }
-            }
+            this.addOptions();
 
-            setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
-            setOption('mode', 'text/plain');
-            setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
-            setOption('lineNumbers', this.options.lineNumbers, true);
-            setOption('tabSize', this.options.tabSize);
-            setOption('indentUnit', this.options.indentUnit);
-            setOption('indentWithTabs', this.options.indentWithTabs);
-            setOption('indentOnPaste', this.options.indentOnPaste);
-            setOption('extraKeys', this.options.extraKeys);
-            setOption('lineWrapping', this.options.lineWrapping);
+            //TODO : update code like followings
+            //var adapter = new TextEditorAdapter(this, parentNode);
+            //this.setAdapter(adapter);
+            //this.setParentNode(parentNode);
+            this.editor = codemirror(parentNode, this.cmOptions);
 
-            this.editor = codemirror(parentNode, options);
+            //TODO : This code should be moved to TextEditorAdapter
+            this.editor.on('change', function(cm, e) {
+                self.emit(Viewer.CONTENT_CHANGE, cm.getValue());
+            });
+
             this.editor.setOption('showCursorWhenSelecting', true);
             this.editor.__instance = this;
             $(this.editor.getWrapperElement()).addClass('maincodeeditor');
