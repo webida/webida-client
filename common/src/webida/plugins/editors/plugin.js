@@ -461,7 +461,7 @@ define([
         }
     }
 
-    var dirtyFileCount = 0;
+
     topic.publish('editors.clean.current');
     topic.publish('editors.clean.all');
 
@@ -809,10 +809,8 @@ define([
         logger.info('_createPart(' + partClassPath + ', PartClass, ' + dataSource + ', ' + options + ', callback)');
 
         var persistence = dataSource.getPersistence();
-        var path = dataSource.getId();
-        if (!editors.getFile(path)) {
-            editors.addFile(path, persistence);
-            persistence.tabTitle = dataSource.getTitle();
+        if (!editors.getFile(dataSource.getId())) {
+            editors.addFile(dataSource.getId(), persistence);
         }
 
         persistence.openWithPart = partClassPath;
@@ -831,6 +829,8 @@ define([
 
         logger.info('editors.onFileOpened(' + file + ', PartClass, dataSource)');
 
+        var page = workbench.getCurrentPage();
+        var registry = page.getPartRegistry();
         var option = options;
 
         //Check file is already showing
@@ -884,7 +884,6 @@ define([
         // Create EditorPart and update content
         var editorPart = new PartClass(file, dataSource);
         editors.addPart(file, editorPart);
-        //file to part map
 
         var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
 
@@ -956,7 +955,6 @@ define([
             editors.setCurrentFile(file);
             editorPart.show();
         }
-
     };
 
     editors.onFileSaved = function(file) {
@@ -970,46 +968,29 @@ define([
         }
     };
 
-    editors.setTitle = function(title) {
-
-    };
-
     editors.refreshTabTitle = function(dataSource) {
-        logger.trace();
-        var file = dataSource.getPersistence();
-        var part = this.getPart(file);
-        var title = file.name;
+        logger.info('refreshTabTitle(' + dataSource + ')');
+
+        var persistence = dataSource.getPersistence();
+        var part = this.getPart(persistence);
+        var view = vm.getView(persistence.viewId);
+        var title = dataSource.getTitle();
+        var page = workbench.getCurrentPage();
+        var registry = page.getPartRegistry();
+
         if (part.isDirty()) {
-            title = '*' + title;
-        }
-
-        if (file.tabTitle !== title) {
-            var view = vm.getView(file.viewId);
-            if (view) {
-                var modified0 = file.tabTitle.indexOf('*') === 0;
-                var modified1 = title.indexOf('*') === 0;
-
-                view.setTitle(title);
-                file.tabTitle = title;
-
-                if (!modified0 && modified1) {
-                    // unmodified --> modified
-                    dirtyFileCount++;
-                    if (file === editors.currentFile) {
-                        topic.publish('editors.dirty.current');
-                    }
-                    topic.publish('editors.dirty.some');
-                } else if (modified0 && !modified1) {
-                    // modified --> unmodified
-                    dirtyFileCount--;
-                    console.assert(dirtyFileCount >= 0);
-                    if (file === editors.currentFile) {
-                        topic.publish('editors.clean.current');
-                    }
-                    if (dirtyFileCount === 0) {
-                        topic.publish('editors.clean.all');
-                    }
-                }
+            view.setTitle('*' + title);
+            if (persistence === editors.currentFile) {
+                topic.publish('editors.dirty.current');
+            }
+            topic.publish('editors.dirty.some');
+        } else {
+            view.setTitle(title);
+            if (persistence === editors.currentFile) {
+                topic.publish('editors.clean.current');
+            }
+            if (registry.getDirtyParts().length === 0) {
+                topic.publish('editors.clean.all');
             }
         }
     };
