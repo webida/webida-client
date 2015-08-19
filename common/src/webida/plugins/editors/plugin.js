@@ -42,6 +42,7 @@ define([
     'external/async/dist/async.min',
     'plugins/webida.notification/notification-message',
     'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
+    './CompatibleTabPartContainer',
     './EditorManager'
 ], function (
     topic, 
@@ -64,6 +65,7 @@ define([
     async, 
     toastr,
     FileDataSource,
+    CompatibleTabPartContainer,
     EditorManager
 ) {
     'use strict';
@@ -787,10 +789,13 @@ define([
     /**
      * @private
      * @Override
+     * @TODO refactor by the proper logic
      */
     editorManager._showExistingPart = function(dataSource, options, callback) {
         logger.info('_showExistingPart(' + dataSource + ', ' + options + ', callback)');
-        if (editors.currentFile && editors.currentFile.path === path) {
+        var persistence = dataSource.getPersistence();
+        //Check persistence is already showing
+        if (editors.currentFile && editors.currentFile === persistence) {
             if (options.pos) {
                 editors.setCursor(editors.currentFile, options.pos);
             }
@@ -808,38 +813,18 @@ define([
     editorManager._createPart = function(partClassPath, PartClass, dataSource, options, callback) {
         logger.info('_createPart(' + partClassPath + ', PartClass, ' + dataSource + ', ' + options + ', callback)');
 
+		//Legacy codes start
         var persistence = dataSource.getPersistence();
         if (!editors.getFile(dataSource.getId())) {
             editors.addFile(dataSource.getId(), persistence);
         }
-
         persistence.openWithPart = partClassPath;
-
-        editors.onFileOpened(persistence, PartClass, dataSource, options, callback);
-    };
-
-    /**
-     * @deprecated since version 1.3.0
-     * This method will be remove from 1.4.0
-     * Temp Code
-     */
-    editors.openFile = editorManager.requestOpen;
-
-    editors.onFileOpened = function(file, PartClass, dataSource, options, callback) {
-
-        logger.info('editors.onFileOpened(' + file + ', PartClass, dataSource)');
+        //Legacy codes end
 
         var page = workbench.getCurrentPage();
         var registry = page.getPartRegistry();
-        var option = options;
 
-        //Check file is already showing
-        if (editors.currentFile === file) {
-            logger.info('editors.currentFile === file');
-            return;
-        }
-
-        var show = option.show !== false;
+        var show = options.show !== false;
         if (show) {
             if (editors.currentFile && editors.getCurrentPart()) {
                 editors.getCurrentPart().hide();
@@ -847,13 +832,13 @@ define([
         }
 
         //View and ViewContainer
-        var view = vm.getView(file.viewId);
+        var view = vm.getView(persistence.viewId);
         var viewContainer = null;
         if (view === null) {
-            file.viewId = _.uniqueId('view_');
-            //TODO file.viewId
-            view = new View(file.viewId, file.name);
-            viewContainer = getViewContainer(view, file, option);
+            persistence.viewId = _.uniqueId('view_');
+            //TODO persistence.viewId
+            view = new View(persistence.viewId, persistence.name);
+            viewContainer = getViewContainer(view, persistence, options);
         } else {
             if (view.getParent()) {
                 view.getParent().select(view);
@@ -861,19 +846,19 @@ define([
         }
 
         //Check exsisting part
-        var part = editors.getPart(file);
+        var part = editors.getPart(persistence);
         logger.info('part = ', part);
         if (part) {
             logger.info('part already exists');
-            if (option.pos) {
-                editors.setCursor(file, option.pos);
+            if (options.pos) {
+                editors.setCursor(persistence, options.pos);
             }
             if ( typeof callback === 'function') {
-                callback(file);
+                callback(persistence);
             }
             editors.refreshTabTitle(dataSource);
             if (show) {
-                editors.setCurrentFile(file);
+                editors.setCurrentFile(persistence);
                 if (viewContainer) {
                     viewContainer.select(view, true);
                 }
@@ -882,15 +867,15 @@ define([
         }
 
         // Create EditorPart and update content
-        var editorPart = new PartClass(file, dataSource);
-        editors.addPart(file, editorPart);
+        var editorPart = new PartClass(persistence, dataSource);
+        editors.addPart(persistence, editorPart);
 
-        var index = _findViewIndexUsingSibling(viewContainer, file, option.siblingList);
+        var index = _findViewIndexUsingSibling(viewContainer, persistence, options.siblingList);
 
         logger.info('viewContainer = ', viewContainer);
 
         if (viewContainer) {
-            view.set('tooltip', file.path);
+            view.set('tooltip', persistence.path);
             view.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
             view.set('closable', true);
             if (index >= 0) {
@@ -899,37 +884,37 @@ define([
                 viewContainer.addLast(view);
             }
 
-            file.pendingCreator = function(c) {
-                logger.info('file.pendingCreator(' + c + ')');
-                function createEditor(file, editorPart, view, callback) {
-                    editorPart.create(view.getContent(), function(file, viewer) {
-                        file.viewer = viewer;
-                        //TODO : file.viewer refactor
+            persistence.pendingCreator = function(c) {
+                logger.info('persistence.pendingCreator(' + c + ')');
+                function createEditor(persistence, editorPart, view, callback) {
+                    editorPart.create(view.getContent(), function(persistence, viewer) {
+                        persistence.viewer = viewer;
+                        //TODO : persistence.viewer refactor
                         if (editorPart.addChangeListener) {
-                            editorPart.addChangeListener(function(file) {
+                            editorPart.addChangeListener(function(persistence) {
                                 _.defer(function() {
-                                    editors.refreshTabTitle(editors.getDataSource(file));
-                                    topic.publish('file.content.changed', file.path, editors.getPart(file).getValue());
+                                    editors.refreshTabTitle(editors.getDataSource(persistence));
+                                    topic.publish('persistence.content.changed', persistence.path, editors.getPart(persistence).getValue());
                                 });
                             });
                         }
 
-                        if (option.pos) {
-                            editors.setCursor(file, option.pos);
+                        if (options.pos) {
+                            editors.setCursor(persistence, options.pos);
                         }
 
                         if (callback) {
-                            callback(file);
+                            callback(persistence);
                         }
                     });
                 }
 
-                createEditor(file, editorPart, view, function(file) {
+                createEditor(persistence, editorPart, view, function(persistence) {
                     if (callback) {
-                        callback(file);
+                        callback(persistence);
                     }
                     if (c) {
-                        c(file);
+                        c(persistence);
                     }
                 });
             };
@@ -938,7 +923,7 @@ define([
                 if (view.getParent()) {
                     view.getParent().select(view);
                 }
-                editors.ensureCreated(file, true);
+                editors.ensureCreated(persistence, true);
             }
 
             editors.onloadPendingFilesCount--;
@@ -946,16 +931,23 @@ define([
                 onloadFinalize();
             }
         } else {
-            console.log('editor open failed : ' + file.path);
+            console.log('editor open failed : ' + persistence.path);
             view.destroy();
         }
 
         editors.refreshTabTitle(dataSource);
         if (show) {
-            editors.setCurrentFile(file);
+            editors.setCurrentFile(persistence);
             editorPart.show();
         }
     };
+
+    /**
+     * @deprecated since version 1.3.0
+     * This method will be remove from 1.4.0
+     * Temp Code
+     */
+    editors.openFile = editorManager.requestOpen;
 
     editors.onFileSaved = function(file) {
         editors.refreshTabTitle(editors.getDataSource(file));
