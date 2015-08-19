@@ -27,13 +27,19 @@
 // @formatter:off
 define([
     'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
     './Part'
 ], function(
     genetic,
+    Logger,
     Part
 ) {
     'use strict';
 // @formatter:on
+
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     function EditorPart() {
         Part.apply(this, arguments);
