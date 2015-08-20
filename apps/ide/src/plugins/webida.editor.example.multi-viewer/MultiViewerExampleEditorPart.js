@@ -72,10 +72,12 @@ define([
 
     var logger = new Logger();
 
-    function MultiPageExampleEditorPart(file) {
-        logger.info('new MulitiTabEditorPart(' + file + ')');
+    function MultiPageExampleEditorPart(container) {
+        logger.info('new MulitiTabEditorPart(' + container + ')');
         MultiViewerEditorPart.apply(this, arguments);
 
+        var dataSource = container.getDataSource();
+        var file = dataSource.getPersistence();
         var that = this;
 
         var dataSource = this._getDataSource();

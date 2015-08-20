@@ -46,12 +46,12 @@ define([
 
     var _partId = 0;
 
-    function Part() {
-        logger.info('new Part()');
+    function Part(container) {
+        logger.info('new Part(' + container + ')');
         this._partId = ++_partId;
-        this.flags = null;
+        this.flags = 0;
         this.parent = null;
-        this.container = null;
+        this.container = container;
         this.viewer = null;
         this.modelManager = null;
     }

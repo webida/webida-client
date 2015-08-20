@@ -47,7 +47,7 @@ define([
     'use strict';
 
     var logger = new Logger();
-    logger.off();
+    //logger.off();
 
 	var dom = {
 		getStyle : function(element, prop){
@@ -62,9 +62,11 @@ define([
 		},
 	}
 
-    function ImageEditorPart(file){
-        logger.info('new ImageEditorPart('+file+')');
+    function ImageEditorPart(container){
+        logger.info('new ImageEditorPart('+container+')');
         EditorPart.apply(this, arguments);
+        var dataSource = container.getDataSource();
+        var file = dataSource.getPersistence();
         this.setFile(file);
     }
 
