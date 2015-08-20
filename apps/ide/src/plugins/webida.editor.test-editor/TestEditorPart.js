@@ -1,18 +1,18 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 /**
  * Constructor function
@@ -22,9 +22,10 @@
  * @see EditorPart
  * @since: 2015.06.19
  * @author: hw.shim
- * 
+ *
  */
 
+// @formatter:off
 define([
     'webida-lib/util/genetic',
     'webida-lib/plugins/workbench/ui/EditorPart',
@@ -32,25 +33,27 @@ define([
     'webida-lib/util/logger/logger-client',
     'dojo/domReady!'
 ], function(
-       genetic,
-        EditorPart,
-        topic,
-        Logger
-       ) {
+    genetic,
+    EditorPart,
+    topic,
+    Logger
+) {
     'use strict';
+// @formatter:on
 
     var logger = new Logger();
 
-    function TestEditor(container){
-        logger.info('new TestEditor('+container+')');
+    function TestEditor(container) {
+        logger.info('new TestEditor(' + container + ')');
         EditorPart.apply(this, arguments);
         var dataSource = container.getDataSource();
         var file = dataSource.getPersistence();
         this.setFile(file);
     }
 
+
     genetic.inherits(TestEditor, EditorPart, {
-        create: function (parent, callback) {
+        create: function(parent, callback) {
             console.info(this.file);
             var pre = document.createElement('pre');
             pre.contentEditable = true;
@@ -60,60 +63,39 @@ define([
             return pre;
         },
 
-        destroy: function () {
+        destroy: function() {
             console.info('destroy()');
         },
 
-        show: function () {
+        show: function() {
             console.info('show()');
         },
 
-        hide: function () {
+        hide: function() {
             console.info('hide()');
         },
 
-        getValue: function () {
+        getValue: function() {
             console.info('getValue()');
         },
 
-        addChangeListener: function (callback) {
+        addChangeListener: function(callback) {
             console.info('addChangeListener()');
         },
 
-        focus: function () {
+        focus: function() {
             console.info('focus()');
         },
 
-        markClean: function () {
+        markClean: function() {
             console.info('markClean()');
         },
 
-        isClean: function () {
+        isClean: function() {
             console.info('isClean()');
         }
-
     });
 
     return TestEditor;
 });
 
-
-
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
