@@ -130,6 +130,7 @@ define(['dojo/_base/declare',
             this.dialogNum = dialogNum++;
             this.buttons = params.buttons;
             this.methodOnEnter = params.methodOnEnter;
+            this.dialogClass = params.dialogClass;
         },
 
         setContentArea: function (markup) {
