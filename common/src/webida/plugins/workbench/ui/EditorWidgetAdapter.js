@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * EditorAdapter
+ * EditorWidgetAdapter
  *
  * @see
  * @since: 2015.07.15
@@ -28,12 +28,12 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    './WidgetAdapter'
+    './ViewerWidgetAdapter'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
-    WidgetAdapter
+    ViewerWidgetAdapter
 ) {
     'use strict';
 // @formatter:on
@@ -46,15 +46,15 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function EditorAdapter() {
-        logger.info('new EditorAdapter()');
+    function EditorWidgetAdapter() {
+        logger.info('new EditorWidgetAdapter()');
 
     }
 
 
-    genetic.inherits(EditorAdapter, WidgetAdapter, {
+    genetic.inherits(EditorWidgetAdapter, ViewerWidgetAdapter, {
 
     });
 
-    return EditorAdapter;
+    return EditorWidgetAdapter;
 });
