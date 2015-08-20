@@ -26,6 +26,7 @@ define([
     './run-configuration-manager',
     './delegator',
     'dojo/topic',
+    'dojo/keys',
     'dojo/on',
     'dojo/store/Memory',
     'dojo/store/Observable',
@@ -51,6 +52,7 @@ define([
     runConfManager,
     delegator,
     topic,
+    keys,
     on,
     Memory,
     Observable,
@@ -107,9 +109,9 @@ define([
 
     ui = {
         dialog: undefined,
+        tree: undefined,
         contentArea: undefined,
         content: undefined,
-        tree: undefined,
         btns: {
             createNewButton: undefined,
             saveButton: undefined,
@@ -301,6 +303,36 @@ define([
                 ui.btns.createNewButton = registry.byId('run-configuration-create-button');
                 ui.btns.deleteButton = registry.byId('run-configuration-delete-button');
 
+                function _deleteConfiguration() {
+                    if (current.runConf) {
+                        PopupDialog.yesno({
+                            title: 'Delete ' + title,
+                            message: 'Are you sure you want to delete this configuration?',
+                            type: 'info'
+                        }).then(function () {
+                            delegator.deleteConf(current.runConf.name, function (error) {
+                                if (!error) {
+                                    _setSelection(current.runConf.type);
+                                    module.refreshTree();
+                                    _removeContentArea();
+                                }
+                            });
+                        }, function () {
+                            toastr.info('Deletion canceled');
+                        });
+                    }
+                }
+
+                ui.dialog.own(on($('#run-configuration-list')[0], 'keydown', function (evt) {
+                    if (evt.keyCode === keys.DELETE) {
+                        _deleteConfiguration();
+                    } else if (evt.keyCode === keys.UP_ARROW) {
+                        ui.tree.find('.selected').last().parent().prev().find('a').trigger('click');
+                    } else if (evt.keyCode === keys.DOWN_ARROW) {
+                        ui.tree.find('.selected').last().parent().next().find('a').trigger('click');
+                    }
+                }));
+
                 ui.contentArea.own(
                     on(ui.btns.createNewButton, 'click', function () {
                         // get project from selected context
@@ -338,23 +370,7 @@ define([
                         }
                     }),
                     on(ui.btns.deleteButton, 'click', function () {
-                        if (current.runConf) {
-                            PopupDialog.yesno({
-                                title: 'Delete ' + title,
-                                message: 'Are you sure you want to delete this configuration?',
-                                type: 'info'
-                            }).then(function () {
-                                delegator.deleteConf(current.runConf.name, function (error) {
-                                    if (!error) {
-                                        _setSelection(current.runConf.type);
-                                        module.refreshTree();
-                                        _removeContentArea();
-                                    }
-                                });
-                            }, function () {
-                                toastr.info('Deletion canceled');
-                            });
-                        }
+                        _deleteConfiguration();
                     })
                 );
 
