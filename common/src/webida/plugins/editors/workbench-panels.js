@@ -112,7 +112,8 @@ define([
             buttonsWidth: '140px',
             onHide: function () {
                 dialog.destroyRecursive();
-            }
+            },
+            dialogClass: 'buttoned-dialog-text-only'
         });
 
         var name = file.name;

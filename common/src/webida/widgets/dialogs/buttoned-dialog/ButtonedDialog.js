@@ -24,6 +24,7 @@
 
 define(['dojo/_base/declare',
         'dojo/aspect',
+        'dojo/dom-class',
         'dojo/on',
         'dijit/Dialog',
         'dijit/registry',
@@ -31,6 +32,7 @@ define(['dojo/_base/declare',
 ], function (
        declare,
        aspect,
+       domClass,
        on,
        Dialog,
        registry) {
@@ -145,6 +147,10 @@ define(['dojo/_base/declare',
         postCreate: function () {
             var ret = Dialog.prototype.postCreate.apply(this, arguments);
             var self = this;
+
+            if (!!this.dialogClass) {
+                domClass.add(this.domNode, this.dialogClass);
+            }
 
             if (this.methodOnEnter !== null) {
                 this.domNode.addEventListener('keydown', function (evt) {
