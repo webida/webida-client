@@ -85,7 +85,7 @@ define([
          * Creates new Part using DataSource
          */
         createPart: function(options, callback) {
-            logger.info('createPart('+options+', callback)');
+            logger.info('createPart(' + options + ', callback)');
             logger.info(this.getDataSource());
             //get Part module by dataSource using plugin manager
             //this.part = new Part()
@@ -154,22 +154,6 @@ define([
          */
         getToolTip: function() {
             return this.toolTip;
-        },
-
-        /**
-         * Explain
-         * @return {HTMLElement}
-         */
-        getInnerElement: function() {
-            throw new Error('getInnerElement() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Explain
-         * @return {HTMLElement}
-         */
-        getOuterElement: function() {
-            throw new Error('getOuterElement() should be implemented by ' + this.constructor.name);
         },
 
         /**
