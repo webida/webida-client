@@ -48,39 +48,11 @@ define([
         logger.info('new TabPartContainer(' + dataSource + ')');
 
         PartContainer.call(this, dataSource);
-
-        /** @type {Object} tabWidget */
-        this.tabWidget = null
-
-        this.createTabWidget();
     }
 
 
     genetic.inherits(TabPartContainer, PartContainer, {
 
-        /**
-         * Explain
-         * @param {}
-         * @return {Array}
-         */
-        createTabWidget: function() {
-            logger.info('createTabWidget()');
-            //TODO
-        },
-
-        /**
-         * @param {Object} tabWidget
-         */
-        setTabWidget: function(tabWidget) {
-            this.tabWidget = tabWidget;
-        },
-
-        /**
-         * @return {Object} tabWidget
-         */
-        getTabWidget: function() {
-            return this.tabWidget;
-        }
     });
 
     return TabPartContainer;
