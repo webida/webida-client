@@ -36,6 +36,10 @@ define([
     'use strict';
 // @formatter:on
 
+    /**
+     * @typedef {Object} WidgetAdapter
+     */
+
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
@@ -51,10 +55,13 @@ define([
         this.title = null;
         this.toolTip = null;
         this.titleImage = null;
+        this.adapter = null;
         this.setDataSource(dataSource);
-        this.setTitle(dataSource.getTitle());
-        this.setToolTip(dataSource.getToolTip());
-        this.setTitleImage(dataSource.getTitleImage());
+        this.createWidgetAdapter(function(container) {
+            container.setTitle(dataSource.getTitle());
+            container.setToolTip(dataSource.getToolTip());
+            container.setTitleImage(dataSource.getTitleImage());
+        });
     }
 
 
@@ -154,6 +161,32 @@ define([
          */
         getToolTip: function() {
             return this.toolTip;
+        },
+
+        /**
+         * @abstract
+         * @param {PartContainer~createWidgetAdapterCallback} callback
+         */
+        /**
+         * @callback PartContainer~createWidgetAdapterCallback
+         * @param {PartContainer} container
+         */
+        createWidgetAdapter: function(callback) {
+            throw new Error('createWidgetAdapter() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @param {WidgetAdapter} adapter
+         */
+        setWidgetAdapter: function(adapter) {
+            this.adapter = adapter;
+        },
+
+        /**
+         * @return {WidgetAdapter}
+         */
+        getWidgetAdapter: function() {
+            return this.adapter;
         },
 
         /**
