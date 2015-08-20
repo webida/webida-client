@@ -80,22 +80,6 @@ define([
          */
         getTabWidget: function() {
             return this.tabWidget;
-        },
-
-        /**
-         * Explain
-         * @return {HTMLElement}
-         */
-        getInnerElement: function() {
-            //TODO
-        },
-
-        /**
-         * Explain
-         * @return {HTMLElement}
-         */
-        getOuterElement: function() {
-            //TODO
         }
     });
 
