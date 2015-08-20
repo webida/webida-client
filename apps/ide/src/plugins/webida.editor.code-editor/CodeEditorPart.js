@@ -59,8 +59,8 @@ define([
     var logger = new Logger();
     logger.off();
 
-    function CodeEditorPart(file) {
-        logger.info('new CodeEditorPart(' + file + ')');
+    function CodeEditorPart(container) {
+        logger.info('new CodeEditorPart(' + container + ')');
         //super constructor
         TextEditorPart.apply(this, arguments);
     }

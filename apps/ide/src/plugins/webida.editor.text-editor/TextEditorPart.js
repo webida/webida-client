@@ -70,9 +70,12 @@ define([
 
     var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide'];
 
-    function TextEditorPart(file) {
-        logger.info('new TextEditorPart(' + file + ')');
+    function TextEditorPart(container) {
+        logger.info('new TextEditorPart(' + container + ')');
         EditorPart.apply(this, arguments);
+        var dataSource = container.getDataSource();
+        var file = dataSource.getPersistence();
+        this.setModelManager(new DocumentManager(dataSource));
         this.setFile(file);
         this.fileOpenedHandle = null;
         this.fileSavedHandle = null;
