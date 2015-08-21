@@ -215,12 +215,33 @@ define([
          * @see Part.js getViewer()
          * @override
          */
-        createViewer: function() {
-            //TODO : parent, callback in case of none
-            var parent = this.getParentElement();
-            var callback = this.createCallback;
+
+
+        getFoldingStatus: function() {
+            return this.foldingStatus;
+        },
+
+        createViewer: function(parentNode, callback) {
+            logger.info('%c createViewer(' + parentNode.tagName + ', ' + typeof callback + ')', 'color:green');
+            //TODO : remove
+            this.file.elem = parentNode;
+            var that = this;
+
+            //Model
+            var modelManager = this.getModelManager();
+            modelManager.createModel(function(doc) {
+                doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
+                    var dataSource = that.getModelManager().getDataSource();
+                    var file = dataSource.getPersistence();
+                    editors.refreshTabTitle(dataSource);
+                    topic.publish('file.content.changed', file.getPath(), file.getContents());
+                });
+                that.initialize();
+            });
+
+            //Viewer
             var ViewerClass = this.getViewerClass();
-            var viewer = new (ViewerClass)(parent, this.file, function(file, viewer) {
+            var viewer = new (ViewerClass)(parentNode, this.file, function(file, viewer) {
                 viewer.addChangeListener(function(viewer, change) {
                     if (viewer._changeCallback) {
                         viewer._changeCallback(file, change);
@@ -234,34 +255,6 @@ define([
             });
             this.setViewer(viewer);
             this.initViewer();
-        },
-
-        getFoldingStatus: function() {
-            return this.foldingStatus;
-        },
-
-        create: function(parent, callback) {
-            logger.info('create(' + parent.tagName + ', callback)');
-            if (this.getFlag(Part.CREATED) === true) {
-                return;
-            }
-            this.setParentElement(parent);
-            this.createCallback = callback;
-            this.file.elem = parent;
-
-            var that = this;
-            var modelManager = this.getModelManager();
-            modelManager.createModel(function(doc) {
-                doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
-                    var dataSource = that.getModelManager().getDataSource();
-                    var file = dataSource.getPersistence();
-                    editors.refreshTabTitle(dataSource);
-                    topic.publish('file.content.changed', file.getPath(), file.getContents());
-                });
-                that.initialize();
-            });
-
-            this.setFlag(Part.CREATED, true);
         },
 
         destroy: function() {

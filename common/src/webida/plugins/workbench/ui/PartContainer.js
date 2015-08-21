@@ -27,17 +27,20 @@
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/plugins/workbench/plugin'
 ], function(
     EventEmitter,
     genetic, 
-    Logger
+    Logger,
+    workbench
 ) {
     'use strict';
 // @formatter:on
 
     /**
      * @typedef {Object} WidgetAdapter
+     * @typedef {Object} HTMLElement
      */
 
     var logger = new Logger();
@@ -48,20 +51,22 @@ define([
 
     function PartContainer(dataSource) {
         logger.info('new PartContainer(' + dataSource + ')');
+
         this._containerId = ++_containerId;
         this.dataSource = null;
         this.part = null;
         this.parent = null;
+        this.contentNode = null;
         this.title = null;
         this.toolTip = null;
         this.titleImage = null;
         this.adapter = null;
+
         this.setDataSource(dataSource);
-        this.createWidgetAdapter(function(container) {
-            container.setTitle(dataSource.getTitle());
-            container.setToolTip(dataSource.getToolTip());
-            container.setTitleImage(dataSource.getTitleImage());
-        });
+        this.createWidgetAdapter();
+        this.setTitle(dataSource.getTitle());
+        this.setToolTip(dataSource.getToolTip());
+        this.setTitleImage(dataSource.getTitleImage());
     }
 
 
@@ -91,12 +96,30 @@ define([
         /**
          * Creates new Part using DataSource
          */
-        createPart: function(options, callback) {
-            logger.info('createPart(' + options + ', callback)');
-            logger.info(this.getDataSource());
-            //get Part module by dataSource using plugin manager
-            //this.part = new Part()
-            //this.part.create(parent);
+        createPart: function(PartClass, options, callback) {
+            logger.info('%ccreatePart(' + PartClass.name + ', ' + options + ', callback)', 'color:orange');
+            //1. Create new Part
+            var part = new PartClass(this);
+            this.setPart(part);
+
+            //2. Register part
+            var page = workbench.getCurrentPage();
+            var registry = page.getPartRegistry();
+            registry.registerPart(part);
+            logger.info('registry.getParts() = ', registry.getParts());
+
+            //3. Create part's widget
+            var file = this.getDataSource().getPersistence();
+            part.createViewer(this.getContentNode(), function() {
+                callback(file);
+            });
+        },
+
+        /**
+         * @param {Part} part
+         */
+        setPart: function(part) {
+            this.part = part;
         },
 
         /**
@@ -118,6 +141,20 @@ define([
          */
         getParent: function() {
             return this.parent;
+        },
+
+        /**
+         * @param {HTMLElement} contentNode
+         */
+        setContentNode: function(contentNode) {
+            this.contentNode = contentNode;
+        },
+
+        /**
+         * @param {Object} parent
+         */
+        getContentNode: function() {
+            return this.contentNode;
         },
 
         /**

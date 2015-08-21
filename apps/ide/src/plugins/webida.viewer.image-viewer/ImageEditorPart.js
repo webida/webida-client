@@ -122,15 +122,11 @@ define([
             });
         },
 
-        create: function (parent, callback) {
-            logger.info('create('+parent.tagName+', callback)');
-            if (this.getFlag(Part.CREATED) === true) {
-                return;
-            }
-            this.setParentElement(parent);
+        createViewer: function (parentNode, callback) {
+            logger.info('create('+parentNode.tagName+', callback)');
+            this.setParentElement(parentNode);
             this.initialize();
             this.renderImage();
-            this.setFlag(Part.CREATED, true);
         },
 
         destroy: function () {
