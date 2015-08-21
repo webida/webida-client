@@ -29,12 +29,14 @@ define([
 	'webida-lib/util/genetic',
 	'webida-lib/util/logger/logger-client',
 	'./DataSource',
+	'./DataSourceRegistry',
 	'./Part'
 ], function(
 	EventEmitter,
 	genetic, 
 	Logger,
 	DataSource,
+	DataSourceRegistry,
 	Part
 ) {
 	'use strict';
@@ -64,7 +66,6 @@ define([
     genetic.inherits(PartRegistry, EventEmitter, {
 
         /**
-         * @param {DataSource} dataSource
          * @param {Part} part
          */
         registerPart: function(part) {
