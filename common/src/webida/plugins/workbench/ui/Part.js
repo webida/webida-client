@@ -63,9 +63,10 @@ define([
         /**
          * @param {HTMLElement} parent
          * @param {Function} callback
+         * @abstract
          */
-        create: function(parent, callback) {
-            throw new Error('create(parent, callback) should be implemented by ' + this.constructor.name);
+        createViewer: function(parent, callback) {
+            throw new Error('createViewer(parent, callback) should be implemented by ' + this.constructor.name);
         },
 
         destroy: function() {
@@ -92,21 +93,9 @@ define([
         },
 
         /**
-         * @abstract
-         */
-        createViewer: function() {
-            throw new Error('createViewer() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
          * @return {Viewer}
          */
         getViewer: function() {
-            //TODO : parent, callback in case of none
-            if (this.viewer !== null) {
-                return this.viewer;
-            }
-            this.createViewer();
             return this.viewer;
         },
 
