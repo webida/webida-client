@@ -412,8 +412,8 @@
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">720</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">936</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">187</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">342</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">208</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">368</XPD:ATTR>
 <XPD:REF name="Model">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="TJYI/XBRMkGiN++9bx9jHAAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="aXWXEofRYUmBQW96xPq4dAAA">
@@ -939,7 +939,7 @@
 <XPD:OBJ name="OwnedViews[24]" type="UMLAssociationView" guid="EooBB0DJwk2Sw3juepQhzwAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">626,1228;720,1167</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">626,1234;720,1179</XPD:ATTR>
 <XPD:REF name="Model">1sGjlykcskGGDPX+eMAvXwAA</XPD:REF>
 <XPD:REF name="Head">kc+XTU8ZREKzpZ/2itAQRgAA</XPD:REF>
 <XPD:REF name="Tail">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
@@ -1794,7 +1794,7 @@
 <XPD:OBJ name="OwnedViews[42]" type="UMLGeneralizationView" guid="9QvvQY14fEeTP2O0sVv/8QAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">906,1032;976,976;1083,786</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">927,1022;976,976;1083,786</XPD:ATTR>
 <XPD:REF name="Model">BCCO0ix1YUaYicHFRjrl+QAA</XPD:REF>
 <XPD:REF name="Head">QTv8/bdafUO2YE7d/VvO0QAA</XPD:REF>
 <XPD:REF name="Tail">kc+XTU8ZREKzpZ/2itAQRgAA</XPD:REF>
@@ -1848,7 +1848,7 @@
 <XPD:OBJ name="OwnedViews[44]" type="UMLAssociationView" guid="P4LdyXhOGk+nR2pqIoskMwAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">1192,574;1236,640;1236,976;1152,1104;906,1105</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">1192,574;1236,640;1236,976;1152,1104;927,1114</XPD:ATTR>
 <XPD:REF name="Model">cGD7bZq690iECmzrvqLWTAAA</XPD:REF>
 <XPD:REF name="Head">kc+XTU8ZREKzpZ/2itAQRgAA</XPD:REF>
 <XPD:REF name="Tail">Mrp67zC/nEG/5DD7kQQO4QAA</XPD:REF>
@@ -3244,7 +3244,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[74]" type="UMLGeneralizationView" guid="dSjmUlg/DUK1cWM7YfmplwAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">621,1012;684,1012;720,1038</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">621,1012;684,1012;720,1040</XPD:ATTR>
 <XPD:REF name="Model">V9pw65baGkix+m4Lbb6FBAAA</XPD:REF>
 <XPD:REF name="Head">kc+XTU8ZREKzpZ/2itAQRgAA</XPD:REF>
 <XPD:REF name="Tail">EMq4yC7EMEOP9ZZiF9CzlQAA</XPD:REF>
@@ -3926,7 +3926,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="CTo6Ag1Rt0annuGPABVL1wAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="0ncEi0LMQUWQS7LGP8f3SAAA">
 <XPD:ATTR name="FontStyle" type="integer">3</XPD:ATTR>
-<XPD:ATTR name="Text" type="string">EditorAdapter</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">EditorWidgetAdapter</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="7ABGm4EKA0+hgl3s064RmAAA">
 <XPD:ATTR name="Text" type="string">&lt;&lt;interface&gt;&gt;</XPD:ATTR>
@@ -6787,7 +6787,7 @@ our application will be working with.
 <XPD:REF name="Generalizations[0]">BCCO0ix1YUaYicHFRjrl+QAA</XPD:REF>
 <XPD:ATTR name="#Specializations" type="integer">1</XPD:ATTR>
 <XPD:REF name="Specializations[0]">V9pw65baGkix+m4Lbb6FBAAA</XPD:REF>
-<XPD:ATTR name="#Operations" type="integer">17</XPD:ATTR>
+<XPD:ATTR name="#Operations" type="integer">19</XPD:ATTR>
 <XPD:OBJ name="Operations[0]" type="UMLOperation" guid="BZRFwcWhzU+3w6OwElUYCQAA">
 <XPD:ATTR name="Name" type="string">PartContainer</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
@@ -6817,12 +6817,16 @@ our application will be working with.
 <XPD:OBJ name="Operations[4]" type="UMLOperation" guid="3Ujk1k/P/0i2mr4CqAn2bgAA">
 <XPD:ATTR name="Name" type="string">createPart</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
-<XPD:ATTR name="#Parameters" type="integer">2</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="++dzmvYN4k2t+6s45xxC0AAA">
+<XPD:ATTR name="#Parameters" type="integer">3</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="m92WPv1G10SIl8Hj7b/1hwAA">
+<XPD:ATTR name="Name" type="string">PartClass</XPD:ATTR>
+<XPD:REF name="BehavioralFeature">3Ujk1k/P/0i2mr4CqAn2bgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="dnD8LKezsEKVvZc5LTPkVwAA">
 <XPD:ATTR name="Name" type="string">options</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">3Ujk1k/P/0i2mr4CqAn2bgAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="KhEU+cqYVUODROqW/xINnQAA">
+<XPD:OBJ name="Parameters[2]" type="UMLParameter" guid="lLbw4o1yikay9SwuMdBU2wAA">
 <XPD:ATTR name="Name" type="string">callback</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">3Ujk1k/P/0i2mr4CqAn2bgAA</XPD:REF>
 </XPD:OBJ>
@@ -6844,7 +6848,20 @@ our application will be working with.
 <XPD:ATTR name="Name" type="string">getParent</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[8]" type="UMLOperation" guid="AnMV6tEE8ECfAw6/A80MLAAA">
+<XPD:OBJ name="Operations[8]" type="UMLOperation" guid="6skVYlFbPkScdYkm8+YYTQAA">
+<XPD:ATTR name="Name" type="string">setContentNode</XPD:ATTR>
+<XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
+<XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="qTvq/QtLoUaj/mo7WQr3CQAA">
+<XPD:ATTR name="Name" type="string">HTMLElement</XPD:ATTR>
+<XPD:REF name="BehavioralFeature">6skVYlFbPkScdYkm8+YYTQAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[9]" type="UMLOperation" guid="juxVN1RSZUysUNqCXi1cRgAA">
+<XPD:ATTR name="Name" type="string">getContentNode</XPD:ATTR>
+<XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[10]" type="UMLOperation" guid="AnMV6tEE8ECfAw6/A80MLAAA">
 <XPD:ATTR name="Name" type="string">setTitle</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
@@ -6853,11 +6870,11 @@ our application will be working with.
 <XPD:REF name="BehavioralFeature">AnMV6tEE8ECfAw6/A80MLAAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[9]" type="UMLOperation" guid="Us+AaYWd8Ui48pYQygzaQwAA">
+<XPD:OBJ name="Operations[11]" type="UMLOperation" guid="Us+AaYWd8Ui48pYQygzaQwAA">
 <XPD:ATTR name="Name" type="string">getTitle</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[10]" type="UMLOperation" guid="8dSYNyIx90qfaIh0o4Ta0gAA">
+<XPD:OBJ name="Operations[12]" type="UMLOperation" guid="8dSYNyIx90qfaIh0o4Ta0gAA">
 <XPD:ATTR name="Name" type="string">setTitleImage</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
@@ -6866,11 +6883,11 @@ our application will be working with.
 <XPD:REF name="BehavioralFeature">8dSYNyIx90qfaIh0o4Ta0gAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[11]" type="UMLOperation" guid="Q6u3J/1VpUK5Kg9NMu8JVAAA">
+<XPD:OBJ name="Operations[13]" type="UMLOperation" guid="Q6u3J/1VpUK5Kg9NMu8JVAAA">
 <XPD:ATTR name="Name" type="string">getTitleImage</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[12]" type="UMLOperation" guid="vsD3QQ315ket/za7VqH/fwAA">
+<XPD:OBJ name="Operations[14]" type="UMLOperation" guid="vsD3QQ315ket/za7VqH/fwAA">
 <XPD:ATTR name="Name" type="string">setToolTip</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
@@ -6879,11 +6896,11 @@ our application will be working with.
 <XPD:REF name="BehavioralFeature">vsD3QQ315ket/za7VqH/fwAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[13]" type="UMLOperation" guid="Dk6AGjaHR0qUAz5T+nvNzwAA">
+<XPD:OBJ name="Operations[15]" type="UMLOperation" guid="Dk6AGjaHR0qUAz5T+nvNzwAA">
 <XPD:ATTR name="Name" type="string">getToolTip</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[14]" type="UMLOperation" guid="bN8UuB9XEkeAxlDWwN16SAAA">
+<XPD:OBJ name="Operations[16]" type="UMLOperation" guid="bN8UuB9XEkeAxlDWwN16SAAA">
 <XPD:ATTR name="Name" type="string">createWidgetAdapter</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
@@ -6892,7 +6909,7 @@ our application will be working with.
 <XPD:REF name="BehavioralFeature">bN8UuB9XEkeAxlDWwN16SAAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[15]" type="UMLOperation" guid="1yg2drEZMUOM+Jf7hh2OAAAA">
+<XPD:OBJ name="Operations[17]" type="UMLOperation" guid="1yg2drEZMUOM+Jf7hh2OAAAA">
 <XPD:ATTR name="Name" type="string">setWidgetAdapter</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
@@ -6901,7 +6918,7 @@ our application will be working with.
 <XPD:REF name="BehavioralFeature">1yg2drEZMUOM+Jf7hh2OAAAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[16]" type="UMLOperation" guid="FjCQU2NVA0qkgBVHqGNOrgAA">
+<XPD:OBJ name="Operations[18]" type="UMLOperation" guid="FjCQU2NVA0qkgBVHqGNOrgAA">
 <XPD:ATTR name="Name" type="string">getWidgetAdapter</XPD:ATTR>
 <XPD:REF name="Owner">/QQBEGb/DEusDYu4/EggvgAA</XPD:REF>
 </XPD:OBJ>
@@ -7286,27 +7303,35 @@ our application will be working with.
 <XPD:REF name="Specializations[1]">21qEbWmYrE+V/QEziUD32gAA</XPD:REF>
 <XPD:ATTR name="#Operations" type="integer">12</XPD:ATTR>
 <XPD:OBJ name="Operations[0]" type="UMLOperation" guid="T8lTyOrotUWDi4QwvO0JJQAA">
-<XPD:ATTR name="Name" type="string">create</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">createViewer</XPD:ATTR>
 <XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">2</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="X1/41qfsZEq8OQEMxhLVKgAA">
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="+/T/ztNbR0mdHqJV6h/4CgAA">
 <XPD:ATTR name="Name" type="string">container</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">T8lTyOrotUWDi4QwvO0JJQAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="oJVVYAOAVUSSqqJR0DAAwQAA">
+<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="ggSS3g0kVUut2QnsXL5kbwAA">
 <XPD:ATTR name="Name" type="string">callback</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">T8lTyOrotUWDi4QwvO0JJQAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[1]" type="UMLOperation" guid="6tPKfy8a+UO+2QrF3YOwDwAA">
+<XPD:OBJ name="Operations[1]" type="UMLOperation" guid="O9lqAAnfhki4UR7yOSYgLAAA">
+<XPD:ATTR name="Name" type="string">getViewer</XPD:ATTR>
+<XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[2]" type="UMLOperation" guid="6tPKfy8a+UO+2QrF3YOwDwAA">
 <XPD:ATTR name="Name" type="string">destroy</XPD:ATTR>
 <XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[2]" type="UMLOperation" guid="s8APWKmySk6wkwAinRlQ6wAA">
+<XPD:OBJ name="Operations[3]" type="UMLOperation" guid="EnTLwsAuxkO2iFDPdsPM7wAA">
+<XPD:ATTR name="Name" type="string">getDataSource</XPD:ATTR>
+<XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[4]" type="UMLOperation" guid="s8APWKmySk6wkwAinRlQ6wAA">
 <XPD:ATTR name="Name" type="string">getContainer</XPD:ATTR>
 <XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[3]" type="UMLOperation" guid="j8mDgxX/r0i7JuCTMuyN+gAA">
+<XPD:OBJ name="Operations[5]" type="UMLOperation" guid="j8mDgxX/r0i7JuCTMuyN+gAA">
 <XPD:ATTR name="Name" type="string">setFlag</XPD:ATTR>
 <XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">2</XPD:ATTR>
@@ -7319,16 +7344,8 @@ our application will be working with.
 <XPD:REF name="BehavioralFeature">j8mDgxX/r0i7JuCTMuyN+gAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[4]" type="UMLOperation" guid="OqEdwENvJkSCd8m3w2mIKAAA">
+<XPD:OBJ name="Operations[6]" type="UMLOperation" guid="OqEdwENvJkSCd8m3w2mIKAAA">
 <XPD:ATTR name="Name" type="string">getFlag</XPD:ATTR>
-<XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
-</XPD:OBJ>
-<XPD:OBJ name="Operations[5]" type="UMLOperation" guid="tjVwo83yt0eNDd7mW5jgUQAA">
-<XPD:ATTR name="Name" type="string">createViewer</XPD:ATTR>
-<XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
-</XPD:OBJ>
-<XPD:OBJ name="Operations[6]" type="UMLOperation" guid="O9lqAAnfhki4UR7yOSYgLAAA">
-<XPD:ATTR name="Name" type="string">getViewer</XPD:ATTR>
 <XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Operations[7]" type="UMLOperation" guid="FaExwz66gE+zlwX4phIpggAA">
@@ -8940,12 +8957,8 @@ our application will be working with.
 <XPD:OBJ name="Operations[0]" type="UMLOperation" guid="wT33QdJ9pEq9M26JCBJoWQAA">
 <XPD:ATTR name="Name" type="string">registerPart</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
-<XPD:ATTR name="#Parameters" type="integer">2</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="famGNHoZK0WVpP7q4KjdUgAA">
-<XPD:ATTR name="Name" type="string">DataSource</XPD:ATTR>
-<XPD:REF name="BehavioralFeature">wT33QdJ9pEq9M26JCBJoWQAA</XPD:REF>
-</XPD:OBJ>
-<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="gKe567Y2mEyCddsKIITgyAAA">
+<XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="jk4ktY1Rg0SDN67A8ZxSiQAA">
 <XPD:ATTR name="Name" type="string">Part</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">wT33QdJ9pEq9M26JCBJoWQAA</XPD:REF>
 </XPD:OBJ>
@@ -9649,7 +9662,7 @@ our application will be working with.
 <XPD:REF name="Views[3]">nLxOG4HrBEmp7dpiSsRMggAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedElements[107]" type="UMLInterface" guid="pIno9Xcly0S1cGUUFccN4wAA">
-<XPD:ATTR name="Name" type="string">EditorAdapter</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">EditorWidgetAdapter</XPD:ATTR>
 <XPD:ATTR name="IsAbstract" type="boolean">True</XPD:ATTR>
 <XPD:REF name="Namespace">8CvsSm5BDkiDCtV5vFo/EgAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">3</XPD:ATTR>
@@ -10587,8 +10600,8 @@ our application will be working with.
 <XPD:REF name="Participant">lYj4fXgJj0Cjes2/j+fXkAAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">TimRwWL1nE+T/K9VoUhIwgAA</XPD:REF>
-<XPD:REF name="Views[1]">P4yeMtQZp0qPd+kOAHZX9QAA</XPD:REF>
-<XPD:REF name="Views[2]">MwFT00cYBk+mVGASbCFL4AAA</XPD:REF>
+<XPD:REF name="Views[1]">MwFT00cYBk+mVGASbCFL4AAA</XPD:REF>
+<XPD:REF name="Views[2]">P4yeMtQZp0qPd+kOAHZX9QAA</XPD:REF>
 <XPD:REF name="Views[3]">RWqbG0lVa0u8Q5NhAYh3qQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Connections[1]" type="UMLAssociationEnd" guid="DSHN4LBDUkCW6pXNFZNPIgAA">
@@ -10597,8 +10610,8 @@ our application will be working with.
 <XPD:REF name="Participant">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">kVHFlvRAzEGBT9c3BAUyhAAA</XPD:REF>
-<XPD:REF name="Views[1]">l+zpXM9eP0SlrI5sG7e+IQAA</XPD:REF>
-<XPD:REF name="Views[2]">MngNDHLr60SIOL39WtiGqgAA</XPD:REF>
+<XPD:REF name="Views[1]">MngNDHLr60SIOL39WtiGqgAA</XPD:REF>
+<XPD:REF name="Views[2]">l+zpXM9eP0SlrI5sG7e+IQAA</XPD:REF>
 <XPD:REF name="Views[3]">y3OiAYSmg0aEgAY1HuYRYQAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
@@ -10702,8 +10715,8 @@ our application will be working with.
 <XPD:REF name="Participant">lYj4fXgJj0Cjes2/j+fXkAAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">AY99PIcW1Eu936hm8/P9DwAA</XPD:REF>
-<XPD:REF name="Views[1]">gfs2/W46nU6xcqqF1YpQIgAA</XPD:REF>
-<XPD:REF name="Views[2]">RHZTnk4DcUWcHVLnfgcT8AAA</XPD:REF>
+<XPD:REF name="Views[1]">RHZTnk4DcUWcHVLnfgcT8AAA</XPD:REF>
+<XPD:REF name="Views[2]">gfs2/W46nU6xcqqF1YpQIgAA</XPD:REF>
 <XPD:REF name="Views[3]">NUtI8GbJU0qsQ7uUCowuOQAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Connections[1]" type="UMLAssociationEnd" guid="R2A/vQi2hUirRHe0fG/6uQAA">
@@ -10712,8 +10725,8 @@ our application will be working with.
 <XPD:REF name="Participant">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">4</XPD:ATTR>
 <XPD:REF name="Views[0]">EsY27D6abUeUzXKPB23CuAAA</XPD:REF>
-<XPD:REF name="Views[1]">4R5WbM4/MEaR7D+ONhJFtwAA</XPD:REF>
-<XPD:REF name="Views[2]">3sDrcnc8QUSMmBaVYEpfrgAA</XPD:REF>
+<XPD:REF name="Views[1]">3sDrcnc8QUSMmBaVYEpfrgAA</XPD:REF>
+<XPD:REF name="Views[2]">4R5WbM4/MEaR7D+ONhJFtwAA</XPD:REF>
 <XPD:REF name="Views[3]">B4NGqPJf/UWjrS27+Fy70gAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>

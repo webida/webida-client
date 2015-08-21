@@ -53,14 +53,17 @@ define([
 
 
     genetic.inherits(TestEditor, EditorPart, {
-        create: function(parent, callback) {
-            console.info(this.file);
+
+        createViewer: function(parentNode, callback) {
+            logger.info('createViewer(' + parentNode + ', callback)');
+            var dataSource = this.getDataSource();
             var pre = document.createElement('pre');
+            dataSource.getContents(function(contents) {
+                pre.textContent = contents;
+            });
             pre.contentEditable = true;
             pre.style.fontSize = '8pt';
-            pre.innerText = this.getFile().getContents();
-            parent.appendChild(pre);
-            return pre;
+            parentNode.appendChild(pre);
         },
 
         destroy: function() {

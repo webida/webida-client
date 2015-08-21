@@ -65,8 +65,8 @@ define([
          * @param {Function} callback
          * @abstract
          */
-        createViewer: function(parent, callback) {
-            throw new Error('createViewer(parent, callback) should be implemented by ' + this.constructor.name);
+        createViewer: function(parentNode, callback) {
+            throw new Error('createViewer(parentNode, callback) should be implemented by ' + this.constructor.name);
         },
 
         destroy: function() {
