@@ -152,9 +152,6 @@ define([
         },
     });
 
-    /** @constant {number} state flag : Part created */
-    Part.CREATED = 1;
-
     /** @constant {string} */
     Part.PROPERTY_CHANGED = 'propertyChanged';
 
