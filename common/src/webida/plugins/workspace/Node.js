@@ -416,6 +416,7 @@ define(['require',
                     var finalName;
                     function handleFile() {
                         var fn = action === 'move' ? fsCache.move: fsCache.copy;
+                        finalName = finalName.replace(/&nbsp;/g, ' ');
                         var newFile = targetPath + finalName;
                         fn(entry.path, newFile, function (err) {
                             if (err) {
@@ -1532,11 +1533,13 @@ define(['require',
                 node.iconNode.innerHTML = '';
                 var stateSetIconClassMap = wv.getStateSetIconClassMap();
                 for (var stateSet in stateSetIconClassMap) {
-                    var overlayIconClass = stateSetIconClassMap[stateSet][that.overlayIconInfo[stateSet]];
-                    if (overlayIconClass) {
-                        var overlayElement = document.createElement('span');
-                        overlayElement.className = overlayIconClass;
-                        node.iconNode.appendChild(overlayElement);
+                    if (stateSetIconClassMap.hasOwnProperty(stateSet)) {
+                        var overlayIconClass = stateSetIconClassMap[stateSet][that.overlayIconInfo[stateSet]];
+                        if (overlayIconClass) {
+                            var overlayElement = document.createElement('span');
+                            overlayElement.className = overlayIconClass;
+                            node.iconNode.appendChild(overlayElement);
+                        }
                     }
                 }
             });
