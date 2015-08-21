@@ -38,6 +38,7 @@ define([
 
     /**
      * @typedef {Object} ModelManager
+     * @typedef {Object} DataSource
      */
 
     var logger = new Logger();
@@ -69,6 +70,14 @@ define([
 
         destroy: function() {
             throw new Error('destroy() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Convenient method to get DataSource
+         * @return {DataSource}
+         */
+        getDataSource: function() {
+            return this.getContainer().getDataSource();
         },
 
         getContainer: function() {
