@@ -458,7 +458,7 @@ define([
                         ratio: [0.7, 0.3]
                     },
                     children: [{
-                    	type: 'LayoutPane',
+                    	type: 'CompatibleLayoutPane',
                         id: 'webida.layout_pane.center'
                     }, {
                     	type: 'LayoutPane',
