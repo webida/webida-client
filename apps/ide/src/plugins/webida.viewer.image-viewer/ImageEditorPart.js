@@ -132,8 +132,6 @@ define([
         destroy: function () {
             logger.info('destroy()');
             //unsubscribe topic
-            //clear state
-            this.setFlag(Part.CREATED, false);
         },
 
         show: function () {

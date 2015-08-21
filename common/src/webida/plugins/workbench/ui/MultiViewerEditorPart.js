@@ -78,15 +78,11 @@ define([
          */
         create: function(parent, callback) {
             logger.info('create(' + parent.tagName + ', callback)');
-            if (this.getFlag(Part.CREATED) === true) {
-                return;
-            }
             this.setParentElement(parent);
             this.createCallback = callback;
             //TODO remove this.file.elem
             this.file.elem = parent;
             this.initialize();
-            this.setFlag(Part.CREATED, true);
         },
 
         destroy: function() {
@@ -103,8 +99,6 @@ define([
             if (this.fileSavedHandle) {
                 this.fileSavedHandle.remove();
             }
-            //clear state
-            this.setFlag(Part.CREATED, false);
         },
 
         initialize: function() {

@@ -224,6 +224,8 @@ define([
         createViewer: function(parentNode, callback) {
             logger.info('%c createViewer(' + parentNode.tagName + ', ' + typeof callback + ')', 'color:green');
             //TODO : remove
+            this.setParentElement(parentNode);
+            //TODO : remove
             this.file.elem = parentNode;
             var that = this;
 
@@ -278,8 +280,6 @@ define([
             if (this.fileSavedHandle !== null) {
                 this.fileSavedHandle.remove();
             }
-            //clear state
-            this.setFlag(Part.CREATED, false);
         },
 
         show: function() {
