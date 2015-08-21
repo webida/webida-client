@@ -156,6 +156,7 @@ define([
                 } else {
                     viewContainer.addLast(widget);
                 }
+                widget.getParent().select(widget);
             } else {
             	logger.warn('viewContainer not found');
                 //widget.destroy();
