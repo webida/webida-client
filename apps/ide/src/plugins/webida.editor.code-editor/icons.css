@@ -1,7 +1,7 @@
 .codeEditorCFileIcon {width:16px;height:16px;background:url(icons/file-icons/c_file.png) 0 0 no-repeat}
 .codeEditorJavaFileIcon {width:16px;height:16px;background:url(icons/file-icons/java_file.png) 0 0 no-repeat}
 .codeEditorPhpFileIcon {width:16px;height:16px;background:url(icons/file-icons/php_file.png) 0 0 no-repeat}
-.codeEditorPluginJsonFileIcon {width:16px;height:16px;background:url(icons/file-icons/plugin_json_file.png) 0 0 no-repeat}
-.codeEditorHtmlFileIcon {width:16px;height:16px;background:url(icons/file-icons/html_tag_obj.gif) 0 0 no-repeat}
-.codeEditorJavaScriptFileIcon {width:16px;height:16px;background:url(icons/file-icons/jsbook_obj.gif) 0 0 no-repeat}
-.codeEditorXmlFileIcon {width:16px;height:16px;background:url(icons/file-icons/generic_xml_obj.gif) 0 0 no-repeat}
+.codeEditorPluginJsonFileIcon {width:16px;height:16px;background:url(icons/file-icons/fileicon_json.png) 0 0 no-repeat}
+.codeEditorHtmlFileIcon {width:16px;height:16px;background:url(icons/file-icons/fileicon_html.png) 0 0 no-repeat}
+.codeEditorJavaScriptFileIcon {width:16px;height:16px;background:url(icons/file-icons/fileicon_javascript.png) 0 0 no-repeat}
+.codeEditorXmlFileIcon {width:16px;height:16px;background:url(icons/file-icons/fileicon_xml.png) 0 0 no-repeat}
