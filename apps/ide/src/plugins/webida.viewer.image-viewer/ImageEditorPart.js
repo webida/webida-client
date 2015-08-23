@@ -123,7 +123,7 @@ define([
         },
 
         createViewer: function (parentNode, callback) {
-            logger.info('create('+parentNode.tagName+', callback)');
+            logger.info('createViewer('+parentNode.tagName+', callback)');
             this.setParentElement(parentNode);
             this.initialize();
             this.renderImage();
