@@ -70,10 +70,6 @@ define([
             console.info('destroy()');
         },
 
-        show: function() {
-            console.info('show()');
-        },
-
         hide: function() {
             console.info('hide()');
         },

@@ -97,7 +97,9 @@ define([
          * Creates new Part using DataSource
          */
         createPart: function(PartClass, options, callback) {
-            logger.info('%ccreatePart(' + PartClass.name + ', ' + options + ', callback)', 'color:orange');
+            logger.info('%ccreatePart(' + PartClass.name + ', ' + options + ', ' + typeof callback + ')', 'color:orange');
+            var that = this;
+
             //1. Create new Part
             var part = new PartClass(this);
             this.setPart(part);
@@ -108,11 +110,20 @@ define([
             registry.registerPart(part);
             logger.info('registry.getParts() = ', registry.getParts());
 
-            //3. Create part's widget
-            var file = this.getDataSource().getPersistence();
-            part.createViewer(this.getContentNode(), function() {
-                callback(file);
-            });
+			//3. Create User Interface of Part
+			var promise = Promise.resolve();
+			promise.then(function(){
+				part.createViewer(that.getContentNode());
+				return part;
+			//If everything is OK
+			}).then(function(part){
+                if ( typeof callback === 'function') {
+                    callback(part);
+                }
+            //If something goes wrong while createViewer
+			}).catch(function(e){
+				logger.warn(e);
+			});
         },
 
         /**
@@ -240,6 +251,9 @@ define([
 
     /** @constant {string} */
     PartContainer.PART_DESTROYED = 'partDestroyed';
+
+    /** @constant {string} */
+    PartContainer.CONTAINER_RESIZE = 'containerResize';
 
     return PartContainer;
 });
