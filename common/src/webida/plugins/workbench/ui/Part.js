@@ -139,10 +139,6 @@ define([
         // ----------- unknowkn ----------- //
         //TODO refactor the follwings
 
-        show: function() {
-            throw new Error('show() should be implemented by ' + this.constructor.name);
-        },
-
         hide: function() {
             throw new Error('hide() should be implemented by ' + this.constructor.name);
         },

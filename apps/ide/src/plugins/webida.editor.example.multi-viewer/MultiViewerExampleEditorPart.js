@@ -253,11 +253,6 @@ define([
             logger.info('addChangeListener(' + callback + ')');
         },
 
-        show: function() {
-            logger.info('show()');
-            logger.trace();
-        },
-
         hide: function() {
             logger.info('hide()');
         },

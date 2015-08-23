@@ -37,6 +37,7 @@ define([
     'webida-lib/plugins/editors/EditorPreference',
     'webida-lib/plugins/workbench/ui/Part', 
     'webida-lib/plugins/workbench/ui/EditorPart', 
+    'webida-lib/plugins/workbench/ui/PartContainer',
     'webida-lib/plugins/workbench/ui/PartModel',
     'webida-lib/plugins/workbench/ui/Viewer',
     'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
@@ -52,6 +53,7 @@ define([
     EditorPreference,
     Part,
     EditorPart,
+    PartContainer,
     PartModel,
     Viewer,
     store,
@@ -73,6 +75,7 @@ define([
     function TextEditorPart(container) {
         logger.info('new TextEditorPart(' + container + ')');
         EditorPart.apply(this, arguments);
+        var that = this;
         var dataSource = container.getDataSource();
         var file = dataSource.getPersistence();
         this.setModelManager(new DocumentManager(dataSource));
@@ -81,6 +84,11 @@ define([
         this.fileSavedHandle = null;
         this.preferences = null;
         this.foldingStatus = null;
+        container.on(PartContainer.CONTAINER_RESIZE, function(changeSize) {
+            //changeSize =  Object {l: 1, t: 1, w: 325, h: 560}
+            that.getViewer().refresh();
+            //that.getViewer().checkSizeChange();
+        });
     }
 
 
@@ -280,12 +288,6 @@ define([
             if (this.fileSavedHandle !== null) {
                 this.fileSavedHandle.remove();
             }
-        },
-
-        show: function() {
-            logger.info('show()');
-            this.getViewer().refresh();
-            this.getViewer().checkSizeChange();
         },
 
         hide: function() {

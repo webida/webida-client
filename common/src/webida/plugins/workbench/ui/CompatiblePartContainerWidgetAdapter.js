@@ -30,6 +30,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/widgets/views/view',
+    './PartContainer',
     './PartContainerWidgetAdapter',
     './WidgetAdapter'
 ], function(
@@ -38,6 +39,7 @@ define([
     genetic, 
     Logger,
     View,
+    PartContainer,
     PartContainerWidgetAdapter,
     WidgetAdapter
 ) {
@@ -62,6 +64,9 @@ define([
         widget.set('closable', true);
         widget.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
         persistence.viewId = viewId;
+        dojo.connect(widget.contentPane, 'resize', function(changeSize) {
+            container.emit(PartContainer.CONTAINER_RESIZE, changeSize);
+        });
         this.setWidget(widget);
     }
 
