@@ -76,11 +76,10 @@ define([
         logger.info('new MulitiTabEditorPart(' + container + ')');
         MultiViewerEditorPart.apply(this, arguments);
 
-        var dataSource = container.getDataSource();
+        var dataSource = this.getDataSource();
         var file = dataSource.getPersistence();
         var that = this;
 
-        var dataSource = this._getDataSource();
         this.setModelManager(new DocumentManager(dataSource));
 
         this.on(MultiViewerEditorPart.TAB_SELECT, function(viewer) {
@@ -121,19 +120,19 @@ define([
         initCodeEditor: function() {
             var viewer = this.getViewerById('CodeEditor');
             var container = viewer.getParentNode();
-            viewer.setValue(this.file.getContents());
+            var persistence = this.getDataSource().getPersistence();
+            viewer.setValue(persistence.getContents());
             viewer.clearHistory();
             viewer.markClean();
-            viewer.setSize(container.offsetWidth, container.offsetHeight);
             viewer.setMatchBrackets(true);
             var that = this;
             var setStatusBarText = function() {
                 var workbench = require('webida-lib/plugins/workbench/plugin');
-                var file = that.file;
+                var persistence = that.getDataSource().getPersistence();
                 var viewer = that.getViewerById('CodeEditor');
                 var cursor = viewer.getCursor();
                 workbench.__editor = viewer;
-                workbench.setContext([file.path], {
+                workbench.setContext([persistence.getPath()], {
                     cursor: (cursor.row + 1) + ':' + (cursor.col + 1)
                 });
             };
@@ -150,12 +149,7 @@ define([
                     TextEditorPart.moveForth();
                 }
             });
-
-            viewer.addEventListener('save', function () {
-                topic.publish('#REQUEST.saveFile');                
-            });
-
-            viewer.setMode(this.file.extension);
+            viewer.setMode(persistence.getExtension());
             viewer.setTheme('webida');
         },
 
@@ -193,17 +187,6 @@ define([
             if (sender === this.getViewerById('CodeEditor')) {
                 this.getViewerById('FormEditor').refresh();
             }
-        },
-
-        /**
-         * @return {DataSource}
-         */
-        _getDataSource: function() {
-            //TODO : this.getContainer().getDataSource()
-            var workbench = require('webida-lib/plugins/workbench/plugin');
-            var dsRegistry = workbench.getDataSourceRegistry();
-            var dataSource = dsRegistry.getDataSourceById(this.file.path);
-            return dataSource;
         },
 
         /**
