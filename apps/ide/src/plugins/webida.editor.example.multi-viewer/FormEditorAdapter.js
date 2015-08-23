@@ -28,13 +28,13 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugins/workbench/ui/EditorAdapter',
+    'webida-lib/plugins/workbench/ui/EditorWidgetAdapter',
     'webida-lib/plugins/workbench/ui/Viewer'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
-    EditorAdapter,
+    EditorWidgetAdapter,
     Viewer
 ) {
     'use strict';
@@ -60,7 +60,7 @@ define([
     }
 
 
-    genetic.inherits(FormEditorAdapter, EditorAdapter, {
+    genetic.inherits(FormEditorAdapter, EditorWidgetAdapter, {
 
         setContents: function(contents) {
             this.getWidget().value = contents;

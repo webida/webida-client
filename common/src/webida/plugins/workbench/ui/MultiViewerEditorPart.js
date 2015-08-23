@@ -76,8 +76,8 @@ define([
         /**
          * @override
          */
-        create: function(parent, callback) {
-            logger.info('create(' + parent.tagName + ', callback)');
+        createViewer: function(parent, callback) {
+            logger.info('createViewer(' + parent.tagName + ', callback)');
             this.setParentElement(parent);
             this.createCallback = callback;
             //TODO remove this.file.elem
