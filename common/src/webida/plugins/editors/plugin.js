@@ -33,6 +33,7 @@ define([
     'webida-lib/util/notify',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workbench/ui/CompatibleTabPartContainer',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/PartContainer',
     'webida-lib/plugins/workbench/ui/Workbench',
@@ -42,7 +43,6 @@ define([
     'external/async/dist/async.min',
     'plugins/webida.notification/notification-message',
     'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
-    './CompatibleTabPartContainer',
     './EditorManager'
 ], function (
     topic, 
@@ -56,6 +56,7 @@ define([
     notify,
     pm, 
     workbench, 
+    CompatibleTabPartContainer,
     EditorPart,
     PartContainer,
     Workbench,
@@ -65,7 +66,6 @@ define([
     async, 
     toastr,
     FileDataSource,
-    CompatibleTabPartContainer,
     EditorManager
 ) {
     'use strict';
@@ -563,11 +563,9 @@ define([
     };
 
     editors.ensureCreated = function(file, bShowAndFocus, cb) {
-        logger.info('ensureCreated()');
         function showAndFocus(file) {
             var editorPart = editors.getPart(file);
             if (editorPart) {
-                editorPart.show();
                 editorPart.focus();
             }
             if (cb) {
@@ -696,72 +694,6 @@ define([
         }
     };
 
-    function _findViewIndexUsingSibling(viewContainer, file, siblings) {
-        var previousSiblings = [];
-        var nextSiblings = [];
-        var i, j, sibling, siblingFile, view;
-        var index = -1;
-
-        if (!siblings) {
-            return index;
-        }
-
-        var found = false;
-        for ( i = 0; i < siblings.length; i++) {
-            sibling = siblings[i];
-            if (sibling === file.path) {
-                found = true;
-                continue;
-            }
-
-            siblingFile = editors.files[sibling];
-            if (found) {
-                nextSiblings.push(siblingFile && siblingFile.viewId);
-            } else {
-                previousSiblings.push(sibling && siblingFile.viewId);
-            }
-        }
-
-        var views = viewContainer.getChildren();
-
-        //find from nextSilings
-        found = false;
-        for ( i = 0; i < nextSiblings.length; i++) {
-            sibling = nextSiblings[i];
-            if (found) {
-                break;
-            }
-            for ( j = 0; j < views.length; j++) {
-                view = views[j];
-                if (sibling === view.getId()) {
-                    index = j;
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-            //find from previousSiblings
-            for ( i = previousSiblings.length - 1; i >= 0; i--) {
-                sibling = previousSiblings[i];
-                if (found) {
-                    break;
-                }
-                for ( j = 0; j < views.length; j++) {
-                    view = views[j];
-                    if (sibling === view.getId()) {
-                        index = j + 1;
-                        found = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return index;
-    }
-
     function getViewContainer(view, file, option) {
         //cellCount=2, cellIndex=-1
         var viewContainer;
@@ -794,15 +726,24 @@ define([
     editorManager._showExistingPart = function(dataSource, options, callback) {
         logger.info('_showExistingPart(' + dataSource + ', ' + options + ', callback)');
         var persistence = dataSource.getPersistence();
-        //Check persistence is already showing
-        if (editors.currentFile && editors.currentFile === persistence) {
-            if (options.pos) {
-                editors.setCursor(editors.currentFile, options.pos);
-            }
+        var view = vm.getView(persistence.viewId);
+        var viewContainer = getViewContainer(view, persistence, options);
+        if (view.getParent()) {
+            view.getParent().select(view);
+        }
+        if (options.pos) {
+            editors.setCursor(persistence, options.pos);
+        }
+        if (persistence === editors.currentFile) {
             editors.getCurrentPart().focus();
-            if (callback) {
-                callback(editors.currentFile);
+        } else {
+            editors.setCurrentFile(persistence);
+            if (viewContainer) {
+                viewContainer.select(view, true);
             }
+        }
+        if ( typeof callback === 'function') {
+            callback(persistence);
         }
     };
 
@@ -810,131 +751,27 @@ define([
      * @private
      * @Override
      */
-    editorManager._createPart = function(partClassPath, PartClass, dataSource, options, callback) {
-        logger.info('_createPart(' + partClassPath + ', PartClass, ' + dataSource + ', ' + options + ', callback)');
+    editorManager._createPart = function(PartClass, dataSource, options, callback, partClassPath) {
+        logger.info('_createPart(PartClass, ' + dataSource + ', ' + options + ', callback, ' + partClassPath + ')');
 
-		//Legacy codes start
+        //Legacy codes start
         var persistence = dataSource.getPersistence();
         if (!editors.getFile(dataSource.getId())) {
             editors.addFile(dataSource.getId(), persistence);
         }
         persistence.openWithPart = partClassPath;
+        var show = options.show !== false;
         //Legacy codes end
 
         var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
+        var layoutPane = page.getChildById('webida.layout_pane.center');
 
-        var show = options.show !== false;
+        //3. create Tab & add to Pane
+        var tabPartContainer = new CompatibleTabPartContainer(dataSource);
+        layoutPane.addPartContainer(tabPartContainer, options, editors);
 
-        //View and ViewContainer
-        var view = vm.getView(persistence.viewId);
-        var viewContainer = null;
-        if (view === null) {
-            persistence.viewId = _.uniqueId('view_');
-            //TODO persistence.viewId
-            view = new View(persistence.viewId, persistence.name);
-            viewContainer = getViewContainer(view, persistence, options);
-        } else {
-            if (view.getParent()) {
-                view.getParent().select(view);
-            }
-        }
-
-        //Check exsisting part
-        var part = editors.getPart(persistence);
-        logger.info('part = ', part);
-        if (part) {
-            logger.info('part already exists');
-            if (options.pos) {
-                editors.setCursor(persistence, options.pos);
-            }
-            if ( typeof callback === 'function') {
-                callback(persistence);
-            }
-            editors.refreshTabTitle(dataSource);
-            if (show) {
-                editors.setCurrentFile(persistence);
-                if (viewContainer) {
-                    viewContainer.select(view, true);
-                }
-            }
-            return;
-        }
-
-        // Create EditorPart and update content
-        var editorPart = new PartClass(persistence, dataSource);
-        editors.addPart(persistence, editorPart);
-
-        var index = _findViewIndexUsingSibling(viewContainer, persistence, options.siblingList);
-
-        logger.info('viewContainer = ', viewContainer);
-
-        if (viewContainer) {
-            view.set('tooltip', persistence.path);
-            view.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
-            view.set('closable', true);
-            if (index >= 0) {
-                viewContainer.addAt(view, index);
-            } else {
-                viewContainer.addLast(view);
-            }
-
-            persistence.pendingCreator = function(c) {
-                logger.info('persistence.pendingCreator(' + c + ')');
-                function createEditor(persistence, editorPart, view, callback) {
-                    editorPart.create(view.getContent(), function(persistence, viewer) {
-                        persistence.viewer = viewer;
-                        //TODO : persistence.viewer refactor
-                        if (editorPart.addChangeListener) {
-                            editorPart.addChangeListener(function(persistence) {
-                                _.defer(function() {
-                                    editors.refreshTabTitle(editors.getDataSource(persistence));
-                                    topic.publish('persistence.content.changed', persistence.path, editors.getPart(persistence).getValue());
-                                });
-                            });
-                        }
-
-                        if (options.pos) {
-                            editors.setCursor(persistence, options.pos);
-                        }
-
-                        if (callback) {
-                            callback(persistence);
-                        }
-                    });
-                }
-
-                createEditor(persistence, editorPart, view, function(persistence) {
-                    if (callback) {
-                        callback(persistence);
-                    }
-                    if (c) {
-                        c(persistence);
-                    }
-                });
-            };
-
-            if (show) {
-                if (view.getParent()) {
-                    view.getParent().select(view);
-                }
-                editors.ensureCreated(persistence, true);
-            }
-
-            editors.onloadPendingFilesCount--;
-            if (editors.onloadPendingFilesCount === 0) {
-                onloadFinalize();
-            }
-        } else {
-            console.log('editor open failed : ' + persistence.path);
-            view.destroy();
-        }
-
-        editors.refreshTabTitle(dataSource);
-        if (show) {
-            editors.setCurrentFile(persistence);
-            editorPart.show();
-        }
+        //4. create Part
+        tabPartContainer.createPart(PartClass, options, callback);
     };
 
     /**
