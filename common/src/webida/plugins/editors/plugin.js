@@ -756,11 +756,7 @@ define([
 
         //Legacy codes start
         var persistence = dataSource.getPersistence();
-        if (!editors.getFile(dataSource.getId())) {
-            editors.addFile(dataSource.getId(), persistence);
-        }
         persistence.openWithPart = partClassPath;
-        var show = options.show !== false;
         //Legacy codes end
 
         var page = workbench.getCurrentPage();
@@ -868,8 +864,14 @@ define([
         this.files[path] = file;
     };
 
-    editors.getFile = function(path) {
-        return this.files[path];
+    //Compatibility
+    //TODO remove
+    editors.getFile = function(dataSourceId) {
+        logger.info('getFile(' + dataSourceId + ')');
+        var workbench = require('webida-lib/plugins/workbench/plugin');
+        var dsRegistry = workbench.getDataSourceRegistry();
+        var dataSource = dsRegistry.getDataSourceById(dataSourceId);
+        return dataSource.getPersistence();
     };
 
     editors.removeFile = function(path) {
