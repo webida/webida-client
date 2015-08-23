@@ -138,6 +138,7 @@ define([
             options = options || {};
 
             //1. prepare DataSource
+            logger.info('workbench = ', workbench);
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             if (dataSource === null) {
@@ -174,7 +175,7 @@ define([
                 //'open with specific editor' or 'default editor' not opened
                 // yet
                 if ('openWithPart' in options || parts.length === 0) {
-                    that._createPart(partClassPath, PartClass, dataSource, options, callback);
+                    that._createPart(PartClass, dataSource, options, callback, partClassPath);
                 } else {
                     //'default editor' already exists
                     if (parts.length > 0) {

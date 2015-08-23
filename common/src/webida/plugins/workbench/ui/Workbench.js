@@ -28,6 +28,7 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
+    './CompatibleLayoutPane',
     './DataSourceRegistry',
     './LayoutPane',
     './Page',
@@ -36,6 +37,7 @@ define([
     EventEmitter,
     genetic, 
     Logger,
+    CompatibleLayoutPane,
     DataSourceRegistry,
     LayoutPane,
     Page,
@@ -145,7 +147,8 @@ define([
             function getLayoutTree(model) {
                 var LayoutClass = {
                     'Page': Page,
-                    'LayoutPane': LayoutPane
+                    'LayoutPane': LayoutPane,
+                    'CompatibleLayoutPane': CompatibleLayoutPane
                 }
                 var layoutTree, split, children, child;
                 if ('type' in model) {
@@ -170,7 +173,7 @@ define([
             if ('pages' in workbenchModel) {
                 var page = [], pages = workbenchModel.pages;
                 for (var i in pages) {
-                	page[i] = getLayoutTree(pages[i]);
+                    page[i] = getLayoutTree(pages[i]);
                     this.addPage(page[i]);
                 }
                 this.setCurrentPage(page[0]);
