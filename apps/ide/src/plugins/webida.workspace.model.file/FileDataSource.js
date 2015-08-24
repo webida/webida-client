@@ -71,6 +71,18 @@ define([
 
         /**
          * @override
+         * @param {Object}
+         */
+        setId: function(dataSourceId) {
+            var persistence = this.getPersistence();
+            if (persistence) {
+                persistence.setPath(dataSourceId);
+            }
+            DataSource.prototype.setId.call(this, dataSourceId);
+        },
+
+        /**
+         * @override
          * @param {DataSource} target
          */
         equals: function(target) {
@@ -90,7 +102,7 @@ define([
          * @param {Function} callback
          */
         getContents: function(callback) {
-        	logger.info('getContents(callback)');
+            logger.info('getContents(callback)');
             var that = this;
             var file = this.getPersistence();
             if (file.getFlag(Persistence.READ) === false) {
