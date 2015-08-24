@@ -789,11 +789,6 @@ define([
         }
     };
 
-    editors.addPart = function(file, part) {
-        logger.info('editors.addPart(' + file + ', ' + part + ')');
-        this.parts.set(file, part);
-    };
-
     editors.getPart = function(file) {
         //logger.trace();
         //logger.info('getPart(' + file + ')');
