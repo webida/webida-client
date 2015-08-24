@@ -823,12 +823,6 @@ define([
         return dataSource.getPersistence();
     };
 
-    editors.removeFile = function(path) {
-        var file = editors.files[path];
-        delete editors.files[path];
-        return file;
-    };
-
     //TODO remove
     editors.getDataSourceById = function(dsId) {
         var workbench = require('webida-lib/plugins/workbench/plugin');
