@@ -813,10 +813,6 @@ define([
         return false;
     };
 
-    editors.addFile = function(path, file) {
-        this.files[path] = file;
-    };
-
     //Compatibility
     //TODO remove
     editors.getFile = function(dataSourceId) {
