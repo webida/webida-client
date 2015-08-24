@@ -251,11 +251,20 @@ define([
 
         topic.subscribe('view.close', function (event, close) {
 
-            var action = function closeFile() {
+            var view = event.view;
+            var vc = event.viewContainer;
+            var partContainer = view.partContainer;
+            var part = partContainer.getPart();
+            var page = workbench.getCurrentPage();
+            var registry = page.getPartRegistry();
+            var dataSource = partContainer.getDataSource();
+            var file = dataSource.getPersistence();
+
+            var action = function () {
                 if (event.closable) {
-                    var editorPart = editors.getPart(file);
-                    editorPart.destroy();
-                    editors.removePart(file);
+                    
+                    part.destroy();
+                    registry.unregisterPart(part);
 
                     var i = editors.currentFiles.indexOf(file);
                     if (i >= 0) {
@@ -275,17 +284,12 @@ define([
                 }
             };
 
-            var view = event.view;
-            var vc = event.viewContainer;
             if (!vc || (vc.getParent() !== editors.splitViewContainer)) {
                 return;
             }
 
-            var file = editors.getFileByViewId(view.getId());
-
             editors.editorTabFocusController.unregisterView(view);
 
-			var part = editors.getPart(file);
             if (!event.force && part.isDirty()) {
                 createDialog(file, 'Close', action);
             } else {

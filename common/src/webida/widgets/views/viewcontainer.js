@@ -51,7 +51,7 @@ define([
     'use strict';
 
 	var logger = new Logger();
-	logger.off();
+	//logger.off();
 
     function ViewContainerEvent(name) {
         this.name = name;
@@ -617,6 +617,8 @@ define([
         },
 
         _contentPaneClose : function (pane, closable) {
+        	logger.trace();
+        	logger.info('_contentPaneClose('+pane+')');
             var _self = this;
             var event = new ViewContainerEvent(ViewContainerEvent.CLOSE);
             event.view = _self._getViewByContentPane(pane);

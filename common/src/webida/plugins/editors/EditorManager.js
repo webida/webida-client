@@ -200,7 +200,7 @@ define([
             layoutPane.addPartContainer(tabPartContainer);
 
             //4. create Part
-            tabPartContainer.createPart(options, callback);
+            tabPartContainer.createPart(PartClass, options, callback);
         },
 
         /**
@@ -215,4 +215,3 @@ define([
 
     return EditorManager;
 });
-
