@@ -77,6 +77,7 @@ define([
 
     logger.log('loaded modules required by editors. initializing editors plugin');
 
+    var dsRegistry = workbench.getDataSourceRegistry();
     var editorManager = EditorManager.getInstance();
 
     function getFileManager() {// TODO: remove publish().
@@ -558,6 +559,7 @@ define([
 
     // options === { path: string }
     editors.closeFile = function(options) {
+        logger.info('editors.closeFile(' + options + ')');
 
         var file;
         if (options && options.path) {
@@ -790,8 +792,6 @@ define([
     };
 
     editors.getPart = function(file) {
-        //logger.trace();
-        //logger.info('getPart(' + file + ')');
         if (this.parts.get(file) instanceof EditorPart) {
             return this.parts.get(file);
         } else {
@@ -799,38 +799,22 @@ define([
         }
     };
 
-    //TODO : call removePart() when destroy editor panel
-    editors.removePart = function(file) {
-        logger.info('removePart(' + file + ')');
-        if (this.getPart(file)) {
-            return this.parts['delete'](file);
-        }
-        return false;
-    };
-
     //Compatibility
     //TODO remove
     editors.getFile = function(dataSourceId) {
         logger.info('getFile(' + dataSourceId + ')');
-        var workbench = require('webida-lib/plugins/workbench/plugin');
-        var dsRegistry = workbench.getDataSourceRegistry();
         var dataSource = dsRegistry.getDataSourceById(dataSourceId);
         return dataSource.getPersistence();
     };
 
     //TODO remove
     editors.getDataSourceById = function(dsId) {
-        var workbench = require('webida-lib/plugins/workbench/plugin');
-        var dsRegistry = workbench.getDataSourceRegistry();
         return dsRegistry.getDataSourceById(dsId);
     };
 
     //TODO remove
     editors.getDataSource = function(persistence) {
-        var workbench = require('webida-lib/plugins/workbench/plugin');
-        var dsRegistry = workbench.getDataSourceRegistry();
-        var dataSource = dsRegistry.getDataSourceById(persistence.getPersistenceId());
-        return dataSource;
+        return dsRegistry.getDataSourceById(persistence.getPersistenceId());
     };
 
     subscribeToTopics();

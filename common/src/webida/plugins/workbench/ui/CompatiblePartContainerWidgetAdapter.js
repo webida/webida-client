@@ -63,7 +63,10 @@ define([
         var widget = new View(viewId, persistence.getName());
         widget.set('closable', true);
         widget.setContent('<div style="width:100%; height:100%; overflow:hidden"></div>');
+        //TODO remove persistence.viewId
         persistence.viewId = viewId;
+        //TODO remove widget.partContainer
+        widget.partContainer = container;
         dojo.connect(widget.contentPane, 'resize', function(changeSize) {
             container.emit(PartContainer.CONTAINER_RESIZE, changeSize);
         });
