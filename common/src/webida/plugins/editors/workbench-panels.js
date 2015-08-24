@@ -255,7 +255,6 @@ define([
                 if (event.closable) {
                     var editorPart = editors.getPart(file);
                     editorPart.destroy();
-                    editors.removeFile(file.path);
                     editors.removePart(file);
 
                     var i = editors.currentFiles.indexOf(file);
