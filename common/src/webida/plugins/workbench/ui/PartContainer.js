@@ -28,12 +28,14 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugins/workbench/plugin'
+    'webida-lib/plugins/workbench/plugin',
+    './DataSource'
 ], function(
     EventEmitter,
     genetic, 
     Logger,
-    workbench
+    workbench,
+    DataSource
 ) {
     'use strict';
 // @formatter:on
@@ -52,6 +54,8 @@ define([
     function PartContainer(dataSource) {
         logger.info('new PartContainer(' + dataSource + ')');
 
+        var that = this;
+
         this._containerId = ++_containerId;
         this.dataSource = null;
         this.part = null;
@@ -64,9 +68,12 @@ define([
 
         this.setDataSource(dataSource);
         this.createWidgetAdapter();
-        this.setTitle(dataSource.getTitle());
-        this.setToolTip(dataSource.getToolTip());
-        this.setTitleImage(dataSource.getTitleImage());
+        this.decorateTitle();
+
+        //In case of rename, move persistence
+        dataSource.on(DataSource.ID_CHANGE, function(/*dataSource, oldId, newId*/) {
+            that.decorateTitle();
+        });
     }
 
 
@@ -209,6 +216,16 @@ define([
          */
         getToolTip: function() {
             return this.toolTip;
+        },
+
+        /**
+         * Decorates title bar of Container
+         */
+        decorateTitle: function() {
+            var dataSource = this.getDataSource();
+            this.setTitle(dataSource.getTitle());
+            this.setToolTip(dataSource.getToolTip());
+            this.setTitleImage(dataSource.getTitleImage());
         },
 
         /**
