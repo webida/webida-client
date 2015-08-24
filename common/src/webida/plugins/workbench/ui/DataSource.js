@@ -61,6 +61,16 @@ define([
     genetic.inherits(DataSource, EventEmitter, {
 
         /**
+         * @param {Object}
+         */
+        setId: function(dataSourceId) {
+            if (this.dataSourceId !== dataSourceId) {
+                this.emit(DataSource.ID_CHANGE, this, this.dataSourceId, dataSourceId);
+            }
+            this.dataSourceId = dataSourceId;
+        },
+
+        /**
          * @return {Object}
          */
         getId: function() {
@@ -124,6 +134,7 @@ define([
 
     DataSource.CONTENTS_CHANGE = 'contentsChange';
     DataSource.CONTENTS_LOAD = 'contentsLoad';
+    DataSource.ID_CHANGE = 'idChange';
 
     return DataSource;
 });
