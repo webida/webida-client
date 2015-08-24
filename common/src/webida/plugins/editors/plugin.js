@@ -293,55 +293,8 @@ define([
         topic.subscribe('fs.cache.node.deleted', function(fsUrl, dir, name, type, movedTo) {
 
             function fileMoved(src, dst) {
-                var file = editors.getFile(src);
-                if (file) {
-                    if (isDir) {
-                        file.path = dst;
-                        editors.removeFile(src);
-                        editors.removePart(file);
-                        editors.addFile(dst, file);
-                    } else {
-                        var newName = pathUtil.getFileName(dst);
-                        var oldExt = pathUtil.getFileExt(file.name);
-                        var newExt = pathUtil.getFileExt(newName);
-                        if (oldExt === newExt) {
-                            file.setPath(dst);
-                            editors.removeFile(src);
-                            editors.removePart(file);
-                            editors.addFile(dst, file);
-                            editors.refreshTabTitle(editors.getDataSource(file));
-                        } else {
-
-                            var view = vm.getView(file.viewId);
-                            var vc = view.getParent();
-                            var viewContainers = editors.splitViewContainer.getViewContainers();
-
-                            var cellIndex = viewContainers.indexOf(vc);
-                            console.assert(cellIndex >= 0);
-
-                            var siblingList = [];
-                            vc.getViewList().forEach(function(view) {
-                                var f = editors.getFileByViewId(view.getId());
-                                siblingList.push(f.path);
-                            });
-                            var idx = siblingList.indexOf(src);
-                            siblingList.splice(idx, 0, dst);
-
-                            var cursor = editors.getCursor(file);
-
-                            topic.publish('#REQUEST.openFile', dst, {
-                                cellIndex: cellIndex,
-                                siblingList: siblingList,
-                                show: editors.currentFile === file,
-                                cursor: cursor
-                            });
-
-                            editors.closeFile({
-                                path: src
-                            });
-                        }
-                    }
-                }
+                var dataSource = editors.getDataSourceById(src);
+                dataSource.setId(dst);
             }
 
             var isDir = type === 'dir';
@@ -878,6 +831,13 @@ define([
         var file = editors.files[path];
         delete editors.files[path];
         return file;
+    };
+
+    //TODO remove
+    editors.getDataSourceById = function(dsId) {
+        var workbench = require('webida-lib/plugins/workbench/plugin');
+        var dsRegistry = workbench.getDataSourceRegistry();
+        return dsRegistry.getDataSourceById(dsId);
     };
 
     //TODO remove
