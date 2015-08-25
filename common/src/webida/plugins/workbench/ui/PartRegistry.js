@@ -60,6 +60,9 @@ define([
 
         /** @type {Map.<DataSource, {Map.<Function, Part>}>} */
         this.recentParts = new Map();
+
+        /** @type {Part} */
+        this.currentEditorPart = null;
     }
 
 
@@ -161,6 +164,22 @@ define([
                 var partsOfDs = this.recentParts.get(dataSource);
                 return partsOfDs.get(PartClass);
             }
+        },
+
+        /**
+         * Remember currently focused EditorPart
+         * @param {Part} part
+         */
+        setCurrentEditorPart: function(part) {
+            this.currentEditorPart = part;
+        },
+
+        /**
+         * Returns currently focused EditorPart
+         * @return {Part}
+         */
+        getCurrentEditorPart: function() {
+            return this.currentEditorPart;
         },
 
         /**
