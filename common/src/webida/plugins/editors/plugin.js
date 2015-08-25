@@ -403,6 +403,10 @@ define([
 
         // TODO: remove the following subscriptions
         topic.subscribe('file.saved', editors.onFileSaved.bind(editors));
+        topic.subscribe('editors.current.part', function(part){
+        	var file = part.getDataSource().getPersistence();
+        	editors.setCurrentFile(file);
+        });
     }
 
     var multipleDeletions = [];
@@ -697,7 +701,6 @@ define([
         }
         //legacy code end
 
-        registry.setCurrentEditorPart(part);
         if ( typeof callback === 'function') {
             callback(part);
         }
