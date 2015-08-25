@@ -30,6 +30,7 @@ define([
 	'webida-lib/util/logger/logger-client',
 	'./DataSource',
 	'./DataSourceRegistry',
+	'./EditorPart',
 	'./Part'
 ], function(
 	EventEmitter,
@@ -37,6 +38,7 @@ define([
 	Logger,
 	DataSource,
 	DataSourceRegistry,
+	EditorPart,
 	Part
 ) {
 	'use strict';
@@ -44,6 +46,7 @@ define([
 
     /**
      * @typedef {Object.<Object, Object>} Map
+     * @typedef {Object} EditorPart
      * @typedef {Object} Part
      * @typedef {Object} DataSource
      */
@@ -58,10 +61,10 @@ define([
         /** @type {Map.<DataSource, {Array.<Part>}>} */
         this.parts = new Map();
 
-        /** @type {Map.<DataSource, {Map.<Function, Part>}>} */
-        this.recentParts = new Map();
+        /** @type {Map.<DataSource, {Map.<Function, EditorPart>}>} */
+        this.recentEditorParts = new Map();
 
-        /** @type {Part} */
+        /** @type {EditorPart} */
         this.currentEditorPart = null;
     }
 
@@ -146,37 +149,47 @@ define([
             return result;
         },
 
-        setRecentPart: function(part) {
-            var dataSource = part.getContainer().getDataSource();
-            if (this.recentParts.has(dataSource)) {
-                this.recentParts.get(dataSource).set(part.constructor, part);
+        /**
+         * Remember recently opened EditorPart
+         * @param {EditorPart} part
+         */
+        setRecentEditorPart: function(part) {
+            if ( part instanceof EditorPart) {
+                var dataSource = part.getContainer().getDataSource();
+                if (this.recentEditorParts.has(dataSource) === false) {
+                    this.recentEditorParts.set(dataSource, new Map());
+                }
+                this.recentEditorParts.get(dataSource).set(part.constructor, part);
             }
         },
 
         /**
          * @param {DataSource} dataSource
          * @param {Function} PartClass
-         * @return {Part} Recently opened Part with given DataSource and
+         * @return {EditorPart} Recently opened EditorPart with given DataSource
+         * and
          * PartClass. If not found returns undefined.
          */
-        getRecentPart: function(dataSource, PartClass) {
-            if (this.recentParts.has(dataSource)) {
-                var partsOfDs = this.recentParts.get(dataSource);
+        getRecentEditorPart: function(dataSource, PartClass) {
+            if (this.recentEditorParts.has(dataSource)) {
+                var partsOfDs = this.recentEditorParts.get(dataSource);
                 return partsOfDs.get(PartClass);
             }
         },
 
         /**
          * Remember currently focused EditorPart
-         * @param {Part} part
+         * @param {EditorPart} part
          */
         setCurrentEditorPart: function(part) {
-            this.currentEditorPart = part;
+            if ( part instanceof EditorPart) {
+                this.currentEditorPart = part;
+            }
         },
 
         /**
          * Returns currently focused EditorPart
-         * @return {Part}
+         * @return {EditorPart}
          */
         getCurrentEditorPart: function() {
             return this.currentEditorPart;
