@@ -2932,8 +2932,8 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
 <XPD:ATTR name="Left" type="integer">136</XPD:ATTR>
 <XPD:ATTR name="Top" type="integer">562</XPD:ATTR>
-<XPD:ATTR name="Width" type="integer">233</XPD:ATTR>
-<XPD:ATTR name="Height" type="integer">199</XPD:ATTR>
+<XPD:ATTR name="Width" type="integer">248</XPD:ATTR>
+<XPD:ATTR name="Height" type="integer">238</XPD:ATTR>
 <XPD:REF name="Model">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="UliwHvirK0m8slvSCpc/GQAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="x6W3Rhlr0kCkgaEyDWInmwAA">
@@ -2961,7 +2961,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[68]" type="UMLAssociationView" guid="PUhdojSg3E+j+eQTJK1RdwAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00FDE1BB</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">368,659;424,658</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">383,669;424,665</XPD:ATTR>
 <XPD:REF name="Model">lkjWifVnqEub63B5YUeZQQAA</XPD:REF>
 <XPD:REF name="Head">iYeh3J/pxESWdP+/zGLdEAAA</XPD:REF>
 <XPD:REF name="Tail">nWEVBv2n/0y1h8jhgqOwBgAA</XPD:REF>
@@ -3045,7 +3045,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[69]" type="UMLAssociationView" guid="vTDP8rGT7kSlscrieVOT6wAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">446,1206;252,1032;252,760</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">446,1206;252,1032;257,799</XPD:ATTR>
 <XPD:REF name="Model">496dHQRREEKx+DuWHNRCYgAA</XPD:REF>
 <XPD:REF name="Head">nWEVBv2n/0y1h8jhgqOwBgAA</XPD:REF>
 <XPD:REF name="Tail">X7fz4Sz5xk2xB0UtbW1YmQAA</XPD:REF>
@@ -3161,7 +3161,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:OBJ name="OwnedViews[71]" type="UMLGeneralizationView" guid="AkqcTuPV2UyWf0khd31DKAAA">
 <XPD:ATTR name="LineColor" type="string">$00F2A753</XPD:ATTR>
 <XPD:ATTR name="FillColor" type="string">$00B9FFFF</XPD:ATTR>
-<XPD:ATTR name="Points" type="Points">252,562;252,524</XPD:ATTR>
+<XPD:ATTR name="Points" type="Points">255,562;254,524</XPD:ATTR>
 <XPD:REF name="Model">82TPnHUa2UCgvuScgPYBjgAA</XPD:REF>
 <XPD:REF name="Head">BYyqtULXCkSoIvBntRzykAAA</XPD:REF>
 <XPD:REF name="Tail">nWEVBv2n/0y1h8jhgqOwBgAA</XPD:REF>
@@ -8970,7 +8970,7 @@ our application will be working with.
 <XPD:ATTR name="#Generalizations" type="integer">2</XPD:ATTR>
 <XPD:REF name="Generalizations[0]">82TPnHUa2UCgvuScgPYBjgAA</XPD:REF>
 <XPD:REF name="Generalizations[1]">MFzkeDgkTkqQxAMZ69/6mAAA</XPD:REF>
-<XPD:ATTR name="#Operations" type="integer">8</XPD:ATTR>
+<XPD:ATTR name="#Operations" type="integer">10</XPD:ATTR>
 <XPD:OBJ name="Operations[0]" type="UMLOperation" guid="wT33QdJ9pEq9M26JCBJoWQAA">
 <XPD:ATTR name="Name" type="string">registerPart</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
@@ -9012,54 +9012,72 @@ our application will be working with.
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="Operations[4]" type="UMLOperation" guid="BMhnkexIyUCYAPIufGvl7gAA">
-<XPD:ATTR name="Name" type="string">setRecentPart</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">setRecentEditorPart</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="qdIZ412Q70ehkrsRM+W3OwAA">
-<XPD:ATTR name="Name" type="string">Part</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="/hFvRViKvUCRhMhk46A5AgAA">
+<XPD:ATTR name="Name" type="string">EditorPart</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">BMhnkexIyUCYAPIufGvl7gAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="Operations[5]" type="UMLOperation" guid="KjjPnV9ZgEyRHkWVX+KBkgAA">
-<XPD:ATTR name="Name" type="string">getRecentPart</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">getRecentEditorPart</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 <XPD:ATTR name="#Parameters" type="integer">2</XPD:ATTR>
-<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="qLBYG3PNlky1A5tTnjyYmAAA">
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="Hbp65PnXPUS9Yt3cv9K2EQAA">
 <XPD:ATTR name="Name" type="string">DataSource</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">KjjPnV9ZgEyRHkWVX+KBkgAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="1jWie4X4Y02Kt41COwk3aAAA">
+<XPD:OBJ name="Parameters[1]" type="UMLParameter" guid="R8q4ZOb7SkSG4aSnxSuGvAAA">
 <XPD:ATTR name="Name" type="string">PartClass</XPD:ATTR>
 <XPD:REF name="BehavioralFeature">KjjPnV9ZgEyRHkWVX+KBkgAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[6]" type="UMLOperation" guid="MVtQYUnB10eppINgt9xQuQAA">
+<XPD:OBJ name="Operations[6]" type="UMLOperation" guid="cKbwvd7C6k6NsbX5Ov2DwQAA">
+<XPD:ATTR name="Name" type="string">setCurrentEditorPart</XPD:ATTR>
+<XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
+<XPD:ATTR name="#Parameters" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="Parameters[0]" type="UMLParameter" guid="aUvsy51q4kKffvTrK0OhzgAA">
+<XPD:ATTR name="Name" type="string">EditorPart</XPD:ATTR>
+<XPD:REF name="BehavioralFeature">cKbwvd7C6k6NsbX5Ov2DwQAA</XPD:REF>
+</XPD:OBJ>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[7]" type="UMLOperation" guid="DP0lEDEZHEq06IhdK5z7egAA">
+<XPD:ATTR name="Name" type="string">getCurrentEditorPart</XPD:ATTR>
+<XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Operations[8]" type="UMLOperation" guid="MVtQYUnB10eppINgt9xQuQAA">
 <XPD:ATTR name="Name" type="string">getParts</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Operations[7]" type="UMLOperation" guid="exvbfO7gFkWcVLsNwPYzugAA">
+<XPD:OBJ name="Operations[9]" type="UMLOperation" guid="exvbfO7gFkWcVLsNwPYzugAA">
 <XPD:ATTR name="Name" type="string">getDirtyParts</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 </XPD:OBJ>
 <XPD:ATTR name="#Associations" type="integer">2</XPD:ATTR>
 <XPD:REF name="Associations[0]">05tLnk9rb0WHy3eT4/CxMgAA</XPD:REF>
 <XPD:REF name="Associations[1]">+vjq5dhnqE6idRCiRUfVTQAA</XPD:REF>
-<XPD:ATTR name="#Attributes" type="integer">4</XPD:ATTR>
+<XPD:ATTR name="#Attributes" type="integer">5</XPD:ATTR>
 <XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="o3A4Fo+qxUqOnYU1Q7lM1wAA">
 <XPD:ATTR name="Name" type="string">Map&lt;DataSource, Array&lt;Part&gt;&gt; parts</XPD:ATTR>
 <XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Attributes[1]" type="UMLAttribute" guid="9KfM74FP2kCNq7IBxY0eHAAA">
-<XPD:ATTR name="Name" type="string">Map&lt;DataSource, Part&gt; recentParts</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">Map&lt;DataSource, EditorPart&gt; recentEditorParts</XPD:ATTR>
 <XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Attributes[2]" type="UMLAttribute" guid="JAvgWafCmEmSeREFcNbOLgAA">
+<XPD:OBJ name="Attributes[2]" type="UMLAttribute" guid="3JlDetOm20K446HFjPx/mgAA">
+<XPD:ATTR name="Name" type="string">EditorPart currentEditorPart</XPD:ATTR>
+<XPD:ATTR name="Visibility" type="UMLVisibilityKind">vkPrivate</XPD:ATTR>
+<XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
+</XPD:OBJ>
+<XPD:OBJ name="Attributes[3]" type="UMLAttribute" guid="JAvgWafCmEmSeREFcNbOLgAA">
 <XPD:ATTR name="Name" type="string">String PART_REGISTERED</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 </XPD:OBJ>
-<XPD:OBJ name="Attributes[3]" type="UMLAttribute" guid="zPbGU4XChUe9GVXf7TzA5wAA">
+<XPD:OBJ name="Attributes[4]" type="UMLAttribute" guid="zPbGU4XChUe9GVXf7TzA5wAA">
 <XPD:ATTR name="Name" type="string">String PART_UNREGISTERED</XPD:ATTR>
 <XPD:REF name="Owner">zZ9hhFAR6kKfPBoUzvUgswAA</XPD:REF>
 </XPD:OBJ>
