@@ -848,7 +848,9 @@ define([
         },
 
         focus: function() {
+        	logger.info('focus()');
             if (this.editor) {
+            	logger.info('this.editor = ', this.editor);
                 this.editor.focus();
             }
         },

@@ -25,17 +25,21 @@
 
 // @formatter:off
 define([
+    'dojo/topic',
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/plugin',
-    './DataSource'
+    './DataSource',
+    './EditorPart'
 ], function(
+    topic,
     EventEmitter,
     genetic, 
     Logger,
     workbench,
-    DataSource
+    DataSource,
+    EditorPart
 ) {
     'use strict';
 // @formatter:on
@@ -112,10 +116,11 @@ define([
             this.setPart(part);
 
             //2. Register part
-            var page = workbench.getCurrentPage();
-            var registry = page.getPartRegistry();
+            var registry = this._getRegistry();
             registry.registerPart(part);
-            logger.info('registry.getParts() = ', registry.getParts());
+            if ( part instanceof EditorPart) {
+            	registry.setCurrentEditorPart(part);
+            }
 
 			//3. Create User Interface of Part
 			var promise = Promise.resolve();
@@ -240,7 +245,7 @@ define([
             throw new Error('createWidgetAdapter() should be implemented by ' + this.constructor.name);
         },
 
-        /**
+         /**
          * @param {WidgetAdapter} adapter
          */
         setWidgetAdapter: function(adapter) {
@@ -253,6 +258,56 @@ define([
         getWidgetAdapter: function() {
             return this.adapter;
         },
+
+        /**
+         * Convenient method for LayoutPane.CONTAINER_SELECT event
+         * @see LayoutPane
+         */
+		onSelect: function(){
+            var part = this.getPart();
+            var registry = this._getRegistry();
+            if ( part instanceof EditorPart) {
+            	registry.setCurrentEditorPart(part);
+            }
+		},
+
+        /**
+         * Updates this container's part's dirty state.
+         * After update publishes corresponding topic
+         */
+        updateDirtyState: function() {
+
+			if(!this.getPart()){
+				topic.publish('editors.clean.current');
+				return;
+			}
+
+	        var part = this.getPart();
+	        var title = this.getDataSource().getTitle();
+	        var registry = workbench.getCurrentPage().getPartRegistry();
+	        var currentPart = registry.getCurrentEditorPart();
+	
+	        if (part.isDirty()) {
+	            this.setTitle('*' + title);
+	            if (part === currentPart) {
+	                topic.publish('editors.dirty.current');
+	            }
+	            topic.publish('editors.dirty.some');
+	        } else {
+	            this.setTitle(title);
+	            if (part === currentPart) {
+	                topic.publish('editors.clean.current');
+	            }
+	            if (registry.getDirtyParts().length === 0) {
+	                topic.publish('editors.clean.all');
+	            }
+	        }
+        },
+
+		_getRegistry: function(){
+            var page = workbench.getCurrentPage();
+            return page.getPartRegistry();
+		},
 
         /**
          * @override

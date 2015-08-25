@@ -613,6 +613,8 @@ define([
             event.viewContainer = _self;
             if (event.view) {
                 topic.publish(ViewContainerEvent.SELECTED, event);
+                //TODO : should be refactored with CompatiblePartContainerWidgetAdapter
+                topic.publish('compatible.view.selected', event.view);
             }
         },
 

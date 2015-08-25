@@ -167,8 +167,7 @@ define([
          * @param {DataSource} dataSource
          * @param {Function} PartClass
          * @return {EditorPart} Recently opened EditorPart with given DataSource
-         * and
-         * PartClass. If not found returns undefined.
+         * and PartClass. If not found returns undefined.
          */
         getRecentEditorPart: function(dataSource, PartClass) {
             if (this.recentEditorParts.has(dataSource)) {
@@ -179,11 +178,14 @@ define([
 
         /**
          * Remember currently focused EditorPart
+         * This method calls setRecentEditorPart()
+         * @see setRecentEditorPart()
          * @param {EditorPart} part
          */
         setCurrentEditorPart: function(part) {
             if ( part instanceof EditorPart) {
                 this.currentEditorPart = part;
+                this.setRecentEditorPart(part);
             }
         },
 
@@ -206,15 +208,15 @@ define([
          * @return {Array.<Part>} Dirty state Part array
          */
         getDirtyParts: function() {
-            var parts = [];
+            var dirtyParts = [];
             this.getParts().forEach(function(parts, dataSource) {
                 parts.forEach(function(part) {
                     if (part.isDirty()) {
-                        parts.push(part);
+                        dirtyParts.push(part);
                     }
                 });
             });
-            return parts;
+            return dirtyParts;
         }
     });
 

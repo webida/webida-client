@@ -35,6 +35,7 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/CompatibleTabPartContainer',
     'webida-lib/plugins/workbench/ui/EditorPart',
+    'webida-lib/plugins/workbench/ui/LayoutPane',
     'webida-lib/plugins/workbench/ui/PartContainer',
     'webida-lib/plugins/workbench/ui/Workbench',
     'webida-lib/widgets/views/view',
@@ -58,6 +59,7 @@ define([
     workbench, 
     CompatibleTabPartContainer,
     EditorPart,
+    LayoutPane,
     PartContainer,
     Workbench,
     View, 
@@ -604,7 +606,7 @@ define([
     };
 
     editors.saveFile = function(option) {
-        console.log('save');
+        console.log('saveFile');
         var file = editors.currentFile;
         if (option) {
             var path = option.path;
@@ -678,27 +680,26 @@ define([
      * @Override
      * @TODO refactor by the proper logic
      */
-    editorManager._showExistingPart = function(dataSource, options, callback) {
-        logger.info('_showExistingPart(' + dataSource + ', ' + options + ', callback)');
+    editorManager._showExistingPart = function(PartClass, dataSource, options, callback) {
+        logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
+
+        var page = workbench.getCurrentPage();
+        var registry = page.getPartRegistry();
+        var part = registry.getRecentEditorPart(dataSource, PartClass);
+
+        //legacy code start
         var persistence = dataSource.getPersistence();
         var view = vm.getView(persistence.viewId);
         var viewContainer = getViewContainer(view, persistence, options);
         if (view.getParent()) {
             view.getParent().select(view);
+            part.focus();
         }
-        if (options.pos) {
-            editors.setCursor(persistence, options.pos);
-        }
-        if (persistence === editors.currentFile) {
-            editors.getCurrentPart().focus();
-        } else {
-            editors.setCurrentFile(persistence);
-            if (viewContainer) {
-                viewContainer.select(view, true);
-            }
-        }
+        //legacy code end
+
+        registry.setCurrentEditorPart(part);
         if ( typeof callback === 'function') {
-            callback(persistence);
+            callback(part);
         }
     };
 
@@ -733,7 +734,14 @@ define([
     editors.openFile = editorManager.requestOpen;
 
     editors.onFileSaved = function(file) {
-        editors.refreshTabTitle(editors.getDataSource(file));
+        logger.info('onFileSaved(' + file + ')');
+        var dataSource = dsRegistry.getDataSourceById(file.getPath());
+        var page = workbench.getCurrentPage();
+        var registry = page.getPartRegistry();
+        var parts = registry.getPartsByDataSource(dataSource);
+        parts.forEach(function(part) {
+            editors.refreshTabTitle(part);
+        });
     };
 
     editors.onFileError = function(file) {
@@ -743,25 +751,26 @@ define([
         }
     };
 
-    editors.refreshTabTitle = function(dataSource) {
-        logger.info('refreshTabTitle(' + dataSource + ')');
+    editors.refreshTabTitle = function(part) {
+        logger.info('refreshTabTitle(' + part + ')');
 
+        var dataSource = part.getDataSource();
         var persistence = dataSource.getPersistence();
-        var part = this.getPart(persistence);
         var view = vm.getView(persistence.viewId);
         var title = dataSource.getTitle();
         var page = workbench.getCurrentPage();
         var registry = page.getPartRegistry();
+        var currentPart = registry.getCurrentEditorPart();
 
         if (part.isDirty()) {
             view.setTitle('*' + title);
-            if (persistence === editors.currentFile) {
+            if (part === currentPart) {
                 topic.publish('editors.dirty.current');
             }
             topic.publish('editors.dirty.some');
         } else {
             view.setTitle(title);
-            if (persistence === editors.currentFile) {
+            if (part === currentPart) {
                 topic.publish('editors.clean.current');
             }
             if (registry.getDirtyParts().length === 0) {
@@ -784,6 +793,7 @@ define([
     };
 
     editors.getCurrentPart = function() {
+        logger.info('getCurrentPart()');
         if (this.currentFile) {
             return this.getPart(this.currentFile);
         } else {
