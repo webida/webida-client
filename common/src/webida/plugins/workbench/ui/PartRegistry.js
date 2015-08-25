@@ -25,6 +25,7 @@
 
 // @formatter:off
 define([
+	'dojo/topic',
 	'external/eventEmitter/EventEmitter',
 	'webida-lib/util/genetic',
 	'webida-lib/util/logger/logger-client',
@@ -33,6 +34,7 @@ define([
 	'./EditorPart',
 	'./Part'
 ], function(
+	topic,
 	EventEmitter,
 	genetic, 
 	Logger,
@@ -183,9 +185,13 @@ define([
          * @param {EditorPart} part
          */
         setCurrentEditorPart: function(part) {
+            logger.info('setCurrentEditorPart(' + part + ')');
             if ( part instanceof EditorPart) {
                 this.currentEditorPart = part;
                 this.setRecentEditorPart(part);
+                //For compatibility 1.3.0
+                //TODO : remove with editors.setCurrentFile
+                topic.publish('editors.current.part', part);
             }
         },
 
@@ -217,7 +223,7 @@ define([
                 });
             });
             return dirtyParts;
-        }
+        },
     });
 
     /** @type {string} */
