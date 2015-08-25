@@ -241,9 +241,8 @@ define([
             var modelManager = this.getModelManager();
             modelManager.createModel(function(doc) {
                 doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
-                    var dataSource = that.getModelManager().getDataSource();
-                    var file = dataSource.getPersistence();
-                    editors.refreshTabTitle(dataSource);
+                    var file = that.getDataSource().getPersistence();
+                    that.getContainer().updateDirtyState();
                     topic.publish('file.content.changed', file.getPath(), file.getContents());
                 });
                 that.initialize();

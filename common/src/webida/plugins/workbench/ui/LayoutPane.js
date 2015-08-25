@@ -52,6 +52,13 @@ define([
 
         /** @type {Map.<DataSource, {Array.<PartContainer>}>} */
         this.containers = new Map();
+
+        this.on(LayoutPane.CONTAINER_SELECT, function(container) {
+            if (container) {
+                container.onSelect();
+                container.updateDirtyState();
+            }
+        });
     }
 
 
@@ -117,6 +124,9 @@ define([
             //TODO
         }
     });
+
+    /** @constant {string} */
+    LayoutPane.CONTAINER_SELECT = 'containerSelect';
 
     return LayoutPane;
 });

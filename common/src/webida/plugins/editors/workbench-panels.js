@@ -259,12 +259,14 @@ define([
             var registry = page.getPartRegistry();
             var dataSource = partContainer.getDataSource();
             var file = dataSource.getPersistence();
+            var layoutPane = page.getChildById('webida.layout_pane.center');
 
             var action = function () {
                 if (event.closable) {
-                    
+
+                    layoutPane.removePartContainer(part.getContainer());
+                    registry.unregisterPart(part);                    
                     part.destroy();
-                    registry.unregisterPart(part);
 
                     var i = editors.currentFiles.indexOf(file);
                     if (i >= 0) {

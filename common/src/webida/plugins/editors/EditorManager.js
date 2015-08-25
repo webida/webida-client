@@ -180,7 +180,7 @@ define([
                     //'default editor' already exists
                     if (parts.length > 0) {
                         logger.log('find existing last part and show');
-                        that._showExistingPart(dataSource, options, callback);
+                        that._showExistingPart(PartClass, dataSource, options, callback);
                     }
                 }
             });
@@ -190,7 +190,7 @@ define([
          * @private
          */
         _createPart: function(PartClass, dataSource, options, callback) {
-            logger.info('_createPart(' + PartClass + ', ' + dataSource + ', ' + options + ', callback)');
+            logger.info('_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
 
             var page = workbench.getCurrentPage();
             var layoutPane = page.getChildById('webida.layout_pane.center');
@@ -206,8 +206,8 @@ define([
         /**
          * @private
          */
-        _showExistingPart: function(dataSource, options, callback) {
-            logger.info('_showExistingPart(' + dataSource + ', ' + options + ', callback)');
+        _showExistingPart: function(PartClass, dataSource, options, callback) {
+            logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
         }
     });
 

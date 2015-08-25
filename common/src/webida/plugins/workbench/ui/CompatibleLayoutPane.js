@@ -25,11 +25,13 @@
 
 // @formatter:off
 define([
+    'dojo/topic',
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './LayoutPane'
 ], function(
+    topic,
     EventEmitter,
     genetic, 
     Logger,
@@ -48,7 +50,13 @@ define([
 
     function CompatibleLayoutPane(id) {
         logger.info('new CompatibleLayoutPane(' + id + ')');
+        var that = this;
         LayoutPane.call(this, id);
+        this.widgetToContainerMap = new Map();
+        topic.subscribe('compatible.view.selected', function(widget) {
+            var container = that._getContainerByWidget(widget);
+            that.emit(LayoutPane.CONTAINER_SELECT, container);
+        });
     }
 
     function getViewContainer(view, file, option, editors) {
@@ -149,6 +157,7 @@ define([
             var dataSource = container.getDataSource();
             var persistence = dataSource.getPersistence();
             var viewContainer = getViewContainer(widget, persistence, options, editors);
+            this._setContainerMap(widget, container);
             if (viewContainer) {
                 var index = _findViewIndexUsingSibling(viewContainer, persistence, options.siblingList, editors);
                 if (index >= 0) {
@@ -158,9 +167,29 @@ define([
                 }
                 widget.getParent().select(widget);
             } else {
-            	logger.warn('viewContainer not found');
+                logger.warn('viewContainer not found');
                 //widget.destroy();
             }
+        },
+
+        /**
+         * Compatibility
+         *
+         * @param {Object} widget
+         * @param {PartContainer} container
+         */
+        _setContainerMap: function(widget, container) {
+            this.widgetToContainerMap.set(widget, container);
+        },
+
+        /**
+         * Compatibility
+         *
+         * @param {Object} widget
+         * @return {PartContainer} container
+         */
+        _getContainerByWidget: function(widget) {
+            return this.widgetToContainerMap.get(widget);
         }
     });
 

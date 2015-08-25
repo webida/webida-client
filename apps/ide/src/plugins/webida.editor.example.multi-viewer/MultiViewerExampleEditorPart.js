@@ -216,11 +216,8 @@ define([
 
                 //3. Listen to model
                 doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
-                    //TODO getFile() will be removed in webida 1.5.0
-                    //Temp Code
-                    var dataSource = that._getDataSource();
-                    var file = dataSource.getPersistence();
-                    editors.refreshTabTitle(dataSource);
+                    var file = that.getDataSource().getPersistence();
+                    that.getContainer().updateDirtyState();
                     topic.publish('file.content.changed', file.getPath(), file.getContents());
                 });
 
