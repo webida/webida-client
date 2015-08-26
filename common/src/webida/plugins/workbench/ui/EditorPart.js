@@ -44,20 +44,38 @@ define([
     function EditorPart() {
         Part.apply(this, arguments);
         this.file = null;
+        this.modelManager = null;
     }
 
 
     genetic.inherits(EditorPart, Part, {
+
+        /**
+         * @param {ModelManager} modelManager
+         */
+        setModelManager: function(modelManager) {
+            this.modelManager = modelManager;
+        },
+
+        /**
+         * @return {ModelManager}
+         */
+        getModelManager: function() {
+            return this.modelManager;
+        },
+
+        isDirty: function() {
+            var modelManager = this.getModelManager();
+            return modelManager === null ? false : modelManager.canSaveModel();
+        },
+
         getValue: function() {
             throw new Error('getValue() should be implemented by ' + this.constructor.name);
         },
         markClean: function() {
             throw new Error('markClean() should be implemented by ' + this.constructor.name);
         },
-        isDirty: function() {
-            var modelManager = this.getModelManager();
-            return modelManager === null ? false : modelManager.canSaveModel();
-        },
+
         isClean: function() {
             throw new Error('isClean() should be implemented by ' + this.constructor.name);
         },
