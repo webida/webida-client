@@ -48,6 +48,9 @@ define([
 
     function PartModel() {
         logger.info('new PartModel()');
+
+        /** @type {Object} */
+        this.contents = null;
     }
 
 
@@ -55,13 +58,32 @@ define([
 
         /**
          * update
+         * @abstract
          */
         update: function() {
-        	throw new Error('update() should be implemented by ' + this.constructor.name);
+            throw new Error('update() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @param {Object} contents
+         */
+        setContents: function(contents) {
+            this.contents = contents;
+        },
+
+        /**
+         * @return {Object}
+         */
+        getContents: function() {
+            return this.contents;
         }
     });
 
-	PartModel.CONTENTS_CHANGE = 'contentsChange';
+    /** @constant {string} */
+    PartModel.CONTENTS_CHANGE = 'contentsChange';
+
+    /** @constant {string} */
+    PartModel.READY = 'partModelReady';
 
     return PartModel;
 });
