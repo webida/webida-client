@@ -54,8 +54,7 @@ define([
             text = text.toString();
         }
 
-        /** @type {string} */
-        this.text = text;
+        this.setContents(text);
     }
 
 
@@ -65,35 +64,35 @@ define([
          * @param {string} text
          */
         setText: function(text) {
-            this.text = text;
+            this.setContents(text);
         },
 
         /**
          * @return {string}
          */
         getText: function() {
-            return this.text;
+            return this.getContents();
         },
 
         /**
          * @return {number}
          */
         getLength: function() {
-            return this.text.length;
+            return this.getText().length;
         },
 
         /**
          * @return {string}
          */
         getCharAt: function(position) {
-            return this.text.charAt(position);
+            return this.getText().charAt(position);
         },
 
         /**
          * @return {number}
          */
         getNumberOfLines: function() {
-            return this.text.split(/\r\n|\r|\n/).length;
+            return this.getText().split(/\r\n|\r|\n/).length;
         },
 
         /**
