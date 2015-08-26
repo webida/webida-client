@@ -39,6 +39,7 @@ define([
     /**
      * @typedef {Object} ModelManager
      * @typedef {Object} DataSource
+     * @typedef {Object} PartModel
      */
 
     var logger = new Logger();
@@ -52,9 +53,9 @@ define([
         this._partId = ++_partId;
         this.flags = 0;
         this.parent = null;
-        this.container = container;
         this.viewer = null;
-        this.modelManager = null;
+        this.model = null;
+        this.container = container;
     }
 
 
@@ -62,27 +63,10 @@ define([
 
         /**
          * @param {HTMLElement} parent
-         * @param {Function} callback
          * @abstract
          */
-        createViewer: function(parentNode, callback) {
-            throw new Error('createViewer(parentNode, callback) should be implemented by ' + this.constructor.name);
-        },
-
-        destroy: function() {
-            throw new Error('destroy() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Convenient method to get DataSource
-         * @return {DataSource}
-         */
-        getDataSource: function() {
-            return this.getContainer().getDataSource();
-        },
-
-        getContainer: function() {
-            return this.container;
+        createViewer: function(parentNode) {
+            throw new Error('createViewer(parentNode) should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -100,17 +84,41 @@ define([
         },
 
         /**
-         * @param {ModelManager} modelManager
+         * @param {DataSource} dataSource
+         * @abstract
          */
-        setModelManager: function(modelManager) {
-            this.modelManager = modelManager;
+        createModel: function(dataSource) {
+            throw new Error('createModel(dataSource) should be implemented by ' + this.constructor.name);
         },
 
         /**
-         * @return {ModelManager}
+         * @param {PartModel} model
          */
-        getModelManager: function() {
-            return this.modelManager;
+        setModel: function(model) {
+            this.model = model;
+        },
+
+        /**
+         * @return {PartModel}
+         */
+        getModel: function() {
+            return this.model;
+        },
+
+        destroy: function() {
+            throw new Error('destroy() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Convenient method to get DataSource
+         * @return {DataSource}
+         */
+        getDataSource: function() {
+            return this.getContainer().getDataSource();
+        },
+
+        getContainer: function() {
+            return this.container;
         },
 
         setFlag: function(/*int*/flag, /*boolean*/value) {
