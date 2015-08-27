@@ -39,11 +39,11 @@
                     "java" : "codeEditorJavaFileIcon",
                     "php" : "codeEditorPhpFileIcon",
                     "js" : "codeEditorJavaScriptFileIcon",
+                    "json" : "codeEditorPluginJsonFileIcon",
                     "html" : "codeEditorHtmlFileIcon",
                     "xml" : "codeEditorXmlFileIcon"
-                 },
+                },
                 "specificFileName" : {
-                    "plugin.json" : "codeEditorPluginJsonFileIcon"                   
                 },
                 "iconCssFilePath" : "./icons.css"
             }
