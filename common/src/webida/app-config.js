@@ -31,6 +31,7 @@ define([], function () {
             deploy: 'apps/deploy/index.html',
             default: 'apps/site/index.html'*/
         },
-        redirectUrl: window.location.protocol + '//' + serverDomain + '/auth.html'
+        redirectUrl: window.location.protocol + '//' + serverDomain + '/auth.html',
+        guestMode: false
     };
 });

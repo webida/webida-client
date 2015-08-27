@@ -36,23 +36,6 @@
         </div>
     </div>
 
-    <div class="userbar" role="user">
-        <div class="container">
-            <div class="navbar-header"></div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav login-bar not-logged-in hidden">
-                    <li><button class="btn btn-primary btn-xs login">Log-in</button></li>
-                    <li><button class="btn btn-success btn-xs signup">New account</button></li>
-                </ul>
-                <ul class="nav navbar-nav login-bar logged-in hidden">
-                    <li><span class="welcome">Welcome, <span class="user-name"></span>!</span>&nbsp;&nbsp;</li>
-                    <li><button class="btn btn-success btn-xs desktop">Open Desktop</button></li>
-                    <li><button class="btn btn-danger btn-xs logout">Log-out</button></li>
-                </ul>
-            </div>
-        </div>
-        <button class="signup" style="margin-left: -9999px"></button>
-    </div>
     <div class="navbar navbar-inverse" role="navigation">
         <div class="container">
             <div class="navbar-header">
@@ -64,10 +47,18 @@
                 </button>
                 <a class="navbar-brand" href="#home"><img src="resource/webida_logo_signup.png" alt="Logo" /></a>
             </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right not-logged-in hidden">
+                    <li class="signup"><a href="#">SIGN UP</a></li>
+                    <li class="login stress"><a href="#">LOGIN</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li class="tryIt stress hidden"><a href="#">TRY IT</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div class="main container">
+    <div class="main">
     </div><!-- /.container -->
 
     <div class="footer">
@@ -91,7 +82,7 @@
     <script src="src/lib/require.min.js" data-main="src/js/main.js"></script>
     <script>
         function loadHtml(url) {
-            $(".main").load(url);
+            $('.main').load(url);
         }
 
         $(function () {
