@@ -5,10 +5,12 @@
             <button data-dojo-type="dijit/form/Button" type="button" id="run-configuration-delete-button" title="Delete Configuration">Delete Configuration</button>
         </div>
         <div id="run-configuration-content" class="run-configuration-dialog-content" data-dojo-type="dijit.layout.BorderContainer">
-            <div id="run-configuration-list-contentpane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center'">
-            </div>
+            <!-- left side: Configuration Category -->
             <div id="run-configuration-list" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left', splitter: true">
                 <ul id="run-configuration-list-tree" class="run-configuration-list-tree"></ul>
+            </div>
+            <!-- right side: Configuration Content -->
+            <div id="run-configuration-list-contentpane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center'">
             </div>
         </div>
     </div>
