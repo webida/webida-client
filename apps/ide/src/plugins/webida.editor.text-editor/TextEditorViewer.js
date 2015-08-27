@@ -195,6 +195,14 @@ define([
             'Ctrl--': 'foldselection',
             'Ctrl-D': 'gotoLine',
         };
+        this.options.unbindKeys = [
+            {keymap: 'default', key: 'Ctrl-U'},
+            {keymap: 'default', key: 'Alt-U'},
+            {keymap: 'default', key: 'Shift-Ctrl-U'},
+            {keymap: 'pcDefault', key: 'Shift-Ctrl-U'},
+            {keymap: 'macDefault', key: 'Cmd-U'},
+            {keymap: 'macDefault', key: 'Shift-Cmd-U'}
+        ];
         this.cursorListeners = [];
         this.focusListeners = [];
         this.blurListeners = [];
@@ -266,6 +274,13 @@ define([
             };
 
             function setOption(name, value, condition, defaultValue) {
+                if (name === 'unbindKeys') {
+                    // Webida's custom option for unbinding unnecessary codemirror keybindings
+                    value.forEach(function (pair) {
+                        delete codemirror.keyMap[pair.keymap][pair.key];
+                    });
+                    return;
+                }
                 if (condition === undefined) {
                     if (value !== undefined) {
                         options[name] = value;
@@ -289,6 +304,7 @@ define([
             setOption('indentOnPaste', this.options.indentOnPaste);
             setOption('extraKeys', this.options.extraKeys);
             setOption('lineWrapping', this.options.lineWrapping);
+            setOption('unbindKeys', this.options.unbindKeys);
 
             this.editor = codemirror(parentNode, options);
             this.editor.setOption('showCursorWhenSelecting', true);
