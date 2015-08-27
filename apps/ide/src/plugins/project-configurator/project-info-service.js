@@ -16,6 +16,7 @@
 
 /**
  * project information API service
+ * Once project's configuration is changed, 'projectConfig.changed' topic will be published with its name of project.
  *
  * @since: 15. 8. 18
  * @author: Koong Kyungmi (kyungmi.k@samsung.com)
@@ -28,41 +29,49 @@ define([
     pc
 ) {
     'use strict';
-    
+
     var module = {};
-    
+
     /**
      * callback that handles the projectInfo
      *
      * @callback projectInfoCallback
      * @param {object} projectInfo
      */
-    
+
+    /**
+     * callback that handles the projectInfo list
+     *
+     * @callback projectInfoListCallback
+     * @param {Array} projectInfoList
+     */
+
     /**
      * Get project information by file path
-     * 
+     *
      * @param {string} path - full path started with workspace root
      *      e.g. '/workspaceName/projectName/filePath...'
-     * @param {projectInfoCallback} [cb] - callback that handles the projectInfo
-     * @return {object} - project information
+     * @param {projectInfoCallback} [callback] - callback that handles the projectInfo
+     * @return
      */
     module.getByPath = pc.getConfigurationObjectByPath;
-    
+
     /**
      * Get project information by project name
-     * 
+     *
      * @param {string} projectName - project name
-     * @param {projectInfoCallback} [cb] - callback that handles the projectInfo
-     * @return {object} - project information
+     * @param {projectInfoCallback} [callback] - callback that handles the projectInfo
+     * @return
      */
     module.getByName = pc.getConfigurationObjectByProjectName;
-    
+
     /**
      * Get all project information in current workspace
-     * 
-     * @return {Array} - all of the project information list
+     *
+     * @param {projectInfoListCallback} [callback] - callback that handles the projectInfo
+     * @return
      */
     module.getAll = pc.getProjectPropertyList;
-    
+
     return module;
 });
