@@ -111,10 +111,6 @@ define([
         if (AppConfig.guestMode) {
             $('.login').removeClass('stress');
             $('.tryIt').removeClass('hidden');
-            $(document).on('click', '.tryIt a', function () {
-                $('.tryIt').addClass('disabled');
-                location.href = Webida.conf.authServer + '/guestlogin';
-            });
         }
 
         $('.dimming').click(function () {

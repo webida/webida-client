@@ -16,12 +16,16 @@
 
 /* exported getLocationOrigin */
 
-function getLocationOrigin() {
+define(function () {
     'use strict';
-    if (!window.location.origin) { // in case of Internet Explorer
-        console.log('location.origin is undefined');
-        window.location.origin = window.location.protocol + '//' +
-            window.location.hostname + (window.location.port ? ':' + window.location.port : '');
-    }
-    return window.location.origin;
-}
+    return {
+        getLocationOrigin: function () {
+            if (!window.location.origin) { // in case of Internet Explorer
+                console.log('location.origin is undefined');
+                window.location.origin = window.location.protocol + '//' +
+                window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+            }
+            return window.location.origin;
+        }
+    };
+});
