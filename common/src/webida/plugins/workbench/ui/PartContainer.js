@@ -31,7 +31,8 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/plugin',
     './DataSource',
-    './EditorPart'
+    './EditorPart',
+    './Part'
 ], function(
     topic,
     EventEmitter,
@@ -39,7 +40,8 @@ define([
     Logger,
     workbench,
     DataSource,
-    EditorPart
+    EditorPart,
+    Part
 ) {
     'use strict';
 // @formatter:on
@@ -105,37 +107,29 @@ define([
         },
 
         /**
-         * Creates new Part using DataSource
+         * Creates a new Part using DataSource
          */
-        createPart: function(PartClass, options, callback) {
-            logger.info('%ccreatePart(' + PartClass.name + ', ' + options + ', ' + typeof callback + ')', 'color:orange');
+        createPart: function(PartClass, callback) {
+            logger.info('%ccreatePart(' + PartClass.name + ', ' + typeof callback + ')', 'color:orange');
             var that = this;
 
-            //1. Create new Part
+            //1. Creates a new Part
             var part = new PartClass(this);
             this.setPart(part);
+            if ( typeof callback === 'function') {
+                part.once(Part.CONTENT_READY, callback);
+            }
 
-            //2. Register part
+            //2. Registers the part
             var registry = this._getRegistry();
             registry.registerPart(part);
             if ( part instanceof EditorPart) {
-            	registry.setCurrentEditorPart(part);
+                registry.setCurrentEditorPart(part);
             }
 
-			//3. Create User Interface of Part
-			var promise = Promise.resolve();
-			promise.then(function(){
-				part.createViewer(that.getContentNode());
-				return part;
-			//If everything is OK
-			}).then(function(part){
-                if ( typeof callback === 'function') {
-                    callback(part);
-                }
-            //If something goes wrong while createViewer
-			}).catch(function(e){
-				logger.warn(e);
-			});
+            //3. Creates Viewer(s) and Model,
+            //   then binds all members together
+            part.prepareMVC();
         },
 
         /**
@@ -245,7 +239,7 @@ define([
             throw new Error('createWidgetAdapter() should be implemented by ' + this.constructor.name);
         },
 
-         /**
+        /**
          * @param {WidgetAdapter} adapter
          */
         setWidgetAdapter: function(adapter) {
@@ -263,13 +257,13 @@ define([
          * Convenient method for LayoutPane.CONTAINER_SELECT event
          * @see LayoutPane
          */
-		onSelect: function(){
+        onSelect: function() {
             var part = this.getPart();
             var registry = this._getRegistry();
             if ( part instanceof EditorPart) {
-            	registry.setCurrentEditorPart(part);
+                registry.setCurrentEditorPart(part);
             }
-		},
+        },
 
         /**
          * Updates this container's part's dirty state.
@@ -277,37 +271,37 @@ define([
          */
         updateDirtyState: function() {
 
-			if(!this.getPart()){
-				topic.publish('editors.clean.current');
-				return;
-			}
+            if (!this.getPart()) {
+                topic.publish('editors.clean.current');
+                return;
+            }
 
-	        var part = this.getPart();
-	        var title = this.getDataSource().getTitle();
-	        var registry = workbench.getCurrentPage().getPartRegistry();
-	        var currentPart = registry.getCurrentEditorPart();
-	
-	        if (part.isDirty()) {
-	            this.setTitle('*' + title);
-	            if (part === currentPart) {
-	                topic.publish('editors.dirty.current');
-	            }
-	            topic.publish('editors.dirty.some');
-	        } else {
-	            this.setTitle(title);
-	            if (part === currentPart) {
-	                topic.publish('editors.clean.current');
-	            }
-	            if (registry.getDirtyParts().length === 0) {
-	                topic.publish('editors.clean.all');
-	            }
-	        }
+            var part = this.getPart();
+            var title = this.getDataSource().getTitle();
+            var registry = workbench.getCurrentPage().getPartRegistry();
+            var currentPart = registry.getCurrentEditorPart();
+
+            if (part.isDirty()) {
+                this.setTitle('*' + title);
+                if (part === currentPart) {
+                    topic.publish('editors.dirty.current');
+                }
+                topic.publish('editors.dirty.some');
+            } else {
+                this.setTitle(title);
+                if (part === currentPart) {
+                    topic.publish('editors.clean.current');
+                }
+                if (registry.getDirtyParts().length === 0) {
+                    topic.publish('editors.clean.all');
+                }
+            }
         },
 
-		_getRegistry: function(){
+        _getRegistry: function() {
             var page = workbench.getCurrentPage();
             return page.getPartRegistry();
-		},
+        },
 
         /**
          * @override
@@ -325,7 +319,7 @@ define([
     PartContainer.PART_DESTROYED = 'partDestroyed';
 
     /** @constant {string} */
-    PartContainer.CONTAINER_RESIZE = 'containerResize';
+    PartContainer.CONTAINER_RESIZE = 'resize';
 
     return PartContainer;
 });

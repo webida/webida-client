@@ -27,11 +27,15 @@
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    './PartModel',
+    './Viewer'
 ], function(
 	EventEmitter,
     genetic,
-    Logger
+    Logger,
+    PartModel,
+    Viewer
 ) {
     'use strict';
 // @formatter:on
@@ -40,6 +44,7 @@ define([
      * @typedef {Object} ModelManager
      * @typedef {Object} DataSource
      * @typedef {Object} PartModel
+     * @typedef {Object} Promise
      */
 
     var logger = new Logger();
@@ -60,6 +65,84 @@ define([
 
 
     genetic.inherits(Part, EventEmitter, {
+
+        /**
+         * Creates Viewer(s) and Model,
+         * then binds all members together.
+         * If different way is required override this method.
+         */
+        prepareMVC: function() {
+            logger.info('%cprepareMVC()', 'color:orange');
+
+            var part = this;
+            var container = this.getContainer();
+
+            //1. Create Viewer(s)
+            var createViewers = this._promiseFor(Viewer, container.getContentNode());
+
+            //2. Create Model
+            var createModel = this._promiseFor(PartModel, container.getDataSource());
+
+            //3. Binds events then sets inital contents for the view
+            Promise.all([createViewers, createModel]).then(function(results) {
+
+                var viewers = results[0];
+                var model = results[1][0];
+
+                viewers.forEach(function(viewer) {
+                    //Viewer listen to model's content change
+                    model.on(PartModel.CONTENTS_CHANGE, function(model, sender) {
+                        viewer.setContents(model.getContents());
+                        container.updateDirtyState();
+                    });
+                    //Viewer listen to container's size change
+                    container.on('resize', function(changeSize) {
+                        viewer.fitSize();
+                    });
+                    //Render initial model
+                    viewer.setContents(model.getContents());
+                });
+
+                //Notify user can navigate contents
+                part.emit(Part.CONTENT_READY, part);
+
+            }, function(error) {
+                logger.warn(error);
+            });
+        },
+
+        /**
+         * Return Promise to create Viewer(s) or Model
+         * @return {Promise}
+         * @private
+         */
+        _promiseFor: function(Type, param) {
+            var part = this;
+            return new Promise(function(resolve, reject) {
+                try {
+                    var objs = part['create'+Type](param);
+                    if (!( objs instanceof Array)) {
+                        objs = [objs];
+                    }
+                    var promises = objs.map(function(obj) {
+                        return new Promise(function(resolve, reject) {
+                            obj.once(Type.READY, function(obj) {
+                                if ( obj instanceof Type) {
+                                    resolve(obj);
+                                }
+                            });
+                        });
+                    });
+                    Promise.all(promises).then(function(objs) {
+                        resolve(objs);
+                    }, function(error) {
+                        logger.warn(error);
+                    });
+                } catch(e) {
+                    reject(e);
+                }
+            });
+        },
 
         /**
          * @param {HTMLElement} parent
@@ -158,6 +241,13 @@ define([
 
     /** @constant {string} */
     Part.PROPERTY_CHANGED = 'propertyChanged';
+
+    /**
+     * Part should emit this event when their Viewer's method
+     * render(contents) called for the first time.
+     * @constant {string}
+     */
+    Part.CONTENT_READY = 'contentReady';
 
     return Part;
 });
