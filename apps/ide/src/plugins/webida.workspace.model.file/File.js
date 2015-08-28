@@ -112,7 +112,7 @@ define([
         },
 
         toString: function() {
-            return '<' + this.constructor.name + '>#' + this.path;
+            return '<' + this.constructor.name + '>#' + this._persistenceId + this.path;
         }
     });
 

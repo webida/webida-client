@@ -46,8 +46,12 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    var _persistenceId = 0;
+
     function Persistence(persistenceId) {
         logger.info('new Persistence(' + persistenceId + ')');
+
+        this._persistenceId = ++_persistenceId;
 
         /** @type {Object} */
         this.persistenceId = persistenceId;
