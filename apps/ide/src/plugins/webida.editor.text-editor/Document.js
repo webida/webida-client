@@ -47,6 +47,8 @@ define([
     function Document(text) {
         logger.info('new Document(' + text + ')');
 
+        PartModel.call(this, text);
+
         if ( typeof text === 'undefined' || text === null) {
             text = '';
         }
@@ -62,12 +64,34 @@ define([
 
         /**
          * @param {string} text
+         * @param {Viewer} [viewer]
          */
-        setText: function(text) {
-            this.setContents(text);
+        setContents: function(text, viewer) {
+            var old = this.text;
+            this.text = text;
+            if (old !== text) {
+                this.emit(PartModel.CONTENTS_CHANGE, this, viewer);
+            }
         },
 
         /**
+         * @return {string}
+         */
+        getContents: function() {
+            return this.text;
+        },
+
+        /**
+         * Alias for setContents with respect to Document
+         * @param {string} text
+         * @param {Viewer} [viewer]
+         */
+        setText: function(text, viewer) {
+            this.setContents(text, viewer);
+        },
+
+        /**
+         * Alias for setContents with respect to Document
          * @return {string}
          */
         getText: function() {
@@ -95,13 +119,16 @@ define([
             return this.getText().split(/\r\n|\r|\n/).length;
         },
 
-        /**
-         * @param {string} text
-         * @param {Viewer} viewer
-         */
-        update: function(text, viewer) {
-            this.setText(text);
-            this.emit(PartModel.CONTENTS_CHANGE, this, viewer);
+        toString: function() {
+            var suffix = '';
+            var res = '<' + this.constructor.name + '>#' + this._partModelId;
+            if (this.getText()) {
+                if (this.getLength() > 10) {
+                    suffix = '...';
+                }
+                res += '(' + this.text.substr(0, 10) + suffix + ')';
+            }
+            return res;
         }
     });
 
