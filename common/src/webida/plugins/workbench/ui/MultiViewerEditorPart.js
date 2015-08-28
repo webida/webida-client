@@ -206,7 +206,7 @@ define([
         setActiveViewer: function(viewer) {
             logger.info('setActiveViewer(' + viewer + ')');
             this.activeViewer = viewer;
-            viewer.refresh();
+            //viewer.refresh();
             this.emit(MultiViewerEditorPart.TAB_SELECT, viewer);
         },
 
