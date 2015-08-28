@@ -40,6 +40,7 @@ define([
 
     /**
      * @typedef {Object} HTMLElement
+     * @typedef {Object} PartModel
      * @typedef {Object} WidgetAdapter
      */
 
@@ -56,12 +57,6 @@ define([
         /** @type {HTMLElement} */
         this.parentNode = null
 
-        /** @type {width:number|string, height:number|string} */
-        this.dimension = null;
-
-        /** @type {Object} */
-        this.contents = null;
-
         /** @type {WidgetAdapter} */
         this.adapter = null;
     }
@@ -71,6 +66,8 @@ define([
 
         /**
          * @param {HTMLElement} parentNode
+         *
+         * @abstract
          */
         createAdapter: function(parentNode) {
             throw new Error('createAdapter(parentNode) should be implemented by ' + this.constructor.name);
@@ -79,6 +76,8 @@ define([
         /**
          * Destroy WidgetAdapter for this View.
          * You can clean up the registered events here.
+         *
+         * @abstract
          */
         destroyAdapter: function() {
             throw new Error('destroyAdapter() should be implemented by ' + this.constructor.name);
@@ -99,19 +98,13 @@ define([
         },
 
         /**
-         * Using getContents() update WidgetAdapter.
-         * If it is needed, update WidgetAdapter's size.
+         * Refreshes WidgetAdapter with contents
+         *
+         * @param {Object} contents
+         * @abstract
          */
-        refresh: function() {
-            throw new Error('refresh() should be implemented by ' + this.constructor.name);
-        },
-
         setContents: function(contents) {
-            this.contents = contents;
-        },
-
-        getContents: function(contents) {
-            return this.contents;
+            throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -130,11 +123,34 @@ define([
             return this.parentNode;
         },
 
+        /**
+         * Set viewer widget's size
+         *
+         * @param {number} width
+         * @param {number} height
+         * @abstract
+         */
         setSize: function(width, height) {
-            this.dimension = {
-                width: width,
-                height: height
-            };
+            throw new Error('setSize(width, height) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * get viewer widget's size
+         *
+         * @return {Object}
+         * @abstract
+         */
+        getSize: function() {
+            throw new Error('getSize() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Updates widget size according to the parent of the widget
+         *
+         * @abstract
+         */
+        fitSize: function() {
+            throw new Error('fitSize() should be implemented by ' + this.constructor.name);
         },
 
         toString: function() {
@@ -145,6 +161,16 @@ define([
 
     /** @constant {string} */
     Viewer.CONTENT_CHANGE = 'contentChange';
+
+    /** 
+     * 
+     * @constant {string}
+     */
+    Viewer.READY = 'viewerReady';
+
+    Viewer.toString = function() {
+        return 'Viewer';
+    };
 
     return Viewer;
 });
