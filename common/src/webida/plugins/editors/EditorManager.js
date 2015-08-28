@@ -200,7 +200,7 @@ define([
             layoutPane.addPartContainer(tabPartContainer);
 
             //4. create Part
-            tabPartContainer.createPart(PartClass, options, callback);
+            tabPartContainer.createPart(PartClass, callback);
         },
 
         /**
