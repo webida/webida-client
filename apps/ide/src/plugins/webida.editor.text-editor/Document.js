@@ -49,6 +49,8 @@ define([
 
         PartModel.call(this, text);
 
+        this.text = '';
+
         if ( typeof text === 'undefined' || text === null) {
             text = '';
         }
