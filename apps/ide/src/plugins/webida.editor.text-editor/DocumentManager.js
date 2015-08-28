@@ -25,14 +25,18 @@
 
 // @formatter:off
 define([
+    'dojo/topic',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/ModelManager',
+    'webida-lib/plugins/workbench/ui/PartModel',
     './Document'
 ], function(
+    topic,
     genetic, 
     Logger,
     ModelManager,
+    PartModel,
     Document
 ) {
     'use strict';
@@ -60,22 +64,31 @@ define([
          * Creates a Document
          *
          * @param {DocumentManager~createModelCallback} callback
+         * @return {Document}
          */
         /**
          * @callback DocumentManager~createModelCallback
          * @param {Document} doc
          */
         createModel: function(callback) {
-        	logger.info('createModel(callback)');
+            logger.info('createModel(callback)');
             var that = this;
+            var doc = new Document();
             var dataSource = this.getDataSource();
             dataSource.getContents(function(contents) {
-                that.savedContents = contents;
-                //Creates a Document(Model) from a DataSource
-                var doc = new Document(contents);
+                doc.setText(contents);
                 that.setModel(doc);
+                that.savedContents = contents;
                 callback(doc);
+                //Let's give a chance to this doc
+                //that it can register READY event in advance
+                //In case of synchronous getContents()
+                //See FileDataSource > getContents()'s else block
+                setTimeout(function() {
+                    doc.emit(PartModel.READY, doc);
+                });
             });
+            return doc;
         },
 
         /**
@@ -133,7 +146,7 @@ define([
         setContents: function(contents, caller) {
             var doc = this.getModel();
             if (contents !== doc.getText()) {
-                doc.update(contents, caller);
+                doc.setContents(contents, caller);
             }
         },
 
