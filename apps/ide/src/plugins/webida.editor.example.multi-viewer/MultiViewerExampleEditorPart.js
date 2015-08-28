@@ -168,28 +168,6 @@ define([
         },
 
         /**
-         * @param {Document} doc
-         * @param {Viewer} sender
-         */
-        codeListener: function(doc, sender) {
-            logger.info('codeListener(doc, ' + sender + ')');
-            if (sender === this.getViewerById('FormEditor')) {
-                this.getViewerById('CodeEditor').refresh();
-            }
-        },
-
-        /**
-         * @param {Document} doc
-         * @param {Viewer} sender
-         */
-        formListener: function(doc, sender) {
-            logger.info('formListener(doc, ' + sender + ')');
-            if (sender === this.getViewerById('CodeEditor')) {
-                this.getViewerById('FormEditor').refresh();
-            }
-        },
-
-        /**
          * Create EditorViewers
          * @override
          */
@@ -213,22 +191,6 @@ define([
                     that.initCodeEditor();
                     codeViewer.setContents(doc);
                 });
-
-                //3. Listen to model
-                doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
-                    var file = that.getDataSource().getPersistence();
-                    that.getContainer().updateDirtyState();
-                    topic.publish('file.content.changed', file.getPath(), file.getContents());
-                });
-
-                //4. For the concurrent editing, listen to the model
-                // Note that, when user select the tab,
-                // the tabContainer make the new viewer as a active viewer.
-                // Then the active viewer will be refreshed automatically.
-                /*
-                 doc.on(PartModel.CONTENTS_CHANGE, that.codeListener.bind(that));
-                 doc.on(PartModel.CONTENTS_CHANGE, that.formListener.bind(that));
-                 */
             });
         },
 
