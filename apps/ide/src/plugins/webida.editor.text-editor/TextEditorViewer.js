@@ -225,6 +225,7 @@ define([
                     'external/codemirror/addon/edit/closetag', 
                     'external/codemirror/addon/edit/matchbrackets'
                 ], function() {
+                	logger.info('load css complete');
                     if (self.getParentNode()) {
                         self.createAdapter(self.getParentNode());
                     }
@@ -299,6 +300,7 @@ define([
         },
 
         createAdapter: function(parentNode) {
+            logger.info('createAdapter(' + parentNode + ')');
             if (this.editor !== undefined) {
                 return;
             }
@@ -339,6 +341,12 @@ define([
                         cm.indentLine(e.from.line + i);
                     }
                 }
+            });
+
+            //Let's give a chance to this viewer
+            //that it can register READY event in advance
+            setTimeout(function() {
+                self.emit(Viewer.READY, self);
             });
         },
 
@@ -809,6 +817,16 @@ define([
             });
         },
 
+        /**
+         * Update Viewer's content
+         *
+         * @param {Object} contents
+         */
+        setContents: function(contents) {
+            logger.info('setContents(contents)');
+            this.editor.setValue(contents);
+        },
+
         foldCodeRange: function(range) {
             if (this.editor) {
                 foldCode(this.editor, range.from, range.to);
@@ -848,18 +866,20 @@ define([
         },
 
         focus: function() {
-        	logger.info('focus()');
+            logger.info('focus()');
             if (this.editor) {
-            	logger.info('this.editor = ', this.editor);
+                logger.info('this.editor = ', this.editor);
                 this.editor.focus();
             }
         },
 
-        refresh: function() {
-            logger.info('refresh()');
-            if (this.getContents()) {
-                this.setValue(this.getContents().getText());
-            }
+        refresh: function(text) {
+            logger.info('refresh(text)');
+            self.editor.setValue(text);
+        },
+
+        fitSize: function() {
+            logger.info('fitSize()');
             if (this.editor) {
                 var parentNode = this.getParentNode();
                 this.setSize(parentNode.offsetWidth, parentNode.offsetHeight);
