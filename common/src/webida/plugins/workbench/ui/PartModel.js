@@ -46,36 +46,31 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    var _partModelId = 0;
+
     function PartModel() {
         logger.info('new PartModel()');
 
-        /** @type {Object} */
-        this.contents = null;
+        this._partModelId = ++_partModelId;
     }
 
 
     genetic.inherits(PartModel, EventEmitter, {
 
         /**
-         * update
+         * @param {Object} contents
          * @abstract
          */
-        update: function() {
-            throw new Error('update() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * @param {Object} contents
-         */
         setContents: function(contents) {
-            this.contents = contents;
+            throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @return {Object}
+         * @abstract
          */
         getContents: function() {
-            return this.contents;
+            throw new Error('getContents() should be implemented by ' + this.constructor.name);
         }
     });
 
@@ -84,6 +79,10 @@ define([
 
     /** @constant {string} */
     PartModel.READY = 'partModelReady';
+
+    PartModel.toString = function() {
+        return 'Model';
+    };
 
     return PartModel;
 });
