@@ -403,9 +403,11 @@ define([
 
         // TODO: remove the following subscriptions
         topic.subscribe('file.saved', editors.onFileSaved.bind(editors));
-        topic.subscribe('editors.current.part', function(part){
-        	var file = part.getDataSource().getPersistence();
-        	editors.setCurrentFile(file);
+
+        //Compatibility
+        topic.subscribe('editors.current.part', function(part) {
+            var file = part.getDataSource().getPersistence();
+            editors.setCurrentFile(file);
         });
     }
 
@@ -468,7 +470,6 @@ define([
     };
 
     editors.setCurrentFile = function(file) {
-        logger.trace();
         logger.info('editors.setCurrentFile(' + file + ')');
 
         if (editors.currentFile !== file) {
@@ -499,11 +500,6 @@ define([
                     topic.publish('editors.dirty.current');
                 } else {
                     topic.publish('editors.clean.current');
-                }
-
-                var editorPart = editors.getPart(file);
-                if (editorPart) {
-                    editorPart.focus(editors.currentFile);
                 }
 
                 if (file.toRefresh) {
@@ -711,7 +707,7 @@ define([
      * @Override
      */
     editorManager._createPart = function(PartClass, dataSource, options, callback, partClassPath) {
-        logger.info('_createPart(PartClass, ' + dataSource + ', ' + options + ', callback, ' + partClassPath + ')');
+        logger.info('%c_createPart(PartClass, ' + dataSource + ', ' + options + ', callback, ' + partClassPath + ')', 'color:green');
 
         //Legacy codes start
         var persistence = dataSource.getPersistence();
@@ -726,7 +722,7 @@ define([
         layoutPane.addPartContainer(tabPartContainer, options, editors);
 
         //4. create Part
-        tabPartContainer.createPart(PartClass, options, callback);
+        tabPartContainer.createPart(PartClass, callback);
     };
 
     /**
@@ -805,8 +801,19 @@ define([
     };
 
     editors.getPart = function(file) {
-        if (this.parts.get(file) instanceof EditorPart) {
-            return this.parts.get(file);
+        logger.info('editors.getPart(' + file + ')');
+        logger.trace();
+
+        var dataSource = dsRegistry.getDataSourceById(file.getPath());
+        var registry = workbench.getCurrentPage().getPartRegistry();
+        var parts = registry.getPartsByDataSource(dataSource);
+
+        if (parts && parts.length > 0) {
+            for (var i in parts) {
+                if (parts[i] instanceof EditorPart) {
+                    return parts[i];
+                }
+            }
         } else {
             return null;
         }
