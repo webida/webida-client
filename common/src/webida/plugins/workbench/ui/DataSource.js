@@ -99,6 +99,14 @@ define([
         },
 
         /**
+         * @param {Object} contents
+         * @param {Function} callback
+         */
+        setContents: function(contents, callback) {
+            throw new Error('setContents(contents, callback) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
          * @param {Function} callback
          */
         getContents: function(callback) {
@@ -132,8 +140,31 @@ define([
         }
     });
 
+    /**
+     * Emit this event when DataSource's
+     * getContents() start to load the contents
+     * @constant {string}
+     */
+    DataSource.LOAD_START = 'loadStart';
+
+    /**
+     * Emit this event when DataSource's
+     * getContents() complete to load the contents
+     * @constant {string}
+     */
+    DataSource.LOAD_COMPLETE = 'loadComplete';
+
+    /**
+     * Emit this event when DataSource's
+     * setContents(contents, callback) is called
+     * @constant {string}
+     */
     DataSource.CONTENTS_CHANGE = 'contentsChange';
-    DataSource.CONTENTS_LOAD = 'contentsLoad';
+
+    /**
+     * This event is emitted when setId(newId) is called
+     * @constant {string}
+     */
     DataSource.ID_CHANGE = 'idChange';
 
     return DataSource;
