@@ -63,6 +63,11 @@ define([
     'use strict';
 // @formatter:on
 
+    /**
+     * @typedef {Object} DataSource
+     * @typedef {Object} Document
+     */
+
     //TODO : this.viewer -> this.getViewer()
     //See File.prototype.isModified = function () {
     //TODO : this.file -> this.getFile()
@@ -84,11 +89,6 @@ define([
         this.fileSavedHandle = null;
         this.preferences = null;
         this.foldingStatus = null;
-        container.on(PartContainer.CONTAINER_RESIZE, function(changeSize) {
-            //changeSize =  Object {l: 1, t: 1, w: 325, h: 560}
-            that.getViewer().refresh();
-            //that.getViewer().checkSizeChange();
-        });
     }
 
 
@@ -105,7 +105,6 @@ define([
             logger.info('initializeContext()');
             var context = this.getViewer();
             var parent = this.getParentElement();
-            context.setValue(this.file.getContents());
             context.clearHistory();
             context.markClean();
             context.setSize(parent.offsetWidth, parent.offsetHeight);
@@ -208,14 +207,6 @@ define([
             return TextEditorViewer;
         },
 
-        initViewer: function() {
-            var that = this;
-            var viewer = this.getViewer();
-            viewer.on(Viewer.CONTENT_CHANGE, function(contents) {
-                that.getModelManager().setContents(contents, viewer);
-            });
-        },
-
         /**
          * If viewer does not exist when calling getViewer(),
          * this method is called to create new viewer.
@@ -229,24 +220,18 @@ define([
             return this.foldingStatus;
         },
 
-        createViewer: function(parentNode, callback) {
-            logger.info('%c createViewer(' + parentNode.tagName + ', ' + typeof callback + ')', 'color:green');
+        /**
+         * @override
+         * @param {HTMLElement} parent
+         * @return {Viewer}
+         */
+        createViewer: function(parentNode) {
+            logger.info('%c createViewer(' + parentNode.tagName + ')', 'color:green');
             //TODO : remove
             this.setParentElement(parentNode);
             //TODO : remove
             this.file.elem = parentNode;
             var that = this;
-
-            //Model
-            var modelManager = this.getModelManager();
-            modelManager.createModel(function(doc) {
-                doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
-                    var file = that.getDataSource().getPersistence();
-                    that.getContainer().updateDirtyState();
-                    topic.publish('file.content.changed', file.getPath(), file.getContents());
-                });
-                that.initialize();
-            });
 
             //Viewer
             var ViewerClass = this.getViewerClass();
@@ -256,14 +241,27 @@ define([
                         viewer._changeCallback(file, change);
                     }
                 });
-                if (callback) {
-                    _.defer(function() {
-                        callback(file, viewer);
-                    });
-                }
+            });
+            viewer.on(Viewer.CONTENT_CHANGE, function(contents) {
+                that.getModelManager().setContents(contents, viewer);
             });
             this.setViewer(viewer);
-            this.initViewer();
+            this.initialize();
+            return viewer;
+        },
+
+        /**
+         * @override
+         * @param {DataSource} dataSource
+         * @return {Document}
+         */
+        createModel: function(dataSource) {
+        	logger.info('%c createModel(' + dataSource + ')', 'color:green');
+            var that = this;
+            var modelManager = this.getModelManager();
+            var model = modelManager.createModel(function(doc) {
+            });
+            return model;
         },
 
         destroy: function() {
