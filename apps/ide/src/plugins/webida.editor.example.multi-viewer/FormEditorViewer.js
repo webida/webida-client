@@ -71,8 +71,8 @@ define([
             }
         },
 
-        setContents: function(contents) {
-            logger.info('setContents(' + contents + ')');
+        render: function(contents) {
+            logger.info('render(' + contents + ')');
             this.getAdapter().setContents(contents);
         },
 

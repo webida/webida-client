@@ -92,7 +92,7 @@ define([
                 viewers.forEach(function(viewer) {
                     //Viewer listen to model's content change
                     model.on(PartModel.CONTENTS_CHANGE, function(model, sender) {
-                        viewer.setContents(model.getContents());
+                        viewer.render(model.getContents());
                         container.updateDirtyState();
                     });
                     //Viewer listen to container's size change
@@ -100,7 +100,7 @@ define([
                         viewer.fitSize();
                     });
                     //Render initial model
-                    viewer.setContents(model.getContents());
+                    viewer.render(model.getContents());
                 });
 
                 //Notify user can navigate contents
