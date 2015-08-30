@@ -77,9 +77,8 @@ define([
             var dataSource = this.getDataSource();
             dataSource.getContents(function(contents) {
                 doc.setText(contents);
-                that.setModel(doc);
                 that.savedContents = contents;
-                callback(doc);
+                that._execFunc(callback, doc);
                 //Let's give a chance to this doc
                 //that it can register READY event in advance
                 //In case of synchronous getContents()
@@ -157,6 +156,15 @@ define([
             } else {
                 throw new Error('Document has not been set yet');
             }
+        },
+
+        /**
+         * Returns constructor for PartModel
+         *
+         * @return {Function} Document
+         */
+        getModelClass: function() {
+            return Document;
         }
     });
 

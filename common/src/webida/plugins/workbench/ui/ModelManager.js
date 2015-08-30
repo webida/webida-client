@@ -30,10 +30,14 @@
 // @formatter:off
 define([
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/plugins/workbench/plugin',
+    './PartModel'
 ], function(
     genetic, 
-    Logger
+    Logger,
+    workbench,
+    PartModel
 ) {
     'use strict';
 // @formatter:on
@@ -116,6 +120,57 @@ define([
          */
         getDataSource: function() {
             return this.dataSource;
+        },
+
+        /**
+         * Retrive Synchronized PartModel for the assigned dataSource
+         * from PartModelProvider. If not exists this method
+         * creates a new PartModel and register it to the PartModelProvider.
+         *
+         * @param {DocumentManager~getSynchronizedModel} callback
+         * @return {Document}
+         */
+        /**
+         * @callback DocumentManager~getSynchronizedModel
+         * @param {Document} doc
+         */
+        getSynchronizedModel: function(callback) {
+            logger.info('getSynchronizedModel(callback)');
+            var provider = workbench.getPartModelProvider();
+            var model = provider.getPartModel(this.getDataSource(), this.getModelClass());
+            logger.info('model --> ', model);
+            if (!!model) {
+                this._execFunc(callback, model);
+                //Let's give a chance to this doc
+                //that it can register READY event in advance
+                //In case of synchronous getContents()
+                //See FileDataSource > getContents()'s else block
+                setTimeout(function() {
+                    model.emit(PartModel.READY, model);
+                });
+            } else {
+                model = this.createModel(callback);
+                provider.register(this.getDataSource(), model);
+            }
+            this.setModel(model);
+            return model;
+        },
+
+        /**
+         * Returns constructor for PartModel
+         * @abstract
+         */
+        getModelClass: function() {
+            throw new Error('getModelClass() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @private
+         */
+        _execFunc: function(callback, param) {
+            if ( typeof callback === 'function') {
+                callback(param);
+            }
         }
     });
 

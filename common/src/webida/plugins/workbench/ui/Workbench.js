@@ -32,6 +32,7 @@ define([
     './DataSourceRegistry',
     './LayoutPane',
     './Page',
+    './PartModelProvider',
     './WorkspaceModel'
 ], function(
     EventEmitter,
@@ -41,6 +42,7 @@ define([
     DataSourceRegistry,
     LayoutPane,
     Page,
+    PartModelProvider,
     WorkspaceModel
 ) {
     'use strict';
@@ -49,9 +51,10 @@ define([
     /**
      * @typedef {Object.<Object, Object>} Map
      * @typedef {Object} DataSourceRegistry
+     * @typedef {Object} Page
+     * @typedef {Object} PartModelProvider
      * @typedef {Object} WorkbenchModel
      * @typedef {Object} WorkspaceModel
-     * @typedef {Object} Page
      */
 
     var logger = new Logger();
@@ -68,6 +71,8 @@ define([
         this.dataSourceRegistry = new DataSourceRegistry();
         /** @type {WorkspaceModel} */
         this.workspaceModel = new WorkspaceModel();
+        /** @type {PartModelProvider} */
+        this.partModelProvider = new PartModelProvider();
     }
 
 
@@ -135,6 +140,13 @@ define([
          */
         getWorkspaceModel: function() {
             return this.workspaceModel;
+        },
+
+        /**
+         * @param {PartModelProvider}
+         */
+        getPartModelProvider: function() {
+            return this.partModelProvider;
         },
 
         /**

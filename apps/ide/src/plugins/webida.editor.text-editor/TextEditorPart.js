@@ -83,7 +83,6 @@ define([
         var that = this;
         var dataSource = container.getDataSource();
         var file = dataSource.getPersistence();
-        this.setModelManager(new DocumentManager(dataSource));
         this.setFile(file);
         this.fileOpenedHandle = null;
         this.fileSavedHandle = null;
@@ -256,11 +255,13 @@ define([
          * @return {Document}
          */
         createModel: function(dataSource) {
-        	logger.info('%c createModel(' + dataSource + ')', 'color:green');
-            var that = this;
-            var modelManager = this.getModelManager();
-            var model = modelManager.createModel(function(doc) {
+            logger.info('%c createModel(' + dataSource + ')', 'color:green');
+            this.setModelManager(new DocumentManager(dataSource));
+            var model = this.getModelManager().getSynchronizedModel(function(doc) {
+                //do something with doc ready if needed
             });
+            //this.getModelManager().SynchroWith(SvgModel);
+            this.setModel(model);
             return model;
         },
 

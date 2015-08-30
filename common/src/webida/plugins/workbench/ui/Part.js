@@ -107,7 +107,7 @@ define([
                 part.emit(Part.CONTENT_READY, part);
 
             }, function(error) {
-                logger.warn(error);
+                logger.error(error);
             });
         },
 
