@@ -181,7 +181,7 @@ define([
                 that.addViewer('FormEditor', 'Form Editor', formViewer, 0, function(parentNode) {
                     formViewer.createAdapter(parentNode);
                     that.initFormViewer();
-                    formViewer.setContents(doc);
+                    formViewer.render(doc);
                 });
 
                 //2. codeViewer
@@ -189,7 +189,7 @@ define([
                 that.addViewer('CodeEditor', 'Code Editor', codeViewer, 1, function(parentNode) {
                     codeViewer.setParentNode(parentNode);
                     that.initCodeEditor();
-                    codeViewer.setContents(doc);
+                    codeViewer.render(doc);
                 });
             });
         },

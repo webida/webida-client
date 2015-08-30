@@ -161,7 +161,7 @@ define([
             	logger.info('%cPromise.all', 'color:red');
                 var viewer = results[0];
                 var model = results[1];
-                viewer.setContents(model.getContents());
+                viewer.render(model.getContents());
                 if ( typeof callback === 'function') {
                     callback(part);
                 }

@@ -822,8 +822,8 @@ define([
          *
          * @param {Object} contents
          */
-        setContents: function(contents) {
-            logger.info('setContents(contents)');
+        render: function(contents) {
+            logger.info('render(contents)');
             this.editor.setValue(contents);
         },
 

@@ -98,13 +98,13 @@ define([
         },
 
         /**
-         * Refreshes WidgetAdapter with contents
+         * Renders WidgetAdapter with contents
          *
          * @param {Object} contents
          * @abstract
          */
-        setContents: function(contents) {
-            throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
+        render: function(contents) {
+            throw new Error('render(contents) should be implemented by ' + this.constructor.name);
         },
 
         /**
