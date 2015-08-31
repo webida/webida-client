@@ -5764,19 +5764,19 @@ define(['require',
         var selectedPaths = wv.getSelectedPaths();
         if (selectedPaths[0]) {
             var gitRootPath = git.findGitRootPath(selectedPaths[0]);
-            var relPath = [];
+            var relPaths;
 
             // if node is git Root directory
             if (gitRootPath === selectedPaths[0]) {
-                relPath.push('.');
+                relPaths = ['.'];
             } else {
                 // extract relative path
-                selectedPaths.forEach(function (value) {
-                    relPath.push(value.replace(gitRootPath, ''));
+                relPaths = selectedPaths.map(function (value) {
+                    return value.replace(gitRootPath, '');
                 })
             }
 
-            _untrack(gitRootPath, relPath);
+            _untrack(gitRootPath, relPaths);
         }
     }
     function remove() {
