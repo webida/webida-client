@@ -3981,6 +3981,23 @@ var ENV_TYPE;
         ensureAuthorize(restApi);
     };
 
+    // FIXME needed more clear way to guess user type
+    mod.getPluginSettingsPath = function (callback) {
+        var defaultPath = 'plugins/plugin-settings.json';
+        mod.auth.getMyInfo(function (err, myInfo) {
+            if (err) {
+                callback(defaultPath);
+            } else {
+                if (myInfo.name &&
+                    myInfo.name.startsWith('Webida Guest ') &&
+                    myInfo.email.includes('webida-guest')) {
+                    callback('plugins/plugin-settings-guest.json');
+                } else {
+                    callback(defaultPath);
+                }
+            }
+        });
+    };
 
     /**
     * API helper function with callback function.
@@ -4227,6 +4244,7 @@ var ENV_TYPE;
      * @memberOf module:webida
      */
     mod.tokenGenerator = new mod.TokenGenerator();
+
 
     /* Check whether the "personal_token" value is in url.
        If then, use that value as a access token.
