@@ -1,0 +1,82 @@
+.container_login {
+    background-color: #3e404d;
+    width: 500px;
+    height: 300px;
+    transition: left .5s;
+    margin: 200px auto 100px auto;
+}
+.container_login .left {
+    float: left;
+    padding: 20px;
+    width: 142px;
+    height: 332px;
+    border-right: 1px solid #525252;
+}
+.container_login .right {
+    margin-left: 160px;
+    padding: 20px;
+}
+.webida-logo {
+    width: 102px;
+    height: 96px;
+}
+.button-action-container {
+    text-align: center;
+    margin-top: 40px;
+    padding: 0;
+}
+.login-button {
+    border-radius:4px;
+    border:solid 1px #fff;
+    color: #fff;
+    width: 100%;
+    height: 38px;
+    font-size:13pt;
+    background-color: #454755;
+    margin-bottom: 5px;
+}
+.login-button:hover {
+    background-color: #FF713D;
+}
+.login-button:active {
+    background-color: #FF713D;
+}
+a.cancel-button {
+    color: #757575;
+    text-decoration: underline;
+}
+.message {
+    color: #ffffff;
+    font-size: 11pt;
+}
+.message ul {
+    padding-left: 15px;
+}
+.message h2 {
+    color: #FF713D;
+    margin-bottom: 30px;
+    margin-top: 0;
+}
+.progress-message {
+    text-align: center;
+    font-size: 10pt;
+    margin-top: 5px;
+}
+.progress {
+    height: 38px;
+    background-color: transparent;
+    border: 1px solid #ffffff;
+    margin-bottom: 0;
+}
+.progress .progress-bar {
+    min-width: 2em;
+    line-height: 35px;
+    background-color: #004988;
+}
+
+.progress .progress-bar-danger {
+    text-align: center;
+    color: #fff;
+    background-color: #FF523D;
+    line-height: 35px;
+}

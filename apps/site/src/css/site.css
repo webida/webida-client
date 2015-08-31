@@ -3,26 +3,6 @@
     src: url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.woff');
 }
 
-::-webkit-input-placeholder {
-    /* WebKit browsers */
-    color: #aaa;
-}
-
-:-moz-placeholder {
-    /* Mozilla Firefox 4 to 18 */
-    color: #aaa;
-}
-
-::-moz-placeholder {
-    /* Mozilla Firefox 19+ */
-    color: #aaa;
-}
-
-:-ms-input-placeholder {
-    /* Internet Explorer 10+ */
-    color: #aaa;
-}
-
 .dimming {
     height: 100%;
     width: 100%;
@@ -197,10 +177,6 @@ div h4 {
     margin-left: 50px;
 }
 
-div ul {
-    margin-left: 50px;
-}
-
 .features li {
     margin-left: -20px;
 }
@@ -288,8 +264,12 @@ div ul {
 }
 
 .footer {
+    background-color: #3E404D;
+    border-top: 1px solid #080808;
+    padding-top: 20px;
+    padding-bottom: 20px;
     height: 60px;
-    background-color: #fff;
+    color: #ddd;
 }
 
 .videoContainer {

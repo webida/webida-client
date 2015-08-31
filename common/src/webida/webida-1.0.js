@@ -3195,6 +3195,14 @@ var ENV_TYPE;
         ensureAuthorize(restApi);
     };
 
+    mod.AuthService.prototype.guestLogin = function (callback) {
+        ajaxCall({
+            url: mod.conf.authApiBaseUrl + '/guestlogin',
+            type: 'POST',
+            callback: callback
+        });
+    };
+
     //db
     //
 
