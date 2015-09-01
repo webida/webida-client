@@ -326,10 +326,6 @@ define([
                 }
             },
 
-            onFocus: function() {
-                this.focus();
-            },
-
             onBlur: function() {
                 if (focusedNode) {
                     $(focusedNode).removeClass('focused');
