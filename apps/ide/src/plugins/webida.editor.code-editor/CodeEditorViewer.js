@@ -1512,7 +1512,7 @@ define([
                 }
                 // Code Folding
                 sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-                // Beutify (All)
+                // Beautify (All)
                 if (editor.getMode().name === 'javascript') {
                     if (selected) {
                         sourceItems['&Beautify'] = menuItems.editMenuItems['&Source']['&Beautify'];
@@ -1633,7 +1633,7 @@ define([
                 }
                 // Code Folding
                 sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-                // Beutify (All)
+                // Beautify (All)
                 var currentModeName = editor.getMode().name;
                 if (currentModeName === 'javascript' || currentModeName === 'htmlmixed' || currentModeName === 'css') {
                     if (selected) {

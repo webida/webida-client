@@ -204,8 +204,8 @@
                     "F&old All" : [ "cmnd" ],
                     "U&nfold All" : [ "cmnd" ],
                     "delim2" : "---",
-                    "&Beautify" : [ "cmnd", { "shortcut": { "keys": { "default" : "Alt+B" }, "desc": "Beutify" } } ],
-                    "B&eautify All" : [ "cmnd", { "shortcut": { "keys": { "default" : "Shift+Alt+B" }, "desc": "Beutify All" } } ],
+                    "&Beautify" : [ "cmnd", { "shortcut": { "keys": { "default" : "Alt+B" }, "desc": "Beautify" } } ],
+                    "B&eautify All" : [ "cmnd", { "shortcut": { "keys": { "default" : "Shift+Alt+B" }, "desc": "Beautify All" } } ],
                     "delim3" : "---",
                     "&Rename Variables" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+Q" }, "desc": "Rename variables" } } ]
                 },
