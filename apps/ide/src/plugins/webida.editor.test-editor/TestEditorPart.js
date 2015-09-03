@@ -58,8 +58,8 @@ define([
             logger.info('createViewer(' + parentNode + ', callback)');
             var dataSource = this.getDataSource();
             var pre = document.createElement('pre');
-            dataSource.getContents(function(contents) {
-                pre.textContent = contents;
+            dataSource.getData(function(data) {
+                pre.textContent = data;
             });
             pre.contentEditable = true;
             pre.style.fontSize = '8pt';
