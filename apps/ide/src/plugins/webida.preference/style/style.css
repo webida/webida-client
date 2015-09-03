@@ -1,0 +1,103 @@
+.dim {
+    position: absolute;
+    top: 37px;
+    left: 0;
+    width: 100%;
+    height: 378px;
+    background-color: rgba(30, 30, 30, 0.3);
+    z-index: 2;
+}
+
+.claro .dijitDialogPaneContentArea {
+    background-color: #F5FAFF;
+}
+#prefDlgContent .preferenceview-container {
+    width: 100%;
+    height: 450px;
+    background-color: transparent;
+}
+
+#prefDlgContent .preferenceview-tree {
+    width: 200px;
+    height: 100%;
+    padding: 0;
+    border-radius: 3px;
+    background-color: #E8EDF2;
+    border: 1px solid #9EA5AE;
+}
+
+#prefDlgContent .preferenceview-content {
+    padding: 0;
+}
+
+#prefDlgContent .preferenceview-content-title {
+    border-bottom: 1px solid #9EA5AE;
+    color: #474F57;
+}
+
+#prefDlgContent .preferenceview-content-title h1 {
+    display: inline-block;
+    width: 264px;
+    margin-top: 0;
+}
+
+#prefDlgContent .preferenceview-content-title .preference-override-box {
+    display: inline-block;
+}
+
+#prefDlgContent .preferenceview-content-title .preference-override-box.hidden {
+    display: none;
+}
+
+#prefDlgContent .preferenceview-sub-content {
+    height: 362px;
+}
+
+#prefDlgContent .preferenceview-sub-buttons {
+    text-align: right;
+    padding: 2px;
+    height: 28px;
+}
+
+#prefDlgContent .preferenceview-category-item {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
+#prefDlgContent .preferenceview-category-item.selected {
+    background-color: #A1E5FF;
+}
+
+#prefDlgContent .dijitSplitterV .dijitSplitterThumb {
+    background: transparent;
+}
+
+#prefDlgContent .dijitSplitterV {
+    width: 2px;
+}
+
+#prefDlgContent .preferenceview-category-item__tree {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 2px;
+    background-image: url("./image/treeExpandImages.png");
+}
+
+#prefDlgContent .preferenceview-category-item__tree.expanded {
+    background-position: -35px 0;
+}
+#prefDlgContent .preferenceview-category-item__tree.expanded.hover {
+    background-position: -53px 0;
+}
+#prefDlgContent .preferenceview-category-item__tree.collapsed {
+    background-position: 0 0;
+}
+#prefDlgContent .preferenceview-category-item__tree.collapsed.hover {
+    background-position: -18px 0;
+}
+#prefDlgContent .preferenceview-category-item__tree.none {
+    background-image: none;
+}
