@@ -540,6 +540,7 @@ define(['webida-lib/app',
                 callback(obj);
             }
         });
+        return getProjectPropertyByPath(path);
     };
 
     projectConfigurator.getConfigurationObjectByProjectName = function (name, callback) {
@@ -550,6 +551,7 @@ define(['webida-lib/app',
                 callback(obj);
             }
         });
+        return getProjectPropertyByName(name);
     };
 
     projectConfigurator.getProjectRootPath = getProjectRootPath;
