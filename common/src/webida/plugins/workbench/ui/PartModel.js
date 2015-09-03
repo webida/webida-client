@@ -39,7 +39,7 @@ define([
 // @formatter:on
 
     /**
-     * @typedef {Object} DataSource
+     * @typedef {Object} ChangeRequest
      */
 
     var logger = new Logger();
@@ -58,19 +58,51 @@ define([
     genetic.inherits(PartModel, EventEmitter, {
 
         /**
-         * @param {Object} contents
+         * From given data, build new contents for the model.
          * @abstract
+         * @param {String} data Source data to build new contents of the model.
+         */
+        createContents: function(data) {
+            throw new Error('createContents(data) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @abstract
+         * @param {String} data Serialized original data, such as Ajax response.
+         */
+        setSerialized: function(data) {
+            throw new Error('setSerialized(data) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @return {String} Serialized data to save
+         */
+        getSerialized: function() {
+            throw new Error('getSerialized() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @abstract
+         * @param {Object} contents
          */
         setContents: function(contents) {
             throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
         },
 
         /**
-         * @return {Object}
          * @abstract
+         * @return {Object}
          */
         getContents: function() {
             throw new Error('getContents() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @abstract
+         * @param {ChangeRequest} request
+         */
+        update: function(request) {
+            throw new Error('update(request) should be implemented by ' + this.constructor.name);
         }
     });
 
