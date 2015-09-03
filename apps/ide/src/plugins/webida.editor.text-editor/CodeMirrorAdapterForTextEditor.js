@@ -825,7 +825,7 @@ define([
 
         refresh: function () {            
             if (this.getContents()) {
-                this.setValue(this.getContents().getText());
+                this.setValue(this.getContents().getContents());
             }
             if (this.editor) {
                 setTimeout(function (self) {
