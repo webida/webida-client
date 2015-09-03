@@ -99,18 +99,18 @@ define([
         },
 
         /**
-         * @param {Object} contents
+         * @param {Object} data
          * @param {Function} callback
          */
-        setContents: function(contents, callback) {
-            throw new Error('setContents(contents, callback) should be implemented by ' + this.constructor.name);
+        setData: function(data, callback) {
+            throw new Error('setData(contents, callback) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {Function} callback
          */
-        getContents: function(callback) {
-            throw new Error('getContents(callback) should be implemented by ' + this.constructor.name);
+        getData: function(callback) {
+            throw new Error('getData(callback) should be implemented by ' + this.constructor.name);
         },
 
         /**

@@ -75,9 +75,9 @@ define([
             var that = this;
             var doc = new Document();
             var dataSource = this.getDataSource();
-            dataSource.getContents(function(contents) {
-                doc.setText(contents);
-                that.savedContents = contents;
+            dataSource.getData(function(data) {
+                doc.setText(data);
+                that.savedContents = data;
                 that._execFunc(callback, doc);
                 //Let's give a chance to this doc
                 //that it can register READY event in advance
@@ -104,8 +104,8 @@ define([
             var that = this;
             var doc = this.getModel();
             var dataSource = this.getDataSource();
-            dataSource.setContents(doc.getText(), function(contents) {
-                that.savedContents = contents;
+            dataSource.setData(doc.getText(), function(data) {
+                that.savedContents = data;
                 callback();
             });
         },

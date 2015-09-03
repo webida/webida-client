@@ -101,16 +101,16 @@ define([
         /**
          * @param {Function} callback
          */
-        getContents: function(callback) {
-            logger.info('getContents(callback)');
+        getData: function(callback) {
+            logger.info('getData(callback)');
             var that = this;
             var file = this.getPersistence();
             if (file.getFlag(Persistence.READ) === false) {
-                fsCache.readFile(file.getPath(), function(error, contents) {
+                fsCache.readFile(file.getPath(), function(error, data) {
                     if (error) {
                         toastr.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
                     } else {
-                        file.setContents(contents);
+                        file.setContents(data);
                         file.setFlag(Persistence.READ, true);
                         callback(file.getContents());
                     }
@@ -121,17 +121,17 @@ define([
         },
 
         /**
-         * @param {Object} contents
+         * @param {Object} data
          * @param {Function} callback
          */
-        setContents: function(contents, callback) {
+        setData: function(data, callback) {
             var file = this.getPersistence();
             file.setFlag(Persistence.READ, false);
-            fsCache.writeFile(file.getPath(), contents, function(error) {
+            fsCache.writeFile(file.getPath(), data, function(error) {
                 if (error) {
                     toastr.error('Failed to write file "' + file.getPath() + '" (' + error + ')');
                 } else {
-                    file.setContents(contents);
+                    file.setContents(data);
                     file.setFlag(Persistence.READ, true);
                     callback(file.getContents());
                     //TODO remove the following
