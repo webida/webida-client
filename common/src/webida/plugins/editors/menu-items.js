@@ -18,7 +18,7 @@ define([], function () {
     'use strict';
 
     var fileMenuItems = {
-        '&Save' : [ 'cmnd', 'webida-lib/plugins/editors/plugin', 'saveFile' ],
+        '&Save' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'saveFile' ],
         'Sav&e All' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'saveAllFiles' ],
         '&Close' : [ 'cmnd', 'webida-lib/plugins/editors/plugin', 'closeFile' ],
         'Cl&ose Others' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'closeOtherFiles' ],

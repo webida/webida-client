@@ -83,6 +83,7 @@ define([
     var editorManager = EditorManager.getInstance();
 
     function getFileManager() {// TODO: remove publish().
+
         var FileManager = {};
         var spaces = {
             '0': '',
@@ -392,9 +393,7 @@ define([
             }, 10000);
         });
 
-        topic.subscribe('#REQUEST.openFile', editorManager.requestOpen.bind(editorManager));
         topic.subscribe('#REQUEST.closeFile', editors.closeFile.bind(editors));
-        topic.subscribe('#REQUEST.saveFile', editors.saveFile.bind(editors));
         topic.subscribe('#REQUEST.selectFile', function(path) {
             if (editors.getFile(path)) {
                 topic.publish('#REQUEST.openFile', path);
@@ -471,6 +470,7 @@ define([
 
     editors.setCurrentFile = function(file) {
         logger.info('editors.setCurrentFile(' + file + ')');
+        logger.trace();
 
         if (editors.currentFile !== file) {
             var view;
@@ -562,6 +562,7 @@ define([
     // options === { path: string }
     editors.closeFile = function(options) {
         logger.info('editors.closeFile(' + options + ')');
+        logger.trace();
 
         var file;
         if (options && options.path) {
@@ -572,6 +573,7 @@ define([
             }
         } else {
             file = editors.currentFile;
+            console.log('file = ', file);
             if (!file) {
                 toastr.error('No files to close');
                 return;
@@ -579,6 +581,9 @@ define([
         }
 
         var view = vm.getView(file.viewId);
+        
+        console.log('view = ', view);
+        
         var vc = view.getParent();
 
         // event is hard-coded, because ViewContainerEvent is private.
@@ -603,19 +608,6 @@ define([
     editors.quit = function() {
 
         topic.publish('view.quit');
-    };
-
-    editors.saveFile = function(option) {
-        console.log('saveFile');
-        var file = editors.currentFile;
-        if (option) {
-            var path = option.path;
-            file = editors.getFile(path);
-        }
-        var part = editors.getPart(file);
-        if (file && part && part.isDirty()) {
-            fm.saveFile(file, option);
-        }
     };
 
     editors.hasModifiedFile = function() {
@@ -801,9 +793,6 @@ define([
     };
 
     editors.getPart = function(file) {
-        logger.info('editors.getPart(' + file + ')');
-        logger.trace();
-
         var dataSource = dsRegistry.getDataSourceById(file.getPath());
         var registry = workbench.getCurrentPage().getPartRegistry();
         var parts = registry.getPartsByDataSource(dataSource);

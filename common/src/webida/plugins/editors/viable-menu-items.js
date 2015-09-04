@@ -32,18 +32,25 @@ define([
     function getItemsUnderFile() {
         var items = {};
         var opened = _.values(editors.files);
-        if (editors.currentFile && opened && opened.length > 0) {
-        	var currentPart = editors.getCurrentPart();
+        var workbench = require('webida-lib/plugins/workbench/plugin');
+        var page = workbench.getCurrentPage();
+        var registry = page.getPartRegistry();
+        var currentPart = registry.getCurrentEditorPart();
+        var editorParts = registry.getEditorParts();
+        
+        console.log('editorParts = ', editorParts);
+        
+        if (currentPart) {
             if (currentPart.isDirty()) {
                 items['&Save'] = menuItems.fileMenuItems['&Save'];
             }
-            if (editors.hasModifiedFile()) {
+            if (registry.getDirtyParts().length > 0) {
                 items['Sav&e All'] = menuItems.fileMenuItems['Sav&e All'];
             }
 
             items['&Close'] = menuItems.fileMenuItems['&Close'];
 
-            if (opened.length > 1) {
+            if (editorParts.length > 1) {
                 items['Cl&ose Others'] = menuItems.fileMenuItems['Cl&ose Others'];
             }
 

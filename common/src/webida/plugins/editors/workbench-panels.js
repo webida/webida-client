@@ -25,7 +25,8 @@ define([
     'dojo/dom-geometry',
     'dojo/topic',
     'external/lodash/lodash.min',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    './EditorManager'
 ], function (
     editors,
     workbench,
@@ -37,7 +38,8 @@ define([
     geometry,
     topic,
     _,
-    Logger
+    Logger,
+    EditorManager
 ) {
     'use strict';
 
@@ -45,8 +47,15 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    var editorManager = EditorManager.getInstance();
+
     var paneElement = $('<div id="editor" tabindex="0" style="position:absolute; ' +
             'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];
+
+	function _getPartRegistry() {
+        var page = workbench.getCurrentPage();
+        return page.getPartRegistry();
+	}
 
     function getPanel() {
         var docFrag = document.createDocumentFragment();
@@ -57,6 +66,7 @@ define([
     var QUIT = 'Quit';
 
     function createDialog(file, title, action, canceled) {
+    	console.log('createDialog('+file+', '+title+', action, canceled)');
         var dialog = new ButtonedDialog({
             title: 'Unsaved Changes in the File to ' + title,
             buttons: [
@@ -76,28 +86,17 @@ define([
             methodOnEnter: 'saveAnd' + title,
             saveAndAction: function () {
                 if (title === QUIT) {
-                    var keys = Object.keys(editors.files);
-                    var len = keys.length;
-                    var part;
-                    for (var i = 0; i < len; i++) {
-                        var key = keys[i];
-                        var savingFile = editors.files[key];
-                        part = editors.getPart(savingFile);
-                        if (part.isDirty()) {
-                            editors.saveFile({
-                                path: savingFile.path,
-                            });
-                        }
-                    }
+                    var registry = _getPartRegistry();
+                    var parts = registry.getDirtyParts();
+                    parts.forEach(function(part) {
+                        part.save();
+                    });
                     action();
                     dialog.hide();
                 } else {
-                    editors.saveFile({
-                        path: file.path,
-                        callback: function () {
-                            action();
-                            dialog.hide();
-                        }
+                    editorManager.requestSave(file.getPath(), null, function() {
+                        action();
+                        dialog.hide();
                     });
                 }
             },
@@ -251,9 +250,14 @@ define([
 
         topic.subscribe('view.close', function (event, close) {
 
+			logger.info('event = ', event);
+
             var view = event.view;
             var vc = event.viewContainer;
             var partContainer = view.partContainer;
+            
+            logger.info('partContainer = ', partContainer);
+            
             var part = partContainer.getPart();
             var page = workbench.getCurrentPage();
             var registry = page.getPartRegistry();
@@ -273,10 +277,6 @@ define([
                         editors.currentFiles.splice(i, 1);
                     } else {
                         console.warn('unexpected');
-                    }
-
-                    if (editors.currentFile === file) {
-                        editors.setCurrentFile(null);
                     }
 
                     workbench.unregistFromViewFocusList(view);
@@ -303,18 +303,14 @@ define([
         topic.subscribe('view.quit', function () {
 
             ide.unregisterBeforeUnloadChecker('checkModifiedFiles');
-            var keys = Object.keys(editors.files);
-            var modifiedFileNames = [];
-            var len = keys.length;
-            var part;
-            for (var i = 0; i < len; i++) {
-                var key = keys[i];
-                var file = editors.files[key];
-                part = editors.getPart(file);
-                if (part.isDirty()) {
-                    modifiedFileNames.push(file.name);
-                }
-            }
+
+            var ds;
+            var registry = _getPartRegistry();
+            var parts = registry.getDirtyParts();
+            parts.forEach(function(part){
+            	ds = part.getDataSource();
+            	modifiedFileNames.push(ds.getPersistance().getName());
+            });
 
             var action = function closeWindow() {
 
@@ -344,7 +340,7 @@ define([
                 ide.registerBeforeUnloadChecker('checkModifiedFiles', checkModifiedFiles);
             };
 
-            if (modifiedFileNames.length > 0) {
+            if (parts.length > 0) {
                 createDialog(modifiedFileNames.join(', '), QUIT, action, cancel);
             } else {
                 action();

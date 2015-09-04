@@ -35,12 +35,14 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/editors/plugin',
     'webida-lib/plugins/editors/EditorPreference',
-    'webida-lib/plugins/workbench/ui/Part', 
-    'webida-lib/plugins/workbench/ui/EditorPart', 
+    'webida-lib/plugins/workbench/ui/EditorModelManager',
+    'webida-lib/plugins/workbench/ui/EditorPart',
+    'webida-lib/plugins/workbench/ui/Part',
     'webida-lib/plugins/workbench/ui/PartContainer',
     'webida-lib/plugins/workbench/ui/PartModel',
     'webida-lib/plugins/workbench/ui/Viewer',
     'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
+    './Document',
     './preferences/preference-config',
     './TextEditorViewer',
     'dojo/domReady!'
@@ -51,12 +53,14 @@ define([
     Logger,
     editors,
     EditorPreference,
-    Part,
+    EditorModelManager,
     EditorPart,
+    Part,
     PartContainer,
     PartModel,
     Viewer,
     store,
+    Document,
     preferenceConfig,
     TextEditorViewer
 ) {
@@ -77,6 +81,8 @@ define([
 
     var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide'];
 
+    var recentViewers = new Map();
+
     function TextEditorPart(container) {
         logger.info('new TextEditorPart(' + container + ')');
         EditorPart.apply(this, arguments);
@@ -88,6 +94,16 @@ define([
         this.fileSavedHandle = null;
         this.preferences = null;
         this.foldingStatus = null;
+        this.on(Part.CONTENT_READY, function(part) {
+            console.log('Part.CONTENT_READY!!');
+            var viewer = part.getViewer();
+            var ds = part.getDataSource();
+            var recentViewer = recentViewers.get(ds);
+            if (recentViewer) {
+                viewer.synchronizeWidgetModel(recentViewer);
+            }
+            recentViewers.set(ds, viewer);
+        });
     }
 
 
@@ -158,21 +174,9 @@ define([
         initializeListeners: function() {
             logger.info('initializeListeners()');
             var that = this;
-            //subscribe topic
-
-            this.fileOpenedHandle = topic.subscribe('file.opened', function(file, content) {
-                if (that.file === file) {
-                    that.viewer.setValue(content);
-                }
-            });
-
-            this.fileSavedHandle = topic.subscribe('file.saved', function(file) {
+            //TODO : remove listener
+            this.on(EditorPart.AFTER_SAVE, function() {
                 that.foldingStatus = that.getViewer().getFoldings();
-            });
-            this.viewer.addEventListener('save', function() {
-                require(['dojo/topic'], function(topic) {
-                    topic.publish('#REQUEST.saveFile');
-                });
             });
         },
 
@@ -220,7 +224,6 @@ define([
         },
 
         /**
-         * @override
          * @param {HTMLElement} parent
          * @return {Viewer}
          */
@@ -241,22 +244,17 @@ define([
                     }
                 });
             });
-            viewer.on(Viewer.CONTENT_CHANGE, function(contents) {
-                that.getModelManager().setContents(contents, viewer);
-            });
             this.setViewer(viewer);
             this.initialize();
             return viewer;
         },
 
         /**
-         * @override
-         * @param {DataSource} dataSource
          * @return {Document}
          */
-        createModel: function(dataSource) {
-            logger.info('%c createModel(' + dataSource + ')', 'color:green');
-            this.setModelManager(new DocumentManager(dataSource));
+        createModel: function() {
+            logger.info('%c createModel()', 'color:green');
+            this.setModelManager(new EditorModelManager(this.getDataSource(), Document));
             var model = this.getModelManager().getSynchronizedModel(function(doc) {
                 //do something with doc ready if needed
             });
@@ -322,7 +320,7 @@ define([
             var doc = docMan.getModel();
             if (doc && dataSource) {
                 var file = dataSource.getPersistence();
-                file.setContents(doc.getText());
+                file.setContents(doc.getContents());
             }
             this.getViewer().markClean();
         },

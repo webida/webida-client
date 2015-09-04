@@ -60,7 +60,6 @@ define([
         this.parent = null;
         this.viewer = null;
         this.model = null;
-        this.container = container;
     }
 
 
@@ -74,25 +73,45 @@ define([
         prepareMVC: function() {
             logger.info('%cprepareMVC()', 'color:orange');
 
-            var part = this;
             var container = this.getContainer();
 
             //1. Create Viewer(s)
-            var createViewers = this._promiseFor(Viewer, container.getContentNode());
+            var createViewers = this.promiseFor(Viewer, container.getContentNode());
 
             //2. Create Model
-            var createModel = this._promiseFor(PartModel, container.getDataSource());
+            var createModels = this.promiseFor(PartModel);
 
             //3. Binds events then sets inital contents for the view
-            Promise.all([createViewers, createModel]).then(function(results) {
+            this.bindMVC(createViewers, createModels);
+        },
+
+        bindMVC: function(createViewers, createModels) {
+            logger.info('%cbindMVC', 'color:orange');
+
+            var part = this;
+            var container = this.getContainer();
+
+            Promise.all([createViewers, createModels]).then(function(results) {
 
                 var viewers = results[0];
-                var model = results[1][0];
+                var models = results[1];
+                var model;
 
-                viewers.forEach(function(viewer) {
+                viewers.forEach(function(viewer, i) {
+                    //a view per a model
+                    model = models[i];
+                    //Model listen to viewer's content change
+                    viewer.on(Viewer.CONTENT_CHANGE, function(request) {
+                        // @formatter:off
+                        // TODO : Consider the followings
+                        // var command = part.getCommand(request);
+                        // commandStack.execute(command);
+                        // @formatter:on
+                        model.update(request);
+                    });
                     //Viewer listen to model's content change
-                    model.on(PartModel.CONTENTS_CHANGE, function(model, sender) {
-                        viewer.render(model.getContents());
+                    model.on(PartModel.CONTENTS_CHANGE, function(request) {
+                        viewer.render(request);
                         container.updateDirtyState();
                     });
                     //Viewer listen to container's size change
@@ -100,11 +119,14 @@ define([
                         viewer.fitSize();
                     });
                     //Render initial model
-                    viewer.render(model.getContents());
+                    viewer.refresh(model.getContents());
                 });
 
                 //Notify user can navigate contents
                 part.emit(Part.CONTENT_READY, part);
+
+                //Check synchronized model's dirty state
+                part.getContainer().updateDirtyState();
 
             }, function(error) {
                 logger.error(error);
@@ -114,15 +136,22 @@ define([
         /**
          * Return Promise to create Viewer(s) or Model
          * @return {Promise}
-         * @private
          */
-        _promiseFor: function(Type, param) {
+        promiseFor: function(Type, param) {
+            logger.info('promiseFor(' + Type + ', ' + param + ')');
             var part = this;
             return new Promise(function(resolve, reject) {
                 try {
                     var objs = part['create'+Type](param);
                     if (!( objs instanceof Array)) {
-                        objs = [objs];
+                        if (!( objs instanceof Type)) {
+                            // @formatter:off
+                            throw new Error(part.constructor.name
+                            	+ ' create' + Type + '(' + (param || '') + ') method should return '
+                            	+ Type + ' or array of ' + Type + 's'); // @formatter:on
+                        } else {
+                            objs = [objs];
+                        }
                     }
                     var promises = objs.map(function(obj) {
                         return new Promise(function(resolve, reject) {
@@ -136,7 +165,7 @@ define([
                     Promise.all(promises).then(function(objs) {
                         resolve(objs);
                     }, function(error) {
-                        logger.warn(error);
+                        logger.error(error);
                     });
                 } catch(e) {
                     reject(e);
@@ -146,6 +175,7 @@ define([
 
         /**
          * @param {HTMLElement} parent
+         * @return {(Viewer|Viewer[])}
          * @abstract
          */
         createViewer: function(parentNode) {
@@ -167,11 +197,11 @@ define([
         },
 
         /**
-         * @param {DataSource} dataSource
+         * @return {(PartModel|PartModel[])}
          * @abstract
          */
-        createModel: function(dataSource) {
-            throw new Error('createModel(dataSource) should be implemented by ' + this.constructor.name);
+        createModel: function() {
+            throw new Error('createModel() should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -198,6 +228,10 @@ define([
          */
         getDataSource: function() {
             return this.getContainer().getDataSource();
+        },
+
+        setContainer: function(container) {
+            this.container = container;
         },
 
         getContainer: function() {
@@ -227,8 +261,21 @@ define([
             return this.parent;
         },
 
-        // ----------- unknowkn ----------- //
-        //TODO refactor the follwings
+        /**
+         * @param {ModelManager} modelManager
+         */
+        setModelManager: function(modelManager) {
+            this.modelManager = modelManager;
+        },
+
+        /**
+         * @return {ModelManager}
+         */
+        getModelManager: function() {
+            return this.modelManager;
+        },
+
+        // ----------- TODO refactor the follwings ----------- //
 
         hide: function() {
             throw new Error('hide() should be implemented by ' + this.constructor.name);

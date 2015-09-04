@@ -155,11 +155,18 @@ define([
     DataSource.LOAD_COMPLETE = 'loadComplete';
 
     /**
-     * Emit this event when DataSource's
-     * setContents(contents, callback) is called
+     * Emit this event before DataSource's
+     * setData(contents, callback) is called
      * @constant {string}
      */
-    DataSource.CONTENTS_CHANGE = 'contentsChange';
+    DataSource.BEFORE_SAVE = 'beforeSave';
+
+    /**
+     * Emit this event after DataSource's
+     * setData(contents, callback) is called
+     * @constant {string}
+     */
+    DataSource.AFTER_SAVE = 'afterSave';
 
     /**
      * This event is emitted when setId(newId) is called

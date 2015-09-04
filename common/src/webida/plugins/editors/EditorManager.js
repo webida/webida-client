@@ -76,7 +76,7 @@ define([
 
         this.extensionManager = ExtensionManager.getInstance();
 
-        //this._subscribe();
+        this._subscribe();
     }
 
     /**
@@ -99,6 +99,8 @@ define([
         _subscribe: function() {
             this.subscribed['#REQUEST.openFile'] = topic.subscribe(
                 '#REQUEST.openFile', this.requestOpen.bind(this));
+            this.subscribed['#REQUEST.saveFile'] = topic.subscribe(
+                '#REQUEST.saveFile', this.requestSave.bind(this));
         },
         // @formatter:on
 
@@ -168,8 +170,7 @@ define([
                 return;
             }
             require([partClassPath], function(PartClass) {
-                var page = workbench.getCurrentPage();
-                var registry = page.getPartRegistry();
+                var registry = that._getPartRegistry();
                 var parts = registry.getPartsByClass(dataSource, PartClass);
 
                 //'open with specific editor' or 'default editor' not opened
@@ -208,6 +209,43 @@ define([
          */
         _showExistingPart: function(PartClass, dataSource, options, callback) {
             logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
+        },
+
+        /**
+         * @private
+         */
+        _getPartRegistry: function() {
+            var page = workbench.getCurrentPage();
+            return page.getPartRegistry();
+        },
+
+        /**
+         * Saves specified dataSource.
+         * With empty arguments this will save current editor part's dataSource.
+         *
+         * @param {Object} dataSourceId
+         * @param {Object} options
+         * @param {requestSaveCallback} callback
+         */
+        /**
+         * @callback requestSaveCallback
+         * @param {Part} part
+         */
+        requestSave: function(dataSourceId, options, callback) {
+            logger.info('> requestSave(' + dataSourceId + ', ', options, ', ' + typeof callback + ')');
+            var part, parts, dataSource;
+            var registry = this._getPartRegistry();
+            var dsRegistry = workbench.getDataSourceRegistry();
+            if (dataSourceId) {
+                dataSource = dsRegistry.getDataSourceById(dataSourceId);
+                parts = registry.getPartsByDataSource(dataSource);
+                if ( parts instanceof Array && parts.length > 0) {
+                    part = parts[0];
+                }
+            } else {
+                part = registry.getCurrentEditorPart();
+            }
+            part.save(callback);
         }
     });
 

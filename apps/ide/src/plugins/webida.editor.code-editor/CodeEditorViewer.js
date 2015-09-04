@@ -490,8 +490,8 @@ define([
         codemirror.showHint(cm, hint, options);
     };
 
-    codemirror.commands.save = function (cm) {
-        cm.__instance.triggerEvent('save');
+    codemirror.commands.save = function(cm) {
+        topic.publish('#REQUEST.saveFile');
     };
 
     function jshint(cm, callback) {
