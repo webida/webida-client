@@ -125,7 +125,9 @@ define([
          * @param {Function} callback
          */
         setData: function(data, callback) {
+            var that = this;
             var file = this.getPersistence();
+            this.emit(DataSource.BEFORE_SAVE);
             file.setFlag(Persistence.READ, false);
             fsCache.writeFile(file.getPath(), data, function(error) {
                 if (error) {
@@ -134,8 +136,7 @@ define([
                     file.setContents(data);
                     file.setFlag(Persistence.READ, true);
                     callback(file.getContents());
-                    //TODO remove the following
-                    topic.publish('file.saved', file);
+                    that.emit(DataSource.AFTER_SAVE);
                 }
             });
         },

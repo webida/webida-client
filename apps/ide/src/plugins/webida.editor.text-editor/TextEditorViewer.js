@@ -29,6 +29,7 @@
 
 // @formatter:off
 define([
+    'dojo/topic',
     'require',
     'webida-lib/util/genetic',
     'external/lodash/lodash.min',
@@ -38,8 +39,9 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/EditorViewer',
     'webida-lib/plugins/workbench/ui/Viewer',
-    'dojo/topic'
+    './TextChangeRequest'
 ], function (
+    topic,
     require,
     genetic,
     _,
@@ -49,7 +51,7 @@ define([
     Logger,
     EditorViewer,
     Viewer,
-    topic
+    TextChangeRequest
 ) {
     'use strict';
 // @formatter:on
@@ -181,7 +183,7 @@ define([
     };
 
     codemirror.commands.save = function(cm) {
-        cm.__instance.triggerEvent('save');
+        topic.publish('#REQUEST.saveFile');
     };
 
     function TextEditorViewer(elem, file, startedListener) {
@@ -260,6 +262,12 @@ define([
 
     genetic.inherits(TextEditorViewer, EditorViewer, {
 
+        synchronizeWidgetModel: function(recentViewer) {
+            this.editor.swapDoc(recentViewer.editor.getDoc().linkedDoc({
+                sharedHist: true
+            }));
+        },
+
         addDeferredAction: function(action) {
             if (this.editor) {
                 action(this);
@@ -315,8 +323,11 @@ define([
             this.editor = codemirror(parentNode, this.cmOptions);
 
             //TODO : This code should be moved to TextEditorAdapter
-            this.editor.on('change', function(cm, e) {
-                self.emit(Viewer.CONTENT_CHANGE, cm.getValue());
+            this.editor.on('change', function(cm, change) {
+                var request = new TextChangeRequest();
+                request.setDelta(change);
+                request.setContents(cm.getValue());
+                self.emit(Viewer.CONTENT_CHANGE, request);
             });
 
             this.editor.setOption('showCursorWhenSelecting', true);
@@ -433,6 +444,7 @@ define([
         },
 
         triggerEvent: function(type, event) {
+            logger.info('triggerEvent(' + type + ', event)');
             var self = this;
             if (this.customListeners !== undefined) {
                 if (this.customListeners[type] !== undefined) {
@@ -822,8 +834,12 @@ define([
          *
          * @param {Object} contents
          */
-        render: function(contents) {
-            logger.info('render(contents)');
+        render: function(request) {
+            logger.info('render(' + request + ')');
+            //Do nothing
+        },
+
+        refresh: function(contents) {
             this.editor.setValue(contents);
         },
 
@@ -871,11 +887,6 @@ define([
                 logger.info('this.editor = ', this.editor);
                 this.editor.focus();
             }
-        },
-
-        refresh: function(text) {
-            logger.info('refresh(text)');
-            self.editor.setValue(text);
         },
 
         fitSize: function() {

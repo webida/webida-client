@@ -98,13 +98,23 @@ define([
         },
 
         /**
-         * Renders WidgetAdapter with contents
+         * Renders WidgetAdapter with delta
+         *
+         * @param {Object} delta
+         * @abstract
+         */
+        render: function(delta) {
+            throw new Error('render(delta) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Refreshes all of the view with contents
          *
          * @param {Object} contents
          * @abstract
          */
-        render: function(contents) {
-            throw new Error('render(contents) should be implemented by ' + this.constructor.name);
+        refresh: function(contents) {
+            throw new Error('refresh(contents) should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -162,8 +172,8 @@ define([
     /** @constant {string} */
     Viewer.CONTENT_CHANGE = 'contentChange';
 
-    /** 
-     * 
+    /**
+     *
      * @constant {string}
      */
     Viewer.READY = 'viewerReady';

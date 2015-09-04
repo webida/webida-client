@@ -51,23 +51,51 @@ define([
     genetic.inherits(EditorPart, Part, {
 
         /**
-         * @param {ModelManager} modelManager
+         * Returns true if the model is updated
+         * since last saved moment.
+         *
+         * @return {boolean}
          */
-        setModelManager: function(modelManager) {
-            this.modelManager = modelManager;
+        isDirty: function() {
+            var manager = this.getModelManager();
+            return manager ? manager.canSaveModel() : false;
+        },
+
+        save: function(callback) {
+            var that = this;
+            var container = this.getContainer();
+            this.emit(EditorPart.BEFORE_SAVE, this);
+            this.getModelManager().saveModel(function() {
+                that._execFunc(callback, that);
+            });
+        },
+
+        saveAs: function() {
+            throw new Error('saveAs() should be implemented by ' + this.constructor.name);
+        },
+
+        canSaveAs: function() {
+            throw new Error('canSaveAs() should be implemented by ' + this.constructor.name);
+        },
+
+        toString: function() {
+            var res = '<' + this.constructor.name + '>#' + this._partId;
+            if (this.file) {
+                res += '(' + this.file.name + ')';
+            }
+            return res;
         },
 
         /**
-         * @return {ModelManager}
+         * @private
          */
-        getModelManager: function() {
-            return this.modelManager;
+        _execFunc: function(callback, param) {
+            if ( typeof callback === 'function') {
+                callback(param);
+            }
         },
 
-        isDirty: function() {
-            var modelManager = this.getModelManager();
-            return modelManager === null ? false : modelManager.canSaveModel();
-        },
+        // ----------- TODO refactor the follwings ----------- //
 
         getValue: function() {
             throw new Error('getValue() should be implemented by ' + this.constructor.name);
@@ -75,7 +103,6 @@ define([
         markClean: function() {
             throw new Error('markClean() should be implemented by ' + this.constructor.name);
         },
-
         isClean: function() {
             throw new Error('isClean() should be implemented by ' + this.constructor.name);
         },
@@ -90,13 +117,6 @@ define([
         },
         getContextMenuItems: function(opened, items, menuItems, deferred) {
             deferred.resolve(items);
-        },
-        toString: function() {
-            var res = '<' + this.constructor.name + '>#' + this._partId;
-            if (this.file) {
-                res += '(' + this.file.name + ')';
-            }
-            return res;
         }
     });
 

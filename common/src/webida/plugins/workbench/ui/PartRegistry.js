@@ -224,6 +224,36 @@ define([
             });
             return dirtyParts;
         },
+
+        /**
+         * @return {Array.<EditorPart>} EditorPart array
+         */
+        getEditorParts: function() {
+            var editorParts = [];
+            this.getParts().forEach(function(parts, dataSource) {
+                parts.forEach(function(part) {
+                    if ( part instanceof EditorPart) {
+                        editorParts.push(part);
+                    }
+                });
+            });
+            return editorParts;
+        },
+
+        /**
+         * @return {Array.<ViewPart>} ViewPart array
+         */
+        getViewParts: function() {
+            var viewParts = [];
+            this.getParts().forEach(function(parts, dataSource) {
+                parts.forEach(function(part) {
+                    if ( part instanceof ViewPart) {
+                        viewParts.push(part);
+                    }
+                });
+            });
+            return viewParts;
+        }
     });
 
     /** @type {string} */

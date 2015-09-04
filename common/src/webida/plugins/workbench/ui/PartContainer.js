@@ -80,6 +80,11 @@ define([
         dataSource.on(DataSource.ID_CHANGE, function(/*dataSource, oldId, newId*/) {
             that.decorateTitle();
         });
+
+        //In case of save
+        dataSource.on(DataSource.AFTER_SAVE, function() {
+            that.updateDirtyState();
+        });
     }
 
 
@@ -137,6 +142,7 @@ define([
          */
         setPart: function(part) {
             this.part = part;
+            part.setContainer(this);
         },
 
         /**
@@ -270,6 +276,9 @@ define([
          * After update publishes corresponding topic
          */
         updateDirtyState: function() {
+
+            logger.info('updateDirtyState()');
+            logger.trace();
 
             if (!this.getPart()) {
                 topic.publish('editors.clean.current');

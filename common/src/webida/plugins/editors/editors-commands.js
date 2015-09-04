@@ -276,28 +276,22 @@ define([
 		editors.splitViewContainer.set('verticalSplit', false);
 	}
 
-	function saveAllFiles() {
-		// editors.files is currently opened file list
-		var opened = _.values(editors.files);
-		var currentFile = editors.currentFile;
-		var part;
+	function saveFile() {
+		topic.publish('#REQUEST.saveFile');
+	}
 
-		_.each(opened, function (file) {
-			part = editors.getPart(file);
-			if (part.isDirty()) {
-				editors.setCurrentFile(file);
-				editors.saveFile();
-			}
-		});
-		editors.setCurrentFile(currentFile);
+	function saveAllFiles() {
+        var page = workbench.getCurrentPage();
+        var registry = page.getPartRegistry();
+        var parts = registry.getDirtyParts();
+        parts.forEach(function(part){
+        	part.save();
+        });
 	}
 
 	function closeOtherFiles() {
 		var curFilePath = editors.currentFile.path;
-
-		// editors.files is currently opened file list
 		var opened = _.values(editors.files);
-
 		_.each(opened, function (file) {
 			if (file.path !== curFilePath) {
 				editors.closeFile({
@@ -352,6 +346,7 @@ define([
 		moveToOtherTabContainer : moveToOtherTabContainer,
 		rotateToVertical : rotateToVertical,
 		rotateToHorizontal : rotateToHorizontal,
+		saveFile : saveFile,
 		saveAllFiles : saveAllFiles,
 		closeOtherFiles : closeOtherFiles,
 		closeAllFiles : closeAllFiles,

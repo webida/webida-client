@@ -75,13 +75,15 @@ define([
          * @param {EditorModel} model
          */
         saveModel: function(callback) {
-            var that = this;
-            var model = this.getModel();
-            var dataSource = this.getDataSource();
-            dataSource.setData(model.getSerialized(), function(data) {
-                that.setSavedData(data);
-                callback(model);
-            });
+            if (this.canSaveModel() === true) {
+                var that = this;
+                var model = this.getModel();
+                var dataSource = this.getDataSource();
+                dataSource.setData(model.getSerialized(), function(data) {
+                    that.setSavedData(data);
+                    callback(model);
+                });
+            }
         },
 
         /**

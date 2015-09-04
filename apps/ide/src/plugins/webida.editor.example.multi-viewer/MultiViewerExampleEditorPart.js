@@ -37,12 +37,13 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/loadCSSList',
     'webida-lib/plugins/editors/plugin',
+    'webida-lib/plugins/workbench/ui/EditorModelManager',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/MultiViewerEditorPart',
     'webida-lib/plugins/workbench/ui/Viewer',
     'webida-lib/plugins/workbench/ui/PartModel',
     'plugins/webida.editor.code-editor/CodeEditorViewer',
-    'plugins/webida.editor.text-editor/DocumentManager',
+    'plugins/webida.editor.text-editor/Document',
     'plugins/webida.editor.text-editor/TextEditorPart',
     './FormEditorViewer',
     'dojo/domReady!'
@@ -54,12 +55,13 @@ define([
     Logger,
     loadCSSList,
     editors,
+    EditorModelManager,
     EditorPart, 
     MultiViewerEditorPart,
     Viewer,
     PartModel,
     CodeEditorViewer,
-    DocumentManager,
+    Document,
     TextEditorPart,
     FormEditorViewer
 ) {
@@ -80,7 +82,7 @@ define([
         var file = dataSource.getPersistence();
         var that = this;
 
-        this.setModelManager(new DocumentManager(dataSource));
+        this.setModelManager(new EditorModelManager(dataSource, Document));
 
         this.on(MultiViewerEditorPart.TAB_SELECT, function(viewer) {
             //To implment context menu
@@ -163,7 +165,8 @@ define([
             var that = this;
             var formViewer = this.getViewerById('FormEditor');
             formViewer.on(Viewer.CONTENT_CHANGE, function(contents) {
-                that.getModelManager().setContents(contents, formViewer);
+            	logger.error('wow');
+                //that.getModelManager().setContents(contents, formViewer);
             });
         },
 
@@ -173,8 +176,7 @@ define([
          */
         createViewers: function() {
             var that = this;
-            var modelManager = this.getModelManager();
-            modelManager.createModel(function(doc) {
+            this.getModelManager().createModel(function(doc) {
 
                 //1. formViewer
                 var formViewer = that.getFormViewer();
@@ -242,7 +244,7 @@ define([
             var codeViewer = this.getViewerById('CodeEditor');
             if (doc && dataSource) {
                 var file = dataSource.getPersistence();
-                file.setContents(doc.getText());
+                file.setContents(doc.getContents());
             }
             if (codeViewer) {
                 codeViewer.markClean();
