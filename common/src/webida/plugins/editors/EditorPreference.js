@@ -27,24 +27,34 @@
 
 define([
 	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client'
+	'webida-lib/util/logger/logger-client',
+    'plugins/webida.preference/preference-service-factory'
 ], function(
 	genetic,
-	Logger
+	Logger,
+    PreferenceFactory
 ) {
 	'use strict';
 
 	var logger = new Logger();
 	logger.off();
 
-	function EditorPreference(storage, viewer) {
-		logger.info('new EditorPreference('+storage+', '+viewer+')');
+    var preferences = PreferenceFactory.get('WORKSPACE');
+
+
+	function EditorPreference(preferenceIds, viewer) {
+		logger.info('new EditorPreference('+preferenceIds+', '+viewer+')');
 		var that = this;
 		this.configs = null;
-		this.storage = storage;
+		//this.storage = preferenceService;
+        this.preferenceIds = preferenceIds;
 		this.viewer = viewer;
-		this.listener = function (value, key) {
-			that.setField(key, value);
+		this.listener = function (values) {
+            for (var key in values) {
+                if (values.hasOwnProperty(key)) {
+                    that.setField(key, values[key]);
+                }
+            }
 		}
 	}
 
@@ -54,32 +64,49 @@ define([
 			var that = this;
 			var viewer = this.viewer;
 			this.configs = configs;
-	        this.storage.addLoadedListener(function () {
+
+            for (var i=0; i<that.preferenceIds.length; i++) {
+                preferences.getValues(that.preferenceIds[i], function (values) {
+                    for (var key in values) {
+                        if (values.hasOwnProperty(key)) {
+                            that.setField(key, values[key]);
+                        }
+                    }
+                });
+                preferences.addFieldChangeListener(that.preferenceIds[i], that.listener);
+            }
+
+	        /*this.storage.addLoadedListener(function () {
 	            Object.keys(that.configs).forEach(function (key) {
 	                that.setField(key, that.storage.getValue(key));
 	                if(typeof that.storage.addFieldChangeListener === 'function'){
 	                	that.storage.addFieldChangeListener(key, that.listener);
 	                }
 	            });
-	        });
+	        });*/
 		},
 		unsetFields : function(){
 			logger.info('unsetFields()');
 	    	var that = this;
-            Object.keys(this.configs).forEach(function (key) {
+            for (var i=0; i<that.preferenceIds.length; i++) {
+                preferences.addFieldChangeListener(that.preferenceIds[i], that.listener);
+            }
+            /*Object.keys(this.configs).forEach(function (key) {
             	if(typeof that.storage.removeFieldChangeListener === 'function'){
             		that.storage.removeFieldChangeListener(key, that.listener);
             	}
-            });
+            });*/
 		},
 		setField : function(key, value){
 			//logger.info('setField('+key+', '+value+')');
 			var config = this.configs[key];
-	        var setter = config[0];
-	        if (value === undefined && config.length > 1) {
-	            value = config[1];
-	        }
-	        this.viewer[setter](value);
+            if (config) {
+                var setter = config[0];
+                if (value === undefined && config.length > 1) {
+                    value = config[1];
+                }
+                this.viewer[setter](value);
+            }
 		}
 	});
 
