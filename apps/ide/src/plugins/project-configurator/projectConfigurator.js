@@ -39,6 +39,7 @@ define(['webida-lib/app',
     var projectConfigurationLoadPromise = readProjectRunConfigurations()
         .then(getConfigurationObjectByProject)
         .then(function () {
+            topic.publish('projectConfig.loadCompleted');
             // FIXME this module has no relation with runAs
             if (projectPropertyList.length === 0 && noProjectList.length === 0) {
                 topic.publish('toolbar.runas.disable');
@@ -562,6 +563,7 @@ define(['webida-lib/app',
                 callback(projectPropertyList);
             }
         });
+        return projectPropertyList;
     };
 
     projectConfigurator.getRunAsList = function () {
