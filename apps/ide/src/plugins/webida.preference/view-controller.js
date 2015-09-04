@@ -60,6 +60,8 @@ define([
         'SimplePage': 'plugins/webida.preference/pages/SimplePage'
     };
 
+    var onChangingPage = false;
+
     function _onStoreStatusChanged(status) {
         if (currentPage.store.status.dirty) {
             reg.byId('restore-preference').set('disabled', false);
@@ -87,35 +89,39 @@ define([
     }
 
     function _onChangeTreeSelection(node) {
-        // get preference store
-        var store = preferenceManager.getStore(node.id, scope, scopeInfo);
-        // get extension's meta
-        var extension = _.find(preferenceExts, {id: node.id});
-        // guess page class module
-        var pageModule = PAGE_CLASS[extension.page] ?
-            PAGE_CLASS[extension.page] :
-            (extension.module + '/' + extension.page);
+        if(!onChangingPage) {
+            onChangingPage = true;
+            // get preference store
+            var store = preferenceManager.getStore(node.id, scope, scopeInfo);
+            // get extension's meta
+            var extension = _.find(preferenceExts, {id: node.id});
+            // guess page class module
+            var pageModule = PAGE_CLASS[extension.page] ?
+                PAGE_CLASS[extension.page] :
+                (extension.module + '/' + extension.page);
 
-        // clear and redraw content area
-        if (currentPage) {
-            currentPage.store.removeStatusChangeListener(_onStoreStatusChanged);
-            currentPage.onPageRemoved();
-            currentPage = undefined;
-        }
-        $(subContentArea).empty();
-
-        require([extension.module, pageModule], function(module, Page) {
-            var pageData;
-            if (module && extension.pageData && typeof module[extension.pageData] === 'function') {
-                pageData = module[extension.pageData]();
+            // clear and redraw content area
+            if (currentPage) {
+                currentPage.store.removeStatusChangeListener(_onStoreStatusChanged);
+                currentPage.onPageRemoved();
+                currentPage = undefined;
             }
-            currentPage = new Page(store, pageData);
-            currentPage.store.addStatusChangeListener(_onStoreStatusChanged);
-            _onStoreStatusChanged();
-            _initializeContentArea(node, store);
-            subContentArea.appendChild(currentPage.getPage());
-            currentPage.onPageAppended();
-        });
+            $(subContentArea).empty();
+
+            require([extension.module, pageModule], function (module, Page) {
+                var pageData;
+                if (module && extension.pageData && typeof module[extension.pageData] === 'function') {
+                    pageData = module[extension.pageData]();
+                }
+                currentPage = new Page(store, pageData);
+                currentPage.store.addStatusChangeListener(_onStoreStatusChanged);
+                _onStoreStatusChanged();
+                _initializeContentArea(node, store);
+                subContentArea.appendChild(currentPage.getPage());
+                currentPage.onPageAppended();
+                onChangingPage = false;
+            });
+        }
     }
 
     function _initializeContentArea(node, store) {
