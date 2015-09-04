@@ -33,5 +33,19 @@ function () {
             'default': 10
         });
     };
+    GitPreferences.getDefault = function () {
+        return {
+            'git:linesOfContext': 10
+        };
+    };
+    GitPreferences.getSchema = function () {
+        return [
+            {
+                key: 'git:linesOfContext',
+                type: 'text',
+                opt: {name: 'Lines of Context'}
+            }
+        ];
+    };
     return GitPreferences;
 });

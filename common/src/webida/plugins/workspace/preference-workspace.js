@@ -17,6 +17,41 @@
 define([], function () {
     'use strict';
     return {
+        getDefault: function () {
+            return {
+                'workspace:filter:.*': false,
+                'workspace:filter:.w.p': true
+            };
+        },
+        getSchema: function () {
+            return [
+                {
+                    type: 'group',
+                    title: 'Filter'
+                },
+                {
+                    key: 'workspace:filter:.*',
+                    type: 'checkbox',
+                    opt: {
+                        name: 'Filter .* resources'
+                    }
+                },
+                {
+                    key: 'workspace:filter:.w.p',
+                    type: 'checkbox',
+                    opt: {
+                        name: 'Filter .project and .workspace directories'
+                    }
+                },
+                {
+                    key: 'workspace:filter:test',
+                    type: 'text',
+                    opt: {
+                        name: 'test filter'
+                    }
+                }
+            ];
+        },
         view: function (fieldCreator) {
             fieldCreator.addField('workspace:filter:.*', 'checkbox', {
                 title: 'Filter',

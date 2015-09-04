@@ -1,0 +1,13 @@
+{
+    "name": "webida.terminal.restrict",
+    "description": "Terminal (Restrict)",
+    "version": "0.1",
+    "extensions": {
+        "webida.common.workbench:views" : {
+            "module" : "plugins/webida.terminal.restrict/plugin",
+            "location": "bottom",
+            "getView": "getView",
+            "onViewAppended": "onViewAppended"
+        }
+    }
+}

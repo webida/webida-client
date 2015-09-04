@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,30 @@ define([], function () {
     'use strict';
 
     return {
+        getDefault: function () {
+            return {
+                'webida.editor.text-editor:invisibles': false,
+                'webida.editor.text-editor:lineNumbers': false
+            };
+        },
+        getSchema: function () {
+            return [
+                {
+                    key: 'webida.editor.text-editor:invisibles',
+                    type: 'checkbox',
+                    opt: {
+                        name: 'Show whitespace characters'
+                    }
+                },
+                {
+                    key: 'webida.editor.text-editor:lineNumbers',
+                    type: 'checkbox',
+                    opt: {
+                        name: 'Show line numbers'
+                    }
+                }
+            ];
+        },
         editor: function (fieldCreator) {
             fieldCreator.addField('webida.editor.text-editor:invisibles', 'checkbox', {
                 title: 'Show or Hide',

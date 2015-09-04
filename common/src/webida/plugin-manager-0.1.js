@@ -530,17 +530,19 @@ function (webida, _, URI, all, request, topic, Logger) {
 
             // read plugins/start-plugins.json and set startPlugins
             function readAppPluginSettings() {
-                var settingsFile = URI(appPath).segment('plugins/plugin-settings.json').pathname();
-                require(['dojo/text!' + settingsFile], function (text) {
-                    var o;
-                    try { o = JSON.parse(text); } catch (e) { }
-                    if (o) {
-                        appPluginSettings = trimPluginSettings(o);
-                        readUserPluginSettings();
-                    } else {
-                        alert('Failed to parse the app plugin settings file ' + appPluginSettings);
-                    }
+                webida.getPluginSettingsPath(function (path) {
+                    var settingsFile = URI(appPath).segment(path).pathname();
+                    require(['dojo/text!' + settingsFile], function (text) {
+                        var o;
+                        try { o = JSON.parse(text); } catch (e) { }
+                        if (o) {
+                            appPluginSettings = trimPluginSettings(o);
+                            readUserPluginSettings();
+                        } else {
+                            alert('Failed to parse the app plugin settings file ' + appPluginSettings);
+                        }
 
+                    });
                 });
             }
 

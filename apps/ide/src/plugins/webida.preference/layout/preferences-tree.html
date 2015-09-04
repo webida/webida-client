@@ -1,0 +1,14 @@
+<div>
+    <% _.forEach(categories, function(c) { %>
+    <div class="preferenceview-category-item <% if(c.selected) { %>selected<% } %>"
+         data-id="<%= c.id %>"
+         data-parent-id="<%= c.parent %>"
+         style="display: <% if (!c.parent) { %> block <% } else { %> none <% } %>;">
+        <span style="width: <%= (c.depth * 15) %>px; display: inline-block;"></span>
+        <span class="preferenceview-category-item__tree <% if(c.hasChild && c.expanded) { %> expanded <% } else if (c.hasChild && !c.expanded) { %> collapsed <% } else { %> none <% } %>"
+              data-id="<%= c.id %>">
+        </span>
+        <span><%= c.name %></span>
+    </div>
+    <% }) %>
+</div>

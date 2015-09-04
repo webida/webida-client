@@ -1,0 +1,48 @@
+{
+    "name": "webida.preference",
+    "description": "Preference",
+    "version": "0.1",
+    "requirement": "webida.common.workbench",
+    "extensionPoints": {
+        "webida.preference:pages": [
+            { "name": "id", "type": "string" },
+            { "name": "hierarchy", "type": "string" },
+            { "name": "name", "type": "string" },
+            { "name": "page", "type": "string" },
+            { "name": "pageData", "type": "function" },
+            { "name": "scope", "type": "Array" },
+            { "name": "getDefault", "type": "function" }
+        ]
+    },
+    "extensions": {
+        "webida.common.workbench:menu": {
+            "location" : "/&Help/",
+            "wholeItems" : {
+                "&Preferences" : [ "cmnd", {
+                    "shortcut" : {
+                        "keys" : { "default" : "Alt + P" }, "desc" : "Workspace Preferences"
+                    },
+                    "toolbar": {
+                        "icons" : "./styles/webida-images/icons/toolbar_preference.png",
+                        "tooltip" : "Preferences",
+                        "enabledOn": "toolbar.preferences.enable",
+                        "disabledOn": "toolbar.preferences.disable"
+                    },
+                    "procedural": true
+                }]
+            },
+            "getViableItems": "getViableItemsForWorkbench"
+        },
+        "webida.common.workspace:menu" : {
+            "location" : "/",
+            "wholeItems" : {
+                "Preferences" : [ "cmnd", {
+                    "shortcut" : {
+                        "keys" : { "default" : "Alt + P" }, "desc" : "Project Preferences"
+                    }
+                }]
+            },
+            "getViableItems" : "getViableItemsForWorkspace"
+        }
+    }
+}

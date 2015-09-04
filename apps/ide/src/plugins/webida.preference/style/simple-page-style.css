@@ -1,0 +1,19 @@
+#prefDlgContent .preferenceview-sub-content h2 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #565F69;
+}
+
+#prefDlgContent .preferenceview-sub-content .component-wrap {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+}
+
+#prefDlgContent .preferenceview-sub-content .dijitTextBox {
+    margin-left: 5px;
+}
+
+#prefDlgContent .preferenceview-sub-content .dijitComboBox {
+    margin-left: 5px;
+}
