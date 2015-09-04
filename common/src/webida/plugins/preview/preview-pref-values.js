@@ -20,37 +20,37 @@
  */
 
 define([
-	'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
+    'plugins/webida.preference/preference-service-factory',
 	'webida-lib/util/logger/logger-client'
-], function (preferences, Logger) {
+], function (
+    PreferenceFactory,
+    Logger
+) {
     'use strict';
 
 	var logger = new Logger();
 	//logger.setConfig('level', Logger.LEVELS.log);
 	//logger.off();
+    var preferences = PreferenceFactory.get('WORKSPACE');
 
     // preferece value
+    var PREFERENCE_ID = 'preview';
     var PREFERENCE_AUTO_CONTENTS = 'preview:autoContentsChange';
     var PREFERENCE_LIVE_RELOAD = 'preview:liveReload';
     var options = {};
     options[PREFERENCE_AUTO_CONTENTS] = false;
     options[PREFERENCE_LIVE_RELOAD] = true;
 
-    function applyPreferences(value, id) {
-        if (typeof value === 'boolean') {
-            options[id] = value;
-        } else {
-            logger.log('Non-boolean value was tried to set an option ' + id + '. Ignored.');
+    function applyPreferences(values) {
+        if (typeof values[PREFERENCE_AUTO_CONTENTS] === 'boolean') {
+            options[PREFERENCE_AUTO_CONTENTS] = values[PREFERENCE_AUTO_CONTENTS];
+        }
+        if (typeof values[PREFERENCE_LIVE_RELOAD] === 'boolean') {
+            options[PREFERENCE_LIVE_RELOAD] = values[PREFERENCE_LIVE_RELOAD];
         }
     }
 
-    preferences.addLoadedListener(function () {
-        applyPreferences(preferences.getValue(PREFERENCE_AUTO_CONTENTS), PREFERENCE_AUTO_CONTENTS);
-        applyPreferences(preferences.getValue(PREFERENCE_LIVE_RELOAD), PREFERENCE_LIVE_RELOAD);
-
-        preferences.addFieldChangeListener(PREFERENCE_AUTO_CONTENTS, applyPreferences);
-        preferences.addFieldChangeListener(PREFERENCE_LIVE_RELOAD, applyPreferences);
-    });
+    preferences.addFieldChangeListener(PREFERENCE_ID, applyPreferences);
 
     return options;
 });
