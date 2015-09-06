@@ -32,7 +32,6 @@ define([
     './DataSourceRegistry',
     './LayoutPane',
     './Page',
-    './PartModelProvider',
     './WorkspaceModel'
 ], function(
     EventEmitter,
@@ -42,7 +41,6 @@ define([
     DataSourceRegistry,
     LayoutPane,
     Page,
-    PartModelProvider,
     WorkspaceModel
 ) {
     'use strict';
@@ -52,7 +50,6 @@ define([
      * @typedef {Object.<Object, Object>} Map
      * @typedef {Object} DataSourceRegistry
      * @typedef {Object} Page
-     * @typedef {Object} PartModelProvider
      * @typedef {Object} WorkbenchModel
      * @typedef {Object} WorkspaceModel
      */
@@ -71,8 +68,6 @@ define([
         this.dataSourceRegistry = new DataSourceRegistry();
         /** @type {WorkspaceModel} */
         this.workspaceModel = new WorkspaceModel();
-        /** @type {PartModelProvider} */
-        this.partModelProvider = new PartModelProvider();
     }
 
 
@@ -98,6 +93,13 @@ define([
         },
 
         /**
+         * @return {Page[]}
+         */
+        getPages: function() {
+            return this.pages;
+        },
+
+        /**
          * @param {Page} page
          */
         setCurrentPage: function(page) {
@@ -116,6 +118,23 @@ define([
          */
         getDataSourceRegistry: function() {
             return this.dataSourceRegistry;
+        },
+
+        /**
+         * Return true if specified dataSource is used
+         * @return {boolean}
+         */
+        isDataSourceUsed: function(dataSource) {
+            var reg, parts;
+            var pages = this.getPages();
+            for (var i in pages) {
+                reg = pages[i].getPartRegistry();
+                parts = reg.getPartsByDataSource(dataSource);
+                if (parts.length > 0) {
+                    return true;
+                }
+            }
+            return false;
         },
 
         /**
@@ -140,13 +159,6 @@ define([
          */
         getWorkspaceModel: function() {
             return this.workspaceModel;
-        },
-
-        /**
-         * @param {PartModelProvider}
-         */
-        getPartModelProvider: function() {
-            return this.partModelProvider;
         },
 
         /**
