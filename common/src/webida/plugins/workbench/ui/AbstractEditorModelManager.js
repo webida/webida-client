@@ -33,13 +33,15 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './PartModel',
-    './PartModelManager'
+    './PartModelManager',
+    './partModelProvider'
 ], function(
     workbench,
     genetic, 
     Logger,
     PartModel,
-    PartModelManager
+    PartModelManager,
+    partModelProvider
 ) {
     'use strict';
 // @formatter:on
@@ -125,8 +127,8 @@ define([
 
         /**
          * Retrive Synchronized PartModel for the assigned dataSource
-         * from PartModelProvider. If not exists this method
-         * creates a new PartModel and register it to the PartModelProvider.
+         * from partModelProvider. If not exists this method
+         * creates a new PartModel and register it to the partModelProvider.
          *
          * @param {editorModelManager~getSynchronizedModel} callback
          * @return {EditorModel}
@@ -138,11 +140,10 @@ define([
         getSynchronizedModel: function(callback) {
             logger.info('getSynchronizedModel(callback)');
             var dataSource = this.getDataSource();
-            var provider = workbench.getPartModelProvider();
-            var model = provider.getPartModel(dataSource, this.getModelClass());
+            var model = partModelProvider.getPartModel(dataSource, this.getModelClass());
             logger.info('model --> ', model);
             if (!!model) {
-            	this.setModel(model);
+                this.setModel(model);
                 this._execFunc(callback, model);
                 //See createModel
                 setTimeout(function() {
@@ -150,7 +151,7 @@ define([
                 });
             } else {
                 model = this.createModel(callback);
-                provider.register(dataSource, model);
+                partModelProvider.register(dataSource, model);
             }
             return model;
         },

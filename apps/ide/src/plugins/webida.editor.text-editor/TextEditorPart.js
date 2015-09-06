@@ -35,11 +35,14 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/editors/plugin',
     'webida-lib/plugins/editors/EditorPreference',
+    'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/EditorModelManager',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/Part',
     'webida-lib/plugins/workbench/ui/PartContainer',
     'webida-lib/plugins/workbench/ui/PartModel',
+    'webida-lib/plugins/workbench/ui/partModelProvider',
+    'webida-lib/plugins/workbench/ui/PartRegistry',
     'webida-lib/plugins/workbench/ui/Viewer',
     'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
     './Document',
@@ -53,11 +56,14 @@ define([
     Logger,
     editors,
     EditorPreference,
+    workbench,
     EditorModelManager,
     EditorPart,
     Part,
     PartContainer,
     PartModel,
+    partModelProvider,
+    PartRegistry,
     Viewer,
     store,
     Document,
@@ -81,7 +87,15 @@ define([
 
     var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide', 'content-assist'];
 
+    //To support synchronizeWidgetModel
+    //TODO : refactor
     var recentViewers = new Map();
+    var partRegistry = workbench.getCurrentPage().getPartRegistry();
+    partRegistry.on(PartRegistry.PART_UNREGISTERED, function(part) {
+        if (partModelProvider.isModelUsed(part.getModel()) === false) {
+            recentViewers['delete'](part.getDataSource());
+        }
+    });
 
     function TextEditorPart(container) {
         logger.info('new TextEditorPart(' + container + ')');
@@ -263,8 +277,8 @@ define([
             return model;
         },
 
-        destroy: function() {
-            logger.info('destroy()');
+        onDestroy: function() {
+            logger.info('onDestroy()');
             if (this.viewer) {
                 this.viewer.destroyAdapter();
                 this.viewer = null;
