@@ -835,6 +835,10 @@ define([
 
         refresh: function(contents) {
             this.editor.setValue(contents);
+            if (!this.contentsInitialized) {
+                this.editor.clearHistory();
+                this.contentsInitialized = true;
+            }
         },
 
         foldCodeRange: function(range) {
