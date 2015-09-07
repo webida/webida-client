@@ -59,6 +59,7 @@ define([
     'webida-lib/util/loadCSSList',
     'popup-dialog',
     'plugins/webida.notification/notification-message',
+    'plugins/project-configurator/project-info-service',
     'external/lodash/lodash.min',
     'external/async/dist/async.min',
     'external/URIjs/src/URI',
@@ -98,7 +99,8 @@ define([
     pathUtil, 
     loadCSSList,
     PopupDialog, 
-    toastr, 
+    toastr,
+    projectInfo, 
     _, 
     async, 
     URI,
@@ -137,27 +139,87 @@ define([
 
     var iconsExtensions = pluginManager.getExtensions(extensionPoints.WORKSPACE_NODE_ICONS);
     var overlayIconsExtensions = pluginManager.getExtensions(extensionPoints.WORKSPACE_NODE_OVERLAY_ICONS);
-    var fileExtensionIconClassMap = {};
-    var fileNameIconClassMap = {};
+    var defaultFileExtensionIconClassMap = {};
+    var defaultFileNameIconClassMap = {};
+    var projectTypeFileExtensionIconClassMap = {};
+    var projectTypeFileNameIconClassMap = {};
+
     var stateSetIconClassMap = {};
     var cssFilePathList = [];
 
-    iconsExtensions.forEach(function(ext) {
-        for (var extName in ext.fileExtension) {
-            if ( typeof extName === 'string') {
-                fileExtensionIconClassMap[extName] = ext.fileExtension[extName];
+    function extractCssFilePathList(ext, cssFilePathList) {
+        if (typeof ext.iconCssFilePath === 'string') {
+            if (ext.iconCssFilePath !== '') {
+                var cssPath = URI(ext.iconCssFilePath).absoluteTo(ext.__plugin__.loc + '/').toString();
+                var resolvedCssPath = require.toUrl(cssPath);
+                cssFilePathList.push(resolvedCssPath);
             }
+        } else {
+            console.error('Type of iconCssFilePath should be string.');
         }
-
-        for (var fileName in ext.specificFileName) {
-            if ( typeof fileName === 'string') {
-                fileNameIconClassMap[fileName] = ext.specificFileName[fileName];
+    }
+    
+    function getItemIconClass(item) {        
+        var fileExtensionIconClassMap = defaultFileExtensionIconClassMap;
+        var fileNameIconClassMap = defaultFileNameIconClassMap;
+        var projectInfoObj = projectInfo.getByPath(item.getPath());
+        var projectType = projectInfoObj ? projectInfoObj.type : '';
+        
+        if (projectType !== '' && projectTypeFileExtensionIconClassMap.hasOwnProperty(projectType)) {
+            fileExtensionIconClassMap = projectTypeFileExtensionIconClassMap[projectType];
+            fileNameIconClassMap = projectTypeFileNameIconClassMap[projectType]; 
+        } 
+        
+        if (fileNameIconClassMap.hasOwnProperty(item.name)) {
+            return fileNameIconClassMap[item.name];
+        } else if (defaultFileNameIconClassMap.hasOwnProperty(item.name)) {
+            return defaultFileNameIconClassMap[item.name];            
+        } else {
+            var fileExt = item.name.indexOf('.') >= 0 ? item.name.split('.').pop() : '';
+            if (fileExtensionIconClassMap.hasOwnProperty(fileExt)) {                
+                return fileExtensionIconClassMap[fileExt];                
+            } else if (defaultFileExtensionIconClassMap.hasOwnProperty(fileExt)) {
+                return defaultFileExtensionIconClassMap[fileExt];
+            } else {
+                return 'wvFile';
+            }           
+        }
+    }
+    
+    iconsExtensions.forEach(function (ext) {        
+        var projectType = ext.projectType;
+        
+        if (typeof projectType === 'string') {
+            
+            var targetFileExtensionIconClassMap = null;
+            var targetFileNameIconClassMap = null;
+            if (projectType === '') {
+                targetFileExtensionIconClassMap = defaultFileExtensionIconClassMap;
+                targetFileNameIconClassMap = defaultFileNameIconClassMap;
+            } else {
+                if (!projectTypeFileExtensionIconClassMap.hasOwnProperty(projectType)) {
+                    projectTypeFileExtensionIconClassMap[projectType] = {};
+                    projectTypeFileNameIconClassMap[projectType] = {};
+                }                 
+                targetFileExtensionIconClassMap = projectTypeFileExtensionIconClassMap[projectType];
+                targetFileNameIconClassMap = projectTypeFileNameIconClassMap[projectType];
             }
-        }
+            
+            for (var fileExt in ext.fileExtension) {
+                if (typeof fileExt === 'string') {
+                    targetFileExtensionIconClassMap[fileExt] = ext.fileExtension[fileExt];
+                }
+            }       
 
-        var cssPath = URI(ext.iconCssFilePath).absoluteTo(ext.__plugin__.loc + '/').toString();
-        var resolvedCssPath = require.toUrl(cssPath);
-        cssFilePathList.push(resolvedCssPath);
+            for (var fileName in ext.specificFileName) {
+                if (typeof fileName === 'string') {
+                    targetFileNameIconClassMap[fileName] = ext.specificFileName[fileName];
+                }
+            }
+            extractCssFilePathList(ext, cssFilePathList);
+        } else {
+            console.error('Type of projectType should be string.');
+        }
     });
 
     overlayIconsExtensions.forEach(function(ext) {
@@ -165,11 +227,9 @@ define([
             if ( typeof stateSet === 'string') {
                 stateSetIconClassMap[stateSet] = ext.stateMap[stateSet];
             }
-        }
-
-        var cssPath = URI(ext.iconCssFilePath).absoluteTo(ext.__plugin__.loc + '/').toString();
-        var resolvedCssPath = require.toUrl(cssPath);
-        cssFilePathList.push(resolvedCssPath);
+        }        
+        
+        extractCssFilePathList(ext, cssFilePathList); 
     });
 
     loadCSSList(cssFilePathList, function() {
@@ -297,18 +357,19 @@ define([
                     // directory
                     return ( opened ? 'dijitFolderOpened' : 'dijitFolderClosed');
                 } else {
-                    // file
-                    if (fileNameIconClassMap.hasOwnProperty(item.name)) {
-                        return fileNameIconClassMap[item.name];
-                    } else {
-                        var extName = item.name.indexOf('.') >= 0 ? item.name.split('.').pop() : '';
-                        if (fileExtensionIconClassMap.hasOwnProperty(extName)) {
-                            return fileExtensionIconClassMap[extName];
-                        } else {
-                            return 'wvFile';
-                        }
-                    }
+                    // file                    
+                    return getItemIconClass(item);
                 }
+            },
+            
+            refreshItemClasses: function () {
+                function refreshItemClassesRecursively(treeNode) {
+                    treeNode._updateItemClasses(treeNode.item);
+                    array.forEach(treeNode.getChildren(), function (childNode) {
+                        refreshItemClassesRecursively(childNode);
+                    });
+                }
+                refreshItemClassesRecursively(this.rootNode);
             },
 
             onDblClick: function(item) {
@@ -1616,28 +1677,35 @@ define([
             }
 
             _loadCss(require.toUrl('webida-lib/plugins/workspace/wv.css'));
+           
+            topic.subscribe('projectConfig.loadCompleted', function() {
 
-            initializeTree();
-            initializeFocus();
-            initializeToolbar();
-            initializeDnd();
-            initializeSyncEditorFocus();
-            initializeFiltering();
+                initializeTree();
+                initializeFocus();
+                initializeToolbar();
+                initializeDnd();
+                initializeSyncEditorFocus();
+                initializeFiltering();
 
-            var opt = {};
-            opt.title = 'Workspace';
-            opt.key = 'W';
-            workbench.registToViewFocusList(view, opt);
+                var opt = {};
+                opt.title = 'Workspace';
+                opt.key = 'W';
+                workbench.registToViewFocusList(view, opt);
 
-            topic.subscribe('view.selected', function(event) {
-                var view = event.view;
-                if (view.getId() === 'workspaceView') {
-                    tree.focus();
-                }
-            });
+                topic.subscribe('view.selected', function(event) {
+                    var view = event.view;
+                    if (view.getId() === 'workspaceView') {
+                        tree.focus();
+                    }
+                });
+                
+                topic.subscribe('projectConfig.changed', function() {
+                    tree.refreshItemClasses();
+                });
 
-            topic.subscribe('workspace.node.overlayicon.state.changed', function(path, stateSet, state) {
-                setNodeOverlayIconInfo(path, stateSet, state);
+                topic.subscribe('workspace.node.overlayicon.state.changed', function(path, stateSet, state) {
+                    setNodeOverlayIconInfo(path, stateSet, state);
+                });
             });
         },
 
@@ -1670,12 +1738,6 @@ define([
         expandAncestors: expandAncestors,
         upload: upload,
 
-        getFileExtensionIconClassMap: function() {
-            return fileExtensionIconClassMap;
-        },
-        getFileNameIconClassMap: function() {
-            return fileNameIconClassMap;
-        },
         getStateSetIconClassMap: function() {
             return stateSetIconClassMap;
         }
