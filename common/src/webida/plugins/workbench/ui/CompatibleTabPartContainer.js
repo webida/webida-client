@@ -97,13 +97,9 @@ define([
          * @override
          */
         onSelect: function() {
-            var part = this.getPart();
-            var registry = this._getRegistry();
-            var currentPart = registry.getCurrentEditorPart();
-            if ( part instanceof EditorPart) {
-                registry.setCurrentEditorPart(part);
-                topic.publish('partContainerSelected', this);
-            }
+            logger.info('onSelect()');
+            TabPartContainer.prototype.onSelect.call(this);
+            topic.publish('partContainerSelected', this);
         }
     });
 
