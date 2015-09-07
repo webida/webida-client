@@ -97,6 +97,8 @@ var ENV_TYPE;
     }
 
     var mod = {};
+    mod.getHostParam = getHostParam;
+    
     var webidaHost = (typeof window !== 'undefined' && window && window.webida_host) ||
         getParamByName('webida.host') || readCookie('webida.host') || getHostFromLocation() || 'https://webida.org';
     var fsServer = getHostParam('webida.fsHostUrl', 'fs', webidaHost);
@@ -413,6 +415,8 @@ var ENV_TYPE;
         isAnonymousMode = anonymousMode;
     };
 
+    
+    mod.ensureAuthorize = ensureAuthorize;
 
     /**
     * Callback function. If function finished successfully then error is undefined
@@ -4219,6 +4223,8 @@ var ENV_TYPE;
      * @memberOf module:webida
      */
     mod.tokenGenerator = new mod.TokenGenerator();
+    
+    mod.ajaxCall = ajaxCall;
 
     /* Check whether the "personal_token" value is in url.
        If then, use that value as a access token.
