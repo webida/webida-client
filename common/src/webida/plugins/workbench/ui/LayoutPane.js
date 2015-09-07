@@ -82,7 +82,7 @@ define([
         removePartContainer: function(container) {
             var containers = this.getPartContainers();
             var index = containers.indexOf(container);
-            if (index > 0) {
+            if (index >= 0) {
                 containers.splice(index, 1);
                 container.setParent(null);
             }
