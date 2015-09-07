@@ -39,7 +39,7 @@
                 "name": "Workspace",
                 "page": "SimplePage",
                 "pageData": "getSchema",
-                "scope": ["USER", "WORKSPACE", "PROJECT"],
+                "scope": ["WORKSPACE"],
                 "getDefault": "getDefault"
             }
         ]

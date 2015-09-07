@@ -27,7 +27,7 @@ define([
     'webida-lib/app',
     'webida-lib/plugin-manager-0.1',
     //'webida-lib/plugins/workbench/preference-system/store',    // TODO: issue #12055
-    'plugins/webida.preference/preference-service',
+    'plugins/webida.preference/preference-service-factory',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/webida-0.3',
     'dijit',
@@ -68,7 +68,7 @@ define([
 ], function (
     ide, 
     pluginManager, 
-    preferences, 
+    PreferenceFactory,
     workbench, 
     webida, 
     dijit, 
@@ -128,6 +128,8 @@ define([
     var wvfilterFuncs = [];
     var isTimerInstalled = false;
     var editorsSelection;
+
+    var preferences = PreferenceFactory.get('WORKSPACE');
 
     var EVT_NODE_ALL_DESELECTED = 'workspace.node.alldeselected';
     var MIME_TYPE_WEBIDA_RESOURCE_PATH = 'text/x-webida-resource-path';
@@ -1473,7 +1475,7 @@ define([
         }
 
         function initPreferences() {
-            preferences.getValues('workspace.preference', null, function (values) {
+            preferences.getValues('workspace.preference', function (values) {
                 var isHidden = values['workspace:filter:.*'];
                 var isSystemRes = values['workspace:filter:.w.p'];
                 if (isHidden === undefined || isHidden === null) {

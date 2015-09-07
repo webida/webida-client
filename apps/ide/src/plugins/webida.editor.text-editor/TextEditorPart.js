@@ -30,16 +30,15 @@
 // @formatter:off
 define([
     'dojo/topic',
-    'external/lodash/lodash.min', 
-    'webida-lib/util/genetic', 
-    'webida-lib/util/logger/logger-client', 
-    'webida-lib/plugins/editors/plugin', 
+    'external/lodash/lodash.min',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/plugins/editors/plugin',
     'webida-lib/plugins/editors/EditorPreference',
-    'webida-lib/plugins/workbench/ui/Part', 
-    'webida-lib/plugins/workbench/ui/EditorPart', 
-    'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
-    './preferences/preference-config', 
-    './TextEditorViewer', 
+    'webida-lib/plugins/workbench/ui/Part',
+    'webida-lib/plugins/workbench/ui/EditorPart',
+    './preferences/preference-config',
+    './TextEditorViewer',
     'dojo/domReady!'
 ], function(
     topic,
@@ -50,7 +49,6 @@ define([
     EditorPreference,
     Part,
     EditorPart,
-    store,
     preferenceConfig,
     TextEditorViewer
 ) {
@@ -63,6 +61,8 @@ define([
 
     var logger = new Logger();
     logger.off();
+
+    var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide'];
 
     function TextEditorPart(file) {
         logger.info('new TextEditorPart(' + file + ')');
@@ -166,7 +166,7 @@ define([
             if (this.viewer && this.file) {
 
                 //preferences
-                this.preferences = new EditorPreference(store, this.viewer);
+                this.preferences = new EditorPreference(preferenceIds, this.viewer);
                 this.preferences.setFields(this.getPreferences());
             }
         },

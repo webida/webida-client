@@ -42,7 +42,7 @@ define([
 
         this.defaultValues = {};
         this.appliedValues = {};
-        this.currentValues = _.clone(this.appliedValues, true);
+        this.currentValues = {};
 
         this.valueChangeListener = [];  // outer (change to topic)
         this.statusChangeListener = [];  // inner (view-controller)
@@ -66,6 +66,7 @@ define([
     PreferenceStore.prototype.initialValues = function (defaultValues, appliedValues) {
         this.defaultValues = defaultValues;
         this.appliedValues = appliedValues;
+        this.currentValues = _.clone(this.appliedValues, true);
         if (Object.keys(this.appliedValues).length > 0) {
             this.setOverride(true);
         }
@@ -170,7 +171,7 @@ define([
     PreferenceStore.prototype.setOverride = function (override) {
         if (override !== this.status.override) {
             if (override) {
-                this.currentValues = _.clone(this.defaultValues, true);
+                this.currentValues = _.clone(this.getRealValues(), true);
             } else {
                 this.currentValues = {};
             }

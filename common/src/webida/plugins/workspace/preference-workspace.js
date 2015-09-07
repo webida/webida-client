@@ -42,13 +42,6 @@ define([], function () {
                     opt: {
                         name: 'Filter .project and .workspace directories'
                     }
-                },
-                {
-                    key: 'workspace:filter:test',
-                    type: 'text',
-                    opt: {
-                        name: 'test filter'
-                    }
                 }
             ];
         },
