@@ -85,133 +85,155 @@ define([
     }
 
     function PreferenceManager() {
+        var self = this;
         this.SCOPE = SCOPE;
         this.preferences = [];
-        this.extensions = [];
+        this.extensions = pluginManager.getExtensions(EXTENSION_NAME);
+        this.extensionsByScope = {};
 
-        var self = this;
-
-        function fillStoreValues(scope, extension, scopeInfo) {
-            return new Promise(function (resolve) {
-                var filePath = _getFilePath(scope, scopeInfo);
-                var store = new Store(extension.id, scope.name, scopeInfo, filePath);
-                self.preferences.push(store);
-                store.addValueChangeListener(function (appliedValues) {
-                    valueChangeListener(this);
+        function _getAllPreferenceFiles() {
+            var files = [];
+            return Promise.all(_.chain(SCOPE).mapValues(function (scope) {
+                return new Promise(function (resolve) {
+                    if (typeof scope.getScopeInfo === 'function') {
+                        scope.getScopeInfo(function (scopeInfos) {
+                            files = files.concat(scopeInfos.map(function (scopeInfo) {
+                                return {
+                                    filePath: _getFilePath(scope, scopeInfo),
+                                    scopeName: scope.name,
+                                    scopeInfo: scopeInfo
+                                };
+                            }));
+                            resolve();
+                        });
+                    } else {
+                        files = files.concat({
+                            filePath: _getFilePath(scope),
+                            scopeName: scope.name
+                        });
+                        resolve();
+                    }
                 });
+            }).values().value()).then(function () {
+                return files;
+            });
+        }
 
-                fsCache.readFile(filePath, function (err, content) {
+        function _getAllExtensions() {
+            return Promise.all(self.extensions.map(function (extension) {
+                return new Promise(function (resolve) {
+                    require([extension.module], function (module) {
+                        var defaultValues = module[extension.getDefault]();
+                        extension.defaultValues = defaultValues;
+                        resolve();
+                    });
+                });
+            }));
+        }
+
+        function _getExtensionsByScope(scopeName) {
+            if (self.extensionsByScope[scopeName]) {
+                return self.extensionsByScope[scopeName];
+            }
+            self.extensionsByScope[scopeName] = _.filter(self.extensions, function (extension) {
+                if (extension.scope) {
+                    if (typeof extension.scope === 'string' && extension.scope === scopeName) {
+                        return true;
+                    } else if (extension.scope instanceof Array && extension.scope.indexOf(scopeName) > -1) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+            return self.extensionsByScope[scopeName];
+        }
+
+        function _makeStoresForEachFile(fileInfo) {
+            return new Promise(function (resolve) {
+                fsCache.readFile(fileInfo.filePath, function (err, content) {
+                    fileInfo.content = {};
                     if (err) {
-                        logger.warn('[Preference] Read file error: ' + filePath, err);
-                        store.initialValues(extension.defaultValues, {});
+                        logger.warn('[Preference] Read file error: ' + fileInfo.filePath, err);
                     } else {
                         try {
-                            var prefFromFile = JSON.parse(content);
-                            store.initialValues(extension.defaultValues, prefFromFile[store.id] || {});
+                            fileInfo.content = JSON.parse(content);
                         } catch (e) {
-                            logger.warn('[Preference] Invalid form of preference file: ' + filePath, e);
-                            store.initialValues(extension.defaultValues, {});
+                            logger.warn('[Preference] Invalid form of preference file: ' + fileInfo.filePath, e);
                         }
                     }
-                    resolve();
+                    resolve(fileInfo);
                 });
-            });
-        }
-
-        function makeStores(scope, extension) {
-            return Promise.resolve().then(function () {
-                if (scope.getScopeInfo) {
-                    scope.getScopeInfo(function (scopeInfos) {
-                        return Promise.all(scopeInfos.map(function (scopeInfo) {
-                            console.log('fillStoreValues', scope, extension, scopeInfo);
-                            return fillStoreValues(scope, extension, scopeInfo);
-                        }));
+            }).then(function (fileInfo) {
+                var extensionsForScope = _getExtensionsByScope(fileInfo.scopeName);
+                _.forEach(extensionsForScope, function (extension) {
+                    console.log('[4] makestore start', fileInfo, extension.defaultValues);
+                    var store = new Store(
+                        extension.id,
+                        fileInfo.scopeName,
+                        fileInfo.scopeInfo,
+                        fileInfo.filePath
+                    );
+                    store.initialValues(extension.defaultValues, fileInfo.content[extension.id] || {});
+                    var storeExist = _.findIndex(self.preferences, function (ps) {
+                        return ps.id === extension.id &&
+                            ps.scope === fileInfo.scopeName &&
+                            ps.targetFile === fileInfo.filePath;
                     });
-                } else {
-                    return fillStoreValues(scope, extension);
-                }
-            });
-        }
-
-        function traverseScopes(extension) {
-            var scopes = extension.scope;
-            if (typeof extension.scope === 'string') {
-                scopes = [extension.scope];
-            }
-            return new Promise(function (resolve) {
-                // retrieve default values for each extension
-                require([extension.module], function (module) {
-                    var defaultValues = module[extension.getDefault]();
-                    extension.defaultValues = defaultValues;
-                    resolve();
+                    if (storeExist > -1) {
+                        self.preferences[storeExist] = store;
+                    } else {
+                        self.preferences.push(store);
+                    }
+                    store.addValueChangeListener(function () {
+                        valueChangeListener(this);
+                    });
                 });
-            }).then(function () {
-                // traverse all scopes per extension and make store objects for each scope
-                var handledScopes = _.chain(SCOPE).pick(scopes).values().value();
-                return Promise.all(handledScopes.map(function (scope) {
-                    return makeStores(scope, extension);
-                }));
             });
         }
 
-        function init () {
-            self.extensions = pluginManager.getExtensions(EXTENSION_NAME);
-            return Promise.all(self.extensions.map(traverseScopes));
+        function _addListeners() {
+            topic.subscribe('projectConfig.changed', function (projectName) {
+                logger.log('projectConfig.changed', projectName);
+                _makeStoresForEachFile({
+                    filePath: _getFilePath(SCOPE.PROJECT, {projectName: projectName}),
+                    scopeName: 'PROJECT',
+                    scopeInfo: {projectName: projectName}
+                });
+            });
+
+            topic.subscribe('fs.cache.file.set', function (fsURL, target) {
+                logger.log('fs.cache.file.set', arguments);
+                //var store = getStoreByPath(target);
+                // reloadPreference(SCOPE[store.scope], store.storeInfo);
+            });
+
+            topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
+                logger.log('fs.cache.node.deleted', arguments);
+                //if (name === PREFERENCE_FILE_NAME) {
+                //  var store = getStoreByPath(targetDir + name);
+                //  flushPreferences(SCOPE[store.scope], store.scopeInfo, function (err) {});
+                //}
+            });
+        }
+
+        function init() {
+            _addListeners();
+            return Promise.all([_getAllPreferenceFiles(), _getAllExtensions()])
+                .then(function (values) {
+                    return Promise.all(values[0].map(_makeStoresForEachFile));
+                });
         }
 
         this.initialized = init();
 
     }
 
- /*   function addListeners() {
-        topic.subscribe('sys.fs.node.moved', function (event) {
-            logger.log('sys.fs.node.moved', arguments);
-            var src = event.srcURL;
-            var dest = event.dstURL;
-            var srcPathInfo = _getPathInfo(src);
-            var destPathInfo = _getPathInfo(dest);
-            if (srcPathInfo.type === 'project' && destPathInfo.type === 'project') {
-                // ignore the case of nested projects
-                projectActions.replaceProject(srcPathInfo.name, destPathInfo.name);
-            } else if (srcPathInfo.type === 'workspaceInfo' || srcPathInfo.type === 'runConfig') {
-                loadRunConfigurations();
-            }
-        });
-
-        topic.subscribe('fs.cache.file.set', function (fsURL, target *//*, type, maybeModified*//* ) {
-            logger.log('fs.cache.file.set', arguments);
-            var targetPathInfo = _getPathInfo(target);
-            if (targetPathInfo.type === 'runConfig') {
-                require(['plugins/webida.ide.project-management.run/view-controller'], function (
-                    viewController) {
-                    if (!viewController.getWindowOpened()) {
-                        loadRunConfigurations();
-                    }
-                });
-            }
-        });
-
-        topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
-            logger.log('fs.cache.node.deleted', arguments);
-            if (type !== 'dir') {
-                return;
-            }
-            var targetPathInfo = _getPathInfo(targetDir);
-            if (targetPathInfo.type === 'workspace') {
-                projectActions.deleteProject(name);
-            } else if (targetPathInfo.type === 'workspaceInfo' || targetPathInfo.type === 'runConfig') {
-                loadRunConfigurations();
-            }
-        });
-    }*/
-
-
     PreferenceManager.prototype.initialize = function () {
         return this.initialized;
     };
 
     PreferenceManager.prototype.getStore = function (preferenceId, scope, scopeInfo) {
-        if(!preferenceId || !scope || SCOPE[scope.name] === undefined) {
+        if (!preferenceId || !scope || SCOPE[scope.name] === undefined) {
             return null;
         }
         var targetFile = _getFilePath(scope, scopeInfo);
@@ -219,7 +241,7 @@ define([
     };
 
     PreferenceManager.prototype.getStoresByScope = function (scope, scopeInfo) {
-        if(!scope || SCOPE[scope.name] === undefined) {
+        if (!scope || SCOPE[scope.name] === undefined) {
             return null;
         }
         var targetFile = _getFilePath(scope, scopeInfo);
@@ -243,7 +265,7 @@ define([
                 if (priority >= childPriority) {
                    continue;
                 }
-                if(!parentStore || SCOPE[parentStore.scope].priority < priority) {
+                if (!parentStore || SCOPE[parentStore.scope].priority < priority) {
                     parentStore = getStoresById[i];
                 }
             }
@@ -287,9 +309,9 @@ define([
         this.initialized.then(function () {
             valueChangeListener = listener;
         });
-    }
+    };
 
-    if(!_preferenceManager) {
+    if (!_preferenceManager) {
         _preferenceManager = new PreferenceManager();
     }
     return _preferenceManager;

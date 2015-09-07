@@ -70,7 +70,7 @@ define([
     PreferenceServiceFactory.findServiceInstance = function (scopeName, additionalInfo) {
         if (!additionalInfo && instances[scopeName]) {
             return instances[scopeName];
-        } else if (additionalInfo && instances[scopeName][additionalInfo]) {
+        } else if (additionalInfo && instances[scopeName] && instances[scopeName][additionalInfo]) {
             return instances[scopeName][additionalInfo];
         }
     };

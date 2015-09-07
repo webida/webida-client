@@ -81,13 +81,15 @@ define([
     }
 
     module.getViableItemsForWorkbench = function () {
-        return workbenchItems;
+        var preferenceTypes = manager.getAllPreferenceTypes(manager.SCOPE['WORKSPACE']);
+        return preferenceTypes.length > 0 ? workbenchItems : null;
     };
 
     module.getViableItemsForWorkspace = function () {
         var context = _getContextInfo(workspace.getSelectedPaths());
         var viable = !context.multi && (context.nodeType === 'workspace' || context.nodeType === 'project');
-        return viable ? workspaceItems : null;
+        var preferenceTypes = manager.getAllPreferenceTypes(manager.SCOPE[context.nodeType.toUpperCase()]);
+        return (viable && preferenceTypes.length > 0) ? workspaceItems : null;
     };
 
     module.openDialog = function (scope, info) {
