@@ -773,12 +773,6 @@ define([
             return this.editor ? this.editor.getValue() : undefined;
         },
 
-        setValue: function (value) {
-            this.addDeferredAction(function (self) {
-                self.editor.setValue(value);
-            });
-        },
-
         foldCodeRange: function (range) {
             if (this.editor) {
                 foldCode(this.editor, range.from, range.to);
@@ -825,7 +819,7 @@ define([
 
         refresh: function () {            
             if (this.getContents()) {
-                this.setValue(this.getContents().getContents());
+                this.refresh(this.getContents().getContents());
             }
             if (this.editor) {
                 setTimeout(function (self) {

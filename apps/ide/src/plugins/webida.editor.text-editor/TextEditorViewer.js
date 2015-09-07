@@ -823,13 +823,6 @@ define([
             return this.editor ? this.editor.getValue() : undefined;
         },
 
-        setValue: function(value) {
-            logger.info('setValue(' + value + ')')
-            this.addDeferredAction(function(self) {
-                self.editor.setValue(value);
-            });
-        },
-
         /**
          * Update Viewer's content
          *
