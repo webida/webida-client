@@ -97,7 +97,7 @@ define([
          */
         _subscribe: function() {
             //open
-            this.subscribed.push(topic.subscribe('#REQUEST.openFile', this._openDataSource.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/open', this._openDataSource.bind(this)));
 
             //save
             this.subscribed.push(topic.subscribe('editor/save/all', this._saveAllParts.bind(this)));

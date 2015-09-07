@@ -385,7 +385,7 @@ define([
                             this._expandNode(node);
                         }
                     } else {
-                        topic.publish('#REQUEST.openFile', item.getPath());
+                        topic.publish('editor/open', item.getPath());
                     }
                 }
             },

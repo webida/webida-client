@@ -396,7 +396,7 @@ define([
 
         topic.subscribe('#REQUEST.selectFile', function(path) {
             if (editors.getFile(path)) {
-                topic.publish('#REQUEST.openFile', path);
+                topic.publish('editor/open', path);
             }
         });
 
@@ -492,7 +492,7 @@ define([
                     type: 'warning'
                 }).then(function() {
                     asked.pop();
-                    topic.publish('#REQUEST.openFile', file.getPersistenceId());
+                    topic.publish('editor/open', file.getPersistenceId());
                 }, function() {
                     asked.pop();
                 });

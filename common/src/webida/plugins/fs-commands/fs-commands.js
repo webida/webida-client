@@ -512,7 +512,7 @@ function (require, fh, _,
         var paths = wv.getSelectedPaths();
         if (paths && paths.length > 0) {
             paths.forEach(function (path) {
-                topic.publish('#REQUEST.openFile', path);
+                topic.publish('editor/open', path);
             });
         }
     }
@@ -537,7 +537,7 @@ function (require, fh, _,
                     if (pathUtil.isDirPath(path)) {
                         console.error('assertion fail: "' + path + '" must be a file');
                     } else {
-                        topic.publish('#REQUEST.openFile', path);
+                        topic.publish('editor/open', path);
                     }
                 });
             }
@@ -554,7 +554,7 @@ function (require, fh, _,
                     } else {
                         var editorParts = fh.getOpenWithParts(); 
                         var options = {openWithPart: editorParts[selectionIndex]};
-                        topic.publish('#REQUEST.openFile', path, options);
+                        topic.publish('editor/open', path, options);
                     }
                 });
             }
@@ -623,7 +623,7 @@ function (require, fh, _,
                 var bExist = this.inputStore.query({ id: text }).length === 1 ? true : false;
 
                 if (bExist) {
-                    topic.publish('#REQUEST.openFile', text);
+                    topic.publish('editor/open', text);
                     this.hide();
                 } else {
                     if (text === '') {

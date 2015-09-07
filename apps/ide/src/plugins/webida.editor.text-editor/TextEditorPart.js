@@ -361,7 +361,7 @@ define([
     };
 
     TextEditorPart.moveTo = function(location) {
-        topic.publish('#REQUEST.openFile', location.filepath, {
+        topic.publish('editor/open', location.filepath, {
             show: true
         }, function(file) {
             if (editors.getPart(file) === null) {
