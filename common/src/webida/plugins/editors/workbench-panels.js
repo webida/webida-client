@@ -197,25 +197,10 @@ define([
         });
         */
 
-        topic.subscribe('view.selected', function(event) {
-            var view = event.view;
-            var vc = event.viewContainer;
-            if (!vc || (vc.getParent() !== editors.splitViewContainer)) {
-                return;
-            }
-            if (view.partContainer) {
-                var registry = _getPartRegistry();
-                var part = view.partContainer.getPart();
-                var currentPart = registry.getCurrentEditorPart();
-                if (part !== currentPart) {
-                    registry.setCurrentEditorPart(part);
-                }
-            }
-        });
-
         topic.subscribe('view.focused', function(event) {
+        	logger.info('view.focused');
             var view = event.view;
-            logger.info('view = ', view);
+            //logger.info('view = ', view);
             var vc = event.viewContainer;
             if (!vc || (vc.getParent() !== editors.splitViewContainer)) {
                 return;
