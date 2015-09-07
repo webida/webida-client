@@ -3129,6 +3129,14 @@ var ENV_TYPE;
         ensureAuthorize(restApi);
     };
 
+    mod.AuthService.prototype.guestLogin = function (callback) {
+        ajaxCall({
+            url: mod.conf.authApiBaseUrl + '/guestlogin',
+            type: 'POST',
+            callback: callback
+        });
+    };
+
     //db
     //
 
@@ -3977,6 +3985,16 @@ var ENV_TYPE;
         ensureAuthorize(restApi);
     };
 
+    mod.getPluginSettingsPath = function (callback) {
+        var defaultPath = 'plugins/plugin-settings.json';
+        mod.auth.getMyInfo(function (err, myInfo) {
+            if (err) {
+                callback(defaultPath);
+            } else {
+                callback(myInfo.isGuest ? 'plugins/plugin-settings-guest.json' : defaultPath);
+            }
+        });
+    };
 
     /**
     * API helper function with callback function.
@@ -4225,6 +4243,7 @@ var ENV_TYPE;
     mod.tokenGenerator = new mod.TokenGenerator();
     
     mod.ajaxCall = ajaxCall;
+
 
     /* Check whether the "personal_token" value is in url.
        If then, use that value as a access token.

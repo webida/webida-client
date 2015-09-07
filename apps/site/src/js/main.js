@@ -37,26 +37,13 @@ define([
         hideMethod: 'fadeOut'
     };
 
-    /* jshint ignore:start */
-    function getRedirectUrl() {
-        var cur = new URI(location.href);
-        var authRel = new URI('auth.html');
-        var redirectUrl = authRel.absoluteTo(cur);
-        redirectUrl.query('');
-        return redirectUrl.toString();
-    }
-    /* jshint ignore:end */
-
     function openDesktop() {
-        // Webida.app.launchApp('desktop', true, null, {name: 'desktop'});
         window.open('../desktop/', 'desktop', '');
     }
 
     Webida.auth.initAuth(AppConfig.clientId, AppConfig.redirectUrl);
 
     $(document).ready(function () {
-        //var emailSendBtn = $('.email_send');
-        var notiOK = $('.noti_ok');
 
         Webida.auth.getLoginStatus(function (err, user) {
             if (err || !user) {
@@ -64,9 +51,7 @@ define([
 
                 $('.not-logged-in').fadeIn(400).removeClass('hidden');
                 $('.logged-in').hide();
-
             } else {
-                // location.replace('//desktop.' + Webida.conf.webidaHost);
 				location.replace('../desktop/');
             }
         });
@@ -75,8 +60,7 @@ define([
             openDesktop();
         });
 
-        $('button.login').click(function () {
-            //var reUrl = getRedirectUrl();
+        $('.login a').click(function () {
             var url = Webida.conf.authApiBaseUrl + '/authorize?response_type=token' +
                 '&redirect_uri=' + encodeURIComponent(AppConfig.redirectUrl) +
                 '&client_id=' + AppConfig.clientId +
@@ -95,7 +79,7 @@ define([
             });
         });
 
-        $(document).on('click', 'button.signup', function () {
+        $(document).on('click', '.signup a', function () {
             var self = $(this);
             var dialog = $('.profile-dialog');
             var dimming = $('.dimming');
@@ -123,6 +107,11 @@ define([
                 dialog.find('.signup-input').focus();
             }
         });
+
+        if (AppConfig.guestMode) {
+            $('.login').removeClass('stress');
+            $('.tryIt').removeClass('hidden');
+        }
 
         $('.dimming').click(function () {
             $('.profile-dialog').fadeOut(100);
@@ -190,7 +179,7 @@ define([
             });
         });
 
-        notiOK.click(function () {
+        $('.noti_ok').click(function () {
             $('.dimming').toggleClass('hide');
             $('.container').toggleClass('hide');
         });

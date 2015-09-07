@@ -23,10 +23,9 @@
 define(['webida-lib/app',
         'webida-lib/util/path',
         'dojo/topic',
-        'webida-lib/plugins/workspace/plugin',
         'external/lodash/lodash.min',
         'plugins/webida.notification/notification-message'
-], function (ide, pathutil, topic, workspace, _, toastr) {
+], function (ide, pathutil, topic, _, toastr) {
     'use strict';
 
     var projectConfigurator = {};
@@ -37,38 +36,49 @@ define(['webida-lib/app',
     projectConfigurator.DEBUG_MODE = 'debug';
     projectConfigurator.RUN_MODE = 'run';
 
-    function readProjectRunConfigurations() {
-        var ret;
-        var idePath = ide.getPath();
-
-        fsMount.list(idePath, function (err, lists) {
-            if (err) {
-                toastr.error(err);
-            } else {
-                _.forEach(lists, function (list) {
-                    if (list.isDirectory === true) {
-                        if (list.name[0] !== '.') {
-                            getConfigurationObjectFromPath(idePath + '/' + list.name + '/', function (obj) {
-                                if (obj) {
-                                    addProjectPropertyByName(obj);
-                                } else {
-                                    addNoProjectByName(list.name);
-                                }
-                            });
-                        }
-                    }
-                });
-
-                if (projectPropertyList.length === 0 && noProjectList.length === 0) {
-                    topic.publish('toolbar.runas.disable');
-                }
+    var projectConfigurationLoadPromise = readProjectRunConfigurations()
+        .then(getConfigurationObjectByProject)
+        .then(function () {
+            topic.publish('projectConfig.loadCompleted');
+            // FIXME this module has no relation with runAs
+            if (projectPropertyList.length === 0 && noProjectList.length === 0) {
+                topic.publish('toolbar.runas.disable');
             }
         });
 
-        return ret;
+    function readProjectRunConfigurations() {
+        return new Promise(function (resolve, reject) {
+            fsMount.list(ide.getPath(), function (err, projectList) {
+                if (err) {
+                    toastr.error(err);
+                    reject(err);
+                } else {
+                    resolve(projectList);
+                }
+            });
+        });
     }
 
-    readProjectRunConfigurations();
+    function getConfigurationObjectByProject(projectList) {
+        return Promise.all(projectList.map(function (project) {
+            return new Promise(function (resolve) {
+                if (project.isDirectory === true && project.name[0] !== '.') {
+                    getConfigurationObjectFromPath(ide.getPath() + '/' + project.name + '/', function (obj) {
+                        if (obj) {
+                            addProjectPropertyByName(obj);
+                        } else {
+                            addNoProjectByName(project.name);
+                        }
+                        resolve();
+                    });
+                } else {
+                    resolve();
+                }
+            });
+        }));
+    }
+
+    //readProjectRunConfigurations();
 
     function deleteProjectPropertyByName(projectName) {
         if (!projectName) {
@@ -86,6 +96,7 @@ define(['webida-lib/app',
                 return;
             }
         }
+        topic.publish('projectConfig.changed', projectName);
     }
 
     function replaceProjectProperty(obj) {
@@ -180,7 +191,6 @@ define(['webida-lib/app',
                                     projectConfigurator.saveProjectProperty(projectPath, obj, null);
                                 }
                             }
-
                             cb(obj);
                         }
                     });
@@ -218,6 +228,7 @@ define(['webida-lib/app',
                         if (obj) {
                             replaceProjectProperty(obj);
                         }
+                        topic.publish('projectConfig.changed', splitTargetDir[2]);
                         //console.log('replace project property : ' + obj);
                     });
                 }
@@ -279,6 +290,7 @@ define(['webida-lib/app',
                 addNoProjectByName(projectName);
                 console.log('newProjectAdded fail ');
             }
+            topic.publish('projectConfig.changed', projectName);
         });
     }
 
@@ -522,29 +534,35 @@ define(['webida-lib/app',
         return projectConfigurator.getConfigurationObjectByPath(path, c);
     };
 
-    projectConfigurator.getConfigurationObjectByPath = function (path, c) {
-        var obj = getProjectPropertyByPath(path);
-
-        if (c) {
-            c(obj);
-        }
-
-        return obj;
+    projectConfigurator.getConfigurationObjectByPath = function (path, callback) {
+        projectConfigurationLoadPromise.then(function () {
+            var obj = getProjectPropertyByPath(path);
+            if (callback) {
+                callback(obj);
+            }
+        });
+        return getProjectPropertyByPath(path);
     };
 
-    projectConfigurator.getConfigurationObjectByProjectName = function (name, c) {
-        var obj = getProjectPropertyByName(name);
+    projectConfigurator.getConfigurationObjectByProjectName = function (name, callback) {
+        projectConfigurationLoadPromise.then(function () {
+            var obj = getProjectPropertyByName(name);
 
-        if (c) {
-            c(obj);
-        }
-
-        return obj;
+            if (callback) {
+                callback(obj);
+            }
+        });
+        return getProjectPropertyByName(name);
     };
 
     projectConfigurator.getProjectRootPath = getProjectRootPath;
 
-    projectConfigurator.getProjectPropertyList = function () {
+    projectConfigurator.getProjectPropertyList = function (callback) {
+        projectConfigurationLoadPromise.then(function () {
+            if (callback) {
+                callback(projectPropertyList);
+            }
+        });
         return projectPropertyList;
     };
 

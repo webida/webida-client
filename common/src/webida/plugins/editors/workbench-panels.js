@@ -112,7 +112,8 @@ define([
             buttonsWidth: '140px',
             onHide: function () {
                 dialog.destroyRecursive();
-            }
+            },
+            dialogClass: 'buttoned-dialog-text-only'
         });
 
         var name = file.name;
@@ -312,8 +313,14 @@ define([
 
                 try {
                     window.focus();
-                    window.opener = window;
-                    window.close();
+
+                    if (!window.opener) {
+                        alert('Quit does not work when IDE was opened by a direct URL.\n' +
+                              'Please close the browser tab to quit the IDE.');
+                    } else {
+                        //window.opener = window;
+                        window.close();
+                    }
                 } catch (e) {
                     logger.log('First try to close App failed', e);
 

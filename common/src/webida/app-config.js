@@ -31,6 +31,21 @@ define([], function () {
             deploy: 'apps/deploy/index.html',
             default: 'apps/site/index.html'*/
         },
-        redirectUrl: window.location.protocol + '//' + serverDomain + '/auth.html'
+        redirectUrl: window.location.protocol + '//' + serverDomain + '/auth.html',
+        guestMode: false,
+        meta: {
+            user: {
+                dir: '.userInfo',
+                file: 'workspace.json'
+            },
+            workspace: {
+                dir: '.workspace',
+                file: 'workspace.json'
+            },
+            project: {
+                dir: '.project',
+                file: 'project.json'
+            }
+        }
     };
 });

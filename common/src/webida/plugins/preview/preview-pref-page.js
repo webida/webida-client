@@ -17,6 +17,30 @@
 define([], function () {
     'use strict';
     return {
+        getDefault: function () {
+            return {
+                'preview:autoContentsChange': false,
+                'preview:liveReload': true
+            };
+        },
+        getSchema: function () {
+            return [
+                {
+                    key: 'preview:autoContentsChange',
+                    type: 'checkbox',
+                    opt: {
+                        name: 'Respond automatically to the selection in Workspace'
+                    }
+                },
+                {
+                    key: 'preview:liveReload',
+                    type: 'checkbox',
+                    opt: {
+                        name: 'Enable live reload'
+                    }
+                }
+            ];
+        },
         view: function (fieldCreator) {
             fieldCreator.addField('preview:autoContentsChange', 'checkbox', {
                 title: 'Preview',

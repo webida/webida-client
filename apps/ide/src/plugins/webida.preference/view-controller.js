@@ -1,0 +1,234 @@
+/*
+ * Copyright (c) 2012-2015 S-Core Co., Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ *
+ * @since: 15. 8. 24
+ * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ */
+
+define([
+    'external/lodash/lodash.min',
+    'webida-lib/util/logger/logger-client',
+    'dojo/on',
+    'dijit/registry',
+    './preference-manager',
+    './tree-view-controller',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!./layout/preferences.html',
+    'xstyle/css!./style/style.css'
+], function (
+    _,
+    Logger,
+    on,
+    reg,
+    preferenceManager,
+    treeViewController,
+    ButtonedDialog,
+    template
+) {
+    'use strict';
+    var logger = new Logger();
+
+    var module = {};
+    var preferenceDlg;
+    var preferenceExts;
+    var currentPage;
+
+    var treeArea;
+    var subContentArea;
+    var titleArea;
+    var scope;
+    var scopeInfo;
+    var invalidStores = [];
+
+    var PAGE_CLASS = {
+        'DefaultPage': 'plugins/webida.preference/pages/PreferencePage',
+        'SimplePage': 'plugins/webida.preference/pages/SimplePage'
+    };
+
+    function _onStoreStatusChanged(status) {
+        if (currentPage.store.status.dirty) {
+            reg.byId('restore-preference').set('disabled', false);
+            reg.byId('apply-preference').set('disabled', !currentPage.store.status.valid);
+        } else {
+            reg.byId('restore-preference').set('disabled', true);
+            reg.byId('apply-preference').set('disabled', true);
+        }
+        if (status) {
+            if (status.override !== undefined) {
+                reg.byId("preference-override").set('checked', status.override);
+            }
+            if (status.valid !== undefined) {
+                if (!status.valid) {
+                    invalidStores.push(this);
+                } else {
+                    var index = invalidStores.indexOf(this);
+                    if (index > -1) {
+                        invalidStores.splice(index, 1);
+                    }
+                }
+                reg.byId('save-all-preference').set('disabled', invalidStores.length > 0);
+            }
+        }
+    }
+
+    function _onChangeTreeSelection(node) {
+        // get preference store
+        var store = preferenceManager.getStore(node.id, scope, scopeInfo);
+        // get extension's meta
+        var extension = _.find(preferenceExts, {id: node.id});
+        // guess page class module
+        var pageModule = PAGE_CLASS[extension.page] ?
+            PAGE_CLASS[extension.page] :
+            (extension.module + '/' + extension.page);
+
+        // clear and redraw content area
+        if (currentPage) {
+            currentPage.store.removeStatusChangeListener(_onStoreStatusChanged);
+            currentPage.onPageRemoved();
+            currentPage = undefined;
+        }
+        $(subContentArea).empty();
+
+        require([extension.module, pageModule], function(module, Page) {
+            var pageData;
+            if (module && extension.pageData && typeof module[extension.pageData] === 'function') {
+                pageData = module[extension.pageData]();
+            }
+            currentPage = new Page(store, pageData);
+            currentPage.store.addStatusChangeListener(_onStoreStatusChanged);
+            _onStoreStatusChanged();
+            _initializeContentArea(node, store);
+            subContentArea.appendChild(currentPage.getPage());
+            currentPage.onPageAppended();
+        });
+    }
+
+    function _initializeContentArea(node, store) {
+
+        function __dim(override) {
+            if(!override) {
+                if($(subContentArea).find('.dim').length === 0) {
+                    $(subContentArea).append($('<div class="dim"></div>'));
+                }
+            } else {
+                $(subContentArea).find('.dim').remove();
+            }
+        }
+
+        var overrideCheckbox = reg.byId("preference-override");
+        $(titleArea).find('h1').text(node.name);
+        if (preferenceManager.getParentStore(store)) {
+            overrideCheckbox.set('checked', store.status.override);
+            __dim(store.status.override);
+            $('.preference-override-box').removeClass('hidden');
+        } else {
+            $('.preference-override-box').addClass('hidden');
+        }
+
+        // events
+        preferenceDlg.own(
+            on($('#restore-preference').get(0), 'click', function () {
+                currentPage.store.restore();
+                currentPage.reload();
+            }),
+            on($('#apply-preference').get(0), 'click', function () {
+                currentPage.store.apply(function (invalidMessage) {
+                    // TODO handle error
+                });
+            }),
+            on(overrideCheckbox, 'change', function () {
+                var checked = overrideCheckbox.get('checked');
+                currentPage.store.setOverride(checked);
+                __dim(checked);
+            })
+        );
+
+    }
+
+    function _initializeLayout() {
+        preferenceDlg.setContentArea(template);
+        treeArea = preferenceDlg.domNode.getElementsByClassName('preferenceview-tree')[0];
+        subContentArea = preferenceDlg.domNode.getElementsByClassName('preferenceview-sub-content')[0];
+        titleArea = preferenceDlg.domNode.getElementsByClassName('preferenceview-content-title')[0];
+    }
+
+    function _initializeTreeView() {
+        preferenceExts = preferenceManager.getAllPreferenceTypes(scope);
+        treeViewController.addSelectionChangedListener(_onChangeTreeSelection);
+
+        // append tree page to the area for tree
+        treeArea.appendChild(treeViewController.getPage(preferenceExts));
+        treeViewController.onPageAppended();
+    }
+
+    module.isOpened = false;
+
+    module.openDialog = function (thisScope, info) {
+        scope = thisScope;
+        scopeInfo = info;
+        if(!module.isOpened) {
+            preferenceDlg = new ButtonedDialog({
+                buttons: [
+                    {
+                        id: 'save-all-preference',
+                        caption: 'Save',
+                        methodOnClick: 'saveClose'
+                    },
+                    {
+                        caption: 'Cancel',
+                        methodOnClick: 'cancelClose'
+                    }
+                ],
+                refocus: false,
+                title: _.capitalize(scope.name.toLowerCase()) + ' Preferences',
+                style: 'width: 650px',
+                methodOnEnter: null,
+                saveClose: function () {
+                    preferenceManager.saveAllPreference(scope, function (invalidMessages) {
+                        // TODO handle error
+                        preferenceDlg.hide();
+                    });
+                },
+                cancelClose: function () {
+                    preferenceDlg.hide();
+                },
+                onHide: function () {
+                    treeViewController.removeSelectionChangedListener(_onChangeTreeSelection);
+                    treeViewController.onPageRemoved();
+                    preferenceDlg.destroyRecursive();
+                    preferenceManager.flushPreference(scope, scopeInfo, function (err) {
+                        // TODO handle error
+                        module.isOpened = false;
+                    });
+                }
+            });
+            module.isOpened = true;
+            try {
+                _initializeLayout();
+                _initializeTreeView();
+                preferenceDlg.show();
+            } catch (e) {
+                logger.error(e);
+                preferenceDlg.onHide();
+                module.isOpened = false;
+            }
+        }
+    };
+
+    return module;
+});

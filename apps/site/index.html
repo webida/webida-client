@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name=viewport content="width=device-width, initial-scale=1">
     <title>Webida</title>
-
     <link rel="shortcut icon" href="resource/webida_favicon_16.png"/>
-
     <link href="src/css/bootstrap.min.css" rel="stylesheet">
     <link href="src/css/site.css" rel="stylesheet">
     <link rel="stylesheet" href="src/lib/toastr/toastr.min.css" type="text/css" />
+    <link href="src/css/guest.css" rel="stylesheet">
 </head>
 
 <body>
@@ -36,24 +35,7 @@
         </div>
     </div>
 
-    <div class="userbar" role="user">
-        <div class="container">
-            <div class="navbar-header"></div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav login-bar not-logged-in hidden">
-                    <li><button class="btn btn-primary btn-xs login">Log-in</button></li>
-                    <li><button class="btn btn-success btn-xs signup">New account</button></li>
-                </ul>
-                <ul class="nav navbar-nav login-bar logged-in hidden">
-                    <li><span class="welcome">Welcome, <span class="user-name"></span>!</span>&nbsp;&nbsp;</li>
-                    <li><button class="btn btn-success btn-xs desktop">Open Desktop</button></li>
-                    <li><button class="btn btn-danger btn-xs logout">Log-out</button></li>
-                </ul>
-            </div>
-        </div>
-        <button class="signup" style="margin-left: -9999px"></button>
-    </div>
-    <div class="navbar navbar-inverse" role="navigation">
+    <div class="header navbar navbar-inverse" role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -64,60 +46,35 @@
                 </button>
                 <a class="navbar-brand" href="#home"><img src="resource/webida_logo_signup.png" alt="Logo" /></a>
             </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right not-logged-in hidden">
+                    <li class="signup"><a href="#">SIGN UP</a></li>
+                    <li class="login stress"><a href="#">LOGIN</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li class="tryIt stress hidden"><a href="#guest">TRY IT</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div class="main container">
-    </div><!-- /.container -->
+    <div class="main">
+    </div>
 
     <div class="footer">
         <div class="container">
-            <p class="text-muted">Copyright 2013 Webida.org. All rights reserved.</p>
+            <p>Copyright 2013 Webida.org. All rights reserved.</p>
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript
-================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script>
         $.browser = { msie: (navigator.appName === "Microsoft Internet Explorer") };
     </script>
     <script src="src/js/jquery.ba-hashchange.min.js"></script>
     <script src="src/js/bootstrap.min.js"></script>
     <script src="src/js/config.js"></script>
-    <script src="src/js/util.js"></script>
     <script src="src/lib/URIjs/URI.min.js"></script>
     <script src="src/lib/require.min.js" data-main="src/js/main.js"></script>
-    <script>
-        function loadHtml(url) {
-            $(".main").load(url);
-        }
-
-        $(function () {
-            $.ajaxSetup({
-                cache: false
-            });
-
-            $(window).on("hashchange", function(e) {
-                var hash = location.hash;
-                if (hash.substr(1, 12) === "access_token") {
-                    var targetOrigin = getLocationOrigin();
-                    var accessToken = hash.substring(1);
-                    window.parent.postMessage(accessToken, targetOrigin);
-                    hash = "";
-                }
-
-                hash = hash.replace(/^#/, "");
-                if (hash == "") {
-                    loadHtml("pages/home.html");
-                } else {
-                    loadHtml("pages/" + hash + ".html");
-                }
-            });
-
-            $(window).hashchange();
-        });
-    </script>
+    <script src="src/js/router.js"></script>
 </body>
 </html>

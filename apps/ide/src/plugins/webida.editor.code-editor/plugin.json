@@ -30,7 +30,30 @@
                 "handler": "editor"
             }
         ],
-        
+
+        "webida.preference:pages": [
+            {
+                "module": "plugins/webida.editor.code-editor/preferences/preference-main",
+                "id": "codeeditor",
+                "hierarchy": "texteditor",
+                "name": "Code Editor",
+                "getDefault": "getDefault",
+                "page": "SimplePage",
+                "pageData": "editor",
+                "scope": ["USER", "WORKSPACE"]
+            },
+            {
+                "module": "plugins/webida.editor.code-editor/preferences/preference-contentassist",
+                "id": "content-assist",
+                "hierarchy": "texteditor/codeeditor",
+                "name": "Content Assists",
+                "getDefault": "getDefault",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "scope": ["USER", "WORKSPACE"]
+            }
+        ],
+
         "webida.common.workspace:icons" : [
             {
                 "projectType" : "",
@@ -39,11 +62,11 @@
                     "java" : "codeEditorJavaFileIcon",
                     "php" : "codeEditorPhpFileIcon",
                     "js" : "codeEditorJavaScriptFileIcon",
+                    "json" : "codeEditorPluginJsonFileIcon",
                     "html" : "codeEditorHtmlFileIcon",
                     "xml" : "codeEditorXmlFileIcon"
-                 },
+                },
                 "specificFileName" : {
-                    "plugin.json" : "codeEditorPluginJsonFileIcon"                   
                 },
                 "iconCssFilePath" : "./icons.css"
             }

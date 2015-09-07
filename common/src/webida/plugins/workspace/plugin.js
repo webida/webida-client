@@ -26,7 +26,8 @@
 define([
     'webida-lib/app',
     'webida-lib/plugin-manager-0.1',
-    'webida-lib/plugins/workbench/preference-system/store',    // TODO: issue #12055
+    //'webida-lib/plugins/workbench/preference-system/store',    // TODO: issue #12055
+    'plugins/webida.preference/preference-service',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/webida-0.3',
     'dijit',
@@ -324,10 +325,6 @@ define([
                         topic.publish('#REQUEST.openFile', item.getPath());
                     }
                 }
-            },
-
-            onFocus: function() {
-                this.focus();
             },
 
             onBlur: function() {
@@ -1415,7 +1412,20 @@ define([
         }
 
         function initPreferences() {
-            var isHidden = preferences.getValue('workspace:filter:.*');
+            preferences.getValues('workspace.preference', null, function (values) {
+                var isHidden = values['workspace:filter:.*'];
+                var isSystemRes = values['workspace:filter:.w.p'];
+                if (isHidden === undefined || isHidden === null) {
+                    isHidden = filters['workspace:filter:.*'];
+                }
+                if (isSystemRes === undefined || isSystemRes === null) {
+                    isSystemRes = filters['workspace:filter:.w.p'];
+                }
+                filters['workspace:filter:.*'] = isHidden;
+                filters['workspace:filter:.w.p'] = isSystemRes;
+                applyPreferences(values);
+            });
+            /*var isHidden = preferences.getValue('workspace:filter:.*');
             var isSystemRes = preferences.getValue('workspace:filter:.w.p');
             if (isHidden === undefined || isHidden === null) {
                 isHidden = filters['workspace:filter:.*'];
@@ -1430,10 +1440,33 @@ define([
                 if (key !== 'filterFuncs') {
                     applyPreferences(filters[key], key);
                 }
-            });
+            });*/
         }
 
-        function applyPreferences(value, id) {
+        function applyPreferences(values, contextInfo) {
+            function addFilterFunc(func) {
+                wvfilterFuncs.push(func);
+                hideNodes(func, true);
+            }
+
+            function removeFilterFunc(func) {
+                var i = wvfilterFuncs.indexOf(func);
+                wvfilterFuncs.splice(i, 1);
+                hideNodes(func, false);
+            }
+
+            for (var key in values) {
+                if (key.indexOf('workspace:filter:') === 0) {
+                    if (values[key]) {
+                        addFilterFunc(filters.filterFuncs[key]);
+                    } else {
+                        removeFilterFunc(filters.filterFuncs[key]);
+                    }
+                }
+            }
+        }
+
+        /*function applyPreferences(value, id) {
             function addFilterFunc(func) {
                 wvfilterFuncs.push(func);
                 hideNodes(func, true);
@@ -1452,14 +1485,15 @@ define([
             } else {
                 removeFilterFunc(filters.filterFuncs[id]);
             }
-        }
+        }*/
 
         //console.log('addLoadedListener');
-        preferences.addLoadedListener(function() {
-            initPreferences();
-            preferences.addFieldChangeListener('workspace:filter:.*', applyPreferences);
-            preferences.addFieldChangeListener('workspace:filter:.w.p', applyPreferences);
-        });
+        //preferences.addLoadedListener(function() {
+        initPreferences();
+        preferences.addFieldChangeListener('workspace.preference', applyPreferences);
+            //preferences.addFieldChangeListener('workspace:filter:.*', applyPreferences);
+            //preferences.addFieldChangeListener('workspace:filter:.w.p', applyPreferences);
+        //});
         topic.subscribe('workspace.node.shown', filter);
     }
 

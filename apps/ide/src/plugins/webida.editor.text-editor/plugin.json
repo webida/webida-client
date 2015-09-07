@@ -41,6 +41,49 @@
                 "name": "Show or Hide",
                 "handler": "editor"
             }
+        ],
+
+        "webida.preference:pages" : [
+            {
+                "module": "plugins/webida.editor.text-editor/preferences/preference-appearance",
+                "id": "texteditor",
+                "hierarchy": "",
+                "name": "Editor",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "getDefault": "getDefault",
+                "scope": ["USER", "WORKSPACE"]
+            },
+            {
+                "module": "plugins/webida.editor.text-editor/preferences/preference-editor",
+                "id": "texteditor.lines",
+                "hierarchy": "texteditor",
+                "name": "Lines",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "getDefault": "getDefault",
+                "scope": ["USER", "WORKSPACE"]
+            },
+            {
+                "module": "plugins/webida.editor.text-editor/preferences/preference-keys",
+                "id": "texteditor.key-map",
+                "hierarchy": "texteditor",
+                "name": "Key Map",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "getDefault": "getDefault",
+                "scope": ["USER", "WORKSPACE"]
+            },
+            {
+                "module": "plugins/webida.editor.text-editor/preferences/preference-show",
+                "id": "texteditor.show-hide",
+                "hierarchy": "texteditor",
+                "name": "Show or Hide",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "getDefault": "getDefault",
+                "scope": ["USER", "WORKSPACE"]
+            }
         ]
     }
 }

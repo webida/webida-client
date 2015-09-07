@@ -107,6 +107,20 @@
                 "visible": "false"
             }
         ],
+
+        "webida.preference:pages": [
+            {
+                "module": "webida-lib/plugins/git/preference-git",
+                "id": "git",
+                "hierarchy": "",
+                "name": "Git",
+                "getDefault": "getDefault",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "scope": ["WORKSPACE"],
+                "visible": "false"
+            }
+        ],
         
         "webida.common.workspace:overlayIcons" : {
             "iconCssFilePath" : "./icons.css",

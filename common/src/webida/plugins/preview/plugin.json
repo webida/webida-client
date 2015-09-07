@@ -18,6 +18,19 @@
             }
         ],
 
+        "webida.preference:pages": [
+            {
+                "module": "webida-lib/plugins/preview/preview-pref-page",
+                "id": "preview",
+                "hierarchy": "",
+                "name": "Preview",
+                "getDefault": "getDefault",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "scope": ["USER", "WORKSPACE"]
+            }
+        ],
+
         "webida.common.workspace:menu" : {
             "location" : "/",
             "module" : "webida-lib/plugins/preview/preview-menu-item",

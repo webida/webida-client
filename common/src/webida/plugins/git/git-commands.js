@@ -2994,9 +2994,8 @@ define(['require',
                     if (pathUtil.isDirPath(selectedPath)) {
                         options.push('-r');
                     }
-                    options.push(relPath);
 
-                    git.exec(path, ['rm'].concat(options), function (err, stdout, stderr) {
+                    git.exec(path, ['rm'].concat(options, relPath), function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(path, 'untrack', err);
                             toastr.error('For more details, refer to the Git view.', 'Git Untrack Error');
@@ -3049,7 +3048,11 @@ define(['require',
                 if (relPath === '.') {
                     $('#GitUntrackFilehInfo').text(GIT_DIR);
                 } else {
-                    $('#GitUntrackFilehInfo').text(GIT_DIR + relPath);
+                    var files = '';
+                    relPath.forEach(function (value) {
+                        files = files + GIT_DIR + value + ' ';
+                    });
+                    $('#GitUntrackFilehInfo').text(files);
                 }
 
                 untrackDialog.show();
@@ -3062,7 +3065,7 @@ define(['require',
         } else if (relPath === '.') {
             _untrackUX();
         } else {
-            git.exec(GIT_DIR, ['status', '--porcelain', '--ignored', '--', relPath], function (err, data) {
+            git.exec(GIT_DIR, ['status', '--porcelain', '--ignored'].concat(relPath), function (err, data) {
                 if (!err) {
                     var rt = git.parseStatus(data);
 
@@ -3822,7 +3825,8 @@ define(['require',
                             //console.log('hina temp: to addlist - ' + item.filename);
                             addlist.push(item.filename);
                         }
-                    } /* else {
+                    }
+                    /* else {
                         console.log('hina temp: to resetlist - ' + item.filename);
                         resetlist.push(item.filename);
                     } */
@@ -5757,20 +5761,22 @@ define(['require',
         }
     }
     function untrack() {
-        var selectedPath = wv.getSelectedPath();
-        if (selectedPath) {
-            var gitRootPath = git.findGitRootPath(selectedPath);
-            var relPath = null;
+        var selectedPaths = wv.getSelectedPaths();
+        if (selectedPaths[0]) {
+            var gitRootPath = git.findGitRootPath(selectedPaths[0]);
+            var relPaths;
 
             // if node is git Root directory
-            if (gitRootPath === selectedPath) {
-                relPath = '.';
+            if (gitRootPath === selectedPaths[0]) {
+                relPaths = ['.'];
             } else {
                 // extract relative path
-                relPath = selectedPath.replace(gitRootPath, '');
+                relPaths = selectedPaths.map(function (value) {
+                    return value.replace(gitRootPath, '');
+                })
             }
 
-            _untrack(gitRootPath, relPath);
+            _untrack(gitRootPath, relPaths);
         }
     }
     function remove() {
