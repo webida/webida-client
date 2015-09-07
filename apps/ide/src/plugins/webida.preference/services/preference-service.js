@@ -15,31 +15,11 @@
  */
 
 /**
+ * Preference Service for getting and setting listeners against to a specific preference store
  *
  * @since: 15. 9. 4
  * @author: Koong Kyungmi (kyungmi.k@samsung.com)
- */
-
-/*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- *
- * @since: 15. 8. 19
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @module webida.preference.service.PreferenceService
  */
 
 define([
@@ -50,8 +30,12 @@ define([
     'use strict';
 
     var SCOPE = preferenceManager.SCOPE;
-    var instances = {};
 
+    /**
+     * Preference Service for scopes ("USER" and "WORKSPACE")
+     * @param {string} scopeName - scope name
+     * @constructor
+     */
     function PreferenceService(scopeName) {
         this.scope = SCOPE[scopeName];
         this.valueChangeListeners = {};
@@ -70,6 +54,11 @@ define([
         }
     };
 
+    /**
+     *
+     * @param preferenceId
+     * @param listener
+     */
     PreferenceService.prototype.addFieldChangeListener = function (preferenceId, listener) {
         if (!this.valueChangeListeners[preferenceId]) {
             this.valueChangeListeners[preferenceId] = [];
@@ -79,6 +68,11 @@ define([
         }
     };
 
+    /**
+     *
+     * @param preferenceId
+     * @param listener
+     */
     PreferenceService.prototype.removeFieldChangeListener = function (preferenceId, listener) {
         if (this.valueChangeListeners[preferenceId]) {
             var index = this.valueChangeListeners[preferenceId].indexOf(listener);
@@ -96,6 +90,20 @@ define([
         }
     };
 
+    /**
+     * This callback will be called after preference values set
+     *
+     * @callback preferenceValueCallback
+     * @param {object} preference value or values
+     */
+
+    /**
+     * Get all values by preference ID
+     *
+     * @param {string} preferenceId - preference ID
+     * @param {preferenceValueCallback} callback
+     * @returns {object} - return preference values even if loading is not completed
+     */
     PreferenceService.prototype.getValues = function (preferenceId, callback) {
         var self = this;
         preferenceManager.initialized.then(function () {
@@ -106,6 +114,14 @@ define([
         return self._getRealPreferenceValues(preferenceManager.getStore(preferenceId, self.scope));
     };
 
+    /**
+     * Get value by preference ID and preference field key
+     *
+     * @param {string} preferenceId - preference ID
+     * @param {string} key - field key
+     * @param {preferenceValueCallback} callback
+     * @returns {object} - return preference values even if loading is not completed
+     */
     PreferenceService.prototype.getValue = function (preferenceId, key, callback) {
         var result = this.getValues(preferenceId, function (values) {
             if (callback) {

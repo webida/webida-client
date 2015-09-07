@@ -15,9 +15,11 @@
  */
 
 /**
+ * Factory class for getting instances of preference service
  *
  * @since: 15. 8. 19
  * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @module webida.preference.PreferenceServiceFactory
  */
 
 define([
@@ -45,13 +47,13 @@ define([
             }
             return value;
         }
-    };
+    }
 
     preferenceManager.setValueChangeListener(function (store) {
         var priority = SCOPE[store.scope].priority;
         var realValues = _getRealPreferenceValues(store);
         for (var scopeName in SCOPE) {
-            if(SCOPE[scopeName].priority >= priority) {
+            if (SCOPE[scopeName].priority >= priority) {
                 var additionalInfo;
                 if (scopeName === 'PROJECT' && store.scopeInfo) {
                     additionalInfo = store.scopeInfo.projectName;
@@ -65,8 +67,23 @@ define([
         }
     });
 
+    /**
+     * Factory class for getting instances of preference service
+     *
+     * @class
+     */
     function PreferenceServiceFactory() {}
 
+    /**
+     * Get a service object bound to a specific scope and additional Info
+     *
+     * @param {string} scopeName - scope name, "USER", "WORKSPACE" or "PROJECT"
+     * @param {string} additionalInfo - additional infos for scope
+     *      e.g. If `scopeName` is "PROJECT", `additionalInfo` will be a project name.
+     * @returns {PreferenceService}
+     *
+     * @memberOf webida.preference.PreferenceServiceFactory
+     */
     PreferenceServiceFactory.findServiceInstance = function (scopeName, additionalInfo) {
         if (!additionalInfo && instances[scopeName]) {
             return instances[scopeName];
@@ -75,22 +92,30 @@ define([
         }
     };
 
+    /**
+     * Get a service object bound to a specific scope and additional Info
+     *
+     * @param {string} scopeName - scope name, "USER", "WORKSPACE" or "PROJECT"
+     * @param {string} additionalInfo - additional infos for scope
+     *      e.g. If `scopeName` is "PROJECT", `additionalInfo` will be a project name.
+     * @returns {PreferenceService}
+     *
+     * @memberOf webida.preference.PreferenceServiceFactory
+     */
     PreferenceServiceFactory.get = function (scopeName, additionalInfo) {
         var instance = PreferenceServiceFactory.findServiceInstance(scopeName, additionalInfo);
         if (instance) {
-           return instance;
+            return instance;
         }
 
-        switch(scopeName) {
+        switch (scopeName) {
             case 'USER':
             case 'WORKSPACE':
                 instances[scopeName] = new PreferenceService(scopeName);
                 return instances[scopeName];
-                break;
             case 'PROJECT':
                 instances[scopeName][additionalInfo] = new ProjectPreferenceService(scopeName, additionalInfo);
                 return instances[scopeName][additionalInfo];
-                break;
         }
     };
 
