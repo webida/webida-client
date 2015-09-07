@@ -123,7 +123,7 @@ define([
             var viewer = this.getViewerById('CodeEditor');
             var container = viewer.getParentNode();
             var persistence = this.getDataSource().getPersistence();
-            viewer.setValue(persistence.getContents());
+            viewer.refresh(persistence.getContents());
             viewer.clearHistory();
             viewer.markClean();
             viewer.setMatchBrackets(true);
