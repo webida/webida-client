@@ -380,7 +380,7 @@ define([
 
                 var tab;
                 var openFileWithNamespace = function (path, opt, pos, foldings) {
-                	topic.publish('#REQUEST.openFile', path, opt, function (file) {
+                	topic.publish('editor/open', path, opt, function (file) {
                         logger.info('pos = ', pos);
 
                         _.defer(function () {

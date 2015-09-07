@@ -74,7 +74,7 @@ define([
                 }
                 var abspath = path.combine(path.getDirPath(currentpath), linkpath);
                 abspath = path.flatten(abspath);
-                topic.publish('#REQUEST.openFile', abspath);
+                topic.publish('editor/open', abspath);
 
                 // to move focus to the opened file... (WTC-312)
                 e.stopPropagation();
