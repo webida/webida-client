@@ -491,7 +491,7 @@ define([
     };
 
     codemirror.commands.save = function(cm) {
-        topic.publish('#REQUEST.saveFile');
+        topic.publish('editor/save/current');
     };
 
     function jshint(cm, callback) {

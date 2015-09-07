@@ -23,7 +23,6 @@
 // @formatter:off
 define([
     'dojo/topic',
-    'text!./ext-to-mime.json',
     'external/lodash/lodash.min',
     'external/URIjs/src/URI',
     'webida-lib/app',
@@ -47,7 +46,6 @@ define([
     './EditorManager'
 ], function (
     topic, 
-    extToMime, 
     _, 
     URI, 
     ide, 
@@ -171,8 +169,7 @@ define([
                     title: 'Close "' + pathUtil.getFileName(path) + '"?',
                     message: 'File "' + path + '" was deleted. ' + 'Is it OK to close the editor tab for the file?'
                 }).then(function() {
-                    editors.closeFile({
-                        path: path,
+                    topic.publish('editor/close/data-source-id', path, {
                         force: true
                     });
                 }, function() {
@@ -210,8 +207,7 @@ define([
                         if (part.isDirty()) {
                             if (answer.yesToModified || answer.noToModified) {
                                 if (answer.yesToModified) {
-                                    editors.closeFile({
-                                        path: filePath,
+                                    topic.publish('editor/close/data-source-id', filePath, {
                                         force: true
                                     });
                                 }
@@ -221,8 +217,7 @@ define([
                         } else {
                             if (answer.yesToUnmodified || answer.noToUnmodified) {
                                 if (answer.yesToUnmodified) {
-                                    editors.closeFile({
-                                        path: filePath,
+                                    topic.publish('editor/close/data-source-id', filePath, {
                                         force: true
                                     });
                                 }
@@ -255,8 +250,7 @@ define([
                             }],
                             methodOnEnter: null,
                             onYes: function() {
-                                editors.closeFile({
-                                    path: filePath,
+                                topic.publish('editor/close/data-source-id', filePath, {
                                     force: true
                                 });
                                 this.hide();
@@ -294,7 +288,14 @@ define([
         }
 
 
+        topic.subscribe('editors.closed', function(dataSourceId, view) {
+            editors.editorTabFocusController.unregisterView(view);
+        });
+
         topic.subscribe('fs.cache.node.deleted', function(fsUrl, dir, name, type, movedTo) {
+
+            logger.info('fs.cache.node.deleted', fsUrl, dir, name, type, movedTo);
+            logger.trace();
 
             function fileMoved(src, dst) {
                 var dataSource = editors.getDataSourceById(src);
@@ -393,7 +394,6 @@ define([
             }, 10000);
         });
 
-        topic.subscribe('#REQUEST.closeFile', editors.closeFile.bind(editors));
         topic.subscribe('#REQUEST.selectFile', function(path) {
             if (editors.getFile(path)) {
                 topic.publish('#REQUEST.openFile', path);
@@ -403,10 +403,59 @@ define([
         // TODO: remove the following subscriptions
         topic.subscribe('file.saved', editors.onFileSaved.bind(editors));
 
+        topic.subscribe('editor/not-exists', function() {
+            topic.publish('editors.clean.all');
+            topic.publish('editors.clean.current');
+        });
+
         //Compatibility
-        topic.subscribe('editors.current.part', function(part) {
-            var file = part.getDataSource().getPersistence();
-            editors.setCurrentFile(file);
+        topic.subscribe('current-part-changed', function(oldPart, newPart) {
+
+            console.log('current-part-changed');
+
+            if (oldPart !== newPart) {
+
+                if (oldPart) {
+                    var oldContainer = oldPart.getContainer();
+                    if (oldContainer) {
+                        var oldView = oldContainer.getWidgetAdapter().getWidget();
+                        workbench.unregistFromViewFocusList(oldView);
+                    }
+                }
+
+                if (newPart) {
+                    var newContainer = newPart.getContainer();
+                    var newView = newContainer.getWidgetAdapter().getWidget();
+                    workbench.registToViewFocusList(newView, {
+                        title: 'Editor',
+                        key: 'E'
+                    });
+
+                    /////////////////////// TODO refactor
+
+                    var file = newPart.getDataSource().getPersistence();
+
+                    editors.currentFile = file;
+
+                    if (file) {
+                        editors.currentFiles.put(file);
+                        editors.recentFiles.put(file.path);
+
+                        if (file.toRefresh) {
+                            file.toRefresh = false;
+                            fsCache.refreshFileContents(file.path);
+                        }
+
+                        if (file.toAskAndReload) {
+                            file.toAskAndReload = false;
+                            _.defer(askAndReload.bind(null, file));
+                        }
+                        topic.publish('editors.selected', file.path, file);
+                    }
+                } else {
+                    editors.currentFile = null;
+                }
+            }
         });
     }
 
@@ -430,7 +479,6 @@ define([
 
     var fsCache = ide.getFSCache();
     var fm = getFileManager();
-    extToMime = JSON.parse(extToMime);
 
     var asked = [];
     function askAndReload(file) {
@@ -466,56 +514,6 @@ define([
         recentFiles: new BubblingArray(20), // keep history of 20 files
         onloadPendingFilesCount: 0,
         parts: new Map()
-    };
-
-    editors.setCurrentFile = function(file) {
-        logger.info('editors.setCurrentFile(' + file + ')');
-        logger.trace();
-
-        if (editors.currentFile !== file) {
-            var view;
-            if (editors.currentFile) {
-                view = vm.getView(editors.currentFile.viewId);
-                if (view) {
-                    workbench.unregistFromViewFocusList(view);
-                    // TODO: do it with an extension and an extension point
-                }
-            }
-            if (file) {
-                view = vm.getView(file.viewId);
-                if (view) {
-                    var opt = {};
-                    opt.title = 'Editor';
-                    opt.key = 'E';
-                    workbench.registToViewFocusList(view, opt);
-                }
-            }
-
-            editors.currentFile = file;
-
-            if (file) {
-                editors.currentFiles.put(file);
-                editors.recentFiles.put(file.path);
-                if (file.tabTitle && file.tabTitle.indexOf('*') === 0) {
-                    topic.publish('editors.dirty.current');
-                } else {
-                    topic.publish('editors.clean.current');
-                }
-
-                if (file.toRefresh) {
-                    file.toRefresh = false;
-                    fsCache.refreshFileContents(file.path);
-                }
-
-                if (file.toAskAndReload) {
-                    file.toAskAndReload = false;
-                    _.defer(askAndReload.bind(null, file));
-                }
-                topic.publish('editors.selected', file.path, file);
-            } else {
-                topic.publish('editors.nofile.current');
-            }
-        }
     };
 
     editors.ensureCreated = function(file, bShowAndFocus, cb) {
@@ -559,51 +557,6 @@ define([
         });
     }
 
-    // options === { path: string }
-    editors.closeFile = function(options) {
-        logger.info('editors.closeFile(' + options + ')');
-        logger.trace();
-
-        var file;
-        if (options && options.path) {
-            file = editors.getFile(options.path);
-            if (!file) {
-                toastr.error('Cannot close the file "' + options.path + '"');
-                return;
-            }
-        } else {
-            file = editors.currentFile;
-            console.log('file = ', file);
-            if (!file) {
-                toastr.error('No files to close');
-                return;
-            }
-        }
-
-        var view = vm.getView(file.viewId);
-        
-        console.log('view = ', view);
-        
-        var vc = view.getParent();
-
-        // event is hard-coded, because ViewContainerEvent is private.
-        var event = {
-            name: 'view.close',
-            viewContainer: vc,
-            view: view,
-            closable: true,
-            force: options && options.force,
-            noClose: function() {
-                this.closable = false;
-            }
-        };
-
-        topic.publish('view.close', event, function() {
-            if (event.closable) {
-                vc._remove(event.view, true);
-            }
-        });
-    };
 
     editors.quit = function() {
 
@@ -722,7 +675,7 @@ define([
      * This method will be remove from 1.4.0
      * Temp Code
      */
-    editors.openFile = editorManager.requestOpen;
+    editors.openFile = editorManager._openDataSource;
 
     editors.onFileSaved = function(file) {
         logger.info('onFileSaved(' + file + ')');
@@ -824,6 +777,11 @@ define([
     //TODO remove
     editors.getDataSource = function(persistence) {
         return dsRegistry.getDataSourceById(persistence.getPersistenceId());
+    };
+
+    editors.getPartRegistry = function() {
+        var page = workbench.getCurrentPage();
+        return page.getPartRegistry();
     };
 
     subscribeToTopics();

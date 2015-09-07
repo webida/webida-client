@@ -79,6 +79,7 @@ define([
                 var that = this;
                 var model = this.getModel();
                 var dataSource = this.getDataSource();
+                model.setSerialized(model.serialize());
                 dataSource.setData(model.getSerialized(), function(data) {
                     that.setSavedData(data);
                     callback(model);
@@ -95,7 +96,7 @@ define([
                 var model = this.getModel();
                 var dataSource = this.getDataSource();
                 var persistence = dataSource.getPersistence();
-                if (model.getSerialized() === persistence.getContents()) {
+                if (model.serialize() === persistence.getContents()) {
                     return false;
                 } else {
                     return true;
@@ -109,7 +110,9 @@ define([
          * Resets the given EditorModel to its last saved state.
          */
         resetModel: function() {
+        	logger.info('resetModel()');
             var model = this.getModel();
+            logger.info('this.getSavedData() = ', this.getSavedData());
             model.createContents(this.getSavedData());
         },
     });

@@ -1222,7 +1222,9 @@ define([
     }
 
     function initializeSyncEditorFocus() {
-        topic.subscribe('editors.selected', function(path) {
+        topic.subscribe('partContainerSelected', function(container) {
+            var persistence = container.getDataSource().getPersistence();
+        	var path = persistence.getPersistenceId();
             if (syncingWithEditor) {
                 expandAncestors(path).then(function(result) {
                     if (result === true) {

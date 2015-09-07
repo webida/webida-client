@@ -112,6 +112,7 @@ define([
          * @param {Object} data
          */
         setSavedData: function(data) {
+            logger.info('setSavedData(' + data + ')');
             this.savedData = data;
         },
 

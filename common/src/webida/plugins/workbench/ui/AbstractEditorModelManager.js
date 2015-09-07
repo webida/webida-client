@@ -144,6 +144,7 @@ define([
             logger.info('model --> ', model);
             if (!!model) {
                 this.setModel(model);
+                this.setSavedData(model.getSerialized());
                 this._execFunc(callback, model);
                 //See createModel
                 setTimeout(function() {

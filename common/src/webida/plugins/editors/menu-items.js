@@ -19,10 +19,10 @@ define([], function () {
 
     var fileMenuItems = {
         '&Save' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'saveFile' ],
-        'Sav&e All' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'saveAllFiles' ],
-        '&Close' : [ 'cmnd', 'webida-lib/plugins/editors/plugin', 'closeFile' ],
-        'Cl&ose Others' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'closeOtherFiles' ],
-        'C&lose All' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'closeAllFiles' ],
+        'Sav&e All' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'saveAll' ],
+        '&Close' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'closeCurrent' ],
+        'Cl&ose Others' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'closeOthers' ],
+        'C&lose All' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'closeAll' ],
         'Recent Files' : [ 'enum', 'webida-lib/plugins/editors/editors-commands', 'openRecentFile' ],
     };
 

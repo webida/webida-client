@@ -183,7 +183,7 @@ define([
     };
 
     codemirror.commands.save = function(cm) {
-        topic.publish('#REQUEST.saveFile');
+        topic.publish('editor/save/current');
     };
 
     function TextEditorViewer(elem, file, startedListener) {
@@ -263,6 +263,7 @@ define([
     genetic.inherits(TextEditorViewer, EditorViewer, {
 
         synchronizeWidgetModel: function(recentViewer) {
+            logger.info('synchronizeWidgetModel(' + recentViewer + ')');
             this.editor.swapDoc(recentViewer.editor.getDoc().linkedDoc({
                 sharedHist: true
             }));

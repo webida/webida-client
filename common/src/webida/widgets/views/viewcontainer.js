@@ -58,7 +58,6 @@ define([
     }
 
     ViewContainerEvent.SELECTED = 'view.selected';
-    ViewContainerEvent.CLOSE = 'view.close';
     ViewContainerEvent.QUIT = 'view.quit';
     ViewContainerEvent.ADDED = 'view.added';
     ViewContainerEvent.ADDED_BEFORE = 'view.added-before';
@@ -420,6 +419,8 @@ define([
                     event.view = view;
                     event.viewContainer = this;
                     topic.publish(ViewContainerEvent.SELECTED, event);
+                    //TODO : should be refactored with CompatiblePartContainerWidgetAdapter
+                    topic.publish('compatible.view.selected', event.view);
                 } else {
                     this.tabContainer.selectChild(view.contentPane, true);
                 }
@@ -618,24 +619,12 @@ define([
             }
         },
 
-        _contentPaneClose : function (pane, closable) {
-        	logger.trace();
-        	logger.info('_contentPaneClose('+pane+')');
-            var _self = this;
-            var event = new ViewContainerEvent(ViewContainerEvent.CLOSE);
-            event.view = _self._getViewByContentPane(pane);
-            event.viewContainer = _self;
-            event.closable = closable;
-            event.noClose = function () {
-                event.closable = false;
-            };
-
-            topic.publish(ViewContainerEvent.CLOSE, event, lang.hitch(this, function () {
-                if (event.closable) {
-                    this._remove(event.view, true);
-                }
-            }));
-        },
+		_contentPaneClose : function (pane, closable) {
+			logger.info('_contentPaneClose('+pane+')');
+			var view = this._getViewByContentPane(pane);
+			var part = view.partContainer.getPart();
+			topic.publish('editor/close/part', part);
+		},
 
         _contentPaneQuit : function (pane) {
             var _self = this;
