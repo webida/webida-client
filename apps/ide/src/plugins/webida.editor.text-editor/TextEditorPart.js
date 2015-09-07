@@ -279,6 +279,7 @@ define([
 
         onDestroy: function() {
             logger.info('onDestroy()');
+            EditorPart.prototype.onDestroy.apply(this);
             if (this.viewer) {
                 this.viewer.destroyAdapter();
                 this.viewer = null;

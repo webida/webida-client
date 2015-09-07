@@ -72,7 +72,7 @@ define([
         logger.info('new EditorManager()');
 
         /** @type {Object} */
-        this.subscribed = {};
+        this.subscribed = [];
 
         this.extensionManager = ExtensionManager.getInstance();
 
@@ -95,23 +95,31 @@ define([
          * subscribe to topic
          * @private
          */
-        // @formatter:off
         _subscribe: function() {
-            this.subscribed['#REQUEST.openFile'] = topic.subscribe(
-                '#REQUEST.openFile', this.requestOpen.bind(this));
-            this.subscribed['#REQUEST.saveFile'] = topic.subscribe(
-                '#REQUEST.saveFile', this.requestSave.bind(this));
+            //open
+            this.subscribed.push(topic.subscribe('#REQUEST.openFile', this._openDataSource.bind(this)));
+
+            //save
+            this.subscribed.push(topic.subscribe('editor/save/all', this._saveAllParts.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/save/current', this._saveCurrentPart.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/save/data-source-id', this._saveByDataSourceId.bind(this)));
+
+            //close
+            this.subscribed.push(topic.subscribe('editor/close/part', this._closePart.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/close/all', this._closeAllParts.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/close/current', this._closeCurrentPart.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/close/others', this._closeOtherParts.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/close/data-source-id', this._closeByDataSourceId.bind(this)));
         },
-        // @formatter:on
 
         /**
          * unsubscribe topics
          * @private
          */
         _unsubscribe: function() {
-            for (var prop in this.subscribed) {
-                this.subscribed[prop].remove();
-            }
+            this.subscribed.forEach(function(subscribed) {
+                subscribed.remove();
+            });
         },
 
         /**
@@ -122,19 +130,21 @@ define([
             return this.extensionManager;
         },
 
+        // ************* Open ************* //
+
         /**
          * Creates a new DataSource if not exist then show Part.
          *
          * @param {Object} dataSourceId
          * @param {Object} options
-         * @param {requestOpenCallback} callback
+         * @param {_openDataSourceCallback} callback
          */
         /**
-         * @callback requestOpenCallback
+         * @callback _openDataSourceCallback
          * @param {Part} part
          */
-        requestOpen: function(dataSourceId, options, callback) {
-            logger.info('> requestOpen(' + dataSourceId + ', ', options, ', ' + typeof callback + ')');
+        _openDataSource: function(dataSourceId, options, callback) {
+            logger.info('> _openDataSource(' + dataSourceId + ', ', options, ', ' + typeof callback + ')');
 
             var that = this;
             options = options || {};
@@ -219,37 +229,104 @@ define([
             return page.getPartRegistry();
         },
 
+        // ************* Save ************* //
+
         /**
          * Saves specified dataSource.
-         * With empty arguments this will save current editor part's dataSource.
          *
          * @param {Object} dataSourceId
          * @param {Object} options
-         * @param {requestSaveCallback} callback
+         * @param {_saveByDataSourceIdCallback} callback
          */
         /**
-         * @callback requestSaveCallback
+         * @callback _saveByDataSourceIdCallback
          * @param {Part} part
          */
-        requestSave: function(dataSourceId, options, callback) {
-            logger.info('> requestSave(' + dataSourceId + ', ', options, ', ' + typeof callback + ')');
-            var part, parts, dataSource;
+        _saveByDataSourceId: function(dataSourceId, callback) {
+            logger.info('> _saveCurrentPart(' + dataSourceId + ', ' + typeof callback + ')');
+            var part, parts;
             var registry = this._getPartRegistry();
             var dsRegistry = workbench.getDataSourceRegistry();
-            if (dataSourceId) {
-                dataSource = dsRegistry.getDataSourceById(dataSourceId);
-                parts = registry.getPartsByDataSource(dataSource);
-                if ( parts instanceof Array && parts.length > 0) {
-                    part = parts[0];
-                }
-            } else {
-                part = registry.getCurrentEditorPart();
+            var dataSource = dsRegistry.getDataSourceById(dataSourceId);
+            parts = registry.getPartsByDataSource(dataSource);
+            if ( parts instanceof Array && parts.length > 0) {
+                part = parts[0];
             }
             part.save(callback);
+        },
+
+        /**
+         * Saves current editor part's dataSource.
+         *
+         * @param {Object} options
+         * @param {_saveCurrentPartCallback} callback
+         */
+        /**
+         * @callback _saveCurrentPartCallback
+         * @param {Part} part
+         */
+        _saveCurrentPart: function(callback) {
+            logger.info('> _saveCurrentPart(' + typeof callback + ')');
+            var registry = this._getPartRegistry();
+            var part = registry.getCurrentEditorPart();
+            part.save(callback);
+        },
+
+        /**
+         * Saves all parts
+         */
+        _saveAllParts: function() {
+            logger.info('_saveAllParts()');
+            var registry = this._getPartRegistry();
+            var parts = registry.getDirtyParts();
+            parts.forEach(function(part) {
+                part.save();
+            });
+        },
+
+        // ************* Close ************* //
+
+        _closePart: function(part) {
+            part.close();
+        },
+
+        /**
+         * Closes current active EditorPart
+         */
+        _closeCurrentPart: function() {
+            logger.info('_closeCurrentPart()');
+            var registry = this._getPartRegistry();
+            var part = registry.getCurrentEditorPart();
+            part.close();
+        },
+
+        _closeOtherParts: function() {
+            var registry = this._getPartRegistry();
+            var currentPart = registry.getCurrentEditorPart();
+            var editorParts = registry.getEditorParts();
+            editorParts.forEach(function(part) {
+                if (part !== currentPart) {
+                    part.close();
+                }
+            });
+        },
+
+        _closeAllParts: function() {
+            var editorParts = this._getPartRegistry().getEditorParts();
+            editorParts.forEach(function(part) {
+                part.close();
+            });
+        },
+
+        _closeByDataSourceId: function(dataSourceId) {
+            logger.info('_closeByDataSourceId(' + dataSourceId + ')');
+            var registry = this._getPartRegistry();
+            var parts = registry.getPartsByDataSource(dataSource);
+            parts.forEach(function(part) {
+                part.close();
+            });
         }
     });
-
-    EditorManager.DATA_SOURCE_OPENED = 'dataSourceOpened';
 
     return EditorManager;
 });

@@ -25,16 +25,20 @@
 
 // @formatter:off
 define([
-    'external/eventEmitter/EventEmitter',
+    'dojo/topic',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
+    'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/CompatiblePartContainerWidgetAdapter',
+    'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/TabPartContainer'
 ], function(
-    EventEmitter,
+    topic,
     genetic, 
     Logger,
+    workbench,
     CompatiblePartContainerWidgetAdapter,
+    EditorPart,
     TabPartContainer
 ) {
     'use strict';
@@ -85,6 +89,21 @@ define([
 
         setTitleImage: function(titleImage) {
             //TODO
+        },
+
+        /**
+         * Convenient method for LayoutPane.CONTAINER_SELECT event
+         * @see LayoutPane
+         * @override
+         */
+        onSelect: function() {
+            var part = this.getPart();
+            var registry = this._getRegistry();
+            var currentPart = registry.getCurrentEditorPart();
+            if ( part instanceof EditorPart) {
+                registry.setCurrentEditorPart(part);
+                topic.publish('partContainerSelected', this);
+            }
         }
     });
 

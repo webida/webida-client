@@ -42,7 +42,6 @@ function (topic, workbench, View, vm, ViewToolbar, wv, pathUtil) {
             }
         }));
         self.addHandle(topic.subscribe('view.close', function (event, onClose) {
-            //console.log('view.close', event.view.getId());
             if (event.view.getId() === self.getId()) {
                 self.onViewClose();
                 onClose();

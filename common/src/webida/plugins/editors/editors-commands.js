@@ -277,39 +277,26 @@ define([
 	}
 
 	function saveFile() {
-		topic.publish('#REQUEST.saveFile');
+		topic.publish('editor/save/current');
 	}
 
-	function saveAllFiles() {
-        var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
-        var parts = registry.getDirtyParts();
-        parts.forEach(function(part){
-        	part.save();
-        });
+	function saveAll() {
+		logger.info('saveAll()');
+		topic.publish('editor/save/all');
 	}
 
-	function closeOtherFiles() {
-		var curFilePath = editors.currentFile.path;
-		var opened = _.values(editors.files);
-		_.each(opened, function (file) {
-			if (file.path !== curFilePath) {
-				editors.closeFile({
-					path : file.path
-				});
-			}
-		});
+	function closeCurrent(){
+		logger.info('closeCurrent()');
+		topic.publish('editor/close/current');
 	}
 
-	function closeAllFiles() {
-		// editors.files is currently opened file list
-		var opened = _.values(editors.files);
+	function closeOthers() {
+		logger.info('closeOthers()');
+		topic.publish('editor/close/others');
+	}
 
-		_.each(opened, function (file) {
-			editors.closeFile({
-				path : file.path
-			});
-		});
+	function closeAll() {
+		topic.publish('editor/close/all');
 	}	
 
 	function openRecentFile(index) {
@@ -347,9 +334,10 @@ define([
 		rotateToVertical : rotateToVertical,
 		rotateToHorizontal : rotateToHorizontal,
 		saveFile : saveFile,
-		saveAllFiles : saveAllFiles,
-		closeOtherFiles : closeOtherFiles,
-		closeAllFiles : closeAllFiles,
+		saveAll : saveAll,
+		closeCurrent : closeCurrent,
+		closeOthers : closeOthers,
+		closeAll : closeAll,
 		replace : replace,
 		find : find,
 		quickFind : quickFind,

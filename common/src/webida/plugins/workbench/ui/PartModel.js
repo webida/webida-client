@@ -82,6 +82,14 @@ define([
         },
 
         /**
+         * Serializes model to a string
+         * @return {String} Serialized Data
+         */
+        serialize: function() {
+            throw new Error('serialize() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
          * @abstract
          * @param {Object} contents
          */

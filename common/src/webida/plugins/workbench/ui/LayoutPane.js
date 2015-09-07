@@ -50,8 +50,8 @@ define([
 
         LayoutTree.call(this, id);
 
-        /** @type {Map.<DataSource, {Array.<PartContainer>}>} */
-        this.containers = new Map();
+        /** @type {Array.<PartContainer>} */
+        this.containers = [];
 
         this.on(LayoutPane.CONTAINER_SELECT, function(container) {
             if (container) {
@@ -69,14 +69,10 @@ define([
          */
         addPartContainer: function(container) {
             logger.info('addPartContainer(' + container + ')');
-            var dataSource = container.getDataSource();
-            var map = this.getPartContainers();
-            if (map.has(dataSource) === false) {
-                map.set(dataSource, []);
-            }
-            var containers = map.get(dataSource);
+            var containers = this.getPartContainers();
             if (containers.indexOf(container) < 0) {
                 containers.push(container);
+                container.setParent(this);
             }
         },
 
@@ -84,23 +80,16 @@ define([
          * @param {PartContainer} container
          */
         removePartContainer: function(container) {
-            var dataSource = container.getDataSource();
-            var map = this.getPartContainers();
-            if (map.has(dataSource) === false) {
-                return;
-            }
-            var containers = map.get(dataSource);
+            var containers = this.getPartContainers();
             var index = containers.indexOf(container);
             if (index > 0) {
                 containers.splice(index, 1);
-                if (containers.length === 0) {
-                    map['delete'](dataSource);
-                }
+                container.setParent(null);
             }
         },
 
         /**
-         * @return {Map.<DataSource, {Array.<PartContainer>}>} partContainers
+         * @return {Array.<PartContainer>} partContainers
          */
         getPartContainers: function() {
             return this.containers;

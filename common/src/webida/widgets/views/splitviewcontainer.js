@@ -302,22 +302,6 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
             }
         },
 
-        _registEvents : function () {
-            var _self = this;
-
-            topic.subscribe('view.selected', function (event) {
-                _self._viewSelectedHandler(event);
-            });
-
-            topic.subscribe('view.close', function (event) {
-                _self._viewCloseHandler(event);
-            });
-
-            topic.subscribe('view.focused', function (event) {
-                _self._viewFocusedHandler(event);
-            });
-        },
-
         _split : function (count) {
             var i, vc, layoutPriority;
             var _self = this;
@@ -342,7 +326,6 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
                         if (!_self._smartVisible) {
                             _self.showContainer(vc);
                         }
-                        // _self._registEvents(vc);
                     }
                 }
                 _self._splitCount = count;

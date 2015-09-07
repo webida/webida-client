@@ -26,12 +26,14 @@
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
+    'webida-lib/util/EventProxy',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './PartModel',
     './Viewer'
 ], function(
 	EventEmitter,
+	EventProxy,
     genetic,
     Logger,
     PartModel,
@@ -60,6 +62,7 @@ define([
         this.parent = null;
         this.viewer = null;
         this.model = null;
+        this.eventProxy = new EventProxy();
     }
 
 
@@ -89,6 +92,7 @@ define([
             logger.info('%cbindMVC', 'color:orange');
 
             var part = this;
+            var eProxy = this.eventProxy;
             var container = this.getContainer();
 
             Promise.all([createViewers, createModels]).then(function(results) {
@@ -101,7 +105,7 @@ define([
                     //a view per a model
                     model = models[i];
                     //Model listen to viewer's content change
-                    viewer.on(Viewer.CONTENT_CHANGE, function(request) {
+                    eProxy.on(viewer, Viewer.CONTENT_CHANGE, function(request) {
                         // @formatter:off
                         // TODO : Consider the followings
                         // var command = part.getCommand(request);
@@ -110,12 +114,12 @@ define([
                         model.update(request);
                     });
                     //Viewer listen to model's content change
-                    model.on(PartModel.CONTENTS_CHANGE, function(request) {
+                    eProxy.on(model, PartModel.CONTENTS_CHANGE, function(request) {
                         viewer.render(request);
                         container.updateDirtyState();
                     });
                     //Viewer listen to container's size change
-                    container.on('resize', function(changeSize) {
+                    eProxy.on(container, 'resize', function(changeSize) {
                         viewer.fitSize();
                     });
                     //Render initial model
@@ -218,8 +222,26 @@ define([
             return this.model;
         },
 
-        destroy: function() {
-            throw new Error('destroy() should be implemented by ' + this.constructor.name);
+        /**
+         * Reset model it's last saved state
+         */
+        resetModel: function() {
+            throw new Error('resetModel() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Closes this Part
+         */
+        close: function() {
+            logger.info('close()');
+            this.getContainer().destroyPart();
+        },
+
+        /**
+         * Convenient method for PartContainer.PART_DESTROYED event
+         */
+        onDestroy: function() {
+            this.eventProxy.offAll();
         },
 
         /**
@@ -273,6 +295,15 @@ define([
          */
         getModelManager: function() {
             return this.modelManager;
+        },
+
+        /**
+         * @private
+         */
+        _execFunc: function(callback, param) {
+            if ( typeof callback === 'function') {
+                callback(param);
+            }
         },
 
         // ----------- TODO refactor the follwings ----------- //

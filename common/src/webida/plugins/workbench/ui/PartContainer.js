@@ -27,6 +27,7 @@
 define([
     'dojo/topic',
     'external/eventEmitter/EventEmitter',
+    'webida-lib/util/EventProxy',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/plugin',
@@ -36,6 +37,7 @@ define([
 ], function(
     topic,
     EventEmitter,
+    EventProxy,
     genetic, 
     Logger,
     workbench,
@@ -71,18 +73,19 @@ define([
         this.toolTip = null;
         this.titleImage = null;
         this.adapter = null;
+        this.eventProxy = new EventProxy();
 
         this.setDataSource(dataSource);
         this.createWidgetAdapter();
         this.decorateTitle();
 
         //In case of rename, move persistence
-        dataSource.on(DataSource.ID_CHANGE, function(/*dataSource, oldId, newId*/) {
+        this.eventProxy.on(dataSource, DataSource.ID_CHANGE, function() {
             that.decorateTitle();
         });
 
         //In case of save
-        dataSource.on(DataSource.AFTER_SAVE, function() {
+        this.eventProxy.on(dataSource, DataSource.AFTER_SAVE, function() {
             that.updateDirtyState();
         });
     }
@@ -131,6 +134,7 @@ define([
             if ( part instanceof EditorPart) {
                 registry.setCurrentEditorPart(part);
             }
+            this.emit(PartContainer.PART_CREATED);
 
             //3. Creates Viewer(s) and Model,
             //   then binds all members together
@@ -138,11 +142,37 @@ define([
         },
 
         /**
+         * Close this container
+         */
+        destroyPart: function() {
+            logger.info('destroyPart()');
+
+            //1. Destroy Part
+            this.getPart().onDestroy();
+            this.emit(PartContainer.PART_DESTROYED);
+
+            //2. Unregister Part
+            var registry = this._getRegistry();
+            registry.unregisterPart(this.getPart());
+            this.setPart(null);
+
+            //3. Remove this from LayoutPane
+            this.getParent().removePartContainer(this);
+
+            //4. Remove Event Listeners
+            this.eventProxy.offAll();
+        },
+
+        /**
          * @param {Part} part
          */
         setPart: function(part) {
+            if (this.part && part === null) {
+                this.part.setContainer(null);
+            } else {
+                part.setContainer(this);
+            }
             this.part = part;
-            part.setContainer(this);
         },
 
         /**
@@ -280,29 +310,30 @@ define([
             logger.info('updateDirtyState()');
             logger.trace();
 
-            if (!this.getPart()) {
-                topic.publish('editors.clean.current');
-                return;
-            }
-
             var part = this.getPart();
             var title = this.getDataSource().getTitle();
             var registry = workbench.getCurrentPage().getPartRegistry();
             var currentPart = registry.getCurrentEditorPart();
 
-            if (part.isDirty()) {
-                this.setTitle('*' + title);
-                if (part === currentPart) {
-                    topic.publish('editors.dirty.current');
-                }
-                topic.publish('editors.dirty.some');
+            if (registry.getDirtyParts().length === 0) {
+                topic.publish('editors.clean.all');
             } else {
-                this.setTitle(title);
-                if (part === currentPart) {
-                    topic.publish('editors.clean.current');
-                }
-                if (registry.getDirtyParts().length === 0) {
-                    topic.publish('editors.clean.all');
+                topic.publish('editors.dirty.some');
+            }
+
+            if (!part) {
+                topic.publish('editors.clean.current');
+            } else {
+                if (part.isDirty()) {
+                    this.setTitle('*' + title);
+                    if (part === currentPart) {
+                        topic.publish('editors.dirty.current');
+                    }
+                } else {
+                    this.setTitle(title);
+                    if (part === currentPart) {
+                        topic.publish('editors.clean.current');
+                    }
                 }
             }
         },

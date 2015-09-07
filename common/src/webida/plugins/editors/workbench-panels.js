@@ -52,10 +52,13 @@ define([
     var paneElement = $('<div id="editor" tabindex="0" style="position:absolute; ' +
             'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];
 
-	function _getPartRegistry() {
+    /**
+     * Compatibility
+     */
+    function _getPartRegistry() {
         var page = workbench.getCurrentPage();
         return page.getPartRegistry();
-	}
+    }
 
     function getPanel() {
         var docFrag = document.createDocumentFragment();
@@ -194,110 +197,37 @@ define([
         });
         */
 
-        topic.subscribe('view.selected', function (event) {
+        topic.subscribe('view.selected', function(event) {
             var view = event.view;
             var vc = event.viewContainer;
             if (!vc || (vc.getParent() !== editors.splitViewContainer)) {
                 return;
             }
-
-            var file = editors.getFileByViewId(view.getId());
-            if (file) {
-                var changed = editors.currentFile !== file;
-                if (changed) {
-                    editors.setCurrentFile(file);
+            if (view.partContainer) {
+                var registry = _getPartRegistry();
+                var part = view.partContainer.getPart();
+                var currentPart = registry.getCurrentEditorPart();
+                if (part !== currentPart) {
+                    registry.setCurrentEditorPart(part);
                 }
-
-                editors.ensureCreated(file, true);
-            }
-
-            /*
-            //TODO FIXME --> #issue 11937. resolved in a different way
-            var viewList = vc.getViewList();
-            file = null;
-            for (var i = viewList.length - 1; i >= 0; i--) {
-                if (view === viewList[i]) {
-                    if (i > 0) {
-                        file = editors.getFileByViewId(viewList[i - 1].getId());
-                    } else if (viewList.length > 1) {
-                        file = editors.getFileByViewId(viewList[i + 1].getId());
-                    }
-                    break;
-                }
-            }
-            if (file) {
-                editors.ensureCreated(file, false);
-            }
-             */
-        });
-
-        topic.subscribe('view.focused', function (event) {
-            var view = event.view;
-            var vc = event.viewContainer;
-            if (!vc || (vc.getParent() !== editors.splitViewContainer)) {
-                return;
-            }
-
-            var file = editors.getFileByViewId(view.getId());
-            if (file) {
-                if (editors.currentFile !== file) {
-                    editors.setCurrentFile(file);
-                }
-
-                topic.publish('editors.focused', file.path, file);
             }
         });
 
-        topic.subscribe('view.close', function (event, close) {
-
-			logger.info('event = ', event);
-
+        topic.subscribe('view.focused', function(event) {
             var view = event.view;
+            logger.info('view = ', view);
             var vc = event.viewContainer;
-            var partContainer = view.partContainer;
-            
-            logger.info('partContainer = ', partContainer);
-            
-            var part = partContainer.getPart();
-            var page = workbench.getCurrentPage();
-            var registry = page.getPartRegistry();
-            var dataSource = partContainer.getDataSource();
-            var file = dataSource.getPersistence();
-            var layoutPane = page.getChildById('webida.layout_pane.center');
-
-            var action = function () {
-                if (event.closable) {
-
-                    layoutPane.removePartContainer(part.getContainer());
-                    registry.unregisterPart(part);                    
-                    part.destroy();
-
-                    var i = editors.currentFiles.indexOf(file);
-                    if (i >= 0) {
-                        editors.currentFiles.splice(i, 1);
-                    } else {
-                        console.warn('unexpected');
-                    }
-
-                    workbench.unregistFromViewFocusList(view);
-
-                    topic.publish('editors.closed', file.path);
-                    close();
-                }
-            };
-
             if (!vc || (vc.getParent() !== editors.splitViewContainer)) {
                 return;
             }
-
-            editors.editorTabFocusController.unregisterView(view);
-
-            if (!event.force && part.isDirty()) {
-                createDialog(file, 'Close', action);
-            } else {
-                action();
+            if (view.partContainer) {
+                var registry = _getPartRegistry();
+                var part = view.partContainer.getPart();
+                var currentPart = registry.getCurrentEditorPart();
+                if (part !== currentPart) {
+                    registry.setCurrentEditorPart(part);
+                }
             }
-
         });
 
         topic.subscribe('view.quit', function () {
@@ -439,6 +369,8 @@ define([
 
             return status;
         });
+        
+        logger.info('lastStatus = ', lastStatus);
 
         if (lastStatus && lastStatus.viewContainers) {
             setTimeout(function () {

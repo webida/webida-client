@@ -86,13 +86,14 @@ define([
                 parts.set(dataSource, []);
             }
             parts.get(dataSource).push(part);
-            this.emit(DataSourceRegistry.PART_REGISTERED, part);
+            this.emit(PartRegistry.PART_REGISTERED, part);
         },
 
         /**
          * @param {Part} part
          */
         unregisterPart: function(part) {
+            logger.info('unregisterPart(' + part + ')');
             var dataSource = part.getContainer().getDataSource();
             var parts = this.getParts();
             if (parts.has(dataSource) === true) {
@@ -102,7 +103,11 @@ define([
                 if (partsOfDs.length === 0) {
                     parts['delete'](dataSource);
                 }
-                this.emit(DataSourceRegistry.PART_REGISTERED, part);
+                this.emit(PartRegistry.PART_UNREGISTERED, part);
+                if (this.getEditorParts().length === 0) {
+                    this.setCurrentEditorPart(null);
+                    topic.publish('editor/not-exists');
+                }
             }
         },
 
@@ -186,12 +191,13 @@ define([
          */
         setCurrentEditorPart: function(part) {
             logger.info('setCurrentEditorPart(' + part + ')');
-            if ( part instanceof EditorPart) {
+            if (part === null || part instanceof EditorPart) {
+                var oldPart = this.getCurrentEditorPart();
                 this.currentEditorPart = part;
                 this.setRecentEditorPart(part);
                 //For compatibility 1.3.0
                 //TODO : remove with editors.setCurrentFile
-                topic.publish('editors.current.part', part);
+                topic.publish('current-part-changed', oldPart, part);
             }
         },
 

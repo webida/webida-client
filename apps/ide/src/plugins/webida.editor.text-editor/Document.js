@@ -90,12 +90,20 @@ define([
         },
 
         /**
+         * Serializes model to a string
+         * For Document, just return it's working text.
+         * @return {String} Serialized Data
+         */
+        serialize: function() {
+            return this.text;
+        },
+
+        /**
          * @param {string} text
          * @param {Viewer} [viewer]
          */
         setContents: function(text, viewer) {
             this.text = text;
-            this.setSerialized(text);
         },
 
         /**

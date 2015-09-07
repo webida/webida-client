@@ -147,12 +147,15 @@ define([
 
         /**
          * @override
-         *
          * @param {PartContainer} container
          */
         addPartContainer: function(container, options, editors) {
             logger.info('addPartContainer(' + container + ', index, options)');
+
+            //Call super class
             LayoutPane.prototype.addPartContainer.call(this, container);
+
+            //Add Tab Widget
             var widget = container.getWidgetAdapter().getWidget();
             var dataSource = container.getDataSource();
             var persistence = dataSource.getPersistence();
@@ -168,8 +171,27 @@ define([
                 widget.getParent().select(widget);
             } else {
                 logger.warn('viewContainer not found');
-                //widget.destroy();
             }
+        },
+
+        /**
+         * @override
+         * @param {PartContainer} container
+         */
+        removePartContainer: function(container) {
+            logger.info('removePartContainer(' + container + ')');
+
+            //Remove Tab Widget
+            var workbench = require('webida-lib/plugins/workbench/plugin');
+            var widget = container.getWidgetAdapter().getWidget();
+            var viewContainer = widget.getParent();
+            var ds = container.getDataSource();
+            workbench.unregistFromViewFocusList(widget);
+            topic.publish('editors.closed', ds.getId(), widget);
+            viewContainer._remove(widget, true);
+
+            //Call super class
+            LayoutPane.prototype.removePartContainer.call(this, container);
         },
 
         /**

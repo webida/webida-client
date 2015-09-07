@@ -28,10 +28,12 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
+    './editorDialog',
     './Part'
 ], function(
     genetic,
     Logger,
+    editorDialog,
     Part
 ) {
     'use strict';
@@ -62,12 +64,14 @@ define([
         },
 
         save: function(callback) {
+        	logger.info('save()');
             var that = this;
-            var container = this.getContainer();
             this.emit(EditorPart.BEFORE_SAVE, this);
-            this.getModelManager().saveModel(function() {
-                that._execFunc(callback, that);
-            });
+            if (this.getModelManager()) {
+                this.getModelManager().saveModel(function() {
+                    that._execFunc(callback, that);
+                });
+            }
         },
 
         saveAs: function() {
@@ -78,12 +82,43 @@ define([
             throw new Error('canSaveAs() should be implemented by ' + this.constructor.name);
         },
 
+        close: function() {
+            logger.info('close()');
+            var that = this;
+            if (this.isDirty()) {
+                this._askSaveThen(function() {
+                    Part.prototype.close.call(that);
+                });
+            } else {
+                Part.prototype.close.call(this);
+            }
+        },
+
+        /**
+         * Reset model it's last saved state
+         */
+        resetModel: function() {
+        	logger.info('resetModel()');
+            if (this.getModelManager()) {
+                this.getModelManager().resetModel();
+            }
+        },
+
         toString: function() {
             var res = '<' + this.constructor.name + '>#' + this._partId;
             if (this.file) {
                 res += '(' + this.file.name + ')';
             }
             return res;
+        },
+
+        /**
+         * @private
+         * TODO : refactor
+         */
+        _askSaveThen: function(callback) {
+            var file = this.getDataSource().getPersistence();
+            editorDialog.create(file, 'Close', callback);
         },
 
         /**

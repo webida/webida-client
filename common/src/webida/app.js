@@ -96,6 +96,7 @@ define(['webida-lib/util/browserInfo',
     var lastStatusFile = '/.workspace/last-status<%user-id%>.json';
 
     function getStatusStringToSave() {
+    	logger.info('getStatusStringToSave()');
         var accum = {};
         Object.keys(lastStatusContributors).sort().forEach(function (key) {
             var contributor = lastStatusContributors[key];
@@ -118,6 +119,7 @@ define(['webida-lib/util/browserInfo',
     }
 
     function saveStatusSync() {
+    	logger.info('saveStatusSync()');
         var statusString = getStatusStringToSave();
         if (statusString) {
             var formData = new FormData();
@@ -157,6 +159,7 @@ define(['webida-lib/util/browserInfo',
     }
 
     function saveStatus(cb, eb) {
+    	logger.info('saveStatus(cb, eb)');
         var statusString = getStatusStringToSave();
         if (statusString) {
             mount.writeFile(path + lastStatusFile, statusString, function (err) {
@@ -295,8 +298,10 @@ define(['webida-lib/util/browserInfo',
         // read last status file and set appLastStatus
         // (this must be done before loading any plugin)
         function restoreLastStatusOfApp() {
+        	logger.info('restoreLastStatusOfApp()');
             singleLogger.log('(B) verified the workspace');
             mount.readFile(path + lastStatusFile, function (err, content) {
+            	logger.info('content = ', content);
                 if (err) {
                     singleLogger.log('(C) not read last status file (' + err + ')');
                 } else {
