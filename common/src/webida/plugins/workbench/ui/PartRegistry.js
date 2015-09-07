@@ -66,6 +66,9 @@ define([
         /** @type {Map.<DataSource, {Map.<Function, EditorPart>}>} */
         this.recentEditorParts = new Map();
 
+        /** @type {Array.<String>} */
+        this.recentDataSourceIds = [];
+
         /** @type {EditorPart} */
         this.currentEditorPart = null;
     }
@@ -181,6 +184,31 @@ define([
                 var partsOfDs = this.recentEditorParts.get(dataSource);
                 return partsOfDs.get(PartClass);
             }
+        },
+
+        /**
+         * Remember recently opened DataSource's Id
+         * @param {String} dataSourceId
+         */
+        setRecentDataSourceId: function(dataSourceId) {
+            logger.info('setRecentDataSourceId(' + dataSourceId + ')');
+            var recents = this.getRecentDataSourceIds();
+            var index = recents.indexOf(dataSourceId);
+            if (index >= 0) {
+                recents.splice(index, 1);
+            }
+            if (recents.length >= 20) {
+                recents.shift();
+            }
+            recents.push(dataSourceId);
+        },
+
+        /**
+         * Returns recently opened DataSources's Ids
+         * @param {Array.<String>}
+         */
+        getRecentDataSourceIds: function() {
+            return this.recentDataSourceIds;
         },
 
         /**

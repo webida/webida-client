@@ -132,7 +132,7 @@ define([
                     var cursor = viewer.getCursor();
                     var scrollInfo = viewer.getScrollInfo();
                     value = v;
-                    viewer.setValue(value);
+                    viewer.refresh(value);
                     viewer.setCursor(cursor);
                     viewer.scrollToScrollInfo(scrollInfo);
                 }
@@ -394,10 +394,8 @@ define([
             }, 10000);
         });
 
-        topic.subscribe('#REQUEST.selectFile', function(path) {
-            if (editors.getFile(path)) {
-                topic.publish('editor/open', path);
-            }
+        topic.subscribe('#REQUEST.selectFile', function(dataSourceId) {
+            topic.publish('editor/open', dataSourceId);
         });
 
         // TODO: remove the following subscriptions
@@ -651,13 +649,12 @@ define([
      * @private
      * @Override
      */
-    editorManager._createPart = function(PartClass, dataSource, options, callback, partClassPath) {
-        logger.info('%c_createPart(PartClass, ' + dataSource + ', ' + options + ', callback, ' + partClassPath + ')', 'color:green');
+    editorManager._createPart = function(PartClass, dataSource, options, callback) {
+        logger.info('%c_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)', 'color:green');
 
-        //Legacy codes start
-        var persistence = dataSource.getPersistence();
-        persistence.openWithPart = partClassPath;
-        //Legacy codes end
+        //Compatibility start
+        //editors.files[dataSource.getId()] = dataSource.getPersistence();
+        //Compatibility end
 
         var page = workbench.getCurrentPage();
         var layoutPane = page.getChildById('webida.layout_pane.center');
@@ -766,7 +763,9 @@ define([
     editors.getFile = function(dataSourceId) {
         logger.info('getFile(' + dataSourceId + ')');
         var dataSource = dsRegistry.getDataSourceById(dataSourceId);
-        return dataSource.getPersistence();
+        if (dataSource) {
+            return dataSource.getPersistence();
+        }
     };
 
     //TODO remove

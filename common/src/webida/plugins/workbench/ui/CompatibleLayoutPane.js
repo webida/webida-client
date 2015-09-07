@@ -84,6 +84,9 @@ define([
     }
 
     function _findViewIndexUsingSibling(viewContainer, file, siblings, editors) {
+        logger.info('_findViewIndexUsingSibling(' + viewContainer + ', ' + file + ', siblings, editors)');
+        var workbench = require('webida-lib/plugins/workbench/plugin');
+        var dsReg = workbench.getDataSourceRegistry();
         var previousSiblings = [];
         var nextSiblings = [];
         var i, j, sibling, siblingFile, view;
@@ -92,13 +95,16 @@ define([
             return index;
         }
         var found = false;
+        var dataSource;
         for ( i = 0; i < siblings.length; i++) {
             sibling = siblings[i];
             if (sibling === file.path) {
                 found = true;
                 continue;
             }
-            siblingFile = editors.files[sibling];
+            dataSource = dsReg.getDataSourceById(sibling);
+            siblingFile = dataSource.getPersistence();
+            //siblingFile = editors.files[sibling];
             if (found) {
                 nextSiblings.push(siblingFile && siblingFile.viewId);
             } else {
