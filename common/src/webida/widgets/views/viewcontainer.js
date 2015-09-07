@@ -57,7 +57,6 @@ define([
         this.name = name;
     }
 
-    ViewContainerEvent.SELECTED = 'view.selected';
     ViewContainerEvent.QUIT = 'view.quit';
     ViewContainerEvent.ADDED = 'view.added';
     ViewContainerEvent.ADDED_BEFORE = 'view.added-before';
@@ -412,34 +411,20 @@ define([
         },
 
         select : function (view, forceFireEvent) {
+        	logger.info('select()');
+        	logger.trace();
             if (view) {
                 var selectedCp = this.tabContainer.get('selectedChildWidget');
                 if (selectedCp === view.contentPane && forceFireEvent) {
-                    var event = new ViewContainerEvent(ViewContainerEvent.SELECTED);
+                    var event = new ViewContainerEvent('view.selected');
                     event.view = view;
                     event.viewContainer = this;
-                    topic.publish(ViewContainerEvent.SELECTED, event);
+                    topic.publish('view.selected', event);
                     //TODO : should be refactored with CompatiblePartContainerWidgetAdapter
                     topic.publish('compatible.view.selected', event.view);
                 } else {
                     this.tabContainer.selectChild(view.contentPane, true);
                 }
-
-//                var index = this.getViewIndex(view);
-//
-//                if (index >= 0) {
-//                    var cp = this._getContentPane(index);
-//                    if (cp) {
-//                        if (this.tabContainer.get('selectedChildWidget') ===  cp) {
-//                            var event = new ViewContainerEvent(ViewContainerEvent.SELECTED);
-//                            event.view = view;
-//                            event.viewContainer = this;
-//                            topic.publish(ViewContainerEvent.SELECTED, event);
-//                        } else {
-//                            this.tabContainer.selectChild(cp, true);
-//                        }
-//                    }
-//                }
             }
         },
 
@@ -609,11 +594,11 @@ define([
         _contentPaneSelected : function (pane) {
 			logger.info('_contentPaneSelected('+pane+')');
             var _self = this;
-            var event = new ViewContainerEvent(ViewContainerEvent.SELECTED);
+            var event = new ViewContainerEvent('view.selected');
             event.view = _self._getViewByContentPane(pane);
             event.viewContainer = _self;
             if (event.view) {
-                topic.publish(ViewContainerEvent.SELECTED, event);
+                topic.publish('view.selected', event);
                 //TODO : should be refactored with CompatiblePartContainerWidgetAdapter
                 topic.publish('compatible.view.selected', event.view);
             }
