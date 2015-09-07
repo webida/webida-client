@@ -39,6 +39,7 @@ define([
         var editorParts = registry.getEditorParts();
         
         console.log('editorParts = ', editorParts);
+        console.log('currentPart = ', currentPart);
         
         if (currentPart) {
             if (currentPart.isDirty()) {
@@ -201,6 +202,7 @@ define([
         }
 
         var editorPart = editors.getCurrentPart();
+        //TODO : 
         if (editorPart) {
             editorPart.getContextMenuItems(opened, items, menuItems, deferred);
         }

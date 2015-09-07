@@ -180,13 +180,14 @@ define([
                 return;
             }
             require([partClassPath], function(PartClass) {
+                PartClass.classPath = partClassPath;
                 var registry = that._getPartRegistry();
                 var parts = registry.getPartsByClass(dataSource, PartClass);
 
                 //'open with specific editor' or 'default editor' not opened
                 // yet
                 if ('openWithPart' in options || parts.length === 0) {
-                    that._createPart(PartClass, dataSource, options, callback, partClassPath);
+                    that._createPart(PartClass, dataSource, options, callback);
                 } else {
                     //'default editor' already exists
                     if (parts.length > 0) {
@@ -194,6 +195,9 @@ define([
                         that._showExistingPart(PartClass, dataSource, options, callback);
                     }
                 }
+
+                // Recent DataSource
+                registry.setRecentDataSourceId(dataSource.getId());
             });
         },
 

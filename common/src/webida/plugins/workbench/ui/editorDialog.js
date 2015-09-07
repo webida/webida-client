@@ -47,6 +47,7 @@ define([
     //logger.off();
 
     function _getPartRegistry() {
+    	var workbench = require('webida-lib/plugins/workbench/plugin');
         var page = workbench.getCurrentPage();
         return page.getPartRegistry();
     }
@@ -97,12 +98,15 @@ define([
                 buttonsWidth: '140px',
                 onHide: function() {
                     dialog.destroyRecursive();
-                }
+                },
+                dialogClass: 'buttoned-dialog-text-only'
             });
 
-            var name = file.getName();
+            var name;
             if (title === QUIT) {
                 name = file;
+            } else {
+                name = file.getName();
             }
             // @formatter:off
             dialog.setContentArea(

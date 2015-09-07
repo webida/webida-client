@@ -17,10 +17,10 @@
 define([
     './plugin',
     'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workbench/ui/editorDialog',
     'webida-lib/app',
     'webida-lib/widgets/views/splitviewcontainer',
     'webida-lib/widgets/views/viewmanager',
-    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     'dojo/dom-style',
     'dojo/dom-geometry',
     'dojo/topic',
@@ -30,10 +30,10 @@ define([
 ], function (
     editors,
     workbench,
+    editorDialog,
     ide,
     SplitViewContainer,
     vm,
-    ButtonedDialog,
     domStyle,
     geometry,
     topic,
@@ -46,6 +46,8 @@ define([
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
+
+	var lastStatus;
 
     var editorManager = EditorManager.getInstance();
 
@@ -64,69 +66,6 @@ define([
         var docFrag = document.createDocumentFragment();
         docFrag.appendChild(paneElement);
         return docFrag;
-    }
-
-    var QUIT = 'Quit';
-
-    function createDialog(file, title, action, canceled) {
-    	console.log('createDialog('+file+', '+title+', action, canceled)');
-        var dialog = new ButtonedDialog({
-            title: 'Unsaved Changes in the File to ' + title,
-            buttons: [
-                {
-                    caption: 'Save and ' + title,
-                    methodOnClick: 'saveAndAction'
-                },
-                {
-                    caption: title + ' without Saving',
-                    methodOnClick: 'actionWithoutSaving'
-                },
-                {
-                    caption: 'Cancel',
-                    methodOnClick: 'canceled'
-                }
-            ],
-            methodOnEnter: 'saveAnd' + title,
-            saveAndAction: function () {
-                if (title === QUIT) {
-                    var registry = _getPartRegistry();
-                    var parts = registry.getDirtyParts();
-                    parts.forEach(function(part) {
-                        part.save();
-                    });
-                    action();
-                    dialog.hide();
-                } else {
-                    editorManager.requestSave(file.getPath(), null, function() {
-                        action();
-                        dialog.hide();
-                    });
-                }
-            },
-            actionWithoutSaving: function () {
-                action();
-                this.hide();
-            },
-            canceled: function () {
-                if (canceled) {
-                    canceled();
-                }
-                this.hide();
-            },
-            buttonsWidth: '140px',
-            onHide: function () {
-                dialog.destroyRecursive();
-            },
-            dialogClass: 'buttoned-dialog-text-only'
-        });
-
-        var name = file.name;
-        if (title === QUIT) {
-            name = file;
-        }
-        dialog.setContentArea('<span> File "' + name  + '" has unsaved changes. </span>' +
-                '<span> Save and ' + title + ' this file? </span>');
-        dialog.show();
     }
 
     function onPanelAppended() {
@@ -215,33 +154,40 @@ define([
             }
         });
 
-        topic.subscribe('view.quit', function () {
-
-            ide.unregisterBeforeUnloadChecker('checkModifiedFiles');
-
-            var ds;
-            var registry = _getPartRegistry();
-            var parts = registry.getDirtyParts();
-            parts.forEach(function(part){
-            	ds = part.getDataSource();
-            	modifiedFileNames.push(ds.getPersistance().getName());
+        function _getDirtyFileNames() {
+            var dataSource, file, fileNames = [];
+            var parts = _getPartRegistry().getDirtyParts();
+            parts.forEach(function(part) {
+                dataSource = part.getDataSource();
+                file = dataSource.getPersistence();
+                fileNames.push(file.getName());
             });
+            return fileNames;
+        }
 
+        function checkDirtyFiles() {
+            var dirtyFileNames = _getDirtyFileNames();
+            if (dirtyFileNames.length > 0) {
+                return "'" + dirtyFileNames.join(', ') + "' has been modified";
+            }
+        } 
+
+        topic.subscribe('view.quit', function() {
+            logger.info('view.quit');
+
+            var dirtyFileNames = _getDirtyFileNames();
             var action = function closeWindow() {
-
                 try {
                     window.focus();
-
                     if (!window.opener) {
-                        alert('Quit does not work when IDE was opened by a direct URL.\n' +
-                              'Please close the browser tab to quit the IDE.');
+                        alert('Quit does not work when IDE was opened by a direct URL.\n' 
+                            + 'Please close the browser tab to quit the IDE.');
                     } else {
                         //window.opener = window;
                         window.close();
                     }
                 } catch (e) {
                     logger.log('First try to close App failed', e);
-
                     try {
                         window.open('', '_self', '');
                         window.close();
@@ -250,96 +196,74 @@ define([
                     }
                 }
             };
-
             var cancel = function cancelSaveBeforeUnload() {
-                ide.registerBeforeUnloadChecker('checkModifiedFiles', checkModifiedFiles);
+                ide.registerBeforeUnloadChecker('checkDirtyFiles', checkDirtyFiles);
             };
 
-            if (parts.length > 0) {
-                createDialog(modifiedFileNames.join(', '), QUIT, action, cancel);
+            ide.unregisterBeforeUnloadChecker('checkDirtyFiles');
+
+            if (dirtyFileNames.length > 0) {
+                editorDialog.create(dirtyFileNames.join(', '), 'Quit', action, cancel);
             } else {
                 action();
             }
-        });
+        }); 
 
-        function checkModifiedFiles() {
+        ide.registerBeforeUnloadChecker('checkDirtyFiles', checkDirtyFiles);
 
-            var keys = Object.keys(editors.files);
-            var modifiedFileNames = [];
-            var len = keys.length;
-            var part;
-            for (var i = 0; i < len; i++) {
-                var key = keys[i];
-                var file = editors.files[key];
-                part = editors.getPart(file);
-                if (part.isDirty()) {
-                    modifiedFileNames.push(file.name);
-                }
-            }
+        function getCurrentStatus() {
+            logger.info('getCurrentStatus()');
 
-            if (modifiedFileNames.length > 0) {
-                return 'You have unsaved changes in files: ' + modifiedFileNames.join(', ');
-            }
-        }
+            var status = {
+                viewContainers: [],
+                viewLayout: {},
+                recentDataSources: []
+            };
 
-        ide.registerBeforeUnloadChecker('checkModifiedFiles', checkModifiedFiles);
-
-        var lastStatus = ide.registerStatusContributorAndGetLastStatus('editor-view', function () {
-            var status = {};
-            var cursorDefault = {col: 0, row: 0};
-            var splitVc = editors.splitViewContainer;
-            var viewContainers = splitVc.getViewContainers();
-            var vc, i, j;
             var totalW = 0;
             var totalH = 0;
-            for (i = 0; i < viewContainers.length; i++) {
-                vc = viewContainers[i];
+            var splitVc = editors.splitViewContainer;
+            var viewContainers = splitVc.getViewContainers();
+            var registry = _getPartRegistry();
+
+            viewContainers.forEach(function(vc) {
                 if (vc.getViewList().length > 0) {
                     totalW += geometry.getContentBox(vc.topContainer.domNode).w;
                     totalH += geometry.getContentBox(vc.topContainer.domNode).h;
                 }
-            }
+            });
+
+            var tabs;
+            var width = 0;
+            var height = 0;
+            var partContainer;
 
             // status.viewContainers
-            status.viewContainers = [];
-            for (i = 0; i < viewContainers.length; i++) {
-                vc = viewContainers[i];
-                var viewList = vc.getViewList();
-                var tabs = [];
-                var selfile;
-                var width = 0;
-                var height = 0;
-                if (viewList.length > 0) {
-                    for (j = 0; j < viewList.length; j++) {
-                        var view = viewList[j];
-                        var file = editors.getFileByViewId(view.getId());
-                        var cursor = editors.getCursor(file) || cursorDefault;
-                        var foldings = file.viewer ? file.viewer.getFoldings() : [];
-                                // temporary solution
-                                // TODO: see why file.viewer sometimes is null.
-                        tabs.push([cursor.col, cursor.row, file.path, foldings, file.openWithPart]);
-                        console.log('--* path : ' + file.path);
-                    }
-                    selfile = editors.getFileByViewId(vc.getSelectedView().getId());
-                    width = domStyle.get(vc.topContainer.domNode, 'width');
-                    height = domStyle.get(vc.topContainer.domNode, 'height');
-
-                    width = geometry.getContentBox(vc.topContainer.domNode).w;
-                    height = geometry.getContentBox(vc.topContainer.domNode).h;
-                    if (width > 0) {
-                        width = parseInt((width * 100 / totalW), 10) + '%';
-                    }
-                    if (height > 0) {
-                        height = parseInt((height * 100 / totalH), 10) + '%';
-                    }
+            viewContainers.forEach(function(vc) {
+                tabs = [];
+            	width = 0;
+            	height = 0;
+                vc.getViewList().forEach(function(view) {
+                    partContainer = view.partContainer;
+                    tabs.push({
+                        dataSourceId: partContainer.getDataSource().getId(),
+                        openWithPart: partContainer.getPart().constructor.classPath
+                    });
+                });
+                width = geometry.getContentBox(vc.topContainer.domNode).w;
+                height = geometry.getContentBox(vc.topContainer.domNode).h;
+                if (width > 0) {
+                    width = parseInt((width * 100 / totalW), 10) + '%';
+                }
+                if (height > 0) {
+                    height = parseInt((height * 100 / totalH), 10) + '%';
                 }
                 status.viewContainers.push({
                     tabs: tabs,
-                    selected: selfile && selfile.path,
                     width: width,
                     height: height
                 });
-            }
+            });
 
             // status.viewLayout
             if (viewContainers.length > 0) {
@@ -350,90 +274,62 @@ define([
             }
 
             // status.recentFiles
-            status.recentFiles = editors.recentFiles.exportToPlainArray();
+            status.recentDataSources = registry.getRecentDataSourceIds();
+
+            logger.info('splitVc = ', splitVc);
+            logger.info('viewContainers = ', viewContainers);
+            logger.info('status = ', status);
 
             return status;
-        });
-        
-        logger.info('lastStatus = ', lastStatus);
+        }
+
+        lastStatus = ide.registerStatusContributorAndGetLastStatus('editor-view', getCurrentStatus); 
+
+        function recoverLastStatus() {
+            logger.info('recoverLastStatus()');
+            logger.info('lastStatus = ', lastStatus);
+
+            if (lastStatus.viewLayout && lastStatus.viewLayout.vertical) {
+                if (lastStatus.viewLayout.vertical === true) {
+                    editors.splitViewContainer.set('verticalSplit', true);
+                } else {
+                    editors.splitViewContainer.set('verticalSplit', false);
+                }
+            }
+
+			var option;
+
+            lastStatus.viewContainers.forEach(function(vc, vcIndex){
+            	var siblingList = [];
+            	vc.tabs.forEach(function(tab){
+            		siblingList.push(tab.dataSourceId);
+            	});
+            	vc.tabs.forEach(function(tab, index){
+            		option = {
+            			cellIndex: vcIndex,
+            			siblingList: siblingList,
+            			openWithPart: tab.openWithPart
+            		};
+            		topic.publish('editor/open', tab.dataSourceId, option);
+            	});
+
+                var viewContainers = editors.splitViewContainer.getViewContainers();
+                //console.log($(viewContainers[i].topContainer.domNode).css('width'));
+                if (vcIndex > 0 && (vc.tabs.length > 0)) {
+                    $(viewContainers[vcIndex].topContainer.domNode).css('width', vc.width);
+                    $(viewContainers[vcIndex].topContainer.domNode).css('height', vc.height);
+                }
+            });
+
+            if (lastStatus.recentDataSources) {
+                editors.recentFiles.importFromPlainArray(lastStatus.recentDataSources);
+            }
+        }
 
         if (lastStatus && lastStatus.viewContainers) {
-            setTimeout(function () {
-                editors.onloadPendingFilesCount = _.reduce(lastStatus.viewContainers, function (memo, vc) {
-                    return memo + vc.tabs.length;
-                }, 0);
-
-                var tab;
-                var openFileWithNamespace = function (path, opt, pos, foldings) {
-                	topic.publish('editor/open', path, opt, function (file) {
-                        logger.info('pos = ', pos);
-
-                        _.defer(function () {
-                            if (file.viewer && file.viewer.setCursor) {
-                                file.viewer.setCursor(pos);
-                            }
-                            if (file.viewer && foldings) {
-                                _.each(foldings, function (fold) {
-                                    file.viewer.foldCodeRange(fold);
-                                });
-                            }
-                        });
-
-                        logger.log('opened file "' + path + '"');
-                    });
-                };
-
-                var path = null;
-                var opt = null;
-                var pos = null;
-                var vc;
-
-                if (lastStatus.viewLayout && lastStatus.viewLayout.vertical) {
-                    if (lastStatus.viewLayout.vertical === true) {
-                        editors.splitViewContainer.set('verticalSplit', true);
-                    } else {
-                        editors.splitViewContainer.set('verticalSplit', false);
-                    }
-                }
-
-                for (var i = 0; i < lastStatus.viewContainers.length; i++) {
-                    vc = lastStatus.viewContainers[i];
-                    var siblingList = [];
-                    var j;
-                    for (j = 0; j < vc.tabs.length; j++) {
-                        siblingList.push(vc.tabs[j][2]);
-                    }
-
-                    for (j = 0; j < vc.tabs.length; j++) {
-                        tab = vc.tabs[j];
-                        opt = {};
-                        path = tab[2];
-                        if (path === vc.selected) {
-                            opt.show = true;
-                        } else {
-                            opt.show = false;
-                        }
-                        opt.cellIndex = i;
-                        opt.siblingList = siblingList;
-                        opt.openWithPart = tab[4];
-                        pos = {};
-                        pos.col = tab[0];
-                        pos.row = tab[1];
-                        openFileWithNamespace(path, opt, pos, tab[3]);
-                    }
-
-                    var viewContainers = editors.splitViewContainer.getViewContainers();
-                    //console.log($(viewContainers[i].topContainer.domNode).css('width'));
-                    if (i > 0 && (vc.tabs.length > 0)) {
-                        $(viewContainers[i].topContainer.domNode).css('width', vc.width);
-                        $(viewContainers[i].topContainer.domNode).css('height', vc.height);
-                    }
-                }
-
-                if (lastStatus.recentFiles) {
-                    editors.recentFiles.importFromPlainArray(lastStatus.recentFiles);
-                }
-            }, 50);
+            //setTimeout(function () {
+                recoverLastStatus();
+            //}, 100);
         }
     }
 
@@ -442,3 +338,37 @@ define([
         onPanelAppended: onPanelAppended
     };
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
