@@ -274,9 +274,13 @@ define([
     };
 
     PreferenceManager.prototype.getAllPreferenceTypes = function (scope) {
-        return _.filter(this.extensions, function (ext) {
-            return ext.scope.indexOf(scope.name) > -1;
-        });
+        if (scope) {
+            return _.filter(this.extensions, function (ext) {
+                return ext.scope.indexOf(scope.name) > -1;
+            });
+        } else {
+            return [];
+        }
     };
 
     PreferenceManager.prototype.saveAllPreference = function (scope, callback) {
