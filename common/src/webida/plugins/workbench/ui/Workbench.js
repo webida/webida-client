@@ -86,7 +86,7 @@ define([
          */
         removePage: function(page) {
             var index = this.pages.indexOf(page);
-            if (index > 0) {
+            if (index >= 0) {
                 page.setParent(null);
                 this.pages.splice(index, 1);
             }

@@ -81,7 +81,7 @@ define([
         unregisterDataSource: function(dataSource) {
             var ds = this.getDataSources();
             var index = ds.indexOf(dataSource);
-            if (index > 0) {
+            if (index >= 0) {
                 var removed = ds.splice(index, 1);
                 this.emit(DataSourceRegistry.DATA_SOURCE_UNREGISTERED, removed);
             }
