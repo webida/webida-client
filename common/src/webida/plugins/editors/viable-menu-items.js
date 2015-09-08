@@ -99,7 +99,7 @@ define([
             items['&Replace'] = menuItems.findMenuItems['&Replace'];
             items['F&ind'] = menuItems.findMenuItems['F&ind'];
             items['&Highlight to Find'] = menuItems.findMenuItems['&Highlight to Find'];
-            if (viewer.canExecute('existSearchQuery')) {
+            if (viewer.execute('existSearchQuery')) {
                 items['Find &Next'] = menuItems.findMenuItems['Find &Next'];
                 items['Find &Previous'] = menuItems.findMenuItems['Find &Previous'];
             }
