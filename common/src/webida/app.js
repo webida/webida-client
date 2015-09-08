@@ -301,7 +301,7 @@ define(['webida-lib/util/browserInfo',
         	logger.info('restoreLastStatusOfApp()');
             singleLogger.log('(B) verified the workspace');
             mount.readFile(path + lastStatusFile, function (err, content) {
-            	logger.info('content = ', content);
+            	//logger.info('content = ', content);
                 if (err) {
                     singleLogger.log('(C) not read last status file (' + err + ')');
                 } else {
@@ -394,7 +394,7 @@ define(['webida-lib/util/browserInfo',
                             aclTopics.push(aclScope + workspaceInfo);
                             aclTopics.push(aclScope + workspaceInfo.split('/')[0] + '/*');
                             msgAgent.sub2(user, aclTopics, function (err, msg) {
-                                logger.log(JSON.stringify(msg));
+                                //logger.log(JSON.stringify(msg));
                                 if (err) {
                                     logger.error('failed to subacribe acl topics with ' + JSON.stringify(msg));
                                 }
@@ -618,7 +618,7 @@ define(['webida-lib/util/browserInfo',
      * @returns {object} the object which the callback function returned at the last unload of the App.
      */
     function registerStatusContributorAndGetLastStatus(key, contributor) {
-        logger.log('entering registerStatusContributorAndGetLastStatus() with a key ' + key);
+        logger.log('registerStatusContributorAndGetLastStatus(' + key + ', contributor)');
 
         if (lastStatusContributors[key]) {
             logger.log('A last status contributor function was already registed with the key \'' + key + '\'');
