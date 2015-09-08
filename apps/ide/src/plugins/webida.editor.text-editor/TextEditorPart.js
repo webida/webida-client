@@ -346,9 +346,13 @@ define([
             return !docMan.canSaveModel();
         },
 
+        getContextMenuClass: function() {
+            return TextEditorContextMenu;
+        },
+
         getContextMenuItems: function(menuItems) {
             logger.info('getContextMenuItems(' + menuItems + ')');
-            var contextMenu = new TextEditorContextMenu(menuItems, this);
+            var contextMenu = new (this.getContextMenuClass())(menuItems, this);
             return contextMenu.getItems();
         }
     });

@@ -35,6 +35,7 @@ define([
     'webida-lib/plugins/workbench/preference-system/store',
     'webida-lib/plugins/editors/EditorPreference',
     './preferences/preference-config',
+    './CodeEditorContextMenu',
     './CodeEditorViewer',
     './configloader',
     'dojo/topic',
@@ -48,6 +49,7 @@ define([
     store,
     EditorPreference,
     preferenceConfig,
+    CodeEditorContextMenu,
     CodeEditorViewer,
     configloader,
     topic,
@@ -152,7 +154,11 @@ define([
                     context.setHinters('word', ['word']);
                     break;
             }
-        }
+        },
+
+        getContextMenuClass: function() {
+            return CodeEditorContextMenu;
+        },
     });
 
     return CodeEditorPart;
