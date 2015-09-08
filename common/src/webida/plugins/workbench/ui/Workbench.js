@@ -28,6 +28,7 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
+    './CompatibleLayoutPane',
     './DataSourceRegistry',
     './LayoutPane',
     './Page',
@@ -36,6 +37,7 @@ define([
     EventEmitter,
     genetic, 
     Logger,
+    CompatibleLayoutPane,
     DataSourceRegistry,
     LayoutPane,
     Page,
@@ -47,9 +49,9 @@ define([
     /**
      * @typedef {Object.<Object, Object>} Map
      * @typedef {Object} DataSourceRegistry
+     * @typedef {Object} Page
      * @typedef {Object} WorkbenchModel
      * @typedef {Object} WorkspaceModel
-     * @typedef {Object} Page
      */
 
     var logger = new Logger();
@@ -84,10 +86,17 @@ define([
          */
         removePage: function(page) {
             var index = this.pages.indexOf(page);
-            if (index > 0) {
+            if (index >= 0) {
                 page.setParent(null);
                 this.pages.splice(index, 1);
             }
+        },
+
+        /**
+         * @return {Page[]}
+         */
+        getPages: function() {
+            return this.pages;
         },
 
         /**
@@ -112,6 +121,23 @@ define([
         },
 
         /**
+         * Return true if specified dataSource is used
+         * @return {boolean}
+         */
+        isDataSourceUsed: function(dataSource) {
+            var reg, parts;
+            var pages = this.getPages();
+            for (var i in pages) {
+                reg = pages[i].getPartRegistry();
+                parts = reg.getPartsByDataSource(dataSource);
+                if (parts.length > 0) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        /**
          * @param {Object} dataSourceId
          * @param {Function} callback
          */
@@ -121,9 +147,16 @@ define([
             var wsModel = this.getWorkspaceModel();
             var factoryId = wsModel.getDataSourceFactory(dataSourceId);
             require([factoryId], function(DataSourceFactory) {
-                var factory = new DataSourceFactory();
-                var dataSource = factory.create(dataSourceId);
-                dsRegistry.registerDataSource(dataSource);
+                var dataSource;
+                var existingDs = dsRegistry.getDataSourceById(dataSourceId);
+                //To solve async creation of DataSource check exists again
+                if (existingDs) {
+                    dataSource = existingDs;
+                } else {
+                    var factory = new DataSourceFactory();
+                    dataSource = factory.create(dataSourceId);
+                    dsRegistry.registerDataSource(dataSource);
+                }
                 callback(dataSource);
             });
         },
@@ -145,7 +178,8 @@ define([
             function getLayoutTree(model) {
                 var LayoutClass = {
                     'Page': Page,
-                    'LayoutPane': LayoutPane
+                    'LayoutPane': LayoutPane,
+                    'CompatibleLayoutPane': CompatibleLayoutPane
                 }
                 var layoutTree, split, children, child;
                 if ('type' in model) {
@@ -170,7 +204,7 @@ define([
             if ('pages' in workbenchModel) {
                 var page = [], pages = workbenchModel.pages;
                 for (var i in pages) {
-                	page[i] = getLayoutTree(pages[i]);
+                    page[i] = getLayoutTree(pages[i]);
                     this.addPage(page[i]);
                 }
                 this.setCurrentPage(page[0]);

@@ -27,21 +27,102 @@
 // @formatter:off
 define([
     'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
+    './editorDialog',
     './Part'
 ], function(
     genetic,
+    Logger,
+    editorDialog,
     Part
 ) {
     'use strict';
 // @formatter:on
 
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
+
     function EditorPart() {
         Part.apply(this, arguments);
         this.file = null;
+        this.modelManager = null;
     }
 
 
     genetic.inherits(EditorPart, Part, {
+
+        /**
+         * Returns true if the model is updated
+         * since last saved moment.
+         *
+         * @return {boolean}
+         */
+        isDirty: function() {
+            var manager = this.getModelManager();
+            return manager ? manager.canSaveModel() : false;
+        },
+
+        save: function(callback) {
+            logger.info('save()');
+            var that = this;
+            this.emit(EditorPart.BEFORE_SAVE, this);
+            if (this.getModelManager()) {
+                this.getModelManager().saveModel(function() {
+                    that._execFunc(callback, that);
+                });
+            }
+        },
+
+        saveAs: function() {
+            throw new Error('saveAs() should be implemented by ' + this.constructor.name);
+        },
+
+        canSaveAs: function() {
+            throw new Error('canSaveAs() should be implemented by ' + this.constructor.name);
+        },
+
+        close: function() {
+            logger.info('close()');
+            var that = this;
+            if (this.isDirty()) {
+                this._askSaveThen(function() {
+                    Part.prototype.close.call(that);
+                });
+            } else {
+                Part.prototype.close.call(this);
+            }
+        },
+
+        /**
+         * Reset model it's last saved state
+         */
+        resetModel: function() {
+            logger.info('resetModel()');
+            if (this.getModelManager()) {
+                this.getModelManager().resetModel();
+            }
+        },
+
+        toString: function() {
+            var res = '<' + this.constructor.name + '>#' + this._partId;
+            if (this.file) {
+                res += '(' + this.file.name + ')';
+            }
+            return res;
+        },
+
+        /**
+         * @private
+         * TODO : refactor
+         */
+        _askSaveThen: function(callback) {
+            var file = this.getDataSource().getPersistence();
+            editorDialog.create(file, 'Close', callback);
+        },
+
+        // ----------- TODO Legacy methods : To be refactored ----------- //
+
         getValue: function() {
             throw new Error('getValue() should be implemented by ' + this.constructor.name);
         },
@@ -59,16 +140,6 @@ define([
         },
         getFile: function() {
             return this.file;
-        },
-        getContextMenuItems: function(opened, items, menuItems, deferred) {
-            deferred.resolve(items);
-        },
-        toString: function() {
-            var res = '<' + this.constructor.name + '>#' + this._partId;
-            if (this.file) {
-                res += '(' + this.file.name + ')';
-            }
-            return res;
         }
     });
 

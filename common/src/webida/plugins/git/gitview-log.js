@@ -70,7 +70,7 @@ define([
     }
 
     function _openEditor(path) {
-        topic.publish('#REQUEST.openFile', path);
+        topic.publish('editor/open', path);
     }
 
     GitView.prototype.appendLog = function () {

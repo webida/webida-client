@@ -30,27 +30,35 @@
 define([
     'dojo/topic',
     'external/eventEmitter/EventEmitter',
+    'external/lodash/lodash.min',
     'webida-lib/plugins/workbench/plugin', //TODO : refactor
     'webida-lib/plugins/workbench/ui/DataSource',
     'webida-lib/plugins/workbench/ui/TabPartContainer',
     'webida-lib/plugins/workbench/ui/Workbench',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
+    'webida-lib/util/notify',
+    './ExtensionManager'
 ], function(
     topic,
     EventEmitter,
+    _,
     workbench,
     DataSource,
     TabPartContainer,
     Workbench,
     genetic, 
-    Logger
+    Logger,
+    notify,
+    ExtensionManager
 ) {
     'use strict';
 // @formatter:on
 
     /**
      * @typedef {Object} DataSource
+     * @typedef {Object} EditorManager
+     * @typedef {Object} ExtensionManager
      * @typedef {Object} Part
      */
 
@@ -58,59 +66,91 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    var singleton = null;
+
     function EditorManager() {
         logger.info('new EditorManager()');
 
         /** @type {Object} */
-        this.subscribed = {};
+        this.subscribed = [];
 
-        //this.subscribe();
+        this.extensionManager = ExtensionManager.getInstance();
+
+        this._subscribe();
     }
 
+    /**
+     * @return {EditorManager}
+     */
+    EditorManager.getInstance = function() {
+        if (singleton === null) {
+            singleton = new this();
+        }
+        return singleton;
+    }
 
     genetic.inherits(EditorManager, EventEmitter, {
 
         /**
          * subscribe to topic
+         * @private
          */
-        // @formatter:off
-        subscribe: function() {
-            this.subscribed['#REQUEST.openFile'] = topic.subscribe(
-                '#REQUEST.openFile', this.requestOpen.bind(this));
-        },
-        // @formatter:on
+        _subscribe: function() {
+            //open
+            this.subscribed.push(topic.subscribe('editor/open', this._openDataSource.bind(this)));
 
-        unsubscribe: function() {
-            for (var prop in this.subscribed) {
-                this.subscribed[prop].remove();
-            }
-        },
+            //save
+            this.subscribed.push(topic.subscribe('editor/save/all', this._saveAllParts.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/save/current', this._saveCurrentPart.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/save/data-source-id', this._saveByDataSourceId.bind(this)));
 
-        getPartClassName: function(dataSource) {
-            var path = this.getPartClassPath(dataSource);
-            return path.split(/[\\/]/).pop();
-        },
-
-        getPartClassPath: function(dataSource) {
-            return 'plugins/webida.editor.example.codemirror/CmEditorPart';
+            //close
+            this.subscribed.push(topic.subscribe('editor/close/part', this._closePart.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/close/all', this._closeAllParts.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/close/current', this._closeCurrentPart.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/close/others', this._closeOtherParts.bind(this)));
+            this.subscribed.push(topic.subscribe('editor/close/data-source-id', this._closeByDataSourceId.bind(this)));
         },
 
         /**
-         * @param {DataSource} dataSourceId
+         * unsubscribe topics
+         * @private
+         */
+        _unsubscribe: function() {
+            this.subscribed.forEach(function(subscribed) {
+                subscribed.remove();
+            });
+        },
+
+        /**
+         * @private
+         * @return {ExtensionManager}
+         */
+        _getExtensionManager: function() {
+            return this.extensionManager;
+        },
+
+        // ************* Open ************* //
+
+        /**
+         * Creates a new DataSource if not exist then show Part.
+         *
+         * @param {Object} dataSourceId
          * @param {Object} options
-         * @param {requestOpenCallback} callback
+         * @param {_openDataSourceCallback} callback
          */
         /**
-         * @callback requestOpenCallback
+         * @callback _openDataSourceCallback
          * @param {Part} part
          */
-        requestOpen: function(dataSourceId, options, callback) {
-            logger.info('> requestOpen(' + dataSourceId + ', ' + options + ', callback)');
+        _openDataSource: function(dataSourceId, options, callback) {
+            logger.info('> _openDataSource(' + dataSourceId + ', ', options, ', ' + typeof callback + ')');
 
             var that = this;
             options = options || {};
 
             //1. prepare DataSource
+            logger.info('workbench = ', workbench);
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             if (dataSource === null) {
@@ -123,32 +163,49 @@ define([
         },
 
         /**
+         * Decide whether create new Part or show existing Part.
+         *
          * @private
          */
         _showPart: function(dataSource, options, callback) {
             logger.info('_showPart(' + dataSource + ', ' + options + ', callback)');
 
-            var page = workbench.getCurrentPage();
-            var registry = page.getPartRegistry();
-            var ClassName = this.getPartClassName(dataSource);
-            var parts = registry.getPartsByClassName(dataSource, ClassName);
-
-            //'open with specific editor' or 'default editor' not opened yet
-            if (options.unlimitedOpen === true || parts.length === 0) {
-                this._createPart(dataSource, options, callback);
-            } else {
-                //'default editor' already exists
-                if (parts.length > 0) {
-                    logger.log('show existing editor');
-                }
+            var that = this;
+            var extMgr = this._getExtensionManager();
+            try {
+                var partClassPath = extMgr.getPartPath(dataSource, options);
+                logger.info('%c partClassPath = ' + partClassPath, 'color:green');
+            } catch(e) {
+                notify.info(e.message);
+                return;
             }
+            require([partClassPath], function(PartClass) {
+                PartClass.classPath = partClassPath;
+                var registry = that._getPartRegistry();
+                var parts = registry.getPartsByClass(dataSource, PartClass);
+
+                //'open with specific editor' or 'default editor' not opened
+                // yet
+                if ('openWithPart' in options || parts.length === 0) {
+                    that._createPart(PartClass, dataSource, options, callback);
+                } else {
+                    //'default editor' already exists
+                    if (parts.length > 0) {
+                        logger.log('find existing last part and show');
+                        that._showExistingPart(PartClass, dataSource, options, callback);
+                    }
+                }
+
+                // Recent DataSource
+                registry.setRecentDataSourceId(dataSource.getId());
+            });
         },
 
         /**
          * @private
          */
-        _createPart: function(dataSource, options, callback) {
-            logger.info('_createPart(' + dataSource + ', ' + options + ', callback)');
+        _createPart: function(PartClass, dataSource, options, callback) {
+            logger.info('_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
 
             var page = workbench.getCurrentPage();
             var layoutPane = page.getChildById('webida.layout_pane.center');
@@ -158,12 +215,122 @@ define([
             layoutPane.addPartContainer(tabPartContainer);
 
             //4. create Part
-            tabPartContainer.createPart(options, callback);
+            tabPartContainer.createPart(PartClass, callback);
+        },
+
+        /**
+         * @private
+         */
+        _showExistingPart: function(PartClass, dataSource, options, callback) {
+            logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
+        },
+
+        /**
+         * @private
+         */
+        _getPartRegistry: function() {
+            var page = workbench.getCurrentPage();
+            return page.getPartRegistry();
+        },
+
+        // ************* Save ************* //
+
+        /**
+         * Saves specified dataSource.
+         *
+         * @param {Object} dataSourceId
+         * @param {Object} options
+         * @param {_saveByDataSourceIdCallback} callback
+         */
+        /**
+         * @callback _saveByDataSourceIdCallback
+         * @param {Part} part
+         */
+        _saveByDataSourceId: function(dataSourceId, callback) {
+            logger.info('> _saveCurrentPart(' + dataSourceId + ', ' + typeof callback + ')');
+            var part, parts;
+            var registry = this._getPartRegistry();
+            var dsRegistry = workbench.getDataSourceRegistry();
+            var dataSource = dsRegistry.getDataSourceById(dataSourceId);
+            parts = registry.getPartsByDataSource(dataSource);
+            if ( parts instanceof Array && parts.length > 0) {
+                part = parts[0];
+            }
+            part.save(callback);
+        },
+
+        /**
+         * Saves current editor part's dataSource.
+         *
+         * @param {Object} options
+         * @param {_saveCurrentPartCallback} callback
+         */
+        /**
+         * @callback _saveCurrentPartCallback
+         * @param {Part} part
+         */
+        _saveCurrentPart: function(callback) {
+            logger.info('> _saveCurrentPart(' + typeof callback + ')');
+            var registry = this._getPartRegistry();
+            var part = registry.getCurrentEditorPart();
+            part.save(callback);
+        },
+
+        /**
+         * Saves all parts
+         */
+        _saveAllParts: function() {
+            logger.info('_saveAllParts()');
+            var registry = this._getPartRegistry();
+            var parts = registry.getDirtyParts();
+            parts.forEach(function(part) {
+                part.save();
+            });
+        },
+
+        // ************* Close ************* //
+
+        _closePart: function(part) {
+            part.close();
+        },
+
+        /**
+         * Closes current active EditorPart
+         */
+        _closeCurrentPart: function() {
+            logger.info('_closeCurrentPart()');
+            var registry = this._getPartRegistry();
+            var part = registry.getCurrentEditorPart();
+            part.close();
+        },
+
+        _closeOtherParts: function() {
+            var registry = this._getPartRegistry();
+            var currentPart = registry.getCurrentEditorPart();
+            var editorParts = registry.getEditorParts();
+            editorParts.forEach(function(part) {
+                if (part !== currentPart) {
+                    part.close();
+                }
+            });
+        },
+
+        _closeAllParts: function() {
+            var editorParts = this._getPartRegistry().getEditorParts();
+            editorParts.forEach(function(part) {
+                part.close();
+            });
+        },
+
+        _closeByDataSourceId: function(dataSourceId) {
+            logger.info('_closeByDataSourceId(' + dataSourceId + ')');
+            var registry = this._getPartRegistry();
+            var parts = registry.getPartsByDataSource(dataSource);
+            parts.forEach(function(part) {
+                part.close();
+            });
         }
     });
 
-    EditorManager.DATA_SOURCE_OPENED = 'dataSourceOpened';
-
     return EditorManager;
 });
-

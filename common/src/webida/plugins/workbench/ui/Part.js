@@ -26,18 +26,27 @@
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
+    'webida-lib/util/EventProxy',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    './PartModel',
+    './Viewer'
 ], function(
 	EventEmitter,
+	EventProxy,
     genetic,
-    Logger
+    Logger,
+    PartModel,
+    Viewer
 ) {
     'use strict';
 // @formatter:on
 
     /**
+     * @typedef {Object} ModelManager
+     * @typedef {Object} DataSource
      * @typedef {Object} PartModel
+     * @typedef {Object} Promise
      */
 
     var logger = new Logger();
@@ -46,32 +55,135 @@ define([
 
     var _partId = 0;
 
-    function Part() {
-        logger.info('new Part()');
+    function Part(container) {
+        logger.info('new Part(' + container + ')');
         this._partId = ++_partId;
-        this.flags = null;
+        this.flags = 0;
         this.parent = null;
-        this.container = null;
         this.viewer = null;
+        this.model = null;
+        this.eventProxy = new EventProxy();
     }
 
 
     genetic.inherits(Part, EventEmitter, {
 
         /**
-         * @param {HTMLElement} parent
-         * @param {Function} callback
+         * Creates Viewer(s) and Model,
+         * then binds all members together.
+         * If different way is required override this method.
          */
-        create: function(parent, callback) {
-            throw new Error('create(parent, callback) should be implemented by ' + this.constructor.name);
+        prepareMVC: function() {
+            logger.info('%cprepareMVC()', 'color:orange');
+
+            var container = this.getContainer();
+
+            //1. Create Viewer(s)
+            var createViewers = this.promiseFor(Viewer, container.getContentNode());
+
+            //2. Create Model
+            var createModels = this.promiseFor(PartModel);
+
+            //3. Binds events then sets inital contents for the view
+            this.bindMVC(createViewers, createModels);
         },
 
-        destroy: function() {
-            throw new Error('destroy() should be implemented by ' + this.constructor.name);
+        bindMVC: function(createViewers, createModels) {
+            logger.info('%cbindMVC', 'color:orange');
+
+            var part = this;
+            var eProxy = this.eventProxy;
+            var container = this.getContainer();
+
+            Promise.all([createViewers, createModels]).then(function(results) {
+
+                var viewers = results[0];
+                var models = results[1];
+                var model;
+
+                viewers.forEach(function(viewer, i) {
+                    //a view per a model
+                    model = models[i];
+                    //Model listen to viewer's content change
+                    eProxy.on(viewer, Viewer.CONTENT_CHANGE, function(request) {
+                        // @formatter:off
+                        // TODO : Consider the followings
+                        // var command = part.getCommand(request);
+                        // commandStack.execute(command);
+                        // @formatter:on
+                        model.update(request);
+                    });
+                    //Viewer listen to model's content change
+                    eProxy.on(model, PartModel.CONTENTS_CHANGE, function(request) {
+                        viewer.render(request);
+                        container.updateDirtyState();
+                    });
+                    //Viewer listen to container's size change
+                    eProxy.on(container, 'resize', function(changeSize) {
+                        viewer.fitSize();
+                    });
+                    //Render initial model
+                    viewer.refresh(model.getContents());
+                });
+
+                //Notify user can navigate contents
+                part.emit(Part.CONTENT_READY, part);
+
+                //Check synchronized model's dirty state
+                part.getContainer().updateDirtyState();
+
+            }, function(error) {
+                logger.error(error);
+            });
         },
 
-        getContainer: function() {
-            return this.container;
+        /**
+         * Return Promise to create Viewer(s) or Model
+         * @return {Promise}
+         */
+        promiseFor: function(Type, param) {
+            logger.info('promiseFor(' + Type + ', ' + param + ')');
+            var part = this;
+            return new Promise(function(resolve, reject) {
+                try {
+                    var objs = part['create'+Type](param);
+                    if (!( objs instanceof Array)) {
+                        if (!( objs instanceof Type)) {
+                            // @formatter:off
+                            throw new Error(part.constructor.name
+                            	+ ' create' + Type + '(' + (param || '') + ') method should return '
+                            	+ Type + ' or array of ' + Type + 's'); // @formatter:on
+                        } else {
+                            objs = [objs];
+                        }
+                    }
+                    var promises = objs.map(function(obj) {
+                        return new Promise(function(resolve, reject) {
+                            obj.once(Type.READY, function(obj) {
+                                if ( obj instanceof Type) {
+                                    resolve(obj);
+                                }
+                            });
+                        });
+                    });
+                    Promise.all(promises).then(function(objs) {
+                        resolve(objs);
+                    }, function(error) {
+                        logger.error(error);
+                    });
+                } catch(e) {
+                    reject(e);
+                }
+            });
+        },
+
+        /**
+         * @param {HTMLElement} parent
+         * @return {(Viewer|Viewer[])}
+         * @abstract
+         */
+        createViewer: function(parentNode) {
+            throw new Error('createViewer(parentNode) should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -82,22 +194,18 @@ define([
         },
 
         /**
-         * @abstract
-         */
-        createViewer: function() {
-            throw new Error('createViewer() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
          * @return {Viewer}
          */
         getViewer: function() {
-            //TODO : parent, callback in case of none
-            if (this.viewer !== null) {
-                return this.viewer;
-            }
-            this.createViewer();
             return this.viewer;
+        },
+
+        /**
+         * @return {(PartModel|PartModel[])}
+         * @abstract
+         */
+        createModel: function() {
+            throw new Error('createModel() should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -108,10 +216,48 @@ define([
         },
 
         /**
-         * @return {PartModel} model
+         * @return {PartModel}
          */
         getModel: function() {
             return this.model;
+        },
+
+        /**
+         * Reset model it's last saved state
+         */
+        resetModel: function() {
+            throw new Error('resetModel() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Closes this Part
+         */
+        close: function() {
+            logger.info('close()');
+            this.getContainer().destroyPart();
+        },
+
+        /**
+         * Convenient method for PartContainer.PART_DESTROYED event
+         */
+        onDestroy: function() {
+            this.eventProxy.offAll();
+        },
+
+        /**
+         * Convenient method to get DataSource
+         * @return {DataSource}
+         */
+        getDataSource: function() {
+            return this.getContainer().getDataSource();
+        },
+
+        setContainer: function(container) {
+            this.container = container;
+        },
+
+        getContainer: function() {
+            return this.container;
         },
 
         setFlag: function(/*int*/flag, /*boolean*/value) {
@@ -137,12 +283,38 @@ define([
             return this.parent;
         },
 
-        // ----------- unknowkn ----------- //
-        //TODO refactor the follwings
-
-        show: function() {
-            throw new Error('show() should be implemented by ' + this.constructor.name);
+        /**
+         * @param {ModelManager} modelManager
+         */
+        setModelManager: function(modelManager) {
+            this.modelManager = modelManager;
         },
+
+        /**
+         * @return {ModelManager}
+         */
+        getModelManager: function() {
+            return this.modelManager;
+        },
+
+        /**
+         * Each Part should override
+         * @return {Object} Set of viable menu items
+         */
+        getContextMenuItems: function(menuItems) {
+            return {};
+        },
+
+        /**
+         * @private
+         */
+        _execFunc: function(callback, param) {
+            if ( typeof callback === 'function') {
+                callback(param);
+            }
+        },
+
+        // ----------- TODO refactor the follwings ----------- //
 
         hide: function() {
             throw new Error('hide() should be implemented by ' + this.constructor.name);
@@ -153,11 +325,15 @@ define([
         },
     });
 
-    /** @constant {number} state flag : Part created */
-    Part.CREATED = 1;
-
     /** @constant {string} */
     Part.PROPERTY_CHANGED = 'propertyChanged';
+
+    /**
+     * Part should emit this event when their Viewer's method
+     * render(contents) called for the first time.
+     * @constant {string}
+     */
+    Part.CONTENT_READY = 'contentReady';
 
     return Part;
 });

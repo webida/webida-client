@@ -37,6 +37,7 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/loadCSSList',
     'webida-lib/plugins/editors/plugin',
+    'webida-lib/plugins/workbench/ui/EditorModelManager',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/MultiViewerEditorPart',
     'webida-lib/plugins/workbench/ui/Viewer',
@@ -54,6 +55,7 @@ define([
     Logger,
     loadCSSList,
     editors,
+    EditorModelManager,
     EditorPart, 
     MultiViewerEditorPart,
     Viewer,
@@ -72,11 +74,16 @@ define([
 
     var logger = new Logger();
 
-    function MultiPageExampleEditorPart(file) {
-        logger.info('new MulitiTabEditorPart(' + file + ')');
+    function MultiPageExampleEditorPart(container) {
+        logger.info('new MulitiTabEditorPart(' + container + ')');
         MultiViewerEditorPart.apply(this, arguments);
 
+        var dataSource = this.getDataSource();
+        var file = dataSource.getPersistence();
         var that = this;
+
+        this.setModelManager(new EditorModelManager(dataSource, Document));
+
         this.on(MultiViewerEditorPart.TAB_SELECT, function(viewer) {
             //To implment context menu
             //TODO : this strange code will be removed before webida-client 1.5.0
@@ -115,19 +122,19 @@ define([
         initCodeEditor: function() {
             var viewer = this.getViewerById('CodeEditor');
             var container = viewer.getParentNode();
-            viewer.setValue(this.file.getContents());
+            var persistence = this.getDataSource().getPersistence();
+            viewer.refresh(persistence.getContents());
             viewer.clearHistory();
             viewer.markClean();
-            viewer.setSize(container.offsetWidth, container.offsetHeight);
             viewer.setMatchBrackets(true);
             var that = this;
             var setStatusBarText = function() {
                 var workbench = require('webida-lib/plugins/workbench/plugin');
-                var file = that.file;
+                var persistence = that.getDataSource().getPersistence();
                 var viewer = that.getViewerById('CodeEditor');
                 var cursor = viewer.getCursor();
                 workbench.__editor = viewer;
-                workbench.setContext([file.path], {
+                workbench.setContext([persistence.getPath()], {
                     cursor: (cursor.row + 1) + ':' + (cursor.col + 1)
                 });
             };
@@ -144,12 +151,7 @@ define([
                     TextEditorPart.moveForth();
                 }
             });
-
-            viewer.addEventListener('save', function () {
-                topic.publish('#REQUEST.saveFile');                
-            });
-
-            viewer.setMode(this.file.extension);
+            viewer.setMode(persistence.getExtension());
             viewer.setTheme('webida');
         },
 
@@ -162,45 +164,10 @@ define([
             logger.info('initFormViewer()');
             var that = this;
             var formViewer = this.getViewerById('FormEditor');
-            formViewer.on(Viewer.CONTENT_CHANGE, function(content) {
-                var doc = that.getModel();
-                if (content !== doc.getText()) {
-                    doc.update(content, formViewer);
-                }
+            formViewer.on(Viewer.CONTENT_CHANGE, function(contents) {
+            	logger.error('wow');
+                //that.getModelManager().setContents(contents, formViewer);
             });
-        },
-
-        /**
-         * @param {Document} doc
-         * @param {Viewer} sender
-         */
-        codeListener: function(doc, sender) {
-            logger.info('codeListener(doc, ' + sender + ')');
-            if (sender === this.getViewerById('FormEditor')) {
-                this.getViewerById('CodeEditor').refresh();
-            }
-        },
-
-        /**
-         * @param {Document} doc
-         * @param {Viewer} sender
-         */
-        formListener: function(doc, sender) {
-            logger.info('formListener(doc, ' + sender + ')');
-            if (sender === this.getViewerById('CodeEditor')) {
-                this.getViewerById('FormEditor').refresh();
-            }
-        },
-
-        /**
-         * @return {DataSource}
-         */
-        _getDataSource: function() {
-            //TODO : this.getContainer().getDataSource()
-            var workbench = require('webida-lib/plugins/workbench/plugin');
-            var dsRegistry = workbench.getDataSourceRegistry();
-            var dataSource = dsRegistry.getDataSourceById(this.file.path);
-            return dataSource;
         },
 
         /**
@@ -208,49 +175,24 @@ define([
          * @override
          */
         createViewers: function() {
-
             var that = this;
+            this.getModelManager().createModel(function(doc) {
 
-            var dataSource = this._getDataSource();
-            dataSource.getContents(function(contents) {
-
-                //1. Create Model from DataSource
-                var doc = new Document(contents);
-                that.setModel(doc);
-
-                //2. formViewer
+                //1. formViewer
                 var formViewer = that.getFormViewer();
                 that.addViewer('FormEditor', 'Form Editor', formViewer, 0, function(parentNode) {
                     formViewer.createAdapter(parentNode);
                     that.initFormViewer();
-                    formViewer.setContents(doc);
+                    formViewer.render(doc);
                 });
 
-                //3. codeViewer
+                //2. codeViewer
                 var codeViewer = that.getCodeViewer();
                 that.addViewer('CodeEditor', 'Code Editor', codeViewer, 1, function(parentNode) {
                     codeViewer.setParentNode(parentNode);
                     that.initCodeEditor();
-                    codeViewer.setContents(doc);
+                    codeViewer.render(doc);
                 });
-
-                //4. Listen to model
-                doc.on(PartModel.CONTENTS_CHANGE, function(doc, sender) {
-                    //TODO getFile() will be removed in webida 1.5.0
-                    //Temp Code
-                    var file = dataSource.getFile();
-                    editors.refreshTabTitle(that.getFile());
-                    topic.publish('file.content.changed', file.getPath(), file.getContents());
-                });
-
-                //5. For the concurrent editing, listen to the model
-                // Note that, when user select the tab,
-                // the tabContainer make the new viewer as a active viewer.
-                // Then the active viewer will be refreshed automatically.
-                /*
-                 doc.on(PartModel.CONTENTS_CHANGE, that.codeListener.bind(that));
-                 doc.on(PartModel.CONTENTS_CHANGE, that.formListener.bind(that));
-                 */
             });
         },
 
@@ -272,11 +214,6 @@ define([
             logger.info('addChangeListener(' + callback + ')');
         },
 
-        show: function() {
-            logger.info('show()');
-            logger.trace();
-        },
-
         hide: function() {
             logger.info('hide()');
         },
@@ -286,36 +223,28 @@ define([
         },
 
         isClean: function() {
-            if (this.getModel()) {
-                var doc = this.getModel();
-                var dataSource = this._getDataSource();
-                var file = dataSource.getFile();
-                if (doc.getText() === file.getContents()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
+            var docMan = this.getModelManager();
+            return !docMan.canSaveModel();
         },
 
         /**
          * @deprecated
          */
         getValue: function() {
-            if (this.getModel()) {
-                return this.getModel().getText();
-            }
+            return this.getModelManager().getContents();
         },
 
+        /**
+         * @deprecated
+         */
         markClean: function() {
-            var doc = this.getModel();
+            var docMan = this.getModelManager();
+            var doc = docMan.getModel();
             var dataSource = this._getDataSource();
             var codeViewer = this.getViewerById('CodeEditor');
             if (doc && dataSource) {
-                var file = dataSource.getFile();
-                file.setContents(doc.getText());
+                var file = dataSource.getPersistence();
+                file.setContents(doc.getContents());
             }
             if (codeViewer) {
                 codeViewer.markClean();

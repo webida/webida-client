@@ -1,360 +1,363 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
+// @formatter:off
 define([
-	'./plugin', 
-	'webida-lib/plugins/workbench/plugin', 
-	'webida-lib/widgets/views/viewmanager', 
-	'dojo/topic', 
-	'external/lodash/lodash.min'
-], function (
-	editors, 
-	workbench, 
-	vm, 
-	topic, 
-	_
+    './plugin', 
+    'webida-lib/plugins/workbench/plugin', 
+    'webida-lib/widgets/views/viewmanager', 
+    'webida-lib/util/logger/logger-client', 
+    'dojo/topic', 
+    'external/lodash/lodash.min'
+], function(
+    editors,
+    workbench,
+    vm,
+    Logger,
+    topic,
+    _
 ) {
     'use strict';
+// @formatter:on
 
-	function undo() {		
-        editors.execCommandForCurrentEditorViewer('undo');
-	}
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
-	function redo() {		
-        editors.execCommandForCurrentEditorViewer('redo');
-	}
-
-	function cursorLineToMiddle() {		
-        editors.execCommandForCurrentEditorViewer('cursorLineToMiddle');
-	}
-
-	function cursorLineToTop() {		
-        editors.execCommandForCurrentEditorViewer('cursorLineToTop');
-	}
-
-	function cursorLineToBottom() {		
-        editors.execCommandForCurrentEditorViewer('cursorLineToBottom');
-	}
-
-	function del() {		
-        editors.execCommandForCurrentEditorViewer('del');
-	}
-
-	function selectAll() {		
-        editors.execCommandForCurrentEditorViewer('selectAll');
-	}
-
-	function selectLine() {		
-        editors.execCommandForCurrentEditorViewer('selectLine');
-	}
-
-	function lineIndent() {		
-        editors.execCommandForCurrentEditorViewer('lineIndent');
-	}
-
-	function lineDedent() {		
-        editors.execCommandForCurrentEditorViewer('lineDedent');
-	}
-
-	function lineMoveUp() {		
-        editors.execCommandForCurrentEditorViewer('lineMoveUp');
-	}
-
-	function lineMoveDown() {		
-        editors.execCommandForCurrentEditorViewer('lineMoveDown');
-	}
-
-	function lineDelete() {		
-        editors.execCommandForCurrentEditorViewer('lineDelete');
-	}
-
-	function lineComment() {		
-        editors.execCommandForCurrentEditorViewer('lineComment');
-	}
-
-	function blockComment() {		
-        editors.execCommandForCurrentEditorViewer('blockComment');
-	}
-
-	function commentOutSelection() {		
-        editors.execCommandForCurrentEditorViewer('commentOutSelection');
-	}
-
-	function foldCode() {		
-        editors.execCommandForCurrentEditorViewer('foldCode');
-	}
-
-	function beautifyCode() {		
-        editors.execCommandForCurrentEditorViewer('beautifyCode');
-	}
-
-	function beautifyAllCode() {		
-        editors.execCommandForCurrentEditorViewer('beautifyAllCode');
-	}
-
-	function rename() {		
-        editors.execCommandForCurrentEditorViewer('rename');
-	}
-    
-    function replace() {        
-        editors.execCommandForCurrentEditorViewer('replace');
+    function execCommand(command) {
+        logger.info('execCommand(' + command + ')');
+        var registry = workbench.getCurrentPage().getPartRegistry();
+        var part = registry.getCurrentEditorPart();
+        var viewer = part.getViewer();
+        if (viewer.canExecute(command)) {
+            viewer.execute(command);
+        }
     }
 
-    function find() {        
-        editors.execCommandForCurrentEditorViewer('find');
+    function undo() {
+        execCommand('undo');
     }
 
-    function quickFind() {        
-        editors.execCommandForCurrentEditorViewer('quickFind');
+    function redo() {
+        execCommand('redo');
     }
 
-    function findNext() {        
-        editors.execCommandForCurrentEditorViewer('findNext');
+    function cursorLineToMiddle() {
+        execCommand('cursorLineToMiddle');
     }
 
-    function findPrev() {        
-        editors.execCommandForCurrentEditorViewer('findPrev');
+    function cursorLineToTop() {
+        execCommand('cursorLineToTop');
     }
 
-    function gotoDefinition() {        
-        editors.execCommandForCurrentEditorViewer('gotoDefinition');
+    function cursorLineToBottom() {
+        execCommand('cursorLineToBottom');
     }
 
-    function gotoLine() {        
-        editors.execCommandForCurrentEditorViewer('gotoLine');
+    function del() {
+        execCommand('del');
     }
 
-    function gotoMatchingBrace() {        
-        editors.execCommandForCurrentEditorViewer('gotoMatchingBrace');
+    function selectAll() {
+        execCommand('selectAll');
     }
 
-	function switchEditorTabToExSelected() {
-		var exFile = editors.currentFiles[1];
-		if (exFile) {
-			var view = vm.getView(exFile.viewId);
-			if (view) {
-				view.select(true);
-			} else {
-				console.warn('unexpected');
-			}
-		}
-	}
+    function selectLine() {
+        execCommand('selectLine');
+    }
 
-	function goPrevTab() {
-		var focusedViewContainer = editors.splitViewContainer.getFocusedViewContainer();
-		if (focusedViewContainer) {
-			var view = focusedViewContainer.getSelectedView();
-			var viewCount = focusedViewContainer.getNumOfViews();
-			if (view && (viewCount > 1)) {
-				var newIndex = focusedViewContainer.getViewIndex(view) - 1;
-				if (newIndex < 0) {
-					newIndex = viewCount - 1;
-				}
-				var targetView = focusedViewContainer.getViewByIndex(newIndex);
-				if (targetView) {
-					targetView.select(true);
-				}
-			}
-		}
-	}
+    function lineIndent() {
+        execCommand('lineIndent');
+    }
 
-	function goNextTab() {
-		var focusedViewContainer = editors.splitViewContainer.getFocusedViewContainer();
-		if (focusedViewContainer) {
-			var view = focusedViewContainer.getSelectedView();
-			var viewCount = focusedViewContainer.getNumOfViews();
-			if (view && (viewCount > 1)) {
-				var newIndex = focusedViewContainer.getViewIndex(view) + 1;
-				if (newIndex >= viewCount) {
-					newIndex = 0;
-				}
-				var targetView = focusedViewContainer.getViewByIndex(newIndex);
-				if (targetView) {
-					targetView.select(true);
-				}
-			}
-		}
-	}
+    function lineDedent() {
+        execCommand('lineDedent');
+    }
 
-	function switchEditorTab() {
-		var fieldLayout = [{
-			'name' : 'Name',
-			'field' : 'title',
-			'width' : '200'
-		}, {
-			'name' : 'Path',
-			'field' : 'path',
-			'width' : '500'
-		}];
-		editors.editorTabFocusController.showViewList(fieldLayout, 'Select Editor Tab from List');
-	}
+    function lineMoveUp() {
+        execCommand('lineMoveUp');
+    }
 
-	function focusMoveToNextTabContainer() {
-		var sp = editors.splitViewContainer;
-		var focusedVc = sp.getFocusedViewContainer();
-		var nextVc = null;
-		//TODO FIXME
-		if (focusedVc) {
-			var showedVcList = sp.getShowedViewContainers();
-			if (showedVcList.length > 1) {
-				for (var i = 0; i < showedVcList.length; i++) {
-					if (showedVcList[i] === focusedVc) {
-						if (i >= showedVcList.length - 1) {
-							nextVc = showedVcList[0];
-						} else {
-							nextVc = showedVcList[i + 1];
-						}
-						if (nextVc.getSelectedView()) {
-							nextVc.getSelectedView().select(true);
-						}
-					}
-				}
+    function lineMoveDown() {
+        execCommand('lineMoveDown');
+    }
 
-			}
-		}
-	}
+    function lineDelete() {
+        execCommand('lineDelete');
+    }
 
-	function moveToOtherTabContainer() {
-		var spContainer = editors.splitViewContainer;
-		var vc = spContainer.getFocusedViewContainer();
-		var view = vc.getSelectedView();
-		if (vc && view) {
-			var viewContainers = spContainer.getViewContainers();
-			var i = viewContainers.indexOf(vc);
-			console.assert(i >= 0);
-			var targetView = (i < viewContainers.length - 1 ? viewContainers[i + 1] : viewContainers[0]);
-			var views = vc.getViewList();
-			if (views.length === 1) {
-				spContainer.moveView(targetView, view);
-				view.select(true);
-			} else {
-				var j = views.indexOf(view);
-				var nextSelectedView = (j > 0 ? views[j - 1] : views[1]);
-				var nextSelectedFile = editors.getFileByViewId(nextSelectedView.getId());
-				editors.ensureCreated(nextSelectedFile, false, function() {
-					spContainer.moveView(targetView, view);
-					view.select(true);
-				});
-			}
-		}
-	}
+    function lineComment() {
+        execCommand('lineComment');
+    }
 
-	function rotateToVertical() {
-		var showedVc = editors.splitViewContainer.getShowedViewContainers();
-		if (showedVc && (showedVc.length === 1)) {
-			//editors.moveToNextTabContainer();
-			moveToOtherTabContainer();
-		}
-		editors.splitViewContainer.set('verticalSplit', true);
-	}
+    function blockComment() {
+        execCommand('blockComment');
+    }
 
-	function rotateToHorizontal() {
-		var showedVc = editors.splitViewContainer.getShowedViewContainers();
-		if (showedVc && (showedVc.length === 1)) {
-			//editors.moveToNextTabContainer();
-			moveToOtherTabContainer();
-		}
-		editors.splitViewContainer.set('verticalSplit', false);
-	}
+    function commentOutSelection() {
+        execCommand('commentOutSelection');
+    }
 
-	function saveAllFiles() {
-		// editors.files is currently opened file list
-		var opened = _.values(editors.files);
-		var currentFile = editors.currentFile;
+    function foldCode() {
+        execCommand('foldCode');
+    }
 
-		_.each(opened, function (file) {
-			if (file.isModified()) {
-				editors.setCurrentFile(file);
-				editors.saveFile();
-			}
-		});
-		editors.setCurrentFile(currentFile);
-	}
+    function beautifyCode() {
+        execCommand('beautifyCode');
+    }
 
-	function closeOtherFiles() {
-		var curFilePath = editors.currentFile.path;
+    function beautifyAllCode() {
+        execCommand('beautifyAllCode');
+    }
 
-		// editors.files is currently opened file list
-		var opened = _.values(editors.files);
+    function rename() {
+        execCommand('rename');
+    }
 
-		_.each(opened, function (file) {
-			if (file.path !== curFilePath) {
-				editors.closeFile({
-					path : file.path
-				});
-			}
-		});
-	}
+    function replace() {
+        execCommand('replace');
+    }
 
-	function closeAllFiles() {
-		// editors.files is currently opened file list
-		var opened = _.values(editors.files);
+    function find() {
+        execCommand('find');
+    }
 
-		_.each(opened, function (file) {
-			editors.closeFile({
-				path : file.path
-			});
-		});
-	}	
+    function quickFind() {
+        execCommand('quickFind');
+    }
 
-	function openRecentFile(index) {
-		var path = editors.recentFiles[index];
-		topic.publish('#REQUEST.openFile', path);
-	}
+    function findNext() {
+        execCommand('findNext');
+    }
 
-	return {
-		undo : undo,
-		redo : redo,
-		del : del,
-		selectAll : selectAll,
-		selectLine : selectLine,
-		cursorLineToMiddle : cursorLineToMiddle,
-		cursorLineToTop : cursorLineToTop,
-		cursorLineToBottom : cursorLineToBottom,
-		lineIndent : lineIndent,
-		lineDedent : lineDedent,
-		lineMoveUp : lineMoveUp,
-		lineMoveDown : lineMoveDown,
-		lineDelete : lineDelete,
-		lineComment : lineComment,
-		blockComment : blockComment,
-		commentOutSelection : commentOutSelection,
-		foldCode : foldCode,
-		beautifyCode : beautifyCode,
-		beautifyAllCode : beautifyAllCode,
-		rename : rename,
-		switchEditorTabToExSelected : switchEditorTabToExSelected,
-		goPrevTab : goPrevTab,
-		goNextTab : goNextTab,
-		switchEditorTab : switchEditorTab,
-		focusMoveToNextTabContainer : focusMoveToNextTabContainer,
-		moveToOtherTabContainer : moveToOtherTabContainer,
-		rotateToVertical : rotateToVertical,
-		rotateToHorizontal : rotateToHorizontal,
-		saveAllFiles : saveAllFiles,
-		closeOtherFiles : closeOtherFiles,
-		closeAllFiles : closeAllFiles,
-		replace : replace,
-		find : find,
-		quickFind : quickFind,
-		findNext : findNext,
-		findPrev : findPrev,
-		gotoDefinition : gotoDefinition,
-		gotoLine : gotoLine,
-		gotoMatchingBrace : gotoMatchingBrace,
-		openRecentFile : openRecentFile
-	};
+    function findPrev() {
+        execCommand('findPrev');
+    }
+
+    function gotoDefinition() {
+        execCommand('gotoDefinition');
+    }
+
+    function gotoLine() {
+        execCommand('gotoLine');
+    }
+
+    function gotoMatchingBrace() {
+        execCommand('gotoMatchingBrace');
+    }
+
+    function switchEditorTabToExSelected() {
+        var exFile = editors.currentFiles[1];
+        if (exFile) {
+            var view = vm.getView(exFile.viewId);
+            if (view) {
+                view.select(true);
+            } else {
+                console.warn('unexpected');
+            }
+        }
+    }
+
+    function goPrevTab() {
+        var focusedViewContainer = editors.splitViewContainer.getFocusedViewContainer();
+        if (focusedViewContainer) {
+            var view = focusedViewContainer.getSelectedView();
+            var viewCount = focusedViewContainer.getNumOfViews();
+            if (view && (viewCount > 1)) {
+                var newIndex = focusedViewContainer.getViewIndex(view) - 1;
+                if (newIndex < 0) {
+                    newIndex = viewCount - 1;
+                }
+                var targetView = focusedViewContainer.getViewByIndex(newIndex);
+                if (targetView) {
+                    targetView.select(true);
+                }
+            }
+        }
+    }
+
+    function goNextTab() {
+        var focusedViewContainer = editors.splitViewContainer.getFocusedViewContainer();
+        if (focusedViewContainer) {
+            var view = focusedViewContainer.getSelectedView();
+            var viewCount = focusedViewContainer.getNumOfViews();
+            if (view && (viewCount > 1)) {
+                var newIndex = focusedViewContainer.getViewIndex(view) + 1;
+                if (newIndex >= viewCount) {
+                    newIndex = 0;
+                }
+                var targetView = focusedViewContainer.getViewByIndex(newIndex);
+                if (targetView) {
+                    targetView.select(true);
+                }
+            }
+        }
+    }
+
+    function switchEditorTab() {
+        var fieldLayout = [{
+            'name': 'Name',
+            'field': 'title',
+            'width': '200'
+        }, {
+            'name': 'Path',
+            'field': 'path',
+            'width': '500'
+        }];
+        editors.editorTabFocusController.showViewList(fieldLayout, 'Select Editor Tab from List');
+    }
+
+    function focusMoveToNextTabContainer() {
+        var sp = editors.splitViewContainer;
+        var focusedVc = sp.getFocusedViewContainer();
+        var nextVc = null;
+        //TODO FIXME
+        if (focusedVc) {
+            var showedVcList = sp.getShowedViewContainers();
+            if (showedVcList.length > 1) {
+                for (var i = 0; i < showedVcList.length; i++) {
+                    if (showedVcList[i] === focusedVc) {
+                        if (i >= showedVcList.length - 1) {
+                            nextVc = showedVcList[0];
+                        } else {
+                            nextVc = showedVcList[i + 1];
+                        }
+                        if (nextVc.getSelectedView()) {
+                            nextVc.getSelectedView().select(true);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    function moveToOtherTabContainer() {
+        var spContainer = editors.splitViewContainer;
+        var vc = spContainer.getFocusedViewContainer();
+        var view = vc.getSelectedView();
+        if (vc && view) {
+            var viewContainers = spContainer.getViewContainers();
+            var i = viewContainers.indexOf(vc);
+            console.assert(i >= 0);
+            var targetView = (i < viewContainers.length - 1 ? viewContainers[i + 1] : viewContainers[0]);
+            var views = vc.getViewList();
+            if (views.length === 1) {
+                spContainer.moveView(targetView, view);
+                view.select(true);
+            } else {
+                var j = views.indexOf(view);
+                var nextSelectedView = (j > 0 ? views[j - 1] : views[1]);
+                var nextSelectedFile = editors.getFileByViewId(nextSelectedView.getId());
+                editors.ensureCreated(nextSelectedFile, false, function() {
+                    spContainer.moveView(targetView, view);
+                    view.select(true);
+                });
+            }
+        }
+    }
+
+    function rotateToVertical() {
+        var showedVc = editors.splitViewContainer.getShowedViewContainers();
+        if (showedVc && (showedVc.length === 1)) {
+            //editors.moveToNextTabContainer();
+            moveToOtherTabContainer();
+        }
+        editors.splitViewContainer.set('verticalSplit', true);
+    }
+
+    function rotateToHorizontal() {
+        var showedVc = editors.splitViewContainer.getShowedViewContainers();
+        if (showedVc && (showedVc.length === 1)) {
+            //editors.moveToNextTabContainer();
+            moveToOtherTabContainer();
+        }
+        editors.splitViewContainer.set('verticalSplit', false);
+    }
+
+    function saveFile() {
+        topic.publish('editor/save/current');
+    }
+
+    function saveAll() {
+        logger.info('saveAll()');
+        topic.publish('editor/save/all');
+    }
+
+    function closeCurrent() {
+        logger.info('closeCurrent()');
+        topic.publish('editor/close/current');
+    }
+
+    function closeOthers() {
+        logger.info('closeOthers()');
+        topic.publish('editor/close/others');
+    }
+
+    function closeAll() {
+        topic.publish('editor/close/all');
+    }
+
+    function openRecentFile(index) {
+        var path = editors.recentFiles[index];
+        topic.publish('editor/open', path);
+    }
+
+    return {
+        undo: undo,
+        redo: redo,
+        del: del,
+        selectAll: selectAll,
+        selectLine: selectLine,
+        cursorLineToMiddle: cursorLineToMiddle,
+        cursorLineToTop: cursorLineToTop,
+        cursorLineToBottom: cursorLineToBottom,
+        lineIndent: lineIndent,
+        lineDedent: lineDedent,
+        lineMoveUp: lineMoveUp,
+        lineMoveDown: lineMoveDown,
+        lineDelete: lineDelete,
+        lineComment: lineComment,
+        blockComment: blockComment,
+        commentOutSelection: commentOutSelection,
+        foldCode: foldCode,
+        beautifyCode: beautifyCode,
+        beautifyAllCode: beautifyAllCode,
+        rename: rename,
+        switchEditorTabToExSelected: switchEditorTabToExSelected,
+        goPrevTab: goPrevTab,
+        goNextTab: goNextTab,
+        switchEditorTab: switchEditorTab,
+        focusMoveToNextTabContainer: focusMoveToNextTabContainer,
+        moveToOtherTabContainer: moveToOtherTabContainer,
+        rotateToVertical: rotateToVertical,
+        rotateToHorizontal: rotateToHorizontal,
+        saveFile: saveFile,
+        saveAll: saveAll,
+        closeCurrent: closeCurrent,
+        closeOthers: closeOthers,
+        closeAll: closeAll,
+        replace: replace,
+        find: find,
+        quickFind: quickFind,
+        findNext: findNext,
+        findPrev: findPrev,
+        gotoDefinition: gotoDefinition,
+        gotoLine: gotoLine,
+        gotoMatchingBrace: gotoMatchingBrace,
+        openRecentFile: openRecentFile
+    };
 });

@@ -773,12 +773,6 @@ define([
             return this.editor ? this.editor.getValue() : undefined;
         },
 
-        setValue: function (value) {
-            this.addDeferredAction(function (self) {
-                self.editor.setValue(value);
-            });
-        },
-
         foldCodeRange: function (range) {
             if (this.editor) {
                 foldCode(this.editor, range.from, range.to);
@@ -825,7 +819,7 @@ define([
 
         refresh: function () {            
             if (this.getContents()) {
-                this.setValue(this.getContents().getText());
+                this.refresh(this.getContents().getContents());
             }
             if (this.editor) {
                 setTimeout(function (self) {
@@ -1470,6 +1464,7 @@ define([
         getContextMenuItems: function (opened, items, menuItems, deferred) {         
 
             var editor = this.editor;
+            var part = editors.getCurrentPart();
             if (editor) {
                 var selected = editor.getSelection();
 
@@ -1491,8 +1486,7 @@ define([
                 }
 
                 // Save
-                //if (editors.isModifiedFile(editors.currentFile)) {
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
 
@@ -1548,7 +1542,7 @@ define([
                 }               
             } else {
                 // FIXME: this is temp code, must fix this coe when editor plugin refactoring
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }               
             }

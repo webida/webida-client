@@ -44,13 +44,14 @@ define(function() {
          */
         mixin: function() {
             var source;
-            var target = arguments[0] || {};
-            for (var i = 1; i < arguments.length; i++) {
+            var target = {};
+            for (var i = 0; i < arguments.length; i++) {
                 source = arguments[i];
                 for (prop in source) {
                     target[prop] = source[prop];
                 }
             }
+            return target;
         }
     }
 });

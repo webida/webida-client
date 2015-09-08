@@ -166,7 +166,7 @@ define([
             }).then(function (fileInfo) {
                 var extensionsForScope = _getExtensionsByScope(fileInfo.scopeName);
                 _.forEach(extensionsForScope, function (extension) {
-                    console.log('[4] makestore start', fileInfo, extension.defaultValues);
+                    //console.log('[4] makestore start', fileInfo, extension.defaultValues);
                     var store = new Store(
                         extension.id,
                         fileInfo.scopeName,

@@ -25,16 +25,33 @@
 
 // @formatter:off
 define([
+    'dojo/topic',
     'external/eventEmitter/EventEmitter',
+    'webida-lib/util/EventProxy',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/plugins/workbench/plugin',
+    './DataSource',
+    './EditorPart',
+    './Part'
 ], function(
+    topic,
     EventEmitter,
+    EventProxy,
     genetic, 
-    Logger
+    Logger,
+    workbench,
+    DataSource,
+    EditorPart,
+    Part
 ) {
     'use strict';
 // @formatter:on
+
+    /**
+     * @typedef {Object} WidgetAdapter
+     * @typedef {Object} HTMLElement
+     */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
@@ -44,17 +61,33 @@ define([
 
     function PartContainer(dataSource) {
         logger.info('new PartContainer(' + dataSource + ')');
+
+        var that = this;
+
         this._containerId = ++_containerId;
         this.dataSource = null;
         this.part = null;
         this.parent = null;
+        this.contentNode = null;
         this.title = null;
         this.toolTip = null;
         this.titleImage = null;
+        this.adapter = null;
+        this.eventProxy = new EventProxy();
+
         this.setDataSource(dataSource);
-        this.setTitle(dataSource.getTitle());
-        this.setToolTip(dataSource.getToolTip());
-        this.setTitleImage(dataSource.getTitleImage());
+        this.createWidgetAdapter();
+        this.decorateTitle();
+
+        //In case of rename, move persistence
+        this.eventProxy.on(dataSource, DataSource.ID_CHANGE, function() {
+            that.decorateTitle();
+        });
+
+        //In case of save
+        this.eventProxy.on(dataSource, DataSource.AFTER_SAVE, function() {
+            that.updateDirtyState();
+        });
     }
 
 
@@ -82,14 +115,64 @@ define([
         },
 
         /**
-         * Creates new Part using DataSource
+         * Creates a new Part using DataSource
          */
-        createPart: function(options, callback) {
-            logger.info('createPart('+options+', callback)');
-            logger.info(this.getDataSource());
-            //get Part module by dataSource using plugin manager
-            //this.part = new Part()
-            //this.part.create(parent);
+        createPart: function(PartClass, callback) {
+            logger.info('%ccreatePart(' + PartClass.name + ', ' + typeof callback + ')', 'color:orange');
+            var that = this;
+
+            //1. Creates a new Part
+            var part = new PartClass(this);
+            this.setPart(part);
+            if ( typeof callback === 'function') {
+                part.once(Part.CONTENT_READY, callback);
+            }
+
+            //2. Registers the part
+            var registry = this._getRegistry();
+            registry.registerPart(part);
+            if ( part instanceof EditorPart) {
+                registry.setCurrentEditorPart(part);
+            }
+            this.emit(PartContainer.PART_CREATED);
+
+            //3. Creates Viewer(s) and Model,
+            //   then binds all members together
+            part.prepareMVC();
+        },
+
+        /**
+         * Close this container
+         */
+        destroyPart: function() {
+            logger.info('destroyPart()');
+
+            //1. Destroy Part
+            this.getPart().onDestroy();
+            this.emit(PartContainer.PART_DESTROYED);
+
+            //2. Unregister Part
+            var registry = this._getRegistry();
+            registry.unregisterPart(this.getPart());
+            this.setPart(null);
+
+            //3. Remove this from LayoutPane
+            this.getParent().removePartContainer(this);
+
+            //4. Remove Event Listeners
+            this.eventProxy.offAll();
+        },
+
+        /**
+         * @param {Part} part
+         */
+        setPart: function(part) {
+            if (this.part && part === null) {
+                this.part.setContainer(null);
+            } else {
+                part.setContainer(this);
+            }
+            this.part = part;
         },
 
         /**
@@ -111,6 +194,20 @@ define([
          */
         getParent: function() {
             return this.parent;
+        },
+
+        /**
+         * @param {HTMLElement} contentNode
+         */
+        setContentNode: function(contentNode) {
+            this.contentNode = contentNode;
+        },
+
+        /**
+         * @param {Object} parent
+         */
+        getContentNode: function() {
+            return this.contentNode;
         },
 
         /**
@@ -157,19 +254,93 @@ define([
         },
 
         /**
-         * Explain
-         * @return {HTMLElement}
+         * Decorates title bar of Container
          */
-        getInnerElement: function() {
-            throw new Error('getInnerElement() should be implemented by ' + this.constructor.name);
+        decorateTitle: function() {
+            var dataSource = this.getDataSource();
+            this.setTitle(dataSource.getTitle());
+            this.setToolTip(dataSource.getToolTip());
+            this.setTitleImage(dataSource.getTitleImage());
         },
 
         /**
-         * Explain
-         * @return {HTMLElement}
+         * @abstract
+         * @param {PartContainer~createWidgetAdapterCallback} callback
          */
-        getOuterElement: function() {
-            throw new Error('getOuterElement() should be implemented by ' + this.constructor.name);
+        /**
+         * @callback PartContainer~createWidgetAdapterCallback
+         * @param {PartContainer} container
+         */
+        createWidgetAdapter: function(callback) {
+            throw new Error('createWidgetAdapter() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @param {WidgetAdapter} adapter
+         */
+        setWidgetAdapter: function(adapter) {
+            this.adapter = adapter;
+        },
+
+        /**
+         * @return {WidgetAdapter}
+         */
+        getWidgetAdapter: function() {
+            return this.adapter;
+        },
+
+        /**
+         * Convenient method for LayoutPane.CONTAINER_SELECT event
+         * @see LayoutPane
+         */
+        onSelect: function() {
+            var part = this.getPart();
+            var registry = this._getRegistry();
+            if ( part instanceof EditorPart) {
+                registry.setCurrentEditorPart(part);
+            }
+        },
+
+        /**
+         * Updates this container's part's dirty state.
+         * After update publishes corresponding topic
+         */
+        updateDirtyState: function() {
+
+            logger.info('updateDirtyState()');
+            logger.trace();
+
+            var part = this.getPart();
+            var title = this.getDataSource().getTitle();
+            var registry = workbench.getCurrentPage().getPartRegistry();
+            var currentPart = registry.getCurrentEditorPart();
+
+            if (registry.getDirtyParts().length === 0) {
+                topic.publish('editors.clean.all');
+            } else {
+                topic.publish('editors.dirty.some');
+            }
+
+            if (!part) {
+                topic.publish('editors.clean.current');
+            } else {
+                if (part.isDirty()) {
+                    this.setTitle('*' + title);
+                    if (part === currentPart) {
+                        topic.publish('editors.dirty.current');
+                    }
+                } else {
+                    this.setTitle(title);
+                    if (part === currentPart) {
+                        topic.publish('editors.clean.current');
+                    }
+                }
+            }
+        },
+
+        _getRegistry: function() {
+            var page = workbench.getCurrentPage();
+            return page.getPartRegistry();
         },
 
         /**
@@ -186,6 +357,9 @@ define([
 
     /** @constant {string} */
     PartContainer.PART_DESTROYED = 'partDestroyed';
+
+    /** @constant {string} */
+    PartContainer.CONTAINER_RESIZE = 'resize';
 
     return PartContainer;
 });

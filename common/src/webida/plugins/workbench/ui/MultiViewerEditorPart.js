@@ -76,17 +76,13 @@ define([
         /**
          * @override
          */
-        create: function(parent, callback) {
-            logger.info('create(' + parent.tagName + ', callback)');
-            if (this.getFlag(Part.CREATED) === true) {
-                return;
-            }
+        createViewer: function(parent, callback) {
+            logger.info('createViewer(' + parent.tagName + ', callback)');
             this.setParentElement(parent);
             this.createCallback = callback;
             //TODO remove this.file.elem
             this.file.elem = parent;
             this.initialize();
-            this.setFlag(Part.CREATED, true);
         },
 
         destroy: function() {
@@ -103,8 +99,6 @@ define([
             if (this.fileSavedHandle) {
                 this.fileSavedHandle.remove();
             }
-            //clear state
-            this.setFlag(Part.CREATED, false);
         },
 
         initialize: function() {
@@ -212,7 +206,7 @@ define([
         setActiveViewer: function(viewer) {
             logger.info('setActiveViewer(' + viewer + ')');
             this.activeViewer = viewer;
-            viewer.refresh();
+            //viewer.refresh();
             this.emit(MultiViewerEditorPart.TAB_SELECT, viewer);
         },
 

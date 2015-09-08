@@ -36,6 +36,10 @@ define([
 	'use strict';
 // @formatter:on
 
+    /**
+     * @typedef {Object} Persistence
+     */
+
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
@@ -45,17 +49,46 @@ define([
     function DataSource(dataSourceId) {
         logger.info('new DataSource(' + dataSourceId + ')');
         this._dataSourceId = ++_dataSourceId;
+
+        /** @type {Object} */
         this.dataSourceId = dataSourceId;
+
+        /** @type {Persistence} */
+        this.persistence = null;
     }
 
 
     genetic.inherits(DataSource, EventEmitter, {
 
         /**
+         * @param {Object}
+         */
+        setId: function(dataSourceId) {
+            if (this.dataSourceId !== dataSourceId) {
+                this.emit(DataSource.ID_CHANGE, this, this.dataSourceId, dataSourceId);
+            }
+            this.dataSourceId = dataSourceId;
+        },
+
+        /**
          * @return {Object}
          */
         getId: function() {
             return this.dataSourceId;
+        },
+
+        /**
+         * @param {Persistence}
+         */
+        setPersistence: function(persistence) {
+            return this.persistence = persistence;
+        },
+
+        /**
+         * @return {Persistence}
+         */
+        getPersistence: function() {
+            return this.persistence;
         },
 
         /**
@@ -66,10 +99,18 @@ define([
         },
 
         /**
+         * @param {Object} data
          * @param {Function} callback
          */
-        getContents: function(callback) {
-            throw new Error('getContents(callback) should be implemented by ' + this.constructor.name);
+        setData: function(data, callback) {
+            throw new Error('setData(contents, callback) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @param {Function} callback
+         */
+        getData: function(callback) {
+            throw new Error('getData(callback) should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -99,8 +140,39 @@ define([
         }
     });
 
-    DataSource.CONTENTS_CHANGE = 'contentsChange';
-    DataSource.CONTENTS_LOAD = 'contentsLoad';
+    /**
+     * Emit this event when DataSource's
+     * getContents() start to load the contents
+     * @constant {string}
+     */
+    DataSource.LOAD_START = 'loadStart';
+
+    /**
+     * Emit this event when DataSource's
+     * getContents() complete to load the contents
+     * @constant {string}
+     */
+    DataSource.LOAD_COMPLETE = 'loadComplete';
+
+    /**
+     * Emit this event before DataSource's
+     * setData(contents, callback) is called
+     * @constant {string}
+     */
+    DataSource.BEFORE_SAVE = 'beforeSave';
+
+    /**
+     * Emit this event after DataSource's
+     * setData(contents, callback) is called
+     * @constant {string}
+     */
+    DataSource.AFTER_SAVE = 'afterSave';
+
+    /**
+     * This event is emitted when setId(newId) is called
+     * @constant {string}
+     */
+    DataSource.ID_CHANGE = 'idChange';
 
     return DataSource;
 });

@@ -29,6 +29,7 @@
 
 // @formatter:off
 define([
+    'dojo/topic',
     'require',
     'webida-lib/util/genetic',
     'external/lodash/lodash.min',
@@ -37,8 +38,10 @@ define([
     'webida-lib/util/loadCSSList',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/EditorViewer',
-    'dojo/topic'
+    'webida-lib/plugins/workbench/ui/Viewer',
+    './TextChangeRequest'
 ], function (
+    topic,
     require,
     genetic,
     _,
@@ -47,7 +50,8 @@ define([
     loadCSSList,
     Logger,
     EditorViewer,
-    topic
+    Viewer,
+    TextChangeRequest
 ) {
     'use strict';
 // @formatter:on
@@ -179,11 +183,11 @@ define([
     };
 
     codemirror.commands.save = function(cm) {
-        cm.__instance.triggerEvent('save');
+        topic.publish('editor/save/current');
     };
 
     function TextEditorViewer(elem, file, startedListener) {
-        logger.info('new TextEditorViewer()');
+        logger.info('%cnew TextEditorViewer(' + elem + ', file, startedListener)', 'color:green');
         EditorViewer.apply(this, arguments);
         var self = this;
         this.elem = elem;
@@ -195,6 +199,7 @@ define([
             'Ctrl--': 'foldselection',
             'Ctrl-D': 'gotoLine',
         };
+        this.cmOptions = {};
         this.cursorListeners = [];
         this.focusListeners = [];
         this.blurListeners = [];
@@ -208,15 +213,28 @@ define([
             });
         }
 
-        loadCSSList([require.toUrl('./css/webida.css'), require.toUrl('external/codemirror/lib/codemirror.css'), require.toUrl('external/codemirror/addon/dialog/dialog.css')], function() {
-            require(['external/codemirror/addon/dialog/dialog', 'external/codemirror/addon/search/searchcursor', './search-addon', 'external/codemirror/addon/edit/closebrackets', 'external/codemirror/addon/edit/closetag', 'external/codemirror/addon/edit/matchbrackets'], function() {
-                setTimeout(function(self) {
-                    if (self.getParentNode()) {
-                        self.createAdapter(self.getParentNode());
+        // @formatter:off
+        loadCSSList([
+                require.toUrl('./css/webida.css'), 
+                require.toUrl('external/codemirror/lib/codemirror.css'), 
+                require.toUrl('external/codemirror/addon/dialog/dialog.css')
+            ], function() {
+            	logger.info('*require*');
+                require([
+                    'external/codemirror/addon/dialog/dialog', 
+                    'external/codemirror/addon/search/searchcursor', 
+                    './search-addon', 
+                    'external/codemirror/addon/edit/closebrackets', 
+                    'external/codemirror/addon/edit/closetag', 
+                    'external/codemirror/addon/edit/matchbrackets'
+                ], function() {
+                	logger.info('%cLoad CSS complete', 'color:orange');
+                    if (self.getParentNode() && !self.getAdapter()) {
+                    	self.createAdapter(self.getParentNode());
                     }
-                }, 0, self);
-            });
+                });
         });
+        // @formatter:on
     }
 
     function scrollToCursor(cm, position) {
@@ -245,6 +263,13 @@ define([
 
     genetic.inherits(TextEditorViewer, EditorViewer, {
 
+        synchronizeWidgetModel: function(recentViewer) {
+            logger.info('synchronizeWidgetModel(' + recentViewer + ')');
+            this.editor.swapDoc(recentViewer.editor.getDoc().linkedDoc({
+                sharedHist: true
+            }));
+        },
+
         addDeferredAction: function(action) {
             if (this.editor) {
                 action(this);
@@ -253,44 +278,63 @@ define([
             }
         },
 
+        setOption: function(key, value, condition, defaultValue) {
+            if (condition === undefined) {
+                if (value !== undefined) {
+                    this.cmOptions[key] = value;
+                }
+            } else {
+                if (condition) {
+                    this.cmOptions[key] = value;
+                } else {
+                    this.cmOptions[key] = defaultValue;
+                }
+            }
+        },
+
+        addOptions: function() {
+            this.setOption('electricChars', false);
+            this.setOption('flattenSpans', false);
+            this.setOption('autoCloseBrackets', this.keymap !== 'vim');
+            this.setOption('autoCloseTags', true);
+            this.setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
+            this.setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
+            this.setOption('lineNumbers', this.options.lineNumbers, true);
+            this.setOption('tabSize', this.options.tabSize);
+            this.setOption('indentUnit', this.options.indentUnit);
+            this.setOption('indentWithTabs', this.options.indentWithTabs);
+            this.setOption('indentOnPaste', this.options.indentOnPaste);
+            this.setOption('extraKeys', this.options.extraKeys);
+            this.setOption('lineWrapping', this.options.lineWrapping);
+            this.setOption('mode', 'text/plain');
+        },
+
         createAdapter: function(parentNode) {
+            logger.info('createAdapter(' + parentNode + ')');
             if (this.editor !== undefined) {
                 return;
             }
             var self = this;
-            var options = {
-                //electricChars: false,
-                flattenSpans: false,
-                autoCloseBrackets: this.keymap !== 'vim',
-                autoCloseTags: true
-            };
 
-            function setOption(name, value, condition, defaultValue) {
-                if (condition === undefined) {
-                    if (value !== undefined) {
-                        options[name] = value;
-                    }
-                } else {
-                    if (condition) {
-                        options[name] = value;
-                    } else {
-                        options[name] = defaultValue;
-                    }
-                }
-            }
+            this.addOptions();
 
-            setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
-            setOption('mode', 'text/plain');
-            setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
-            setOption('lineNumbers', this.options.lineNumbers, true);
-            setOption('tabSize', this.options.tabSize);
-            setOption('indentUnit', this.options.indentUnit);
-            setOption('indentWithTabs', this.options.indentWithTabs);
-            setOption('indentOnPaste', this.options.indentOnPaste);
-            setOption('extraKeys', this.options.extraKeys);
-            setOption('lineWrapping', this.options.lineWrapping);
+            //TODO : update code like followings
+            //var adapter = new TextEditorAdapter(this, parentNode);
+            //this.setAdapter(adapter);
+            //this.setParentNode(parentNode);
+            this.editor = codemirror(parentNode, this.cmOptions);
 
-            this.editor = codemirror(parentNode, options);
+            //TODO : refactor
+            this.setAdapter(this.editor);
+
+            //TODO : This code should be moved to TextEditorAdapter
+            this.editor.on('change', function(cm, change) {
+                var request = new TextChangeRequest();
+                request.setDelta(change);
+                request.setContents(cm.getValue());
+                self.emit(Viewer.CONTENT_CHANGE, request);
+            });
+
             this.editor.setOption('showCursorWhenSelecting', true);
             this.editor.__instance = this;
             $(this.editor.getWrapperElement()).addClass('maincodeeditor');
@@ -313,6 +357,13 @@ define([
                         cm.indentLine(e.from.line + i);
                     }
                 }
+            });
+
+            //Let's give a chance to this viewer
+            //that it can register READY event in advance
+            setTimeout(function() {
+                logger.info('self.emit(Viewer.READY, self)');
+                self.emit(Viewer.READY, self);
             });
         },
 
@@ -399,6 +450,7 @@ define([
         },
 
         triggerEvent: function(type, event) {
+            logger.info('triggerEvent(' + type + ', event)');
             var self = this;
             if (this.customListeners !== undefined) {
                 if (this.customListeners[type] !== undefined) {
@@ -776,10 +828,23 @@ define([
             return this.editor ? this.editor.getValue() : undefined;
         },
 
-        setValue: function(value) {
-            this.addDeferredAction(function(self) {
-                self.editor.setValue(value);
-            });
+        /**
+         * Update Viewer's content
+         *
+         * @param {Object} contents
+         */
+        render: function(request) {
+            logger.info('render(' + request + ')');
+            //Do nothing
+        },
+
+        refresh: function(contents) {
+            logger.info('refresh(' + contents + ')');
+            this.editor.setValue(contents);
+            if (!this.contentsInitialized) {
+                this.editor.clearHistory();
+                this.contentsInitialized = true;
+            }
         },
 
         foldCodeRange: function(range) {
@@ -821,16 +886,15 @@ define([
         },
 
         focus: function() {
+            logger.info('focus()');
             if (this.editor) {
+                logger.info('this.editor = ', this.editor);
                 this.editor.focus();
             }
         },
 
-        refresh: function() {
-            logger.info('refresh()');
-            if (this.getContents()) {
-                this.setValue(this.getContents().getText());
-            }
+        fitSize: function() {
+            logger.info('fitSize()');
             if (this.editor) {
                 var parentNode = this.getParentNode();
                 this.setSize(parentNode.offsetWidth, parentNode.offsetHeight);
@@ -1469,95 +1533,28 @@ define([
                 deferred.resolve(items);
             }
         },
-        getContextMenuItems: function(opened, items, menuItems, deferred) {
 
-            var editor = this.editor;
-            if (editor) {
-                var selected = editor.getSelection();
+        /**
+         * Execute command for this EditorViewer
+         * @param {Object} command
+         */
+        execute: function(command) {
+            logger.info('execute(' + command + ')');
+            return this[command]();
+        },
 
-                // Close Others, Close All
-                if (opened.length > 1) {
-                    items['Close O&thers'] = menuItems.fileMenuItems['Cl&ose Others'];
-                }
-                items['&Close All'] = menuItems.fileMenuItems['C&lose All'];
-
-                // Undo, Redo
-                var history = editor.getHistory();
-                if (history) {
-                    if (history.done && history.done.length > 0) {
-                        items['U&ndo'] = menuItems.editMenuItems['&Undo'];
-                    }
-                    if (history.undone && history.undone.length > 0) {
-                        items['&Redo'] = menuItems.editMenuItems['&Redo'];
-                    }
-                }
-
-                // Save
-                //if (editors.isModifiedFile(editors.currentFile)) {
-                if (editors.currentFile.isModified()) {
-                    items['&Save'] = menuItems.fileMenuItems['&Save'];
-                }
-
-                // Delete
-                items['&Delete'] = menuItems.editMenuItems['&Delete'];
-
-                // Select All, Select Line
-                items['Select &All'] = menuItems.editMenuItems['Select &All'];
-                items['Select L&ine'] = menuItems.editMenuItems['Select L&ine'];
-
-                // Line
-                var lineItems = {};
-
-                // Line - Move Line Up, Move Line Down, Copy, Delete
-                lineItems['&Indent'] = menuItems.editMenuItems['&Line']['&Indent'];
-                lineItems['&Dedent'] = menuItems.editMenuItems['&Line']['&Dedent'];
-                var pos = editor.getCursor();
-                if (pos.line > 0) {
-                    lineItems['Move Line U&p'] = menuItems.editMenuItems['&Line']['Move Line U&p'];
-                }
-                if (pos.line < editor.lastLine()) {
-                    lineItems['Move Line Dow&n'] = menuItems.editMenuItems['&Line']['Move Line Dow&n'];
-                }
-                //lineItems['&Copy Line'] =
-                // menuItems.editMenuItems['&Line']['&Copy Line'];
-                lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
-                lineItems['Move Cursor Line to Middle'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
-                lineItems['Move Cursor Line to Top'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
-                lineItems['Move Cursor Line to Bottom'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
-
-                if (_.values(lineItems).length > 0) {
-                    items['&Line'] = lineItems;
-                }
-
-                // Source
-                var sourceItems = {};
-
-                // Code Folding
-                sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-
-                // Source
-                if (_.values(sourceItems).length > 0) {
-                    items['So&urce'] = sourceItems;
-                }
-
-                // Go to
-
-                if (this.isDefaultKeyMap()) {
-                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
-                }
-
-                if (this.isThereMatchingBracket()) {
-                    items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
-                }
+        /**
+         * Whether this EditorViewer can execute given command
+         * @param {Object} command
+         * @return {boolean}
+         */
+        canExecute: function(command) {
+            if ( typeof this[command] === 'function') {
+                return true;
             } else {
-                // FIXME: this is temp code, must fix this coe when editor plugin
-                // refactoring
-                if (editors.currentFile.isModified()) {
-                    items['&Save'] = menuItems.fileMenuItems['&Save'];
-                }
+                return false;
             }
-            deferred.resolve(items);
-        }
+        },
     });
 
     //Static

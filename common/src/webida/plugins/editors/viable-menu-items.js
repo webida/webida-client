@@ -19,31 +19,46 @@ define([
     './plugin', 
     './menu-items', 
     'dojo/Deferred', 
-    'external/lodash/lodash.min'
+    'external/lodash/lodash.min',
+    'webida-lib/util/logger/logger-client'
 ], function(
     editors, 
     menuItems, 
     Deferred, 
-    _
+    _,
+    Logger
 ) {
     'use strict';
 // @formatter:on
 
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
+
+    function _getPartRegistry() {
+        var workbench = require('webida-lib/plugins/workbench/plugin');
+        var page = workbench.getCurrentPage();
+        return page.getPartRegistry();
+    }
+
     function getItemsUnderFile() {
+        logger.info('getItemsUnderFile()');
         var items = {};
-        var opened = _.values(editors.files);
-        if (editors.currentFile && opened && opened.length > 0) {
-            //if (editors.isModifiedFile(editors.currentFile)) {
-            if (editors.currentFile.isModified()) {
+        var registry = _getPartRegistry();
+        var currentPart = registry.getCurrentEditorPart();
+        var editorParts = registry.getEditorParts();
+
+        if (currentPart) {
+            if (currentPart.isDirty()) {
                 items['&Save'] = menuItems.fileMenuItems['&Save'];
             }
-            if (editors.hasModifiedFile()) {
+            if (registry.getDirtyParts().length > 0) {
                 items['Sav&e All'] = menuItems.fileMenuItems['Sav&e All'];
             }
 
             items['&Close'] = menuItems.fileMenuItems['&Close'];
 
-            if (opened.length > 1) {
+            if (editorParts.length > 1) {
                 items['Cl&ose Others'] = menuItems.fileMenuItems['Cl&ose Others'];
             }
 
@@ -57,6 +72,7 @@ define([
     }
 
     function getItemsUnderEdit() {
+        logger.info('getItemsUnderEdit()');
         var deferred = new Deferred();
         var items = {};
         var opened = _.values(editors.files);
@@ -73,6 +89,7 @@ define([
     }
 
     function getItemsUnderFind() {
+        logger.info('getItemsUnderFind()');
         var opened = _.values(editors.files);
         if (!opened || opened.length < 1) {
             return null;
@@ -90,6 +107,7 @@ define([
     }
 
     function getItemsUnderNavigate() {
+        logger.info('getItemsUnderNavigate()');
         function getViewRunnableMenuItems(menuName) {
             var splitContainer = editors.splitViewContainer;
             var focusedVc = splitContainer.getFocusedViewContainer();
@@ -139,8 +157,7 @@ define([
         // Navigate Editors
         var naviEditorsItems = {};
 
-        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 
-            'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
+        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
 
         _.each(itemsList, function(item) {
             if (getViewRunnableMenuItems(item)) {
@@ -166,6 +183,7 @@ define([
     }
 
     function getItemsUnderView() {
+        logger.info('getItemsUnderView()');
         var items = {};
         // Split Editors
         var layoutEditorsItems = {};
@@ -185,20 +203,25 @@ define([
     }
 
     function getContextMenuItems() {
-        var deferred = new Deferred();
-        var items = {};
-
-        var opened = _.values(editors.files);
-        if (!opened || opened.length < 1) {
+        logger.info('getContextMenuItems()');
+        var items;
+        var deferred;
+        var registry = _getPartRegistry();
+        var currentPart = registry.getCurrentEditorPart();
+        var editorParts = registry.getEditorParts();
+        if (editorParts.length === 0) {
             return null;
         }
-
-        var editorPart = editors.getPart(editors.currentFile);
-        if (editorPart) {
-            editorPart.getContextMenuItems(opened, items, menuItems, deferred);
+        try {
+            deferred = new Deferred();
+            if (currentPart) {
+                items = currentPart.getContextMenuItems(menuItems);
+                deferred.resolve(items);
+            }
+            return deferred;
+        } catch(e) {
+            logger.error(e);
         }
-
-        return deferred;
     }
 
     return {

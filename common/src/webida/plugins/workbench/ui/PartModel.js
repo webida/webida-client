@@ -39,29 +39,90 @@ define([
 // @formatter:on
 
     /**
-     * @typedef {Object} DataSource
+     * @typedef {Object} ChangeRequest
      */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    var _partModelId = 0;
+
     function PartModel() {
         logger.info('new PartModel()');
+
+        this._partModelId = ++_partModelId;
     }
 
 
     genetic.inherits(PartModel, EventEmitter, {
 
         /**
-         * update
+         * From given data, build new contents for the model.
+         * @abstract
+         * @param {String} data Source data to build new contents of the model.
          */
-        update: function() {
-        	throw new Error('update() should be implemented by ' + this.constructor.name);
+        createContents: function(data) {
+            throw new Error('createContents(data) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @abstract
+         * @param {String} data Serialized original data, such as Ajax response.
+         */
+        setSerialized: function(data) {
+            throw new Error('setSerialized(data) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @return {String} Serialized data to save
+         */
+        getSerialized: function() {
+            throw new Error('getSerialized() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Serializes model to a string
+         * @return {String} Serialized Data
+         */
+        serialize: function() {
+            throw new Error('serialize() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @abstract
+         * @param {Object} contents
+         */
+        setContents: function(contents) {
+            throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @abstract
+         * @return {Object}
+         */
+        getContents: function() {
+            throw new Error('getContents() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @abstract
+         * @param {ChangeRequest} request
+         */
+        update: function(request) {
+            throw new Error('update(request) should be implemented by ' + this.constructor.name);
         }
     });
 
-	PartModel.CONTENTS_CHANGE = 'contentsChange';
+    /** @constant {string} */
+    PartModel.CONTENTS_CHANGE = 'contentsChange';
+
+    /** @constant {string} */
+    PartModel.READY = 'partModelReady';
+
+    PartModel.toString = function() {
+        return 'Model';
+    };
 
     return PartModel;
 });

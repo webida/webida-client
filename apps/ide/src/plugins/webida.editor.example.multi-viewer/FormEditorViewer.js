@@ -71,14 +71,9 @@ define([
             }
         },
 
-        setContents: function(doc) {
-            EditorViewer.prototype.setContents.call(this, doc);
-            this.refresh();
-        },
-
-        refresh: function() {
-            logger.info('refresh()', this.getContents().getText());
-            this.getAdapter().setContents(this.getContents().getText());
+        render: function(contents) {
+            logger.info('render(' + contents + ')');
+            this.getAdapter().setContents(contents);
         },
 
         getContextMenuItems: function(opened, items, menuItems, deferred) {

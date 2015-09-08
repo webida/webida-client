@@ -42,7 +42,6 @@ define([
 
     /**
      * @typedef {Object} Map
-     * @typedef {Object} Plugin
      */
 
     var logger = new Logger();
@@ -54,9 +53,6 @@ define([
 
         /** @type {Object} */
         this.widget = null;
-
-        /** @type {Map.<Object, Plugin>} */
-        this.plugins = new Map();
     }
 
 
@@ -77,53 +73,6 @@ define([
          */
         getWidget: function() {
             return this.widget;
-        },
-
-        /**
-         * Installs plugin (such as code assist engine).
-         * @abstract
-         * @param {Object} key
-         * @param {Object} plugin
-         */
-        installPlugin: function(key, plugin) {
-            throw new Error('destroy() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Activate plugin
-         * @abstract
-         * @param {Object} key
-         */
-        activatePlugin: function(key) {
-            throw new Error('destroy() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Reset all installed plugin.
-         * This method calls deactive() of plugin
-         * @abstract
-         * @param {Object} key
-         */
-        resetPlugins: function() {
-            throw new Error('destroy() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Set contents for the widget
-         * @abstract
-         * @param {Object} contents
-         */
-        setContents: function(contents) {
-            throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Retrive contents of the widget
-         * @abstract
-         * @return {Object} contents
-         */
-        getContents: function() {
-            throw new Error('getContents() should be implemented by ' + this.constructor.name);
         }
     });
 

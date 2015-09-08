@@ -708,6 +708,7 @@ define([
         },
         getContextMenuItems: function (opened, items, menuItems, deferred) {                    
             var editor = this.editor;
+            var part = editors.getCurrentPart();
             if (editor) {                
 
                 // Close Others, Close All
@@ -726,8 +727,7 @@ define([
                 }                
 
                 // Save
-                //if (editors.isModifiedFile(editors.currentFile)) {
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
 
@@ -783,7 +783,7 @@ define([
                 }               
             } else {
                 // FIXME: this is temp code, must fix this coe when editor plugin refactoring
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }               
             }

@@ -490,8 +490,8 @@ define([
         codemirror.showHint(cm, hint, options);
     };
 
-    codemirror.commands.save = function (cm) {
-        cm.__instance.triggerEvent('save');
+    codemirror.commands.save = function(cm) {
+        topic.publish('editor/save/current');
     };
 
     function jshint(cm, callback) {
@@ -896,95 +896,43 @@ define([
 
     genetic.inherits(CodeEditorViewer, TextEditorViewer, {
 
-	    createAdapter: function (parentNode) {
-	        if (this.editor !== undefined) {
-	            return;
-	        }
-	        var self = this;
-	        var options = {
-	            //electricChars: false,
-	            flattenSpans: false,
-	            autoCloseBrackets: this.keymap !== 'vim',
-	            autoCloseTags: true
-	        };
+		/**
+		 * @override
+		 */
+        addOptions: function() {
+            TextEditorViewer.prototype.addOptions.call(this);
+            this.setOption('mode', this.mappedMode, isAvailable('mode', this.mode), 'text/plain');
+        },
 
-	        function setOption(name, value, condition, defaultValue) {
-	            if (condition === undefined) {
-	                if (value !== undefined) {
-	                    options[name] = value;
-	                }
-	            } else {
-	                if (condition) {
-	                    options[name] = value;
-	                } else {
-	                    options[name] = defaultValue;
-	                }
-	            }
-	        }
-	        setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
-	        setOption('mode', this.mappedMode, isAvailable('mode', this.mode), 'text/plain');
-	        setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
-	        setOption('lineNumbers', this.options.lineNumbers, true);
-	        setOption('tabSize', this.options.tabSize);
-	        setOption('indentUnit', this.options.indentUnit);
-	        setOption('indentWithTabs', this.options.indentWithTabs);
-	        setOption('indentOnPaste', this.options.indentOnPaste);
-	        setOption('extraKeys', this.options.extraKeys);
-	        setOption('lineWrapping', this.options.lineWrapping);
+		/**
+		 * @override
+		 */
+        createAdapter: function (parentNode) {
 
-	        this.editor = codemirror(parentNode, options);
+            TextEditorViewer.prototype.createAdapter.call(this, parentNode);
 
-            this.editor.on("change", function(cm, change) {
-            	if(self.getContents()){
-            		self.getContents().update(cm.getValue(), self);
-            	}
-                //console.log('self.getContents() = ', self.getContents());
+            var self = this;
+
+            this.__applyLinter();
+
+            this.editor.on('mousedown', function(cm, e) {
+                if (settings.gotoLinkEnabled) {
+                    require(['./content-assist/goto-link'], function(gotolink) {
+                        gotolink.onMouseDown(cm, e);
+                    });
+                }
             });
 
-
-	        this.editor.setOption('showCursorWhenSelecting', true);
-	        this.editor.__instance = this;
-	        $(this.editor.getWrapperElement()).addClass('maincodeeditor');
-	        this.__applyLinter();
-
-	        if (this.deferredActions) {
-	            _.each(this.deferredActions, function (action) {
-	                action(self);
-	            });
-	            delete this.deferredActions;
-	        }
-
-            this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function () {
-                self.checkSizeChange();
+            this.editor.on('keydown', function(cm, e) {
+                if (settings.gotoLinkEnabled) {
+                    require(['./content-assist/goto-link'], function(gotolink) {
+                        gotolink.onKeyDown(cm, e);
+                    });
+                }
             });
 
-	        this.editor.on('mousedown', function (cm, e) {
-	            if (settings.gotoLinkEnabled) {
-	                require(['./content-assist/goto-link'], function (gotolink) {
-	                    gotolink.onMouseDown(cm, e);
-	                });
-	            }
-	        });
-
-	        this.editor.on('keydown', function (cm, e) {
-	            if (settings.gotoLinkEnabled) {
-	                require(['./content-assist/goto-link'], function (gotolink) {
-	                    gotolink.onKeyDown(cm, e);
-	                });
-	            }
-	        });
-
-	        // conditionally indent on paste
-	        self.editor.on('change', function (cm, e) {
-	            if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
-	                for (var i = 0; i <= e.text.length; i++) {
-	                    cm.indentLine(e.from.line + i);
-	                }
-	            }
-	        });
-
-	        Snippet.init(self.editor);
-	    },
+            Snippet.init(self.editor);
+        },
 
 	    setMode : function (mode) {
 	        if (mode === undefined || this.mode === mode) {
@@ -1562,6 +1510,7 @@ define([
             }
 
             var editor = this.editor;
+            var part = editors.getCurrentPart();
             if (editor) {
                 var selected = editor.getSelection();
 
@@ -1583,8 +1532,7 @@ define([
                 }
 
                 // Save
-                //if (editors.isModifiedFile(editors.currentFile)) {
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
 
@@ -1671,7 +1619,7 @@ define([
                 }
             } else {
                 // FIXME: this is temp code, must fix this coe when editor plugin refactoring
-                if (editors.currentFile.isModified()) {
+                if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
                 deferred.resolve(items);

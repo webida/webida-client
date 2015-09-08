@@ -35,9 +35,19 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/editors/plugin',
     'webida-lib/plugins/editors/EditorPreference',
-    'webida-lib/plugins/workbench/ui/Part',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workbench/ui/EditorModelManager',
     'webida-lib/plugins/workbench/ui/EditorPart',
+    'webida-lib/plugins/workbench/ui/Part',
+    'webida-lib/plugins/workbench/ui/PartContainer',
+    'webida-lib/plugins/workbench/ui/PartModel',
+    'webida-lib/plugins/workbench/ui/partModelProvider',
+    'webida-lib/plugins/workbench/ui/PartRegistry',
+    'webida-lib/plugins/workbench/ui/Viewer',
+    'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
+    './Document',
     './preferences/preference-config',
+    './TextEditorContextMenu',
     './TextEditorViewer',
     'dojo/domReady!'
 ], function(
@@ -47,31 +57,69 @@ define([
     Logger,
     editors,
     EditorPreference,
-    Part,
+    workbench,
+    EditorModelManager,
     EditorPart,
+    Part,
+    PartContainer,
+    PartModel,
+    partModelProvider,
+    PartRegistry,
+    Viewer,
+    store,
+    Document,
     preferenceConfig,
+    TextEditorContextMenu,
     TextEditorViewer
 ) {
     'use strict';
 // @formatter:on
+
+    /**
+     * @typedef {Object} DataSource
+     * @typedef {Object} Document
+     */
 
     //TODO : this.viewer -> this.getViewer()
     //See File.prototype.isModified = function () {
     //TODO : this.file -> this.getFile()
 
     var logger = new Logger();
-    logger.off();
+    //logger.off();
 
     var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide', 'content-assist'];
 
-    function TextEditorPart(file) {
-        logger.info('new TextEditorPart(' + file + ')');
+    //To support synchronizeWidgetModel
+    //TODO : refactor
+    var recentViewers = new Map();
+    var partRegistry = workbench.getCurrentPage().getPartRegistry();
+    partRegistry.on(PartRegistry.PART_UNREGISTERED, function(part) {
+        if (partModelProvider.isModelUsed(part.getModel()) === false) {
+            recentViewers['delete'](part.getDataSource());
+        }
+    });
+
+    function TextEditorPart(container) {
+        logger.info('new TextEditorPart(' + container + ')');
         EditorPart.apply(this, arguments);
+        var that = this;
+        var dataSource = container.getDataSource();
+        var file = dataSource.getPersistence();
         this.setFile(file);
         this.fileOpenedHandle = null;
         this.fileSavedHandle = null;
         this.preferences = null;
         this.foldingStatus = null;
+        this.on(Part.CONTENT_READY, function(part) {
+            console.log('Part.CONTENT_READY!!');
+            var viewer = part.getViewer();
+            var ds = part.getDataSource();
+            var recentViewer = recentViewers.get(ds);
+            if (recentViewer) {
+                viewer.synchronizeWidgetModel(recentViewer);
+            }
+            recentViewers.set(ds, viewer);
+        });
     }
 
 
@@ -88,7 +136,6 @@ define([
             logger.info('initializeContext()');
             var context = this.getViewer();
             var parent = this.getParentElement();
-            context.setValue(this.file.getContents());
             context.clearHistory();
             context.markClean();
             context.setSize(parent.offsetWidth, parent.offsetHeight);
@@ -143,21 +190,9 @@ define([
         initializeListeners: function() {
             logger.info('initializeListeners()');
             var that = this;
-            //subscribe topic
-
-            this.fileOpenedHandle = topic.subscribe('file.opened', function(file, content) {
-                if (that.file === file) {
-                    that.viewer.setValue(content);
-                }
-            });
-
-            this.fileSavedHandle = topic.subscribe('file.saved', function(file) {
+            //TODO : remove listener
+            this.on(EditorPart.AFTER_SAVE, function() {
                 that.foldingStatus = that.getViewer().getFoldings();
-            });
-            this.viewer.addEventListener('save', function() {
-                require(['dojo/topic'], function(topic) {
-                    topic.publish('#REQUEST.saveFile');
-                });
             });
         },
 
@@ -192,51 +227,55 @@ define([
         },
 
         /**
-         * If viewer does not exist when calling getViewer(),
-         * this method is called to create new viewer.
-         *
-         * @see Part.js getViewer()
-         * @override
+         * TODO : move to CodeEditorPart
          */
-        createViewer: function() {
-            //TODO : parent, callback in case of none
-            var parent = this.getParentElement();
-            var callback = this.createCallback;
+        getFoldingStatus: function() {
+            return this.foldingStatus;
+        },
+
+        /**
+         * @param {HTMLElement} parent
+         * @return {Viewer}
+         */
+        createViewer: function(parentNode) {
+            logger.info('%c createViewer(' + parentNode.tagName + ')', 'color:green');
+            //TODO : remove
+            this.setParentElement(parentNode);
+            //TODO : remove
+            this.file.elem = parentNode;
+            var that = this;
+
+            //Viewer
             var ViewerClass = this.getViewerClass();
-            var viewer = new (ViewerClass)(parent, this.file, function(file, viewer) {
+            var viewer = new (ViewerClass)(parentNode, this.file, function(file, viewer) {
                 viewer.addChangeListener(function(viewer, change) {
                     if (viewer._changeCallback) {
                         viewer._changeCallback(file, change);
                     }
                 });
-                if (callback) {
-                    _.defer(function() {
-                        callback(file, viewer);
-                    });
-                }
             });
             this.setViewer(viewer);
-        },
-
-        getFoldingStatus: function() {
-            return this.foldingStatus;
-        },
-
-        create: function(parent, callback) {
-            logger.info('create(' + parent.tagName + ', callback)');
-            if (this.getFlag(Part.CREATED) === true) {
-                return;
-            }
-            this.setParentElement(parent);
-            this.createCallback = callback;
-            this.file.elem = parent;
-            //TODO : remove
             this.initialize();
-            this.setFlag(Part.CREATED, true);
+            return viewer;
         },
 
-        destroy: function() {
-            logger.info('destroy()');
+        /**
+         * @return {Document}
+         */
+        createModel: function() {
+            logger.info('%c createModel()', 'color:green');
+            this.setModelManager(new EditorModelManager(this.getDataSource(), Document));
+            var model = this.getModelManager().getSynchronizedModel(function(doc) {
+                //do something with doc ready if needed
+            });
+            //this.getModelManager().SynchroWith(SvgModel);
+            this.setModel(model);
+            return model;
+        },
+
+        onDestroy: function() {
+            logger.info('onDestroy()');
+            EditorPart.prototype.onDestroy.apply(this);
             if (this.viewer) {
                 this.viewer.destroyAdapter();
                 this.viewer = null;
@@ -256,14 +295,6 @@ define([
             if (this.fileSavedHandle !== null) {
                 this.fileSavedHandle.remove();
             }
-            //clear state
-            this.setFlag(Part.CREATED, false);
-        },
-
-        show: function() {
-            logger.info('show()');
-            this.getViewer().refresh();
-            this.getViewer().checkSizeChange();
         },
 
         hide: function() {
@@ -295,25 +326,29 @@ define([
         },
 
         markClean: function() {
+            var docMan = this.getModelManager();
+            var dataSource = docMan.getDataSource();
+            var doc = docMan.getModel();
+            if (doc && dataSource) {
+                var file = dataSource.getPersistence();
+                file.setContents(doc.getContents());
+            }
             this.getViewer().markClean();
         },
 
         isClean: function() {
-            if (this.viewer) {
-                return this.viewer.isClean();
-                //TODO : getViewer()
-            } else {
-                logger.info('this.viewer not found');
-                logger.trace();
-                return true;
-            }
+            var docMan = this.getModelManager();
+            return !docMan.canSaveModel();
         },
 
-        getContextMenuItems: function(opened, items, menuItems, deferred) {
-            var viewer = this.getViewer();
-            if (viewer) {
-                viewer.getContextMenuItems(opened, items, menuItems, deferred);
-            }
+        getContextMenuClass: function() {
+            return TextEditorContextMenu;
+        },
+
+        getContextMenuItems: function(menuItems) {
+            logger.info('getContextMenuItems(' + menuItems + ')');
+            var contextMenu = new (this.getContextMenuClass())(menuItems, this);
+            return contextMenu.getItems();
         }
     });
 
@@ -325,7 +360,7 @@ define([
     };
 
     TextEditorPart.moveTo = function(location) {
-        topic.publish('#REQUEST.openFile', location.filepath, {
+        topic.publish('editor/open', location.filepath, {
             show: true
         }, function(file) {
             if (editors.getPart(file) === null) {

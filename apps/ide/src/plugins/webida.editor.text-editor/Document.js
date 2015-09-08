@@ -25,10 +25,12 @@
 
 // @formatter:off
 define([
+    'webida-lib/plugins/workbench/ui/EditorModel',
     'webida-lib/plugins/workbench/ui/PartModel',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
+    EditorModel,
     PartModel,
     genetic, 
     Logger
@@ -45,7 +47,11 @@ define([
     //logger.off();
 
     function Document(text) {
-        logger.info('new Document(' + text + ')');
+        logger.info('new Document(' + text + ')', this);
+
+        PartModel.call(this, text);
+
+        this.text = '';
 
         if ( typeof text === 'undefined' || text === null) {
             text = '';
@@ -54,55 +60,120 @@ define([
             text = text.toString();
         }
 
-        /** @type {string} */
-        this.text = text;
+        this.setContents(text);
     }
 
 
-    genetic.inherits(Document, PartModel, {
+    genetic.inherits(Document, EditorModel, {
+
+        /**
+         * From given data, build new contents for the model.
+         * @param {String} data Source data to build new contents of the model.
+         */
+        createContents: function(data) {
+            this.setSerialized(data);
+            this.setContents(data);
+        },
+
+        /**
+         * @param {String} data Serialized original data, such as Ajax response.
+         */
+        setSerialized: function(data) {
+            this.serialized = data;
+        },
+
+        /**
+         * @return {String} Serialized data to save
+         */
+        getSerialized: function() {
+            return this.serialized;
+        },
+
+        /**
+         * Serializes model to a string
+         * For Document, just return it's working text.
+         * @return {String} Serialized Data
+         */
+        serialize: function() {
+            return this.text;
+        },
 
         /**
          * @param {string} text
+         * @param {Viewer} [viewer]
          */
-        setText: function(text) {
+        setContents: function(text, viewer) {
             this.text = text;
         },
 
         /**
          * @return {string}
          */
-        getText: function() {
+        getContents: function() {
             return this.text;
+        },
+
+        /**
+         * @param {TextChangeRequest} request
+         */
+        update: function(request) {
+            logger.info('update(' + request + ')');
+            var old = this.getContents();
+            var text = request.getContents();
+            if (old !== text) {
+                this.setContents(text);
+                this.emit(PartModel.CONTENTS_CHANGE, request);
+            }
+        },
+
+        /**
+         * Alias for setContents with respect to Document
+         * @param {string} text
+         * @param {Viewer} [viewer]
+         */
+        setText: function(text, viewer) {
+            this.setContents(text, viewer);
+        },
+
+        /**
+         * Alias for setContents with respect to Document
+         * @return {string}
+         */
+        getText: function() {
+            return this.getContents();
         },
 
         /**
          * @return {number}
          */
         getLength: function() {
-            return this.text.length;
+            return this.getContents().length;
         },
 
         /**
          * @return {string}
          */
         getCharAt: function(position) {
-            return this.text.charAt(position);
+            return this.getContents().charAt(position);
         },
 
         /**
          * @return {number}
          */
         getNumberOfLines: function() {
-            return this.text.split(/\r\n|\r|\n/).length;
+            return this.getContents().split(/\r\n|\r|\n/).length;
         },
 
-        /**
-         * @param {string} text
-         * @param {Viewer} viewer
-         */
-        update: function(text, viewer) {
-            this.setText(text);
-            this.emit(PartModel.CONTENTS_CHANGE, this, viewer);
+        toString: function() {
+            var suffix = '';
+            var res = '<' + this.constructor.name + '>#' + this._partModelId;
+            if (this.getContents()) {
+                if (this.getLength() > 10) {
+                    suffix = '...';
+                }
+                res += '(' + this.text.substr(0, 10) + suffix + ')';
+            }
+            return res;
         }
     });
 
