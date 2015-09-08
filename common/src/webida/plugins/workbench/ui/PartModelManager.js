@@ -135,12 +135,5 @@ define([
         }
     });
 
-    /**
-     * Whether data arrived.
-     * For example, ajax transport case.
-     * @constant {number} flag 1
-     */
-    PartModelManager.DATA_ARRIVED = 1;
-
     return PartModelManager;
 });

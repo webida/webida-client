@@ -34,14 +34,16 @@ define([
     'webida-lib/util/logger/logger-client',
     './PartModel',
     './PartModelManager',
-    './partModelProvider'
+    './partModelProvider',
+    './Persistence'
 ], function(
     workbench,
     genetic, 
     Logger,
     PartModel,
     PartModelManager,
-    partModelProvider
+    partModelProvider,
+    Persistence
 ) {
     'use strict';
 // @formatter:on
@@ -68,7 +70,6 @@ define([
 
         this.setDataSource(dataSource);
         this.setModelClass(ModelClass);
-        this.setFlag(PartModelManager.DATA_ARRIVED, false);
     }
 
 
@@ -114,13 +115,13 @@ define([
             this.getDataSource().getData(function(data) {
                 model.createContents(data);
                 that.setSavedData(data);
-                that.setFlag(PartModelManager.DATA_ARRIVED, true);
                 that._execFunc(callback, model);
                 //Let's give a chance to this model
                 //that it can register READY event in advance
                 //in case of synchronous getData().
                 //See FileDataSource > getData()'s else block.
                 setTimeout(function() {
+                    logger.info('model.emit(PartModel.READY, model)');
                     model.emit(PartModel.READY, model);
                 });
             });
@@ -143,19 +144,23 @@ define([
             logger.info('getSynchronizedModel(callback)');
             var that = this;
             var dataSource = this.getDataSource();
+            var persistence = dataSource.getPersistence();
             var model = partModelProvider.getPartModel(dataSource, this.getModelClass());
             logger.info('model --> ', model);
             if (!!model) {
                 this.setModel(model);
-                if (this.getFlag(PartModelManager.DATA_ARRIVED) === true) {
+                if (persistence.getFlag(Persistence.READ) === true) {
                     //Model and data exists
                     this.setSavedData(model.getSerialized());
                     this._execFunc(callback, model);
                     setTimeout(function() {
+                        logger.info('model.emit(PartModel.READY, model)');
                         model.emit(PartModel.READY, model);
                     });
                 } else {
                     //Model exists but data has not been arrived yet.
+                    //Case : call createModel() but still running
+                    // this.getDataSource().getData()
                     //Wait until the model's READY state.
                     //When the model's data ready,
                     //1) set this ModelManager's saved data
