@@ -834,6 +834,7 @@ define([
         },
 
         refresh: function(contents) {
+            logger.info('refresh(' + contents + ')');
             this.editor.setValue(contents);
             if (!this.contentsInitialized) {
                 this.editor.clearHistory();
