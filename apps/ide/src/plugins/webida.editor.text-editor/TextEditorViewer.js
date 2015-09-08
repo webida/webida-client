@@ -219,6 +219,8 @@ define([
                 require.toUrl('external/codemirror/lib/codemirror.css'), 
                 require.toUrl('external/codemirror/addon/dialog/dialog.css')
             ], function() {
+            	logger.info('*require*');
+            	logger.trace();
                 require([
                     'external/codemirror/addon/dialog/dialog', 
                     'external/codemirror/addon/search/searchcursor', 
@@ -227,9 +229,9 @@ define([
                     'external/codemirror/addon/edit/closetag', 
                     'external/codemirror/addon/edit/matchbrackets'
                 ], function() {
-                	logger.info('load css complete');
-                    if (self.getParentNode()) {
-                        self.createAdapter(self.getParentNode());
+                	logger.info('%cLoad CSS complete', 'color:orange');
+                    if (self.getParentNode() && !self.getAdapter()) {
+                    	self.createAdapter(self.getParentNode());
                     }
                 });
         });
@@ -323,6 +325,9 @@ define([
             //this.setParentNode(parentNode);
             this.editor = codemirror(parentNode, this.cmOptions);
 
+            //TODO : refactor
+            this.setAdapter(this.editor);
+
             //TODO : This code should be moved to TextEditorAdapter
             this.editor.on('change', function(cm, change) {
                 var request = new TextChangeRequest();
@@ -358,6 +363,7 @@ define([
             //Let's give a chance to this viewer
             //that it can register READY event in advance
             setTimeout(function() {
+                logger.info('self.emit(Viewer.READY, self)');
                 self.emit(Viewer.READY, self);
             });
         },
@@ -1528,95 +1534,28 @@ define([
                 deferred.resolve(items);
             }
         },
-        getContextMenuItems: function(opened, items, menuItems, deferred) {
 
-            var editor = this.editor;
-            var part = editors.getCurrentPart();
-            if (editor) {
-                var selected = editor.getSelection();
+        /**
+         * Execute command for this EditorViewer
+         * @param {Object} command
+         */
+        execute: function(command) {
+            logger.info('execute(' + command + ')');
+            return this[command]();
+        },
 
-                // Close Others, Close All
-                if (opened.length > 1) {
-                    items['Close O&thers'] = menuItems.fileMenuItems['Cl&ose Others'];
-                }
-                items['&Close All'] = menuItems.fileMenuItems['C&lose All'];
-
-                // Undo, Redo
-                var history = editor.getHistory();
-                if (history) {
-                    if (history.done && history.done.length > 0) {
-                        items['U&ndo'] = menuItems.editMenuItems['&Undo'];
-                    }
-                    if (history.undone && history.undone.length > 0) {
-                        items['&Redo'] = menuItems.editMenuItems['&Redo'];
-                    }
-                }
-
-                // Save
-                if (part.isDirty()) {
-                    items['&Save'] = menuItems.fileMenuItems['&Save'];
-                }
-
-                // Delete
-                items['&Delete'] = menuItems.editMenuItems['&Delete'];
-
-                // Select All, Select Line
-                items['Select &All'] = menuItems.editMenuItems['Select &All'];
-                items['Select L&ine'] = menuItems.editMenuItems['Select L&ine'];
-
-                // Line
-                var lineItems = {};
-
-                // Line - Move Line Up, Move Line Down, Copy, Delete
-                lineItems['&Indent'] = menuItems.editMenuItems['&Line']['&Indent'];
-                lineItems['&Dedent'] = menuItems.editMenuItems['&Line']['&Dedent'];
-                var pos = editor.getCursor();
-                if (pos.line > 0) {
-                    lineItems['Move Line U&p'] = menuItems.editMenuItems['&Line']['Move Line U&p'];
-                }
-                if (pos.line < editor.lastLine()) {
-                    lineItems['Move Line Dow&n'] = menuItems.editMenuItems['&Line']['Move Line Dow&n'];
-                }
-                //lineItems['&Copy Line'] =
-                // menuItems.editMenuItems['&Line']['&Copy Line'];
-                lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
-                lineItems['Move Cursor Line to Middle'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
-                lineItems['Move Cursor Line to Top'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
-                lineItems['Move Cursor Line to Bottom'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
-
-                if (_.values(lineItems).length > 0) {
-                    items['&Line'] = lineItems;
-                }
-
-                // Source
-                var sourceItems = {};
-
-                // Code Folding
-                sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-
-                // Source
-                if (_.values(sourceItems).length > 0) {
-                    items['So&urce'] = sourceItems;
-                }
-
-                // Go to
-
-                if (this.isDefaultKeyMap()) {
-                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
-                }
-
-                if (this.isThereMatchingBracket()) {
-                    items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
-                }
+        /**
+         * Whether this EditorViewer can execute given command
+         * @param {Object} command
+         * @return {boolean}
+         */
+        canExecute: function(command) {
+            if ( typeof this[command] === 'function') {
+                return true;
             } else {
-                // FIXME: this is temp code, must fix this coe when editor plugin
-                // refactoring
-                if (part.isDirty()) {
-                    items['&Save'] = menuItems.fileMenuItems['&Save'];
-                }
+                return false;
             }
-            deferred.resolve(items);
-        }
+        },
     });
 
     //Static

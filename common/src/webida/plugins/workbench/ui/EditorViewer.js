@@ -50,6 +50,28 @@ define([
 
     genetic.inherits(EditorViewer, Viewer, {
 
+        /**
+         * Execute command for this EditorViewer
+         * @param {Object} command
+         * Command can be any form of object (String, Object)
+         * @abstract
+         */
+        execute: function(command) {
+            throw new Error('execute(command) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Whether this EditorViewer can execute given command
+         * @param {Object} command
+         * @return {boolean}
+         * @abstract
+         */
+        canExecute: function(command) {
+            throw new Error('canExecute(command) should be implemented by ' + this.constructor.name);
+        },
+
+        // ----------- TODO Legacy methods : To be refactored ----------- //
+
         addChangeListener: function(listener) {
             throw new Error('addChangeListener() should be implemented by ' + this.constructor.name);
         },
@@ -115,7 +137,7 @@ define([
         },
 
         getContextMenuItems: function(opened, items, menuItems, deferred) {
-        	//TODO refactor the location of the implementaion
+            //TODO refactor the location of the implementaion
             deferred.resolve(items);
         }
     });
