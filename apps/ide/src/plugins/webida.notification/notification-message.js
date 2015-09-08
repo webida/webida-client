@@ -4,41 +4,40 @@ define([
     Toastr
 ) {
     'use strict';
+    var notificationClassPrefix = 'notification-message-';
+    var colors = {};
 
-    var notification = { log : ''};
-
-    function setNotification(message, title, optionsOverride) {
-        var d = new Date();
-        notification.log += '[' + d.toString() + '] ' + '[' + title + '] ' + (message ? message : '') + '<br>';
-        $('#log').html(notification.log);
+    function setPreferenceColor(values) {
+        for (var key in values) {
+            if (values.hasOwnProperty(key) && key.endsWith('-color')) {
+                var type = key.substring(0, key.indexOf('-color'));
+                colors[type] = values[key];
+                $('#log').find('.' + notificationClassPrefix + type).css({color: colors[type]});
+            }
+        }
     }
 
-    function error(message, title, optionsOverride) {
-        setNotification(message, title, optionsOverride);
-        Toastr.error(message, title, optionsOverride);
+    function setNotification(type, message, title/*, optionsOverride*/) {
+        var messageString = '[' + new Date().toLocaleString() + ']';
+        if (title) {
+            messageString += ' [' + title + ']';
+        }
+        if (message) {
+            messageString += message;
+        }
+        var $message = $('<p class="notification-message"></p>')
+            .addClass(notificationClassPrefix + type)
+            .css({color: colors[type]})
+            .text(messageString);
+        $('#log').append($message);
     }
 
     function getContainer(options, create) {
         Toastr.getContainer(options, create);
     }
 
-    function info(message, title, optionsOverride) {
-        setNotification(message, title, optionsOverride);
-        Toastr.info(message, title, optionsOverride);
-    }
-
     function subscribe(callback) {
         Toastr.subscribe(callback);
-    }
-
-    function success(message, title, optionsOverride) {
-        setNotification(message, title, optionsOverride);
-        Toastr.success(message, title, optionsOverride);
-    }
-
-    function warning(message, title, optionsOverride) {
-        setNotification(message, title, optionsOverride);
-        Toastr.warning(message, title, optionsOverride);
     }
 
     function clear($toastElement, clearOptions) {
@@ -49,15 +48,36 @@ define([
         Toastr.remove($toastElement);
     }
 
+    function error(message, title, optionsOverride) {
+        setNotification('error', message, title, optionsOverride);
+        Toastr.error(message, title, optionsOverride);
+    }
+
+    function warning(message, title, optionsOverride) {
+        setNotification('warn', message, title, optionsOverride);
+        Toastr.warning(message, title, optionsOverride);
+    }
+
+    function info(message, title, optionsOverride) {
+        setNotification('info', message, title, optionsOverride);
+        Toastr.info(message, title, optionsOverride);
+    }
+
+    function success(message, title, optionsOverride) {
+        setNotification('success', message, title, optionsOverride);
+        Toastr.success(message, title, optionsOverride);
+    }
+
     return {
-        error : error,
-        getContainer : getContainer,
-        info : info,
-        subscribe : subscribe,
-        success : success,
-        warning : warning,
-        clear : clear,
-        remove : remove
+        getContainer: getContainer,
+        subscribe: subscribe,
+        clear: clear,
+        remove: remove,
+        error: error,
+        warning: warning,
+        info: info,
+        success: success,
+        setPreferenceColor: setPreferenceColor
     };
 });
 

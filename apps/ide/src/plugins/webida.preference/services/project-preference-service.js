@@ -15,15 +15,17 @@
  */
 
 /**
+ * Preference Service for getting and setting listeners against to a "PROJECT"-scoped preference store
  *
  * @since: 15. 9. 4
  * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @module webida.preference.service.ProjectPreferenceService
  */
 
 define([
     '../preference-manager',
     './preference-service',
-    'webida-lib/util/genetic',
+    'webida-lib/util/genetic'
 ], function (
     preferenceManager,
     PreferenceService,

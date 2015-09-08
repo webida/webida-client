@@ -62,7 +62,7 @@ define([
     var logger = new Logger();
     logger.off();
 
-    var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide'];
+    var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide', 'content-assist'];
 
     function TextEditorPart(file) {
         logger.info('new TextEditorPart(' + file + ')');

@@ -1679,36 +1679,38 @@ define([
             }
 
             _loadCss(require.toUrl('webida-lib/plugins/workspace/wv.css'));
-           
-            topic.subscribe('projectConfig.loadCompleted', function() {
 
-                initializeTree();
-                initializeFocus();
-                initializeToolbar();
-                initializeDnd();
-                initializeSyncEditorFocus();
-                initializeFiltering();
+            //topic.subscribe('projectConfig.loadCompleted', function() {
 
-                var opt = {};
-                opt.title = 'Workspace';
-                opt.key = 'W';
-                workbench.registToViewFocusList(view, opt);
+            initializeTree();
+            initializeFocus();
+            initializeToolbar();
+            initializeDnd();
+            initializeSyncEditorFocus();
+            initializeFiltering();
 
-                topic.subscribe('view.selected', function(event) {
-                    var view = event.view;
-                    if (view.getId() === 'workspaceView') {
-                        tree.focus();
-                    }
-                });
-                
-                topic.subscribe('projectConfig.changed', function() {
-                    tree.refreshItemClasses();
-                });
+            var opt = {};
+            opt.title = 'Workspace';
+            opt.key = 'W';
+            workbench.registToViewFocusList(view, opt);
 
-                topic.subscribe('workspace.node.overlayicon.state.changed', function(path, stateSet, state) {
-                    setNodeOverlayIconInfo(path, stateSet, state);
-                });
+            topic.subscribe('view.selected', function (event) {
+                var view = event.view;
+                if (view.getId() === 'workspaceView') {
+                    tree.focus();
+                }
             });
+
+            topic.subscribe('projectConfig.changed', function () {
+                tree.refreshItemClasses();
+            });
+            topic.subscribe('projectConfig.loadCompleted', function () {
+                tree.refreshItemClasses();
+            });
+            topic.subscribe('workspace.node.overlayicon.state.changed', function (path, stateSet, state) {
+                setNodeOverlayIconInfo(path, stateSet, state);
+            });
+            //});
         },
 
         // copy, cut, and paste
