@@ -262,10 +262,8 @@ define([
                 var j = views.indexOf(view);
                 var nextSelectedView = (j > 0 ? views[j - 1] : views[1]);
                 var nextSelectedFile = editors.getFileByViewId(nextSelectedView.getId());
-                editors.ensureCreated(nextSelectedFile, false, function() {
-                    spContainer.moveView(targetView, view);
-                    view.select(true);
-                });
+                spContainer.moveView(targetView, view);
+                view.select(true);
             }
         }
     }
