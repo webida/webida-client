@@ -220,7 +220,6 @@ define([
                 require.toUrl('external/codemirror/addon/dialog/dialog.css')
             ], function() {
             	logger.info('*require*');
-            	logger.trace();
                 require([
                     'external/codemirror/addon/dialog/dialog', 
                     'external/codemirror/addon/search/searchcursor', 

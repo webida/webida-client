@@ -227,13 +227,8 @@ define([
         },
 
         /**
-         * If viewer does not exist when calling getViewer(),
-         * this method is called to create new viewer.
-         *
-         * @see Part.js getViewer()
-         * @override
+         * TODO : move to CodeEditorPart
          */
-
         getFoldingStatus: function() {
             return this.foldingStatus;
         },

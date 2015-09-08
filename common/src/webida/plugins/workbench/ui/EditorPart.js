@@ -64,7 +64,7 @@ define([
         },
 
         save: function(callback) {
-        	logger.info('save()');
+            logger.info('save()');
             var that = this;
             this.emit(EditorPart.BEFORE_SAVE, this);
             if (this.getModelManager()) {
@@ -98,7 +98,7 @@ define([
          * Reset model it's last saved state
          */
         resetModel: function() {
-        	logger.info('resetModel()');
+            logger.info('resetModel()');
             if (this.getModelManager()) {
                 this.getModelManager().resetModel();
             }

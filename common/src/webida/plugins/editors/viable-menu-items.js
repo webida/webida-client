@@ -47,6 +47,7 @@ define([
         var registry = _getPartRegistry();
         var currentPart = registry.getCurrentEditorPart();
         var editorParts = registry.getEditorParts();
+
         if (currentPart) {
             if (currentPart.isDirty()) {
                 items['&Save'] = menuItems.fileMenuItems['&Save'];
