@@ -22,7 +22,7 @@
  * @constructor
  * @since: 2015.07.10
  * @author: h.m.kwon
- * 
+ *
  */
 
 define([
@@ -931,8 +931,8 @@ define([
                     action(self);
                 });
                 delete this.deferredActions;
-            }            
-            
+            }
+
             topic.subscribe('editor-panel-resize-finished', function () {
                 self.__checkSizeChange();
             });
@@ -1495,7 +1495,7 @@ define([
                 }
                 // Code Folding
                 sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-                // Beutify (All)
+                // Beautify (All)
                 if (editor.getMode().name === 'javascript') {
                     if (selected) {
                         sourceItems['&Beautify'] = menuItems.editMenuItems['&Source']['&Beautify'];
@@ -1616,7 +1616,7 @@ define([
                 }
                 // Code Folding
                 sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-                // Beutify (All)
+                // Beautify (All)
                 var currentModeName = editor.getMode().name;
                 if (currentModeName === 'javascript' || currentModeName === 'htmlmixed' || currentModeName === 'css') {
                     if (selected) {
@@ -1633,8 +1633,8 @@ define([
                 items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];
 
                 if (this.isDefaultKeyMap()) {
-                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];               
-                }            
+                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
+                }
 
                 if (this.isThereMatchingBracket()) {
                     items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
@@ -1658,7 +1658,7 @@ define([
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
                 }
                 deferred.resolve(items);
-            }            
+            }
         }
     });
 

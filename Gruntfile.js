@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-'user strict';
+'use strict';
 module.exports = function (grunt) {
     grunt.initConfig({
        // for jshint check based on .jshintrc
