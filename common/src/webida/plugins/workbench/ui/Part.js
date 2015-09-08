@@ -298,6 +298,14 @@ define([
         },
 
         /**
+         * Each Part should override
+         * @return {Object} Set of viable menu items
+         */
+        getContextMenuItems: function(menuItems) {
+            return {};
+        },
+
+        /**
          * @private
          */
         _execFunc: function(callback, param) {

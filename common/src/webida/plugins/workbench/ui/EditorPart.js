@@ -149,9 +149,6 @@ define([
         },
         getFile: function() {
             return this.file;
-        },
-        getContextMenuItems: function(opened, items, menuItems, deferred) {
-            deferred.resolve(items);
         }
     });
 
