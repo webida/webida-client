@@ -147,9 +147,16 @@ define([
             var wsModel = this.getWorkspaceModel();
             var factoryId = wsModel.getDataSourceFactory(dataSourceId);
             require([factoryId], function(DataSourceFactory) {
-                var factory = new DataSourceFactory();
-                var dataSource = factory.create(dataSourceId);
-                dsRegistry.registerDataSource(dataSource);
+                var dataSource;
+                var existingDs = dsRegistry.getDataSourceById(dataSourceId);
+                //To solve async creation of DataSource check exists again
+                if (existingDs) {
+                    dataSource = existingDs;
+                } else {
+                    var factory = new DataSourceFactory();
+                    dataSource = factory.create(dataSourceId);
+                    dsRegistry.registerDataSource(dataSource);
+                }
                 callback(dataSource);
             });
         },
