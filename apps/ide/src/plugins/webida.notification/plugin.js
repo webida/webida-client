@@ -16,12 +16,33 @@
 
 /**
  * This plug-in check the toastr message
- * 
+ *
  * @since: 2015.07.20
  * @author: minsung.jin
  */
-define([], function () {
+define([
+    'plugins/webida.preference/preference-service-factory',
+    './notification-message'
+], function (
+    PreferenceFactory,
+    topic
+) {
     'use strict';
 
+    var module = {};
+    var preference = PreferenceFactory.get('WORKSPACE');
+    preference.getValues('notification', topic.setPreferenceColor);
+    preference.addFieldChangeListener('notification', topic.setPreferenceColor);
+
     //TODO:
+    module.getDefaultPreference = function () {
+        return {
+            'error-color': '#db1515',
+            'warn-color': '#f57003',
+            'info-color': '#000000',
+            'success-color': '#4072bd'
+        };
+    };
+
+    return module;
 });

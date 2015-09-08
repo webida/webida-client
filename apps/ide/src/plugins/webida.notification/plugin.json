@@ -7,6 +7,17 @@
         "webida.common.workbench:views" : {
             "module" : "plugins/webida.notification/notification-view",
             "location" : "bottom"
-        }
+        },
+        "webida.preference:pages": [
+            {
+                "id": "notification",
+                "hierarchy": "",
+                "name": "Notification",
+                "page": "../preferences/NotificationPreferencePage",
+                "pageData": "",
+                "getDefault": "getDefaultPreference",
+                "scope": ["USER", "WORKSPACE"]
+            }
+        ]
     }
 }
