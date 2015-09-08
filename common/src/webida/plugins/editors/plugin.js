@@ -722,6 +722,7 @@ define([
 
     editors.execCommandForCurrentEditorViewer = function(commandKey) {
         logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');
+        
         // Command means a method of EditorViewer which have no arguments
         if (editors.currentFile && editors.currentFile.viewer) {
             var viewer = editors.currentFile.viewer;

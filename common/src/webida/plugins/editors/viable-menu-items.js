@@ -41,6 +41,11 @@ define([
         return page.getPartRegistry();
     }
 
+    function _getCurrentEditorPart() {
+        var registry = _getPartRegistry();
+        return registry.getCurrentEditorPart();
+    }
+
     function getItemsUnderFile() {
         logger.info('getItemsUnderFile()');
         var items = {};
@@ -75,30 +80,26 @@ define([
         logger.info('getItemsUnderEdit()');
         var deferred = new Deferred();
         var items = {};
-        var opened = _.values(editors.files);
-        if (!opened || opened.length < 1) {
-            return null;
+        var part = _getCurrentEditorPart();
+        if (part) {
+            var viewer = part.getViewer();
+            if (viewer) {
+                viewer.getMenuItemsUnderEdit(items, menuItems, deferred);
+            }
         }
-
-        var viewer = editors.currentFile && editors.currentFile.viewer;
-        if (viewer) {
-            viewer.getMenuItemsUnderEdit(items, menuItems, deferred);
-        }
-
         return deferred;
     }
 
     function getItemsUnderFind() {
         logger.info('getItemsUnderFind()');
-        var opened = _.values(editors.files);
-        if (!opened || opened.length < 1) {
-            return null;
-        } else {
+        var part = _getCurrentEditorPart();
+        if (part) {
+            var viewer = part.getViewer();
             var items = {};
             items['&Replace'] = menuItems.findMenuItems['&Replace'];
             items['F&ind'] = menuItems.findMenuItems['F&ind'];
             items['&Highlight to Find'] = menuItems.findMenuItems['&Highlight to Find'];
-            if (editors.execCommandForCurrentEditorViewer('existSearchQuery')) {
+            if (viewer.canExecute('existSearchQuery')) {
                 items['Find &Next'] = menuItems.findMenuItems['Find &Next'];
                 items['Find &Previous'] = menuItems.findMenuItems['Find &Previous'];
             }
@@ -108,6 +109,21 @@ define([
 
     function getItemsUnderNavigate() {
         logger.info('getItemsUnderNavigate()');
+
+        var registry = _getPartRegistry();
+        var part = registry.getCurrentEditorPart();
+        var parts = registry.getEditorParts();
+        if (!part) {
+            return null;
+        }
+        var viewer = part.getViewer();
+        var items = {};
+
+        // Navigate Editors
+        var naviEditorsItems = {};
+        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
+
+
         function getViewRunnableMenuItems(menuName) {
             var splitContainer = editors.splitViewContainer;
             var focusedVc = splitContainer.getFocusedViewContainer();
@@ -138,7 +154,7 @@ define([
                 }
                 return false;
             } else if (menuName === '&Ex-Selected Tab') {
-                if (editors.currentFiles.length > 1) {
+                if (parts.length >= 2) {
                     return true;
                 }
             } else if (menuName === 'Switch &Tab Container') {
@@ -151,14 +167,6 @@ define([
             return false;
         }
 
-        var opened = _.values(editors.files);
-        var items = {};
-
-        // Navigate Editors
-        var naviEditorsItems = {};
-
-        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
-
         _.each(itemsList, function(item) {
             if (getViewRunnableMenuItems(item)) {
                 naviEditorsItems[item] = menuItems.navMenuItems['&Navigate Editors'][item];
@@ -167,14 +175,14 @@ define([
 
         items['&Navigate Editors'] = naviEditorsItems;
 
-        if (opened && opened.length >= 1) {
+        if (viewer) {
             items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];
 
-            if (editors.execCommandForCurrentEditorViewer('isDefaultKeyMap')) {
+            if (viewer.execute('isDefaultKeyMap')) {
                 items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
             }
 
-            if (editors.execCommandForCurrentEditorViewer('isThereMatchingBracket')) {
+            if (viewer.execute('isThereMatchingBracket')) {
                 items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
             }
         }
@@ -208,8 +216,7 @@ define([
         var deferred;
         var registry = _getPartRegistry();
         var currentPart = registry.getCurrentEditorPart();
-        var editorParts = registry.getEditorParts();
-        if (editorParts.length === 0) {
+        if (!currentPart) {
             return null;
         }
         try {
