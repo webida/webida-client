@@ -110,6 +110,7 @@ define([
                     if (error) {
                         toastr.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
                     } else {
+                    	logger.info('data arrived');
                         file.setContents(data);
                         file.setFlag(Persistence.READ, true);
                         callback(file.getContents());
@@ -168,8 +169,8 @@ define([
          * @override
          */
         toString: function() {
-            var res = '<' + this.constructor.name + '>#' + this.getPersistence().getPath();
-            return res;
+            var suffix = this.getPersistence().getPath();
+            return DataSource.prototype.toString.call(this) + suffix;
         }
     });
 
