@@ -121,16 +121,7 @@ define([
             editorDialog.create(file, 'Close', callback);
         },
 
-        /**
-         * @private
-         */
-        _execFunc: function(callback, param) {
-            if ( typeof callback === 'function') {
-                callback(param);
-            }
-        },
-
-        // ----------- TODO refactor the follwings ----------- //
+        // ----------- TODO Legacy methods : To be refactored ----------- //
 
         getValue: function() {
             throw new Error('getValue() should be implemented by ' + this.constructor.name);
