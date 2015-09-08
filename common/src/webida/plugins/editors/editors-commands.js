@@ -37,116 +37,126 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    function execCommand(command) {
+        logger.info('execCommand(' + command + ')');
+        var registry = workbench.getCurrentPage().getPartRegistry();
+        var part = registry.getCurrentEditorPart();
+        var viewer = part.getViewer();
+        if (viewer.canExecute(command)) {
+            viewer.execute(command);
+        }
+    }
+
     function undo() {
-        editors.execCommandForCurrentEditorViewer('undo');
+        execCommand('undo');
     }
 
     function redo() {
-        editors.execCommandForCurrentEditorViewer('redo');
+        execCommand('redo');
     }
 
     function cursorLineToMiddle() {
-        editors.execCommandForCurrentEditorViewer('cursorLineToMiddle');
+        execCommand('cursorLineToMiddle');
     }
 
     function cursorLineToTop() {
-        editors.execCommandForCurrentEditorViewer('cursorLineToTop');
+        execCommand('cursorLineToTop');
     }
 
     function cursorLineToBottom() {
-        editors.execCommandForCurrentEditorViewer('cursorLineToBottom');
+        execCommand('cursorLineToBottom');
     }
 
     function del() {
-        editors.execCommandForCurrentEditorViewer('del');
+        execCommand('del');
     }
 
     function selectAll() {
-        editors.execCommandForCurrentEditorViewer('selectAll');
+        execCommand('selectAll');
     }
 
     function selectLine() {
-        editors.execCommandForCurrentEditorViewer('selectLine');
+        execCommand('selectLine');
     }
 
     function lineIndent() {
-        editors.execCommandForCurrentEditorViewer('lineIndent');
+        execCommand('lineIndent');
     }
 
     function lineDedent() {
-        editors.execCommandForCurrentEditorViewer('lineDedent');
+        execCommand('lineDedent');
     }
 
     function lineMoveUp() {
-        editors.execCommandForCurrentEditorViewer('lineMoveUp');
+        execCommand('lineMoveUp');
     }
 
     function lineMoveDown() {
-        editors.execCommandForCurrentEditorViewer('lineMoveDown');
+        execCommand('lineMoveDown');
     }
 
     function lineDelete() {
-        editors.execCommandForCurrentEditorViewer('lineDelete');
+        execCommand('lineDelete');
     }
 
     function lineComment() {
-        editors.execCommandForCurrentEditorViewer('lineComment');
+        execCommand('lineComment');
     }
 
     function blockComment() {
-        editors.execCommandForCurrentEditorViewer('blockComment');
+        execCommand('blockComment');
     }
 
     function commentOutSelection() {
-        editors.execCommandForCurrentEditorViewer('commentOutSelection');
+        execCommand('commentOutSelection');
     }
 
     function foldCode() {
-        editors.execCommandForCurrentEditorViewer('foldCode');
+        execCommand('foldCode');
     }
 
     function beautifyCode() {
-        editors.execCommandForCurrentEditorViewer('beautifyCode');
+        execCommand('beautifyCode');
     }
 
     function beautifyAllCode() {
-        editors.execCommandForCurrentEditorViewer('beautifyAllCode');
+        execCommand('beautifyAllCode');
     }
 
     function rename() {
-        editors.execCommandForCurrentEditorViewer('rename');
+        execCommand('rename');
     }
 
     function replace() {
-        editors.execCommandForCurrentEditorViewer('replace');
+        execCommand('replace');
     }
 
     function find() {
-        editors.execCommandForCurrentEditorViewer('find');
+        execCommand('find');
     }
 
     function quickFind() {
-        editors.execCommandForCurrentEditorViewer('quickFind');
+        execCommand('quickFind');
     }
 
     function findNext() {
-        editors.execCommandForCurrentEditorViewer('findNext');
+        execCommand('findNext');
     }
 
     function findPrev() {
-        editors.execCommandForCurrentEditorViewer('findPrev');
+        execCommand('findPrev');
     }
 
     function gotoDefinition() {
-        editors.execCommandForCurrentEditorViewer('gotoDefinition');
+        execCommand('gotoDefinition');
     }
 
     function gotoLine() {
-        editors.execCommandForCurrentEditorViewer('gotoLine');
+        execCommand('gotoLine');
     }
 
     function gotoMatchingBrace() {
-        editors.execCommandForCurrentEditorViewer('gotoMatchingBrace');
+        execCommand('gotoMatchingBrace');
     }
 
     function switchEditorTabToExSelected() {

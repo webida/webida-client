@@ -47,6 +47,7 @@ define([
     'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
     './Document',
     './preferences/preference-config',
+    './TextEditorContextMenu',
     './TextEditorViewer',
     'dojo/domReady!'
 ], function(
@@ -68,6 +69,7 @@ define([
     store,
     Document,
     preferenceConfig,
+    TextEditorContextMenu,
     TextEditorViewer
 ) {
     'use strict';
@@ -83,7 +85,7 @@ define([
     //TODO : this.file -> this.getFile()
 
     var logger = new Logger();
-    logger.off();
+    //logger.off();
 
     var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide', 'content-assist'];
 
@@ -232,7 +234,6 @@ define([
          * @override
          */
 
-
         getFoldingStatus: function() {
             return this.foldingStatus;
         },
@@ -345,11 +346,10 @@ define([
             return !docMan.canSaveModel();
         },
 
-        getContextMenuItems: function(opened, items, menuItems, deferred) {
-            var viewer = this.getViewer();
-            if (viewer) {
-                viewer.getContextMenuItems(opened, items, menuItems, deferred);
-            }
+        getContextMenuItems: function(menuItems) {
+            logger.info('getContextMenuItems(' + menuItems + ')');
+            var contextMenu = new TextEditorContextMenu(menuItems, this);
+            return contextMenu.getItems();
         }
     });
 

@@ -19,28 +19,34 @@ define([
     './plugin', 
     './menu-items', 
     'dojo/Deferred', 
-    'external/lodash/lodash.min'
+    'external/lodash/lodash.min',
+    'webida-lib/util/logger/logger-client'
 ], function(
     editors, 
     menuItems, 
     Deferred, 
-    _
+    _,
+    Logger
 ) {
     'use strict';
 // @formatter:on
 
-    function getItemsUnderFile() {
-        var items = {};
-        var opened = _.values(editors.files);
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
+
+    function _getPartRegistry() {
         var workbench = require('webida-lib/plugins/workbench/plugin');
         var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
+        return page.getPartRegistry();
+    }
+
+    function getItemsUnderFile() {
+        logger.info('getItemsUnderFile()');
+        var items = {};
+        var registry = _getPartRegistry();
         var currentPart = registry.getCurrentEditorPart();
         var editorParts = registry.getEditorParts();
-        
-        console.log('editorParts = ', editorParts);
-        console.log('currentPart = ', currentPart);
-        
         if (currentPart) {
             if (currentPart.isDirty()) {
                 items['&Save'] = menuItems.fileMenuItems['&Save'];
@@ -65,6 +71,7 @@ define([
     }
 
     function getItemsUnderEdit() {
+        logger.info('getItemsUnderEdit()');
         var deferred = new Deferred();
         var items = {};
         var opened = _.values(editors.files);
@@ -81,6 +88,7 @@ define([
     }
 
     function getItemsUnderFind() {
+        logger.info('getItemsUnderFind()');
         var opened = _.values(editors.files);
         if (!opened || opened.length < 1) {
             return null;
@@ -98,6 +106,7 @@ define([
     }
 
     function getItemsUnderNavigate() {
+        logger.info('getItemsUnderNavigate()');
         function getViewRunnableMenuItems(menuName) {
             var splitContainer = editors.splitViewContainer;
             var focusedVc = splitContainer.getFocusedViewContainer();
@@ -147,8 +156,7 @@ define([
         // Navigate Editors
         var naviEditorsItems = {};
 
-        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 
-            'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
+        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
 
         _.each(itemsList, function(item) {
             if (getViewRunnableMenuItems(item)) {
@@ -174,6 +182,7 @@ define([
     }
 
     function getItemsUnderView() {
+        logger.info('getItemsUnderView()');
         var items = {};
         // Split Editors
         var layoutEditorsItems = {};
@@ -193,21 +202,25 @@ define([
     }
 
     function getContextMenuItems() {
-        var deferred = new Deferred();
-        var items = {};
-
-        var opened = _.values(editors.files);
-        if (!opened || opened.length < 1) {
+        logger.info('getContextMenuItems()');
+        var items;
+        var deferred;
+        var registry = _getPartRegistry();
+        var currentPart = registry.getCurrentEditorPart();
+        var editorParts = registry.getEditorParts();
+        if (editorParts.length === 0) {
             return null;
         }
-
-        var editorPart = editors.getCurrentPart();
-        //TODO : 
-        if (editorPart) {
-            editorPart.getContextMenuItems(opened, items, menuItems, deferred);
+        try {
+            deferred = new Deferred();
+            if (currentPart) {
+                items = currentPart.getContextMenuItems(menuItems);
+                deferred.resolve(items);
+            }
+            return deferred;
+        } catch(e) {
+            logger.error(e);
         }
-
-        return deferred;
     }
 
     return {
