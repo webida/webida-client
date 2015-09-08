@@ -4,10 +4,6 @@
     src: url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.woff') format('woff'), url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.ttf') format('truetype');
 }
 
-@font-face {
-    font-family: myFirstFont;
-    src: url(sansation_light.woff);
-}
 
 body {
     font-family: 'Nanum Gothic Coding';
@@ -53,7 +49,6 @@ footer {
 
 .top-logo-text {
     position: absolute;
-    font-family: myFirstFont;
     font-style: italic;
     font-size: 20px;
     font-weight: bold;

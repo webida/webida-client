@@ -1,30 +1,30 @@
 
-define(['monitorApi', 'toastr'], function (monitorApi, toastr){
+define(['monitorApi', 'js/data', 'toastr', 'moment'], function (monitorApi, dataMgr, toastr, moment) {
     'use strict';
     function init() {
-        
-        //$('.selectpicker').selectpicker();
         
         var gridObj = $('#jsGrid-pf-current');
         var pf = monitorApi.pf;
         
-        pf.getSvcTypeList(function (err, result) {
+        dataMgr.getSvcTypeList(function (err, result) {
             if (err) {
                 return console.error(err);
             }
 
+            $('#cur-option-svctype').find('option:not(:first)').remove();
             for (var i in result) {
                 var val = result[i];
                 var o = new Option(val.svc_type, val.svc_type);
                 $('#cur-option-svctype').append(o);
             }  
         });
-
-        pf.getInstNameList(function (err, result) {
+       
+        dataMgr.getInstNameList(function (err, result) {
             if (err) {
                 return console.error(err);
             }
 
+            $('#cur-option-svcname').find('option:not(:first)').remove();
             for (var i in result) {
                 var val = result[i];
                 var o = new Option(val.inst_name, val.inst_name);
@@ -37,6 +37,8 @@ define(['monitorApi', 'toastr'], function (monitorApi, toastr){
                 return console.error(err);
             }
 
+            $('#cur-option-instid').find('option:not(:first)').remove();
+            
             for (var i in result) {
                 var val = result[i];
                 var str = val.inst_id + '| => ' + val.started_at + ' ~ ' + val.ended_at;
@@ -65,33 +67,48 @@ define(['monitorApi', 'toastr'], function (monitorApi, toastr){
             }
         });
 
-        pf.getUrlList(function (err, result) {
+        dataMgr.getUrlList(function (err, result) {
             if (err) {
                 return console.error(err);
             }
-            
+            $('#cur-option-url').find('option:not(:first)').remove();
             for (var i in result) {
                 var val = result[i];
                 var url = val.req_url + '+' + val.req_method;
                 
                 var o = new Option(url, url);
                 $('#cur-option-url').append(o);
-                //var str = '<option value="' + url + '">' + url + '</option>';
-                //html += str;
-                //console.log(str);
             }  
-            //$('#option-urllist').append(html);
         });
         
-        $('#cur-tmstart').datetimepicker('update', new Date());
+        
+        function applyStartDate() {
+            var sel = getSel('#cur-option-period');
+            var startTime;
+            if (sel === '1 Day') {
+                startTime = moment().subtract(1, 'day');
+            } else if (sel === '7 Days') {
+                startTime = moment().subtract(7, 'day');
+
+            } else if (sel === '15 Days') {
+                startTime = moment().subtract(15, 'day');
+            }
+
+            $('#cur-tmstart').datetimepicker('update', startTime.toDate());
+        }
+        applyStartDate();
         $('#cur-tmend').datetimepicker('update', new Date());
+
+        $('#cur-option-period').change(function () {
+            applyStartDate();
+        });
         
         var gridOptions = {
             width: '100%',
             height: '550px',
 
             //filtering: true,
-            editing: true,
+            editing: false,
             sorting: true,
             paging: true,
             

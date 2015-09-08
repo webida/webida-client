@@ -29,6 +29,44 @@ require([ 'webida-lib/app-config',
         }
     });
 
+    $(document).ready(function () {
+        $('#cssmenu > ul > li > a').click(function () {
+            $('#cssmenu li').removeClass('active');
+            $(this).closest('li').addClass('active');	
+            var checkElement = $(this).next();
+            if ((checkElement.is('ul')) && (checkElement.is(':visible'))) {
+                $(this).closest('li').removeClass('active');
+                checkElement.slideUp('normal');
+            }
+            if ((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
+                $('#cssmenu ul ul:visible').slideUp('normal');
+                checkElement.slideDown('normal');
+            }
+            if ($(this).closest('li').find('ul').children().length === 0) {
+                return true;
+            } else {
+                return false;	
+            }		
+        });
+        
+        $(window).bind('hashchange', function() {
+            var hash = location.hash;
+
+            if (hash === '') {
+                hash = 'pf-current';
+            }
+
+            console.log(hash);
+            var target = hash;
+            $('.right > div').hide();
+            $(target).show();
+            right.toggleView(target);
+        });
+        
+        $(window).trigger('hashchange');
+    });
+    
+    /*
     var treeData = left.getTree();
     $('#tree').treeview(
         {
@@ -47,5 +85,6 @@ require([ 'webida-lib/app-config',
             }
         }
     );
+    */
     
 });

@@ -61,12 +61,8 @@ define(['toastr'], function (toastr) {
                         href: '#pf-current-stat'
                     },
                     {
-                        text: 'Hourly statistics',
-                        href: '#pf-for-hours'
-                    },
-                    {
-                        text: 'Daily statistics',
-                        href: '#pf-for-days'
+                        text: 'Statistics history',
+                        href: '#pf-statistics-history'
                     }
                 ]
             }

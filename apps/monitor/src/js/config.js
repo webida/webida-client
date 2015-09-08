@@ -21,12 +21,14 @@ var webidaHost =
     decodeURIComponent(document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1'));
 
 var webida = '../../../common/src/webida/webida-0.3';
-
+var external = '../../../bower_components/';
 var require = {
     baseUrl: '.',
     paths: {
         webida: webida,
-        toastr: 'lib/toastr/toastr',
+        external: external,
+        toastr: external + 'toastr/toastr',
+        moment: external + 'moment/moment',
         text: 'lib/text',
         left: 'js/left',
         right: 'js/right',

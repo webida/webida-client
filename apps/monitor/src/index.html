@@ -7,30 +7,28 @@
 
         <!-- load css style -->
         <link rel="stylesheet" href="css/monitor.css">
-        <link rel="stylesheet" href="css/toastr.css" type="text/css" />
-        
-        <link href="lib/bootstrap-3.3.5/css/bootstrap.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/menu-styles.css">
+        <link rel="stylesheet" href="../../../bower_components/toastr/toastr.css" type="text/css" />
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
         
         <!-- load javasccript -->
-        <script src="lib/jquery.js"></script>
-        <script src="lib/bootstrap-treeview/bootstrap-treeview.min.js"></script>
-
-
         <script src="js/config.js"></script>
         <script src="lib/require.min.js" data-main="js/monitor.js"></script>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script src="../../../bower_components/bootstrap-treeview/dist/bootstrap-treeview.min.js"></script>
         
+ 
         <!-- js grid -->
         <link type="text/css" rel="stylesheet" href="lib/jsgrid-1.1.0/jsgrid.min.css" />
         <link type="text/css" rel="stylesheet" href="lib/jsgrid-1.1.0/jsgrid-theme.min.css" />
         <script type="text/javascript" src="lib/jsgrid-1.1.0/jsgrid.min.js"></script>
         
-        <!-- bootstrap select 
-        <link type="text/css" rel="stylesheet" href="lib/bootstrap-select/css/bootstrap-select.min.css" />
-        <script type="text/javascript" src="lib/bootstrap-select/js/bootstrap-select.min.js"></script>
-        -->
-        <link type="text/css" rel="stylesheet" href="lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
-        <script type="text/javascript" src="lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
         
+        <link type="text/css" rel="stylesheet" href="../../../bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
+        <script type="text/javascript" src="../../../bower_components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+        
+
     </head>
 
     <!-- main -->
@@ -46,7 +44,27 @@
         </div>
         
         <div class="left">
-           <div id="tree"></div>
+            <div id='cssmenu'>
+                <ul>
+                    <li class='active'><a href='#'><span>Home</span></a></li>
+                    <li class='has-sub'><a href='#'><span>API profiling</span></a>
+                        <ul>
+                            <li><a href='#pf-current'><span>Current</span></a></li>
+                            <li><a href='#pf-current-stat'><span>Current statistics</span></a></li>
+                            <li class='last'><a href='#pf-statistics-history'><span>Statistics History</span></a></li>
+                        </ul>
+                    </li>
+                    <li class='has-sub'><a href='#'><span>System</span></a>
+                        <ul>
+                            <li><a href='##under-construction'><span>CPU</span></a></li>
+                            <li class='last'><a href='##under-construction'><span>Memory</span></a></li>
+                        </ul>
+                    </li>
+                    <li class='has-sub'><a href='#under-construction'><span>Servers</span></a>
+                    <li class='last'><a href='##under-construction'><span>User</span></a></li>
+                </ul>
+            </div>
+            <!--<div id="tree"></div>-->
         </div>
 
         <!-- content -->
@@ -78,16 +96,15 @@
                     <div  class="pf-options-input">
                         <span>Period: </span>
                         <select id="cur-option-period" class="selectpicker">
-                            <option>All</option>
-                            <option>1 day</option>
-                            <option>1 week</option>
-                            <option>2 week</option>
-                            <option>1 month</option>
+                            <option>1 Day</option>
+                            <option>7 Days</option>
+                            <option>15 Days</option>
+                            <option>User selection</option>
                         </select>
                         <span>&nbsp;&nbsp; FROM: </span>
-                        <input type="text" value="2012-05-15 21:05" id="cur-tmstart" data-date-format="yyyy-mm-dd hh:ii">
+                        <input type="text" id="cur-tmstart" data-date-format="yyyy-mm-dd hh:ii">
                         <span>&nbsp;&nbsp; ~ &nbsp;&nbsp;TO: </span>
-                        <input type="text" value="2012-05-15 21:05" id="cur-tmend" data-date-format="yyyy-mm-dd hh:ii">
+                        <input type="text" id="cur-tmend" data-date-format="yyyy-mm-dd hh:ii">
                     </div>
                 </div>
                 <div> 
@@ -124,13 +141,15 @@
                     <div  class="pf-options-input">
                         <span>Period: </span>
                         <select id="option-period" class="selectpicker">
-                            <option>All</option>
+                            <option>1 Day</option>
+                            <option>7 Days</option>
+                            <option>15 Days</option>
                             <option>User selection</option>
                         </select>
                         <span>&nbsp;&nbsp; FROM: </span>
-                        <input type="text" value="2012-05-15 21:05" id="tmstart" data-date-format="yyyy-mm-dd hh:ii">
+                        <input type="text" id="tmstart" data-date-format="yyyy-mm-dd hh:ii">
                         <span>&nbsp;&nbsp; ~ &nbsp;&nbsp;TO: </span>
-                        <input type="text" value="2012-05-15 21:05" id="tmend" data-date-format="yyyy-mm-dd hh:ii">
+                        <input type="text" id="tmend" data-date-format="yyyy-mm-dd hh:ii">
                     </div>
                 </div>
                 <div> 
@@ -140,40 +159,58 @@
                 <div id="jsGrid-pf-current-stat"></div>
             </div>
             
-            <div id="pf-for-hours" class="right-pane" >
-                <h3>Profiling > Hourly statistics</h3>
-                <p>This page is under construction.</p>
+            <div id="pf-statistics-history" class="right-pane" >
+                <h3>Profiling > Statistics history</h3>
+                <div class="rc-options">
+                    <div class="pf-options-input">
+                        <span>Service type: </span>
+                        <select id="stat-history-option-svctype" class="selectpicker">
+                            <option>All</option>
+                        </select>
+                        <span>&nbsp;&nbsp; Service name: </span>
+                        <select id="stat-history-option-svcname" class="selectpicker">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div class="pf-options-input">
+                        <span>URL + method: </span>
+                        <select id="stat-history-option-url" class="selectpicker" style="width: 300px">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div  class="pf-options-input">
+                        <span>Unit time:</span>
+                        <select id="stat-history-option-unit-time" class="selectpicker">
+                            <option>Daily</option>
+                            <option>Hourly</option>
+                        </select>
+                        <span>&nbsp;&nbsp; Period: </span>
+                        <select id="stat-history-option-period" class="selectpicker">
+                            <option>1 Day</option>
+                            <option>7 Days</option>
+                            <option>15 Days</option>
+                            <option>User selection</option>
+                        </select>
+                        <span>&nbsp;&nbsp; FROM: </span>
+                        <input type="text" id="stat-history-tmstart" data-date-format="yyyy-mm-dd hh:ii">
+                        <span>&nbsp;&nbsp; ~ &nbsp;&nbsp;TO: </span>
+                        <input type="text" id="stat-history-tmend" data-date-format="yyyy-mm-dd hh:ii">
+                    </div>
+                </div>
+                <div> 
+                    <button type="button" class="btn btn-default navbar-btn" id="stat-history-btn-query">Inquiry</button>
+                    <button type="button" class="btn btn-default navbar-btn" id="stat-history-btn-reset">Reset</button>
+                </div>
+                <div id="stat-history-jsGrid"></div>
             </div>
             
-            <div id="pf-for-days" class="right-pane">
-                <h3>Profiling > Daily statistics</h3>
-                <p>This page is under construction.</p>
-            </div>
             
             <div id="under-construction" class="right-pane">
                 <h3>This page is under construction.</h3>
                 <p>This page is under construction.</p>
             </div>
-
-            
-            
-            
-            <!-- 
-            <div class="wrap active" id="pf-current">
-
-
-            </div>
-
+     
        
-            <div class="wrap" id="pf-for-hours">
-                
-            </div>
-
-            <div class="wrap" id="pf-for-days">
-
-                workspace -->
-                
-            </div>
         </div>
 
 

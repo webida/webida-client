@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
  *
@@ -139,7 +137,27 @@ define(['webida'], function (webida) {
         webida.ensureAuthorize(restApi);
     };
     
-  
+    
+    mod.ProfilingService.prototype.getStatisticsHistory = function (unitTime, startTime, endTime, options, isMergeResult, cb) {
+        function restApi() {
+            var data = {
+                unitTime: unitTime,
+                startTime: startTime,
+                endTime: endTime,
+                options: JSON.stringify(options),
+                isMergeResult: isMergeResult
+            };
+
+            webida.ajaxCall({
+                url: mod.conf.monApiBaseUrl + '/pf/getStatisticsHistory',
+                data: data,
+                type: 'GET',
+                callback: cb
+            });
+        }
+        webida.ensureAuthorize(restApi);
+    };
+
     mod.pf = new mod.ProfilingService();
 
 
