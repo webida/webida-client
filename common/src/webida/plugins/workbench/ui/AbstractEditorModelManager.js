@@ -68,6 +68,7 @@ define([
 
         this.setDataSource(dataSource);
         this.setModelClass(ModelClass);
+        this.setFlag(PartModelManager.DATA_ARRIVED, false);
     }
 
 
@@ -113,6 +114,7 @@ define([
             this.getDataSource().getData(function(data) {
                 model.createContents(data);
                 that.setSavedData(data);
+                that.setFlag(PartModelManager.DATA_ARRIVED, true);
                 that._execFunc(callback, model);
                 //Let's give a chance to this model
                 //that it can register READY event in advance
@@ -139,17 +141,30 @@ define([
          */
         getSynchronizedModel: function(callback) {
             logger.info('getSynchronizedModel(callback)');
+            var that = this;
             var dataSource = this.getDataSource();
             var model = partModelProvider.getPartModel(dataSource, this.getModelClass());
             logger.info('model --> ', model);
             if (!!model) {
                 this.setModel(model);
-                this.setSavedData(model.getSerialized());
-                this._execFunc(callback, model);
-                //See createModel
-                setTimeout(function() {
-                    model.emit(PartModel.READY, model);
-                });
+                if (this.getFlag(PartModelManager.DATA_ARRIVED) === true) {
+                    //Model and data exists
+                    this.setSavedData(model.getSerialized());
+                    this._execFunc(callback, model);
+                    setTimeout(function() {
+                        model.emit(PartModel.READY, model);
+                    });
+                } else {
+                    //Model exists but data has not been arrived yet.
+                    //Wait until the model's READY state.
+                    //When the model's data ready,
+                    //1) set this ModelManager's saved data
+                    //2) then execute callback.
+                    model.once(PartModel.READY, function(model) {
+                        that.setSavedData(model.getSerialized());
+                        that._execFunc(callback, model);
+                    });
+                }
             } else {
                 model = this.createModel(callback);
                 partModelProvider.register(dataSource, model);
