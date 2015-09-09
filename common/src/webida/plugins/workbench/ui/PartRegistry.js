@@ -164,6 +164,7 @@ define([
          * @param {EditorPart} part
          */
         setRecentEditorPart: function(part) {
+            logger.info('setRecentEditorPart(' + part + ')');
             if ( part instanceof EditorPart) {
                 var dataSource = part.getContainer().getDataSource();
                 if (this.recentEditorParts.has(dataSource) === false) {
@@ -180,8 +181,10 @@ define([
          * and PartClass. If not found returns undefined.
          */
         getRecentEditorPart: function(dataSource, PartClass) {
+        	logger.info('getRecentEditorPart('+dataSource+', PartClass)');
             if (this.recentEditorParts.has(dataSource)) {
                 var partsOfDs = this.recentEditorParts.get(dataSource);
+                logger.info('return --> ' + partsOfDs.get(PartClass));
                 return partsOfDs.get(PartClass);
             }
         },

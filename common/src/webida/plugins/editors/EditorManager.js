@@ -145,6 +145,7 @@ define([
          */
         _openDataSource: function(dataSourceId, options, callback) {
             logger.info('> _openDataSource(' + dataSourceId + ', ', options, ', ' + typeof callback + ')');
+            logger.trace();
 
             var that = this;
             options = options || {};

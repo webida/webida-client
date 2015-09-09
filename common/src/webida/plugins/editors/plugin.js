@@ -394,10 +394,6 @@ define([
             }, 10000);
         });
 
-        topic.subscribe('#REQUEST.selectFile', function(dataSourceId) {
-            topic.publish('editor/open', dataSourceId);
-        });
-
         // TODO: remove the following subscriptions
         topic.subscribe('file.saved', editors.onFileSaved.bind(editors));
 
@@ -621,7 +617,6 @@ define([
     /**
      * @private
      * @Override
-     * @TODO refactor by the proper logic
      */
     editorManager._showExistingPart = function(PartClass, dataSource, options, callback) {
         logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
@@ -630,15 +625,15 @@ define([
         var registry = page.getPartRegistry();
         var part = registry.getRecentEditorPart(dataSource, PartClass);
 
-        //legacy code start
+        //Compatibility start
         var persistence = dataSource.getPersistence();
-        var view = vm.getView(persistence.viewId);
+        var view = part.getContainer().getWidgetAdapter().getWidget();
         var viewContainer = getViewContainer(view, persistence, options);
         if (view.getParent()) {
             view.getParent().select(view);
             part.focus();
         }
-        //legacy code end
+        //Compatibility end
 
         if ( typeof callback === 'function') {
             callback(part);
@@ -722,7 +717,7 @@ define([
 
     editors.execCommandForCurrentEditorViewer = function(commandKey) {
         logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');
-        
+
         // Command means a method of EditorViewer which have no arguments
         if (editors.currentFile && editors.currentFile.viewer) {
             var viewer = editors.currentFile.viewer;
