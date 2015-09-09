@@ -394,9 +394,6 @@ define([
             }, 10000);
         });
 
-        // TODO: remove the following subscriptions
-        topic.subscribe('file.saved', editors.onFileSaved.bind(editors));
-
         topic.subscribe('editor/not-exists', function() {
             topic.publish('editors.clean.all');
             topic.publish('editors.clean.current');
@@ -650,17 +647,6 @@ define([
      * Temp Code
      */
     editors.openFile = editorManager._openDataSource;
-
-    editors.onFileSaved = function(file) {
-        logger.info('onFileSaved(' + file + ')');
-        var dataSource = dsRegistry.getDataSourceById(file.getPath());
-        var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
-        var parts = registry.getPartsByDataSource(dataSource);
-        parts.forEach(function(part) {
-            editors.refreshTabTitle(part);
-        });
-    };
 
     editors.onFileError = function(file) {
         editors.onloadPendingFilesCount--;
