@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+    <!-- head -->
+    <head>
+        <title>Development Center</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- load css style -->
+        <link rel="stylesheet" href="css/monitor.css">
+        <link rel="stylesheet" href="css/menu-styles.css">
+        <link rel="stylesheet" href="../../../bower_components/toastr/toastr.css" type="text/css" />
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- load javasccript -->
+        <script src="js/config.js"></script>
+        <script src="lib/require.min.js" data-main="js/monitor.js"></script>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script src="../../../bower_components/bootstrap-treeview/dist/bootstrap-treeview.min.js"></script>
+        
+ 
+        <!-- js grid -->
+        <link type="text/css" rel="stylesheet" href="lib/jsgrid-1.1.0/jsgrid.min.css" />
+        <link type="text/css" rel="stylesheet" href="lib/jsgrid-1.1.0/jsgrid-theme.min.css" />
+        <script type="text/javascript" src="lib/jsgrid-1.1.0/jsgrid.min.js"></script>
+        
+        
+        <link type="text/css" rel="stylesheet" href="../../../bower_components/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" />
+        <script type="text/javascript" src="../../../bower_components/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+        
+
+    </head>
+
+    <!-- main -->
+    <body>
+        <!-- menu navigation -->
+        <div class="overlay"></div>
+
+        <div class="top">
+            <span id="top-logo" class="top-logo"></span>
+            <span id="top-logo-text" class="top-logo-text">Monitor</span>
+            <span id="userinfoButton_label" class="top-log-userinfo">Unauthorized user</span>
+            <span class="top-logo-arrowbtn"></span>
+        </div>
+        
+        <div class="left">
+            <div id='cssmenu'>
+                <ul>
+                    <li class='active'><a href='#'><span>Home</span></a></li>
+                    <li class='has-sub'><a href='#'><span>API profiling</span></a>
+                        <ul>
+                            <li><a href='#pf-current'><span>Current</span></a></li>
+                            <li><a href='#pf-current-stat'><span>Current statistics</span></a></li>
+                            <li class='last'><a href='#pf-statistics-history'><span>Statistics History</span></a></li>
+                        </ul>
+                    </li>
+                    <li class='has-sub'><a href='#'><span>System</span></a>
+                        <ul>
+                            <li><a href='##under-construction'><span>CPU</span></a></li>
+                            <li class='last'><a href='##under-construction'><span>Memory</span></a></li>
+                        </ul>
+                    </li>
+                    <li class='has-sub'><a href='#under-construction'><span>Servers</span></a>
+                    <li class='last'><a href='##under-construction'><span>User</span></a></li>
+                </ul>
+            </div>
+            <!--<div id="tree"></div>-->
+        </div>
+
+        <!-- content -->
+        <div class="right">
+            <div id="pf-current" class="right-pane">
+                <h3>Profiling > Current</h3>
+                <p style="font-style: italic;">Please select your options for your query.</p>
+                <div class="rc-options">
+                    <div class="pf-options-input">
+                        <span>Service type: </span>
+                        <select id="cur-option-svctype" class="selectpicker">
+                            <option>All</option>
+                        </select>
+                        <span>&nbsp;&nbsp; Service name: </span>
+                        <select id="cur-option-svcname" class="selectpicker">
+                            <option>All</option>
+                        </select>
+                        <span>&nbsp;&nbsp; Instance ID: </span>
+                        <select id="cur-option-instid"class="selectpicker">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div class="pf-options-input">
+                        <span>URL + method: </span>
+                        <select id="cur-option-url" class="selectpicker" style="width: 300px">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div  class="pf-options-input">
+                        <span>Period: </span>
+                        <select id="cur-option-period" class="selectpicker">
+                            <option>1 Day</option>
+                            <option>7 Days</option>
+                            <option>15 Days</option>
+                            <option>User selection</option>
+                        </select>
+                        <span>&nbsp;&nbsp; FROM: </span>
+                        <input type="text" id="cur-tmstart" data-date-format="yyyy-mm-dd hh:ii">
+                        <span>&nbsp;&nbsp; ~ &nbsp;&nbsp;TO: </span>
+                        <input type="text" id="cur-tmend" data-date-format="yyyy-mm-dd hh:ii">
+                    </div>
+                </div>
+                <div> 
+                    <button type="button" class="btn btn-default navbar-btn" id="btn-pf-curr-query">Inquiry</button>
+                    <button type="button" class="btn btn-default navbar-btn" id="btn-pf-curr-reset">Reset</button>
+                </div>
+                <div id="jsGrid-pf-current"></div>
+            </div>
+            
+            <div id="pf-current-stat" class="right-pane">
+                <h3>Profiling > Current statistics</h3>
+                <p style="font-style: italic;">Please select your options for your query.</p>
+                <div class="rc-options">
+                    <div class="pf-options-input">
+                        <span>Service type: </span>
+                        <select id="option-svctype" class="selectpicker">
+                            <option>All</option>
+                        </select>
+                        <span>&nbsp;&nbsp; Service name: </span>
+                        <select id="option-svcname" class="selectpicker">
+                            <option>All</option>
+                        </select>
+                        <span>&nbsp;&nbsp; Instance ID: </span>
+                        <select id="option-instid"class="selectpicker">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div class="pf-options-input">
+                        <span>URL + method: </span>
+                        <select id="option-url" class="selectpicker" style="width: 300px">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div  class="pf-options-input">
+                        <span>Period: </span>
+                        <select id="option-period" class="selectpicker">
+                            <option>1 Day</option>
+                            <option>7 Days</option>
+                            <option>15 Days</option>
+                            <option>User selection</option>
+                        </select>
+                        <span>&nbsp;&nbsp; FROM: </span>
+                        <input type="text" id="tmstart" data-date-format="yyyy-mm-dd hh:ii">
+                        <span>&nbsp;&nbsp; ~ &nbsp;&nbsp;TO: </span>
+                        <input type="text" id="tmend" data-date-format="yyyy-mm-dd hh:ii">
+                    </div>
+                </div>
+                <div> 
+                    <button type="button" class="btn btn-default navbar-btn" id="btn-pf-curr-st-query">Inquiry</button>
+                    <button type="button" class="btn btn-default navbar-btn" id="btn-pf-curr-st-reset">Reset</button>
+                </div>
+                <div id="jsGrid-pf-current-stat"></div>
+            </div>
+            
+            <div id="pf-statistics-history" class="right-pane" >
+                <h3>Profiling > Statistics history</h3>
+                <div class="rc-options">
+                    <div class="pf-options-input">
+                        <span>Service type: </span>
+                        <select id="stat-history-option-svctype" class="selectpicker">
+                            <option>All</option>
+                        </select>
+                        <span>&nbsp;&nbsp; Service name: </span>
+                        <select id="stat-history-option-svcname" class="selectpicker">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div class="pf-options-input">
+                        <span>URL + method: </span>
+                        <select id="stat-history-option-url" class="selectpicker" style="width: 300px">
+                            <option>All</option>
+                        </select>
+                    </div>
+                    <div  class="pf-options-input">
+                        <span>Unit time:</span>
+                        <select id="stat-history-option-unit-time" class="selectpicker">
+                            <option>Daily</option>
+                            <option>Hourly</option>
+                        </select>
+                        <span>&nbsp;&nbsp; Period: </span>
+                        <select id="stat-history-option-period" class="selectpicker">
+                            <option>1 Day</option>
+                            <option>7 Days</option>
+                            <option>15 Days</option>
+                            <option>User selection</option>
+                        </select>
+                        <span>&nbsp;&nbsp; FROM: </span>
+                        <input type="text" id="stat-history-tmstart" data-date-format="yyyy-mm-dd hh:ii">
+                        <span>&nbsp;&nbsp; ~ &nbsp;&nbsp;TO: </span>
+                        <input type="text" id="stat-history-tmend" data-date-format="yyyy-mm-dd hh:ii">
+                    </div>
+                </div>
+                <div> 
+                    <button type="button" class="btn btn-default navbar-btn" id="stat-history-btn-query">Inquiry</button>
+                    <button type="button" class="btn btn-default navbar-btn" id="stat-history-btn-reset">Reset</button>
+                </div>
+                <div id="stat-history-jsGrid"></div>
+            </div>
+            
+            
+            <div id="under-construction" class="right-pane">
+                <h3>This page is under construction.</h3>
+                <p>This page is under construction.</p>
+            </div>
+     
+       
+        </div>
+
+
+        <footer></footer>
+
+    </body>
+</html>
