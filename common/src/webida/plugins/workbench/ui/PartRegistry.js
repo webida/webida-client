@@ -120,7 +120,7 @@ define([
          * If not found returns undefined.
          */
         getPartsByDataSource: function(dataSource) {
-            return this.getParts().get(dataSource);
+            return this.getParts().get(dataSource) || [];
         },
 
         /**

@@ -45,6 +45,7 @@ define([
     'webida-lib/plugins/workbench/ui/PartRegistry',
     'webida-lib/plugins/workbench/ui/Viewer',
     'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
+    './configloader',
     './Document',
     './preferences/preference-config',
     './TextEditorContextMenu',
@@ -67,6 +68,7 @@ define([
     PartRegistry,
     Viewer,
     store,
+    configloader,
     Document,
     preferenceConfig,
     TextEditorContextMenu,
@@ -182,11 +184,14 @@ define([
 
         initializePreferences: function() {
             logger.info('initializePreferences()');
-            if (this.viewer && this.file) {
-
-                //preferences
-                this.preferences = new EditorPreference(preferenceIds, this.viewer);
-                this.preferences.setFields(this.getPreferences());
+            var viewer = this.getViewer();
+            var file = this.file;
+            //preferences
+            this.preferences = new EditorPreference(preferenceIds, viewer);
+            //editorconfig
+            this.preferences.setFields(this.getPreferences());
+            if (store.getValue('webida.editor.text-editor:editorconfig') === true) {
+                configloader.editorconfig(viewer, file);
             }
         },
 

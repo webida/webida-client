@@ -77,33 +77,30 @@ define([
         initialize: function() {
             logger.info('initialize()');
             TextEditorPart.prototype.initialize.call(this);
-            this.initializeCodeEditorPart();
         },
 
-        initializeCodeEditorPart: function() {
-            logger.info('initializeCodeEditorPart()');
-            var context = this.getViewer();
+        initializePreferences: function() {
+            logger.info('initializePreferences()');
+            TextEditorPart.prototype.initializePreferences.call(this);
+            var viewer = this.getViewer();
             var file = this.file;
-            //context.addDeferredAction(function (context) {
-            //   context.editor.setOption('overviewRuler', false);
+            //viewer.addDeferredAction(function (viewer) {
+            //   viewer.editor.setOption('overviewRuler', false);
             //});
-            if (store.getValue('webida.editor.text-editor:editorconfig') === true) {
-                configloader.editorconfig(context, file);
-            }
             if (store.getValue('webida.editor.text-editor:jshintrc') !== false) {
-                configloader.jshintrc(context, file);
+                configloader.jshintrc(viewer, file);
             }
         },
 
         /**
-         * Initialize context
+         * Initialize viewer
          * @override
          */
-        initializeContext: function() {
-            logger.info('initializeContext()');
-            TextEditorPart.prototype.initializeContext.call(this);
-            var context = this.getViewer();
-            if (context && this.file) {
+        initializeViewer: function() {
+            logger.info('initializeViewer()');
+            TextEditorPart.prototype.initializeViewer.call(this);
+            var viewer = this.getViewer();
+            if (viewer && this.file) {
                 var mode = this.file.name.split('.').pop().toLowerCase();
                 this.setMode(mode);
             }
@@ -126,32 +123,32 @@ define([
         },
 
         setMode: function(mode) {
-            var context = this.getViewer();
-            if (!context) {
+            var viewer = this.getViewer();
+            if (!viewer) {
                 return;
             }
-            context.setMode(mode);
+            viewer.setMode(mode);
             switch (mode) {
                 case 'json':
-                    context.setLinter('json', true);
-                    context.setHinters('json', ['word']);
+                    viewer.setLinter('json', true);
+                    viewer.setHinters('json', ['word']);
                     break;
                 case 'js':
-                    context.setLinter('js', false);
-                    context.setHinters('javascript', ['javascript']);
+                    viewer.setLinter('js', false);
+                    viewer.setHinters('javascript', ['javascript']);
                     break;
                 case 'css':
-                    context.setLinter('css', true);
-                    context.setHinters('css', ['css', 'cssSmart']);
+                    viewer.setLinter('css', true);
+                    viewer.setHinters('css', ['css', 'cssSmart']);
                     break;
                 case 'html':
-                    context.setLinter('html', true);
-                    context.setHinters('html', ['html', 'htmlLink', 'htmlSmart']);
-                    context.setHinters('htmlmixed', ['html', 'htmlLink', 'htmlSmart']);
-                    context.setHinters('css', ['css', 'cssSmart']);
+                    viewer.setLinter('html', true);
+                    viewer.setHinters('html', ['html', 'htmlLink', 'htmlSmart']);
+                    viewer.setHinters('htmlmixed', ['html', 'htmlLink', 'htmlSmart']);
+                    viewer.setHinters('css', ['css', 'cssSmart']);
                     break;
                 default:
-                    context.setHinters('word', ['word']);
+                    viewer.setHinters('word', ['word']);
                     break;
             }
         },
