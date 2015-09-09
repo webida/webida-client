@@ -669,34 +669,6 @@ define([
         }
     };
 
-    editors.refreshTabTitle = function(part) {
-        logger.info('refreshTabTitle(' + part + ')');
-
-        var dataSource = part.getDataSource();
-        var persistence = dataSource.getPersistence();
-        var view = vm.getView(persistence.viewId);
-        var title = dataSource.getTitle();
-        var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
-        var currentPart = registry.getCurrentEditorPart();
-
-        if (part.isDirty()) {
-            view.setTitle('*' + title);
-            if (part === currentPart) {
-                topic.publish('editors.dirty.current');
-            }
-            topic.publish('editors.dirty.some');
-        } else {
-            view.setTitle(title);
-            if (part === currentPart) {
-                topic.publish('editors.clean.current');
-            }
-            if (registry.getDirtyParts().length === 0) {
-                topic.publish('editors.clean.all');
-            }
-        }
-    };
-
     editors.execCommandForCurrentEditorViewer = function(commandKey) {
         logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');
 
