@@ -316,7 +316,11 @@ define([
             			siblingList: siblingList,
             			openWithPart: tab.openWithPart
             		};
-            		topic.publish('editor/open', tab.dataSourceId, option);
+            		//setTimeout : after load preference store
+            		//TODO Refactor (Use Promise)
+            		setTimeout(function(dataSourceId, option){
+            			topic.publish('editor/open', dataSourceId, option);
+            		}, 300, tab.dataSourceId, option);
             	});
 
                 var viewContainers = editors.splitViewContainer.getViewContainers();
