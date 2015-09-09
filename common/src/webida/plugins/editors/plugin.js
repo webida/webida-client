@@ -553,25 +553,7 @@ define([
 
 
     editors.quit = function() {
-
         topic.publish('view.quit');
-    };
-
-    editors.hasModifiedFile = function() {
-        logger.info('hasModifiedFile()');
-        var opened = _.values(editors.files);
-        var hasModified = false;
-        var part, modelManager;
-
-        _.each(opened, function(file) {
-            var part = editors.getPart(file);
-            if (part.isDirty()) {
-                logger.info('here!');
-                hasModified = true;
-            }
-        });
-        logger.info('hasModifiedFile() --> ' + hasModified);
-        return hasModified;
     };
 
     editors.setCursor = function(file, pos) {
