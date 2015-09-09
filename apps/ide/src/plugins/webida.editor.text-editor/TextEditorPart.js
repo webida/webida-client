@@ -127,36 +127,20 @@ define([
 
         initialize: function() {
             logger.info('initialize()');
-            this.initializeContext();
+            this.initializeViewer();
             this.initializeListeners();
             this.initializePreferences();
         },
 
-        initializeContext: function() {
-            logger.info('initializeContext()');
-            var context = this.getViewer();
-            var parent = this.getParentElement();
-            context.clearHistory();
-            context.markClean();
-            context.setSize(parent.offsetWidth, parent.offsetHeight);
-            context.setMatchBrackets(true);
-
-            /* Invalid direct css manipulation. This causes ODP-423 bug.
-             (ODP-423) Ocassional no contents display in newly created TextEditor
-
-             viewer.addDeferredAction(function (editor) {
-             console.log("-tmep--------- addDeferredAction wrapper css");
-             var wrapper = editor.editor.getWrapperElement();
-             $(wrapper).css({
-             height: 'auto',
-             position: 'absolute',
-             left: '0px',
-             right: '0px',
-             top: '0px',
-             bottom: '0px'
-             });
-             });*/
+        initializeViewer: function() {
+            logger.info('initializeViewer()');
             var that = this;
+            var viewer = this.getViewer();
+            var parent = this.getParentElement();
+            viewer.clearHistory();
+            viewer.markClean();
+            viewer.setSize(parent.offsetWidth, parent.offsetHeight);
+            viewer.setMatchBrackets(true);
             var setStatusBarText = function() {
                 var workbench = require('webida-lib/plugins/workbench/plugin');
                 var file = that.file;
@@ -168,12 +152,12 @@ define([
                     cursor: (cursor.row + 1) + ':' + (cursor.col + 1)
                 });
             };
-            context.addCursorListener(setStatusBarText);
-            context.addFocusListener(setStatusBarText);
-            context.addCursorListener(function(viewer) {
-                TextEditorPart.pushCursorLocation(context.file, context.getCursor());
+            viewer.addCursorListener(setStatusBarText);
+            viewer.addFocusListener(setStatusBarText);
+            viewer.addCursorListener(function(viewer) {
+                TextEditorPart.pushCursorLocation(viewer.file, viewer.getCursor());
             });
-            context.addExtraKeys({
+            viewer.addExtraKeys({
                 'Ctrl-Alt-Left': function() {
                     TextEditorPart.moveBack();
                 },
