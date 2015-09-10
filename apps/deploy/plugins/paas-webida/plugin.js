@@ -521,6 +521,11 @@ define([
                                 console.log('deployApp : ' + err);
                                 var app = reg.byNode(parent);
                                 showAppPane.removeChild(app);
+                                webida.app.deleteApp(appID, function (err) {
+                                    if (err) {
+                                        toastr.error(err);
+                                    }
+                                });
                             } else {
                                 icon = $(parent).find('.table-title-newappcancel');
                                 $(icon).removeClass('table-title-newappcancel-block');
