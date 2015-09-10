@@ -73,8 +73,8 @@ define([
          * then binds all members together.
          * If different way is required override this method.
          */
-        prepareMVC: function() {
-            logger.info('%cprepareMVC()', 'color:orange');
+        prepareVM: function() {
+            logger.info('%cprepareVM()', 'color:orange');
 
             var container = this.getContainer();
 
@@ -85,11 +85,11 @@ define([
             var createModels = this.promiseFor(PartModel);
 
             //3. Binds events then sets inital contents for the view
-            this.bindMVC(createViewers, createModels);
+            this.bindVM(createViewers, createModels);
         },
 
-        bindMVC: function(createViewers, createModels) {
-            logger.info('%cbindMVC', 'color:orange');
+        bindVM: function(createViewers, createModels) {
+            logger.info('%cbindVM', 'color:orange');
 
             var part = this;
             var eProxy = this.eventProxy;

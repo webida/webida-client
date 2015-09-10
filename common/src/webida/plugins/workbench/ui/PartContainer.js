@@ -138,7 +138,7 @@ define([
 
             //3. Creates Viewer(s) and Model,
             //   then binds all members together
-            part.prepareMVC();
+            part.prepareVM();
         },
 
         /**
