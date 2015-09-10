@@ -424,29 +424,6 @@ define([
         parts: new Map()
     };
 
-    editors.ensureCreated = function(file, bShowAndFocus, cb) {
-        function showAndFocus(file) {
-            var editorPart = editors.getPart(file);
-            if (editorPart) {
-                editorPart.focus();
-            }
-            if (cb) {
-                cb();
-            }
-        }
-
-        if (file.pendingCreator) {
-            file.pendingCreator( bShowAndFocus ? showAndFocus : cb);
-            delete file.pendingCreator;
-        } else if (bShowAndFocus) {
-            showAndFocus(file);
-        } else {
-            if (cb) {
-                cb();
-            }
-        }
-    };
-
     editors.getFileByViewId = function(viewId) {
         return _.findWhere(editors.files, {
             viewId: viewId
