@@ -1,41 +1,28 @@
 {
-  "name": "y",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "codemirror": "webida/codemirror#f0fb78a6eedb9550c875714154847208a7a5edc1",
-    "dgrid": "0.3.11",
-    "put-selector": "~0.3.6",
-    "xstyle": "~0.3.1",
-    "async": "~1.3.0",
-    "js-beautify": "~1.5.10",
-    "lodash": "~3.10.0",
-    "moment": "~2.10.3",
-    "URIjs": "~1.15.2",
-    "requirejs": "~2.1.18",
-    "qunit": "~1.18.0",
-    "qunit-composite": "git://github.com/JamesMGreene/qunit-composite#~1.1.0",
-    "toastr": "~2.1.1",
-    "showdown": "~1.1.0",
-    "socket.io-client": "git://github.com/automattic/socket.io-client#~1.3.5",
-    "eventEmitter": "~4.2.11",
-    "bootstrap-treeview": "~1.2.0",
-    "smalot-bootstrap-datetimepicker": "~2.3.4"
-  },
-  "version": "y",
-  "homepage": "y",
-  "authors": [
-    "y"
-  ],
-  "license": "y",
-  "description": "y",
-  "main": "y",
-  "keywords": [
-    "y"
-  ]
+    "name": "webida-client",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components"
+    ],
+    "dependencies": {
+        "codemirror": "webida/codemirror#f0fb78a6eedb9550c875714154847208a7a5edc1",
+        "dgrid": "0.3.11",
+        "put-selector": "~0.3.6",
+        "xstyle": "~0.3.1",
+        "async": "~1.3.0",
+        "js-beautify": "~1.5.10",
+        "lodash": "~3.10.0",
+        "moment": "~2.10.3",
+        "URIjs": "~1.15.2",
+        "requirejs": "~2.1.18",
+        "qunit": "~1.18.0",
+        "qunit-composite": "git://github.com/JamesMGreene/qunit-composite#~1.1.0",
+        "toastr": "~2.1.1",
+        "showdown": "~1.1.0",
+        "socket.io-client": "git://github.com/automattic/socket.io-client#~1.3.5",
+        "eventEmitter": "~4.2.11",
+        "bootstrap-treeview": "~1.2.0",
+        "smalot-bootstrap-datetimepicker": "~2.3.4"
+    } 
 }
