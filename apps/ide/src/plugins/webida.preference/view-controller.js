@@ -65,11 +65,10 @@ define([
     var onChangingPage = false;
 
     function _onStoreStatusChanged(status) {
+        reg.byId('restore-preference').set('disabled', !currentPage.store.status.override);
         if (currentPage.store.status.dirty) {
-            reg.byId('restore-preference').set('disabled', false);
             reg.byId('apply-preference').set('disabled', !currentPage.store.status.valid);
         } else {
-            reg.byId('restore-preference').set('disabled', true);
             reg.byId('apply-preference').set('disabled', true);
         }
         if (status) {
@@ -131,21 +130,23 @@ define([
     function _initializeContentArea(node, store) {
 
         function __dim(override) {
-            if (!override) {
-                if ($(subContentArea).find('.dim').length === 0) {
-                    $(subContentArea).append($('<div class="dim"></div>'));
+            if (!$('.preference-override-box').hasClass('hidden')) {
+                if (!override) {
+                    if ($(subContentArea).find('.dim').length === 0) {
+                        $(subContentArea).append($('<div class="dim"></div>'));
+                    }
+                } else {
+                    $(subContentArea).find('.dim').remove();
                 }
-            } else {
-                $(subContentArea).find('.dim').remove();
             }
         }
 
         var overrideCheckbox = reg.byId('preference-override');
         $(titleArea).find('h1').text(node.name);
         if (preferenceManager.getParentStore(store)) {
-            overrideCheckbox.set('checked', store.status.override);
-            __dim(store.status.override);
             $('.preference-override-box').removeClass('hidden');
+            overrideCheckbox.set('checked', store.status.override, false);
+            __dim(store.status.override);
         } else {
             $('.preference-override-box').addClass('hidden');
         }
@@ -163,8 +164,7 @@ define([
                     }
                 });
             }),
-            on(overrideCheckbox, 'change', function () {
-                var checked = overrideCheckbox.get('checked');
+            on(overrideCheckbox, 'change', function (checked) {
                 currentPage.store.setOverride(checked);
                 __dim(checked);
             })

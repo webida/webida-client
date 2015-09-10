@@ -89,7 +89,7 @@ define([
             dirty = true;
             this.invalidMessage = this.validator(key, this.currentValues[key]);
             valid = !this.invalidMessage;
-            this.setStatus({dirty: dirty, valid: valid});
+            this.setStatus({dirty: dirty, valid: valid, override: true});
         }
     };
 
