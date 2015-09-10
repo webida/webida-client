@@ -331,8 +331,12 @@ define([
 
         save: function(callback) {
             logger.info('save(' + typeof callback + ')');
+            var that = this;
             this._beforeSave();
-            EditorPart.prototype.save.call(this, callback);
+            //TODO Refactor : find more a way without setTimeout
+            setTimeout(function() {
+                EditorPart.prototype.save.call(that, callback);
+            });
         },
 
         _beforeSave: function() {
@@ -344,9 +348,12 @@ define([
                 return;
             }
 
-            //logger.info('viewer.trimTrailingWhitespaces = ', viewer.trimTrailingWhitespaces);
-            //logger.info('viewer.insertFinalNewLine = ', viewer.insertFinalNewLine);
-            //logger.info('viewer.retabIndentations = ', viewer.retabIndentations);
+            //logger.info('viewer.trimTrailingWhitespaces = ',
+            // viewer.trimTrailingWhitespaces);
+            //logger.info('viewer.insertFinalNewLine = ',
+            // viewer.insertFinalNewLine);
+            //logger.info('viewer.retabIndentations = ',
+            // viewer.retabIndentations);
 
             if (viewer.trimTrailingWhitespaces && text.match(/( |\t)+$/m)) {
                 text = text.replace(/( |\t)+$/mg, '');
@@ -441,9 +448,13 @@ define([
 
         function compareLocations(cursor1, cursor2, colspan, rowspan, timespan) {
             if (cursor1.filepath === cursor2.filepath) {
-                if (((!colspan || (Math.abs(cursor1.cursor.col - cursor2.cursor.col) < colspan)) && (!rowspan || (Math.abs(cursor1.cursor.row - cursor2.cursor.row) < rowspan))) || (!timespan || (Math.abs(cursor1.timestamp - cursor2.timestamp) < timespan))) {
+                // @formatter:off
+                if (((!colspan || (Math.abs(cursor1.cursor.col - cursor2.cursor.col) < colspan)) 
+                	&& (!rowspan || (Math.abs(cursor1.cursor.row - cursor2.cursor.row) < rowspan))) 
+                	|| (!timespan || (Math.abs(cursor1.timestamp - cursor2.timestamp) < timespan))) {
                     return true;
                 }
+                // @formatter:on
                 return false;
             } else {
                 return false;
@@ -460,10 +471,13 @@ define([
 
         if (cursorStacks.back.length > 0) {
             var latest = cursorStacks.back.pop();
-            if (((forced || latest.forced) && !identicalLocations(thisLocation, latest)) || (!similarLocations(thisLocation, latest))) {
+            // @formatter:off
+            if (((forced || latest.forced) && !identicalLocations(thisLocation, latest)) 
+            	|| (!similarLocations(thisLocation, latest))) {
                 cursorStacks.back.push(latest);
                 cursorStacks.forth = [];
             }
+            // @formatter:on
         }
         cursorStacks.back.push(thisLocation);
         return thisLocation;
