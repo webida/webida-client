@@ -340,10 +340,13 @@ define([
             var viewer = this.getViewer();
             var doc = this.getModel();
             var text = doc.getContents();
+            if ( typeof text === 'undefined') {
+                return;
+            }
 
-            logger.info('viewer.trimTrailingWhitespaces = ', viewer.trimTrailingWhitespaces);
-            logger.info('viewer.insertFinalNewLine = ', viewer.insertFinalNewLine);
-            logger.info('viewer.retabIndentations = ', viewer.retabIndentations);
+            //logger.info('viewer.trimTrailingWhitespaces = ', viewer.trimTrailingWhitespaces);
+            //logger.info('viewer.insertFinalNewLine = ', viewer.insertFinalNewLine);
+            //logger.info('viewer.retabIndentations = ', viewer.retabIndentations);
 
             if (viewer.trimTrailingWhitespaces && text.match(/( |\t)+$/m)) {
                 text = text.replace(/( |\t)+$/mg, '');
