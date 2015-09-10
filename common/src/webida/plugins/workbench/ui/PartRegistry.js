@@ -181,7 +181,7 @@ define([
          * and PartClass. If not found returns undefined.
          */
         getRecentEditorPart: function(dataSource, PartClass) {
-        	logger.info('getRecentEditorPart('+dataSource+', PartClass)');
+            logger.info('getRecentEditorPart(' + dataSource + ', PartClass)');
             if (this.recentEditorParts.has(dataSource)) {
                 var partsOfDs = this.recentEditorParts.get(dataSource);
                 logger.info('return --> ' + partsOfDs.get(PartClass));
