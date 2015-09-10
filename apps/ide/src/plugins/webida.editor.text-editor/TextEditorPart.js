@@ -230,8 +230,6 @@ define([
             logger.info('%c createViewer(' + parentNode.tagName + ')', 'color:green');
             //TODO : remove
             this.setParentElement(parentNode);
-            //TODO : remove
-            this.file.elem = parentNode;
             var that = this;
 
             //Viewer
