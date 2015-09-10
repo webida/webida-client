@@ -4,7 +4,7 @@
          data-id="<%= c.id %>"
          data-parent-id="<%= c.parent %>"
          style="display: <% if (!c.parent) { %> block <% } else { %> none <% } %>;">
-        <span style="width: <%= (c.depth * 15) %>px; display: inline-block;"></span>
+        <span style="width: <%= (c.hierarchies.length * 15) %>px; display: inline-block;"></span>
         <span class="preferenceview-category-item__tree <% if(c.hasChild && c.expanded) { %> expanded <% } else if (c.hasChild && !c.expanded) { %> collapsed <% } else { %> none <% } %>"
               data-id="<%= c.id %>">
         </span>

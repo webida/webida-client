@@ -38,7 +38,7 @@ define([
             valid: true,
             override: false
         }
-        this.invalidMessage = {};
+        this.invalidMessage = '';
 
         this.defaultValues = {};
         this.appliedValues = {};
@@ -89,7 +89,7 @@ define([
             dirty = true;
             this.invalidMessage = this.validator(key, this.currentValues[key]);
             valid = !this.invalidMessage;
-            this.setStatus({dirty: dirty, valid: valid});
+            this.setStatus({dirty: dirty, valid: valid, override: true});
         }
     };
 
@@ -123,9 +123,10 @@ define([
     PreferenceStore.prototype.setStatus = function (status) {
         // status ['dirty', 'valid', 'override']
         var changedStatus = getRealChangedValues(this.status, status);
-        console.log('beforeSetStatus: ', this.id, this.scope, this.status, status);
         _.extend(this.status, changedStatus);
-        console.log('afterSetStatus: ', this.id, this.scope, this.status);
+        if (this.status.valid) {
+            this.invalidMessage = '';
+        }
         if (Object.keys(changedStatus).length > 0) {
             // listener
             for (var i=0; i<this.statusChangeListener.length; i++) {

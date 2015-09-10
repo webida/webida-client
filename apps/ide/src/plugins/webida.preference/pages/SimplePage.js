@@ -122,7 +122,13 @@ define([
             PreferencePage.prototype.onPageRemoved.call(this);
         },
         reload: function () {
-
+            var self = this;
+            _.forEach(this.components, function (comp) {
+                var key = comp.get('id');
+                if (key) {
+                    comp.set('value', self.store.getValue(key), false);
+                }
+            });
         },
         _addGroup: function (title) {
             $('<h2>' + title + '</h2>').appendTo(this.ui);
@@ -190,6 +196,7 @@ define([
 
                     var comboBox = new ComboBox({
                         //name: "state",
+                        id: key,
                         store: dataStore,
                         searchAttr: 'name',
                         value: currentValue,
@@ -212,9 +219,10 @@ define([
                     var slider = $('<div>').appendTo(wrapper);
 
                     slider = new HorizontalSlider({
+                        id: key,
                         minimum: opt.min,
                         maximum: opt.max,
-                        intermediateChanges: true,
+                        intermediateChanges: false,
                         style: 'width: 300px',
                         discreteValues: (opt.max - opt.min + 1),
                         value: value,
@@ -250,6 +258,7 @@ define([
                     br.appendTo(wrapper);
 
                     var text = new TextBox({
+                        id: key,
                         value: value,
                         style: 'margin-top: 5px; margin-bottom: 5px; margin-left: 5px;',
                         onChange: function (value) {
