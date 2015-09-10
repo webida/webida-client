@@ -41,6 +41,7 @@ function (app, pm, _) {
                 } else {
                     try {
                         preferences = JSON.parse(content);
+                        console.info('preferences = ', preferences);
                         if (typeof preferences !== 'object') {
                             throw 'Malformed preferences: preferences must be stored in an object';
                         }

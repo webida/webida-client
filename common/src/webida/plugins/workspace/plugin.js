@@ -149,6 +149,14 @@ define([
     var stateSetIconClassMap = {};
     var cssFilePathList = [];
 
+    /**
+     * Compatibility
+     */
+    function _getPartRegistry() {
+        var page = workbench.getCurrentPage();
+        return page.getPartRegistry();
+    }
+
     function extractCssFilePathList(ext, cssFilePathList) {
         if (typeof ext.iconCssFilePath === 'string') {
             if (ext.iconCssFilePath !== '') {
@@ -238,6 +246,8 @@ define([
     });
 
     function selectNode(node) {
+    	singleLogger.info('selectNode(node)');
+    	singleLogger.trace();
         if ( typeof node === 'string') {
             node = getNode(node);
         }
@@ -1248,9 +1258,25 @@ define([
             }
         });
 
+        // File should be shown for the following cases
+        // 1) The file has been opened already (Part exists in the registry)
+        // 2) If the file is opened, the part should be hidden.
+        // TODO : Can workspace view plugin know PartRegistry and EditorPart?
         topic.subscribe('workspace.node.selected', function(path) {
             if (syncingWithEditor && !pathUtil.isDirPath(path) && getSelectedNodes().length === 1) {
-                topic.publish('#REQUEST.selectFile', path);
+	            var partRegistry = _getPartRegistry();
+	            var dsRegistry = workbench.getDataSourceRegistry();
+	            var dataSource = dsRegistry.getDataSourceById(path);
+	            if(dataSource){
+	            	var parts = partRegistry.getPartsByDataSource(dataSource);
+	                if (parts.length > 0) {
+	                    var currentPart = _getPartRegistry().getCurrentEditorPart();
+	                    var currentPath = currentPart.getDataSource().getId();
+	                    if (path !== currentPath) {
+	                        topic.publish('editor/open', path);
+	                    }
+	                }
+	            }
             }
         });
     }

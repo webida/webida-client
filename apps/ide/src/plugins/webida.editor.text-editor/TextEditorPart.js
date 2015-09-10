@@ -45,6 +45,7 @@ define([
     'webida-lib/plugins/workbench/ui/PartRegistry',
     'webida-lib/plugins/workbench/ui/Viewer',
     'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
+    './configloader',
     './Document',
     './preferences/preference-config',
     './TextEditorContextMenu',
@@ -67,6 +68,7 @@ define([
     PartRegistry,
     Viewer,
     store,
+    configloader,
     Document,
     preferenceConfig,
     TextEditorContextMenu,
@@ -127,36 +129,20 @@ define([
 
         initialize: function() {
             logger.info('initialize()');
-            this.initializeContext();
+            this.initializeViewer();
             this.initializeListeners();
             this.initializePreferences();
         },
 
-        initializeContext: function() {
-            logger.info('initializeContext()');
-            var context = this.getViewer();
-            var parent = this.getParentElement();
-            context.clearHistory();
-            context.markClean();
-            context.setSize(parent.offsetWidth, parent.offsetHeight);
-            context.setMatchBrackets(true);
-
-            /* Invalid direct css manipulation. This causes ODP-423 bug.
-             (ODP-423) Ocassional no contents display in newly created TextEditor
-
-             viewer.addDeferredAction(function (editor) {
-             console.log("-tmep--------- addDeferredAction wrapper css");
-             var wrapper = editor.editor.getWrapperElement();
-             $(wrapper).css({
-             height: 'auto',
-             position: 'absolute',
-             left: '0px',
-             right: '0px',
-             top: '0px',
-             bottom: '0px'
-             });
-             });*/
+        initializeViewer: function() {
+            logger.info('initializeViewer()');
             var that = this;
+            var viewer = this.getViewer();
+            var parent = this.getParentElement();
+            viewer.clearHistory();
+            viewer.markClean();
+            viewer.setSize(parent.offsetWidth, parent.offsetHeight);
+            viewer.setMatchBrackets(true);
             var setStatusBarText = function() {
                 var workbench = require('webida-lib/plugins/workbench/plugin');
                 var file = that.file;
@@ -168,12 +154,12 @@ define([
                     cursor: (cursor.row + 1) + ':' + (cursor.col + 1)
                 });
             };
-            context.addCursorListener(setStatusBarText);
-            context.addFocusListener(setStatusBarText);
-            context.addCursorListener(function(viewer) {
-                TextEditorPart.pushCursorLocation(context.file, context.getCursor());
+            viewer.addCursorListener(setStatusBarText);
+            viewer.addFocusListener(setStatusBarText);
+            viewer.addCursorListener(function(viewer) {
+                TextEditorPart.pushCursorLocation(viewer.file, viewer.getCursor());
             });
-            context.addExtraKeys({
+            viewer.addExtraKeys({
                 'Ctrl-Alt-Left': function() {
                     TextEditorPart.moveBack();
                 },
@@ -198,11 +184,14 @@ define([
 
         initializePreferences: function() {
             logger.info('initializePreferences()');
-            if (this.viewer && this.file) {
-
-                //preferences
-                this.preferences = new EditorPreference(preferenceIds, this.viewer);
-                this.preferences.setFields(this.getPreferences());
+            var viewer = this.getViewer();
+            var file = this.file;
+            //preferences
+            this.preferences = new EditorPreference(preferenceIds, viewer);
+            //editorconfig
+            this.preferences.setFields(this.getPreferences());
+            if (store.getValue('webida.editor.text-editor:editorconfig') === true) {
+                configloader.editorconfig(viewer, file);
             }
         },
 

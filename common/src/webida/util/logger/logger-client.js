@@ -29,6 +29,8 @@ define([
 
     var singlton;
 
+	var count = 0;
+
     function Logger() {
         LoggerInterface.apply(this, arguments);
         this.setFormater(formater);
@@ -71,7 +73,7 @@ define([
             return result.join(':');
         }
 
-        var prefix = '[' + getNow() + ']';
+        var prefix = '[' + getNow() + '][' + (count++) + ']';
         //style
         if (args.length === 2 && typeof args[0] === 'string' && args[0].substr(0, 2) === '%c') {
             prefix = '%c' + prefix + ' ' + args[0].substr(2);

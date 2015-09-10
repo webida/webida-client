@@ -138,6 +138,7 @@ define([
 
         topic.subscribe('view.focused', function(event) {
         	logger.info('view.focused');
+        	logger.trace();
             var view = event.view;
             //logger.info('view = ', view);
             var vc = event.viewContainer;
@@ -233,6 +234,9 @@ define([
                 }
             });
 
+			logger.info('totalW = ', totalW);
+			logger.info('totalH = ', totalH);
+
             var tabs;
             var width = 0;
             var height = 0;
@@ -283,7 +287,9 @@ define([
             return status;
         }
 
-        lastStatus = ide.registerStatusContributorAndGetLastStatus('editor-view', getCurrentStatus); 
+        lastStatus = ide.registerStatusContributorAndGetLastStatus('editor-view', getCurrentStatus);
+        
+        logger.info('lastStatus => ', lastStatus); 
 
         function recoverLastStatus() {
             logger.info('recoverLastStatus()');
@@ -310,7 +316,11 @@ define([
             			siblingList: siblingList,
             			openWithPart: tab.openWithPart
             		};
-            		topic.publish('editor/open', tab.dataSourceId, option);
+            		//setTimeout : after load preference store
+            		//TODO Refactor (Use Promise)
+            		setTimeout(function(dataSourceId, option){
+            			topic.publish('editor/open', dataSourceId, option);
+            		}, 300, tab.dataSourceId, option);
             	});
 
                 var viewContainers = editors.splitViewContainer.getViewContainers();

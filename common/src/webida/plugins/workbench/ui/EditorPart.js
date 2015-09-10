@@ -66,7 +66,6 @@ define([
         save: function(callback) {
             logger.info('save()');
             var that = this;
-            this.emit(EditorPart.BEFORE_SAVE, this);
             if (this.getModelManager()) {
                 this.getModelManager().saveModel(function() {
                     that._execFunc(callback, that);

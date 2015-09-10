@@ -394,13 +394,6 @@ define([
             }, 10000);
         });
 
-        topic.subscribe('#REQUEST.selectFile', function(dataSourceId) {
-            topic.publish('editor/open', dataSourceId);
-        });
-
-        // TODO: remove the following subscriptions
-        topic.subscribe('file.saved', editors.onFileSaved.bind(editors));
-
         topic.subscribe('editor/not-exists', function() {
             topic.publish('editors.clean.all');
             topic.publish('editors.clean.current');
@@ -557,25 +550,7 @@ define([
 
 
     editors.quit = function() {
-
         topic.publish('view.quit');
-    };
-
-    editors.hasModifiedFile = function() {
-        logger.info('hasModifiedFile()');
-        var opened = _.values(editors.files);
-        var hasModified = false;
-        var part, modelManager;
-
-        _.each(opened, function(file) {
-            var part = editors.getPart(file);
-            if (part.isDirty()) {
-                logger.info('here!');
-                hasModified = true;
-            }
-        });
-        logger.info('hasModifiedFile() --> ' + hasModified);
-        return hasModified;
     };
 
     editors.setCursor = function(file, pos) {
@@ -621,7 +596,6 @@ define([
     /**
      * @private
      * @Override
-     * @TODO refactor by the proper logic
      */
     editorManager._showExistingPart = function(PartClass, dataSource, options, callback) {
         logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
@@ -630,15 +604,15 @@ define([
         var registry = page.getPartRegistry();
         var part = registry.getRecentEditorPart(dataSource, PartClass);
 
-        //legacy code start
+        //Compatibility start
         var persistence = dataSource.getPersistence();
-        var view = vm.getView(persistence.viewId);
+        var view = part.getContainer().getWidgetAdapter().getWidget();
         var viewContainer = getViewContainer(view, persistence, options);
         if (view.getParent()) {
             view.getParent().select(view);
             part.focus();
         }
-        //legacy code end
+        //Compatibility end
 
         if ( typeof callback === 'function') {
             callback(part);
@@ -674,17 +648,6 @@ define([
      */
     editors.openFile = editorManager._openDataSource;
 
-    editors.onFileSaved = function(file) {
-        logger.info('onFileSaved(' + file + ')');
-        var dataSource = dsRegistry.getDataSourceById(file.getPath());
-        var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
-        var parts = registry.getPartsByDataSource(dataSource);
-        parts.forEach(function(part) {
-            editors.refreshTabTitle(part);
-        });
-    };
-
     editors.onFileError = function(file) {
         editors.onloadPendingFilesCount--;
         if (editors.onloadPendingFilesCount === 0) {
@@ -692,37 +655,9 @@ define([
         }
     };
 
-    editors.refreshTabTitle = function(part) {
-        logger.info('refreshTabTitle(' + part + ')');
-
-        var dataSource = part.getDataSource();
-        var persistence = dataSource.getPersistence();
-        var view = vm.getView(persistence.viewId);
-        var title = dataSource.getTitle();
-        var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
-        var currentPart = registry.getCurrentEditorPart();
-
-        if (part.isDirty()) {
-            view.setTitle('*' + title);
-            if (part === currentPart) {
-                topic.publish('editors.dirty.current');
-            }
-            topic.publish('editors.dirty.some');
-        } else {
-            view.setTitle(title);
-            if (part === currentPart) {
-                topic.publish('editors.clean.current');
-            }
-            if (registry.getDirtyParts().length === 0) {
-                topic.publish('editors.clean.all');
-            }
-        }
-    };
-
     editors.execCommandForCurrentEditorViewer = function(commandKey) {
         logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');
-        
+
         // Command means a method of EditorViewer which have no arguments
         if (editors.currentFile && editors.currentFile.viewer) {
             var viewer = editors.currentFile.viewer;
