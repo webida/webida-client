@@ -453,19 +453,6 @@ define([
         });
     };
 
-    function onloadFinalize() {
-        logger.info('onloadFinalize()');
-        var vcs = editors.splitViewContainer.getViewContainers();
-        _.each(vcs, function(vc) {
-            var selview = vc.getSelectedView();
-            if (selview) {
-                var selfile = editors.getFileByViewId(selview.getId());
-                editors.ensureCreated(selfile);
-            }
-        });
-    }
-
-
     editors.quit = function() {
         topic.publish('view.quit');
     };
