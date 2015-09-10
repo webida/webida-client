@@ -77,6 +77,15 @@ define([
 
     genetic.inherits(ImageEditorPart, EditorPart, {
 
+        /**
+         * @Override
+         */
+		prepareVM: function(){
+			logger.info('%cprepareVM()', 'color:orange');
+			var container = this.getContainer();
+			this.createViewer(container.getContentNode());
+		},
+
         initialize: function() {
             logger.info('initialize()');
             this.initializeListeners();
@@ -149,10 +158,6 @@ define([
 
         focus: function() {
             logger.info('focus()');
-        },
-
-        markClean: function() {
-            logger.info('markClean()');
         },
 
         isClean: function() {

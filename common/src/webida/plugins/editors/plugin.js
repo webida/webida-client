@@ -43,7 +43,8 @@ define([
     'external/async/dist/async.min',
     'plugins/webida.notification/notification-message',
     'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
-    './EditorManager'
+    './DataSourceHandler',
+    './LifecycleManager'
 ], function (
     topic, 
     _, 
@@ -66,7 +67,8 @@ define([
     async, 
     toastr,
     FileDataSource,
-    EditorManager
+    DataSourceHandler,
+    LifecycleManager
 ) {
     'use strict';
 // @formatter:on
@@ -78,200 +80,13 @@ define([
     logger.log('loaded modules required by editors. initializing editors plugin');
 
     var dsRegistry = workbench.getDataSourceRegistry();
-    var editorManager = EditorManager.getInstance();
+    var lifecycleManager = LifecycleManager.getInstance();
+    var dataSourceHandler = DataSourceHandler.getInstance();
 
     function subscribeToTopics() {
 
-        function onSingleDeletion(path) {
-            require(['popup-dialog'], function(PopupDialog) {
-                PopupDialog.yesno({
-                    title: 'Close "' + pathUtil.getFileName(path) + '"?',
-                    message: 'File "' + path + '" was deleted. ' + 'Is it OK to close the editor tab for the file?'
-                }).then(function() {
-                    topic.publish('editor/close/data-source-id', path, {
-                        force: true
-                    });
-                }, function() {
-                });
-            });
-        }
-
-        function onMultiDeletion(paths) {
-            var openedFilePaths = Object.keys(editors.files);
-            var toClose = openedFilePaths.filter(function(p) {
-                return paths.some(function(deleted) {
-                    if (pathUtil.isDirPath(deleted)) {
-                        return p.indexOf(deleted) === 0;
-                    } else {
-                        return p === deleted;
-                    }
-                });
-            });
-
-            if (toClose.length === 0) {
-                return;
-            }
-
-            if (toClose.length === 1) {
-                onSingleDeletion(toClose[0]);
-                return;
-            }
-
-            require(['webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'], function(ButtonedDialog) {
-                var answer = {};
-                async.eachSeries(toClose, function(filePath, cb) {
-                    var file = editors.getFile(filePath);
-                    if (file) {
-                        var part = editors.getPart(file);
-                        if (part.isDirty()) {
-                            if (answer.yesToModified || answer.noToModified) {
-                                if (answer.yesToModified) {
-                                    topic.publish('editor/close/data-source-id', filePath, {
-                                        force: true
-                                    });
-                                }
-                                cb(null);
-                                return;
-                            }
-                        } else {
-                            if (answer.yesToUnmodified || answer.noToUnmodified) {
-                                if (answer.yesToUnmodified) {
-                                    topic.publish('editor/close/data-source-id', filePath, {
-                                        force: true
-                                    });
-                                }
-                                cb(null);
-                                return;
-                            }
-                        }
-
-                        var modified = part.isDirty();
-                        var qualifier = modified ? 'Modified' : 'Unmodified';
-                        var title = 'Close ' + qualifier + ' "' + pathUtil.getFileName(filePath) + '"?';
-                        var msg = ['File "' + filePath + '" was deleted.', 'Is it OK to close the ' + qualifier.toLowerCase() + ' editor tab for the file?'];
-                        msg = msg.join('</span><br><span>');
-
-                        var dialog = new ButtonedDialog({
-                            title: title,
-                            //buttonsWidth: '120px',
-                            buttons: [{
-                                caption: 'Yes',
-                                methodOnClick: 'onYes'
-                            }, {
-                                caption: 'Yes to All',
-                                methodOnClick: 'onYesToAll'
-                            }, {
-                                caption: 'No',
-                                methodOnClick: 'hide'
-                            }, {
-                                caption: 'No to All',
-                                methodOnClick: 'onNoToAll'
-                            }],
-                            methodOnEnter: null,
-                            onYes: function() {
-                                topic.publish('editor/close/data-source-id', filePath, {
-                                    force: true
-                                });
-                                this.hide();
-                            },
-                            onYesToAll: function() {
-                                if (modified) {
-                                    answer.yesToModified = true;
-                                } else {
-                                    answer.yesToUnmodified = true;
-                                }
-                                this.onYes();
-                            },
-                            onNoToAll: function() {
-                                if (modified) {
-                                    answer.noToModified = true;
-                                } else {
-                                    answer.noToUnmodified = true;
-                                }
-                                this.hide();
-                            },
-                            onHide: function() {
-                                dialog.destroyRecursive();
-                                workbench.focusLastWidget();
-                                cb(null);
-                            }
-                        });
-                        dialog.setContentArea('<span>' + msg + '</span>');
-                        dialog.show();
-                    } else {
-                        cb(null);
-                    }
-                }, function() {
-                });
-            });
-        }
-
-
         topic.subscribe('editors.closed', function(dataSourceId, view) {
             editors.editorTabFocusController.unregisterView(view);
-        });
-
-        topic.subscribe('fs.cache.node.deleted', function(fsUrl, dir, name, type, movedTo) {
-
-            logger.info('fs.cache.node.deleted', fsUrl, dir, name, type, movedTo);
-            logger.trace();
-
-            function fileMoved(src, dst) {
-                var dataSource = editors.getDataSourceById(src);
-                dataSource.setId(dst);
-            }
-
-            var isDir = type === 'dir';
-
-            if (movedTo) {
-
-                var src = dir + name;
-                var dst = movedTo;
-
-                if (isDir) {
-                    if (!pathUtil.isDirPath(src)) {
-                        src = src + '/';
-                    }
-                    if (!pathUtil.isDirPath(dst)) {
-                        dst = dst + '/';
-                    }
-                    var paths = Object.keys(editors.files);
-                    _.each(paths, function(path) {
-                        if (path.substr(0, src.length) === src) {
-                            var relpath = path.substr(src.length);
-                            fileMoved(src + relpath, dst + relpath);
-                        }
-                    });
-                } else {
-                    fileMoved(src, dst);
-                }
-            } else {
-                var path = dir + name + ( isDir ? '/' : '');
-                var multiDel = getMultiDeletion(path);
-                if (multiDel) {
-                    console.assert(multiDel.deleted.indexOf(path) < 0);
-                    multiDel.deleted.push(path);
-                    if (multiDel.length === multiDel.deleted.length) {
-                        var i = multipleDeletions.indexOf(multiDel);
-                        if (i >= 0) {
-                            multipleDeletions.splice(i, 1);
-                            if (multiDel.deleted.length > 0) {
-                                onMultiDeletion(multiDel.deleted);
-                            }
-                        } else {
-                            console.assert(false, 'assertion fail: unreachable');
-                        }
-                    }
-                } else if (isDir) {
-                    onMultiDeletion([path]);
-                } else {
-                    Object.keys(editors.files).forEach(function(p) {
-                        if (p === path) {
-                            onSingleDeletion(p);
-                        }
-                    });
-                }
-            }
         });
 
         topic.subscribe('fs.cache.file.invalidated', function(fsURL, path) {
@@ -296,21 +111,6 @@ define([
                     }
                 }
             }
-        });
-
-        topic.subscribe('workspace.nodes.deleting', function(paths) {
-            multipleDeletions.push(paths);
-            setTimeout(function() {
-                var i = multipleDeletions.indexOf(paths);
-                if (i >= 0) {
-                    multipleDeletions.splice(i, 1);
-                    if (paths.deleted.length > 0) {
-                        onMultiDeletion(paths.deleted);
-                    }
-                } else {
-                    console.assert(false, 'assertion fail: unreachable');
-                }
-            }, 10000);
         });
 
         topic.subscribe('editor/not-exists', function() {
@@ -369,20 +169,6 @@ define([
         });
     }
 
-    var multipleDeletions = [];
-    function getMultiDeletion(path) {
-        var filtered = multipleDeletions.filter(function(md) {
-            return md.indexOf(path) >= 0;
-        });
-
-        if (filtered.length > 1) {
-            console.assert(false, 'assertion fail: unreachable');
-            return null;
-        } else {
-            return filtered[0] || null;
-        }
-    }
-
 
     topic.publish('editors.clean.current');
     topic.publish('editors.clean.all');
@@ -424,47 +210,11 @@ define([
         parts: new Map()
     };
 
-    editors.ensureCreated = function(file, bShowAndFocus, cb) {
-        function showAndFocus(file) {
-            var editorPart = editors.getPart(file);
-            if (editorPart) {
-                editorPart.focus();
-            }
-            if (cb) {
-                cb();
-            }
-        }
-
-        if (file.pendingCreator) {
-            file.pendingCreator( bShowAndFocus ? showAndFocus : cb);
-            delete file.pendingCreator;
-        } else if (bShowAndFocus) {
-            showAndFocus(file);
-        } else {
-            if (cb) {
-                cb();
-            }
-        }
-    };
-
     editors.getFileByViewId = function(viewId) {
         return _.findWhere(editors.files, {
             viewId: viewId
         });
     };
-
-    function onloadFinalize() {
-        logger.info('onloadFinalize()');
-        var vcs = editors.splitViewContainer.getViewContainers();
-        _.each(vcs, function(vc) {
-            var selview = vc.getSelectedView();
-            if (selview) {
-                var selfile = editors.getFileByViewId(selview.getId());
-                editors.ensureCreated(selfile);
-            }
-        });
-    }
-
 
     editors.quit = function() {
         topic.publish('view.quit');
@@ -514,7 +264,7 @@ define([
      * @private
      * @Override
      */
-    editorManager._showExistingPart = function(PartClass, dataSource, options, callback) {
+    lifecycleManager._showExistingPart = function(PartClass, dataSource, options, callback) {
         logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
 
         var page = workbench.getCurrentPage();
@@ -540,7 +290,7 @@ define([
      * @private
      * @Override
      */
-    editorManager._createPart = function(PartClass, dataSource, options, callback) {
+    lifecycleManager._createPart = function(PartClass, dataSource, options, callback) {
         logger.info('%c_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)', 'color:green');
 
         //Compatibility start
@@ -563,14 +313,7 @@ define([
      * This method will be remove from 1.4.0
      * Temp Code
      */
-    editors.openFile = editorManager._openDataSource;
-
-    editors.onFileError = function(file) {
-        editors.onloadPendingFilesCount--;
-        if (editors.onloadPendingFilesCount === 0) {
-            onloadFinalize();
-        }
-    };
+    editors.openFile = lifecycleManager._openDataSource;
 
     editors.execCommandForCurrentEditorViewer = function(commandKey) {
         logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');

@@ -80,8 +80,6 @@ define([
             logger.info('createViewer(' + parent.tagName + ', callback)');
             this.setParentElement(parent);
             this.createCallback = callback;
-            //TODO remove this.file.elem
-            this.file.elem = parent;
             this.initialize();
         },
 
