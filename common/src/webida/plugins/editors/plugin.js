@@ -565,13 +565,6 @@ define([
      */
     editors.openFile = editorManager._openDataSource;
 
-    editors.onFileError = function(file) {
-        editors.onloadPendingFilesCount--;
-        if (editors.onloadPendingFilesCount === 0) {
-            onloadFinalize();
-        }
-    };
-
     editors.execCommandForCurrentEditorViewer = function(commandKey) {
         logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');
 
