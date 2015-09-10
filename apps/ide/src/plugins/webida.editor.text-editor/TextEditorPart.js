@@ -315,6 +315,7 @@ define([
         },
 
         markClean: function() {
+            logger.info('markClean()');
             var docMan = this.getModelManager();
             var dataSource = docMan.getDataSource();
             var doc = docMan.getModel();
@@ -338,6 +339,56 @@ define([
             logger.info('getContextMenuItems(' + menuItems + ')');
             var contextMenu = new (this.getContextMenuClass())(menuItems, this);
             return contextMenu.getItems();
+        },
+
+        save: function(callback) {
+            logger.info('save(' + typeof callback + ')');
+            this._beforeSave();
+            EditorPart.prototype.save.call(this, callback);
+        },
+
+        _beforeSave: function() {
+            logger.info('_beforeSave');
+            var viewer = this.getViewer();
+            var doc = this.getModel();
+            var text = doc.getContents();
+
+            logger.info('viewer.trimTrailingWhitespaces = ', viewer.trimTrailingWhitespaces);
+            logger.info('viewer.insertFinalNewLine = ', viewer.insertFinalNewLine);
+            logger.info('viewer.retabIndentations = ', viewer.retabIndentations);
+
+            if (viewer.trimTrailingWhitespaces && text.match(/( |\t)+$/m)) {
+                text = text.replace(/( |\t)+$/mg, '');
+            }
+
+            if (viewer.insertFinalNewLine && text.match(/.$/)) {
+                text = text + '\n';
+            }
+
+            if (viewer.retabIndentations) {
+                function getSpaces(n) {
+                    var spaces = ['', ' ', '  ', '   ', '    '];
+                    if (spaces[n] === undefined) {
+                        return (spaces[n] = ( n ? ' ' + getSpaces(n - 1) : ''));
+                    } else {
+                        return spaces[n];
+                    }
+                }
+
+                var unit = viewer.options.indentUnit, re = /^(( )*)\t/m, m;
+                while (( m = text.match(re))) {
+                    text = text.replace(re, '$1' + getSpaces(unit - (m[0].length - 1) % unit));
+                }
+            }
+
+            if (text !== doc.getContents()) {
+                var cursor = viewer.getCursor();
+                var scrollInfo = viewer.getScrollInfo();
+                viewer.refresh(text);
+                //TODO Refactor : use execCommand();
+                viewer.setCursor(cursor);
+                viewer.scrollToScrollInfo(scrollInfo);
+            }
         }
     });
 

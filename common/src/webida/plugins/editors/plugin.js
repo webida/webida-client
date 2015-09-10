@@ -80,87 +80,6 @@ define([
     var dsRegistry = workbench.getDataSourceRegistry();
     var editorManager = EditorManager.getInstance();
 
-    function getFileManager() {// TODO: remove publish().
-
-        var FileManager = {};
-        var spaces = {
-            '0': '',
-            '1': ' ',
-            '2': '  ',
-            '3': '   ',
-            '4': '    '
-        };
-
-        FileManager.saveFile = function(file, option) {
-            logger.info('FileManager.saveFile(' + file + ', option)');
-            function getSpaces(n) {
-                if (spaces[n] === undefined) {
-                    return (spaces[n] = ( n ? ' ' + getSpaces(n - 1) : ''));
-                } else {
-                    return spaces[n];
-                }
-            }
-
-            var path = file.path;
-
-            var value = editors.getPart(file).getValue();
-            if (value === undefined) {// TODO: make this check unnecessary.
-                throw new Error('tried to save a file "' + file.path + '" + whose value is not yet set');
-            }
-
-            console.assert(file.viewer);
-            var viewer = file.viewer;
-
-            if (viewer.trimTrailingWhitespaces || viewer.insertFinalNewLine || viewer.retabIndentations) {
-                var v = value;
-                if (viewer.trimTrailingWhitespaces && v.match(/( |\t)+$/m)) {
-                    v = v.replace(/( |\t)+$/mg, '');
-                }
-                if (viewer.insertFinalNewLine && v.match(/.$/)) {
-                    v = v + '\n';
-                    // TODO: consider line ending mode
-                }
-                if (viewer.retabIndentations) {
-                    //var spaces = getSpaces(viewer.options.indentUnit);
-                    var unit = viewer.options.indentUnit, re = /^(( )*)\t/m, m;
-                    while (( m = v.match(re))) {
-                        v = v.replace(re, '$1' + getSpaces(unit - (m[0].length - 1) % unit));
-                    }
-                }
-
-                if (v !== value) {
-                    var cursor = viewer.getCursor();
-                    var scrollInfo = viewer.getScrollInfo();
-                    value = v;
-                    viewer.refresh(value);
-                    viewer.setCursor(cursor);
-                    viewer.scrollToScrollInfo(scrollInfo);
-                }
-            }
-
-            fsCache.writeFile(path, value, function(error) {
-                if (error) {
-                    toastr.error('Failed to write file "' + path + '" (' + error + ')');
-                    editors.onFileError(file);
-                } else {
-                    file.getContents(value);
-                    var editorPart = editors.getPart(file);
-                    if (editorPart && editorPart.markClean) {
-                        editorPart.markClean();
-                    }
-
-                    topic.publish('file.saved', file);
-
-                    if (option && option.callback) {
-                        option.callback();
-                    }
-                }
-            });
-        };
-
-        return FileManager;
-    }
-
     function subscribeToTopics() {
 
         function onSingleDeletion(path) {
@@ -469,8 +388,6 @@ define([
     topic.publish('editors.clean.all');
 
     var fsCache = ide.getFSCache();
-    var fm = getFileManager();
-
     var asked = [];
     function askAndReload(file) {
         require(['popup-dialog'], function(PopupDialog) {
