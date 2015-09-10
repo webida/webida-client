@@ -320,7 +320,7 @@ define([
             		//TODO Refactor (Use Promise)
             		setTimeout(function(dataSourceId, option){
             			topic.publish('editor/open', dataSourceId, option);
-            		}, 300, tab.dataSourceId, option);
+            		}, 1000, tab.dataSourceId, option);
             	});
 
                 var viewContainers = editors.splitViewContainer.getViewContainers();

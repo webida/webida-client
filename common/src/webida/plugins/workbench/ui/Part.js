@@ -133,7 +133,7 @@ define([
                 part.getContainer().updateDirtyState();
 
             }, function(error) {
-                logger.error(error);
+                logger.error(error.stack || error);
             });
         },
 

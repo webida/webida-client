@@ -110,7 +110,7 @@ define([
                     if (error) {
                         toastr.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
                     } else {
-                    	logger.info('data arrived');
+                        logger.info('data arrived');
                         file.setContents(data);
                         file.setFlag(Persistence.READ, true);
                         callback(file.getContents());
@@ -138,6 +138,7 @@ define([
                     file.setFlag(Persistence.READ, true);
                     callback(file.getContents());
                     that.emit(DataSource.AFTER_SAVE);
+                    topic.publish('data-source/written', that);
                 }
             });
         },
