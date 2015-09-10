@@ -54,6 +54,15 @@ define([
 
     genetic.inherits(TestEditor, EditorPart, {
 
+        /**
+         * @Override
+         */
+		prepareVM: function(){
+			logger.info('%cprepareVM()', 'color:orange');
+			var container = this.getContainer();
+			this.createViewer(container.getContentNode());
+		},
+
         createViewer: function(parentNode, callback) {
             logger.info('createViewer(' + parentNode + ', callback)');
             var dataSource = this.getDataSource();
