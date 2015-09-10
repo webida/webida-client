@@ -43,7 +43,7 @@ define([
     'external/async/dist/async.min',
     'plugins/webida.notification/notification-message',
     'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
-    './EditorManager'
+    './LifecycleManager'
 ], function (
     topic, 
     _, 
@@ -66,7 +66,7 @@ define([
     async, 
     toastr,
     FileDataSource,
-    EditorManager
+    LifecycleManager
 ) {
     'use strict';
 // @formatter:on
@@ -78,7 +78,7 @@ define([
     logger.log('loaded modules required by editors. initializing editors plugin');
 
     var dsRegistry = workbench.getDataSourceRegistry();
-    var editorManager = EditorManager.getInstance();
+    var lifecycleManager = LifecycleManager.getInstance();
 
     function subscribeToTopics() {
 
@@ -478,7 +478,7 @@ define([
      * @private
      * @Override
      */
-    editorManager._showExistingPart = function(PartClass, dataSource, options, callback) {
+    lifecycleManager._showExistingPart = function(PartClass, dataSource, options, callback) {
         logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
 
         var page = workbench.getCurrentPage();
@@ -504,7 +504,7 @@ define([
      * @private
      * @Override
      */
-    editorManager._createPart = function(PartClass, dataSource, options, callback) {
+    lifecycleManager._createPart = function(PartClass, dataSource, options, callback) {
         logger.info('%c_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)', 'color:green');
 
         //Compatibility start
@@ -527,7 +527,7 @@ define([
      * This method will be remove from 1.4.0
      * Temp Code
      */
-    editors.openFile = editorManager._openDataSource;
+    editors.openFile = lifecycleManager._openDataSource;
 
     editors.execCommandForCurrentEditorViewer = function(commandKey) {
         logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');

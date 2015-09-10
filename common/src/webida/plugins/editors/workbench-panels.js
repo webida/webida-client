@@ -26,7 +26,7 @@ define([
     'dojo/topic',
     'external/lodash/lodash.min',
     'webida-lib/util/logger/logger-client',
-    './EditorManager'
+    './LifecycleManager'
 ], function (
     editors,
     workbench,
@@ -39,7 +39,7 @@ define([
     topic,
     _,
     Logger,
-    EditorManager
+    LifecycleManager
 ) {
     'use strict';
 
@@ -49,7 +49,7 @@ define([
 
 	var lastStatus;
 
-    var editorManager = EditorManager.getInstance();
+    var lifecycleManager = LifecycleManager.getInstance();
 
     var paneElement = $('<div id="editor" tabindex="0" style="position:absolute; ' +
             'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];

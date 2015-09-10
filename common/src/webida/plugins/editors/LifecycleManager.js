@@ -17,9 +17,9 @@
 /**
  * Constructor
  *
- * EditorManager is a Mediator for EditorParts
+ * LifecycleManager is a Mediator for EditorParts
  * EditorParts do not know each other,
- * only know their Mediator EditorManager.
+ * only know their Mediator LifecycleManager.
  *
  * @see
  * @since: 2015.07.19
@@ -57,7 +57,7 @@ define([
 
     /**
      * @typedef {Object} DataSource
-     * @typedef {Object} EditorManager
+     * @typedef {Object} LifecycleManager
      * @typedef {Object} ExtensionManager
      * @typedef {Object} Part
      */
@@ -68,8 +68,8 @@ define([
 
     var singleton = null;
 
-    function EditorManager() {
-        logger.info('new EditorManager()');
+    function LifecycleManager() {
+        logger.info('new LifecycleManager()');
 
         /** @type {Object} */
         this.subscribed = [];
@@ -80,16 +80,16 @@ define([
     }
 
     /**
-     * @return {EditorManager}
+     * @return {LifecycleManager}
      */
-    EditorManager.getInstance = function() {
+    LifecycleManager.getInstance = function() {
         if (singleton === null) {
             singleton = new this();
         }
         return singleton;
     }
 
-    genetic.inherits(EditorManager, EventEmitter, {
+    genetic.inherits(LifecycleManager, EventEmitter, {
 
         /**
          * subscribe to topic
@@ -333,5 +333,5 @@ define([
         }
     });
 
-    return EditorManager;
+    return LifecycleManager;
 });
