@@ -168,6 +168,13 @@ define([
      */
     DataSource.AFTER_SAVE = 'afterSave';
 
+	/**
+     * Emit this event when error occured
+     * during setData(contents, callback)
+     * @constant {string}
+     */
+	DataSource.SAVE_FAIL = 'saveFail';
+
     /**
      * This event is emitted when setId(newId) is called
      * @constant {string}

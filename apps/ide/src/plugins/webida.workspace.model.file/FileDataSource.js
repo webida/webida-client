@@ -30,9 +30,9 @@ define([
     'webida-lib/app',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
+    'webida-lib/util/notify',
     'webida-lib/plugins/workbench/ui/DataSource',
     'webida-lib/plugins/workbench/ui/Persistence',
-    'plugins/webida.notification/notification-message',
     './File'
 ], function(
 	topic,
@@ -40,9 +40,9 @@ define([
     app,
     genetic, 
     Logger,
+    notify,
     DataSource,
     Persistence,
-    toastr,
     File
 ) {
     'use strict';
@@ -108,7 +108,7 @@ define([
             if (file.getFlag(Persistence.READ) === false) {
                 fsCache.readFile(file.getPath(), function(error, data) {
                     if (error) {
-                        toastr.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
+                        notify.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
                     } else {
                         logger.info('data arrived');
                         file.setContents(data);
@@ -132,7 +132,8 @@ define([
             file.setFlag(Persistence.READ, false);
             fsCache.writeFile(file.getPath(), data, function(error) {
                 if (error) {
-                    toastr.error('Failed to write file "' + file.getPath() + '" (' + error + ')');
+                    notify.error('Failed to write file "' + file.getPath() + '" (' + error + ')');
+                    that.emit(DataSource.SAVE_FAIL);
                 } else {
                     file.setContents(data);
                     file.setFlag(Persistence.READ, true);
