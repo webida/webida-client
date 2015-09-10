@@ -145,11 +145,13 @@ define([
             var reg = page.getPartRegistry();
             reg.on(PartRegistry.PART_UNREGISTERED, function(part) {
                 var model = part.getModel();
-                var dataSource = part.getDataSource();
-                var PartModelClass = model.constructor;
-                if (provider.getPartModel(dataSource, PartModelClass) 
-                        && provider.isModelUsed(model) === false) {
-                    part.resetModel();
+                if (model) {
+                    var dataSource = part.getDataSource();
+                    var PartModelClass = model.constructor;
+                    if (provider.getPartModel(dataSource, PartModelClass) 
+                            && provider.isModelUsed(model) === false) {
+                        part.resetModel();
+                    }                	
                 }
             });
             // @formatter:on
