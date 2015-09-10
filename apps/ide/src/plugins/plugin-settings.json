@@ -1,10 +1,10 @@
 {
     "plugins" : [
-    	"plugins/webida.editor.example.multi-viewer",
         "plugins/webida.editor.text-editor",
         "plugins/webida.editor.code-editor",
         "plugins/webida.editor.test-editor",
         "plugins/webida.viewer.image-viewer",
+        "plugins/webida.editor.example.multi-viewer",
         "plugins/deploy",
         "plugins/help",
         "plugins/webida.preference",
