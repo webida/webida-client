@@ -40,13 +40,16 @@ define([
     var compiledTemplate = _.template(template);
     var listeners = [];
     var treeElement;
+    var selectionBlocked = false;
 
     function setSelection(nodeId) {
-        selectedNode = _.find(nodes, {id: nodeId});
-        $('[data-id].selected').removeClass('selected');
-        $('[data-id="' + nodeId + '"]').addClass('selected');
-        for(var i=0; i<listeners.length; i++) {
-            listeners[i](selectedNode);
+        if (!selectionBlocked) {
+            selectedNode = _.find(nodes, {id: nodeId});
+            $('[data-id].selected').removeClass('selected');
+            $('[data-id="' + nodeId + '"]').addClass('selected');
+            for (var i = 0; i < listeners.length; i++) {
+                listeners[i](selectedNode);
+            }
         }
     }
 
@@ -84,31 +87,49 @@ define([
 
     function getAllDescendantNodes(nodeId) {
         return _.filter(nodes, function (node) {
-            return node.hierarchy.indexOf(nodeId) > -1;
+            return node.hierarchies.indexOf(nodeId) > -1;
         });
     }
 
     function makeNodes(preferenceTypes) {
         nodes = [];
-        if(preferenceTypes.length > 0) {
+        if (preferenceTypes.length > 0) {
             nodes = preferenceTypes.map(function (type) {
                 var hierarchies = (type.hierarchy) ? type.hierarchy.split('/') : [];
                 var parent = _.last(hierarchies);
-                var hasChild = _.some(preferenceTypes, function(child) {
+                var hasChild = _.some(preferenceTypes, function (child) {
                     return child.hierarchy.indexOf(type.id) > -1;
                 });
 
                 return {
                     id: type.id,
                     name: type.name,
-                    depth: hierarchies.length,
-                    hierarchy: type.hierarchy,
+                    hierarchies: hierarchies,
                     parent: parent,
                     hasChild: hasChild,
                     expanded: false,
                     selected: false
+                };
+            });
+
+            _.forEach(nodes, function (node) {
+                var parentNode;
+                var i;
+                for (i = node.hierarchies.length - 1; i >= 0; i--) {
+                    parentNode = getNode(node.hierarchies[i]);
+                    if (parentNode) {
+                        node.parent = parentNode.id;
+                        break;
+                    }
+                }
+                if (!parentNode) {
+                    node.parent = '';
+                    node.hierarchies = [];
+                } else {
+                    node.hierarchies = node.hierarchies.splice(0, i + 1);
                 }
             });
+
             nodes[0].selected = true;
             setSelection(nodes[0].id);
         }
@@ -148,6 +169,10 @@ define([
         if (index > -1) {
             listeners.splice(index, 1);
         }
+    };
+
+    module.blockTreeSelection = function (blocked) {
+        selectionBlocked = blocked;
     };
 
     return module;

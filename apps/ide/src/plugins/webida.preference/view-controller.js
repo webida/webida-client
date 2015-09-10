@@ -25,6 +25,7 @@ define([
     'webida-lib/util/logger/logger-client',
     'dojo/on',
     'dijit/registry',
+    'plugins/webida.notification/notification-message',
     './preference-manager',
     './tree-view-controller',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
@@ -35,6 +36,7 @@ define([
     Logger,
     on,
     reg,
+    topic,
     preferenceManager,
     treeViewController,
     ButtonedDialog,
@@ -56,8 +58,8 @@ define([
     var invalidStores = [];
 
     var PAGE_CLASS = {
-        'DefaultPage': 'plugins/webida.preference/pages/PreferencePage',
-        'SimplePage': 'plugins/webida.preference/pages/SimplePage'
+        DefaultPage: 'plugins/webida.preference/pages/PreferencePage',
+        SimplePage: 'plugins/webida.preference/pages/SimplePage'
     };
 
     var onChangingPage = false;
@@ -72,7 +74,7 @@ define([
         }
         if (status) {
             if (status.override !== undefined) {
-                reg.byId("preference-override").set('checked', status.override);
+                reg.byId('preference-override').set('checked', status.override);
             }
             if (status.valid !== undefined) {
                 if (!status.valid) {
@@ -91,6 +93,7 @@ define([
     function _onChangeTreeSelection(node) {
         if(!onChangingPage) {
             onChangingPage = true;
+            treeViewController.blockTreeSelection(true);
             // get preference store
             var store = preferenceManager.getStore(node.id, scope, scopeInfo);
             // get extension's meta
@@ -120,6 +123,7 @@ define([
                 subContentArea.appendChild(currentPage.getPage());
                 currentPage.onPageAppended();
                 onChangingPage = false;
+                treeViewController.blockTreeSelection(false);
             });
         }
     }
@@ -127,8 +131,8 @@ define([
     function _initializeContentArea(node, store) {
 
         function __dim(override) {
-            if(!override) {
-                if($(subContentArea).find('.dim').length === 0) {
+            if (!override) {
+                if ($(subContentArea).find('.dim').length === 0) {
                     $(subContentArea).append($('<div class="dim"></div>'));
                 }
             } else {
@@ -136,7 +140,7 @@ define([
             }
         }
 
-        var overrideCheckbox = reg.byId("preference-override");
+        var overrideCheckbox = reg.byId('preference-override');
         $(titleArea).find('h1').text(node.name);
         if (preferenceManager.getParentStore(store)) {
             overrideCheckbox.set('checked', store.status.override);
@@ -154,7 +158,9 @@ define([
             }),
             on($('#apply-preference').get(0), 'click', function () {
                 currentPage.store.apply(function (invalidMessage) {
-                    // TODO handle error
+                    if (invalidMessage) {
+                        topic.warning(invalidMessage);
+                    }
                 });
             }),
             on(overrideCheckbox, 'change', function () {
@@ -206,7 +212,9 @@ define([
                 methodOnEnter: null,
                 saveClose: function () {
                     preferenceManager.saveAllPreference(scope, function (invalidMessages) {
-                        // TODO handle error
+                        if (invalidMessages.trim()) {
+                            topic.warning(invalidMessages);
+                        }
                         preferenceDlg.hide();
                     });
                 },
@@ -218,7 +226,9 @@ define([
                     treeViewController.onPageRemoved();
                     preferenceDlg.destroyRecursive();
                     preferenceManager.flushPreference(scope, scopeInfo, function (err) {
-                        // TODO handle error
+                        if (err) {
+                            topic.error(err);
+                        }
                         module.isOpened = false;
                     });
                 }
