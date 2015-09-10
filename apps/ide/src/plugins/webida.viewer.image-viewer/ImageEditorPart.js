@@ -151,10 +151,6 @@ define([
             logger.info('focus()');
         },
 
-        markClean: function() {
-            logger.info('markClean()');
-        },
-
         isClean: function() {
             logger.info('isClean()');
         }

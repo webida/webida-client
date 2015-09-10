@@ -86,10 +86,6 @@ define([
             console.info('focus()');
         },
 
-        markClean: function() {
-            console.info('markClean()');
-        },
-
         isClean: function() {
             console.info('isClean()');
         }

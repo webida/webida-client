@@ -232,24 +232,6 @@ define([
          */
         getValue: function() {
             return this.getModelManager().getContents();
-        },
-
-        /**
-         * @deprecated
-         */
-        markClean: function() {
-            var docMan = this.getModelManager();
-            var doc = docMan.getModel();
-            var dataSource = this._getDataSource();
-            var codeViewer = this.getViewerById('CodeEditor');
-            if (doc && dataSource) {
-                var file = dataSource.getPersistence();
-                file.setContents(doc.getContents());
-            }
-            if (codeViewer) {
-                codeViewer.markClean();
-            }
-
         }
     });
 

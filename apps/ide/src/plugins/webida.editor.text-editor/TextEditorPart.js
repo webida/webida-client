@@ -314,18 +314,6 @@ define([
             }
         },
 
-        markClean: function() {
-            logger.info('markClean()');
-            var docMan = this.getModelManager();
-            var dataSource = docMan.getDataSource();
-            var doc = docMan.getModel();
-            if (doc && dataSource) {
-                var file = dataSource.getPersistence();
-                file.setContents(doc.getContents());
-            }
-            this.getViewer().markClean();
-        },
-
         isClean: function() {
             var docMan = this.getModelManager();
             return !docMan.canSaveModel();

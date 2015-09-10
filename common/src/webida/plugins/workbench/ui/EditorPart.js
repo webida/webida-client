@@ -125,9 +125,6 @@ define([
         getValue: function() {
             throw new Error('getValue() should be implemented by ' + this.constructor.name);
         },
-        markClean: function() {
-            throw new Error('markClean() should be implemented by ' + this.constructor.name);
-        },
         isClean: function() {
             throw new Error('isClean() should be implemented by ' + this.constructor.name);
         },
