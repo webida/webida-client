@@ -1480,10 +1480,10 @@ define([
                         deferred.resolve(items);
                     });
                 } else {
-                    deferred.resolve(items);
+                	deferred.resolve(items);
                 }
             } else {
-                deferred.resolve(items);
+            	deferred.resolve(items);
             }
         },
 
