@@ -362,15 +362,14 @@ define([
             }
 
             if (viewer.retabIndentations) {
-                function getSpaces(n) {
+                var getSpaces = function(n) {
                     var spaces = ['', ' ', '  ', '   ', '    '];
                     if (spaces[n] === undefined) {
                         return (spaces[n] = ( n ? ' ' + getSpaces(n - 1) : ''));
                     } else {
                         return spaces[n];
                     }
-                }
-
+                };
                 var unit = viewer.options.indentUnit, re = /^(( )*)\t/m, m;
                 while (( m = text.match(re))) {
                     text = text.replace(re, '$1' + getSpaces(unit - (m[0].length - 1) % unit));
