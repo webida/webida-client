@@ -48,6 +48,7 @@ define([
 
     function getItemsUnderFile() {
         logger.info('getItemsUnderFile()');
+        logger.trace();
         var items = {};
         var registry = _getPartRegistry();
         var currentPart = registry.getCurrentEditorPart();
@@ -78,16 +79,15 @@ define([
 
     function getItemsUnderEdit() {
         logger.info('getItemsUnderEdit()');
-        var deferred = new Deferred();
         var items = {};
         var part = _getCurrentEditorPart();
         if (part) {
             var viewer = part.getViewer();
             if (viewer) {
-                viewer.getMenuItemsUnderEdit(items, menuItems, deferred);
+                items = viewer.getMenuItemsUnderEdit(items, menuItems);
             }
         }
-        return deferred;
+        return items;
     }
 
     function getItemsUnderFind() {

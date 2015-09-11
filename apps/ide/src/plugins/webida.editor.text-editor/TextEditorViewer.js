@@ -1477,7 +1477,7 @@ define([
             }
         },
 
-        getMenuItemsUnderEdit: function(items, menuItems, deferred) {
+        getMenuItemsUnderEdit: function(items, menuItems) {
             var editor = this.editor;
 
             if (editor) {
@@ -1526,12 +1526,9 @@ define([
                 sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
 
                 items['&Source'] = sourceItems;
-
-                deferred.resolve(items);
-
-            } else {
-                deferred.resolve(items);
             }
+
+            return items;
         },
 
         /**
