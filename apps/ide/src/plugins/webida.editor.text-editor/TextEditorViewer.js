@@ -1477,7 +1477,7 @@ define([
             }
         },
 
-        getMenuItemsUnderEdit: function(items, menuItems) {
+        getMenuItemsUnderEdit: function(items, menuItems, deferred) {
             var editor = this.editor;
 
             if (editor) {
@@ -1528,7 +1528,7 @@ define([
                 items['&Source'] = sourceItems;
             }
 
-            return items;
+			deferred.resolve(items);
         },
 
         /**

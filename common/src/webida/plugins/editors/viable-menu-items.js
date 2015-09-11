@@ -80,14 +80,17 @@ define([
     function getItemsUnderEdit() {
         logger.info('getItemsUnderEdit()');
         var items = {};
+        var deferred = new Deferred();
         var part = _getCurrentEditorPart();
         if (part) {
             var viewer = part.getViewer();
             if (viewer) {
-                items = viewer.getMenuItemsUnderEdit(items, menuItems);
+                items = viewer.getMenuItemsUnderEdit(items, menuItems, deferred);
             }
+        } else {
+			deferred.resolve(items);
         }
-        return items;
+        return deferred;
     }
 
     function getItemsUnderFind() {
@@ -122,7 +125,6 @@ define([
         // Navigate Editors
         var naviEditorsItems = {};
         var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
-
 
         function getViewRunnableMenuItems(menuName) {
             var splitContainer = editors.splitViewContainer;
@@ -166,6 +168,7 @@ define([
             }
             return false;
         }
+
 
         _.each(itemsList, function(item) {
             if (getViewRunnableMenuItems(item)) {
