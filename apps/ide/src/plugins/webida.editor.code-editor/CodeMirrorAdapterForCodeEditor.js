@@ -709,7 +709,7 @@ define([
         });
     }
 
-    function lineCommentableOrUncommentable(editor) {
+    function isLineCommentable(editor) {
         var from = editor.getCursor('from');
         var to = editor.getCursor('to');
         var mode1 = editor.getModeAt(from);
@@ -826,7 +826,7 @@ define([
         }
     }
 
-    function blockCommentableOrUncommentable(editor) {
+    function isBlockCommentable(editor) {
 
         var doc = editor.getDoc();
         var from = editor.getCursor('from');
@@ -1487,10 +1487,10 @@ define([
                 var sourceItems = {};
 
                 // Toggle Comments
-                if (lineCommentableOrUncommentable(editor)) {
+                if (isLineCommentable(editor)) {
                     sourceItems['&Toggle Line Comments'] = menuItems.editMenuItems['&Source']['&Toggle Line Comments'];
                 }
-                if (blockCommentableOrUncommentable(editor)) {
+                if (isBlockCommentable(editor)) {
                     sourceItems['Toggle Block Comment'] = menuItems.editMenuItems['&Source']['Toggle Block Comment'];
                 }
                 // Code Folding
@@ -1605,10 +1605,10 @@ define([
                 var sourceItems = {};
 
                 // Toggle Comments
-                if (lineCommentableOrUncommentable(editor)) {
+                if (isLineCommentable(editor)) {
                     sourceItems['&Toggle Line Comments'] = menuItems.editMenuItems['&Source']['&Toggle Line Comments'];
                 }
-                if (blockCommentableOrUncommentable(editor)) {
+                if (isBlockCommentable(editor)) {
                     sourceItems['Toggle Block Comment'] = menuItems.editMenuItems['&Source']['Toggle Block Comment'];
                 }
                 if (selectionCommentable(editor)) {

@@ -321,17 +321,17 @@ define([
             return TextEditorContextMenu;
         },
 
-        getContextMenuItems: function(menuItems) {
-            logger.info('getContextMenuItems(' + menuItems + ')');
-            var contextMenu = new (this.getContextMenuClass())(menuItems, this);
-            return contextMenu.getItems();
+        getContextMenuItems: function(allItems) {
+            logger.info('getContextMenuItems(' + allItems + ')');
+            var contextMenu = new (this.getContextMenuClass())(allItems, this);
+            return contextMenu.getPromiseForAvailableItems();
         },
 
         save: function(callback) {
             logger.info('save(' + typeof callback + ')');
             var that = this;
             this._beforeSave();
-            //TODO Refactor : find more a way without setTimeout
+            //TODO Refactor : find more neat way without setTimeout
             setTimeout(function() {
                 EditorPart.prototype.save.call(that, callback);
             });

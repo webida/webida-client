@@ -721,15 +721,6 @@ define([
         });
     }
 
-    function lineCommentableOrUncommentable(editor) {
-        var from = editor.getCursor('from');
-        var to = editor.getCursor('to');
-        var mode1 = editor.getModeAt(from);
-        var mode2 = editor.getModeAt(to);
-        return mode1.name === mode2.name && mode1.lineComment &&
-            mode1.lineComment === mode2.lineComment;
-    }
-
     function getEnclosingBlockComments(mode, editor, from, to) {
         var startStr = mode.blockCommentStart;
         var endStr = mode.blockCommentEnd;
@@ -836,30 +827,6 @@ define([
         } else {
             return false;
         }
-    }
-
-    function blockCommentableOrUncommentable(editor) {
-
-        var doc = editor.getDoc();
-        var from = editor.getCursor('from');
-        var to = editor.getCursor('to');
-        var from2 = { line: from.line, ch: 0 };
-        var to2 = { line: to.line, ch: doc.getLine(to.line).length };
-        //console.log('hina temp: from and to: ');
-        //console.debug(from);
-        //console.debug(to);
-
-        var mode1 = editor.getModeAt(from);
-        var mode2 = editor.getModeAt(to);
-        var comments;
-        return mode1.name === mode2.name && mode1.blockCommentStart &&
-            mode1.blockCommentStart === mode2.blockCommentStart &&
-            mode1.blockCommentEnd === mode2.blockCommentEnd &&
-            (comments = getEnclosingBlockComments(mode1, editor, from, to)) &&
-            (comments.length === 1 ||
-             ((comments = getEnclosingBlockComments(mode1, editor, from2, to2)) && comments.length === 0
-             )
-            );
     }
 
     function getBeautifier(editor, callback) {
@@ -1452,10 +1419,10 @@ define([
                 var sourceItems = {};
 
                 // Toggle Comments
-                if (lineCommentableOrUncommentable(editor)) {
+                if (CodeEditorViewer.isLineCommentable(editor)) {
                     sourceItems['&Toggle Line Comments'] = menuItems.editMenuItems['&Source']['&Toggle Line Comments'];
                 }
-                if (blockCommentableOrUncommentable(editor)) {
+                if (CodeEditorViewer.isBlockCommentable(editor)) {
                     sourceItems['Toggle Block Comment'] = menuItems.editMenuItems['&Source']['Toggle Block Comment'];
                 }
                 // Code Folding
@@ -1484,145 +1451,6 @@ define([
                 }
             } else {
             	deferred.resolve(items);
-            }
-        },
-
-        getContextMenuItems: function (opened, items, menuItems, deferred) {
-
-            function selectionCommentable(editor) {
-                var from = editor.getCursor('from');
-                var to = editor.getCursor('to');
-                //console.log('hina temp: from and to: ');
-                //console.debug(from);
-                //console.debug(to);
-
-                if (from.line === to.line && from.ch === to.ch) {
-                    return false;	// no selection
-                }
-
-                var mode1 = editor.getModeAt(from);
-                var mode2 = editor.getModeAt(to);
-                var comments;
-                return mode1.name === mode2.name && mode1.blockCommentStart &&
-                    mode1.blockCommentStart === mode2.blockCommentStart &&
-                    mode1.blockCommentEnd === mode2.blockCommentEnd &&
-                    (comments = getEnclosingBlockComments(mode1, editor, from, to)) && comments.length === 0;
-            }
-
-            var editor = this.editor;
-            var part = editors.getCurrentPart();
-            if (editor) {
-                var selected = editor.getSelection();
-
-                // Close Others, Close All
-                if (opened.length > 1) {
-                    items['Close O&thers'] = menuItems.fileMenuItems['Cl&ose Others'];
-                }
-                items['&Close All'] = menuItems.fileMenuItems['C&lose All'];
-
-                // Undo, Redo
-                var history = editor.getHistory();
-                if (history) {
-                    if (history.done && history.done.length > 0) {
-                        items['U&ndo'] = menuItems.editMenuItems['&Undo'];
-                    }
-                    if (history.undone && history.undone.length > 0) {
-                        items['&Redo'] = menuItems.editMenuItems['&Redo'];
-                    }
-                }
-
-                // Save
-                if (part.isDirty()) {
-                    items['&Save'] = menuItems.fileMenuItems['&Save'];
-                }
-
-                // Delete
-                items['&Delete'] = menuItems.editMenuItems['&Delete'];
-
-                // Select All, Select Line
-                items['Select &All'] = menuItems.editMenuItems['Select &All'];
-                items['Select L&ine'] = menuItems.editMenuItems['Select L&ine'];
-
-                // Line
-                var lineItems = {};
-
-                // Line - Move Line Up, Move Line Down, Copy, Delete
-                lineItems['&Indent'] = menuItems.editMenuItems['&Line']['&Indent'];
-                lineItems['&Dedent'] = menuItems.editMenuItems['&Line']['&Dedent'];
-                var pos = editor.getCursor();
-                if (pos.line > 0) {
-                    lineItems['Move Line U&p'] = menuItems.editMenuItems['&Line']['Move Line U&p'];
-                }
-                if (pos.line < editor.lastLine()) {
-                    lineItems['Move Line Dow&n'] = menuItems.editMenuItems['&Line']['Move Line Dow&n'];
-                }
-                //lineItems['&Copy Line'] = menuItems.editMenuItems['&Line']['&Copy Line'];
-                lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
-                lineItems['Move Cursor Line to Middle'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
-                lineItems['Move Cursor Line to Top'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
-                lineItems['Move Cursor Line to Bottom'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
-
-                if (_.values(lineItems).length > 0) {
-                    items['&Line'] = lineItems;
-                }
-
-                // Source
-                var sourceItems = {};
-
-                // Toggle Comments
-                if (lineCommentableOrUncommentable(editor)) {
-                    sourceItems['&Toggle Line Comments'] = menuItems.editMenuItems['&Source']['&Toggle Line Comments'];
-                }
-                if (blockCommentableOrUncommentable(editor)) {
-                    sourceItems['Toggle Block Comment'] = menuItems.editMenuItems['&Source']['Toggle Block Comment'];
-                }
-                if (selectionCommentable(editor)) {
-                    sourceItems['Comment Out Selection'] = menuItems.editMenuItems['&Source']['Comment Out Selection'];
-                }
-                // Code Folding
-                sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-                // Beautify (All)
-                var currentModeName = editor.getMode().name;
-                if (currentModeName === 'javascript' || currentModeName === 'htmlmixed' || currentModeName === 'css') {
-                    if (selected) {
-                        sourceItems['&Beautify'] = menuItems.editMenuItems['&Source']['&Beautify'];
-                    }
-                    sourceItems['B&eautify All'] = menuItems.editMenuItems['&Source']['B&eautify All'];
-                }
-                // Rename
-                if (_.values(sourceItems).length > 0) {
-                    items['So&urce'] = sourceItems;
-                }
-
-                // Go to
-                items['&Go to Definition'] = menuItems.navMenuItems['&Go to Definition'];
-
-                if (this.isDefaultKeyMap()) {
-                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
-                }
-
-                if (this.isThereMatchingBracket()) {
-                    items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
-                }
-
-                if (editor._ternAddon) {
-                    editor._ternAddon.request(editor,
-                                              {type: 'rename', newName: 'merong', fullDocs: true},
-                                              function (error/*, data*/) {
-                        if (!error) {
-                            sourceItems['&Rename Variables'] = menuItems.editMenuItems['&Source']['&Rename Variables'];
-                        }
-                        deferred.resolve(items);
-                    });
-                } else {
-                    deferred.resolve(items);
-                }
-            } else {
-                // FIXME: this is temp code, must fix this coe when editor plugin refactoring
-                if (part.isDirty()) {
-                    items['&Save'] = menuItems.fileMenuItems['&Save'];
-                }
-                deferred.resolve(items);
             }
         }
     });
@@ -1689,6 +1517,59 @@ define([
     CodeEditorViewer.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
     };
+
+
+    CodeEditorViewer.isLineCommentable = function(editor) {
+        var from = editor.getCursor('from');
+        var to = editor.getCursor('to');
+        var mode1 = editor.getModeAt(from);
+        var mode2 = editor.getModeAt(to);
+        return mode1.name === mode2.name && 
+            mode1.lineComment && mode1.lineComment === mode2.lineComment;
+    }
+
+    CodeEditorViewer.isBlockCommentable = function(editor) {
+        var doc = editor.getDoc();
+        var from = editor.getCursor('from');
+        var to = editor.getCursor('to');
+        var from2 = {
+            line: from.line,
+            ch: 0
+        };
+        var to2 = {
+            line: to.line,
+            ch: doc.getLine(to.line).length
+        };
+
+        var mode1 = editor.getModeAt(from);
+        var mode2 = editor.getModeAt(to);
+        var comments;
+        return mode1.name === mode2.name && 
+            mode1.blockCommentStart && 
+            mode1.blockCommentStart === mode2.blockCommentStart && 
+            mode1.blockCommentEnd === mode2.blockCommentEnd && 
+            ( comments = getEnclosingBlockComments(mode1, editor, from, to)) && 
+            (comments.length === 1 || 
+            	(( comments = getEnclosingBlockComments(mode1, editor, from2, to2)) && comments.length === 0));
+    }
+
+    CodeEditorViewer.selectionCommentable = function(editor) {
+        var from = editor.getCursor('from');
+        var to = editor.getCursor('to');
+
+        if (from.line === to.line && from.ch === to.ch) {
+            return false;
+            // no selection
+        }
+
+        var mode1 = editor.getModeAt(from);
+        var mode2 = editor.getModeAt(to);
+        var comments;
+        return mode1.name === mode2.name && mode1.blockCommentStart && 
+            mode1.blockCommentStart === mode2.blockCommentStart && 
+            mode1.blockCommentEnd === mode2.blockCommentEnd && 
+            ( comments = getEnclosingBlockComments(mode1, editor, from, to)) && comments.length === 0;
+    }
 
     return CodeEditorViewer;
 });

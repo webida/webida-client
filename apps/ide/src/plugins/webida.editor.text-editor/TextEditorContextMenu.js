@@ -25,10 +25,12 @@
 
 // @formatter:off
 define([
+    'dojo/Deferred',
     'webida-lib/plugins/workbench/ui/PartContextMenu',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
+    Deferred,
     PartContextMenu,
     genetic, 
     Logger
@@ -53,12 +55,14 @@ define([
     genetic.inherits(TextEditorContextMenu, PartContextMenu, {
 
         /**
-         * Creates Menu Items
-         * @return {Object} viable menu items
+         * Creates Available Menu Items then return Thenable
+         * @return {Thenable}
          */
-        createItems: function(menuItems) {
+        getPromiseForAvailableItems: function() {
 
             var items = {};
+            var menuItems = this.getAllItems();
+            var deferred = new Deferred();
             var part = this.getPart();
             var viewer = part.getViewer();
             var widget = viewer.getAdapter();
@@ -79,7 +83,6 @@ define([
             if (history) {
                 if (history.done && history.done.length > 0) {
                     items['U&ndo'] = menuItems.editMenuItems['&Undo'];
-                    console.log('undo --> ', items['U&ndo']);
                 }
                 if (history.undone && history.undone.length > 0) {
                     items['&Redo'] = menuItems.editMenuItems['&Redo'];
@@ -129,7 +132,9 @@ define([
                 items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
             }
 
-            return items;
+            deferred.resolve(items);
+
+            return deferred;
         }
     });
 

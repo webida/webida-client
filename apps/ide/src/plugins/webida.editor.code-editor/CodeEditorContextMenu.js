@@ -25,13 +25,17 @@
 
 // @formatter:off
 define([
+    'dojo/Deferred',
     'plugins/webida.editor.text-editor/TextEditorContextMenu',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    './CodeEditorViewer'
 ], function(
+    Deferred,
     TextEditorContextMenu,
     genetic, 
-    Logger
+    Logger,
+    CodeEditorViewer
 ) {
     'use strict';
 // @formatter:on
@@ -44,8 +48,8 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function CodeEditorContextMenu(menuItems, part) {
-        logger.info('new CodeEditorContextMenu(menuItems, part)');
+    function CodeEditorContextMenu(allItems, part) {
+        logger.info('new CodeEditorContextMenu(allItems, part)');
         TextEditorContextMenu.apply(this, arguments);
     }
 
@@ -53,19 +57,77 @@ define([
     genetic.inherits(CodeEditorContextMenu, TextEditorContextMenu, {
 
         /**
-         * Creates Menu Items
-         * @return {Object} viable menu items
+         * Creates Available Menu Items then return Thenable
+         * @return {Thenable}
          */
-        createItems: function(menuItems) {
+        getPromiseForAvailableItems: function() {
 
-            var items = TextEditorContextMenu.prototype.createItems.call(this, menuItems);
+            var superDeferred = TextEditorContextMenu.prototype.getPromiseForAvailableItems.call(this);
 
-            // Source
-            var sourceItems = {};
-            sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
-            items['So&urce'] = sourceItems;
+            var deferred = new Deferred();
+            var allItems = this.getAllItems();
+            var part = this.getPart();
+            var viewer = part.getViewer();
+            var widget = viewer.getAdapter();
+            var selected = widget.getSelection();
+            var registry = this.getPartRegistry();
+            var editorParts = registry.getEditorParts();
 
-            return items;
+            superDeferred.then(function(items) {
+
+                // Source
+                var sourceItems = {};
+                // Toggle Comments
+                if (CodeEditorViewer.isLineCommentable(widget)) {
+                    sourceItems['&Toggle Line Comments'] = allItems.editMenuItems['&Source']['&Toggle Line Comments'];
+                }
+                if (CodeEditorViewer.isBlockCommentable(widget)) {
+                    sourceItems['Toggle Block Comment'] = allItems.editMenuItems['&Source']['Toggle Block Comment'];
+                }
+                if (CodeEditorViewer.selectionCommentable(widget)) {
+                    sourceItems['Comment Out Selection'] = allItems.editMenuItems['&Source']['Comment Out Selection'];
+                }
+                // Code Folding
+                sourceItems['&Fold'] = allItems.editMenuItems['&Source']['&Fold'];
+                // Beautify (All)
+                var currentModeName = widget.getMode().name;
+                if (currentModeName === 'javascript' || currentModeName === 'htmlmixed' || currentModeName === 'css') {
+                    if (selected) {
+                        sourceItems['&Beautify'] = allItems.editMenuItems['&Source']['&Beautify'];
+                    }
+                    sourceItems['B&eautify All'] = allItems.editMenuItems['&Source']['B&eautify All'];
+                }
+                items['So&urce'] = sourceItems;
+
+                // Go to
+                items['&Go to Definition'] = allItems.navMenuItems['&Go to Definition'];
+
+                if (viewer.isDefaultKeyMap()) {
+                    items['G&o to Line'] = allItems.navMenuItems['G&o to Line'];
+                }
+
+                if (viewer.isThereMatchingBracket()) {
+                    items['Go to &Matching Brace'] = allItems.navMenuItems['Go to &Matching Brace'];
+                }
+
+                //TODO: widget._ternAddon -> viewer.getPlugin('tern')
+                if (widget._ternAddon) {
+                    widget._ternAddon.request(widget, {
+                        type: 'rename',
+                        newName: 'merong',
+                        fullDocs: true
+                    }, function(error/*, data*/) {
+                        if (!error) {
+                            sourceItems['&Rename Variables'] = allItems.editMenuItems['&Source']['&Rename Variables'];
+                        }
+                        deferred.resolve(items);
+                    });
+                } else {
+                    deferred.resolve(items);
+                }
+            });
+
+            return deferred;
         }
     });
 
