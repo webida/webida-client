@@ -397,11 +397,7 @@ define([
     TextEditorPart.moveTo = function(location) {
         topic.publish('editor/open', location.filepath, {
             show: true
-        }, function(file) {
-            if (editors.getPart(file) === null) {
-                return;
-            }
-            var part = editors.getPart(file);
+        }, function(part) {
             var viewer = part.getViewer();
             if (location.start && location.end) {
                 viewer.setSelection(location.start, location.end);
@@ -435,7 +431,7 @@ define([
 
     TextEditorPart.pushCursorLocation = function(file, cursor, forced) {
         logger.info('pushCursorLocation(file, ' + cursor + ', forced)');
-        var filepath = ( typeof file === 'string') ? file : file.path;
+        var filepath = ( typeof file === 'string') ? file : file.getPath();
         var thisLocation = {
             filepath: filepath,
             cursor: cursor,
