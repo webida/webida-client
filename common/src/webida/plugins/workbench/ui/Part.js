@@ -47,6 +47,7 @@ define([
      * @typedef {Object} DataSource
      * @typedef {Object} PartModel
      * @typedef {Object} Promise
+     * @typedef {Object} Thenable
      */
 
     var logger = new Logger();
@@ -299,10 +300,11 @@ define([
 
         /**
          * Each Part should override
-         * @return {Object} Set of viable menu items
+         * @param {Object} allItems
+         * @return {Thenable}
          */
-        getContextMenuItems: function(menuItems) {
-            return {};
+        getContextMenuItems: function(allItems) {
+            return null;
         },
 
         /**

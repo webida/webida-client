@@ -35,47 +35,44 @@ define([
 // @formatter:on
 
     /**
-     * @typedef {Object} DataSource
+     * @typedef {Object} Thenable
      */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function PartContextMenu(menuItems, part) {
-        logger.info('new PartContextMenu(menuItems, part)');
+    function PartContextMenu(allItems, part) {
+        logger.info('new PartContextMenu(allItems, part)');
 
-        this.items = {};
+        this.setAllItems(allItems);
         this.setPart(part);
-        this.setItems(this.createItems(menuItems));
     }
 
 
     genetic.inherits(PartContextMenu, Object, {
 
         /**
-         * Creates Menu Items
-         * @return {Object} viable menu items
+         * Creates Available Menu Items then return Thenable
+         * @return {Thenable}
          * @abstract
          */
-        createItems: function(menuItems) {
-            throw new Error('createItems(menuItems) should be implemented by ' + this.constructor.name);
+        getPromiseForAvailableItems: function() {
+            throw new Error('getPromiseForAvailableItems() should be implemented by ' + this.constructor.name);
         },
 
         /**
-         * Sets context menu items
-         * @param {Array} items
+         * @param {Object}
          */
-        setItems: function(items) {
-            this.items = items;
+        setAllItems: function(allItems) {
+            this.allItems = allItems;
         },
 
         /**
-         * Returns viable context menu items
-         * @return {Array}
+         * @return {Object}
          */
-        getItems: function() {
-            return this.items;
+        getAllItems: function(allItems) {
+            return this.allItems;
         },
 
         /**
