@@ -70,6 +70,17 @@ define([
     genetic.inherits(Part, EventEmitter, {
 
         /**
+         * Prepares required components.
+         * Basically, Part prepares a Viewer and a PartModel for itself.
+         * But if you need to prepare different components,
+         * you can override this.
+         */
+        prepareComponents: function() {
+            logger.info('%cprepareComponents()', 'color:orange');
+            this.prepareVM();
+        },
+
+        /**
          * Creates a Viewer and a Model then binds together.
          * If you need different way for your Part,
          * override this method.
@@ -89,8 +100,14 @@ define([
             this.bindVM(createViewer, createModel);
         },
 
+        /**
+         * If two Promises createModel, createModel resolved,
+         * Bind each other with MVC Pattern.
+         * @param {Promise} createViewer
+         * @param {Promise} createModel
+         */
         bindVM: function(createViewer, createModel) {
-            logger.info('%cbindVM', 'color:orange');
+            logger.info('%cbindVM(' + createViewer + ', ' + createModel + ')', 'color:orange');
 
             var part = this;
             var eProxy = this.eventProxy;
