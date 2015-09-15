@@ -23,9 +23,11 @@
  */
 
 define([
-    '../preference-manager'
+    '../preference-manager',
+    'webida-lib/plugins/workbench/ui/promiseMap'
 ], function (
-    preferenceManager
+    preferenceManager,
+    promiseMap
 ) {
     'use strict';
 
@@ -106,7 +108,7 @@ define([
      */
     PreferenceService.prototype.getValues = function (preferenceId, callback) {
         var self = this;
-        preferenceManager.initialized.then(function () {
+        promiseMap.get('preference/load').then(function () {
             if (callback) {
                 callback(self._getRealPreferenceValues(preferenceManager.getStore(preferenceId, self.scope)));
             }

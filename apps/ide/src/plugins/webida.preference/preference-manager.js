@@ -27,6 +27,7 @@ define([
     'webida-lib/app',
     'webida-lib/app-config',
     'webida-lib/plugin-manager-0.1',
+    'webida-lib/plugins/workbench/ui/promiseMap',
     './preference-store',
     'plugins/project-configurator/project-info-service'
 ], function (
@@ -36,6 +37,7 @@ define([
     ide,
     conf,
     pluginManager,
+    promiseMap,
     Store,
     projectService
 ) {
@@ -46,6 +48,7 @@ define([
     var fsCache = ide.getFSCache();
     var valueChangeListener;
 
+    var PROMISE_LOADED = 'preference/load';
     var EXTENSION_NAME = 'webida.preference:pages';
     var PREF_FILE_NAME = 'preferences.json';
     var SCOPE = Object.freeze({
@@ -223,12 +226,11 @@ define([
                 });
         }
 
-        this.initialized = init();
-
+        promiseMap.set(PROMISE_LOADED, init());
     }
 
     PreferenceManager.prototype.initialize = function () {
-        return this.initialized;
+        return promiseMap.get(PROMISE_LOADED);
     };
 
     PreferenceManager.prototype.getStore = function (preferenceId, scope, scopeInfo) {
@@ -308,7 +310,7 @@ define([
     };
 
     PreferenceManager.prototype.setValueChangeListener = function (listener) {
-        this.initialized.then(function () {
+        promiseMap.get(PROMISE_LOADED).then(function () {
             valueChangeListener = listener;
         });
     };

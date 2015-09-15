@@ -28,6 +28,7 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/path',
+    'webida-lib/plugins/workbench/ui/promiseMap',
     './preference-manager',
     'plugins/project-configurator/project-info-service'
 ], function (
@@ -36,6 +37,7 @@ define([
     Logger,
     workspace,
     pathUtil,
+    promiseMap,
     manager,
     projectInfo
 ) {
@@ -54,7 +56,7 @@ define([
         'Preferences' : ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByContext']
     };
 
-    var managerInitialized = manager.initialize();
+    var managerInitialized = promiseMap.get('preference/load');
 
     function _getContextInfo(paths){
         var info = {
