@@ -88,7 +88,7 @@ define([
                 items = viewer.getMenuItemsUnderEdit(items, menuItems, deferred);
             }
         } else {
-			deferred.resolve(items);
+            deferred.resolve(items);
         }
         return deferred;
     }
@@ -216,21 +216,16 @@ define([
     function getContextMenuItems() {
         logger.info('getContextMenuItems()');
         var items;
-        var deferred;
         var registry = _getPartRegistry();
         var currentPart = registry.getCurrentEditorPart();
         if (!currentPart) {
             return null;
-        }
-        try {
-            deferred = new Deferred();
-            if (currentPart) {
-                items = currentPart.getContextMenuItems(menuItems);
-                deferred.resolve(items);
+        } else {
+            try {
+                return currentPart.getContextMenuItems(menuItems);
+            } catch(e) {
+                logger.error(e);
             }
-            return deferred;
-        } catch(e) {
-            logger.error(e);
         }
     }
 
