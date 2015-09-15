@@ -23,11 +23,11 @@
  */
 
 define([
-    '../preference-manager',
-    'webida-lib/plugins/workbench/ui/promiseMap'
+    'webida-lib/plugins/workbench/ui/promiseMap',
+    '../preference-manager'
 ], function (
-    preferenceManager,
-    promiseMap
+    promiseMap,
+    preferenceManager
 ) {
     'use strict';
 

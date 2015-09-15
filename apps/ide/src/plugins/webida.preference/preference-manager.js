@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 /**
  *
  * @since: 15. 8. 18
@@ -21,25 +5,25 @@
  */
 
 define([
-    'external/lodash/lodash.min',
     'dojo/topic',
-    'webida-lib/util/logger/logger-client',
+    'external/lodash/lodash.min',
+    'plugins/project-configurator/project-info-service',
     'webida-lib/app',
     'webida-lib/app-config',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/ui/promiseMap',
-    './preference-store',
-    'plugins/project-configurator/project-info-service'
+    'webida-lib/util/logger/logger-client',
+    './preference-store'
 ], function (
-    _,
     topic,
-    Logger,
+    _,
+    projectService,
     ide,
     conf,
     pluginManager,
     promiseMap,
-    Store,
-    projectService
+    Logger,
+    Store
 ) {
     'use strict';
 
@@ -48,7 +32,6 @@ define([
     var fsCache = ide.getFSCache();
     var valueChangeListener;
 
-    var PROMISE_LOADED = 'preference/load';
     var EXTENSION_NAME = 'webida.preference:pages';
     var PREF_FILE_NAME = 'preferences.json';
     var SCOPE = Object.freeze({
@@ -167,30 +150,30 @@ define([
                     resolve(fileInfo);
                 });
             }).then(function (fileInfo) {
-                var extensionsForScope = _getExtensionsByScope(fileInfo.scopeName);
-                _.forEach(extensionsForScope, function (extension) {
-                    var store = new Store(
-                        extension.id,
-                        fileInfo.scopeName,
-                        fileInfo.scopeInfo,
-                        fileInfo.filePath
-                    );
-                    store.initialValues(extension.defaultValues, fileInfo.content[extension.id] || {});
-                    var storeExist = _.findIndex(self.preferences, function (ps) {
-                        return ps.id === extension.id &&
-                            ps.scope === fileInfo.scopeName &&
-                            ps.targetFile === fileInfo.filePath;
-                    });
-                    if (storeExist > -1) {
-                        self.preferences[storeExist] = store;
-                    } else {
-                        self.preferences.push(store);
-                    }
-                    store.addValueChangeListener(function () {
-                        valueChangeListener(this);
+                    var extensionsForScope = _getExtensionsByScope(fileInfo.scopeName);
+                    _.forEach(extensionsForScope, function (extension) {
+                        var store = new Store(
+                            extension.id,
+                            fileInfo.scopeName,
+                            fileInfo.scopeInfo,
+                            fileInfo.filePath
+                        );
+                        store.initialValues(extension.defaultValues, fileInfo.content[extension.id] || {});
+                        var storeExist = _.findIndex(self.preferences, function (ps) {
+                            return ps.id === extension.id &&
+                                ps.scope === fileInfo.scopeName &&
+                                ps.targetFile === fileInfo.filePath;
+                        });
+                        if (storeExist > -1) {
+                            self.preferences[storeExist] = store;
+                        } else {
+                            self.preferences.push(store);
+                        }
+                        store.addValueChangeListener(function () {
+                            valueChangeListener(this);
+                        });
                     });
                 });
-            });
         }
 
         function _addListeners() {
@@ -226,11 +209,11 @@ define([
                 });
         }
 
-        promiseMap.set(PROMISE_LOADED, init());
+        promiseMap.set('preference/load', init());
     }
 
     PreferenceManager.prototype.initialize = function () {
-        return promiseMap.get(PROMISE_LOADED);
+        return promiseMap.get('preference/load');
     };
 
     PreferenceManager.prototype.getStore = function (preferenceId, scope, scopeInfo) {
@@ -264,7 +247,7 @@ define([
             for (var i=0; i<getStoresById.length; i++) {
                 var priority = SCOPE[getStoresById[i].scope].priority;
                 if (priority >= childPriority) {
-                   continue;
+                    continue;
                 }
                 if (!parentStore || SCOPE[parentStore.scope].priority < priority) {
                     parentStore = getStoresById[i];
@@ -310,7 +293,7 @@ define([
     };
 
     PreferenceManager.prototype.setValueChangeListener = function (listener) {
-        promiseMap.get(PROMISE_LOADED).then(function () {
+        promiseMap.get('preference/load').then(function () {
             valueChangeListener = listener;
         });
     };
@@ -320,3 +303,19 @@ define([
     }
     return _preferenceManager;
 });
+
+/*
+ * Copyright (c) 2012-2015 S-Core Co., Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
