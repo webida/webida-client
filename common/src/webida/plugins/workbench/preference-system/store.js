@@ -1,24 +1,39 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
-define(['webida-lib/app',
+// @formatter:off
+define([
+    'external/lodash/lodash.min',
+    'webida-lib/app',
     'webida-lib/plugin-manager-0.1',
-    'external/lodash/lodash.min'],
-function (app, pm, _) {
+    'webida-lib/util/logger/logger-client'
+], function(
+    _,
+    app,
+    pm,
+    Logger
+) {
     'use strict';
+// @formatter:on
+
+    var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
+
+    logger.info('store.js loaded');
 
     var preferences;
     var listeners = {};
@@ -30,23 +45,24 @@ function (app, pm, _) {
 
     var validValType = ['number', 'string', 'boolean'];
     function isValidValue(value) {
-        return validValType.indexOf(typeof value) >= 0;
+        return validValType.indexOf( typeof value) >= 0;
     }
 
     function load(done) {
-        bind.createDirectory(prefFileDir, true, function () {
-            bind.readFile(prefFilePath, function (err, content) {
+        logger.info('load(done)');
+        bind.createDirectory(prefFileDir, true, function() {
+            bind.readFile(prefFilePath, function(err, content) {
                 if (err) {
                     done(err);
                 } else {
                     try {
                         preferences = JSON.parse(content);
-                        console.info('preferences = ', preferences);
-                        if (typeof preferences !== 'object') {
+                        logger.info('preferences = ', preferences);
+                        if ( typeof preferences !== 'object') {
                             throw 'Malformed preferences: preferences must be stored in an object';
                         }
-                        _.each(preferences, function (value, key) {
-                            if (typeof key !== 'string') {
+                        _.each(preferences, function(value, key) {
+                            if ( typeof key !== 'string') {
                                 throw 'Malformed settings.json: Key type must be string';
                             }
                             if (!isValidValue(value)) {
@@ -66,13 +82,13 @@ function (app, pm, _) {
 
     var savedListeners = [];
     function save() {
-        bind.createDirectory(prefFileDir, true, function () {
-            bind.writeFile(prefFilePath, JSON.stringify(preferences), function (err) {
+        bind.createDirectory(prefFileDir, true, function() {
+            bind.writeFile(prefFilePath, JSON.stringify(preferences), function(err) {
                 if (err) {
                     console.error(err);
                 } else {
                     if (savedListeners && savedListeners.length > 0) {
-                        _.each(savedListeners, function (listener) {
+                        _.each(savedListeners, function(listener) {
                             listener();
                         });
                     }
@@ -83,7 +99,7 @@ function (app, pm, _) {
 
     function callListener(fieldId, value) {
         if (listeners[fieldId] !== undefined) {
-            _.each(listeners[fieldId], function (listener) {
+            _.each(listeners[fieldId], function(listener) {
                 try {
                     listener(value, fieldId);
                 } catch (e) {
@@ -96,19 +112,21 @@ function (app, pm, _) {
     function generateDefaults() {
         console.log('Generating preference defaults...');
         preferences = {};
-        (function () {
+        (function() {
             var pages = pm.getExtensions('workbench:preference-page');
-            pages = _.sortBy(pages, function (page) { return page.hierarchy; });
+            pages = _.sortBy(pages, function(page) {
+                return page.hierarchy;
+            });
 
-            _.each(pages, function (page) {
-                require([page.module], function (mod) {
+            _.each(pages, function(page) {
+                require([page.module], function(mod) {
                     var fieldCreator = {
                         page: page,
-                        addField: function (fieldId, fieldType, opt) {
+                        addField: function(fieldId, fieldType, opt) {
                             preferences[fieldId] = opt['default'];
                         }
                     };
-                    if (typeof mod[page.handler] === 'function') {
+                    if ( typeof mod[page.handler] === 'function') {
                         mod[page.handler](fieldCreator);
                     }
                 });
@@ -117,41 +135,41 @@ function (app, pm, _) {
     }
 
     var loadedListeners = [];
-    load(function (err) {
+    load(function(err) {
         if (err) {
             console.warn('Failed to load preferences: ' + err);
             generateDefaults();
         }
-        _.each(loadedListeners, function (listener) {
+        _.each(loadedListeners, function(listener) {
             listener();
         });
         loadedListeners = false;
     });
 
     return {
-        updateValues: function (obj) {
-            _.each(obj, function (value) {
+        updateValues: function(obj) {
+            _.each(obj, function(value) {
                 if (!isValidValue(value)) {
                     throw 'An invalid argument to the updateValues function';
                 }
             });
             _.extend(preferences, obj);
-            _.each(obj, function (value, key) {
+            _.each(obj, function(value, key) {
                 callListener(key, value);
             });
             save();
         },
 
-        getValue: function (keys) {
-            if (typeof keys === 'string') {
+        getValue: function(keys) {
+            if ( typeof keys === 'string') {
                 return preferences[keys];
             }
-            return _.map(keys, function (key) {
+            return _.map(keys, function(key) {
                 return preferences[key];
             });
         },
 
-        addLoadedListener: function (done) {
+        addLoadedListener: function(done) {
             if (loadedListeners === false) {
                 done();
             } else {
@@ -159,17 +177,17 @@ function (app, pm, _) {
             }
         },
 
-        addSavedListener: function (listener) {
+        addSavedListener: function(listener) {
             savedListeners.push(listener);
         },
 
-        addFieldChangeListener: function (fieldId, listener) {
+        addFieldChangeListener: function(fieldId, listener) {
             if (listeners[fieldId] === undefined) {
                 listeners[fieldId] = [];
             }
             listeners[fieldId].push(listener);
         },
-        removeFieldChangeListener: function (fieldId, listener) {
+        removeFieldChangeListener: function(fieldId, listener) {
             listeners[fieldId] = _.without(listeners[fieldId], listener);
         }
     };
