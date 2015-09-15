@@ -303,13 +303,8 @@ define([
         },
 
         focus: function() {
-            if (this.viewer) {
-                this.viewer.focus();
-                //TODO : getViewer()
-            } else {
-                logger.info('this.viewer not found');
-                logger.trace();
-            }
+        	logger.info('focus()');
+            this.getViewer().focus();
         },
 
         isClean: function() {

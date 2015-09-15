@@ -319,14 +319,19 @@ define([
             }
         },
 
+        /**
+         * Let this part to take focus within the workbench.
+         * Parts must assign focus to one of the widget contained
+         * in the part's parent composite.
+         */
+        focus: function() {
+            throw new Error('focus() should be implemented by ' + this.constructor.name);
+        },
+
         // ----------- TODO refactor the follwings ----------- //
 
         hide: function() {
             throw new Error('hide() should be implemented by ' + this.constructor.name);
-        },
-
-        focus: function() {
-            throw new Error('focus() should be implemented by ' + this.constructor.name);
         },
     });
 
