@@ -714,7 +714,7 @@ define([
                      'external/codemirror/addon/edit/matchbrackets'], function () {
                 setTimeout(function(self){
                 	if (self.getParentNode()) {
-                		self.createAdapter(self.getParentNode());
+                		self.createWidget(self.getParentNode());
                 	}
                 }, 0, self);
             });
@@ -874,9 +874,9 @@ define([
 		/**
 		 * @override
 		 */
-        createAdapter: function (parentNode) {
+        createWidget: function (parentNode) {
 
-            TextEditorViewer.prototype.createAdapter.call(this, parentNode);
+            TextEditorViewer.prototype.createWidget.call(this, parentNode);
 
             var self = this;
 

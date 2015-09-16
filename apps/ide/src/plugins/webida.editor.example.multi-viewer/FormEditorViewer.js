@@ -62,10 +62,10 @@ define([
         /**
          * Creates Viewer Element
          */
-        createAdapter: function(parentNode) {
+        createWidget: function(parentNode) {
             if (parentNode) {
                 var adapter = new FormEditorAdapter(this);
-                this.setAdapter(adapter);
+                this.setWidget(adapter);
                 this.setParentNode(parentNode);
                 parentNode.appendChild(adapter.getWidget());
             }
@@ -73,7 +73,7 @@ define([
 
         render: function(contents) {
             logger.info('render(' + contents + ')');
-            this.getAdapter().setContents(contents);
+            this.getWidget().setContents(contents);
         },
 
         getContextMenuItems: function(opened, items, menuItems, deferred) {
