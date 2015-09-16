@@ -181,7 +181,7 @@ define([
                 //1. formViewer
                 var formViewer = that.getFormViewer();
                 that.addViewer('FormEditor', 'Form Editor', formViewer, 0, function(parentNode) {
-                    formViewer.createAdapter(parentNode);
+                    formViewer.createWidget(parentNode);
                     that.initFormViewer();
                     formViewer.render(doc);
                 });
@@ -207,7 +207,7 @@ define([
 
         destroy: function() {
             MultiViewerEditorPart.prototype.destroy.call(this);
-            this.getViewerById('CodeEditor').destroyAdapter();
+            this.getViewerById('CodeEditor').destroyWidget();
         },
 
         addChangeListener: function(callback) {

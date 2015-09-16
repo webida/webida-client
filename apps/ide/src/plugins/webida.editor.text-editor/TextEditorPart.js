@@ -264,7 +264,7 @@ define([
             logger.info('onDestroy()');
             EditorPart.prototype.onDestroy.apply(this);
             if (this.viewer) {
-                this.viewer.destroyAdapter();
+                this.viewer.destroyWidget();
                 this.viewer = null;
             } else {
                 logger.info('this.viewer not found');

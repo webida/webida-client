@@ -229,8 +229,8 @@ define([
                     'external/codemirror/addon/edit/matchbrackets'
                 ], function() {
                 	logger.info('%cLoad CSS complete', 'color:orange');
-                    if (self.getParentNode() && !self.getAdapter()) {
-                    	self.createAdapter(self.getParentNode());
+                    if (self.getParentNode() && !self.getWidget()) {
+                    	self.createWidget(self.getParentNode());
                     }
                 });
         });
@@ -309,8 +309,8 @@ define([
             this.setOption('mode', 'text/plain');
         },
 
-        createAdapter: function(parentNode) {
-            logger.info('createAdapter(' + parentNode + ')');
+        createWidget: function(parentNode) {
+            logger.info('createWidget(' + parentNode + ')');
             if (this.editor !== undefined) {
                 return;
             }
@@ -320,12 +320,12 @@ define([
 
             //TODO : update code like followings
             //var adapter = new TextEditorAdapter(this, parentNode);
-            //this.setAdapter(adapter);
+            //this.setWidget(adapter);
             //this.setParentNode(parentNode);
             this.editor = codemirror(parentNode, this.cmOptions);
 
             //TODO : refactor
-            this.setAdapter(this.editor);
+            this.setWidget(this.editor);
 
             //TODO : This code should be moved to TextEditorAdapter
             this.editor.on('change', function(cm, change) {
@@ -392,7 +392,7 @@ define([
             }
         },
 
-        destroyAdapter: function() {
+        destroyWidget: function() {
             //unsubscribing topics
 
             if (this.resizeTopicHandler) {
