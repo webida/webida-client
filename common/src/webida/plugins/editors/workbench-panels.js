@@ -1,58 +1,60 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
+// @formatter:off
 define([
-    './plugin',
-    'webida-lib/plugins/workbench/plugin',
-    'webida-lib/plugins/workbench/ui/editorDialog',
-    'webida-lib/app',
-    'webida-lib/widgets/views/splitviewcontainer',
-    'webida-lib/widgets/views/viewmanager',
     'dojo/dom-style',
     'dojo/dom-geometry',
     'dojo/topic',
     'external/lodash/lodash.min',
+    'webida-lib/app',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workbench/ui/editorDialog',
     'webida-lib/util/logger/logger-client',
-    './LifecycleManager'
-], function (
-    editors,
-    workbench,
-    editorDialog,
-    ide,
-    SplitViewContainer,
-    vm,
+    'webida-lib/widgets/views/splitviewcontainer',
+    'webida-lib/widgets/views/viewmanager',
+    './LifecycleManager',
+    './plugin'
+], function(
     domStyle,
     geometry,
     topic,
     _,
+    ide,
+    workbench,
+    editorDialog,
     Logger,
-    LifecycleManager
+    SplitViewContainer,
+    vm,
+    LifecycleManager,
+    editors
 ) {
     'use strict';
+// @formatter:on
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-	var lastStatus;
+    var lastStatus;
 
     var lifecycleManager = LifecycleManager.getInstance();
 
     var paneElement = $('<div id="editor" tabindex="0" style="position:absolute; ' +
-            'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];
+    'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];
 
     /**
      * Compatibility
@@ -81,28 +83,31 @@ define([
         }, 'editor-tab');
         vm.addToGroup(editors.splitViewContainer, 'editorView');
 
-        topic.subscribe('editor-panel-resize', function () {
+        topic.subscribe('editor-panel-resize', function() {
             var borderContainer = editors.splitViewContainer.widgetObject;
             var children = borderContainer.getChildren();
-            var totalW = 5;  // including margin and splitter size
-            var totalH = 5;  // including margin and splitter size
+            var totalW = 5;
+            // including margin and splitter size
+            var totalH = 5;
+            // including margin and splitter size
             var width, height;
             var child;
             var i;
             var ratioW, ratioH;
-            for (i = 0; i < children.length; i++) {
+            for ( i = 0; i < children.length; i++) {
                 child = children[i];
                 totalW += geometry.getMarginBox(child.domNode).w;
                 totalH += geometry.getMarginBox(child.domNode).h;
             }
 
-            for (i = 1; i < children.length; i++) {
+            for ( i = 1; i < children.length; i++) {
                 child = children[i];
                 width = geometry.getMarginBox(child.domNode).w;
                 height = geometry.getMarginBox(child.domNode).h;
                 ratioW = ((width - 2) * 100 / totalW) + '%';
                 ratioH = ((height - 2) * 100 / totalH) + '%';
-                //console.log('total : ' +totalW+ ', content : '+ i  + ' : ' + width + ', ratio : '+ratioW);
+                //console.log('total : ' +totalW+ ', content : '+ i  + ' : ' +
+                // width + ', ratio : '+ratioW);
                 if (child.get('region') === 'right') {
                     if ($(child.domNode).css('width').split('%').length > 1) {
                         continue;
@@ -114,31 +119,31 @@ define([
                     }
                     domStyle.set(child.domNode, 'height', ratioH);
                 }
-            }            
-        
+            }
+
         });
 
         /* viewcontainer supports 'dblclick' event
-        var vcList = editors.splitViewContainer.getViewContainers();
-        _.forEach(vcList, function (vc) {
-            dojo.connect(vc.tabContainer, 'onDblClick', function (ev) {
-                if (ev.currentTarget === vc.tabContainer.domNode) {
-                    var parent = ev.srcElement.parentNode;
-                    while (parent && parent.parentNode) {
-                        if (parent === vc.tabContainer.domNode.firstElementChild) {
-                            workbench.toggleFullScreen();
-                            break;
-                        }
-                        parent = parent.parentNode;
-                    }
-                }
-            });
-        });
-        */
+         var vcList = editors.splitViewContainer.getViewContainers();
+         _.forEach(vcList, function (vc) {
+         dojo.connect(vc.tabContainer, 'onDblClick', function (ev) {
+         if (ev.currentTarget === vc.tabContainer.domNode) {
+         var parent = ev.srcElement.parentNode;
+         while (parent && parent.parentNode) {
+         if (parent === vc.tabContainer.domNode.firstElementChild) {
+         workbench.toggleFullScreen();
+         break;
+         }
+         parent = parent.parentNode;
+         }
+         }
+         });
+         });
+         */
 
         topic.subscribe('view.focused', function(event) {
-        	logger.info('view.focused');
-        	logger.trace();
+            logger.info('view.focused');
+            logger.trace();
             var view = event.view;
             //logger.info('view = ', view);
             var vc = event.viewContainer;
@@ -171,7 +176,8 @@ define([
             if (dirtyFileNames.length > 0) {
                 return "'" + dirtyFileNames.join(', ') + "' has been modified";
             }
-        } 
+        }
+
 
         topic.subscribe('view.quit', function() {
             logger.info('view.quit');
@@ -181,8 +187,10 @@ define([
                 try {
                     window.focus();
                     if (!window.opener) {
-                        alert('Quit does not work when IDE was opened by a direct URL.\n' 
+                        // @formatter:off
+                        alert('Quit does not work when IDE was opened by a direct URL.\n'
                             + 'Please close the browser tab to quit the IDE.');
+                            // @formatter:on
                     } else {
                         //window.opener = window;
                         window.close();
@@ -208,7 +216,7 @@ define([
             } else {
                 action();
             }
-        }); 
+        });
 
         ide.registerBeforeUnloadChecker('checkDirtyFiles', checkDirtyFiles);
 
@@ -234,8 +242,8 @@ define([
                 }
             });
 
-			logger.info('totalW = ', totalW);
-			logger.info('totalH = ', totalH);
+            logger.info('totalW = ', totalW);
+            logger.info('totalH = ', totalH);
 
             var tabs;
             var width = 0;
@@ -245,8 +253,8 @@ define([
             // status.viewContainers
             viewContainers.forEach(function(vc) {
                 tabs = [];
-            	width = 0;
-            	height = 0;
+                width = 0;
+                height = 0;
                 vc.getViewList().forEach(function(view) {
                     partContainer = view.partContainer;
                     tabs.push({
@@ -288,8 +296,8 @@ define([
         }
 
         lastStatus = ide.registerStatusContributorAndGetLastStatus('editor-view', getCurrentStatus);
-        
-        logger.info('lastStatus => ', lastStatus); 
+
+        logger.info('lastStatus => ', lastStatus);
 
         function recoverLastStatus() {
             logger.info('recoverLastStatus()');
@@ -303,25 +311,25 @@ define([
                 }
             }
 
-			var option;
+            var option;
 
-            lastStatus.viewContainers.forEach(function(vc, vcIndex){
-            	var siblingList = [];
-            	vc.tabs.forEach(function(tab){
-            		siblingList.push(tab.dataSourceId);
-            	});
-            	vc.tabs.forEach(function(tab, index){
-            		option = {
-            			cellIndex: vcIndex,
-            			siblingList: siblingList,
-            			openWithPart: tab.openWithPart
-            		};
-            		//setTimeout : after load preference store
-            		//TODO Refactor (Use Promise)
-            		setTimeout(function(dataSourceId, option){
-            			topic.publish('editor/open', dataSourceId, option);
-            		}, 1000, tab.dataSourceId, option);
-            	});
+            lastStatus.viewContainers.forEach(function(vc, vcIndex) {
+                var siblingList = [];
+                vc.tabs.forEach(function(tab) {
+                    siblingList.push(tab.dataSourceId);
+                });
+                vc.tabs.forEach(function(tab, index) {
+                    option = {
+                        cellIndex: vcIndex,
+                        siblingList: siblingList,
+                        openWithPart: tab.openWithPart
+                    };
+                    //setTimeout : after load preference store
+                    //TODO Refactor (Use Promise)
+                    setTimeout(function(dataSourceId, option) {
+                        topic.publish('editor/open', dataSourceId, option);
+                    }, 1000, tab.dataSourceId, option);
+                });
 
                 var viewContainers = editors.splitViewContainer.getViewContainers();
                 //console.log($(viewContainers[i].topContainer.domNode).css('width'));
@@ -338,7 +346,7 @@ define([
 
         if (lastStatus && lastStatus.viewContainers) {
             //setTimeout(function () {
-                recoverLastStatus();
+            recoverLastStatus();
             //}, 100);
         }
     }
@@ -348,37 +356,3 @@ define([
         onPanelAppended: onPanelAppended
     };
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
