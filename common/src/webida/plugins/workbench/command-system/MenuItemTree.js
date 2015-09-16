@@ -14,22 +14,36 @@
  * limitations under the License.
  */
 
-define(['require',
-        'dojo/Deferred',
-        'dojo/when',
-        'dojo/promise/all',
-        'external/lodash/lodash.min',
-        'webida-lib/plugins/workbench/preference-system/store',
-        'webida-lib/util/keyCode',
-        'plugins/webida.notification/notification-message',
-        'webida-lib/util/logger/logger-client'],
-function (require, Deferred, when, all, _, prefStore, keyCode, toastr, Logger) {
+define([
+    'dojo/Deferred',
+    'dojo/when',
+    'dojo/promise/all',
+    'external/lodash/lodash.min',
+    'plugins/webida.notification/notification-message',
+    'plugins/webida.preference/preference-service-factory',
+    'require',
+    'webida-lib/plugins/workbench/ui/promiseMap',
+    'webida-lib/util/keyCode',
+    'webida-lib/util/logger/logger-client'
+], function (
+    Deferred,
+    when,
+    all,
+    _,
+    toastr,
+    PreferenceFactory,
+    require,
+    promiseMap,
+    keyCode,
+    Logger
+) {
     'use strict';
 
 	var logger = new Logger();
 	//logger.setConfig('level', Logger.LEVELS.log);
 	//logger.off();
 
+    var preferences = PreferenceFactory.get('WORKSPACE');
     var emptyArr = [];
 
     var menuedPlugins = [];
@@ -724,8 +738,9 @@ function (require, Deferred, when, all, _, prefStore, keyCode, toastr, Logger) {
 
         var self = this;
 
-        prefStore.addLoadedListener(function () {
-            var delta = prefStore.getValue('shortcutKeysDelta:' + pluginName);
+        promiseMap.get('preference/load').then(function () {
+            //var delta = prefStore.getValue('shortcutKeysDelta:' + pluginName);
+            var delta = preferences.getValues('shortcutKeysDelta:' + pluginName);
             if (delta) {
                 try {
                     delta = JSON.parse(delta);
@@ -1083,9 +1098,11 @@ function (require, Deferred, when, all, _, prefStore, keyCode, toastr, Logger) {
         console.assert(!errMsg);
 
         if (!restoring) {
-            var changed = {}, delta = getShortcutDelta(menuItemTree._wholeItems);
-            changed['shortcutKeysDelta:' + menuItemTree._pluginName] = JSON.stringify(delta);
-            prefStore.updateValues(changed);
+            //var changed = {};
+            var delta = getShortcutDelta(menuItemTree._wholeItems);
+            //changed['shortcutKeysDelta:' + menuItemTree._pluginName] = JSON.stringify(delta);
+            //prefStore.updateValues(changed);
+            preferences.setValues('shortcutKeysDelta:' + menuItemTree._pluginName, JSON.stringify(delta));
         }
     }
 

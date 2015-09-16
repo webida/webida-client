@@ -22,50 +22,45 @@
  * @see TextEditorPart
  * @since: 2015.06.23
  * @author: hw.shim
- * 
+ *
  */
 
 define([
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
     'plugins/webida.preference/preference-service-factory'
-], function(
-	genetic,
-	Logger,
-    PreferenceFactory
-) {
-	'use strict';
+], function (genetic,
+             Logger,
+             PreferenceFactory) {
+    'use strict';
 
-	var logger = new Logger();
-	logger.off();
+    var logger = new Logger();
+    logger.off();
 
     var preferences = PreferenceFactory.get('WORKSPACE');
 
-
-	function EditorPreference(preferenceIds, viewer) {
-		logger.info('new EditorPreference('+preferenceIds+', '+viewer+')');
-		var that = this;
-		this.configs = null;
-		//this.storage = preferenceService;
+    function EditorPreference(preferenceIds, viewer) {
+        var that = this;
+        logger.info('new EditorPreference(' + preferenceIds + ', ' + viewer + ')');
+        this.configs = null;
         this.preferenceIds = preferenceIds;
-		this.viewer = viewer;
-		this.listener = function (values) {
+        this.viewer = viewer;
+        this.listener = function (values) {
             for (var key in values) {
                 if (values.hasOwnProperty(key)) {
                     that.setField(key, values[key]);
                 }
             }
-		}
-	}
+        };
+    }
 
-	genetic.inherits(EditorPreference, Object, {
-		setFields : function(configs){
-			logger.info('setFields('+configs+')');
-			var that = this;
-			var viewer = this.viewer;
-			this.configs = configs;
+    genetic.inherits(EditorPreference, Object, {
+        setFields: function (configs) {
+            logger.info('setFields(' + configs + ')');
+            var that = this;
+            this.configs = configs;
 
-            for (var i=0; i<that.preferenceIds.length; i++) {
+            for (var i = 0; i < that.preferenceIds.length; i++) {
                 preferences.getValues(that.preferenceIds[i], function (values) {
                     for (var key in values) {
                         if (values.hasOwnProperty(key)) {
@@ -75,40 +70,33 @@ define([
                 });
                 preferences.addFieldChangeListener(that.preferenceIds[i], that.listener);
             }
-
-	        /*this.storage.addLoadedListener(function () {
-	            Object.keys(that.configs).forEach(function (key) {
-	                that.setField(key, that.storage.getValue(key));
-	                if(typeof that.storage.addFieldChangeListener === 'function'){
-	                	that.storage.addFieldChangeListener(key, that.listener);
-	                }
-	            });
-	        });*/
-		},
-		unsetFields : function(){
-			logger.info('unsetFields()');
-	    	var that = this;
-            for (var i=0; i<that.preferenceIds.length; i++) {
+        },
+        unsetFields: function () {
+            logger.info('unsetFields()');
+            var that = this;
+            for (var i = 0; i < that.preferenceIds.length; i++) {
                 preferences.addFieldChangeListener(that.preferenceIds[i], that.listener);
             }
-            /*Object.keys(this.configs).forEach(function (key) {
-            	if(typeof that.storage.removeFieldChangeListener === 'function'){
-            		that.storage.removeFieldChangeListener(key, that.listener);
-            	}
-            });*/
-		},
-		setField : function(key, value){
-			//logger.info('setField('+key+', '+value+')');
-			var config = this.configs[key];
+        },
+        setField: function (key, value) {
+            //logger.info('setField('+key+', '+value+')');
+            var config = this.configs[key];
             if (config) {
                 var setter = config[0];
-                if (value === undefined && config.length > 1) {
+                /*if (value === undefined && config.length > 1) {
                     value = config[1];
-                }
+                }*/
                 this.viewer[setter](value);
             }
-		}
-	});
+        },
+        getField: function (id, key, callback) {
+            return preferences.getValue(id, key, function (value) {
+                if (callback) {
+                    callback(value);
+                }
+            });
+        }
+    });
 
-	return EditorPreference;
+    return EditorPreference;
 });
