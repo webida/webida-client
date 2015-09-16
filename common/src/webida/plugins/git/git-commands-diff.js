@@ -16,7 +16,7 @@
 
 define(['require',
         'webida-lib/app',
-        'webida-lib/plugins/workbench/preference-system/store',
+        'plugins/webida.preference/preference-service-factory',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
         'plugins/webida.notification/notification-message',
         'dojo/Deferred',
@@ -28,18 +28,19 @@ define(['require',
         './lib/jsdifflib/diffview',
         './lib/jsdifflib/difflib'
        ],
-function (require, ide, preferences, ButtonedDialog, toastr, Deferred,
+function (require, ide, PreferenceFactory, ButtonedDialog, toastr, Deferred,
            registry, async, git, gitviewlog, GitPreferences, diffview, difflib) {
     'use strict';
 
     var fsCache = ide.getFSCache();
-
+    var preferences = PreferenceFactory.get('WORKSPACE');
     // constructor
     var GitDiff = function () {
     };
 
     GitDiff.prototype._getLinesOfContext = function () {
-        var linesOfContext = preferences.getValue(GitPreferences.getKey(GitPreferences.LINES_OF_CONTEXT));
+        var linesOfContext = preferences.getValue(GitPreferences.PREFIX,
+            GitPreferences.getKey(GitPreferences.LINES_OF_CONTEXT));
         return linesOfContext || 10;
     };
 

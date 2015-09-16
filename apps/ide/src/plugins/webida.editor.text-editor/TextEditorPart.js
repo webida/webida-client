@@ -44,7 +44,6 @@ define([
     'webida-lib/plugins/workbench/ui/partModelProvider',
     'webida-lib/plugins/workbench/ui/PartRegistry',
     'webida-lib/plugins/workbench/ui/Viewer',
-    'webida-lib/plugins/workbench/preference-system/store', // TODO: issue #12055
     './configloader',
     './Document',
     './preferences/preference-config',
@@ -67,7 +66,6 @@ define([
     partModelProvider,
     PartRegistry,
     Viewer,
-    store,
     configloader,
     Document,
     preferenceConfig,
@@ -182,17 +180,19 @@ define([
             });
         },
 
-        initializePreferences: function() {
+        initializePreferences: function () {
             logger.info('initializePreferences()');
             var viewer = this.getViewer();
             var file = this.file;
             //preferences
             this.preferences = new EditorPreference(preferenceIds, viewer);
-            //editorconfig
             this.preferences.setFields(this.getPreferences());
-            if (store.getValue('webida.editor.text-editor:editorconfig') === true) {
-                configloader.editorconfig(viewer, file);
-            }
+            //editorconfig
+            this.preferences.getField('texteditor', 'webida.editor.text-editor:editorconfig', function (value) {
+                if (value === true) {
+                    configloader.editorconfig(viewer, file);
+                }
+            });
         },
 
         /**

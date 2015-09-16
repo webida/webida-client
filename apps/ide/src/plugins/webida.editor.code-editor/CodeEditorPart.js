@@ -32,7 +32,6 @@ define([
     'external/lodash/lodash.min',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'plugins/webida.editor.text-editor/TextEditorPart',
-    'webida-lib/plugins/workbench/preference-system/store',
     'webida-lib/plugins/editors/EditorPreference',
     './preferences/preference-config',
     './CodeEditorContextMenu',
@@ -46,7 +45,6 @@ define([
     _,
     EditorPart,
     TextEditorPart,
-    store,
     EditorPreference,
     preferenceConfig,
     CodeEditorContextMenu,
@@ -79,17 +77,19 @@ define([
             TextEditorPart.prototype.initialize.call(this);
         },
 
-        initializePreferences: function() {
-            logger.info('initializePreferences()');
-            TextEditorPart.prototype.initializePreferences.call(this);
+        initializePreferences: function () {
             var viewer = this.getViewer();
             var file = this.file;
+            logger.info('initializePreferences()');
+            TextEditorPart.prototype.initializePreferences.call(this);
             //viewer.addDeferredAction(function (viewer) {
             //   viewer.editor.setOption('overviewRuler', false);
             //});
-            if (store.getValue('webida.editor.text-editor:jshintrc') !== false) {
-                configloader.jshintrc(viewer, file);
-            }
+            this.preferences.getField('codeeditor', 'webida.editor.text-editor:jshintrc', function (value) {
+                if (value !== false) {
+                    configloader.jshintrc(viewer, file);
+                }
+            });
         },
 
         /**
@@ -110,7 +110,7 @@ define([
          * @returns CodeEditorViewer
          * @override
          */
-        getViewerClass: function() {
+        getViewerClass: function () {
             return CodeEditorViewer;
         },
 
@@ -118,7 +118,7 @@ define([
          * @returns preferenceConfig for CodeEditor
          * @override
          */
-        getPreferences: function() {
+        getPreferences: function () {
             return preferenceConfig;
         },
 
@@ -153,9 +153,9 @@ define([
             }
         },
 
-        getContextMenuClass: function() {
+        getContextMenuClass: function () {
             return CodeEditorContextMenu;
-        },
+        }
     });
 
     return CodeEditorPart;

@@ -50,6 +50,48 @@ define([
             return self._getRealPreferenceValues(preferenceManager.getStore(preferenceId, self.scope, {
                 projectName: self.projectName
             }));
+        },
+        setValues: function (preferenceId, values, callback) {
+            var store = preferenceManager.getStore(preferenceId, self.scope, {
+                projectName: self.projectName
+            });
+            if (values) {
+                for (var key in values) {
+                    if (values.hasOwnProperty(key)) {
+                        store.setValue(key, values[key]);
+                    }
+                }
+                store.apply(function (invalid) {
+                    if (invalid) {
+                        if (callback) {
+                            callback(invalid);
+                        }
+                    } else {
+                        preferenceManager.flushPreference(self.scope, {projectName: self.projectName});
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                });
+            }
+        },
+        setValue: function (preferenceId, key, value, callback) {
+            var store = preferenceManager.getStore(preferenceId, self.scope, {
+                projectName: self.projectName
+            });
+            store.setValue(key, value);
+            store.apply(function (invalid) {
+                if (invalid) {
+                    if (callback) {
+                        callback(invalid);
+                    }
+                } else {
+                    preferenceManager.flushPreference(self.scope, {projectName: self.projectName});
+                    if (callback) {
+                        callback();
+                    }
+                }
+            });
         }
     });
 

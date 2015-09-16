@@ -133,5 +133,45 @@ define([
         return result[key];
     };
 
+    PreferenceService.prototype.setValues = function (preferenceId, values, callback) {
+        var store = preferenceManager.getStore(preferenceId, self.scope);
+        if (values) {
+            for (var key in values) {
+                if (values.hasOwnProperty(key)) {
+                    store.setValue(key, values[key]);
+                }
+            }
+            store.apply(function (invalid) {
+                if (invalid) {
+                    if (callback) {
+                        callback(invalid);
+                    }
+                } else {
+                    preferenceManager.flushPreference(self.scope);
+                    if (callback) {
+                        callback();
+                    }
+                }
+            });
+        }
+    };
+
+    PreferenceService.prototype.setValue = function (preferenceId, key, value, callback) {
+        var store = preferenceManager.getStore(preferenceId, self.scope);
+        store.setValue(key, value);
+        store.apply(function (invalid) {
+            if (invalid) {
+                if (callback) {
+                    callback(invalid);
+                }
+            } else {
+                preferenceManager.flushPreference(self.scope);
+                if (callback) {
+                    callback();
+                }
+            }
+        });
+    };
+
     return PreferenceService;
 });
