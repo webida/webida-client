@@ -23,6 +23,7 @@ define([
     'webida-lib/app',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/editorDialog',
+    'webida-lib/plugins/workbench/ui/promiseMap',
     'webida-lib/util/logger/logger-client',
     'webida-lib/widgets/views/splitviewcontainer',
     'webida-lib/widgets/views/viewmanager',
@@ -36,6 +37,7 @@ define([
     ide,
     workbench,
     editorDialog,
+    promiseMap,
     Logger,
     SplitViewContainer,
     vm,
@@ -345,9 +347,9 @@ define([
         }
 
         if (lastStatus && lastStatus.viewContainers) {
-            //setTimeout(function () {
-            recoverLastStatus();
-            //}, 100);
+            promiseMap.get('preference/load').then(function() {
+                recoverLastStatus();
+            });
         }
     }
 
