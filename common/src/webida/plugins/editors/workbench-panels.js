@@ -326,11 +326,7 @@ define([
                         siblingList: siblingList,
                         openWithPart: tab.openWithPart
                     };
-                    //setTimeout : after load preference store
-                    //TODO Refactor (Use Promise)
-                    setTimeout(function(dataSourceId, option) {
-                        topic.publish('editor/open', dataSourceId, option);
-                    }, 1000, tab.dataSourceId, option);
+                    topic.publish('editor/open', tab.dataSourceId, option);
                 });
 
                 var viewContainers = editors.splitViewContainer.getViewContainers();
