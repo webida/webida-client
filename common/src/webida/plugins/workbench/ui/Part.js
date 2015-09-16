@@ -70,62 +70,77 @@ define([
     genetic.inherits(Part, EventEmitter, {
 
         /**
-         * Creates Viewer(s) and Model,
-         * then binds all members together.
-         * If different way is required override this method.
+         * Prepares required components.
+         * Basically, Part prepares a Viewer and a PartModel for itself.
+         * But if you need to prepare different components,
+         * you can override this.
+         */
+        prepareComponents: function() {
+            logger.info('%cprepareComponents()', 'color:orange');
+            this.prepareVM();
+        },
+
+        /**
+         * Creates a Viewer and a Model then binds together.
+         * If you need different way for your Part,
+         * override this method.
          */
         prepareVM: function() {
             logger.info('%cprepareVM()', 'color:orange');
 
             var container = this.getContainer();
 
-            //1. Create Viewer(s)
-            var createViewers = this.promiseFor(Viewer, container.getContentNode());
+            //1. Create Viewer
+            var createViewer = this.promiseFor(Viewer, container.getContentNode());
 
             //2. Create Model
-            var createModels = this.promiseFor(PartModel);
+            var createModel = this.promiseFor(PartModel);
 
             //3. Binds events then sets inital contents for the view
-            this.bindVM(createViewers, createModels);
+            this.bindVM(createViewer, createModel);
         },
 
-        bindVM: function(createViewers, createModels) {
-            logger.info('%cbindVM', 'color:orange');
+        /**
+         * If two Promises createModel, createModel resolved,
+         * Bind each other with MVC Pattern.
+         * @param {Promise} createViewer
+         * @param {Promise} createModel
+         */
+        bindVM: function(createViewer, createModel) {
+            logger.info('%cbindVM(' + createViewer + ', ' + createModel + ')', 'color:orange');
 
             var part = this;
             var eProxy = this.eventProxy;
             var container = this.getContainer();
 
-            Promise.all([createViewers, createModels]).then(function(results) {
+            Promise.all([createViewer, createModel]).then(function(result) {
 
-                var viewers = results[0];
-                var models = results[1];
-                var model;
+                var viewer = result[0];
+                var model = result[1];
 
-                viewers.forEach(function(viewer, i) {
-                    //a view per a model
-                    model = models[i];
-                    //Model listen to viewer's content change
-                    eProxy.on(viewer, Viewer.CONTENT_CHANGE, function(request) {
-                        // @formatter:off
-                        // TODO : Consider the followings
-                        // var command = part.getCommand(request);
-                        // commandStack.execute(command);
-                        // @formatter:on
-                        model.update(request);
-                    });
-                    //Viewer listen to model's content change
-                    eProxy.on(model, PartModel.CONTENTS_CHANGE, function(request) {
-                        viewer.render(request);
-                        container.updateDirtyState();
-                    });
-                    //Viewer listen to container's size change
-                    eProxy.on(container, 'resize', function(changeSize) {
-                        viewer.fitSize();
-                    });
-                    //Render initial model
-                    viewer.refresh(model.getContents());
+                //Model listen to viewer's content change
+                eProxy.on(viewer, Viewer.CONTENT_CHANGE, function(request) {
+                    // @formatter:off
+                    // TODO : Consider the followings
+                    // var command = part.getCommand(request);
+                    // commandStack.execute(command);
+                    // @formatter:on
+                    model.update(request);
                 });
+
+                //Viewer listen to model's content change
+                eProxy.on(model, PartModel.CONTENTS_CHANGE, function(request) {
+                    viewer.render(request);
+                    container.updateDirtyState();
+                });
+
+                //Viewer listen to container's size change
+                eProxy.on(container, 'resize', function(changeSize) {
+                    viewer.fitSize();
+                });
+
+                //Render initial model
+                viewer.refresh(model.getContents());
 
                 //Notify user can navigate contents
                 part.emit(Part.CONTENT_READY, part);
@@ -147,31 +162,17 @@ define([
             var part = this;
             return new Promise(function(resolve, reject) {
                 try {
-                    var objs = part['create'+Type](param);
-                    if (!( objs instanceof Array)) {
-                        if (!( objs instanceof Type)) {
-                            // @formatter:off
-                            throw new Error(part.constructor.name
-                            	+ ' create' + Type + '(' + (param || '') + ') method should return '
-                            	+ Type + ' or array of ' + Type + 's'); // @formatter:on
-                        } else {
-                            objs = [objs];
-                        }
-                    }
-                    var promises = objs.map(function(obj) {
-                        return new Promise(function(resolve, reject) {
-                            obj.once(Type.READY, function(obj) {
-                                if ( obj instanceof Type) {
-                                    resolve(obj);
-                                }
-                            });
+                    var obj = part['create'+Type](param);
+                    if ( obj instanceof Type) {
+                        obj.once(Type.READY, function(obj) {
+                            resolve(obj);
                         });
-                    });
-                    Promise.all(promises).then(function(objs) {
-                        resolve(objs);
-                    }, function(error) {
-                        logger.error(error);
-                    });
+                    } else {
+                        // @formatter:off
+                        throw new Error(part.constructor.name + ' create' + Type 
+                            + '(' + (param || '') + ') method should return ' + Type);
+                        // @formatter:on
+                    }
                 } catch(e) {
                     reject(e);
                 }
@@ -242,7 +243,9 @@ define([
          * Convenient method for PartContainer.PART_DESTROYED event
          */
         onDestroy: function() {
-            this.eventProxy.offAll();
+            if (this.eventProxy) {
+                this.eventProxy.offAll();
+            }
         },
 
         /**
@@ -316,14 +319,19 @@ define([
             }
         },
 
+        /**
+         * Let this part to take focus within the workbench.
+         * Parts must assign focus to one of the widget contained
+         * in the part's parent composite.
+         */
+        focus: function() {
+            throw new Error('focus() should be implemented by ' + this.constructor.name);
+        },
+
         // ----------- TODO refactor the follwings ----------- //
 
         hide: function() {
             throw new Error('hide() should be implemented by ' + this.constructor.name);
-        },
-
-        focus: function() {
-            throw new Error('focus() should be implemented by ' + this.constructor.name);
         },
     });
 

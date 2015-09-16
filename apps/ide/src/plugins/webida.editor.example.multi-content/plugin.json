@@ -1,0 +1,19 @@
+{
+    "name": "webida.editor.example.multi-content",
+    "description": "Multi Content Editor Example",
+    "version": "0.1.0",
+    "requirement": "webida.common.editors",
+    "extensions" : {
+
+        "webida.common.editors:editor" : {
+            "name" : "Multi Content Editor Example",
+            "editorPart" : "MultiContentExampleEditorPart",
+            "fileValueRequired" : true,
+            "handledFileExt" : [ "xml" ],
+            "handledMimeTypes" : [],
+            "handledFileNames" : [ "multi-content.xml" ],
+            "unhandledFileExt" : [],
+            "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
+        }
+    }
+}

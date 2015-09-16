@@ -136,9 +136,8 @@ define([
             }
             this.emit(PartContainer.PART_CREATED);
 
-            //3. Creates Viewer(s) and Model,
-            //   then binds all members together
-            part.prepareVM();
+            //3. Prepares Part's components
+            part.prepareComponents();
         },
 
         /**
