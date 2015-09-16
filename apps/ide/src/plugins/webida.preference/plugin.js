@@ -23,21 +23,23 @@
  */
 
 define([
-    'external/lodash/lodash.min',
     'dojo/topic',
-    'webida-lib/util/logger/logger-client',
+    'external/lodash/lodash.min',
+    'plugins/project-configurator/project-info-service',
+    'webida-lib/plugins/workbench/ui/promiseMap',
     'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/logger/logger-client',
     'webida-lib/util/path',
-    './preference-manager',
-    'plugins/project-configurator/project-info-service'
+    './preference-manager'
 ], function (
-    _,
     topic,
-    Logger,
+    _,
+    projectInfo,
+    promiseMap,
     workspace,
+    Logger,
     pathUtil,
-    manager,
-    projectInfo
+    manager
 ) {
     'use strict';
 
@@ -54,7 +56,7 @@ define([
         'Preferences' : ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByContext']
     };
 
-    var managerInitialized = manager.initialize();
+    var managerInitialized = promiseMap.get('preference/load');
 
     function _getContextInfo(paths){
         var info = {

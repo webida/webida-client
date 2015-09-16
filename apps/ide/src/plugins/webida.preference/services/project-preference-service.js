@@ -23,13 +23,13 @@
  */
 
 define([
-    '../preference-manager',
+    'webida-lib/util/genetic',
     './preference-service',
-    'webida-lib/util/genetic'
+    '../preference-manager'
 ], function (
-    preferenceManager,
+    genetic,
     PreferenceService,
-    genetic
+    preferenceManager
 ) {
     'use strict';
     function ProjectPreferenceService(scopeName, projectName) {

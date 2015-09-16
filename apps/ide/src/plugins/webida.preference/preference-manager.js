@@ -21,23 +21,25 @@
  */
 
 define([
-    'external/lodash/lodash.min',
     'dojo/topic',
-    'webida-lib/util/logger/logger-client',
+    'external/lodash/lodash.min',
+    'plugins/project-configurator/project-info-service',
     'webida-lib/app',
     'webida-lib/app-config',
     'webida-lib/plugin-manager-0.1',
-    './preference-store',
-    'plugins/project-configurator/project-info-service'
+    'webida-lib/plugins/workbench/ui/promiseMap',
+    'webida-lib/util/logger/logger-client',
+    './preference-store'
 ], function (
-    _,
     topic,
-    Logger,
+    _,
+    projectService,
     ide,
     conf,
     pluginManager,
-    Store,
-    projectService
+    promiseMap,
+    Logger,
+    Store
 ) {
     'use strict';
 
@@ -164,30 +166,30 @@ define([
                     resolve(fileInfo);
                 });
             }).then(function (fileInfo) {
-                var extensionsForScope = _getExtensionsByScope(fileInfo.scopeName);
-                _.forEach(extensionsForScope, function (extension) {
-                    var store = new Store(
-                        extension.id,
-                        fileInfo.scopeName,
-                        fileInfo.scopeInfo,
-                        fileInfo.filePath
-                    );
-                    store.initialValues(extension.defaultValues, fileInfo.content[extension.id] || {});
-                    var storeExist = _.findIndex(self.preferences, function (ps) {
-                        return ps.id === extension.id &&
-                            ps.scope === fileInfo.scopeName &&
-                            ps.targetFile === fileInfo.filePath;
-                    });
-                    if (storeExist > -1) {
-                        self.preferences[storeExist] = store;
-                    } else {
-                        self.preferences.push(store);
-                    }
-                    store.addValueChangeListener(function () {
-                        valueChangeListener(this);
+                    var extensionsForScope = _getExtensionsByScope(fileInfo.scopeName);
+                    _.forEach(extensionsForScope, function (extension) {
+                        var store = new Store(
+                            extension.id,
+                            fileInfo.scopeName,
+                            fileInfo.scopeInfo,
+                            fileInfo.filePath
+                        );
+                        store.initialValues(extension.defaultValues, fileInfo.content[extension.id] || {});
+                        var storeExist = _.findIndex(self.preferences, function (ps) {
+                            return ps.id === extension.id &&
+                                ps.scope === fileInfo.scopeName &&
+                                ps.targetFile === fileInfo.filePath;
+                        });
+                        if (storeExist > -1) {
+                            self.preferences[storeExist] = store;
+                        } else {
+                            self.preferences.push(store);
+                        }
+                        store.addValueChangeListener(function () {
+                            valueChangeListener(this);
+                        });
                     });
                 });
-            });
         }
 
         function _addListeners() {
@@ -223,12 +225,11 @@ define([
                 });
         }
 
-        this.initialized = init();
-
+        promiseMap.set('preference/load', init());
     }
 
     PreferenceManager.prototype.initialize = function () {
-        return this.initialized;
+        return promiseMap.get('preference/load');
     };
 
     PreferenceManager.prototype.getStore = function (preferenceId, scope, scopeInfo) {
@@ -262,7 +263,7 @@ define([
             for (var i=0; i<getStoresById.length; i++) {
                 var priority = SCOPE[getStoresById[i].scope].priority;
                 if (priority >= childPriority) {
-                   continue;
+                    continue;
                 }
                 if (!parentStore || SCOPE[parentStore.scope].priority < priority) {
                     parentStore = getStoresById[i];
@@ -308,7 +309,7 @@ define([
     };
 
     PreferenceManager.prototype.setValueChangeListener = function (listener) {
-        this.initialized.then(function () {
+        promiseMap.get('preference/load').then(function () {
             valueChangeListener = listener;
         });
     };
