@@ -113,7 +113,6 @@ define([
             var model = new (this.getModelClass())();
             this.setModel(model);
             this.getDataSource().getData(function(data) {
-                model.setSerialized(data);
                 model.createContents(data);
                 that._execFunc(callback, model);
                 //Let's give a chance to this model

@@ -67,21 +67,6 @@ define([
         },
 
         /**
-         * @abstract
-         * @param {String} data Serialized original data, such as Ajax response.
-         */
-        setSerialized: function(data) {
-            throw new Error('setSerialized(data) should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * @return {String} Serialized data to save
-         */
-        getSerialized: function() {
-            throw new Error('getSerialized() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
          * Serializes model to a string
          * @return {String} Serialized Data
          */

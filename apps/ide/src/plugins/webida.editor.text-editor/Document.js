@@ -75,20 +75,6 @@ define([
         },
 
         /**
-         * @param {String} data Serialized original data, such as Ajax response.
-         */
-        setSerialized: function(data) {
-            this.serialized = data;
-        },
-
-        /**
-         * @return {String} Serialized data to save
-         */
-        getSerialized: function() {
-            return this.serialized;
-        },
-
-        /**
          * Serializes model to a string
          * For Document, just return it's working text.
          * @return {String} Serialized Data
