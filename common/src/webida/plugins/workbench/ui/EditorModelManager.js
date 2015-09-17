@@ -79,8 +79,7 @@ define([
                 var that = this;
                 var model = this.getModel();
                 var dataSource = this.getDataSource();
-                model.setSerialized(model.serialize());
-                dataSource.setData(model.getSerialized(), function(data) {
+                dataSource.setData(model.serialize(), function(data) {
                     callback(model);
                 });
             }
