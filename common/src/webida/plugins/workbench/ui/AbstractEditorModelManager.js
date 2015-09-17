@@ -113,7 +113,6 @@ define([
             var model = new (this.getModelClass())();
             this.setModel(model);
             this.getDataSource().getData(function(data) {
-                that.setSavedData(data);
                 model.setSerialized(data);
                 model.createContents(data);
                 that._execFunc(callback, model);
@@ -152,7 +151,6 @@ define([
                 this.setModel(model);
                 if (persistence.getFlag(Persistence.READ) === true) {
                     //Model and data exists
-                    this.setSavedData(model.getSerialized());
                     this._execFunc(callback, model);
                     setTimeout(function() {
                         logger.info('model.emit(PartModel.READY, model)');
@@ -167,7 +165,6 @@ define([
                     //1) set this ModelManager's saved data
                     //2) then execute callback.
                     model.once(PartModel.READY, function(model) {
-                        that.setSavedData(model.getSerialized());
                         that._execFunc(callback, model);
                     });
                 }
@@ -190,6 +187,16 @@ define([
          */
         getDataSource: function() {
             return this.dataSource;
+        },
+
+        /**
+         * For the EditorPart, saved data could be retrived
+         * from dataSource. So setSavedData() is not required.
+         * @override
+         * @return {string}
+         */
+        getSavedData: function() {
+            return this.getDataSource().getPersistence().getContents();
         }
     });
 

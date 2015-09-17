@@ -81,7 +81,6 @@ define([
                 var dataSource = this.getDataSource();
                 model.setSerialized(model.serialize());
                 dataSource.setData(model.getSerialized(), function(data) {
-                    that.setSavedData(data);
                     callback(model);
                 });
             }
