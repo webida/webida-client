@@ -51,6 +51,27 @@ define([
 
     genetic.inherits(EditorModel, PartModel, {
 
+        /**
+         * Serializes model to a string
+         * @return {String} Serialized Data
+         */
+        serialize: function() {
+            throw new Error('serialize() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @param {Object} contents
+         */
+        setContents: function(contents) {
+            this.contents = contents;
+        },
+
+        /**
+         * @return {Object}
+         */
+        getContents: function() {
+            return this.contents;
+        }
     });
 
     return EditorModel;
