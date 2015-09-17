@@ -71,7 +71,6 @@ define([
          * @param {String} data Source data to build new contents of the model.
          */
         createContents: function(data) {
-            this.setSerialized(data);
             this.setContents(data);
         },
 
