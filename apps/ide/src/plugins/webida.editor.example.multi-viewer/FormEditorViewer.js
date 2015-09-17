@@ -50,8 +50,8 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function FormEditorViewer() {
-        logger.info('new FormEditorViewer()');
+    function FormEditorViewer(parentNode) {
+        logger.info('new FormEditorViewer(' + parentNode + ')');
         EditorViewer.apply(this, arguments);
         this.form = null;
     }
@@ -66,7 +66,6 @@ define([
             if (parentNode) {
                 var adapter = new FormEditorAdapter(this);
                 this.setWidget(adapter);
-                this.setParentNode(parentNode);
                 parentNode.appendChild(adapter.getWidget());
             }
         },

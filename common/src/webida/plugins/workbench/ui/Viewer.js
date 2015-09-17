@@ -50,15 +50,14 @@ define([
 
     var _viewerId = 0;
 
-    function Viewer() {
-        logger.info('new Viewer()');
+    function Viewer(parentNode) {
+        logger.info('new Viewer(' + parentNode + ')');
         this._viewerId = ++_viewerId;
-
-        /** @type {HTMLElement} */
-        this.parentNode = null
 
         /** @type {WidgetAdapter} */
         this.widget = null;
+
+        this.setParentNode(parentNode);
     }
 
 
