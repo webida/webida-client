@@ -677,7 +677,6 @@ define([
     	TextEditorViewer.apply(this, arguments);
         var self = this;
         this.elem = elem;
-        this.setParentNode(elem);
         this.file = file;
         this.options = {};
         this.options.extraKeys = {

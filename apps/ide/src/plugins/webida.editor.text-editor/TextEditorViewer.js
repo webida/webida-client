@@ -190,8 +190,6 @@ define([
         logger.info('%cnew TextEditorViewer(' + elem + ', file, startedListener)', 'color:green');
         EditorViewer.apply(this, arguments);
         var self = this;
-        this.elem = elem;
-        this.setParentNode(elem);
         this.file = file;
         this.options = {};
         this.options.extraKeys = {
