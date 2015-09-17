@@ -51,8 +51,6 @@ define([
 
         PartModel.call(this, text);
 
-        this.text = '';
-
         if ( typeof text === 'undefined' || text === null) {
             text = '';
         }
@@ -80,22 +78,7 @@ define([
          * @return {String} Serialized Data
          */
         serialize: function() {
-            return this.text;
-        },
-
-        /**
-         * @param {string} text
-         * @param {Viewer} [viewer]
-         */
-        setContents: function(text, viewer) {
-            this.text = text;
-        },
-
-        /**
-         * @return {string}
-         */
-        getContents: function() {
-            return this.text;
+            return this.getContents();
         },
 
         /**
@@ -156,7 +139,7 @@ define([
                 if (this.getLength() > 10) {
                     suffix = '...';
                 }
-                res += '(' + this.text.substr(0, 10) + suffix + ')';
+                res += '(' + this.getContents().substr(0, 10) + suffix + ')';
             }
             return res;
         }
