@@ -92,6 +92,9 @@ define([
     });
 
     /** @constant {string} */
+    PartModel.CONTENTS_CREATED = 'contentsCreated';
+
+    /** @constant {string} */
     PartModel.CONTENTS_CHANGE = 'contentsChange';
 
     /** @constant {string} */

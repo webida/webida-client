@@ -118,6 +118,12 @@ define([
                 var viewer = result[0];
                 var model = result[1];
 
+                //Refresh model's contents
+                eProxy.on(model, PartModel.CONTENTS_CREATED, function(contents) {
+                    viewer.refresh(contents);
+                    container.updateDirtyState();
+                });
+
                 //Model listen to viewer's content change
                 eProxy.on(viewer, Viewer.CONTENT_CHANGE, function(request) {
                     // @formatter:off
@@ -139,7 +145,7 @@ define([
                     viewer.fitSize();
                 });
 
-                //Render initial model
+                //Refresh initial model
                 viewer.refresh(model.getContents());
 
                 //Notify user can navigate contents

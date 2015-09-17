@@ -70,6 +70,7 @@ define([
          */
         createContents: function(data) {
             this.setContents(data);
+            this.emit(PartModel.CONTENTS_CREATED, data);
         },
 
         /**
