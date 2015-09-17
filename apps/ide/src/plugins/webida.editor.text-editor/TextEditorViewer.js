@@ -186,55 +186,6 @@ define([
         topic.publish('editor/save/current');
     };
 
-    function TextEditorViewer(elem, file, startedListener) {
-        logger.info('%cnew TextEditorViewer(' + elem + ', file, startedListener)', 'color:green');
-        EditorViewer.apply(this, arguments);
-        var self = this;
-        this.file = file;
-        this.options = {};
-        this.options.extraKeys = {
-            'Tab': 'handleTab',
-            'Ctrl--': 'foldselection',
-            'Ctrl-D': 'gotoLine',
-        };
-        this.cmOptions = {};
-        this.cursorListeners = [];
-        this.focusListeners = [];
-        this.blurListeners = [];
-        this.deferredActions = [];
-        this.mode = '';
-        this.mappedMode = 'text/plain';
-
-        if (startedListener) {
-            this.addDeferredAction(function(self) {
-                startedListener(file, self);
-            });
-        }
-
-        // @formatter:off
-        loadCSSList([
-                require.toUrl('./css/webida.css'), 
-                require.toUrl('external/codemirror/lib/codemirror.css'), 
-                require.toUrl('external/codemirror/addon/dialog/dialog.css')
-            ], function() {
-            	logger.info('*require*');
-                require([
-                    'external/codemirror/addon/dialog/dialog', 
-                    'external/codemirror/addon/search/searchcursor', 
-                    './search-addon', 
-                    'external/codemirror/addon/edit/closebrackets', 
-                    'external/codemirror/addon/edit/closetag', 
-                    'external/codemirror/addon/edit/matchbrackets'
-                ], function() {
-                	logger.info('%cLoad CSS complete', 'color:orange');
-                    if (self.getParentNode() && !self.getWidget()) {
-                    	self.createWidget(self.getParentNode());
-                    }
-                });
-        });
-        // @formatter:on
-    }
-
     function scrollToCursor(cm, position) {
         var lineNum = cm.getCursor().line;
         var charCoords = cm.charCoords({
@@ -258,57 +209,70 @@ define([
         cm.scrollTo(null, y);
     }
 
+    function TextEditorViewer(elem, file, startedListener) {
+        logger.info('%cnew TextEditorViewer(' + elem + ', file, startedListener)', 'color:green');
+        this.init(file, startedListener);
+        EditorViewer.apply(this, arguments);
+    }
+
 
     genetic.inherits(TextEditorViewer, EditorViewer, {
 
-        synchronizeWidgetModel: function(recentViewer) {
-            logger.info('synchronizeWidgetModel(' + recentViewer + ')');
-            this.editor.swapDoc(recentViewer.editor.getDoc().linkedDoc({
-                sharedHist: true
-            }));
-        },
-
-        addDeferredAction: function(action) {
-            if (this.editor) {
-                action(this);
-            } else {
-                this.deferredActions.push(action);
+        init: function(file, startedListener) {
+            var self = this;
+            this.file = file;
+            this.options = {};
+            this.cmOptions = {};
+            this.cursorListeners = [];
+            this.focusListeners = [];
+            this.blurListeners = [];
+            this.mode = '';
+            this.mappedMode = 'text/plain';
+            this.deferredActions = [];
+            if (startedListener) {
+                this.addDeferredAction(function(self) {
+                    startedListener(file, self);
+                });
             }
-        },
-
-        setOption: function(key, value, condition, defaultValue) {
-            if (condition === undefined) {
-                if (value !== undefined) {
-                    this.cmOptions[key] = value;
-                }
-            } else {
-                if (condition) {
-                    this.cmOptions[key] = value;
-                } else {
-                    this.cmOptions[key] = defaultValue;
-                }
-            }
-        },
-
-        addOptions: function() {
-            this.setOption('electricChars', false);
-            this.setOption('flattenSpans', false);
-            this.setOption('autoCloseBrackets', this.keymap !== 'vim');
-            this.setOption('autoCloseTags', true);
-            this.setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
-            this.setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
-            this.setOption('lineNumbers', this.options.lineNumbers, true);
-            this.setOption('tabSize', this.options.tabSize);
-            this.setOption('indentUnit', this.options.indentUnit);
-            this.setOption('indentWithTabs', this.options.indentWithTabs);
-            this.setOption('indentOnPaste', this.options.indentOnPaste);
-            this.setOption('extraKeys', this.options.extraKeys);
-            this.setOption('lineWrapping', this.options.lineWrapping);
-            this.setOption('mode', 'text/plain');
         },
 
         createWidget: function(parentNode) {
             logger.info('createWidget(' + parentNode + ')');
+            this.options.extraKeys = {
+                'Tab': 'handleTab',
+                'Ctrl--': 'foldselection',
+                'Ctrl-D': 'gotoLine',
+            };
+            this.prepareCreate();
+        },
+
+        prepareCreate: function() {
+        	logger.info('prepareCreate()');
+            var self = this;
+            // @formatter:off
+            loadCSSList([
+                    require.toUrl('plugins/webida.editor.text-editor/css/webida.css'), 
+                    require.toUrl('external/codemirror/lib/codemirror.css'), 
+                    require.toUrl('external/codemirror/addon/dialog/dialog.css')
+                ], function() {
+                    logger.info('*require*');
+                    require([
+                        'external/codemirror/addon/dialog/dialog', 
+                        'external/codemirror/addon/search/searchcursor', 
+                        'plugins/webida.editor.text-editor/search-addon', 
+                        'external/codemirror/addon/edit/closebrackets', 
+                        'external/codemirror/addon/edit/closetag', 
+                        'external/codemirror/addon/edit/matchbrackets'
+                    ], function() {
+                        logger.info('%cLoad CSS complete', 'color:orange');
+                        self.createEditorWidget(self.getParentNode());
+                    });
+            });
+            // @formatter:on
+        },
+
+        createEditorWidget: function(parentNode) {
+            logger.info('createEditorWidget(' + parentNode + ')');
             if (this.editor !== undefined) {
                 return;
             }
@@ -363,6 +327,52 @@ define([
                 logger.info('self.emit(Viewer.READY, self)');
                 self.emit(Viewer.READY, self);
             });
+        },
+
+        synchronizeWidgetModel: function(recentViewer) {
+            logger.info('synchronizeWidgetModel(' + recentViewer + ')');
+            this.editor.swapDoc(recentViewer.editor.getDoc().linkedDoc({
+                sharedHist: true
+            }));
+        },
+
+        addDeferredAction: function(action) {
+            if (this.editor) {
+                action(this);
+            } else {
+                this.deferredActions.push(action);
+            }
+        },
+
+        setOption: function(key, value, condition, defaultValue) {
+            if (condition === undefined) {
+                if (value !== undefined) {
+                    this.cmOptions[key] = value;
+                }
+            } else {
+                if (condition) {
+                    this.cmOptions[key] = value;
+                } else {
+                    this.cmOptions[key] = defaultValue;
+                }
+            }
+        },
+
+        addOptions: function() {
+            this.setOption('electricChars', false);
+            this.setOption('flattenSpans', false);
+            this.setOption('autoCloseBrackets', this.keymap !== 'vim');
+            this.setOption('autoCloseTags', true);
+            this.setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
+            this.setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
+            this.setOption('lineNumbers', this.options.lineNumbers, true);
+            this.setOption('tabSize', this.options.tabSize);
+            this.setOption('indentUnit', this.options.indentUnit);
+            this.setOption('indentWithTabs', this.options.indentWithTabs);
+            this.setOption('indentOnPaste', this.options.indentOnPaste);
+            this.setOption('extraKeys', this.options.extraKeys);
+            this.setOption('lineWrapping', this.options.lineWrapping);
+            this.setOption('mode', 'text/plain');
         },
 
         getMode: function() {
@@ -886,9 +896,9 @@ define([
         focus: function() {
             logger.info('focus()');
             if (this.editor) {
-            	var editor = this.editor;
-                setTimeout(function(){
-                	editor.focus();
+                var editor = this.editor;
+                setTimeout(function() {
+                    editor.focus();
                 });
             }
         },
@@ -1528,7 +1538,7 @@ define([
                 items['&Source'] = sourceItems;
             }
 
-			deferred.resolve(items);
+            deferred.resolve(items);
         },
 
         /**
