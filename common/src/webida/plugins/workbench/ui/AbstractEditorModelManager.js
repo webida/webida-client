@@ -113,8 +113,9 @@ define([
             var model = new (this.getModelClass())();
             this.setModel(model);
             this.getDataSource().getData(function(data) {
-                model.createContents(data);
                 that.setSavedData(data);
+                model.setSerialized(data);
+                model.createContents(data);
                 that._execFunc(callback, model);
                 //Let's give a chance to this model
                 //that it can register READY event in advance
