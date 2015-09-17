@@ -53,19 +53,19 @@ define([
     function Viewer(parentNode) {
         logger.info('new Viewer(' + parentNode + ')');
         this._viewerId = ++_viewerId;
-
-        /** @type {WidgetAdapter} */
-        this.widget = null;
-
         this.setParentNode(parentNode);
+        this.createWidget(parentNode);
     }
 
 
     genetic.inherits(Viewer, EventEmitter, {
 
         /**
-         * @param {HTMLElement} parentNode
+         * Create widget which shows visual information for the model.
+         * For example any HTMLElement, JqueryWidget, Dojo widget,
+         * extJs widget and even codemirror instance could be a widget.
          *
+         * @param {HTMLElement} parentNode
          * @abstract
          */
         createWidget: function(parentNode) {
