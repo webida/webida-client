@@ -174,6 +174,20 @@ define([
             return model;
         },
 
+        synchronize: function(ModelClass) {
+            var dataSource = this.getDataSource();
+            var myModel = this.getModel();
+            var otherModel = partModelProvider.getPartModel(dataSource, ModelClass);
+            if (otherModel) {
+                otherModel.on(PartModel.CONTENTS_CHANGE, function(change) {
+                    myModel.syncFrom(otherModel, change);
+                });
+                myModel.on(PartModel.CONTENTS_CHANGE, function(change) {
+                    myModel.syncTo(otherModel, change);
+                });
+            }
+        },
+
         /**
          * @param {DataSource} dataSource
          */
