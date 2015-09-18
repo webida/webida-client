@@ -235,13 +235,7 @@ define([
 
             //Viewer
             var ViewerClass = this.getViewerClass();
-            var viewer = new (ViewerClass)(parentNode, this.file, function(file, viewer) {
-                viewer.addChangeListener(function(viewer, change) {
-                    if (viewer._changeCallback) {
-                        viewer._changeCallback(file, change);
-                    }
-                });
-            });
+            var viewer = new (ViewerClass)(parentNode, this.file);
             this.setViewer(viewer);
             this.initialize();
             return viewer;

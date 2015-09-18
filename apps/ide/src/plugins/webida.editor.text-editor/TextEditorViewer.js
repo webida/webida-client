@@ -209,17 +209,18 @@ define([
         cm.scrollTo(null, y);
     }
 
-    function TextEditorViewer(elem, file, startedListener) {
-        logger.info('%cnew TextEditorViewer(' + elem + ', file, startedListener)', 'color:green');
-        this.init(file, startedListener);
+    function TextEditorViewer(elem, file) {
+        logger.info('%cnew TextEditorViewer(' + elem + ', file)', 'color:green');
+        this.init(file);
         EditorViewer.apply(this, arguments);
     }
 
 
     genetic.inherits(TextEditorViewer, EditorViewer, {
 
-        init: function(file, startedListener) {
+        init: function(file) {
             var self = this;
+            //TODO remove this.file
             this.file = file;
             this.options = {};
             this.cmOptions = {};
@@ -229,11 +230,6 @@ define([
             this.mode = '';
             this.mappedMode = 'text/plain';
             this.deferredActions = [];
-            if (startedListener) {
-                this.addDeferredAction(function(self) {
-                    startedListener(file, self);
-                });
-            }
         },
 
         createWidget: function(parentNode) {
