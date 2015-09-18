@@ -1218,6 +1218,16 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
             },
 
+            // replaceFiles
+            replaceFiles : function (keyword, replace, where, options, cb) {
+                if (_.every(where, function (path) { return isValidAbsPath(path); })) {
+                    mount.replaceFiles.apply(mount, arguments);
+                } else {
+                    setTimeout(cb.bind(null, 'The list of where contains a string which ' +
+                        'is not a valid absolute path.'), 0);
+                }
+            },
+
             // stat
             stat : function (pathList, cb) {
                 if (pathList.every(function (path) { return isValidAbsPath(path); })) {
