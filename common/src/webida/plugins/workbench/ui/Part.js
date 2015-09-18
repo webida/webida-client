@@ -43,9 +43,11 @@ define([
 // @formatter:on
 
     /**
-     * @typedef {Object} ModelManager
+     * @typedef {Object} CommandStack
      * @typedef {Object} DataSource
+     * @typedef {Object} ModelManager
      * @typedef {Object} PartModel
+     * @typedef {Object} PartModelCommand
      * @typedef {Object} Promise
      * @typedef {Object} Thenable
      */
@@ -126,17 +128,18 @@ define([
 
                 //Model listen to viewer's content change
                 eProxy.on(viewer, Viewer.CONTENT_CHANGE, function(request) {
-                    // @formatter:off
-                    // TODO : Consider the followings
-                    // var command = part.getCommand(request);
-                    // commandStack.execute(command);
-                    // @formatter:on
-                    model.update(request);
+                    // model.update(request);
+                    var command = part.getCommand(request);
+                    if (part.hasCommandStack()) {
+                        part.getCommandStack().execute(command);
+                    } else {
+                        command.execute();
+                    }
                 });
 
                 //Viewer listen to model's content change
-                eProxy.on(model, PartModel.CONTENTS_CHANGE, function(request) {
-                    viewer.render(request);
+                eProxy.on(model, PartModel.CONTENTS_CHANGE, function(delta) {
+                    viewer.render(delta);
                     container.updateDirtyState();
                 });
 
@@ -232,6 +235,7 @@ define([
 
         /**
          * Reset model it's last saved state
+         * @abstract
          */
         resetModel: function() {
             throw new Error('resetModel() should be implemented by ' + this.constructor.name);
@@ -305,6 +309,29 @@ define([
          */
         getModelManager: function() {
             return this.modelManager;
+        },
+
+        /**
+         * @return {PartModelCommand}
+         * @abstract
+         */
+        getCommand: function(request) {
+            throw new Error('getCommand(request) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @return {boolean}
+         */
+        hasCommandStack: function() {
+            return false;
+        },
+
+        /**
+         * @return {CommandStack}
+         * @abstract
+         */
+        getCommandStack: function() {
+            throw new Error('getCommandStack() should be implemented by ' + this.constructor.name);
         },
 
         /**

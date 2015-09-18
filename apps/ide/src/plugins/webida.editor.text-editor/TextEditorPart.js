@@ -46,6 +46,7 @@ define([
     'webida-lib/plugins/workbench/ui/Viewer',
     './configloader',
     './Document',
+    './DocumentCommand',
     './preferences/preference-config',
     './TextEditorContextMenu',
     './TextEditorViewer',
@@ -68,6 +69,7 @@ define([
     Viewer,
     configloader,
     Document,
+    DocumentCommand,
     preferenceConfig,
     TextEditorContextMenu,
     TextEditorViewer
@@ -180,7 +182,7 @@ define([
             });
         },
 
-        initializePreferences: function () {
+        initializePreferences: function() {
             logger.info('initializePreferences()');
             var viewer = this.getViewer();
             var file = this.file;
@@ -188,7 +190,7 @@ define([
             this.preferences = new EditorPreference(preferenceIds, viewer);
             this.preferences.setFields(this.getPreferences());
             //editorconfig
-            this.preferences.getField('texteditor', 'webida.editor.text-editor:editorconfig', function (value) {
+            this.preferences.getField('texteditor', 'webida.editor.text-editor:editorconfig', function(value) {
                 if (value === true) {
                     configloader.editorconfig(viewer, file);
                 }
@@ -303,13 +305,20 @@ define([
         },
 
         focus: function() {
-        	logger.info('focus()');
+            logger.info('focus()');
             this.getViewer().focus();
         },
 
         isClean: function() {
             var docMan = this.getModelManager();
             return !docMan.canSaveModel();
+        },
+
+        /**
+         * @return {DocumentCommand}
+         */
+        getCommand: function(request) {
+            return new DocumentCommand(this.getModel(), request);
         },
 
         getContextMenuClass: function() {
