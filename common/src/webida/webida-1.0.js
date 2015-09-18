@@ -1290,6 +1290,40 @@ var ENV_TYPE;
     };
 
     /**
+     * Search and replace files matching served pattern with a replace pattern
+     *
+     * @param {string} pattern - Search regular expression pattern. eg. <tt>a+b+c</tt>
+     * @param {string} replacePattern - Replace regular expression pattern.
+     * @param {module:webida.path[]} where - target path array to replace
+     * @param {module:webida.search_option} options - Search and replace option
+     * @param {module:webida.request_callback} callback -
+     *        (error:callback_error) → undefined
+     *        <br>If function finished successfully then error is undefined
+     * @memberOf module:webida.FSService.FileSystem
+     */
+    FileSystem.prototype.replaceFiles = function (pattern, replacePattern, where, options, callback) {
+        var self = this;
+        function restApi() {
+            var data = {};
+            if (options !== undefined) {
+                data = options;
+            }
+            data.where = where;
+            data.pattern = pattern;
+            data.replacePattern = replacePattern;
+
+            ajaxCall({
+                url: mod.conf.fsApiBaseUrl + '/' + self.fsid + '/replace',
+                type: 'POST',
+                data: data,
+                callback: callback
+            });
+        }
+
+        ensureAuthorize(restApi);
+    };
+
+    /**
     * Copy from source to destination. You can specify recursive mode.
     *
     * @method copy
