@@ -124,12 +124,6 @@ define([
 
         addChangeListener: function() {
             throw new Error('addChangeListener() should be implemented by ' + this.constructor.name);
-        },
-        setFile: function(file) {
-            this.file = file;
-        },
-        getFile: function() {
-            return this.file;
         }
     });
 

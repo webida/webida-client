@@ -46,9 +46,6 @@ define([
     function TestEditor(container) {
         logger.info('new TestEditor(' + container + ')');
         EditorPart.apply(this, arguments);
-        var dataSource = container.getDataSource();
-        var file = dataSource.getPersistence();
-        this.setFile(file);
     }
 
 

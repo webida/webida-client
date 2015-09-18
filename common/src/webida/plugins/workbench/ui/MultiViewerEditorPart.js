@@ -57,9 +57,6 @@ define([
         logger.info('new MultiViewerEditorPart(' + file + ')');
         EditorPart.apply(this, arguments);
 
-        this.setFile(file);
-        //TODO : refactor
-
         /** @type {Map.<Object, EditorViewer>} */
         this.viewers = new Map();
 

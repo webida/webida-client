@@ -84,7 +84,6 @@ define([
 
     //TODO : this.viewer -> this.getViewer()
     //See File.prototype.isModified = function () {
-    //TODO : this.file -> this.getFile()
 
     var logger = new Logger();
     //logger.off();
@@ -106,8 +105,6 @@ define([
         EditorPart.apply(this, arguments);
         var that = this;
         var dataSource = container.getDataSource();
-        var file = dataSource.getPersistence();
-        this.setFile(file);
         this.fileOpenedHandle = null;
         this.fileSavedHandle = null;
         this.preferences = null;
