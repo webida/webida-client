@@ -83,10 +83,6 @@ define([
             console.info('hide()');
         },
 
-        getValue: function() {
-            console.info('getValue()');
-        },
-
         addChangeListener: function(callback) {
             console.info('addChangeListener()');
         },

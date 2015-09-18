@@ -148,10 +148,6 @@ define([
             logger.info('hide()');
         },
 
-        getValue: function() {
-            logger.info('getValue()');
-        },
-
         addChangeListener: function(callback) {
             logger.info('addChangeListener()');
         },

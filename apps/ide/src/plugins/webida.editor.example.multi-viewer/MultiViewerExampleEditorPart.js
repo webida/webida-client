@@ -220,18 +220,6 @@ define([
 
         focus: function() {
 
-        },
-
-        isClean: function() {
-            var docMan = this.getModelManager();
-            return !docMan.canSaveModel();
-        },
-
-        /**
-         * @deprecated
-         */
-        getValue: function() {
-            return this.getModelManager().getContents();
         }
     });
 

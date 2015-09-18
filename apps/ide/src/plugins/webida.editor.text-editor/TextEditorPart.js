@@ -290,16 +290,6 @@ define([
             logger.info('hide()');
         },
 
-        getValue: function() {
-            if (this.viewer) {
-                return this.viewer.getValue();
-                //TODO : getViewer()
-            } else {
-                logger.info('this.viewer not found');
-                logger.trace();
-            }
-        },
-
         addChangeListener: function(callback) {
             this.viewer._changeCallback = callback;
         },
