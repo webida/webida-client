@@ -1,0 +1,19 @@
+{
+    "name": "webida.editor.example.svg",
+    "description": "SVG Painter Example",
+    "version": "0.1.0",
+    "requirement": "webida.common.editors",
+    "extensions" : {
+
+        "webida.common.editors:editor" : {
+            "name" : "SVG Painter",
+            "editorPart" : "SvgEditorPart",
+            "fileValueRequired" : true,
+            "handledFileExt" : [ "svgx" ],
+            "handledMimeTypes" : [],
+            "handledFileNames" : [ "test.svgx" ],
+            "unhandledFileExt" : [],
+            "unhandledMimeTypes" : [ "audio/.*", "video/.*" ]
+        }
+    }
+}
