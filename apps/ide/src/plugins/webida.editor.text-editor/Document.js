@@ -83,15 +83,15 @@ define([
         },
 
         /**
-         * @param {TextChangeRequest} request
+         * For now, whole contents is assumed as delta 
+         * @param {Object} contents
          */
-        update: function(request) {
-            logger.info('update(' + request + ')');
+        update: function(newText) {
+            logger.info('update(' + newText + ')');
             var old = this.getContents();
-            var text = request.getContents();
-            if (old !== text) {
-                this.setContents(text);
-                this.emit(PartModel.CONTENTS_CHANGE, request);
+            if (old !== newText) {
+                this.setContents(newText);
+                this.emit(PartModel.CONTENTS_CHANGE, newText);
             }
         },
 
