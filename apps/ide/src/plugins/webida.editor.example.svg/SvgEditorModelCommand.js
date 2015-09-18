@@ -16,22 +16,22 @@
 
 /**
  * Constructor
- * EditorModel
+ * SvgEditorModelCommand
  *
  * @see
- * @since: 2015.07.15
+ * @since: 2015.09.17
  * @author: hw.shim
  */
 
 // @formatter:off
 define([
+    'webida-lib/plugins/workbench/ui/PartModelCommand',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './PartModel'
+    'webida-lib/util/logger/logger-client'
 ], function(
+    PartModelCommand,
     genetic, 
-    Logger,
-    PartModel
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -44,35 +44,21 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function EditorModel() {
-        logger.info('new EditorModel()');
+    function SvgEditorModelCommand(model, request) {
+        logger.info('new SvgEditorModelCommand(' + model + ', ' + request + ')');
+        this.setModel(model);
+        this.setRequest(request);
     }
 
 
-    genetic.inherits(EditorModel, PartModel, {
+    genetic.inherits(SvgEditorModelCommand, PartModelCommand, {
 
-        /**
-         * Serializes model to a string
-         * @return {String} Serialized Data
-         */
-        serialize: function() {
-            throw new Error('serialize() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * @param {Object} contents
-         */
-        setContents: function(contents) {
-            this.contents = contents;
-        },
-
-        /**
-         * @return {Object}
-         */
-        getContents: function() {
-            return this.contents;
+        execute: function() {
+            var request = this.getRequest();
+            var delta = request.getDelta();
+            this.getModel().update(delta);
         }
     });
 
-    return EditorModel;
+    return SvgEditorModelCommand;
 });

@@ -672,55 +672,6 @@ define([
         }
     }
 
-    function CodeEditorViewer(elem, file, startedListener) {
-    	logger.info('new CodeEditorViewer()');
-    	TextEditorViewer.apply(this, arguments);
-        var self = this;
-        this.elem = elem;
-        this.setParentNode(elem);
-        this.file = file;
-        this.options = {};
-        this.options.extraKeys = {
-            'Ctrl-Space': 'autocomplete',
-            'Ctrl-/': 'linecomment',
-            'Tab': 'handleTab',
-            'Shift-Tab': 'navigateSnippetBackward',
-            'Ctrl--': 'foldselection',
-            'Ctrl-D': 'gotoLine',
-        };
-        this.cursorListeners = [];
-        this.focusListeners = [];
-        this.blurListeners = [];
-        this.deferredActions = [];
-        this.mode = '';
-        this.mappedMode = 'text/plain';
-        this.settings = settings;
-
-        if (startedListener) {
-            this.addDeferredAction(function (self) {
-                startedListener(file, self);
-            });
-        }
-
-        loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/webida.css'),
-                     require.toUrl('external/codemirror/lib/codemirror.css'),
-                     require.toUrl('external/codemirror/addon/dialog/dialog.css')], function () {
-            require(['external/codemirror/addon/dialog/dialog',
-                     'external/codemirror/addon/search/searchcursor',
-                     'plugins/webida.editor.text-editor/search-addon',
-                     './addon/overview-ruler/overview-ruler',
-                     'external/codemirror/addon/edit/closebrackets',
-                     'external/codemirror/addon/edit/closetag',
-                     'external/codemirror/addon/edit/matchbrackets'], function () {
-                setTimeout(function(self){
-                	if (self.getParentNode()) {
-                		self.createAdapter(self.getParentNode());
-                	}
-                }, 0, self);
-            });
-        });
-    }
-
     function getEnclosingBlockComments(mode, editor, from, to) {
         var startStr = mode.blockCommentStart;
         var endStr = mode.blockCommentEnd;
@@ -861,27 +812,38 @@ define([
         /* jshint camelcase: true */
     }
 
+    function CodeEditorViewer(elem, file, startedListener) {
+    	logger.info('new CodeEditorViewer()');
+    	this.settings = settings;
+    	TextEditorViewer.apply(this, arguments);
+    }
+
     genetic.inherits(CodeEditorViewer, TextEditorViewer, {
 
 		/**
 		 * @override
 		 */
-        addOptions: function() {
-            TextEditorViewer.prototype.addOptions.call(this);
-            this.setOption('mode', this.mappedMode, isAvailable('mode', this.mode), 'text/plain');
+        createWidget: function(parentNode) {
+        	logger.info('createWidget(' + parentNode + ')');
+            this.options.extraKeys = {
+                'Ctrl-Space': 'autocomplete',
+                'Ctrl-/': 'linecomment',
+                'Tab': 'handleTab',
+                'Shift-Tab': 'navigateSnippetBackward',
+                'Ctrl--': 'foldselection',
+                'Ctrl-D': 'gotoLine',
+            };
+			this.prepareCreate();
         },
 
 		/**
 		 * @override
 		 */
-        createAdapter: function (parentNode) {
-
-            TextEditorViewer.prototype.createAdapter.call(this, parentNode);
-
-            var self = this;
+        createEditorWidget: function (parentNode) {
+            logger.info('createEditorWidget(' + parentNode + ')');
+            TextEditorViewer.prototype.createEditorWidget.call(this, parentNode);
 
             this.__applyLinter();
-
             this.editor.on('mousedown', function(cm, e) {
                 if (settings.gotoLinkEnabled) {
                     require(['./content-assist/goto-link'], function(gotolink) {
@@ -889,7 +851,6 @@ define([
                     });
                 }
             });
-
             this.editor.on('keydown', function(cm, e) {
                 if (settings.gotoLinkEnabled) {
                     require(['./content-assist/goto-link'], function(gotolink) {
@@ -897,8 +858,15 @@ define([
                     });
                 }
             });
+            Snippet.init(this.editor);
+        },
 
-            Snippet.init(self.editor);
+		/**
+		 * @override
+		 */
+        addOptions: function() {
+            TextEditorViewer.prototype.addOptions.call(this);
+            this.setOption('mode', this.mappedMode, isAvailable('mode', this.mode), 'text/plain');
         },
 
 	    setMode : function (mode) {

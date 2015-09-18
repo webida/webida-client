@@ -68,7 +68,7 @@ define([
             var allItems = this.getAllItems();
             var part = this.getPart();
             var viewer = part.getViewer();
-            var widget = viewer.getAdapter();
+            var widget = viewer.getWidget();
             var selected = widget.getSelection();
             var registry = this.getPartRegistry();
             var editorParts = registry.getEditorParts();

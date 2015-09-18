@@ -51,8 +51,6 @@ define([
 
         PartModel.call(this, text);
 
-        this.text = '';
-
         if ( typeof text === 'undefined' || text === null) {
             text = '';
         }
@@ -71,22 +69,8 @@ define([
          * @param {String} data Source data to build new contents of the model.
          */
         createContents: function(data) {
-            this.setSerialized(data);
             this.setContents(data);
-        },
-
-        /**
-         * @param {String} data Serialized original data, such as Ajax response.
-         */
-        setSerialized: function(data) {
-            this.serialized = data;
-        },
-
-        /**
-         * @return {String} Serialized data to save
-         */
-        getSerialized: function() {
-            return this.serialized;
+            this.emit(PartModel.CONTENTS_CREATED, data);
         },
 
         /**
@@ -95,34 +79,19 @@ define([
          * @return {String} Serialized Data
          */
         serialize: function() {
-            return this.text;
+            return this.getContents();
         },
 
         /**
-         * @param {string} text
-         * @param {Viewer} [viewer]
+         * For now, whole contents is assumed as delta 
+         * @param {Object} contents
          */
-        setContents: function(text, viewer) {
-            this.text = text;
-        },
-
-        /**
-         * @return {string}
-         */
-        getContents: function() {
-            return this.text;
-        },
-
-        /**
-         * @param {TextChangeRequest} request
-         */
-        update: function(request) {
-            logger.info('update(' + request + ')');
+        update: function(newText) {
+            logger.info('update(' + newText + ')');
             var old = this.getContents();
-            var text = request.getContents();
-            if (old !== text) {
-                this.setContents(text);
-                this.emit(PartModel.CONTENTS_CHANGE, request);
+            if (old !== newText) {
+                this.setContents(newText);
+                this.emit(PartModel.CONTENTS_CHANGE, newText);
             }
         },
 
@@ -171,7 +140,7 @@ define([
                 if (this.getLength() > 10) {
                     suffix = '...';
                 }
-                res += '(' + this.text.substr(0, 10) + suffix + ')';
+                res += '(' + this.getContents().substr(0, 10) + suffix + ')';
             }
             return res;
         }

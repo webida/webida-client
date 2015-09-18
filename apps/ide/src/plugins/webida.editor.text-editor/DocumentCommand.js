@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * FormEditorAdapter
+ * DocumentCommand
  *
  * @see
  * @since: 2015.07.15
@@ -25,17 +25,13 @@
 
 // @formatter:off
 define([
-    'external/eventEmitter/EventEmitter',
+    'webida-lib/plugins/workbench/ui/PartModelCommand',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    'webida-lib/plugins/workbench/ui/EditorWidgetAdapter',
-    'webida-lib/plugins/workbench/ui/Viewer'
+    'webida-lib/util/logger/logger-client'
 ], function(
-    EventEmitter,
+    PartModelCommand,
     genetic, 
-    Logger,
-    EditorWidgetAdapter,
-    Viewer
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -48,28 +44,21 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function FormEditorAdapter(viewer) {
-        logger.info('new FormEditorAdapter()');
-
-        var that = this;
-        var widget = $("<textarea style='font-size:9pt; width:90%; height:90%'></textarea>")[0];
-        widget.addEventListener('keyup', function(e) {
-            viewer.emit(Viewer.CONTENT_CHANGE, that.getContents());
-        });
-        this.setWidget(widget);
+    function DocumentCommand(doc, request) {
+        logger.info('new DocumentCommand(' + doc + ', ' + request + ')');
+        this.setModel(doc);
+        this.setRequest(request);
     }
 
 
-    genetic.inherits(FormEditorAdapter, EditorWidgetAdapter, {
+    genetic.inherits(DocumentCommand, PartModelCommand, {
 
-        setContents: function(contents) {
-            this.getWidget().value = contents;
-        },
-
-        getContents: function() {
-            return this.getWidget().value;
+        execute: function() {
+            var request = this.getRequest();
+            var contents = request.getContents();
+            this.getModel().update(contents);
         }
     });
 
-    return FormEditorAdapter;
+    return DocumentCommand;
 });

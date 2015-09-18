@@ -69,9 +69,6 @@ define([
     function ImageEditorPart(container) {
         logger.info('new ImageEditorPart(' + container + ')');
         EditorPart.apply(this, arguments);
-        var dataSource = container.getDataSource();
-        var file = dataSource.getPersistence();
-        this.setFile(file);
     }
 
 
@@ -101,7 +98,7 @@ define([
             logger.info('renderImage()');
             var fs = app.getFSCache();
             var parent = this.getParentElement();
-            var arr = pathUtil.dividePath(this.getFile().getPath());
+            var arr = pathUtil.dividePath(this.getDataSource().getId());
             var dir = arr[0];
             var fileName = arr[1];
             fs.addAlias(dir, 10, function(err, alias) {
@@ -146,10 +143,6 @@ define([
 
         hide: function() {
             logger.info('hide()');
-        },
-
-        getValue: function() {
-            logger.info('getValue()');
         },
 
         addChangeListener: function(callback) {

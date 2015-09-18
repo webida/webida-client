@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * Viewer
+ * PartViewer
  *
  * @see
  * @since: 2015.07.15
@@ -50,27 +50,26 @@ define([
 
     var _viewerId = 0;
 
-    function Viewer() {
-        logger.info('new Viewer()');
+    function PartViewer(parentNode) {
+        logger.info('new PartViewer(' + parentNode + ')');
         this._viewerId = ++_viewerId;
-
-        /** @type {HTMLElement} */
-        this.parentNode = null
-
-        /** @type {WidgetAdapter} */
-        this.adapter = null;
+        this.setParentNode(parentNode);
+        this.createWidget(parentNode);
     }
 
 
-    genetic.inherits(Viewer, EventEmitter, {
+    genetic.inherits(PartViewer, EventEmitter, {
 
         /**
-         * @param {HTMLElement} parentNode
+         * Create widget which shows visual information for the model.
+         * For example any HTMLElement, JqueryWidget, Dojo widget,
+         * extJs widget and even codemirror instance could be a widget.
          *
+         * @param {HTMLElement} parentNode
          * @abstract
          */
-        createAdapter: function(parentNode) {
-            throw new Error('createAdapter(parentNode) should be implemented by ' + this.constructor.name);
+        createWidget: function(parentNode) {
+            throw new Error('createWidget(parentNode) should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -79,22 +78,22 @@ define([
          *
          * @abstract
          */
-        destroyAdapter: function() {
-            throw new Error('destroyAdapter() should be implemented by ' + this.constructor.name);
+        destroyWidget: function() {
+            throw new Error('destroyWidget() should be implemented by ' + this.constructor.name);
         },
 
         /**
-         * @param {WidgetAdapter} adapter
+         * @param {WidgetAdapter} widget
          */
-        setAdapter: function(adapter) {
-            this.adapter = adapter;
+        setWidget: function(widget) {
+            this.widget = widget;
         },
 
         /**
          * @return {WidgetAdapter}
          */
-        getAdapter: function() {
-            return this.adapter;
+        getWidget: function() {
+            return this.widget;
         },
 
         /**
@@ -170,17 +169,17 @@ define([
     });
 
     /** @constant {string} */
-    Viewer.CONTENT_CHANGE = 'contentChange';
+    PartViewer.CONTENT_CHANGE = 'contentChange';
 
     /**
      *
      * @constant {string}
      */
-    Viewer.READY = 'viewerReady';
+    PartViewer.READY = 'viewerReady';
 
-    Viewer.toString = function() {
+    PartViewer.toString = function() {
         return 'Viewer';
     };
 
-    return Viewer;
+    return PartViewer;
 });

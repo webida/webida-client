@@ -68,29 +68,6 @@ define([
 
         /**
          * @abstract
-         * @param {String} data Serialized original data, such as Ajax response.
-         */
-        setSerialized: function(data) {
-            throw new Error('setSerialized(data) should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * @return {String} Serialized data to save
-         */
-        getSerialized: function() {
-            throw new Error('getSerialized() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Serializes model to a string
-         * @return {String} Serialized Data
-         */
-        serialize: function() {
-            throw new Error('serialize() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * @abstract
          * @param {Object} contents
          */
         setContents: function(contents) {
@@ -113,6 +90,9 @@ define([
             throw new Error('update(request) should be implemented by ' + this.constructor.name);
         }
     });
+
+    /** @constant {string} */
+    PartModel.CONTENTS_CREATED = 'contentsCreated';
 
     /** @constant {string} */
     PartModel.CONTENTS_CHANGE = 'contentsChange';

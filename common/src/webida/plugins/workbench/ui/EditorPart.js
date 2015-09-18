@@ -122,20 +122,8 @@ define([
 
         // ----------- TODO Legacy methods : To be refactored ----------- //
 
-        getValue: function() {
-            throw new Error('getValue() should be implemented by ' + this.constructor.name);
-        },
-        isClean: function() {
-            throw new Error('isClean() should be implemented by ' + this.constructor.name);
-        },
         addChangeListener: function() {
             throw new Error('addChangeListener() should be implemented by ' + this.constructor.name);
-        },
-        setFile: function(file) {
-            this.file = file;
-        },
-        getFile: function() {
-            return this.file;
         }
     });
 

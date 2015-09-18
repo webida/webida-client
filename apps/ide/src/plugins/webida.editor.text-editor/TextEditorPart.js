@@ -43,9 +43,9 @@ define([
     'webida-lib/plugins/workbench/ui/PartModel',
     'webida-lib/plugins/workbench/ui/partModelProvider',
     'webida-lib/plugins/workbench/ui/PartRegistry',
-    'webida-lib/plugins/workbench/ui/Viewer',
     './configloader',
     './Document',
+    './DocumentCommand',
     './preferences/preference-config',
     './TextEditorContextMenu',
     './TextEditorViewer',
@@ -65,9 +65,9 @@ define([
     PartModel,
     partModelProvider,
     PartRegistry,
-    Viewer,
     configloader,
     Document,
+    DocumentCommand,
     preferenceConfig,
     TextEditorContextMenu,
     TextEditorViewer
@@ -82,7 +82,6 @@ define([
 
     //TODO : this.viewer -> this.getViewer()
     //See File.prototype.isModified = function () {
-    //TODO : this.file -> this.getFile()
 
     var logger = new Logger();
     //logger.off();
@@ -104,8 +103,8 @@ define([
         EditorPart.apply(this, arguments);
         var that = this;
         var dataSource = container.getDataSource();
-        var file = dataSource.getPersistence();
-        this.setFile(file);
+        //TODO remove all dependency to file
+        this.file = dataSource.getPersistence();
         this.fileOpenedHandle = null;
         this.fileSavedHandle = null;
         this.preferences = null;
@@ -180,7 +179,7 @@ define([
             });
         },
 
-        initializePreferences: function () {
+        initializePreferences: function() {
             logger.info('initializePreferences()');
             var viewer = this.getViewer();
             var file = this.file;
@@ -188,7 +187,7 @@ define([
             this.preferences = new EditorPreference(preferenceIds, viewer);
             this.preferences.setFields(this.getPreferences());
             //editorconfig
-            this.preferences.getField('texteditor', 'webida.editor.text-editor:editorconfig', function (value) {
+            this.preferences.getField('texteditor', 'webida.editor.text-editor:editorconfig', function(value) {
                 if (value === true) {
                     configloader.editorconfig(viewer, file);
                 }
@@ -234,13 +233,7 @@ define([
 
             //Viewer
             var ViewerClass = this.getViewerClass();
-            var viewer = new (ViewerClass)(parentNode, this.file, function(file, viewer) {
-                viewer.addChangeListener(function(viewer, change) {
-                    if (viewer._changeCallback) {
-                        viewer._changeCallback(file, change);
-                    }
-                });
-            });
+            var viewer = new (ViewerClass)(parentNode, this.file);
             this.setViewer(viewer);
             this.initialize();
             return viewer;
@@ -264,7 +257,7 @@ define([
             logger.info('onDestroy()');
             EditorPart.prototype.onDestroy.apply(this);
             if (this.viewer) {
-                this.viewer.destroyAdapter();
+                this.viewer.destroyWidget();
                 this.viewer = null;
             } else {
                 logger.info('this.viewer not found');
@@ -288,28 +281,25 @@ define([
             logger.info('hide()');
         },
 
-        getValue: function() {
-            if (this.viewer) {
-                return this.viewer.getValue();
-                //TODO : getViewer()
-            } else {
-                logger.info('this.viewer not found');
-                logger.trace();
-            }
-        },
-
         addChangeListener: function(callback) {
             this.viewer._changeCallback = callback;
         },
 
         focus: function() {
-        	logger.info('focus()');
+            logger.info('focus()');
             this.getViewer().focus();
         },
 
         isClean: function() {
             var docMan = this.getModelManager();
             return !docMan.canSaveModel();
+        },
+
+        /**
+         * @return {DocumentCommand}
+         */
+        getCommand: function(request) {
+            return new DocumentCommand(this.getModel(), request);
         },
 
         getContextMenuClass: function() {

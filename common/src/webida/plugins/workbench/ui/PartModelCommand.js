@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * EditorModel
+ * PartModelCommand
  *
  * @see
  * @since: 2015.07.15
@@ -26,12 +26,10 @@
 // @formatter:off
 define([
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './PartModel'
+    'webida-lib/util/logger/logger-client'
 ], function(
     genetic, 
-    Logger,
-    PartModel
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -44,35 +42,48 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function EditorModel() {
-        logger.info('new EditorModel()');
+    function PartModelCommand() {
+        logger.info('new PartModelCommand()');
     }
 
 
-    genetic.inherits(EditorModel, PartModel, {
+    genetic.inherits(PartModelCommand, Object, {
 
         /**
-         * Serializes model to a string
-         * @return {String} Serialized Data
+         * @abstract
          */
-        serialize: function() {
-            throw new Error('serialize() should be implemented by ' + this.constructor.name);
+        execute: function() {
+            throw new Error('execute() should be implemented by ' + this.constructor.name);
         },
 
         /**
-         * @param {Object} contents
+         * @param {PartModel}
          */
-        setContents: function(contents) {
-            this.contents = contents;
+        setModel: function(model) {
+            this.model = model;
         },
 
         /**
-         * @return {Object}
+         * @return {PartModel}
          */
-        getContents: function() {
-            return this.contents;
+        getModel: function() {
+            return this.model;
+        },
+
+        /**
+         * @param {ChangeRequest}
+         */
+        setRequest: function(request) {
+            this.request = request;
+        },
+
+        /**
+         * @return {ChangeRequest}
+         */
+        getRequest: function() {
+            return this.request;
         }
     });
 
-    return EditorModel;
+    return PartModelCommand;
 });

@@ -38,7 +38,7 @@ define([
     'webida-lib/util/loadCSSList',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/EditorViewer',
-    'webida-lib/plugins/workbench/ui/Viewer',
+    'webida-lib/plugins/workbench/ui/PartViewer',
     './TextChangeRequest'
 ], function (
     topic,
@@ -50,7 +50,7 @@ define([
     loadCSSList,
     Logger,
     EditorViewer,
-    Viewer,
+    PartViewer,
     TextChangeRequest
 ) {
     'use strict';
@@ -186,57 +186,6 @@ define([
         topic.publish('editor/save/current');
     };
 
-    function TextEditorViewer(elem, file, startedListener) {
-        logger.info('%cnew TextEditorViewer(' + elem + ', file, startedListener)', 'color:green');
-        EditorViewer.apply(this, arguments);
-        var self = this;
-        this.elem = elem;
-        this.setParentNode(elem);
-        this.file = file;
-        this.options = {};
-        this.options.extraKeys = {
-            'Tab': 'handleTab',
-            'Ctrl--': 'foldselection',
-            'Ctrl-D': 'gotoLine',
-        };
-        this.cmOptions = {};
-        this.cursorListeners = [];
-        this.focusListeners = [];
-        this.blurListeners = [];
-        this.deferredActions = [];
-        this.mode = '';
-        this.mappedMode = 'text/plain';
-
-        if (startedListener) {
-            this.addDeferredAction(function(self) {
-                startedListener(file, self);
-            });
-        }
-
-        // @formatter:off
-        loadCSSList([
-                require.toUrl('./css/webida.css'), 
-                require.toUrl('external/codemirror/lib/codemirror.css'), 
-                require.toUrl('external/codemirror/addon/dialog/dialog.css')
-            ], function() {
-            	logger.info('*require*');
-                require([
-                    'external/codemirror/addon/dialog/dialog', 
-                    'external/codemirror/addon/search/searchcursor', 
-                    './search-addon', 
-                    'external/codemirror/addon/edit/closebrackets', 
-                    'external/codemirror/addon/edit/closetag', 
-                    'external/codemirror/addon/edit/matchbrackets'
-                ], function() {
-                	logger.info('%cLoad CSS complete', 'color:orange');
-                    if (self.getParentNode() && !self.getAdapter()) {
-                    	self.createAdapter(self.getParentNode());
-                    }
-                });
-        });
-        // @formatter:on
-    }
-
     function scrollToCursor(cm, position) {
         var lineNum = cm.getCursor().line;
         var charCoords = cm.charCoords({
@@ -260,8 +209,121 @@ define([
         cm.scrollTo(null, y);
     }
 
+    function TextEditorViewer(elem, file) {
+        logger.info('%cnew TextEditorViewer(' + elem + ', file)', 'color:green');
+        this.init(file);
+        EditorViewer.apply(this, arguments);
+    }
+
 
     genetic.inherits(TextEditorViewer, EditorViewer, {
+
+        init: function(file) {
+            var self = this;
+            //TODO remove this.file
+            this.file = file;
+            this.options = {};
+            this.cmOptions = {};
+            this.cursorListeners = [];
+            this.focusListeners = [];
+            this.blurListeners = [];
+            this.mode = '';
+            this.mappedMode = 'text/plain';
+            this.deferredActions = [];
+        },
+
+        createWidget: function(parentNode) {
+            logger.info('createWidget(' + parentNode + ')');
+            this.options.extraKeys = {
+                'Tab': 'handleTab',
+                'Ctrl--': 'foldselection',
+                'Ctrl-D': 'gotoLine',
+            };
+            this.prepareCreate();
+        },
+
+        prepareCreate: function() {
+        	logger.info('prepareCreate()');
+            var self = this;
+            // @formatter:off
+            loadCSSList([
+                    require.toUrl('plugins/webida.editor.text-editor/css/webida.css'), 
+                    require.toUrl('external/codemirror/lib/codemirror.css'), 
+                    require.toUrl('external/codemirror/addon/dialog/dialog.css')
+                ], function() {
+                    logger.info('*require*');
+                    require([
+                        'external/codemirror/addon/dialog/dialog', 
+                        'external/codemirror/addon/search/searchcursor', 
+                        'plugins/webida.editor.text-editor/search-addon', 
+                        'external/codemirror/addon/edit/closebrackets', 
+                        'external/codemirror/addon/edit/closetag', 
+                        'external/codemirror/addon/edit/matchbrackets'
+                    ], function() {
+                        logger.info('%cLoad CSS complete', 'color:orange');
+                        self.createEditorWidget(self.getParentNode());
+                    });
+            });
+            // @formatter:on
+        },
+
+        createEditorWidget: function(parentNode) {
+            logger.info('createEditorWidget(' + parentNode + ')');
+            if (this.editor !== undefined) {
+                return;
+            }
+            var self = this;
+
+            this.addOptions();
+
+            //TODO : update code like followings
+            //var adapter = new TextEditorAdapter(this, parentNode);
+            //this.setWidget(adapter);
+            //this.setParentNode(parentNode);
+            this.editor = codemirror(parentNode, this.cmOptions);
+
+            //TODO : refactor
+            this.setWidget(this.editor);
+
+            //TODO : This code should be moved to TextEditorAdapter
+            this.editor.on('change', function(cm, change) {
+                var request = new TextChangeRequest();
+                request.setDelta(change);
+                request.setContents(cm.getValue());
+                self.emit(PartViewer.CONTENT_CHANGE, request);
+            });
+
+            this.editor.setOption('showCursorWhenSelecting', true);
+            this.editor.__instance = this;
+            $(this.editor.getWrapperElement()).addClass('maincodeeditor');
+
+            if (this.deferredActions) {
+                _.each(this.deferredActions, function(action) {
+                    action(self);
+                });
+                delete this.deferredActions;
+            }
+
+            this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function() {
+                self.checkSizeChange();
+            });
+
+            // conditionally indent on paste
+            self.editor.on('change', function(cm, e) {
+                if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
+                    for (var i = 0; i <= e.text.length; i++) {
+                        cm.indentLine(e.from.line + i);
+                    }
+                }
+            });
+
+            //Let's give a chance to this viewer
+            //that it can register READY event in advance
+            setTimeout(function() {
+                logger.info('self.emit(PartViewer.READY, self)');
+                self.emit(PartViewer.READY, self);
+            });
+        },
 
         synchronizeWidgetModel: function(recentViewer) {
             logger.info('synchronizeWidgetModel(' + recentViewer + ')');
@@ -309,64 +371,6 @@ define([
             this.setOption('mode', 'text/plain');
         },
 
-        createAdapter: function(parentNode) {
-            logger.info('createAdapter(' + parentNode + ')');
-            if (this.editor !== undefined) {
-                return;
-            }
-            var self = this;
-
-            this.addOptions();
-
-            //TODO : update code like followings
-            //var adapter = new TextEditorAdapter(this, parentNode);
-            //this.setAdapter(adapter);
-            //this.setParentNode(parentNode);
-            this.editor = codemirror(parentNode, this.cmOptions);
-
-            //TODO : refactor
-            this.setAdapter(this.editor);
-
-            //TODO : This code should be moved to TextEditorAdapter
-            this.editor.on('change', function(cm, change) {
-                var request = new TextChangeRequest();
-                request.setDelta(change);
-                request.setContents(cm.getValue());
-                self.emit(Viewer.CONTENT_CHANGE, request);
-            });
-
-            this.editor.setOption('showCursorWhenSelecting', true);
-            this.editor.__instance = this;
-            $(this.editor.getWrapperElement()).addClass('maincodeeditor');
-
-            if (this.deferredActions) {
-                _.each(this.deferredActions, function(action) {
-                    action(self);
-                });
-                delete this.deferredActions;
-            }
-
-            this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function() {
-                self.checkSizeChange();
-            });
-
-            // conditionally indent on paste
-            self.editor.on('change', function(cm, e) {
-                if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
-                    for (var i = 0; i <= e.text.length; i++) {
-                        cm.indentLine(e.from.line + i);
-                    }
-                }
-            });
-
-            //Let's give a chance to this viewer
-            //that it can register READY event in advance
-            setTimeout(function() {
-                logger.info('self.emit(Viewer.READY, self)');
-                self.emit(Viewer.READY, self);
-            });
-        },
-
         getMode: function() {
             return this.mode;
         },
@@ -392,7 +396,7 @@ define([
             }
         },
 
-        destroyAdapter: function() {
+        destroyWidget: function() {
             //unsubscribing topics
 
             if (this.resizeTopicHandler) {
@@ -888,9 +892,9 @@ define([
         focus: function() {
             logger.info('focus()');
             if (this.editor) {
-            	var editor = this.editor;
-                setTimeout(function(){
-                	editor.focus();
+                var editor = this.editor;
+                setTimeout(function() {
+                    editor.focus();
                 });
             }
         },
@@ -1530,7 +1534,7 @@ define([
                 items['&Source'] = sourceItems;
             }
 
-			deferred.resolve(items);
+            deferred.resolve(items);
         },
 
         /**

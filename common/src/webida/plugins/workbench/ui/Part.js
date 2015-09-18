@@ -30,22 +30,24 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './PartModel',
-    './Viewer'
+    './PartViewer'
 ], function(
 	EventEmitter,
 	EventProxy,
     genetic,
     Logger,
     PartModel,
-    Viewer
+    PartViewer
 ) {
     'use strict';
 // @formatter:on
 
     /**
-     * @typedef {Object} ModelManager
+     * @typedef {Object} CommandStack
      * @typedef {Object} DataSource
+     * @typedef {Object} ModelManager
      * @typedef {Object} PartModel
+     * @typedef {Object} PartModelCommand
      * @typedef {Object} Promise
      * @typedef {Object} Thenable
      */
@@ -71,7 +73,7 @@ define([
 
         /**
          * Prepares required components.
-         * Basically, Part prepares a Viewer and a PartModel for itself.
+         * Basically, Part prepares a PartViewer and a PartModel for itself.
          * But if you need to prepare different components,
          * you can override this.
          */
@@ -91,7 +93,7 @@ define([
             var container = this.getContainer();
 
             //1. Create Viewer
-            var createViewer = this.promiseFor(Viewer, container.getContentNode());
+            var createViewer = this.promiseFor(PartViewer, container.getContentNode());
 
             //2. Create Model
             var createModel = this.promiseFor(PartModel);
@@ -118,19 +120,26 @@ define([
                 var viewer = result[0];
                 var model = result[1];
 
+                //Refresh model's contents
+                eProxy.on(model, PartModel.CONTENTS_CREATED, function(contents) {
+                    viewer.refresh(contents);
+                    container.updateDirtyState();
+                });
+
                 //Model listen to viewer's content change
-                eProxy.on(viewer, Viewer.CONTENT_CHANGE, function(request) {
-                    // @formatter:off
-                    // TODO : Consider the followings
-                    // var command = part.getCommand(request);
-                    // commandStack.execute(command);
-                    // @formatter:on
-                    model.update(request);
+                eProxy.on(viewer, PartViewer.CONTENT_CHANGE, function(request) {
+                    // model.update(request);
+                    var command = part.getCommand(request);
+                    if (part.hasCommandStack()) {
+                        part.getCommandStack().execute(command);
+                    } else {
+                        command.execute();
+                    }
                 });
 
                 //Viewer listen to model's content change
-                eProxy.on(model, PartModel.CONTENTS_CHANGE, function(request) {
-                    viewer.render(request);
+                eProxy.on(model, PartModel.CONTENTS_CHANGE, function(delta) {
+                    viewer.render(delta);
                     container.updateDirtyState();
                 });
 
@@ -139,7 +148,7 @@ define([
                     viewer.fitSize();
                 });
 
-                //Render initial model
+                //Refresh initial model
                 viewer.refresh(model.getContents());
 
                 //Notify user can navigate contents
@@ -181,7 +190,7 @@ define([
 
         /**
          * @param {HTMLElement} parent
-         * @return {(Viewer|Viewer[])}
+         * @return {PartViewer}
          * @abstract
          */
         createViewer: function(parentNode) {
@@ -189,21 +198,21 @@ define([
         },
 
         /**
-         * @param {Viewer} viewer
+         * @param {PartViewer} viewer
          */
         setViewer: function(viewer) {
             this.viewer = viewer;
         },
 
         /**
-         * @return {Viewer}
+         * @return {PartViewer}
          */
         getViewer: function() {
             return this.viewer;
         },
 
         /**
-         * @return {(PartModel|PartModel[])}
+         * @return {PartModel}
          * @abstract
          */
         createModel: function() {
@@ -226,6 +235,7 @@ define([
 
         /**
          * Reset model it's last saved state
+         * @abstract
          */
         resetModel: function() {
             throw new Error('resetModel() should be implemented by ' + this.constructor.name);
@@ -302,6 +312,29 @@ define([
         },
 
         /**
+         * @return {PartModelCommand}
+         * @abstract
+         */
+        getCommand: function(request) {
+            throw new Error('getCommand(request) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @return {boolean}
+         */
+        hasCommandStack: function() {
+            return false;
+        },
+
+        /**
+         * @return {CommandStack}
+         * @abstract
+         */
+        getCommandStack: function() {
+            throw new Error('getCommandStack() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
          * Each Part should override
          * @param {Object} allItems
          * @return {Thenable}
@@ -326,13 +359,7 @@ define([
          */
         focus: function() {
             throw new Error('focus() should be implemented by ' + this.constructor.name);
-        },
-
-        // ----------- TODO refactor the follwings ----------- //
-
-        hide: function() {
-            throw new Error('hide() should be implemented by ' + this.constructor.name);
-        },
+        }
     });
 
     /** @constant {string} */

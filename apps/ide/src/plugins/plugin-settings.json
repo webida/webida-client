@@ -4,7 +4,7 @@
         "plugins/webida.editor.code-editor",
         "plugins/webida.editor.test-editor",
         "plugins/webida.viewer.image-viewer",
-        "plugins/webida.editor.example.multi-content",
+        "plugins/webida.editor.example.svg",
         "plugins/deploy",
         "plugins/help",
         "plugins/webida.preference",
