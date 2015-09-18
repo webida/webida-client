@@ -108,10 +108,6 @@ define([
             throw new Error('clearHistory() should be implemented by ' + this.constructor.name);
         },
 
-        markClean: function() {
-            throw new Error('markClean() should be implemented by ' + this.constructor.name);
-        },
-
         focus: function() {
             throw new Error('focus() should be implemented by ' + this.constructor.name);
         },

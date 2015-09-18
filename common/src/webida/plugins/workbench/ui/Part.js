@@ -190,7 +190,7 @@ define([
 
         /**
          * @param {HTMLElement} parent
-         * @return {(Viewer|Viewer[])}
+         * @return {Viewer}
          * @abstract
          */
         createViewer: function(parentNode) {
@@ -212,7 +212,7 @@ define([
         },
 
         /**
-         * @return {(PartModel|PartModel[])}
+         * @return {PartModel}
          * @abstract
          */
         createModel: function() {

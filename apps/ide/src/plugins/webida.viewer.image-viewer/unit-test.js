@@ -10,7 +10,5 @@ require(['plugins/webida.editor.test-editor/TestEditorPart'], function (TestEdit
 		assert.ok(typeof testEditor.focus === 'function', 'focus() method exists');
 		assert.ok(typeof testEditor.getValue === 'function', 'getValue() method exists');
 		assert.ok(typeof testEditor.addChangeListener === 'function', 'addChangeListener() method exists');
-		assert.ok(typeof testEditor.markClean === 'function', 'markClean() method exists');
-		assert.ok(typeof testEditor.isClean === 'function', 'isClean() method exists');
     });
 });
