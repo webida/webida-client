@@ -8,7 +8,5 @@ require(['plugins/webida.editor.code-editor/CodeEditorPart'], function (CodeEdit
 		assert.ok(typeof part.show === 'function', 'show() method exists');
 		assert.ok(typeof part.hide === 'function', 'hide() method exists');
 		assert.ok(typeof part.focus === 'function', 'focus() method exists');
-		assert.ok(typeof part.getValue === 'function', 'getValue() method exists');
-		assert.ok(typeof part.addChangeListener === 'function', 'addChangeListener() method exists');
     });
 });

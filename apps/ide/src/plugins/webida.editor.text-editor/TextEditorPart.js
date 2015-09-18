@@ -105,6 +105,8 @@ define([
         EditorPart.apply(this, arguments);
         var that = this;
         var dataSource = container.getDataSource();
+        //TODO remove all dependency to file
+        this.file = dataSource.getPersistence();
         this.fileOpenedHandle = null;
         this.fileSavedHandle = null;
         this.preferences = null;
