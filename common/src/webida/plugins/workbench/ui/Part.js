@@ -30,14 +30,14 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './PartModel',
-    './Viewer'
+    './PartViewer'
 ], function(
 	EventEmitter,
 	EventProxy,
     genetic,
     Logger,
     PartModel,
-    Viewer
+    PartViewer
 ) {
     'use strict';
 // @formatter:on
@@ -73,7 +73,7 @@ define([
 
         /**
          * Prepares required components.
-         * Basically, Part prepares a Viewer and a PartModel for itself.
+         * Basically, Part prepares a PartViewer and a PartModel for itself.
          * But if you need to prepare different components,
          * you can override this.
          */
@@ -93,7 +93,7 @@ define([
             var container = this.getContainer();
 
             //1. Create Viewer
-            var createViewer = this.promiseFor(Viewer, container.getContentNode());
+            var createViewer = this.promiseFor(PartViewer, container.getContentNode());
 
             //2. Create Model
             var createModel = this.promiseFor(PartModel);
@@ -127,7 +127,7 @@ define([
                 });
 
                 //Model listen to viewer's content change
-                eProxy.on(viewer, Viewer.CONTENT_CHANGE, function(request) {
+                eProxy.on(viewer, PartViewer.CONTENT_CHANGE, function(request) {
                     // model.update(request);
                     var command = part.getCommand(request);
                     if (part.hasCommandStack()) {
@@ -190,7 +190,7 @@ define([
 
         /**
          * @param {HTMLElement} parent
-         * @return {Viewer}
+         * @return {PartViewer}
          * @abstract
          */
         createViewer: function(parentNode) {
@@ -198,14 +198,14 @@ define([
         },
 
         /**
-         * @param {Viewer} viewer
+         * @param {PartViewer} viewer
          */
         setViewer: function(viewer) {
             this.viewer = viewer;
         },
 
         /**
-         * @return {Viewer}
+         * @return {PartViewer}
          */
         getViewer: function() {
             return this.viewer;

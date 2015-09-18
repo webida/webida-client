@@ -31,11 +31,11 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    './Viewer'
+    './PartViewer'
 ], function(
     genetic,
     Logger,
-    Viewer
+    PartViewer
 ) {
 	'use strict';
 // @formatter:on
@@ -44,11 +44,11 @@ define([
 
     function EditorViewer() {
         logger.info('new EditorViewer()');
-        Viewer.apply(this, arguments);
+        PartViewer.apply(this, arguments);
     }
 
 
-    genetic.inherits(EditorViewer, Viewer, {
+    genetic.inherits(EditorViewer, PartViewer, {
 
         /**
          * Execute command for this EditorViewer

@@ -38,7 +38,7 @@ define([
     'webida-lib/util/loadCSSList',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/EditorViewer',
-    'webida-lib/plugins/workbench/ui/Viewer',
+    'webida-lib/plugins/workbench/ui/PartViewer',
     './TextChangeRequest'
 ], function (
     topic,
@@ -50,7 +50,7 @@ define([
     loadCSSList,
     Logger,
     EditorViewer,
-    Viewer,
+    PartViewer,
     TextChangeRequest
 ) {
     'use strict';
@@ -290,7 +290,7 @@ define([
                 var request = new TextChangeRequest();
                 request.setDelta(change);
                 request.setContents(cm.getValue());
-                self.emit(Viewer.CONTENT_CHANGE, request);
+                self.emit(PartViewer.CONTENT_CHANGE, request);
             });
 
             this.editor.setOption('showCursorWhenSelecting', true);
@@ -320,8 +320,8 @@ define([
             //Let's give a chance to this viewer
             //that it can register READY event in advance
             setTimeout(function() {
-                logger.info('self.emit(Viewer.READY, self)');
-                self.emit(Viewer.READY, self);
+                logger.info('self.emit(PartViewer.READY, self)');
+                self.emit(PartViewer.READY, self);
             });
         },
 

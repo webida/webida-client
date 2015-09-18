@@ -30,14 +30,14 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/ChangeRequest',
     'webida-lib/plugins/workbench/ui/EditorViewer',
-    'webida-lib/plugins/workbench/ui/Viewer'
+    'webida-lib/plugins/workbench/ui/PartViewer'
 ], function(
     dom,
     genetic,
     Logger,
     ChangeRequest,
     EditorViewer,
-    Viewer
+    PartViewer
 ) {
     'use strict';
 // @formatter:on
@@ -67,7 +67,7 @@ define([
             this._prepareElements(parentNode);
             this._bindListeners();
             setTimeout(function() {
-                that.emit(Viewer.READY, that);
+                that.emit(PartViewer.READY, that);
             });
         },
 
@@ -170,7 +170,7 @@ define([
                 layerXBack = layerYBack = undefined;
                 init = false;
                 feedback.innerHTML = '';
-                that.emit(Viewer.CONTENT_CHANGE, new ChangeRequest(desc));
+                that.emit(PartViewer.CONTENT_CHANGE, new ChangeRequest(desc));
             });
         },
 

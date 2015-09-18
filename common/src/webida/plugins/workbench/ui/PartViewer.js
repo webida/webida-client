@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * Viewer
+ * PartViewer
  *
  * @see
  * @since: 2015.07.15
@@ -50,15 +50,15 @@ define([
 
     var _viewerId = 0;
 
-    function Viewer(parentNode) {
-        logger.info('new Viewer(' + parentNode + ')');
+    function PartViewer(parentNode) {
+        logger.info('new PartViewer(' + parentNode + ')');
         this._viewerId = ++_viewerId;
         this.setParentNode(parentNode);
         this.createWidget(parentNode);
     }
 
 
-    genetic.inherits(Viewer, EventEmitter, {
+    genetic.inherits(PartViewer, EventEmitter, {
 
         /**
          * Create widget which shows visual information for the model.
@@ -169,17 +169,17 @@ define([
     });
 
     /** @constant {string} */
-    Viewer.CONTENT_CHANGE = 'contentChange';
+    PartViewer.CONTENT_CHANGE = 'contentChange';
 
     /**
      *
      * @constant {string}
      */
-    Viewer.READY = 'viewerReady';
+    PartViewer.READY = 'viewerReady';
 
-    Viewer.toString = function() {
+    PartViewer.toString = function() {
         return 'Viewer';
     };
 
-    return Viewer;
+    return PartViewer;
 });
