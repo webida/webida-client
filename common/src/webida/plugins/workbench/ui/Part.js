@@ -359,13 +359,7 @@ define([
          */
         focus: function() {
             throw new Error('focus() should be implemented by ' + this.constructor.name);
-        },
-
-        // ----------- TODO refactor the follwings ----------- //
-
-        hide: function() {
-            throw new Error('hide() should be implemented by ' + this.constructor.name);
-        },
+        }
     });
 
     /** @constant {string} */
