@@ -931,11 +931,11 @@ define([
 	        }
 	        this.theme = theme;
             if (theme === 'codemirror-default') {
-                theme = this.theme = 'default';
-                if (this.editor) {
-	                this.editor.setOption('theme', this.theme);
-	            }
-	        } else {
+                theme = this.theme = 'default';                
+                this.addDeferredAction(function (self) {
+                    self.editor.setOption('theme', self.theme);
+                });
+            } else {
 	            var self = this;
 	            var csspath = 'external/codemirror/theme/' + theme + '.css';
 	            switch (theme) {
@@ -951,11 +951,11 @@ define([
 	                break;
 	            }
 	            loadCSSList([require.toUrl(csspath)], function () {
-	                addAvailable('theme', theme);
-	                if (self.editor) {
-	                    self.editor.setOption('theme', self.theme);
-	                }
-	            });
+	                addAvailable('theme', theme);	                
+                    self.addDeferredAction(function (self) {
+                        self.editor.setOption('theme', self.theme);
+                    });
+                });
 	        }
 	    },
 
