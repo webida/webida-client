@@ -130,7 +130,7 @@ define([
                 callback(values[key]);
             }
         });
-        return result[key];
+        return result && result[key];
     };
 
     PreferenceService.prototype.setValues = function (preferenceId, values, callback) {
