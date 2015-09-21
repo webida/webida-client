@@ -1264,6 +1264,9 @@ var ENV_TYPE;
             if (options !== undefined) {
                 data = options;
             }
+            if (where && where instanceof Array) {
+                where = where.map(encodeURIComponent);
+            }
             data.where = where;
             data.pattern = pattern;
             data.replacePattern = replacePattern;
