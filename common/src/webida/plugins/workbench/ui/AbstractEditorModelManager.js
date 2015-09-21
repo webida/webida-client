@@ -63,13 +63,10 @@ define([
      *
      * @constructor
      * @param {DataSource} dataSource
-     * @param {Function} ModelClass
      */
-    function AbstractEditorModelManager(dataSource, ModelClass) {
-        logger.info('new AbstractEditorModelManager(' + dataSource + ', ModelClass)');
-
+    function AbstractEditorModelManager(dataSource) {
+        logger.info('new AbstractEditorModelManager(' + dataSource + ')');
         this.setDataSource(dataSource);
-        this.setModelClass(ModelClass);
     }
 
 
@@ -100,6 +97,7 @@ define([
         /**
          * Creates a EditorModel
          *
+         * @param {Function} ModelClass
          * @param {editorModelManager~createModelCallback} callback
          * @return {EditorModel}
          */
@@ -107,10 +105,10 @@ define([
          * @callback editorModelManager~createModelCallback
          * @param {EditorModel} model
          */
-        createModel: function(callback) {
-            logger.info('createModel(callback)');
+        createModel: function(ModelClass, callback) {
+            logger.info('createModel(ModelClass, callback)');
             var that = this;
-            var model = new (this.getModelClass())();
+            var model = new ModelClass();
             this.setModel(model);
             this.getDataSource().getData(function(data) {
                 model.createContents(data);
@@ -132,6 +130,7 @@ define([
          * from partModelProvider. If not exists this method
          * creates a new PartModel and register it to the partModelProvider.
          *
+         * @param {Function} ModelClass
          * @param {editorModelManager~getSynchronizedModel} callback
          * @return {EditorModel}
          */
@@ -139,12 +138,12 @@ define([
          * @callback editorModelManager~getSynchronizedModel
          * @param {EditorModel} model
          */
-        getSynchronizedModel: function(callback) {
-            logger.info('getSynchronizedModel(callback)');
+        getSynchronizedModel: function(ModelClass, callback) {
+            logger.info('getSynchronizedModel(ModelClass, callback)');
             var that = this;
             var dataSource = this.getDataSource();
             var persistence = dataSource.getPersistence();
-            var model = partModelProvider.getPartModel(dataSource, this.getModelClass());
+            var model = partModelProvider.getPartModel(dataSource, ModelClass);
             logger.info('model --> ', model);
             if (!!model) {
                 this.setModel(model);
@@ -168,7 +167,7 @@ define([
                     });
                 }
             } else {
-                model = this.createModel(callback);
+                model = this.createModel(ModelClass, callback);
                 partModelProvider.register(dataSource, model);
             }
             return model;

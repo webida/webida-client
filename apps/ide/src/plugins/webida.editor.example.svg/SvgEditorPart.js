@@ -80,8 +80,8 @@ define([
          */
         createModel: function() {
             logger.info('%c createModel()', 'color:green');
-            this.setModelManager(new EditorModelManager(this.getDataSource(), SvgEditorModel));
-            var model = this.getModelManager().getSynchronizedModel();
+            this.setModelManager(new EditorModelManager(this.getDataSource()));
+            var model = this.getModelManager().getSynchronizedModel(SvgEditorModel);
             this.getModelManager().synchronize(Document);
             this.setModel(model);
             return model;

@@ -55,12 +55,6 @@ define([
 
     function PartModelManager() {
         logger.info('new PartModelManager()');
-
-        /** @type {PartModel} */
-        this.model = null;
-
-        /** @type {function} */
-        this.ModelClass = null;
     }
 
 
@@ -78,22 +72,6 @@ define([
          */
         resetModel: function() {
             throw new Error('resetModel() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Set Model's Constructor
-         * @param {Function} ModelClass
-         */
-        setModelClass: function(ModelClass) {
-            this.ModelClass = ModelClass;
-        },
-
-        /**
-         * Returns constructor for PartModel
-         * @return {Function}
-         */
-        getModelClass: function() {
-            return this.ModelClass;
         },
 
         /**
