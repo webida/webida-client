@@ -245,7 +245,7 @@ define([
         createModel: function() {
             logger.info('%c createModel()', 'color:green');
             this.setModelManager(new EditorModelManager(this.getDataSource()));
-            var model = this.getModelManager().getSynchronizedModel(Document);
+            var model = this.getModelManager().getSynchronized(Document);
             //this.getModelManager().SynchroWith(SvgModel);
             this.setModel(model);
             return model;

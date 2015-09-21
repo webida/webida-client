@@ -131,15 +131,15 @@ define([
          * creates a new PartModel and register it to the partModelProvider.
          *
          * @param {Function} ModelClass
-         * @param {editorModelManager~getSynchronizedModel} callback
+         * @param {editorModelManager~getSynchronized} callback
          * @return {EditorModel}
          */
         /**
-         * @callback editorModelManager~getSynchronizedModel
+         * @callback editorModelManager~getSynchronized
          * @param {EditorModel} model
          */
-        getSynchronizedModel: function(ModelClass, callback) {
-            logger.info('getSynchronizedModel(ModelClass, callback)');
+        getSynchronized: function(ModelClass, callback) {
+            logger.info('getSynchronized(ModelClass, callback)');
             var that = this;
             var dataSource = this.getDataSource();
             var persistence = dataSource.getPersistence();
