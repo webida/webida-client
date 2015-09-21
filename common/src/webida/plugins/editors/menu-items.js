@@ -83,8 +83,8 @@ define([], function () {
 
     var viewMenuItems = {
         'Spl&it Editors' : {
-            '&Vertical' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'rotateToVertical' ],
-            '&Horizontal' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'rotateToHorizontal' ],
+            '&Vertical' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'rotateToHorizontal' ],
+            '&Horizontal' : [ 'cmnd', 'webida-lib/plugins/editors/editors-commands', 'rotateToVertical' ],
         }
     };
 
