@@ -43,11 +43,13 @@ define([
 // @formatter:on
 
     /**
+     * @typedef {Object} ChangeRequest
      * @typedef {Object} CommandStack
      * @typedef {Object} DataSource
      * @typedef {Object} ModelManager
      * @typedef {Object} PartModel
      * @typedef {Object} PartModelCommand
+     * @typedef {Object} PartModelEvent
      * @typedef {Object} Promise
      * @typedef {Object} Thenable
      */
@@ -128,18 +130,12 @@ define([
 
                 //Model listen to viewer's content change
                 eProxy.on(viewer, PartViewer.CONTENT_CHANGE, function(request) {
-                    // model.update(request);
-                    var command = part.getCommand(request);
-                    if (part.hasCommandStack()) {
-                        part.getCommandStack().execute(command);
-                    } else {
-                        command.execute();
-                    }
+                    part.onViewerChange(request);
                 });
 
                 //Viewer listen to model's content change
-                eProxy.on(model, PartModel.CONTENTS_CHANGE, function(delta) {
-                    viewer.render(delta);
+                eProxy.on(model, PartModel.CONTENTS_CHANGE, function(modelEvent) {
+                    part.onModelChange(modelEvent);
                     container.updateDirtyState();
                 });
 
@@ -239,6 +235,33 @@ define([
          */
         resetModel: function() {
             throw new Error('resetModel() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * When any event occured in the PartViewer,
+         * It should send ChangeRequest to Part.
+         * Then the Part receives the request and call onViewerChange() method.
+         * @See bindVM()
+         *
+         * @param {ChangeRequest} request
+         * @abstract
+         */
+        onViewerChange: function(request) {
+            throw new Error('onViewerChange(request) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * This method is called when the PartModel updated.
+         * Part developers should implement this method to reflect the model's
+         * change to the PartViewer.
+         * Please use PartViewer.refresh() to update all contents of model
+         * or use PartViewer.render() to update model's delta.
+         *
+         * @param {PartModelEvent} modelEvent
+         * @abstract
+         */
+        onModelChange: function(modelEvent) {
+            throw new Error('onModelChange(modelEvent) should be implemented by ' + this.constructor.name);
         },
 
         /**
@@ -344,21 +367,21 @@ define([
         },
 
         /**
-         * @private
-         */
-        _execFunc: function(callback, param) {
-            if ( typeof callback === 'function') {
-                callback(param);
-            }
-        },
-
-        /**
          * Let this part to take focus within the workbench.
          * Parts must assign focus to one of the widget contained
          * in the part's parent composite.
          */
         focus: function() {
             throw new Error('focus() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @private
+         */
+        _execFunc: function(callback, param) {
+            if ( typeof callback === 'function') {
+                callback(param);
+            }
         }
     });
 
