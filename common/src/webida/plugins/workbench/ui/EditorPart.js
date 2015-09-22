@@ -145,12 +145,6 @@ define([
         _askSaveThen: function(callback) {
             var file = this.getDataSource().getPersistence();
             editorDialog.create(file, 'Close', callback);
-        },
-
-        // ----------- TODO Legacy methods : To be refactored ----------- //
-
-        addChangeListener: function() {
-            throw new Error('addChangeListener() should be implemented by ' + this.constructor.name);
         }
     });
 

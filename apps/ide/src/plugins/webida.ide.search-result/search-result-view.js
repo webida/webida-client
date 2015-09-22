@@ -254,7 +254,12 @@ define([
                 },
 
                 onNodeDblClicked: function (item) {
-                    topic.publish('editor/open', item.path);
+                    topic.publish('editor/open', item.path, {}, function(part){
+                    	var viewer = part.getViewer();
+                    	if(typeof viewer.setCursor === 'function'){
+                    		//part.getViewer().setCursor({row:78, col:0});
+                    	}
+                    });
                 },
 
                 onNodeEnterKey: function (item) {

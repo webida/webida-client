@@ -72,10 +72,6 @@ define([
 
         // ----------- TODO Legacy methods : To be refactored ----------- //
 
-        addChangeListener: function(listener) {
-            throw new Error('addChangeListener() should be implemented by ' + this.constructor.name);
-        },
-
         addFocusListener: function(listener) {
             throw new Error('addFocusListener() should be implemented by ' + this.constructor.name);
         },
@@ -98,10 +94,6 @@ define([
 
         setKeymap: function(keymap) {
             throw new Error('setKeymap() should be implemented by ' + this.constructor.name);
-        },
-
-        isClean: function() {
-            throw new Error('isClean() should be implemented by ' + this.constructor.name);
         },
 
         clearHistory: function() {

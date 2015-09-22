@@ -54,11 +54,11 @@ define([
         /**
          * @Override
          */
-		prepareVM: function(){
-			logger.info('%cprepareVM()', 'color:orange');
-			var container = this.getContainer();
-			this.createViewer(container.getContentNode());
-		},
+        prepareComponents: function() {
+            logger.info('%cprepareComponents()', 'color:orange');
+            var container = this.getContainer();
+            this.createViewer(container.getContentNode());
+        },
 
         createViewer: function(parentNode, callback) {
             logger.info('createViewer(' + parentNode + ', callback)');
@@ -70,26 +70,6 @@ define([
             pre.contentEditable = true;
             pre.style.fontSize = '8pt';
             parentNode.appendChild(pre);
-        },
-
-        destroy: function() {
-            console.info('destroy()');
-        },
-
-        hide: function() {
-            console.info('hide()');
-        },
-
-        addChangeListener: function(callback) {
-            console.info('addChangeListener()');
-        },
-
-        focus: function() {
-            console.info('focus()');
-        },
-
-        isClean: function() {
-            console.info('isClean()');
         }
     });
 
