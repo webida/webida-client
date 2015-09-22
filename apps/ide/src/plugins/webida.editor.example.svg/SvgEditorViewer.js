@@ -141,7 +141,7 @@ define([
                         layerXBack = posInEl(ev).x;
                         layerYBack = posInEl(ev).y;
                         if (init === false) {
-                            desc += ' M' + startPos.x + ',' + startPos.y;
+                            desc += 'M' + startPos.x + ',' + startPos.y;
                             init = true;
                         } else {
                             desc += ' l' + dx + ',' + dy;
@@ -165,12 +165,14 @@ define([
                 feedback.appendChild(feedbackPath);
             });
             mask.addEventListener('mouseup', function(ev) {
+                if (desc) {
+                    that.emit(PartViewer.CONTENT_CHANGE, new ChangeRequest(desc));
+                }
                 isDragStart = false;
                 isDragProgress = false;
                 layerXBack = layerYBack = undefined;
                 init = false;
                 feedback.innerHTML = '';
-                that.emit(PartViewer.CONTENT_CHANGE, new ChangeRequest(desc));
             });
         },
 
