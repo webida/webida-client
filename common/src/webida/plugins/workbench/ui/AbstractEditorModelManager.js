@@ -95,6 +95,30 @@ define([
         },
 
         /**
+         * Synchronizes to other PartModel
+         * Any ModelManager which want to synchronize with other model
+         * should implement this method. (syncFrom() also)
+         *
+         * @param {EditorModel} otherModel
+         * @param {PartModelEvent} modelEvent
+         */
+        syncTo: function(otherModel, modelEvent) {
+            throw new Error('syncTo(otherModel, modelEvent) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Synchronizes from other PartModel
+         * Any ModelManager which want to synchronize with other model
+         * should implement this method. (syncTo() also)
+         *
+         * @param {EditorModel} otherModel
+         * @param {PartModelEvent} modelEvent
+         */
+        syncFrom: function(otherModel, modelEvent) {
+            throw new Error('syncFrom(otherModel, modelEvent) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
          * Creates a EditorModel
          *
          * @param {Function} ModelClass
@@ -139,7 +163,7 @@ define([
          * @param {EditorModel} model
          */
         getSynchronized: function(ModelClass, callback) {
-            logger.info('getSynchronized(ModelClass, callback)');
+            logger.info('getSynchronized(' + ModelClass.name + ', callback)');
             var that = this;
             var dataSource = this.getDataSource();
             var persistence = dataSource.getPersistence();
@@ -173,18 +197,30 @@ define([
             return model;
         },
 
+        /**
+         * Synchronizes to other model.
+         * The ModelManager which calls this method should
+         * implement syncTo(), syncFrom() method.
+         *
+         * @param {Function} ModelClass
+         */
         synchronize: function(ModelClass) {
-            var dataSource = this.getDataSource();
+            logger.info('synchronize(' + ModelClass.name + ')');
+            var that = this;
             var myModel = this.getModel();
-            var otherModel = partModelProvider.getPartModel(dataSource, ModelClass);
-            if (otherModel) {
-                otherModel.on(PartModel.CONTENTS_CHANGE, function(change) {
-                    myModel.syncFrom(otherModel, change);
+            var otherManager = new (this.constructor)(this.getDataSource());
+            var otherModel = otherManager.getSynchronized(ModelClass, function(otherModel) {
+                myModel.on(PartModel.CONTENTS_CHANGE, function(modelEvent) {
+                    if (myModel.serialize() !== otherModel.serialize()) {
+                        that.syncTo(otherModel, modelEvent);
+                    }
                 });
-                myModel.on(PartModel.CONTENTS_CHANGE, function(change) {
-                    myModel.syncTo(otherModel, change);
+                otherModel.on(PartModel.CONTENTS_CHANGE, function(modelEvent) {
+                    if (myModel.serialize() !== otherModel.serialize()) {
+                        that.syncFrom(otherModel, modelEvent);
+                    }
                 });
-            }
+            });
         },
 
         /**
