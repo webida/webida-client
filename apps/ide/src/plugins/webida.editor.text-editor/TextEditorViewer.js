@@ -243,7 +243,7 @@ define([
         },
 
         prepareCreate: function() {
-        	logger.info('prepareCreate()');
+            logger.info('prepareCreate()');
             var self = this;
             // @formatter:off
             loadCSSList([
@@ -834,12 +834,13 @@ define([
 
         /**
          * Update Viewer's content
-         *
-         * @param {Object} contents
+         * @param {Object} delta
          */
-        render: function(request) {
-            logger.info('render(' + request + ')');
-            //Do nothing
+        render: function(newText) {
+            //logger.info('render(' + newText.substr(0, 10) + ')');
+            if (this.editor.getDoc().getValue() !== newText) {
+                this.editor.setValue(newText);
+            }
         },
 
         refresh: function(contents) {
