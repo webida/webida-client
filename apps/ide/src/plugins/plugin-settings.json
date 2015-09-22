@@ -13,6 +13,7 @@
         "plugins/webida.ide.project-management.run",
         "plugins/project-wizard",
         "plugins/webida.ide.project-management.run.java",
+        "plugins/webida.ide.search-result",
         "plugins/uid-menu-items",
         "plugins/webida.terminal",
         "plugins/webida.notification",

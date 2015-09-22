@@ -1,0 +1,14 @@
+{
+    "name": "webida.ide.search-result",
+    "description": "showing result of search",
+    "version": "0.0.1",
+    "requirement": "webida.common.workbench",
+    "extensions": {
+        "webida.common.workbench:views" : {
+            "module" : "plugins/webida.ide.search-result/search-result-view",
+            "location" : "bottom"
+        }
+    },
+    "subscriptions" : {
+    }
+}

@@ -1,0 +1,19 @@
+.search-result-view {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.search-result-contents {
+    padding: 5px;
+    background-color: #efefef;
+}
+
+.search-result-toolbar-panel {
+    width: 100%;
+    height: auto;
+    color: #494949;
+    background-image: -webkit-linear-gradient(top, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
+    background-image: -moz-linear-gradient(top, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
+    background-image: linear-gradient(to bottom, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
+}
