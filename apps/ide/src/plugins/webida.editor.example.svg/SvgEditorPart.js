@@ -26,27 +26,28 @@
 // @formatter:off
 define([
     'plugins/webida.editor.text-editor/Document',
+    'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugins/workbench/ui/EditorModelManager',
-    'webida-lib/plugins/workbench/ui/EditorPart',
-    './SvgEditorViewer',
     './SvgEditorModel',
-    './SvgEditorModelCommand'
+    './SvgEditorModelCommand',
+    './SvgEditorModelManager',
+    './SvgEditorViewer'
 ], function(
     Document,
+    EditorPart,
     genetic,
     Logger,
-    EditorModelManager,
-    EditorPart,
-    SvgEditorViewer,
     SvgEditorModel,
-    SvgEditorModelCommand
+    SvgEditorModelCommand,
+    SvgEditorModelManager,
+    SvgEditorViewer
 ) {
     'use strict';
 // @formatter:on
 
     /**
+     * @typedef {Object} ChangeRequest
      * @typedef {Object} EditorViewer
      * @typedef {Object} HTMLElement
      * @typedef {Object} SvgEditorModelCommand
@@ -80,17 +81,19 @@ define([
          */
         createModel: function() {
             logger.info('%c createModel()', 'color:green');
-            this.setModelManager(new EditorModelManager(this.getDataSource(), SvgEditorModel));
-            var model = this.getModelManager().getSynchronizedModel();
+            this.setModelManager(new SvgEditorModelManager(this.getDataSource()));
+            var model = this.getModelManager().getSynchronized(SvgEditorModel);
             this.getModelManager().synchronize(Document);
             this.setModel(model);
             return model;
         },
 
         /**
+         * @param {ChangeRequest} request
          * @return {SvgEditorModelCommand}
          */
         getCommand: function(request) {
+            logger.info('getCommand(' + request + ')');
             return new SvgEditorModelCommand(this.getModel(), request);
         }
     });

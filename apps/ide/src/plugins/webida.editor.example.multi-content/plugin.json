@@ -9,9 +9,9 @@
             "name" : "Multi Content Editor Example",
             "editorPart" : "MultiContentExampleEditorPart",
             "fileValueRequired" : true,
-            "handledFileExt" : [ "xml" ],
+            "handledFileExt" : [ "svgx" ],
             "handledMimeTypes" : [],
-            "handledFileNames" : [ "multi-content.xml" ],
+            "handledFileNames" : [ "multi-content.svgx" ],
             "unhandledFileExt" : [],
             "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
         }

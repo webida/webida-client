@@ -28,12 +28,14 @@ define([
     'plugins/webida.editor.text-editor/TextChangeRequest',
     'webida-lib/plugins/workbench/ui/EditorModel',
     'webida-lib/plugins/workbench/ui/PartModel',
+    'webida-lib/plugins/workbench/ui/PartModelEvent',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
     TextChangeRequest,
     EditorModel,
     PartModel,
+    PartModelEvent,
     genetic, 
     Logger
 ) {
@@ -65,32 +67,19 @@ define([
         serialize: function() {
             var contents = this.getContents();
             if ( contents instanceof Array) {
-                return this.getContents().join('\n');
+                return this.getContents().join('\n').trim();
             } else {
                 return '';
             }
         },
 
-        /**
-         * @param {Object} delta
-         */
         update: function(delta) {
             logger.info('update(' + delta + ')');
+            var modelEvent = new PartModelEvent();
             this.getContents().push(delta);
-            this.emit(PartModel.CONTENTS_CHANGE, delta);
-        },
-
-        syncFrom: function(otherModel, request) {
-            if ( request instanceof TextChangeRequest) {
-                this.createContents(request.contents);
-            }
-        },
-
-        syncTo: function(otherModel, request) {
-            console.log('request = ', request);
-            var contents = otherModel.getContents();
-            otherModel.setContents(contents + '\n' + request);
-            console.log(otherModel.getContents());
+            modelEvent.setDelta(delta);
+            modelEvent.setContents(this.getContents());
+            this.emit(PartModel.CONTENTS_CHANGE, modelEvent);
         }
     });
 

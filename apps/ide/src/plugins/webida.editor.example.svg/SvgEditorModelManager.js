@@ -16,25 +16,21 @@
 
 /**
  * Constructor
- * MultiContentExampleEditorPart
+ * SvgEditorModelManager
  *
  * @see
- * @since: 2015.07.15
+ * @since: 2015.09.21
  * @author: hw.shim
  */
 
 // @formatter:off
 define([
-    'plugins/webida.editor.example.svg/SvgEditorPart',
-    'plugins/webida.editor.code-editor/CodeEditorPart',
-    'webida-lib/plugins/workbench/ui/MultiContentEditorPart',
+    'webida-lib/plugins/workbench/ui/EditorModelManager',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
-    SvgEditorPart,
-    CodeEditorPart,
-    MultiContentEditorPart,
-    genetic,
+    EditorModelManager,
+    genetic, 
     Logger
 ) {
     'use strict';
@@ -48,23 +44,26 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function MultiContentExampleEditorPart(container) {
-        logger.info('new MultiContentExampleEditorPart(' + container + ')');
-        MultiContentEditorPart.apply(this, arguments);
+    function SvgEditorModelManager(dataSource) {
+        logger.info('new SvgEditorModelManager(' + dataSource + ')');
+        EditorModelManager.apply(this, arguments);
     }
 
 
-    genetic.inherits(MultiContentExampleEditorPart, MultiContentEditorPart, {
+    genetic.inherits(SvgEditorModelManager, EditorModelManager, {
 
-        /**
-         * Adds multi-contents
-         */
-        createContents: function() {
-            this.addPart('svgEditor', 'Svg Editor', 0, SvgEditorPart);
-            this.addPart('codeEditor', 'Code Editor', 1, CodeEditorPart);
+        syncTo: function(otherModel, modelEvent) {
+            logger.info('syncTo(' + otherModel + ', ' + modelEvent + ')');
+            var myModel = this.getModel();
+            otherModel.update(myModel.serialize());
+        },
+
+        syncFrom: function(otherModel, modelEvent) {
+            logger.info('syncFrom(' + otherModel + ', ' + modelEvent + ')');
+            var myModel = this.getModel();
+            myModel.createContents(modelEvent.getContents());
         }
     });
 
-    return MultiContentExampleEditorPart;
+    return SvgEditorModelManager;
 });
-

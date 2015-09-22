@@ -55,8 +55,8 @@ define([
      * @param {DataSource} dataSource
      * @param {Function} ModelClass
      */
-    function EditorModelManager(dataSource, ModelClass) {
-        logger.info('new EditorModelManager(' + dataSource + ', ModelClass)');
+    function EditorModelManager(dataSource) {
+        logger.info('new EditorModelManager(' + dataSource + ')');
 
         AbstractEditorModelManager.apply(this, arguments);
     }

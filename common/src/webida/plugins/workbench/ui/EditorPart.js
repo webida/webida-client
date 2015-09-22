@@ -81,6 +81,10 @@ define([
             throw new Error('canSaveAs() should be implemented by ' + this.constructor.name);
         },
 
+        focus: function() {
+            logger.info('focus() //do nothing');
+        },
+
         close: function() {
             logger.info('close()');
             var that = this;
@@ -101,6 +105,29 @@ define([
             if (this.getModelManager()) {
                 this.getModelManager().resetModel();
             }
+        },
+
+        /**
+         * @See Part's onViewerChange()
+         * @param {ChangeRequest} request
+         */
+        onViewerChange: function(request) {
+            logger.info('onViewerChange(' + request + ')');
+            var command = this.getCommand(request);
+            if (this.hasCommandStack()) {
+                this.getCommandStack().execute(command);
+            } else {
+                command.execute();
+            }
+        },
+
+        /**
+         * @See Part's onModelChange()
+         * @param {PartModelEvent} modelEvent
+         */
+        onModelChange: function(modelEvent) {
+            logger.info('onModelChange(' + modelEvent + ')');
+            this.getViewer().render(modelEvent.getDelta());
         },
 
         toString: function() {

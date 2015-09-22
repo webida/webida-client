@@ -16,55 +16,63 @@
 
 /**
  * Constructor
- * MultiContentExampleEditorPart
+ * PartModelEvent
  *
  * @see
- * @since: 2015.07.15
+ * @since: 2015.09.21
  * @author: hw.shim
  */
 
 // @formatter:off
 define([
-    'plugins/webida.editor.example.svg/SvgEditorPart',
-    'plugins/webida.editor.code-editor/CodeEditorPart',
-    'webida-lib/plugins/workbench/ui/MultiContentEditorPart',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
-    SvgEditorPart,
-    CodeEditorPart,
-    MultiContentEditorPart,
-    genetic,
+    genetic, 
     Logger
 ) {
     'use strict';
 // @formatter:on
 
-    /**
-     * @typedef {Object} DataSource
-     */
-
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function MultiContentExampleEditorPart(container) {
-        logger.info('new MultiContentExampleEditorPart(' + container + ')');
-        MultiContentEditorPart.apply(this, arguments);
+    function PartModelEvent() {
+        logger.info('new PartModelEvent()');
     }
 
 
-    genetic.inherits(MultiContentExampleEditorPart, MultiContentEditorPart, {
+    genetic.inherits(PartModelEvent, Object, {
 
         /**
-         * Adds multi-contents
+         * @param {Object} delta
          */
-        createContents: function() {
-            this.addPart('svgEditor', 'Svg Editor', 0, SvgEditorPart);
-            this.addPart('codeEditor', 'Code Editor', 1, CodeEditorPart);
+        setDelta: function(delta) {
+            this.delta = delta;
+        },
+
+        /**
+         * @return {Object}
+         */
+        getDelta: function() {
+            return this.delta;
+        },
+
+        /**
+         * @param {Object} contents
+         */
+        setContents: function(contents) {
+            this.contents = contents;
+        },
+
+        /**
+         * @return {Object}
+         */
+        getContents: function() {
+            return this.contents;
         }
     });
 
-    return MultiContentExampleEditorPart;
+    return PartModelEvent;
 });
-
