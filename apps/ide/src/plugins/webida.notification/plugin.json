@@ -16,7 +16,7 @@
                 "page": "../preferences/NotificationPreferencePage",
                 "pageData": "",
                 "getDefault": "getDefaultPreference",
-                "scope": ["USER", "WORKSPACE"]
+                "scope": ["WORKSPACE"]
             }
         ]
     }

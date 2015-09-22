@@ -27,7 +27,7 @@
                 "getDefault": "getDefault",
                 "page": "SimplePage",
                 "pageData": "getSchema",
-                "scope": ["USER", "WORKSPACE"]
+                "scope": ["WORKSPACE"]
             }
         ],
 

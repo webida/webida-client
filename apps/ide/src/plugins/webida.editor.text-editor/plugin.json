@@ -52,7 +52,7 @@
                 "page": "SimplePage",
                 "pageData": "getSchema",
                 "getDefault": "getDefault",
-                "scope": ["USER", "WORKSPACE"]
+                "scope": ["WORKSPACE"]
             },
             {
                 "module": "plugins/webida.editor.text-editor/preferences/preference-editor",
@@ -62,7 +62,7 @@
                 "page": "SimplePage",
                 "pageData": "getSchema",
                 "getDefault": "getDefault",
-                "scope": ["USER", "WORKSPACE"]
+                "scope": ["WORKSPACE"]
             },
             {
                 "module": "plugins/webida.editor.text-editor/preferences/preference-keys",
@@ -72,7 +72,7 @@
                 "page": "SimplePage",
                 "pageData": "getSchema",
                 "getDefault": "getDefault",
-                "scope": ["USER", "WORKSPACE"]
+                "scope": ["WORKSPACE"]
             },
             {
                 "module": "plugins/webida.editor.text-editor/preferences/preference-show",
@@ -82,7 +82,7 @@
                 "page": "SimplePage",
                 "pageData": "getSchema",
                 "getDefault": "getDefault",
-                "scope": ["USER", "WORKSPACE"]
+                "scope": ["WORKSPACE"]
             }
         ]
     }
