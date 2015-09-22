@@ -77,21 +77,10 @@ define([
         /**
          * @Override
          */
-		prepareVM: function(){
-			logger.info('%cprepareVM()', 'color:orange');
-			var container = this.getContainer();
-			this.createViewer(container.getContentNode());
-		},
-
-        initialize: function() {
-            logger.info('initialize()');
-            this.initializeListeners();
-        },
-
-        initializeListeners: function() {
-            logger.info('initializeListeners()');
-            var that = this;
-            //subscribe topic
+        prepareComponents: function() {
+            logger.info('%cprepareComponents()', 'color:orange');
+            var container = this.getContainer();
+            this.createViewer(container.getContentNode());
         },
 
         renderImage: function() {
@@ -132,29 +121,7 @@ define([
         createViewer: function(parentNode, callback) {
             logger.info('createViewer(' + parentNode.tagName + ', callback)');
             this.setParentElement(parentNode);
-            this.initialize();
             this.renderImage();
-        },
-
-        destroy: function() {
-            logger.info('destroy()');
-            //unsubscribe topic
-        },
-
-        hide: function() {
-            logger.info('hide()');
-        },
-
-        addChangeListener: function(callback) {
-            logger.info('addChangeListener()');
-        },
-
-        focus: function() {
-            logger.info('focus()');
-        },
-
-        isClean: function() {
-            logger.info('isClean()');
         }
     });
 

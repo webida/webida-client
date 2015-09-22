@@ -232,12 +232,6 @@ define([
             }
         },
 
-        addChangeListener: function (listener) {            
-            this.addDeferredAction(function (self) {
-                self.editor.on('change', listener);
-            });
-        },
-
         addCursorListener: function (listener) {
             //var tListener = eventTransformers.cursor(this, listener);
             this.cursorListeners.push(listener);
@@ -492,14 +486,6 @@ define([
 
         getFoldings: function () {
             // May be, no feature
-        },
-
-        isClean: function () {
-            if (this.editor) {
-                return !(this.editor.getSession().getUndoManager().hasUndo());
-            } else {
-                return true;                
-            }            
         },
 
         clearHistory: function () {

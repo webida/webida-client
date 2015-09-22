@@ -47,10 +47,6 @@ define([
             throw new Error('destroy() should be implemented by subclass');
         },
 
-        addChangeListener: function (listener) {
-            throw new Error('addChangeListener() should be implemented by subclass');            
-        }, 
-
         addFocusListener: function (listener) {
             throw new Error('addFocusListener() should be implemented by subclass'); 
         },
@@ -77,10 +73,6 @@ define([
 
         setKeymap: function (keymap) {
             throw new Error('setKeymap() should be implemented by subclass');
-        },
-
-        isClean: function () {
-            throw new Error('isClean() should be implemented by subclass');
         },
 
         clearHistory: function () {

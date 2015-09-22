@@ -275,22 +275,9 @@ define([
             }
         },
 
-        hide: function() {
-            logger.info('hide()');
-        },
-
-        addChangeListener: function(callback) {
-            this.viewer._changeCallback = callback;
-        },
-
         focus: function() {
             logger.info('focus()');
             this.getViewer().focus();
-        },
-
-        isClean: function() {
-            var docMan = this.getModelManager();
-            return !docMan.canSaveModel();
         },
 
         /**

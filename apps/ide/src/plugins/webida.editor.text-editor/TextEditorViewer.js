@@ -407,13 +407,6 @@ define([
             $(this.elem).html('');
         },
 
-        addChangeListener: function(listener) {
-            var tListener = eventTransformers.change(this, listener);
-            this.addDeferredAction(function(self) {
-                self.editor.on('change', tListener);
-            });
-        },
-
         addCursorListener: function(listener) {
             var tListener = eventTransformers.cursor(this, listener);
             this.cursorListeners.push(listener);
@@ -867,14 +860,6 @@ define([
                 return _.map(foldings, function(fold) {
                     return fold.find();
                 });
-            }
-        },
-
-        isClean: function() {
-            if (this.editor) {
-                return this.editor.getDoc().isClean();
-            } else {
-                return true;
             }
         },
 
