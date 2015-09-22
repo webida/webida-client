@@ -27,11 +27,13 @@
 define([
     'webida-lib/plugins/workbench/ui/EditorModel',
     'webida-lib/plugins/workbench/ui/PartModel',
+    'webida-lib/plugins/workbench/ui/PartModelEvent',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function(
     EditorModel,
     PartModel,
+    PartModelEvent,
     genetic, 
     Logger
 ) {
@@ -83,15 +85,17 @@ define([
         },
 
         /**
-         * For now, whole contents is assumed as delta 
          * @param {Object} contents
          */
         update: function(newText) {
             logger.info('update(' + newText + ')');
             var old = this.getContents();
+            var modelEvent = new PartModelEvent();
             if (old !== newText) {
                 this.setContents(newText);
-                this.emit(PartModel.CONTENTS_CHANGE, newText);
+                modelEvent.setDelta(newText);
+                modelEvent.setContents(this.getContents());
+                this.emit(PartModel.CONTENTS_CHANGE, modelEvent);
             }
         },
 
