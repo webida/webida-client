@@ -73,6 +73,10 @@ define([
         getContentPane: function(contentPane) {
             return this.contentPane;
         },
+
+        updateDirtyState: function() {
+            this.getParent().updateDirtyState();
+        }
     });
 
     return MultiContentPartContainer;

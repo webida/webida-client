@@ -30,14 +30,16 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './EditorPart',
-    './MultiContentPartContainer'
+    './MultiContentPartContainer',
+    './Part'
 ], function(
     TabContainer,
     ContentPane,
     genetic, 
     Logger,
     EditorPart,
-    MultiContentPartContainer
+    MultiContentPartContainer,
+    Part
 ) {
     'use strict';
 // @formatter:on
@@ -69,22 +71,21 @@ define([
     genetic.inherits(MultiContentEditorPart, EditorPart, {
 
         /**
+         * Prepares required components.
+         */
+        prepareComponents: function() {
+            logger.info('%cprepareComponents()', 'color:orange');
+            var container = this.getContainer();
+            this.createTabContainer(container.getContentNode());
+            this.createContents();
+        },
+
+        /**
          * Create contents and add to sub-tab.
          * @abstract
          */
         createContents: function() {
             throw new Error('createContents() should be implemented by ' + this.constructor.name);
-        },
-
-        /**
-         * Prepares required components.
-         */
-        prepareComponents: function() {
-            logger.info('%cprepareComponents()', 'color:orange');
-
-            var container = this.getContainer();
-            this.createTabContainer(container.getContentNode());
-            this.createContents();
         },
 
         /**
@@ -122,61 +123,67 @@ define([
         },
 
         /**
-         * @param {Object} id
-         * @param {string} title
-         * @param {(Part|Viewer|HTMLElement)} content
-         * @param {number} index
-         * @param {MultiContentEditorPart~addViewerCallback} callback
+         * @private
          */
-        /**
-         * @callback MultiContentEditorPart~addViewerCallback
-         * @param {HTMLElement} parentNode
-         */
-        addContent: function(id, title, content, index, callback) {
-            logger.info('addContent(' + id + ', ' + title + ', ' + content + ', ' + index + ', callback)');
+        _addContent: function(id, title, index, callback, exec) {
+            var content;
             var pane = new ContentPane({
                 title: title
             });
-            pane.startup();
             this.getTabContainer().addChild(pane, index);
+            content = exec(pane);
             this.getContents().set(id, content);
             this.getTabToContentMap().set(pane, content);
-            this._execFunc(callback, pane.domNode);
+            this._execFunc(callback, content);
             if (this.getContents().size === 1) {
                 this.setActiveContent(content);
             }
         },
 
-        addHtmlElement: function(id, title, element, index, callback) {
-            logger.info('addHtmlElement(' + id + ', ' + title + ', element, ' + index + ', callback)');
-            var pane = new ContentPane({
-                title: title
+        /**
+         * @param {Object} id
+         * @param {string} title
+         * @param {number} index
+         * @param {HTMLElement} element
+         * @param {MultiContentEditorPart~addHtmlElementCallback} callback
+         */
+        /**
+         * @callback MultiContentEditorPart~addHtmlElementCallback
+         * @param {HTMLElement} content
+         */
+        addHtmlElement: function(id, title, index, element, callback) {
+            this._addContent(id, title, index, callback, function(pane) {
+                pane.domNode.appendChild(element);
+                pane.startup();
+                return element;
             });
-            this.getTabContainer().addChild(pane, index);
-            this.getContents().set(id, element);
-            this.getTabToContentMap().set(pane, element);
-            pane.domNode.appendChild(element);
-            pane.startup();
-            this._execFunc(callback, pane.domNode);
-            if (this.getContents().size === 1) {
-                this.setActiveContent(element);
-            }
         },
 
-        addPart: function(id, title, PartClass, index, callback) {
-            logger.info('addPart(' + id + ', ' + title + ', ' + PartClass.name + ', ' + index + ', callback)');
-            var part
-            var partContainer;
-            var pane = new ContentPane({
-                title: title
+        /**
+         * @param {Object} id
+         * @param {string} title
+         * @param {number} index
+         * @param {Function} PartClass
+         * @param {DataSource} dataSource
+         * @param {MultiContentEditorPart~addPartCallback} callback
+         */
+        /**
+         * @callback MultiContentEditorPart~addPartCallback
+         * @param {Part} part
+         */
+        addPart: function(id, title, index, PartClass, dataSource, callback) {
+            var that = this;
+            var dataSource = dataSource || this.getDataSource();
+            this._addContent(id, title, index, callback, function(pane) {
+                var part
+                var partContainer;
+                partContainer = new MultiContentPartContainer(dataSource, pane);
+                partContainer.setParent(that.getContainer());
+                partContainer.createPart(PartClass, callback);
+                part = partContainer.getPart();
+                pane.startup();
+                return part;
             });
-            this.getTabContainer().addChild(pane, index);
-            partContainer = new MultiContentPartContainer(this.getDataSource(), pane);
-            partContainer.createPart(PartClass, callback);
-            part = partContainer.getPart();
-            this.getContents().set(id, part);
-            this.getTabToContentMap().set(pane, part);
-            pane.startup();
         },
 
         /**
@@ -199,7 +206,7 @@ define([
         },
 
         /**
-         * @return {EditorContent} content
+         * @return {(Part|HTMLElement)}
          */
         getActiveContent: function() {
             return this.activeContent;
@@ -207,7 +214,7 @@ define([
 
         /**
          * @param {Object} id
-         * @return {EditorContent}
+         * @return {(Part|HTMLElement)}
          */
         getContentById: function(id) {
             return this.getContents().get(id);
@@ -222,26 +229,62 @@ define([
 
         /**
          * @param {Object} tab
-         * @return {EditorViewer}
+         * @return {(Part|HTMLElement)}
          */
         getContentByTab: function(tab) {
             return this.getTabToContentMap().get(tab);
         },
 
         /**
-         * @return {Map.<Object, {(Part|Viewer|HTMLElement)}>}
+         * @return {Map.<Object, {(Part|HTMLElement)}>}
          */
         getTabToContentMap: function() {
             return this.tabToContentMap;
         },
 
         /**
-         * @return {Map.<Object, {(Part|Viewer|HTMLElement)}>}
+         * @return {Map.<Object, {(Part|HTMLElement)}>}
          */
         getContents: function() {
             return this.contents;
         },
+
+        /**
+         * @override
+         */
+        save: function() {
+            var content = this.getActiveContent();
+            if ( content instanceof EditorPart) {
+                return content.save();
+            }
+        },
+
+        /**
+         * @override
+         */
+        isDirty: function() {
+            var content = this.getActiveContent();
+            if ( content instanceof EditorPart) {
+                return content.isDirty();
+            } else {
+                return false;
+            }
+        },
+
+        /**
+         * @override
+         */
+        getContextMenuItems: function(allItems) {
+            var content = this.getActiveContent();
+            if (content) {
+                return content.getContextMenuItems(allItems);
+            } else {
+                return null;
+            }
+        }
     });
+
+    MultiContentEditorPart.TAB_SELECT = 'tabSelect';
 
     return MultiContentEditorPart;
 });

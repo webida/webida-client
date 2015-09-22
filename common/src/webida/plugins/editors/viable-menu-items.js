@@ -98,15 +98,17 @@ define([
         var part = _getCurrentEditorPart();
         if (part) {
             var viewer = part.getViewer();
-            var items = {};
-            items['&Replace'] = menuItems.findMenuItems['&Replace'];
-            items['F&ind'] = menuItems.findMenuItems['F&ind'];
-            items['&Highlight to Find'] = menuItems.findMenuItems['&Highlight to Find'];
-            if (viewer.execute('existSearchQuery')) {
-                items['Find &Next'] = menuItems.findMenuItems['Find &Next'];
-                items['Find &Previous'] = menuItems.findMenuItems['Find &Previous'];
+            if (viewer) {
+                var items = {};
+                items['&Replace'] = menuItems.findMenuItems['&Replace'];
+                items['F&ind'] = menuItems.findMenuItems['F&ind'];
+                items['&Highlight to Find'] = menuItems.findMenuItems['&Highlight to Find'];
+                if (viewer.execute('existSearchQuery')) {
+                    items['Find &Next'] = menuItems.findMenuItems['Find &Next'];
+                    items['Find &Previous'] = menuItems.findMenuItems['Find &Previous'];
+                }
+                return items;
             }
-            return items;
         }
     }
 
