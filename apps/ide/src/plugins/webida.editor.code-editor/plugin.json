@@ -40,7 +40,7 @@
                 "getDefault": "getDefault",
                 "page": "SimplePage",
                 "pageData": "editor",
-                "scope": ["USER", "WORKSPACE"]
+                "scope": ["WORKSPACE"]
             },
             {
                 "module": "plugins/webida.editor.code-editor/preferences/preference-contentassist",
@@ -50,7 +50,7 @@
                 "getDefault": "getDefault",
                 "page": "SimplePage",
                 "pageData": "getSchema",
-                "scope": ["USER", "WORKSPACE"]
+                "scope": ["WORKSPACE"]
             }
         ],
 
