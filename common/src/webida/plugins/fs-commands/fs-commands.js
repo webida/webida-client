@@ -28,7 +28,7 @@ define(['require',
         'webida-lib/util/arrays/BubblingArray',     // BubblingArray
         'webida-lib/plugins/workspace/plugin',                 // wv
         'webida-lib/plugins/workbench/plugin',      // workbench
-        './CheckBoxTree',                           // CheckBoxTree
+        'webida-lib/widgets/checkbox-tree/CheckBoxTree',
         'text!./layer/searchFilesForm.html',        // sFilesForm
         'text!./layer/filesSelectForm.html',        // fSelectForm
         'text!./layer/goToFile.html',               // goToFileForm
