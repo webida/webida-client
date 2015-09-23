@@ -139,7 +139,7 @@ define([
                     file.setFlag(Persistence.READ, true);
                     callback(file.getContents());
                     that.emit(DataSource.AFTER_SAVE);
-                    topic.publish('data-source/written', that);
+                    topic.publish('data-source/written', that.getId());
                 }
             });
         },
