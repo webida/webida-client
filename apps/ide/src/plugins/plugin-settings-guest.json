@@ -1,10 +1,11 @@
 {
     "plugins" : [
-    	"plugins/webida.editor.example.multi-viewer",
         "plugins/webida.editor.text-editor",
         "plugins/webida.editor.code-editor",
         "plugins/webida.editor.test-editor",
         "plugins/webida.viewer.image-viewer",
+        "plugins/webida.editor.example.svg",
+        "plugins/webida.editor.example.multi-content",
         "plugins/deploy",
         "plugins/help",
         "plugins/webida.preference",
@@ -13,9 +14,11 @@
         "plugins/webida.ide.project-management.run",
         "plugins/project-wizard",
         "plugins/webida.ide.project-management.run.java",
+        "plugins/webida.ide.search-result",
         "plugins/uid-menu-items",
         "plugins/webida.terminal.restrict",
         "plugins/webida.notification",
+        "plugins/webida.ide.notification.toast",
         "webida-lib/plugins/editors",
         "webida-lib/plugins/fs-commands",
         "webida-lib/plugins/git",
@@ -25,6 +28,7 @@
         "webida-lib/plugins/workbench"
     ],
     "start-plugins" : [
-        "webida-lib/plugins/workbench"
+        "webida-lib/plugins/workbench",
+        "plugins/webida.ide.notification.toast"
     ]
 }
