@@ -108,10 +108,11 @@ define([
          * Resets the given EditorModel to its last saved state.
          */
         resetModel: function() {
-        	logger.info('resetModel()');
+            logger.info('resetModel()');
             var model = this.getModel();
-            logger.info('this.getSavedData() = ', this.getSavedData());
-            model.createContents(this.getSavedData());
+            this.getDataSource().getData(function(data) {
+                model.createContents(data);
+            });
         },
     });
 
