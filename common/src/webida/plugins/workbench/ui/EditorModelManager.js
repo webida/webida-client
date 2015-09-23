@@ -110,7 +110,7 @@ define([
         resetModel: function() {
             logger.info('resetModel()');
             var model = this.getModel();
-            this.getDataSource().getData(function(data) {
+            this.getDataSource().reload(function(data) {
                 model.createContents(data);
             });
         },

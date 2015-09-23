@@ -114,6 +114,13 @@ define([
         },
 
         /**
+         * @param {Function} callback
+         */
+        reload: function(callback) {
+            throw new Error('reload(callback) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
          * @return {string} title
          */
         getTitle: function() {

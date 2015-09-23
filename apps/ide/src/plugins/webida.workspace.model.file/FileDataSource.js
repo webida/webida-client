@@ -101,6 +101,16 @@ define([
         /**
          * @param {Function} callback
          */
+        reload: function(callback) {
+            logger.info('reload(callback)');
+            var file = this.getPersistence();
+            file.setFlag(Persistence.READ, false);
+            this.getData(callback);
+        },
+
+        /**
+         * @param {Function} callback
+         */
         getData: function(callback) {
             logger.info('getData(callback)');
             var that = this;
