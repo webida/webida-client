@@ -89,21 +89,6 @@ define([
         },
 
         /**
-         * @param {Object} data
-         */
-        setSavedData: function(data) {
-            logger.info('setSavedData(' + data + ')');
-            this.savedData = data;
-        },
-
-        /**
-         * @return {Object}
-         */
-        getSavedData: function() {
-            return this.savedData;
-        },
-
-        /**
          * @private
          */
         _execFunc: function(callback, param) {
