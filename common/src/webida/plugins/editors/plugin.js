@@ -24,12 +24,9 @@
 define([
     'dojo/topic',
     'external/lodash/lodash.min',
-    'external/URIjs/src/URI',
     'webida-lib/app',
-    'webida-lib/util/path',
     'webida-lib/util/arrays/BubblingArray',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/util/notify',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/CompatibleTabPartContainer',
@@ -37,23 +34,17 @@ define([
     'webida-lib/plugins/workbench/ui/LayoutPane',
     'webida-lib/plugins/workbench/ui/PartContainer',
     'webida-lib/plugins/workbench/ui/Workbench',
-    'webida-lib/widgets/views/view',
     'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
-    'external/async/dist/async.min',
     'plugins/webida.notification/notification-message',
-    'plugins/webida.workspace.model.file/FileDataSource', //TODO : temp for 7.21
     './DataSourceHandler',
     './LifecycleManager'
 ], function (
     topic, 
     _, 
-    URI, 
     ide, 
-    pathUtil, 
     BubblingArray,
     Logger, 
-    notify,
     pm, 
     workbench, 
     CompatibleTabPartContainer,
@@ -61,12 +52,9 @@ define([
     LayoutPane,
     PartContainer,
     Workbench,
-    View, 
     vm, 
     ViewFocusController,  
-    async, 
     toastr,
-    FileDataSource,
     DataSourceHandler,
     LifecycleManager
 ) {
@@ -90,6 +78,7 @@ define([
         });
 
         topic.subscribe('fs.cache.file.invalidated', function(fsURL, path) {
+            logger.info('fs.cache.file.invalidated arrived');
             var file = editors.getFile(path);
             if (file) {
                 if (file === editors.currentFile) {
@@ -102,14 +91,7 @@ define([
 
         topic.subscribe('fs.cache.file.set', function(fsUrl, target, reason) {
             if (reason === 'refreshed') {
-                var file = editors.getFile(target);
-                if (file) {
-                    if (file === editors.currentFile) {
-                        _.defer(askAndReload.bind(null, file));
-                    } else {
-                        file.toAskAndReload = true;
-                    }
-                }
+                topic.publish('data-source/content-change', target);
             }
         });
 
@@ -121,7 +103,7 @@ define([
         //Compatibility
         topic.subscribe('current-part-changed', function(oldPart, newPart) {
 
-            console.log('current-part-changed');
+            logger.info('current-part-changed arrived');
 
             if (oldPart !== newPart) {
 
@@ -141,7 +123,7 @@ define([
                         key: 'E'
                     });
 
-                    /////////////////////// TODO refactor
+                    //------------ TODO refactor ---------------
 
                     var file = newPart.getDataSource().getPersistence();
 
@@ -156,10 +138,6 @@ define([
                             fsCache.refreshFileContents(file.path);
                         }
 
-                        if (file.toAskAndReload) {
-                            file.toAskAndReload = false;
-                            _.defer(askAndReload.bind(null, file));
-                        }
                         topic.publish('editors.selected', file.path, file);
                     }
                 } else {
@@ -175,24 +153,6 @@ define([
 
     var fsCache = ide.getFSCache();
     var asked = [];
-    function askAndReload(file) {
-        require(['popup-dialog'], function(PopupDialog) {
-            if (asked.indexOf(file) === -1) {
-                console.assert(asked.length === 0, 'assertion fail: only one file is asked to reload at any point of time');
-                asked.push(file);
-                PopupDialog.yesno({
-                    title: 'Reload File',
-                    message: file.path + '<br><br>' + 'File \'' + file.name + '\' has changed. <br>' + 'Do you want to reload?',
-                    type: 'warning'
-                }).then(function() {
-                    asked.pop();
-                    topic.publish('editor/open', file.getPersistenceId());
-                }, function() {
-                    asked.pop();
-                });
-            }
-        });
-    }
 
     /** @module editors */
     var editors = {

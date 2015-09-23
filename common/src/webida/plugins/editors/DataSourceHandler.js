@@ -77,9 +77,12 @@ define([
          * @private
          */
         _subscribe: function() {
-            //open
+            //on deleted
             this.subscribed.push(topic.subscribe('workspace.nodes.deleting', this._onNodesDeleted.bind(this)));
             this.subscribed.push(topic.subscribe('fs.cache.node.deleted', this._checkCase.bind(this)));
+
+            //on content changed
+            this.subscribed.push(topic.subscribe('data-source/content-change', this._onContentChange.bind(this)));
         },
 
         /**
@@ -210,6 +213,14 @@ define([
             }
         },
 
+        // ************* On Content Changed ************* //
+
+        _onContentChange: function(dataSourceId) {
+            var dsRegistry = workbench.getDataSourceRegistry();
+            var dataSource = dsRegistry.getDataSourceById(dataSourceId);
+            _askReload(dataSource);
+        },
+
         /**
          * @private
          */
@@ -231,6 +242,29 @@ define([
             }).then(function() {
                 topic.publish('editor/close/data-source-id', dataSourceId, {
                     force: true
+                });
+            }, function() {
+            });
+            // @formatter:on
+        });
+    }
+
+    function _askReload(dataSource) {
+        var dataSourceId = dataSource.getId();
+        var persistence = dataSource.getPersistence();
+        require(['popup-dialog'], function(PopupDialog) {
+            // @formatter:off
+            PopupDialog.yesno({
+                title: "Reload '" + persistence.getName() + "'?",
+                message: "'" + persistence.getPath() + "' has been changed. "
+                    + 'Reload the editor(s) for the resource?',
+                type: 'warning'
+            }).then(function() {
+                var page = workbench.getCurrentPage();
+                var registry = page.getPartRegistry();
+                var parts = registry.getPartsByDataSource(dataSource);
+                parts.forEach(function(part) {
+                    part.resetModel();
                 });
             }, function() {
             });
