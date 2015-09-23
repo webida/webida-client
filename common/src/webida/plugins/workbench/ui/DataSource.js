@@ -142,14 +142,21 @@ define([
 
     /**
      * Emit this event when DataSource's
-     * getContents() start to load the contents
+     * getContents() starts to load the contents
      * @constant {string}
      */
     DataSource.LOAD_START = 'loadStart';
 
     /**
      * Emit this event when DataSource's
-     * getContents() complete to load the contents
+     * getContents() fails to load the contents
+     * @constant {string}
+     */
+    DataSource.LOAD_FAIL = 'loadFail';
+
+    /**
+     * Emit this event when DataSource's
+     * getContents() completes to load the contents
      * @constant {string}
      */
     DataSource.LOAD_COMPLETE = 'loadComplete';
@@ -168,12 +175,12 @@ define([
      */
     DataSource.AFTER_SAVE = 'afterSave';
 
-	/**
+    /**
      * Emit this event when error occured
      * during setData(contents, callback)
      * @constant {string}
      */
-	DataSource.SAVE_FAIL = 'saveFail';
+    DataSource.SAVE_FAIL = 'saveFail';
 
     /**
      * This event is emitted when setId(newId) is called

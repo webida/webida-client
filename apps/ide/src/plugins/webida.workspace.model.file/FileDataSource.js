@@ -106,13 +106,16 @@ define([
             var that = this;
             var file = this.getPersistence();
             if (file.getFlag(Persistence.READ) === false) {
+                this.emit(DataSource.LOAD_START, this);
                 fsCache.readFile(file.getPath(), function(error, data) {
                     if (error) {
                         notify.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
+                        that.emit(DataSource.LOAD_FAIL, that);
                     } else {
                         logger.info('data arrived');
                         file.setContents(data);
                         file.setFlag(Persistence.READ, true);
+                        that.emit(DataSource.LOAD_COMPLETE, data);
                         callback(file.getContents());
                     }
                 });
