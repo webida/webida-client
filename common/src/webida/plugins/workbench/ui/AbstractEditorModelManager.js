@@ -235,16 +235,6 @@ define([
          */
         getDataSource: function() {
             return this.dataSource;
-        },
-
-        /**
-         * For the EditorPart, saved data could be retrived
-         * from dataSource. So setSavedData() is not required.
-         * @override
-         * @return {string}
-         */
-        getSavedData: function() {
-            return this.getDataSource().getPersistence().getContents();
         }
     });
 

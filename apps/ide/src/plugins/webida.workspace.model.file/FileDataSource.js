@@ -101,18 +101,31 @@ define([
         /**
          * @param {Function} callback
          */
+        reload: function(callback) {
+            logger.info('reload(callback)');
+            var file = this.getPersistence();
+            file.setFlag(Persistence.READ, false);
+            this.getData(callback);
+        },
+
+        /**
+         * @param {Function} callback
+         */
         getData: function(callback) {
             logger.info('getData(callback)');
             var that = this;
             var file = this.getPersistence();
             if (file.getFlag(Persistence.READ) === false) {
+                this.emit(DataSource.LOAD_START, this);
                 fsCache.readFile(file.getPath(), function(error, data) {
                     if (error) {
                         notify.error('Failed to read file "' + file.getPath() + '" (' + error + ')');
+                        that.emit(DataSource.LOAD_FAIL, that);
                     } else {
                         logger.info('data arrived');
                         file.setContents(data);
                         file.setFlag(Persistence.READ, true);
+                        that.emit(DataSource.LOAD_COMPLETE, data);
                         callback(file.getContents());
                     }
                 });
@@ -139,7 +152,7 @@ define([
                     file.setFlag(Persistence.READ, true);
                     callback(file.getContents());
                     that.emit(DataSource.AFTER_SAVE);
-                    topic.publish('data-source/written', that);
+                    topic.publish('data-source/written', that.getId());
                 }
             });
         },
