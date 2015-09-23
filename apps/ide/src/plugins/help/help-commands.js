@@ -27,7 +27,7 @@
 define(['require'], function (require) {
     'use strict';
 
-    var version = '1.0';
+    var version = '1.4.1';
 
     function showHelpDocument() {
         require(['webida-lib/webida-0.3'], function (webida) {
@@ -74,7 +74,7 @@ define(['require'], function (require) {
                 var date = buildId.substring(0, underbarPos);
                 var time = buildId.substr(underbarPos + 1);
                 time = time.replace(/-/g, ':');
-                $('#version').text('Version: ' + version + '.' + data.buildnumber + ' (Beta)');
+                $('#version').text('Version: ' + version + ' (' + data.buildnumber + ')');
                 $('#buildInfo').html('Build created: ' + date + ' ' + time +
                                      '<br>Commit-id: ' + data.buildcommitid);
             } else {
