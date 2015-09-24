@@ -1318,18 +1318,15 @@ define([
 
         replace: function() {
             this.addDeferredAction(function(self) {
-                var editor = self.editor;
-                self.focus();
+                var editor = self.editor;                
                 editor.execCommand('replace');
             });
         },
 
         find: function() {
             this.addDeferredAction(function(self) {
-                var editor = self.editor;
-                self.focus();
+                var editor = self.editor;                
                 editor.execCommand('find');
-
             });
         },
 
