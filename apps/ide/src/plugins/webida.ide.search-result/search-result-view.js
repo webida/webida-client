@@ -24,7 +24,6 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/widgets/checkbox-tree/CheckBoxTree',
     'webida-lib/widgets/views/view',
-    'webida-lib/widgets/views/viewToolbar',
     'text!./layout/search-result.html',
     'dijit/form/Button',
     'dijit/form/CheckBox',
@@ -41,7 +40,6 @@ define([
     workbench,
     Tree,
     View,
-    ViewToolbar,
     Template,
     button,
     checkBox,
@@ -143,6 +141,19 @@ define([
         }
 
         function _setTree(err, data) {
+
+            function __openEditor(item) {
+                if (item.type === 'directory') {
+                    return;
+                }
+
+                topic.publish('editor/open', item.path, {}, function (part) {
+                    var viewer = part.getViewer();
+                    if (typeof viewer.setCursor === 'function') {
+                        viewer.setCursor({row: item.line - 1, col: 0});
+                    }
+                });
+            }
 
             var title = err ? err : data.title;
             $('<div class="search-result-title"></div>').appendTo(
@@ -254,18 +265,11 @@ define([
                 },
 
                 onNodeDblClicked: function (item) {
-                    topic.publish('editor/open', item.path, {}, function(part){
-                    	var viewer = part.getViewer();
-                    	if(typeof viewer.setCursor === 'function'){
-                    		//part.getViewer().setCursor({row:78, col:0});
-                    	}
-                    });
+                    __openEditor(item);
                 },
 
                 onNodeEnterKey: function (item) {
-                    if (item.type !== 'directory') {
-                        topic.publish('editor/open', item.path);
-                    }
+                    __openEditor(item);
                 },
 
                 isCheckable: function (item) {
@@ -279,11 +283,7 @@ define([
             _removeTreePanel();
             var jobId = workbench.addJob('Searching... ');
             controller.handleFind(_getMetadata(), function (err, data) {
-                if (err) {
-                    _setTree(err, data);
-                } else {
-                    _setTree(err, data);
-                }
+                _setTree(err, data);
                 workbench.removeJob(jobId);
             });
         });
@@ -293,11 +293,7 @@ define([
             _removeTreePanel();
             var jobId = workbench.addJob('Replacing... ');
             controller.handleReplace(_getMetadata(), function (err, data) {
-                if (err) {
-                    _setTree(err, data);
-                } else {
-                    _setTree(err, data);
-                }
+                _setTree(err, data);
                 workbench.removeJob(jobId);
             });
         });
