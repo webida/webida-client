@@ -88,7 +88,8 @@ define([
                     id: 'id' + treeNode.length,
                     name: value,
                     type: 'directory',
-                    path: path
+                    path: path,
+                    line: ''
                 };
 
                 var exist = _.find(treeNode, {path: path, name: value});
@@ -114,7 +115,8 @@ define([
                 var object = {
                     id: 'id' + treeNode.length,
                     name: value,
-                    path: path
+                    path: path,
+                    line: ''
                 };
                 var exist = _.find(treeNode, {path: path, name: value});
                 if (!exist) {
@@ -123,6 +125,7 @@ define([
                     object.parent = parent.id;
                     object.path = parent.path;
                     object.type = 'text';
+                    object.line = fileLocationInfo.line;
                     treeNode.push(object);
                 }
             });
@@ -189,7 +192,7 @@ define([
                     callback('no search result');
                     var result = {
                         error : 'no serach result'
-                    }
+                    };
                     data.update(result);
                 }
             }
