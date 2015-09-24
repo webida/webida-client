@@ -50,6 +50,11 @@ function (
 
         templateString: CheckBoxTreeNodeTemplate,
 
+        _setLabelAttr: {
+            node: 'labelNode',
+            type: 'innerHTML'
+        },
+
         _checkbox: null,
 
         _createCheckbox: function () {
