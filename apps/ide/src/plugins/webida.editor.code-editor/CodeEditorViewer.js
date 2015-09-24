@@ -1335,7 +1335,6 @@ define([
         rename: function () {
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
-                self.focus();
 
                 // rename trigger
                 editor.execCommand('tern-rename');
