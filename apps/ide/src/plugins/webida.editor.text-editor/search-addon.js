@@ -516,5 +516,22 @@ define(['external/codemirror/lib/codemirror',
                 startQuery(cm, text, { caseSensitive: false, regexp: false, wholeWord: false });
             }
         };
+
+        /**
+         * Highlights strings matching given query with query options
+         * Example: cm.setHighlight('string',{caseSensitive: false, regexp: false, wholeWord: false});
+         * @param {string} query
+         * @param {Object} options
+         */
+
+        CodeMirror.defineExtension('setHighlight', function (query, options) {
+            clearSearch(this);
+            if (!options) {
+                options = {caseSensitive: false, regexp: false, wholeWord: false};
+            }
+            if (query) {
+                startQuery(this, query, options);
+            }
+        });
     })();
 });
