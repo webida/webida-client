@@ -528,6 +528,18 @@ define([
                 }
             });
         },
+        
+        /**
+         * Highlights strings matching given query with query options
+         * Example: viewer.setHighlight('string',{caseSensitive: false, regexp: false, wholeWord: false});
+         * @param {string} query
+         * @param {Object} options
+         */
+        setHighlight: function (query, options) {
+            this.addDeferredAction(function(self) {
+                self.editor.setHighlight(query, options);
+            });
+        },
 
         getTheme: function() {
             return this.theme;
