@@ -86,13 +86,13 @@ define([
                 var path = currentNode.join('/');
                 var object = {
                     id: 'id' + treeNode.length,
-                    name: value,
+                    label: value,
                     type: 'directory',
                     path: path,
                     line: ''
                 };
 
-                var exist = _.find(treeNode, {path: path, name: value});
+                var exist = _.find(treeNode, {path: path, label: value});
                 if (!exist) {
                     if (treeNode.length) {
                         var parentPath = path.substring(0, path.length - value.length - 1);
@@ -114,16 +114,20 @@ define([
                 var path = currentNode.join('/');
                 var object = {
                     id: 'id' + treeNode.length,
-                    name: value,
+                    label: value,
                     path: path,
                     line: ''
                 };
-                var exist = _.find(treeNode, {path: path, name: value});
+
+                var exist = _.find(treeNode, {path: path, label: value});
                 if (!exist) {
                     var parentPath = path.substring(0, path.length - value.length - 1);
                     var parent = _.find(treeNode, {path: parentPath});
+                    var label = _.escape(value);
                     object.parent = parent.id;
                     object.path = parent.path;
+                    object.label = label.replace(metadata.pattern,
+                                                 '<mark>' + metadata.pattern + '</mark>');
                     object.type = 'text';
                     object.line = fileLocationInfo.line;
                     treeNode.push(object);

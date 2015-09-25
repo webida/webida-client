@@ -152,6 +152,16 @@ define([
                     if (typeof viewer.setCursor === 'function') {
                         viewer.setCursor({row: item.line - 1, col: 0});
                     }
+
+                    if (typeof viewer.setHighlight === 'function') {
+                        var metadata = _getMetadata();
+                        var options = {
+                            caseSensitive: metadata.ignoreCase,
+                            regexp: metadata.regEx,
+                            wholeWord: metadata.wholeWord
+                        };
+                        viewer.setHighlight(metadata.pattern, options);
+                    }
                 });
             }
 
@@ -175,6 +185,7 @@ define([
             var resultModel = new ObjectStoreModel({
                 store: store,
                 query: { id: 'id0' },
+                labelAttr: 'label'
             });
 
             void new Tree({
