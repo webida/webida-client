@@ -40,12 +40,12 @@ define([
             searchResultData.title = source.title;
         }
 
-        if (source.store) {
-            searchResultData.treeStore = source.store;
-        }
-
         if (source.node) {
             searchResultData.treeNode = source.node;
+        }
+
+        if (source.store) {
+            searchResultData.treeStore = source.store;
         }
 
         if (source.replacePaths) {

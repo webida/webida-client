@@ -68,7 +68,7 @@ function (
 
         postCreate: function () {
 
-            if (this.tree.isCheckable(this.item)) {
+            if (this.tree.addCheckbox(this.item)) {
                 this._createCheckbox();
             }
 
@@ -92,7 +92,7 @@ function (
 
         onNodeEnterKey: function (/*storeItem, node*/) { },
 
-        isCheckable: function (/*storeItem, node*/) {
+        addCheckbox: function (/*storeItem, node*/) {
             return true;
         },
 
