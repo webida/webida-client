@@ -31,6 +31,7 @@
 define(['webida-lib/util/logger/logger-client',          // Logger
         'external/lodash/lodash.min',  // _
         'webida-lib/app',                   // ide
+        'webida-lib/plugins/workbench/plugin',  // workbench
         'webida-lib/webida-0.3',            // webida
         'webida-lib/widgets/views/view',    // View
         'dojo/query',                       // query
@@ -42,6 +43,7 @@ define(['webida-lib/util/logger/logger-client',          // Logger
 function (Logger,
           _,
           ide,
+          workbench,
           webida,
           View,
           query,
@@ -152,8 +154,13 @@ function (Logger,
      */
     mod.onViewAppended = function () {
         logger.log('onViewAppended');
+        var opt = {};
         mod._view.setContent(terminalHtml);
         mod._init();
+
+        opt.title = 'Terminal';
+        opt.key = 'T';
+        workbench.registToViewFocusList(mod._view, opt);
     };
 
     return mod;
