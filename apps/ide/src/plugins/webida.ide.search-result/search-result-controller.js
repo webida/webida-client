@@ -43,14 +43,11 @@ define([
 
     function handleReplace(metadata, callback) {
 
-        model.sendReplaceData(metadata, function (err, title, store) {
+        model.sendReplaceData(metadata, function (err, title) {
             if (err) {
                 callback(err);
             } else {
-                callback(null, {
-                    title: title,
-                    store : store
-                });
+                callback(null, title);
             }
         });
     }
@@ -66,9 +63,17 @@ define([
         });
     }
 
+    function handleCheckbox(item, checked, callback) {
+
+        model.updateReplacePaths(item, checked, function () {
+            callback();
+        });
+    }
+
     return {
         handleFind : handleFind,
         handleReplace : handleReplace,
-        handleSelection : handleSelection
+        handleSelection : handleSelection,
+        handleCheckbox : handleCheckbox
     };
 });

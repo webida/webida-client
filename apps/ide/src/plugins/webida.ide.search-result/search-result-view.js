@@ -78,6 +78,7 @@ define([
             workbench.registToViewFocusList(view, opt);
         }
 
+        var pressFindButton;
         var findInput = registry.byId('find-input');
         var findButton = registry.byId('find-button');
         var replaceInput = registry.byId('replace-input');
@@ -87,13 +88,11 @@ define([
         var ignoreCase = registry.byId('ignore-case');
         var wholeWord = registry.byId('whole-word');
         var clearButton = registry.byId('clear-button');
-
         var scopeStore = [
             { name: 'Workspace', id: 'W' },
             { name: 'Project', id: 'P' },
             { name: 'Selection', id: 'S'}
         ];
-
         scopeSelect.set({
             store: new Observable(new Memory({ data: scopeStore })),
             searchAttr: 'name',
@@ -140,30 +139,88 @@ define([
             return metadata;
         }
 
-        function _setTree(err, data) {
+        function _openEditor(item) {
+            if (item.type === 'directory') {
+                return;
+            }
 
-            function __openEditor(item) {
-                if (item.type === 'directory') {
-                    return;
+            topic.publish('editor/open', item.path, {}, function (part) {
+                var viewer = part.getViewer();
+                if (typeof viewer.setCursor === 'function') {
+                    viewer.setCursor({row: item.line - 1, col: 0});
                 }
 
-                topic.publish('editor/open', item.path, {}, function (part) {
-                    var viewer = part.getViewer();
-                    if (typeof viewer.setCursor === 'function') {
-                        viewer.setCursor({row: item.line - 1, col: 0});
+                if (typeof viewer.setHighlight === 'function') {
+                    var metadata = _getMetadata();
+                    var options = {
+                        caseSensitive: metadata.ignoreCase,
+                        regexp: metadata.regEx,
+                        wholeWord: metadata.wholeWord
+                    };
+                    var pattern;
+                    if (pressFindButton) {
+                        pattern = findInput.getValue();
+                    } else {
+                        pattern = replaceInput.getValue();
                     }
+                    viewer.setHighlight(pattern, options);
+                }
+            });
+        }
 
-                    if (typeof viewer.setHighlight === 'function') {
-                        var metadata = _getMetadata();
-                        var options = {
-                            caseSensitive: metadata.ignoreCase,
-                            regexp: metadata.regEx,
-                            wholeWord: metadata.wholeWord
-                        };
-                        viewer.setHighlight(metadata.pattern, options);
+        function _setChecked(node) {
+
+            node.getChildren().forEach(function (value) {
+                if (value.item.type !== 'text') {
+                    value._checkbox.set('checked', true);
+                }
+                _setChecked(value);
+            });
+        }
+
+        function _checkParent(node) {
+
+            var parent = node.getParent();
+            if (!parent._checkbox) {
+                return;
+            }
+            var children = parent.getChildren();
+            var checked = true;
+            for (var i = 0; i < children.length; i++) {
+                if (children[i]._checkbox.checked === false) {
+                    checked = false;
+                    break;
+                }
+            }
+            parent._checkbox.set('checked', checked);
+            if (checked) {
+                _checkParent(parent);
+            }
+        }
+
+        function _setUnchecked(node, tree) {
+
+            var parent = node.getParent();
+            if (parent.id !== tree.rootNode.id) {
+                parent._checkbox.set('checked', false);
+                _setUnchecked(parent, tree);
+            }
+        }
+
+        function _uncheckChildren(node) {
+
+            var children = node.getChildren();
+            if (children && children.length) {
+                children.forEach(function (child) {
+                    if (child.item.type !== 'text') {
+                        child._checkbox.set('checked', false);
                     }
+                    _uncheckChildren(child);
                 });
             }
+        }
+
+        function _setTree(err, data) {
 
             var title = err ? err : data.title;
             $('<div class="search-result-title"></div>').appendTo(
@@ -188,6 +245,7 @@ define([
                 labelAttr: 'label'
             });
 
+            var isCheckable = true;
             void new Tree({
                 model: resultModel,
 
@@ -209,81 +267,41 @@ define([
                 openOnClick: false,
 
                 onNodeChecked: function (item, node) {
-
-                    function setChecked(node) {
-
-                        node.getChildren().forEach(function (value) {
-                            if (value.item.type !== 'text') {
-                                value._checkbox.set('checked', true);
-                            }
-                            setChecked(value);
-                        });
+                    if (!isCheckable) {
+                        return;
                     }
 
-                    function checkParent(node) {
-
-                        var parentNode = node.getParent();
-                        if (!parentNode._checkbox) {
-                            return;
-                        }
-
-                        var children = parentNode.getChildren();
-                        var checked = true;
-                        for (var i = 0; i < children.length; i++) {
-                            if (children[i]._checkbox.checked === false) {
-                                checked = false;
-                                break;
-                            }
-                        }
-
-                        parentNode._checkbox.set('checked', checked);
-                        if (checked) {
-                            checkParent(parentNode);
-                        }
-                    }
-
-                    setChecked(node);
-                    checkParent(node);
+                    _setChecked(node);
+                    _checkParent(node);
+                    isCheckable = false;
+                    controller.handleCheckbox(item, true, function () {
+                        isCheckable = true;
+                    });
                 },
 
                 onNodeUnchecked: function (item, node) {
-                    var self = this;
-
-                    function setUnchecked(node) {
-
-                        var parent = node.getParent();
-                        if (parent.id !== self.rootNode.id) {
-                            parent._checkbox.set('checked', false);
-                            setUnchecked(parent);
-                        }
+                    if (!isCheckable) {
+                        return;
                     }
 
-                    function checkChildren(node) {
-
-                        var children = node.getChildren();
-                        if (children && children.length) {
-                            children.forEach(function (child) {
-                                if (child.item.type !== 'text') {
-                                    child._checkbox.set('checked', false);
-                                }
-                                checkChildren(child);
-                            });
-                        }
-                    }
-
-                    setUnchecked(node);
-                    checkChildren(node);
+                    var tree = this;
+                    _setUnchecked(node, tree);
+                    _uncheckChildren(node);
+                    isCheckable = false;
+                    controller.handleCheckbox(item, false, function () {
+                        isCheckable = true;
+                    });
                 },
 
                 onNodeDblClicked: function (item) {
-                    __openEditor(item);
+                    _openEditor(item);
                 },
 
                 onNodeEnterKey: function (item) {
-                    __openEditor(item);
+                    _openEditor(item);
                 },
 
-                isCheckable: function (item) {
+                addCheckbox: function (item) {
                     return item.type !== 'text';
                 }
             }, $('.search-result-tree').get(0)).startup();
@@ -292,6 +310,7 @@ define([
         dojo.connect(findButton, 'onClick', function () {
 
             _removeTreePanel();
+            pressFindButton = true;
             var jobId = workbench.addJob('Searching... ');
             controller.handleFind(_getMetadata(), function (err, data) {
                 _setTree(err, data);
@@ -302,10 +321,23 @@ define([
         dojo.connect(replaceButton, 'onClick', function () {
 
             _removeTreePanel();
+            pressFindButton = false;
             var jobId = workbench.addJob('Replacing... ');
-            controller.handleReplace(_getMetadata(), function (err, data) {
-                _setTree(err, data);
-                workbench.removeJob(jobId);
+            var metadata = _getMetadata();
+            controller.handleReplace(metadata, function (err, title) {
+                if (err) {
+                    $('<div class="search-result-title"></div>').appendTo(
+                        $('.search-result-tree-panel').get(0));
+                    html.set($('.search-result-title').get(0), err,
+                             {parseContent: true});
+                } else {
+                    metadata.pattern = metadata.replaceWith;
+                    controller.handleFind(metadata, function (err, data) {
+                        data.title = title;
+                        _setTree(err, data);
+                    });
+                    workbench.removeJob(jobId);
+                }
             });
         });
 
