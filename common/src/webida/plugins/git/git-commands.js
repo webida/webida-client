@@ -1071,7 +1071,7 @@ define(['require',
                 var GITHUB_INFO_PATH = '/.userinfo/github.json';
                 var MSG = 'You can fetch your repository list from GitHub by setting the GitHub token on ';
                 //var visitURL = 'https://dashboard.' + webidaHost + '/#settings';
-                var visitURL =  window.location.protocol + '//' + webidaHost + '/apps/dashboard/#settings';
+                var visitURL =  window.location.protocol + '//' + webidaHost + '/pages/main.html#settings';
                 async.waterfall([
                     function (next) {
                         fsCache.exists(GITHUB_INFO_PATH, function (err, exist) {

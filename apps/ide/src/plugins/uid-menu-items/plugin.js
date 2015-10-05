@@ -16,9 +16,9 @@
 
 define(['webida-lib/webida-0.3', 'plugins/webida.notification/notification-message'], function (webida, toastr) {
     'use strict';
-
+    /* global webidaHost: true */
     function openDashboard() {
-        location.href = '/apps/dashboard/';
+        location.href = '//' + webidaHost + '/pages/main.html';//'/apps/dashboard/';
             // webidaHost is defined in dojoConfig.js
     }
 
@@ -28,7 +28,7 @@ define(['webida-lib/webida-0.3', 'plugins/webida.notification/notification-messa
                 toastr.error('Could not sign out.');
                 console.log('logout error: ' + e);
             } else {
-                window.location.replace('/'); // webidaHost is defined in dojoConfig.js
+                window.location.replace('//' + webidaHost); // webidaHost is defined in dojoConfig.js
             }
         });
     }
