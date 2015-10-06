@@ -286,7 +286,13 @@ define([
                 break;
 
             default :
-                path = scope;
+                selected = workspace.getRootPath();
+                if (scope.indexOf('/') === 0 &&
+                    scope.indexOf(selected) === -1) {
+                    path = selected.substr(0, selected.length - 1) + scope;
+                } else {
+                    path = scope;
+                }
                 break;
         }
 
