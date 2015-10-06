@@ -74,7 +74,12 @@ define([
 
                 var elm = $('<span>').addClass('fileloc_link pre_whitespace').text(text);
                 elm.on('click', function () {
-                    topic.publish('editor/open', path, { pos: pos });
+                    topic.publish('editor/open', path, {}, function (part) {
+                        var viewer = part.getViewer();
+                        if (typeof viewer.setCursor === 'function') {
+                            viewer.setCursor(pos);
+                        }
+                    });
                     elm.addClass('fileloc_link_clicked');
                 });
 
