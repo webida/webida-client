@@ -1399,6 +1399,8 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                                       'Handled a notification [sys.fs.node.intractableChanges] for "' +
                                       urlParsed.path + '"');
                         topic.publish('#REQUEST.log', '');
+
+                        onNodeChanges(urlParsed.path);
                     });
                 } else {
                     console.error('sys.fs.dir.intractable-changes arrived for a non-directory "' +
@@ -2206,6 +2208,12 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
             }
         }
 
+        function onNodeChanges(targetDir) {
+            if (publishing) {
+                topic.publish(FSCACHE_NODE_CHANGES, fsURL, targetDir);
+            }
+        }
+
         function onFileInvalidated(target) {
             if (publishing) {
                 topic.publish(FSCACHE_FILE_INVALIDATED, fsURL, target);
@@ -2265,6 +2273,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
 
     var FSCACHE_NODE_ADDED              = 'fs.cache.node.added';
     var FSCACHE_NODE_DELETED            = 'fs.cache.node.deleted';
+    var FSCACHE_NODE_CHANGES            = 'fs.cache.node.changes';
     var FSCACHE_FILE_SET                = 'fs.cache.file.set';
     var FSCACHE_FILE_INVALIDATED        = 'fs.cache.file.invalidated';
     var FSCACHE_METADATA_SET            = 'fs.cache.metadata.set';
