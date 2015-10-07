@@ -163,6 +163,10 @@
             "handler": "handleNodeDelEventInGitRepo",
             "module": "webida-lib/plugins/git/git-icon"
         },
+        "fs.cache.node.changes": {
+            "handler": "handleNodeChangesEventInGitRepo",
+            "module": "webida-lib/plugins/git/git-icon"
+        },
         "fs.cache.file.set": {
             "handler": "handleFileSetEventInGitRepo",
             "module": "webida-lib/plugins/git/git-icon"

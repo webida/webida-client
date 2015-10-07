@@ -408,6 +408,10 @@ define([
         refreshGitIconsInRepoOf(targetDir + name);
     }
 
+    function handleNodeChangesEventInGitRepo(fsURL, targetDir) {
+        refreshGitIconsInRepoOf(targetDir);
+    }
+
     function handleFileSetEventInGitRepo(fsURL, target, case_, maybeModified) {
         if (maybeModified) {
             refreshGitIconsInRepoOf(target);
@@ -435,6 +439,7 @@ define([
         detectGitRepoDeletion: detectGitRepoDeletion,
         handleNodeAddEventInGitRepo: handleNodeAddEventInGitRepo,
         handleNodeDelEventInGitRepo: handleNodeDelEventInGitRepo,
+        handleNodeChangesEventInGitRepo: handleNodeChangesEventInGitRepo,
         handleFileSetEventInGitRepo: handleFileSetEventInGitRepo,
 
         refreshGitIconsInRepoOf: refreshGitIconsInRepoOf
