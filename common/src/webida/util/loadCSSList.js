@@ -16,11 +16,11 @@
 
 define([
 	'external/lodash/lodash.min',
-	'plugins/webida.notification/notification-message',
+	'webida-lib/util/notify',
 	'webida-lib/util/logger/logger-client'
 ], function (
 	_, 
-	toastr,
+	notify,
 	Logger
 ) {
     'use strict';
@@ -40,7 +40,7 @@ define([
             return function () {
                 _.each(doneItems, function (newDone) {
                     if (_.contains(loadedItems, newDone)) {
-                        toastr.error('Not good ' + newDone + ' in ' + loadedItems);
+                        notify.error('Not good ' + newDone + ' in ' + loadedItems);
                     } else {
                         loadedItems.push(newDone);
                     }

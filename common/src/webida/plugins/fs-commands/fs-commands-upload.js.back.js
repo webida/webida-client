@@ -42,7 +42,7 @@ define(['external/lodash/lodash.min',          // _
         'dijit/Tree',                               // Tree
         'dijit/registry',                           // reg
         'dijit/Tooltip',                            // Tooltip
-        'plugins/webida.notification/notification-message',            // Toastr
+        'webida-lib/util/notify',                   // notify
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
         ],
@@ -69,7 +69,7 @@ function (_,
           Tree,
           reg,
           Tooltip,
-          toastr,
+          notify,
           ButtonedDialog,
           FileDialog
          )
@@ -204,14 +204,14 @@ function (_,
         }
 
         if (!window.File || !window.FileReader) {
-            toastr.error('The File APIs are not supported in this browser.');
+            notify.error('The File APIs are not supported in this browser.');
             return;
         }
 
         var nodes = wv.getSelectedNodes();
         var targetNode = nodes && nodes[0];
         if (!targetNode) {
-            toastr.error('Upload target is not selected.');
+            notify.error('Upload target is not selected.');
             return;
         }
 
@@ -283,7 +283,7 @@ function (_,
                     } else if (uploadItems.selected && uploadItems.selected.length > 0) {
                         callUploadFile(uploadItems);
                     } else {
-                        toastr.error('No selection');
+                        notify.error('No selection');
                     }
                 }
 

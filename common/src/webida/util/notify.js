@@ -39,34 +39,42 @@ define([
 
         /**
          * @param {string} msg
+         * @param {string} [title]
          */
-        info: function(msg) {
-            logger.info('notify > ' + msg);
-            topic.publish('NOTIFY', 'info', msg);
+        info: function(msg, title) {
+            title = title ? '[' + title + '] ' : '';
+            logger.info('notify > ' + title + msg);
+            topic.publish('NOTIFY', 'info', msg, title);
         },
 
         /**
          * @param {string} msg
+         * @param {string} [title]
          */
-        warning: function(msg) {
-            logger.warn('notify > ' + msg);
-            topic.publish('NOTIFY', 'warning', msg);
+        warning: function(msg, title) {
+            title = title ? '[' + title + '] ' : '';
+            logger.warn('notify > ' + title + msg);
+            topic.publish('NOTIFY', 'warning', msg, title);
         },
 
         /**
          * @param {string} msg
+         * @param {string} [title]
          */
-        error: function(msg) {
-            logger.error('notify > ' + msg);
-            topic.publish('NOTIFY', 'error', msg);
+        error: function(msg, title) {
+            title = title ? '[' + title + '] ' : '';
+            logger.error('notify > ' + title + msg);
+            topic.publish('NOTIFY', 'error', msg, title);
         },
 
         /**
          * @param {string} msg
+         * @param {string} [title]
          */
-        success: function(msg) {
-            logger.info('notify > ' + msg);
-            topic.publish('NOTIFY', 'success', msg);
+        success: function(msg, title) {
+            title = title ? '[' + title + '] ' : '';
+            logger.info('notify > ' + title + msg);
+            topic.publish('NOTIFY', 'success', msg, title);
         },
 
         clear: function() {

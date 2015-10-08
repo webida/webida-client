@@ -30,7 +30,7 @@ define([
     'dijit/registry',             // reg
     'webida-lib/plugin-manager-0.1',             // pm
     'dojo/text!./command-list.html',   // markup
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'   // ButtonedDialog
 ],
 function (
@@ -39,7 +39,7 @@ function (
         reg,
         pm,
         markup,
-        toastr,
+        notify,
         ButtonedDialog
        )
 {
@@ -76,7 +76,7 @@ function (
                 var val = cb.get('value');
                 val = (val && val.trim()) || '';
                 if (!val) {
-                    toastr.error('Select a command');
+                    notify.error('Select a command');
                     return;
                 }
 
@@ -86,7 +86,7 @@ function (
                 var item = items && items[0];
 
                 if (!item) {
-                    toastr.error('No such command');
+                    notify.error('No such command');
                     return;
                 }
 
@@ -161,7 +161,7 @@ function (
                                 addItemHierarchy(plugin, path + '/' + key, items[key], wholeItems[key]);
                             });
                         } else if (valType !== 'string') {
-                            toastr.error('Invalid command specification from a plug-in');
+                            notify.error('Invalid command specification from a plug-in');
                         }
 
                     }

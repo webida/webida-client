@@ -36,7 +36,6 @@ define([
     'webida-lib/plugins/workbench/ui/Workbench',
     'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
-    'plugins/webida.notification/notification-message',
     './DataSourceHandler',
     './LifecycleManager'
 ], function (
@@ -54,7 +53,6 @@ define([
     Workbench,
     vm, 
     ViewFocusController,  
-    toastr,
     DataSourceHandler,
     LifecycleManager
 ) {

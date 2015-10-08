@@ -35,7 +35,6 @@ define([
     'webida-lib/widgets/views/viewmanager',         // vm
     'webida-lib/widgets/views/viewFocusController', // ViewFocusController
     'webida-lib/widgets/views/splitviewcontainer',  // SplitViewContainer
-    'plugins/webida.notification/notification-message',
     'external/lodash/lodash.min',
     'dojo/topic',                             // topic
     'dojo/dom-geometry',                      // geometry
@@ -52,7 +51,7 @@ define([
      Webida,
      app,
      vm, ViewFocusController, SplitViewContainer,
-     toastr, _,
+     _,
      topic, geometry, aspect, domClass, domStyle,
      BorderContainer, ContentPane,
      dom, DropDownButton, DropDownMenu, MenuItem) {

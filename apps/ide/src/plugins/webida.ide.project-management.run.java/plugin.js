@@ -23,7 +23,7 @@ define([
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
     'dijit/layout/ContentPane',
     'dijit/registry',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'external/lodash/lodash.min'
 ], function (
     ide,
@@ -34,7 +34,7 @@ define([
     FileDialog,
     ContentPane,
     registry,
-    toastr,
+    notify,
     _
 ) {
     'use strict';
@@ -95,7 +95,7 @@ define([
         var dlg;
 
         if (!currentRunConf || !project || !pathInputBox) {
-            toastr.error('Cannot find root path');
+            notify.error('Cannot find root path');
             return;
         }
 
@@ -119,7 +119,7 @@ define([
             var pathSplit;
             if (selected) {
                 if (selected.length <= 0) {
-                    toastr.warning('Select a java file.');
+                    notify.warning('Select a java file.');
                     return;
                 }
                 pathSplit = selected[0].split(root);
@@ -136,7 +136,7 @@ define([
                         isDirty: true
                     });
                 } else {
-                    toastr.warning('Select a java file.');
+                    notify.warning('Select a java file.');
                 }
             }
         });
@@ -182,7 +182,7 @@ define([
                     if (!invalidMsg) {
                         topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, currentRunConf);
                     } else {
-                        toastr.error(invalidMsg);
+                        notify.error(invalidMsg);
                     }
                 }),
                 on(ui.pathButton, 'click', _pathButtonClicked),

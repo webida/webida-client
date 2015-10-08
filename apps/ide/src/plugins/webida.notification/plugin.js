@@ -22,25 +22,26 @@
  */
 define([
     'plugins/webida.preference/preference-service-factory',
-    './notification-message'
+    './notification'
 ], function (
     PreferenceFactory,
-    topic
+    notification
 ) {
     'use strict';
 
     var module = {};
     var preference = PreferenceFactory.get('WORKSPACE');
-    preference.getValues('notification', topic.setPreferenceColor);
-    preference.addFieldChangeListener('notification', topic.setPreferenceColor);
+
+    preference.getValues('notification', notification.setPreferenceColor);
+    preference.addFieldChangeListener('notification', notification.setPreferenceColor);
 
     //TODO:
     module.getDefaultPreference = function () {
         return {
             'error-color': '#db1515',
-            'warn-color': '#f57003',
-            'info-color': '#000000',
-            'success-color': '#4072bd'
+            'warning-color': '#f57003',
+            'info-color': '#009999',
+            'success-color': '#009900'
         };
     };
 

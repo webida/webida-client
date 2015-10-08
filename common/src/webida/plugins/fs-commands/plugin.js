@@ -27,7 +27,7 @@ define([
     'dojo/topic', // topic
     'webida-lib/util/path', // pathUtil
     'webida-lib/util/logger/logger-client',
-    'plugins/webida.notification/notification-message' // Toastr
+    'webida-lib/util/notify', // notify
 ], function(
     wv,
     ExtensionManager,
@@ -35,7 +35,7 @@ define([
     topic,
     pathUtil,
     Logger,
-    toastr
+    notify
 ) {
     'use strict';
 // @formatter:on
@@ -303,7 +303,7 @@ define([
                         var valType = ( val instanceof Array) ? 'array' : typeof val;
                         if (valType === 'array') {
                             if (target[key]) {
-                                toastr.error('This plug-in has a duplicate or inconsistent key: ' + key);
+                                notify.error('This plug-in has a duplicate or inconsistent key: ' + key);
                                 throw new Error();
                             } else {
                                 target[key] = val;
@@ -313,7 +313,7 @@ define([
                                 if ( typeof target[key] === 'object') {
                                     accumulateItems(target[key], val);
                                 } else {
-                                    toastr.error('This plug-in has an inconsistent command hierarchy at ' + key);
+                                    notify.error('This plug-in has an inconsistent command hierarchy at ' + key);
                                     throw new Error();
                                 }
                             } else {
@@ -321,17 +321,17 @@ define([
                             }
                         } else if (val === '---') {
                             if (target[key]) {
-                                toastr.error('This plug-in has a duplicate or inconsistent key: ' + key);
+                                notify.error('This plug-in has a duplicate or inconsistent key: ' + key);
                                 throw new Error();
                             } else {
                                 target[key] = val;
                             }
                         } else {
-                            toastr.error('Invalid specification of items at key ' + key + 'in the plug-in');
+                            notify.error('Invalid specification of items at key ' + key + 'in the plug-in');
                             throw new Error();
                         }
                     } else {
-                        toastr.error('Invalid specification of items at key ' + key + 'in the plug-in');
+                        notify.error('Invalid specification of items at key ' + key + 'in the plug-in');
                         throw new Error();
                     }
                 });

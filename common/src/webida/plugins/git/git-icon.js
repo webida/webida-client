@@ -21,7 +21,7 @@ define([
     './git-core',
     'webida-lib/app',
     'webida-lib/util/path',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'webida-lib/util/logger/logger-client'
 ], function (
 	require, 
@@ -30,7 +30,7 @@ define([
 	git, 
 	ide, 
 	pathUtil, 
-	toastr, 
+	notify, 
 	Logger
 ) {
 
@@ -227,7 +227,7 @@ define([
                 git.exec(repoPath, ['status', '--ignored', '-z'], function (err, stdout, stderr) {
                     singleLogger.log('received the response to the git status request for ' + repoPath);
                     if (err) {
-                        toastr.error('git status failed for ' + repoPath + ' (' + err + ')');
+                        notify.error('git status failed for ' + repoPath + ' (' + err + ')');
                     } else if (stderr) {
                         console.log('git status emitted stderr msg for ' + repoPath + ' (' + stderr + ')');
                     } else {
@@ -290,7 +290,7 @@ define([
                 singleLogger.log('received the response to the first git status request for ' +
                                 parentPath);
                 if (err) {
-                    toastr.error('git status failed for ' + parentPath + ' (' + err + ')');
+                    notify.error('git status failed for ' + parentPath + ' (' + err + ')');
                 } else if (stderr) {
                     console.log('git status emitted stderr msg for ' + parentPath + ' (' +
                                 stderr + ')');
@@ -332,7 +332,7 @@ define([
                                 }
 
                                 if (err) {
-                                    toastr.error('Failed to read a file ' + path + ' (' +
+                                    notify.error('Failed to read a file ' + path + ' (' +
                                                  err + ')');
                                 } else {
                                     var repoTopPath = getRepoTopPath(content);

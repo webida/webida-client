@@ -18,10 +18,10 @@ define(['webida-lib/app',
         'webida-lib/util/path',
         'webida-lib/plugins/workspace/plugin',
         'webida-lib/webida-0.3',
-        'plugins/webida.notification/notification-message'
+        'webida-lib/util/notify'
        ],
 
-function (ide, pathUtil, wv, webida, toastr) {
+function (ide, pathUtil, wv, webida, notify) {
     'use strict';
 
     var module = {};
@@ -61,7 +61,7 @@ function (ide, pathUtil, wv, webida, toastr) {
         if (!win) {
             var e = new Error('Window can\'t be opened.<br />' +
                               'It might be interrupted by pop-up blocking, please check it.');
-            toastr.error(e.message);
+            notify.error(e.message);
             throw e;
         }
 

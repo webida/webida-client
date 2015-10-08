@@ -31,7 +31,7 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/path',
     'external/lodash/lodash.min',
-    'plugins/webida.notification/notification-message'
+    'webida-lib/util/notify',
 ], function (
     runConfigurationManager,
     delegator,
@@ -41,7 +41,7 @@ define([
     workbench,
     pathUtil,
     _,
-    toastr
+    notify
 ) {
     'use strict';
 
@@ -362,14 +362,14 @@ define([
         }
         var contextPath = contextPaths[0];
         if (contextPath === workspace.getRootPath()) {
-            toastr.warning('Cannot run workspace directory');
+            notify.warning('Cannot run workspace directory');
         }
 
         var projectName = parseProjectNameFromPath(contextPath);
 
         _beforeLaunchHook(projectName, mode, function (err) {
             if (err) {
-                toastr.error(err);
+                notify.error(err);
             } else {
                 var runConfigurations = runConfigurationManager.getByProjectName(projectName);
                 if (_.isEmpty(runConfigurations)) {
@@ -492,7 +492,7 @@ define([
 
         _beforeLaunchHook(projectName, mode, function (err) {
             if (err) {
-                toastr.error(err);
+                notify.error(err);
             } else {
                 var runConfigurations = runConfigurationManager.getByProjectName(projectName);
                 if (_.isEmpty(runConfigurations)) {
@@ -509,7 +509,7 @@ define([
         switch (mode) {
             case runConfigurationManager.MODE.RUN_MODE:
                 if (!runConf) {
-                    toastr.info('Cannot find a run configuration. Add a new one.');
+                    notify.info('Cannot find a run configuration. Add a new one.');
                     openRunConfigurationDialog(null, mode);
                 } else {
                     delegator.run(runConf);
@@ -517,7 +517,7 @@ define([
                 break;
             case runConfigurationManager.MODE.DEBUG_MODE:
                 if (!runConf) {
-                    toastr.info('Cannot find a debug configuration. Add a new one.');
+                    notify.info('Cannot find a debug configuration. Add a new one.');
                     openRunConfigurationDialog(null, mode);
                 } else {
                     delegator.debug(runConf);

@@ -26,7 +26,7 @@ define([
     'webida-lib/util/path',
     'webida-lib/plugins/workspace/plugin',
     'dojo/store/Memory',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     './search-result-data',
 ], function (
     _,
@@ -34,7 +34,7 @@ define([
     pathUtil,
     workspace,
     Memory,
-    toastr,
+    notify,
     data
 ) {
     'use strict';
@@ -144,7 +144,7 @@ define([
         fsMount.searchFiles(convert.pattern, metadata.path,
                             options, function (err, results) {
             if (err) {
-                toastr.error('Failed to search files.');
+                notify.error('Failed to search files.');
                 callback(err);
                 var error = {
                     error: err
@@ -216,7 +216,7 @@ define([
         fsMount.replaceFiles(convert.pattern, convert.replaceWith,
                              replacePaths, options, function (err) {
             if (err) {
-                toastr.error('Failed to replase files.');
+                notify.error('Failed to replase files.');
                 callback(err);
 
                 var error = {

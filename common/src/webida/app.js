@@ -19,7 +19,7 @@ define(['webida-lib/util/browserInfo',
         'webida-lib/webida-0.3',
         'webida-lib/msg',
         'external/lodash/lodash.min',
-        'plugins/webida.notification/notification-message',
+        'webida-lib/util/notify',
         'webida-lib/plugin-manager-0.1',
         'webida-lib/FSCache-0.1',
         'external/URIjs/src/URI',
@@ -30,7 +30,7 @@ define(['webida-lib/util/browserInfo',
         'dojo/domReady!',
         'webida-lib/util/timedLogger',
         'webida-lib/util/loading-screen'],
-       function (brInfo, loadingScreen, webida, msgAgent, _, toastr, pm,
+       function (brInfo, loadingScreen, webida, msgAgent, _, notify, pm,
                   FSCache, URI, PopupDialog, topic, lang, Logger) {
     'use strict';
     /* global timedLogger: true */
@@ -48,12 +48,6 @@ define(['webida-lib/util/browserInfo',
     var mount = null;
 
     var wellOpened = false;
-
-    // init toastr
-    toastr.options = {
-        'closeButton': true,
-        'positionClass': 'toast-top-right'
-    };
 
     // loading screen
     topic.subscribe('#REQUEST.showApp', function () {
@@ -164,7 +158,7 @@ define(['webida-lib/util/browserInfo',
         if (statusString) {
             mount.writeFile(path + lastStatusFile, statusString, function (err) {
                 if (err) {
-                    toastr.error('Saving App status failed: ' + err);
+                    notify.error('Saving App status failed: ' + err);
                     if (eb) {
                         eb();
                     }

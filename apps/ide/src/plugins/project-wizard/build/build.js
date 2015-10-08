@@ -18,7 +18,6 @@ define(['webida-lib/app',
         'webida-lib/webida-0.3',
         'webida-lib/util/path',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'plugins/webida.notification/notification-message',
         'dojo',
         'dojo/topic',
         'dijit/registry',
@@ -28,7 +27,7 @@ define(['webida-lib/app',
         '../messages',
         '../lib/util'
        ],
-function (ide, webida, pathUtil, ButtonedDialog, toastr, dojo, topic, reg,
+function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
     BuildProfile, Constants, Launcher, Messages, Util) {
     'use strict';
     /* global webidaHost: true */

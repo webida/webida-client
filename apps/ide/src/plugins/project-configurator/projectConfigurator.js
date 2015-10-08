@@ -24,8 +24,8 @@ define(['webida-lib/app',
         'webida-lib/util/path',
         'dojo/topic',
         'external/lodash/lodash.min',
-        'plugins/webida.notification/notification-message'
-], function (ide, pathutil, topic, _, toastr) {
+        'webida-lib/util/notify',
+], function (ide, pathutil, topic, _, notify) {
     'use strict';
 
     var projectConfigurator = {};
@@ -50,7 +50,7 @@ define(['webida-lib/app',
         return new Promise(function (resolve, reject) {
             fsMount.list(ide.getPath(), function (err, projectList) {
                 if (err) {
-                    toastr.error(err);
+                    notify.error(err);
                     reject(err);
                 } else {
                     resolve(projectList);
@@ -424,7 +424,7 @@ define(['webida-lib/app',
         var filePath = path + '.project';
         fsMount.exists(filePath, function (err, result) {
             if (err) {
-                toastr.error('"exists" API call failed: ' + err);
+                notify.error('"exists" API call failed: ' + err);
                 return;
             }
             if (result) {
@@ -450,7 +450,7 @@ define(['webida-lib/app',
 
         fsMount.exists(filePath, function (err, result) {
             if (err) {
-                toastr.error('"exists" API call failed: ' + err);
+                notify.error('"exists" API call failed: ' + err);
                 return;
             }
             if (result) {
@@ -464,7 +464,7 @@ define(['webida-lib/app',
                 //projectConfigurator.saveProjectProperty(path, obj, cb);
                 projectConfigurator.saveProjectProperty(path, obj, function (err) {
                     if (err) {
-                        toastr.error('"writeFile" API call failed: ' + err);
+                        notify.error('"writeFile" API call failed: ' + err);
                     } else {
                         addProjectPropertyByName(obj);
                         if (cb) {
@@ -486,7 +486,7 @@ define(['webida-lib/app',
 
                         projectConfigurator.saveProjectProperty(path, obj, function (err) {
                             if (err) {
-                                toastr.error('"writeFile" API call failed: ' + err);
+                                notify.error('"writeFile" API call failed: ' + err);
                             } else {
                                 addProjectPropertyByName(obj);
                                 if (cb) {

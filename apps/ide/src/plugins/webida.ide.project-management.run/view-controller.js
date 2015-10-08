@@ -42,7 +42,7 @@ define([
     'text!./layout/run-configuration.html',
     'text!./layout/default-run-configuration.html',
     'external/lodash/lodash.min',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'xstyle/css!./style/style.css'
 ], function (
     ide,
@@ -68,7 +68,7 @@ define([
     windowTemplate,
     contentTemplate,
     _,
-    toastr
+    notify
 ) {
     'use strict';
 
@@ -318,7 +318,7 @@ define([
                                 }
                             });
                         }, function () {
-                            toastr.info('Deletion canceled');
+                            notify.info('Deletion canceled');
                         });
                     }
                 }
@@ -462,7 +462,7 @@ define([
         var runConf = currentRunConf;
         var project = ui.forms.select.get('value');
         if (!runConf || !project || !pathInputBox) {
-            toastr.error('Cannot find root path');
+            notify.error('Cannot find root path');
             return;
         }
 
@@ -487,7 +487,7 @@ define([
         dlg.open(function (fileSelected) {
             if (fileSelected) {
                 if (fileSelected.length <= 0) {
-                    toastr.warning('Select a file.');
+                    notify.warning('Select a file.');
                     return;
                 }
                 var pathSplit = fileSelected[0].split(root);
@@ -501,7 +501,7 @@ define([
                     var isValid = !_checkInvalidField();
                     topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {isValid: isValid, isDirty: true});
                 } else {
-                    toastr.warning('Select a file.');
+                    notify.warning('Select a file.');
                 }
             }
         });
@@ -536,7 +536,7 @@ define([
     function _saveButtonClicked() {
         var invalidMsg = _checkInvalidField();
         if (invalidMsg) {
-            toastr.error(invalidMsg);
+            notify.error(invalidMsg);
         } else {
             topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, currentRunConf);
         }
@@ -581,7 +581,7 @@ define([
 
         ide.getWorkspaceInfo(function (err, workspaceInfo) {
             if (err) {
-                toastr.error('failed to get project list');
+                notify.error('failed to get project list');
             } else {
                 projects = workspaceInfo.projects.map(function (project) {
                     return {

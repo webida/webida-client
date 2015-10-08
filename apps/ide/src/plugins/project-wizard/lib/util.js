@@ -28,7 +28,7 @@ define(['webida-lib/app',
         'webida-lib/webida-0.3',
         'webida-lib/util/path',
         'webida-lib/plugins/workbench/plugin',
-        'plugins/webida.notification/notification-message',
+        'webida-lib/util/notify',
         'external/lodash/lodash.min',
         'dojo/Deferred',
         'dijit/registry',
@@ -37,7 +37,7 @@ define(['webida-lib/app',
         'webida-lib/plugins/workspace/plugin',
         'popup-dialog'
        ],
-function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg,
+function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
           projectConfigurator, runConfiguration, wv, PopupDialog) {
     'use strict';
 
@@ -282,7 +282,7 @@ function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg,
             if (xhr.readyState === 4) {
                 if (xhr.status !== 200) {
                     console.error('Error loading url: ' + xhr.status);
-                    toastr.error('Error loading url: ' + xhr.status);
+                    notify.error('Error loading url: ' + xhr.status);
                 }
                 if (cb) {
                     cb(xhr.responseText);
@@ -291,7 +291,7 @@ function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg,
         };
         xhr.onerror = function (e) {
             console.error('createXHR', e);
-            toastr.error('Error: ' + e);
+            notify.error('Error: ' + e);
         };
         //xhr.upload.onprogress = progressCallback;
         return xhr;
@@ -451,10 +451,10 @@ function (ide, webida, pathUtil, workbench, toastr, _, Deferred, reg,
                     }
                     cb();
                 } else {
-                    toastr.error('No such node "' + path + '" in the workspace');
+                    notify.error('No such node "' + path + '" in the workspace');
                 }
             } else {
-                toastr.error('Error while expanding to "' + path + '": ' + result);
+                notify.error('Error while expanding to "' + path + '": ' + result);
             }
         });
     };
