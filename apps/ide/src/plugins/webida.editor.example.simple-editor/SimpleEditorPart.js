@@ -43,13 +43,13 @@ define([
 
     var logger = new Logger();
 
-    function TestEditor(container) {
-        logger.info('new TestEditor(' + container + ')');
+    function SimpleEditorPart(container) {
+        logger.info('new SimpleEditorPart(' + container + ')');
         EditorPart.apply(this, arguments);
     }
 
 
-    genetic.inherits(TestEditor, EditorPart, {
+    genetic.inherits(SimpleEditorPart, EditorPart, {
 
         /**
          * @Override
@@ -73,6 +73,6 @@ define([
         }
     });
 
-    return TestEditor;
+    return SimpleEditorPart;
 });
 

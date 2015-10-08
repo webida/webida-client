@@ -2,7 +2,7 @@
     "plugins" : [
         "plugins/webida.editor.text-editor",
         "plugins/webida.editor.code-editor",
-        "plugins/webida.editor.test-editor",
+        "plugins/webida.editor.example.simple-editor",
         "plugins/webida.viewer.image-viewer",
         "plugins/webida.editor.example.svg",
         "plugins/webida.editor.example.multi-content",
