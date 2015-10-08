@@ -2,7 +2,7 @@
     "plugins" : [
         "plugins/webida.editor.text-editor",
         "plugins/webida.editor.code-editor",
-        "plugins/webida.editor.test-editor",
+        "plugins/webida.editor.example.simple-editor",
         "plugins/webida.viewer.image-viewer",
         "plugins/webida.editor.example.svg",
         "plugins/webida.editor.example.multi-content",
@@ -17,7 +17,7 @@
         "plugins/webida.ide.search-result",
         "plugins/uid-menu-items",
         "plugins/webida.terminal",
-        "plugins/webida.notification",
+        "plugins/webida.ide.notification.view",
         "plugins/webida.ide.notification.toast",
         "webida-lib/plugins/editors",
         "webida-lib/plugins/fs-commands",
