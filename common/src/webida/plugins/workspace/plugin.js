@@ -58,7 +58,7 @@ define([
     'webida-lib/util/path',
     'webida-lib/util/loadCSSList',
     'popup-dialog',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'plugins/project-configurator/project-info-service',
     'external/lodash/lodash.min',
     'external/async/dist/async.min',
@@ -99,7 +99,7 @@ define([
     pathUtil, 
     loadCSSList,
     PopupDialog, 
-    toastr,
+    notify,
     projectInfo, 
     _, 
     async, 
@@ -898,14 +898,14 @@ define([
                                 srcPath = pathUtil.detachSlash(srcPath);
                                 var srcNode = tree.model.store.query({id: srcPath})[0];
                                 if (srcNode.getParentNode() === targetNode) {
-                                    toastr.error('Cannot copy or move "' + 
+                                    notify.error('Cannot copy or move "' + 
                                                  srcNode.getPath() + '" to its parent directory');
                                     quit = true;
                                 } else {
                                     srcNodes.push(srcNode);
                                 }
                             } else {
-                                toastr.info('Source fsid is different from the current one, ' + 
+                                notify.info('Source fsid is different from the current one, ' + 
                                             'which is currently not supported');
                                 quit = true;
                             }
@@ -1098,12 +1098,12 @@ define([
             }, function(err) {
                 if (err) {
                     console.log('Failed to delete (' + err + ')');
-                    toastr.error('Failed to delete');
+                    notify.error('Failed to delete');
                 } else {
                     if (parentNode) {
                         selectNode(parentNode);
                     }
-                    toastr.success('All files have been deleted successfully');
+                    notify.success('All files have been deleted successfully');
                 }
             });
         }, function() {
@@ -1242,10 +1242,10 @@ define([
                         if (node) {
                             selectNode(node);
                         } else {
-                            toastr.error('No such file "' + path + '" in the workspace');
+                            notify.error('No such file "' + path + '" in the workspace');
                         }
                     } else {
-                        toastr.error('Error while expanding to "' + path + '": ' + result);
+                        notify.error('Error while expanding to "' + path + '": ' + result);
                     }
                 });
             }
@@ -1408,10 +1408,10 @@ define([
                             if (node) {
                                 selectNode(node);
                             } else {
-                                toastr.error('No such file "' + editorsSelection + '" in the workspace');
+                                notify.error('No such file "' + editorsSelection + '" in the workspace');
                             }
                         } else {
-                            toastr.error('Error while expanding to "' + editorsSelection + '": ' + result);
+                            notify.error('Error while expanding to "' + editorsSelection + '": ' + result);
                         }
                     });
                 }

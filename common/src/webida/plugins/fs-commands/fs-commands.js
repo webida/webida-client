@@ -44,7 +44,7 @@ define(['require',
         'dijit/Tree',                               // Tree
         'dijit/registry',                           // reg
         'dijit/Tooltip',                            // Tooltip
-        'plugins/webida.notification/notification-message',                  // Toastr
+        'webida-lib/util/notify',                   // notify
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
         'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
         ],
@@ -71,7 +71,7 @@ function (require, fh, _,
           Tree,
           reg,
           Tooltip,
-          toastr,
+          notify,
           ButtonedDialog,
           FileDialog
          )
@@ -219,9 +219,9 @@ function (require, fh, _,
                 var inFilesAsRegEx = inFilesAsRegExBtElem.checked;
 
                 if (!pattern) {
-                    toastr.warning('Enter the pattern to find.');
+                    notify.warning('Enter the pattern to find.');
                 } else if (!path) {
-                    toastr.warning('Enter the directory to search.');
+                    notify.warning('Enter the directory to search.');
                 } else {
                     // save current values
                     fiFData.patterns.put(pattern);
@@ -272,7 +272,7 @@ function (require, fh, _,
                     options.wholeword = wholeword;
                     fsMount.searchFiles(pattern, path, options, function (err, results) {
                         if (err) {
-                            toastr.error('Failed to search files.');
+                            notify.error('Failed to search files.');
                             console.log('Failed to search files (' + err + ')');
                         } else {
                             topic.publish('#REQUEST.log', '# Result of finding pattern ' +
@@ -627,9 +627,9 @@ function (require, fh, _,
                     this.hide();
                 } else {
                     if (text === '') {
-                        toastr.error('No such file.');
+                        notify.error('No such file.');
                     } else {
-                        toastr.error(text + ': No such file.');
+                        notify.error(text + ': No such file.');
                     }
                 }
             },

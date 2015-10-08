@@ -25,7 +25,7 @@
  */
 define(['webida-lib/webida-0.3',
         'webida-lib/app',
-        'plugins/webida.notification/notification-message',
+        'webida-lib/util/notify',
         'external/lodash/lodash.min',
         'showdown',
         'lib/image-slide/sly.wrapper',
@@ -48,7 +48,7 @@ define(['webida-lib/webida-0.3',
         'dojo/topic'
        ],
 function (webida, ide,
-          toastr, _, showdown, sly,
+          notify, _, showdown, sly,
           aspect, Deferred, dom, on, ready, Memory, Observable,
           Dialog, TabContainer, ContentPane, reg, Tree, ObjectStoreModel,
           Constants, BuildProfile, Util, topic
@@ -249,7 +249,7 @@ function (webida, ide,
             } else {
                 webida.fs.getMyFSInfos(function (err, fsInfos) {
                     if (err || fsInfos.length === 0) {
-                        toastr.error(PW_MSG.FS_GET_MY_INFO_FAILED, PW_MSG.ERROR);
+                        notify.error(PW_MSG.FS_GET_MY_INFO_FAILED, PW_MSG.ERROR);
                         return;
                     } else {
                         destFS = fsInfos[0].fsid;
@@ -289,7 +289,7 @@ function (webida, ide,
                         if (exists) {
                             mountSrc.readFile(specPath, function (err, content) {
                                 if (err) {
-                                    toastr.error(PW_MSG.FS_READ_FILE_FAILED, PW_MSG.ERROR);
+                                    notify.error(PW_MSG.FS_READ_FILE_FAILED, PW_MSG.ERROR);
                                 } else {
                                     try {
                                         var o = JSON.parse(content);
@@ -474,7 +474,7 @@ function (webida, ide,
                 console.log('Reading...', path);
                 mountSrc.readFile(path, function (err, content) {
                     if (err) {
-                        toastr.error(PW_MSG.FS_READ_FILE_FAILED, PW_MSG.ERROR);
+                        notify.error(PW_MSG.FS_READ_FILE_FAILED, PW_MSG.ERROR);
                         console.error(PW_MSG.FS_READ_FILE_FAILED, path);
                     } else {
                         var desc;
@@ -578,7 +578,7 @@ function (webida, ide,
                 });
             } catch (e) {
                 console.log('JSON.parse error: ' + e.message);
-                toastr.error(PW_MSG.FS_JSON_PARSE_FAILED, PW_MSG.ERROR);
+                notify.error(PW_MSG.FS_JSON_PARSE_FAILED, PW_MSG.ERROR);
                 return;
             }
         }));
@@ -618,7 +618,7 @@ function (webida, ide,
         return function (err, content) {
             if (err) {
                 console.log(msg, err);
-                toastr.error(msg, PW_MSG.ERROR);
+                notify.error(msg, PW_MSG.ERROR);
             } else {
                 cb(content);
             }
@@ -638,7 +638,7 @@ function (webida, ide,
                     mountDest.writeFile(pcPath + '/project.json', pConfText,
                                         cbError(PW_MSG.FS_WRITE_FILE_FAILED + ': ' +
                                                 pcPath + '/project.json', function () {
-                        toastr.success(PW_MSG.PROJECT_CREATE_SUCCESS.format(name), PW_MSG.SUCCESS);
+                        notify.success(PW_MSG.PROJECT_CREATE_SUCCESS.format(name), PW_MSG.SUCCESS);
 
                         window.postMessage('project_created:' + [destFS, destSelect, projectName].join(','), '*');
                         //onCloseProject();
@@ -742,7 +742,7 @@ function (webida, ide,
             }
 
             if (error) {
-                toastr.error(error.msg, PW_MSG.INPUT_VALIDATION_ERROR);
+                notify.error(error.msg, PW_MSG.INPUT_VALIDATION_ERROR);
                 return false;
             }
             return true;
@@ -752,17 +752,17 @@ function (webida, ide,
             mountDest.exists(destFSPath, function (err, exists) {
                 if (err)  {
                     console.log(err.reason);
-                    toastr.error(PW_MSG.FS_EXISTS_FAILED, PW_MSG.ERROR);
+                    notify.error(PW_MSG.FS_EXISTS_FAILED, PW_MSG.ERROR);
                 } else if (exists) {
-                    toastr.error(PW_MSG.PROJECT_EXISTS, PW_MSG.ERROR);
+                    notify.error(PW_MSG.PROJECT_EXISTS, PW_MSG.ERROR);
                 } else {
                     mountSrc.exists(srcFSPrjPath, function (err, exists) {
                         if (err) {
                             console.log(err.reason);
-                            toastr.error(PW_MSG.FS_EXISTS_FAILED, PW_MSG.ERROR);
+                            notify.error(PW_MSG.FS_EXISTS_FAILED, PW_MSG.ERROR);
                         } else if (!exists) {
                             console.log('bad template: no project directory in ' + srcFSPrjPath, PW_MSG.ERROR);
-                            toastr.error(PW_MSG.TEMPLATE_NOT_EXISTS, PW_MSG.ERROR);
+                            notify.error(PW_MSG.TEMPLATE_NOT_EXISTS, PW_MSG.ERROR);
                         } else {
                             createProject();
                         }

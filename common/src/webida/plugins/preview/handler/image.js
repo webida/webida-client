@@ -21,12 +21,12 @@
 
 define(['webida-lib/app',
         'webida-lib/util/path',
-        'plugins/webida.notification/notification-message',
+        'webida-lib/util/notify',
         'dijit/registry',
         'dijit/form/Button',
         'text!../layout/image-toolbar.html'
        ],
-function (app, pathUtil, toastr, reg, Button, toolbarTemplate) {
+function (app, pathUtil, notify, reg, Button, toolbarTemplate) {
     'use strict';
 
     var fsMount = app.getFSCache();
@@ -94,7 +94,7 @@ function (app, pathUtil, toastr, reg, Button, toolbarTemplate) {
         var name = arr[1];
         fsMount.addAlias(parent, 10, function (err, aliasData) {
             if (err) {
-                toastr.error('Failed to add an alias for the path of the image file (' +
+                notify.error('Failed to add an alias for the path of the image file (' +
                              err + ')');
             } else {
                 var $imgElem = $('.preview-content-panel').find('img');

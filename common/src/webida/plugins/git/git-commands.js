@@ -34,7 +34,7 @@ define(['require',
     './lib/jsdifflib/difflib',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/arrays/BubblingArray',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'popup-dialog',
     'dijit/registry',
     'dojo/store/Memory',
@@ -72,7 +72,7 @@ define(['require',
               difflib,
               workbench,
               BubblingArray,
-              toastr,
+              notify,
               PopupDialog,
               registry,
               Memory,
@@ -325,18 +325,18 @@ define(['require',
                 git.exec(path, ['stash', 'save'].concat(stashArgs), function (err, stdout, stderr) {
                     if (err) {
                         gitviewlog.error(path, 'stash', err);
-                        toastr.error('For more details, refer to the Git view.', 'Git Stash Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Stash Error');
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(path, 'stash', data);
-                            toastr.error('For more details, refer to the Git view.', 'Git Stash Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Stash Error');
                         } else {
                             if (data.match('No local changes to save')) {
-                                toastr.info('No local changes to save', 'Git Stash Info');
+                                notify.info('No local changes to save', 'Git Stash Info');
                                 gitviewlog.info(path, 'stash', data);
                             } else {
-                                toastr.success('', 'Git Stash Success');
+                                notify.success('', 'Git Stash Success');
                                 gitviewlog.success(path, 'stash', data);
                                 refresh(gitRootPath, true);
                             }
@@ -419,7 +419,7 @@ define(['require',
                     }
 
                     if (branchCheckbox.get('checked') && !branchInput.get('value')) {
-                        toastr.error('Enter a new branch name');
+                        notify.error('Enter a new branch name');
                         return;
                     }
 
@@ -456,16 +456,16 @@ define(['require',
                     git.exec(path, ['stash', 'drop', reflog], function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(path, 'unstash', err);
-                            toastr.error('For more details, refer to the Git view.', 'Git UnStash Drop Error');
+                            notify.error('For more details, refer to the Git view.', 'Git UnStash Drop Error');
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'unstash', data);
-                                toastr.error('For more details, refer to the Git view.', 'Git UnStash Drop Error');
+                                notify.error('For more details, refer to the Git view.', 'Git UnStash Drop Error');
                             } else {
                                 grid.store.deleteItem(item[0]);
                                 gitviewlog.success(path, 'unstash', data);
-                                toastr.success('', 'Git Stash Drop Success');
+                                notify.success('', 'Git Stash Drop Success');
                             }
                         }
                     });
@@ -476,7 +476,7 @@ define(['require',
 
             function clearEvent(path) {
                 if (grid.rowCount === 0) {
-                    toastr.warning('No stashed states exist', 'Git Stash Clear Warning');
+                    notify.warning('No stashed states exist', 'Git Stash Clear Warning');
                     return;
                 }
 
@@ -490,15 +490,15 @@ define(['require',
                     git.exec(path, ['stash', 'clear'], function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(path, 'unstash', err);
-                            toastr.error('For more details, refer to the Git view.', 'Git UnStash Clear Error');
+                            notify.error('For more details, refer to the Git view.', 'Git UnStash Clear Error');
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'unstash', data);
-                                toastr.error('For more details, refer to the Git view.', 'Git UnStash Clear Error');
+                                notify.error('For more details, refer to the Git view.', 'Git UnStash Clear Error');
                             } else {
                                 gitviewlog.success(path, 'unstash', 'Removed all the stashed states');
-                                toastr.success('', 'Git Stash Clear Success');
+                                notify.success('', 'Git Stash Clear Success');
                                 grid.setStore(null);
                                 applyButton.set('disabled', true);
                                 dropButton.set('disabled', true);
@@ -535,15 +535,15 @@ define(['require',
                 git.exec(path, stashArgs, function (err, stdout, stderr) {
                     if (err) {
                         gitviewlog.error(path, 'unstash', err);
-                        toastr.error('For more details, refer to the Git view.', 'Git Unstash Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Unstash Error');
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(path, 'unstash', data);
-                            toastr.error('For more details, refer to the Git view.', 'Git Unstash Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Unstash Error');
                         } else {
                             gitviewlog.success(path, 'unstash', data);
-                            toastr.success('', 'Git Unstash Success');
+                            notify.success('', 'Git Unstash Success');
 
                             refresh(gitRootPath, true);
 
@@ -653,17 +653,17 @@ define(['require',
                 git.exec(path, ['checkout'].concat(checklist), function (err, stdout, stderr) {
                     if (err) {
                         gitviewlog.error(path, 'checkout', err);
-                        toastr.error('For more details, refer to the Git view.', 'Git Checkout Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Checkout Error');
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(path, 'checkout', data);
-                            toastr.error('For more details, refer to the Git view.', 'Git Checkout Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Checkout Error');
                         } else {
                             var msg = checklist.join(': checkout\n') + ': checkout';
 
                             gitviewlog.success(path, 'checkout', msg);
-                            toastr.success('', 'Git Checkout Success');
+                            notify.success('', 'Git Checkout Success');
 
                             refresh(gitRootPath);
                         }
@@ -781,10 +781,10 @@ define(['require',
 
                             if (status === '??') {
                                 infoMsg = filepath + ' has been newly added.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else if (status === 'D') {
                                 infoMsg = filepath + ' file has been deleted.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else {
                                 _diff(gitRootPath, filepath);
                             }
@@ -1097,7 +1097,7 @@ define(['require',
                         var msg = MSG + visitURL;
 
                         gitviewlog.info(GIT_DIR, 'clone', msg);
-                        toastr.info('For more details, refer to the Git view', 'Info');
+                        notify.info('For more details, refer to the Git view', 'Info');
                     } else {
                         var gt = new Github(data.tokenKey);
 
@@ -1107,7 +1107,7 @@ define(['require',
                                 var msg = MSG + visitURL;
 
                                 gitviewlog.info(GIT_DIR, 'clone', msg);
-                                toastr.info('For more details, refer to the Git view', 'Info');
+                                notify.info('For more details, refer to the Git view', 'Info');
                             } else {
                                 var sshURL = _.pluck(repos, 'ssh_url');
                                 var httpsURL = _.pluck(repos, 'clone_url');
@@ -1126,7 +1126,7 @@ define(['require',
                                 });
 
                                 sessionStorage.setItem('GIT_URL_HISTORY', JSON.stringify(URLSource));
-                                toastr.success('Fetched your repository lists from GitHub', 'Success');
+                                notify.success('Fetched your repository lists from GitHub', 'Success');
 
                                 fetchFlag = true;
                             }
@@ -1271,7 +1271,7 @@ define(['require',
                 git.exec(path, ['clone'].concat(options), function (err, stdout, stderr) {
                     if (err) {
                         workbench.removeJob(jobId);
-                        toastr.error('For more details, refer to the Git view.', 'Git Clone Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Clone Error');
                         gitviewlog.error(path, 'clone', err);
                     } else {
                         var data = stdout + stderr;
@@ -1279,7 +1279,7 @@ define(['require',
                             workbench.removeJob(jobId);
 
                             fsCache.refreshHierarchy(selectedPath, { level: 1 });
-                            toastr.error('For more details, refer to the Git view.', 'Git Clone Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Clone Error');
 
                             /*
                             if (data.match(/correct access rights/)) {
@@ -1304,7 +1304,7 @@ define(['require',
                             sessionStorage.setItem('GIT_URL_HISTORY', JSON.stringify(URLSource));
 
                             var msg = data + '\n\'' + url + '\' cloned.';
-                            toastr.success('', 'Git Clone Success');
+                            notify.success('', 'Git Clone Success');
                             gitviewlog.success(target, 'clone', msg);
                         }
                     }
@@ -1416,12 +1416,12 @@ define(['require',
 
                     git.exec(path, cmd, function (err, stdout, stderr) {
                         if (err) {
-                            toastr.error('For more details, refer to the Git view.', 'Git Push Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Push Error');
                             gitviewlog.error(path, 'push', err);
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
-                                toastr.error('For more details, refer to the Git view.', 'Git Push Error');
+                                notify.error('For more details, refer to the Git view.', 'Git Push Error');
 
                                 /*
                                 if (data.match(/correct access rights/)) {
@@ -1433,10 +1433,10 @@ define(['require',
                                 gitviewlog.error(path, 'push', data);
                             } else {
                                 if (data.match('Everything up-to-date')) {
-                                    toastr.info('Everything up-to-date', 'Git Push Success');
+                                    notify.info('Everything up-to-date', 'Git Push Success');
                                     gitviewlog.info(path, 'push', data);
                                 } else {
-                                    toastr.success('For more details, refer to the Git view.', 'Git Push Success');
+                                    notify.success('For more details, refer to the Git view.', 'Git Push Success');
                                     gitviewlog.success(path, 'push', data + '\nSuccessfully pushed.');
 
                                     refresh(gitRootPath);		// is this necessary?
@@ -1496,7 +1496,7 @@ define(['require',
                                     '\' have diverged.\nBefore pushing,\nRun \'git pull\' or \'git merge ' +
                                     devergedBranch + '\'';
 
-                                toastr.info('For more details, refer to the Git view.', 'Git Push Info');
+                                notify.info('For more details, refer to the Git view.', 'Git Push Info');
                                 gitviewlog.info(GIT_DIR, 'push', msg);
 
                                 next(null, 0);
@@ -1514,7 +1514,7 @@ define(['require',
                                 msg = 'This job is expected the result that Non-fast forward updates were ' +
                                     'rejected, Run \'git pull\'.';
 
-                                toastr.info('For more details, refer to the Git view.', 'Git Push Info');
+                                notify.info('For more details, refer to the Git view.', 'Git Push Info');
                                 gitviewlog.info(GIT_DIR, 'push', msg);
 
                                 next(null, 0);
@@ -1741,11 +1741,11 @@ define(['require',
                     if (err) {
                         workbench.removeJob(jobId);
                         gitviewlog.error(GIT_DIR, 'pull', err);
-                        toastr.error('For more details, refer to the Git view', 'Git Pull Error');
+                        notify.error('For more details, refer to the Git view', 'Git Pull Error');
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
-                            toastr.error('For more details, refer to the Git view', 'Git Pull Error');
+                            notify.error('For more details, refer to the Git view', 'Git Pull Error');
 
                             /*
                             if (data.match(/correct access rights/)) {
@@ -1756,11 +1756,11 @@ define(['require',
                              */
                             gitviewlog.error(GIT_DIR, 'pull', data);
                         } else if (data.match(/You asked to pull from the remote '.*'/)) {
-                            toastr.warning('For more details, refer to the Git view', 'Git Pull Warning');
+                            notify.warning('For more details, refer to the Git view', 'Git Pull Warning');
                             gitviewlog.warning(GIT_DIR, 'pull', data);
                         }  else if (data.match(/CONFLICT .*/)) {
                             gitviewlog.warning(GIT_DIR, 'pull', data);
-                            toastr.warning('For more details, refer to the Git view.', 'Git Pull Conflict Warning');
+                            notify.warning('For more details, refer to the Git view.', 'Git Pull Conflict Warning');
 
                             refresh(gitRootPath);
                         } else {
@@ -1770,10 +1770,10 @@ define(['require',
 
                             if (!uptodate) {
                                 refresh(gitRootPath);
-                                toastr.success('', 'Git Pull Success');
+                                notify.success('', 'Git Pull Success');
                                 gitviewlog.success(GIT_DIR, 'pull ' + repo, data + '\nSuccessfuly pulled');
                             } else {
-                                toastr.info('Already up-to-date', 'Git Pull Info');
+                                notify.info('Already up-to-date', 'Git Pull Info');
                                 gitviewlog.info(GIT_DIR, 'pull ' +  repo, 'Already up-to-date');
                             }
                         }
@@ -1981,22 +1981,22 @@ define(['require',
             // run 'git merge' command
             git.exec(GIT_DIR, ['merge'].concat(options), function (err, stdout, stderr) {
                 if (err) {
-                    toastr.error('For more details, refer to the Git view.', 'Git Merge Error');
+                    notify.error('For more details, refer to the Git view.', 'Git Merge Error');
                     gitviewlog.error(GIT_DIR, 'merge', err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
                         gitviewlog.error(GIT_DIR, 'merge', data);
-                        toastr.error('For more details, refer to the Git view.', 'Git Merge Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Merge Error');
                     } else if (data.match('Already up-to-date')) {
                         gitviewlog.info(GIT_DIR, 'merge', data);
-                        toastr.info('Already up-to-date', 'Git Merge Info');
+                        notify.info('Already up-to-date', 'Git Merge Info');
                     } else if (data.match(/CONFLICT .*/)) {
                         gitviewlog.warning(GIT_DIR, 'merge', data);
-                        toastr.warning('For more details, refer to the Git view.', 'Git Merge Conflict Warning');
+                        notify.warning('For more details, refer to the Git view.', 'Git Merge Conflict Warning');
                         refresh(gitRootPath);
                     } else {
-                        toastr.success('', 'Git Merge Success');
+                        notify.success('', 'Git Merge Success');
                         gitviewlog.success(GIT_DIR, 'merge', data);
                         refresh(gitRootPath);
                     }
@@ -2008,16 +2008,16 @@ define(['require',
             git.exec(path, ['merge', '--abort'], function (err, stdout, stderr) {
                 if (err) {
                     gitviewlog.error(GIT_DIR, 'merge --abort', err);
-                    toastr.error('For more details, refer to the Git view.', 'Git Merge Error');
+                    notify.error('For more details, refer to the Git view.', 'Git Merge Error');
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
                         gitviewlog.error(GIT_DIR, 'merge --abort', data);
-                        toastr.error('For more details, refer to the Git view.', 'Git Merge Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Merge Error');
                     } else {
                         refresh(gitRootPath);
                         gitviewlog.success(GIT_DIR, 'merge --abort', data);
-                        toastr.success('', 'Git Merge Abort Success');
+                        notify.success('', 'Git Merge Abort Success');
                     }
                 }
             });
@@ -2182,7 +2182,7 @@ define(['require',
         git.exec(GIT_DIR, ['status'], function (err, data) {
             if (err) {
                 gitviewlog.error(GIT_DIR, 'merge', err);
-                toastr.error('For more details, refer to the Git view.', 'Git Merge Error');
+                notify.error('For more details, refer to the Git view.', 'Git Merge Error');
             } else {
                 if (data.match(/All conflicts fixed but you are still merging./)) {
                     mergeProcessingDlg();
@@ -2291,11 +2291,11 @@ define(['require',
                     if (err) {
                         workbench.removeJob(jobId);
                         gitviewlog.error(GIT_DIR, 'fetch ' + repo, err);
-                        toastr.error('For more details, refer to the Git view.', 'Git Fetch Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Fetch Error');
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
-                            toastr.error('For more details, refer to the Git view.', 'Git Fetch Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Fetch Error');
 
                             /*
                             if (data.match(/correct access rights/)) {
@@ -2307,7 +2307,7 @@ define(['require',
                             gitviewlog.error(GIT_DIR, 'fetch ', data);
                         } else {
                             gitviewlog.success(GIT_DIR, 'fetch ', data + '\nSuccessfully fetched');
-                            toastr.success('For more details, refer to the Git view.', 'Git Fetch Success');
+                            notify.success('For more details, refer to the Git view.', 'Git Fetch Success');
 
                             if (rebaseFlag) {
                                 _rebase(gitRootPath);
@@ -2485,37 +2485,37 @@ define(['require',
 
             git.exec(GIT_DIR, ['rebase'].concat(option), function (err, stdout, stderr) {
                 if (err) {
-                    toastr.error('For more details, refer to the Git view.', 'Git Rebase Error');
+                    notify.error('For more details, refer to the Git view.', 'Git Rebase Error');
                     gitviewlog.error(GIT_DIR, 'rebase ' + upstramBranch, err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
-                        toastr.error('For more details, refer to the Git view.', 'Git Rebase Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Rebase Error');
                         gitviewlog.error(GIT_DIR, 'rebase ' + upstramBranch, data);
                     } else {
                         if (data.match(/CONFLICT .*/)) {
-                            toastr.warning('For more details, refer to the Git view.', 'Git Rebase Conflict Warning');
+                            notify.warning('For more details, refer to the Git view.', 'Git Rebase Conflict Warning');
                             gitviewlog.warning(GIT_DIR, 'rebase ' + upstramBranch, data);
 
                             refresh(gitRootPath);
                         } else if (data.match(/Cannot rebase: .*/)) {
-                            toastr.warning(data, 'Git Rebase Warning');
+                            notify.warning(data, 'Git Rebase Warning');
                             gitviewlog.warning(GIT_DIR, 'rebase ' + upstramBranch, data);
                         } else if (data.match(/Applying: .*/)) {
-                            toastr.success('', 'Git Rebase Success');
+                            notify.success('', 'Git Rebase Success');
                             gitviewlog.success(GIT_DIR, 'rebase ' + upstramBranch, data);
 
                             refresh(gitRootPath);
                         } else if (data.match(/Current branch .* is up to date./)) {
-                            toastr.info(data, 'Git Rebase Info');
+                            notify.info(data, 'Git Rebase Info');
                             gitviewlog.info(GIT_DIR, 'rebase ' + upstramBranch, data);
                         } else if (data.match(/Fast-forwarded .* to .*/)) {
-                            toastr.success('', 'Git Rebase Success');
+                            notify.success('', 'Git Rebase Success');
                             gitviewlog.success(GIT_DIR, 'rebase ' + upstramBranch, data);
 
                             refresh(gitRootPath);
                         } else if (data.match(/First, rewinding head .*/)) {
-                            toastr.success('', 'Git Rebase Success');
+                            notify.success('', 'Git Rebase Success');
                             gitviewlog.success(GIT_DIR, 'rebase ' + upstramBranch, data);
 
                             refresh(gitRootPath);
@@ -2583,31 +2583,31 @@ define(['require',
         function _rebaseContinueEvent() {
             git.exec(GIT_DIR, ['rebase', '--continue'], function (err, stdout, stderr) {
                 if (err) {
-                    toastr.error('For more details, refer to the Git view.', 'Git Rebase Continue Error');
+                    notify.error('For more details, refer to the Git view.', 'Git Rebase Continue Error');
                     gitviewlog.error(GIT_DIR, 'rebase --continue', err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
-                        toastr.error('For more details, refer to the Git view', 'Git Rebase Continue Error');
+                        notify.error('For more details, refer to the Git view', 'Git Rebase Continue Error');
                         gitviewlog.error(GIT_DIR, 'rebase --continue', data);
                     } else {
                         if (data.match(/CONFLICT .*/)) {
-                            toastr.warning('For more details, refer to the Git view', 'Git Rebase Conflict Warning');
+                            notify.warning('For more details, refer to the Git view', 'Git Rebase Conflict Warning');
                             gitviewlog.warning(GIT_DIR, 'rebase --continue', data);
                             refresh(gitRootPath);
                         } else if (data.match(/Cannot rebase: .*/)) {
-                            toastr.warning(data, 'Git Rebase Warning');
+                            notify.warning(data, 'Git Rebase Warning');
                             gitviewlog.warning(GIT_DIR, 'rebase --continue', data);
                         } else if (data.match(/Applying: .*/)) {
-                            toastr.success('', 'Git Rebase Success');
+                            notify.success('', 'Git Rebase Success');
                             gitviewlog.success(GIT_DIR, 'rebase --continue', data);
                             refresh(gitRootPath);
                         } else if (/.* needs merge/) {
-                            toastr.warning('For more details, refer to the Git view', 'Git Rebase Continue Warning');
+                            notify.warning('For more details, refer to the Git view', 'Git Rebase Continue Warning');
                             gitviewlog.warning(GIT_DIR, 'rebase --continue', data);
                             refresh(gitRootPath);
                         } else {
-                            toastr.success('', 'Git Rebase Success');
+                            notify.success('', 'Git Rebase Success');
                             gitviewlog.success(GIT_DIR, 'rebase --continue', data);
                             refresh(gitRootPath);
                         }
@@ -2619,20 +2619,20 @@ define(['require',
         function _rebaseSkipEvent() {
             git.exec(GIT_DIR, ['rebase', '--skip'], function (err, stdout, stderr) {
                 if (err) {
-                    toastr.error('For more details, refer to the Git view.', 'Git Rebase Skip Error');
+                    notify.error('For more details, refer to the Git view.', 'Git Rebase Skip Error');
                     gitviewlog.error(GIT_DIR, 'rebase --skip', err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
-                        toastr.error('For more details, refer to the Git view', 'Git Rebase Skip Error');
+                        notify.error('For more details, refer to the Git view', 'Git Rebase Skip Error');
                         gitviewlog.error(GIT_DIR, 'rebase --skip', data);
                     } else {
                         if (data.match(/CONFLICT .*/)) {
-                            toastr.warning('For more details, refer to the Git view.', 'Git Rebase Conflict Warning');
+                            notify.warning('For more details, refer to the Git view.', 'Git Rebase Conflict Warning');
                             gitviewlog.warning(GIT_DIR, 'rebase --skip', data);
                             refresh(gitRootPath);
                         } else {
-                            toastr.success('', 'Git Rebase Success');
+                            notify.success('', 'Git Rebase Success');
                             gitviewlog.success(GIT_DIR, 'rebase --skip', data);
                             refresh(gitRootPath);
                         }
@@ -2644,15 +2644,15 @@ define(['require',
         function _rebaseAbortEvent() {
             git.exec(GIT_DIR, ['rebase', '--abort'], function (err, stdout, stderr) {
                 if (err) {
-                    toastr.error('For more details, refer to the Git view.', 'Git Rebase Abort Error');
+                    notify.error('For more details, refer to the Git view.', 'Git Rebase Abort Error');
                     gitviewlog.error(GIT_DIR, 'rebase --abort', err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
-                        toastr.error('For more details, refer to the Git view', 'Git Rebase Abort Error');
+                        notify.error('For more details, refer to the Git view', 'Git Rebase Abort Error');
                         gitviewlog.error(GIT_DIR, 'rebase --abort', data);
                     } else {
-                        toastr.success('', 'Git Rebase Aboart Success');
+                        notify.success('', 'Git Rebase Aboart Success');
                         gitviewlog.success(GIT_DIR, 'rebase --abort', data);
                         refresh(gitRootPath);
                     }
@@ -2664,7 +2664,7 @@ define(['require',
         git.exec(GIT_DIR, ['status'], function (err, data) {
             if (err) {
                 gitviewlog.error(GIT_DIR, '', err);
-                toastr.error('For more details, refer to the Git view.', 'Git Rebase Error');
+                notify.error('For more details, refer to the Git view.', 'Git Rebase Error');
             } else {
                 if (data.match(/You are currently rebasing/)) {
                     require(['text!./layer/rebaseprocessing.html'], function (rebaseProcessingView) {
@@ -2799,7 +2799,7 @@ define(['require',
                 ], function (err) {
                     if (err) {
                         gitviewlog.error(GIT_DIR, 'add', err);
-                        toastr.error('For more details, refer to the Git view.', 'Git Add Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Add Error');
                     } else {
                         var add;
                         var rm;
@@ -2817,7 +2817,7 @@ define(['require',
 
                         gitIcon.refreshGitIconsInRepoOf(path, true);
 
-                        toastr.success('', 'Git Add Success');
+                        notify.success('', 'Git Add Success');
                         gitviewlog.success(GIT_DIR, 'add', add + rm);
                     }
                 });
@@ -2935,13 +2935,13 @@ define(['require',
 
                             if (status === '??') {
                                 infoMsg = filepath + ' has been newly added.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else if (status === 'A') {
                                 infoMsg = filepath + ' has been newly added.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else if (status === 'D') {
                                 infoMsg = filepath + ' has been deleted.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else {
                                 _diff(gitRootPath, filepath);
                             }
@@ -2998,12 +2998,12 @@ define(['require',
                     git.exec(path, ['rm'].concat(options, relPath), function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(path, 'untrack', err);
-                            toastr.error('For more details, refer to the Git view.', 'Git Untrack Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Untrack Error');
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'untrack', data);
-                                toastr.error('For more details, refer to the Git view.', 'Git Untrack Error');
+                                notify.error('For more details, refer to the Git view.', 'Git Untrack Error');
                             } else {
                                 if (refreshFlag) {
                                     refresh(gitRootPath);
@@ -3012,7 +3012,7 @@ define(['require',
                                 }
 
                                 gitviewlog.success(path, 'untrack', relPath + ': untracked');
-                                toastr.success('', 'Git Untrack Success');
+                                notify.success('', 'Git Untrack Success');
                             }
                         }
                     });
@@ -3060,7 +3060,7 @@ define(['require',
         }
 
         if (relPath === '.git/') {
-            toastr.warning('Invalid path ' + relPath, 'Git Untrack Warning');
+            notify.warning('Invalid path ' + relPath, 'Git Untrack Warning');
             return;
         } else if (relPath === '.') {
             _untrackUX();
@@ -3070,9 +3070,9 @@ define(['require',
                     var rt = git.parseStatus(data);
 
                     if (rt.length && rt[0].action.match(/[D?]/)) {
-                        toastr.warning(relPath + ' is already untracked', 'Git Untrack Warning');
+                        notify.warning(relPath + ' is already untracked', 'Git Untrack Warning');
                     } else if (rt.length && rt[0].action.match(/[!]/)) {
-                        toastr.warning(relPath + ' is ignored.', 'Git Untrack Warning');
+                        notify.warning(relPath + ' is ignored.', 'Git Untrack Warning');
                     } else {
                         _untrackUX();
                     }
@@ -3107,12 +3107,12 @@ define(['require',
                     console.log(err, stdout, stderr);
                     if (err) {
                         gitviewlog.error(GIT_DIR, 'remove from stage', err);
-                        toastr.error('For more details, refer to the Git view.', 'Git Reset Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Reset Error');
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(GIT_DIR, 'remove from stage', data);
-                            toastr.error('For more details, refer to the Git view.', 'Git Reset Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Reset Error');
                         } else {
                             if (refreshFlag) {
                                 refresh(gitRootPath, true);
@@ -3127,7 +3127,7 @@ define(['require',
                             gitviewlog.success(GIT_DIR,
                                                'remove from stage',
                                                checklist.join(': remove from stage\n') + ': remove from stage');
-                            toastr.success('', 'Git Remove Success');
+                            notify.success('', 'Git Remove Success');
                         }
                     }
                 });
@@ -3260,13 +3260,13 @@ define(['require',
 
                             if (status === 'A') {
                                 infoMsg = filepath + ' has been newly added.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else if (status === 'R') {
                                 infoMsg = 'The specified path ' + filepath + ' was renamed.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else if (status === 'D') {
                                 infoMsg = filepath + ' has been deleted.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else {
                                 _diff(gitRootPath, filepath);
                             }
@@ -3326,17 +3326,17 @@ define(['require',
 
                         if (err) {
                             gitviewlog.error(path, 'reset to commit', err);
-                            toastr.error('For more details, refer to the Git view.', 'Git Reset to ' +
+                            notify.error('For more details, refer to the Git view.', 'Git Reset to ' +
                                          omittedID + ' Error');
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'reset to commit', err);
-                                toastr.error('For more details, refer to the Git view.', 'Git Reset to ' +
+                                notify.error('For more details, refer to the Git view.', 'Git Reset to ' +
                                              omittedID + ' Error');
                             } else  {
                                 gitviewlog.success(path, 'reset to commit', 'Successfully Reset to ' + id);
-                                toastr.success('', 'Git Reset to ' + omittedID + ' Success');
+                                notify.success('', 'Git Reset to ' + omittedID + ' Success');
 
                                 refresh(gitRootPath, resetType !== '--soft');
                             }
@@ -3697,13 +3697,13 @@ define(['require',
 
                             if (status === '??') {
                                 infoMsg = filepath + ' has been newly added.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else if (status === 'D') {
                                 infoMsg = filepath + ' has been deleted.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else if (status === 'R') {
                                 infoMsg = 'The specified path ' + filepath + ' was renamed.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
                             } else {
                                 _diff(gitRootPath, filepath);
                             }
@@ -3796,7 +3796,7 @@ define(['require',
 
                 // check whether the author-info is empty or not
                 if (author === '') {
-                    toastr.warning('Author is not specified', 'Git Commit Warning');
+                    notify.warning('Author is not specified', 'Git Commit Warning');
                     return;
                 }
 
@@ -3805,7 +3805,7 @@ define(['require',
                 if (m) {
                     commitArgs.push('--author=' + author);
                 } else {
-                    toastr.warning('Verify the author information format.', 'Git Commit Warning');
+                    notify.warning('Verify the author information format.', 'Git Commit Warning');
                     gitviewlog.warning(path,
                        'commit', 'Specify author information\n\nEx.) AuthorName <AuthorName@Email.li>');
                     return;
@@ -3834,7 +3834,7 @@ define(['require',
 
 
                 if (!changes && commitOption === '') {
-                    toastr.info('No changes detected');
+                    notify.info('No changes detected');
                     return;
                 }
 
@@ -3887,16 +3887,16 @@ define(['require',
                         git.exec(path, commitArgs, function (err, stdout, stderr) {
                             if (err) {
                                 gitviewlog.error(path, 'commit', err);
-                                toastr.error('For more details, refer to the Git view.', 'Git Commit Error');
+                                notify.error('For more details, refer to the Git view.', 'Git Commit Error');
                             } else {
                                 var data = stdout + stderr;
                                 if (data.match(/(fatal|error): .*/)) {
                                     gitviewlog.error(path, 'commit', data);
-                                    toastr.error('For more details, refer to the Git view.', 'Git Commit Error');
+                                    notify.error('For more details, refer to the Git view.', 'Git Commit Error');
                                 } else {
                                     gitIcon.refreshGitIconsInRepoOf(path, true);
 
-                                    toastr.success('For more details, refer to the Git view.', 'Git Commit Success');
+                                    notify.success('For more details, refer to the Git view.', 'Git Commit Success');
                                     gitviewlog.success(path, 'commit', data);
 
                                     if (pushFlag) {
@@ -3928,7 +3928,7 @@ define(['require',
 
                     commitMsgInput.setValue(msg.trim() + changeId);
                 } else if (checked && m) {
-                    toastr.info('The Change-Id already exists.', 'Info');
+                    notify.info('The Change-Id already exists.', 'Info');
                 }
             });
 
@@ -4131,7 +4131,7 @@ define(['require',
                                 createRepoLocal(nodePath, dirName);
                                 createDialog.hide();
                             } else {
-                                toastr.error('Select a directory to make a repository');
+                                notify.error('Select a directory to make a repository');
                             }
                         }
                     }
@@ -4221,7 +4221,7 @@ define(['require',
                                 console.error('Failed to create a repo', err);
                                 var errorMsg = JSON.parse(err.request.responseText).message;
                                 gitviewlog.error('', 'create repository',  '\'' + options.name + '\' ' + errorMsg);
-                                toastr.error('For more details, refer to the Git view.', 'Git Create Repository Error');
+                                notify.error('For more details, refer to the Git view.', 'Git Create Repository Error');
                             } else {
                                 /* jshint camelcase: false */
                                 var msg = 'Successfully created repository to GitHub.\n\n' +
@@ -4236,7 +4236,7 @@ define(['require',
                                     'For more information, visit ' + repo.html_url;
                                 /* jshint camelcase: true */
 
-                                toastr.success('For more details, refer to the Git view.',
+                                notify.success('For more details, refer to the Git view.',
                                                'Git Create Repository Success');
                                 gitviewlog.success('', 'create repository', msg);
 
@@ -4335,11 +4335,11 @@ define(['require',
                     if (err) {
                         workbench.removeJob(jobId);
                         gitviewlog.error(GIT_DIR, 'create git repository', err);
-                        toastr.error('For more details, refer to the Git view.', 'Git Create Repository Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Create Repository Error');
                     } else {
                         workbench.removeJob(jobId);
                         gitviewlog.success(GIT_DIR, 'create git repository', resultString);
-                        toastr.success('', 'Git Create Repository Success');
+                        notify.success('', 'Git Create Repository Success');
                         refresh(selectedPath);
                     }
                 });
@@ -4584,10 +4584,10 @@ define(['require',
                         var options = [];
 
                         if (!remoteName) {
-                            toastr.warning('Enter remote repository name');
+                            notify.warning('Enter remote repository name');
                             return;
                         } else if (!remoteLOC) {
-                            toastr.warning('Enter remote repository URL');
+                            notify.warning('Enter remote repository URL');
                             return;
                         }
 
@@ -4617,7 +4617,7 @@ define(['require',
                         git.exec(GIT_DIR, ['remote', 'add'].concat(options), function (err, stdout, stderr) {
                             if (err) {
                                 workbench.removeJob(jobId);
-                                toastr.error(err, 'Git Remote Error');
+                                notify.error(err, 'Git Remote Error');
                                 gitviewlog.error(GIT_DIR, 'remote', err);
                             } else {
                                 var data = stdout + stderr;
@@ -4627,7 +4627,7 @@ define(['require',
                                     if (data.match(/Could not fetch/)) {
                                         var WARN_MSG = 'Check whether the remote repository url information is valid.';
 
-                                        toastr.warning('For more details, refer to the Git view.',
+                                        notify.warning('For more details, refer to the Git view.',
                                                        'Git Remote Warning');
                                         gitviewlog.warning(GIT_DIR, 'remote', WARN_MSG + '\n' + data);
 
@@ -4638,7 +4638,7 @@ define(['require',
 
                                     } else {
                                         gitviewlog.error(GIT_DIR, 'remote rm', data);
-                                        toastr.error('For more details, refer to the Git view.', 'Git Remote Error');
+                                        notify.error('For more details, refer to the Git view.', 'Git Remote Error');
                                     }
                                 } else {
                                     workbench.removeJob(jobId);
@@ -4647,7 +4647,7 @@ define(['require',
                                         location: remoteLOC
                                     });
 
-                                    toastr.success('For more details, refer to the Git view.', 'Git Remote Success');
+                                    notify.success('For more details, refer to the Git view.', 'Git Remote Success');
                                     gitviewlog.success(GIT_DIR, 'remote add',
                                                        'Successfully added remote \'' + remoteName + '\' repository.');
                                 }
@@ -4697,16 +4697,16 @@ define(['require',
                     git.exec(GIT_DIR, ['remote', 'rm', remoteName], function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(GIT_DIR, 'remote', err);
-                            toastr.error('For more details, refer to the Git view.', 'Git Remote Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Remote Error');
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(GIT_DIR, 'remote rm', data);
-                                toastr.error('For more details, refer to the Git view.', 'Git Remote Error');
+                                notify.error('For more details, refer to the Git view.', 'Git Remote Error');
                             } else {
                                 grid.store.deleteItem(item[0]);
 
-                                toastr.success('For more details, refer to the Git view.', 'Git Remote Success');
+                                notify.success('For more details, refer to the Git view.', 'Git Remote Success');
                                 gitviewlog.success(GIT_DIR, 'remote rm', 'Successfully removed remote \'' +
                                                    remoteName + '\' repository.');
                             }
@@ -4853,10 +4853,10 @@ define(['require',
                     ], function (err) {
                         if (err) {
                             gitviewlog.error(GIT_DIR, 'configure', err);
-                            toastr.error('', 'Git Configure Change Error');
+                            notify.error('', 'Git Configure Change Error');
                         } else {
                             gitviewlog.success(GIT_DIR, 'configure', 'Successfully changed git configure.');
-                            toastr.success('', 'Git Configure Setting Success');
+                            notify.success('', 'Git Configure Setting Success');
                         }
                     });
                 },
@@ -5117,7 +5117,7 @@ define(['require',
                         var cmd = [];
 
                         if (target === '') {
-                            toastr.warning('Enter name.');
+                            notify.warning('Enter name.');
                             return;
                         }
 
@@ -5129,7 +5129,7 @@ define(['require',
                             }
                         } else {
                             if (message.length === 0) {
-                                toastr.warning('Enter message.');
+                                notify.warning('Enter message.');
                                 return;
                             }
 
@@ -5155,7 +5155,7 @@ define(['require',
                                 break;
                             case STR_TAG:
                                 if (stTag === '') {
-                                    toastr.warning('Select a tag.');
+                                    notify.warning('Select a tag.');
                                     return;
                                 }
 
@@ -5163,7 +5163,7 @@ define(['require',
                                 break;
                             case STR_COMMIT:
                                 if (sha === '') {
-                                    toastr.warning('Enter commit-id.');
+                                    notify.warning('Enter commit-id.');
                                     return;
                                 }
                                 cmd.push(sha);
@@ -5177,7 +5177,7 @@ define(['require',
                                 var data = stdout + stderr;
 
                                 if (data.match(/(fatal|error): .*/)) {
-                                    toastr.error('For more details, refer to the Git view.', 'Git Error');
+                                    notify.error('For more details, refer to the Git view.', 'Git Error');
                                     gitviewlog.error(GIT_DIR, cmd[0], data);
                                 } else {
                                     if (branchRBtn.checked) {
@@ -5195,7 +5195,7 @@ define(['require',
                                                            'Sucessfully ' + '\'' + target + '\' taged.');
                                     }
 
-                                    toastr.success('For more details, refer to the Git view.', 'Git Success');
+                                    notify.success('For more details, refer to the Git view.', 'Git Success');
 
                                 }
                             }
@@ -5356,7 +5356,7 @@ define(['require',
                             var data = stdout + stderr;
                             if (data) {
                                 if (data.match(/(fatal|error): .*/)) {
-                                    toastr.error('For more details, refer to the Git view.', 'Git Checkout Error');
+                                    notify.error('For more details, refer to the Git view.', 'Git Checkout Error');
                                     gitviewlog.error(GIT_DIR, 'checkout', data);
                                 } else {
                                     redrawTree();
@@ -5366,7 +5366,7 @@ define(['require',
                                     removeBtn.set('disabled', true);
                                     checkoutBtn.set('disabled', true);
 
-                                    toastr.success('For more details, refer to the Git view.', 'Git Checkout Success');
+                                    notify.success('For more details, refer to the Git view.', 'Git Checkout Success');
                                     gitviewlog.success(GIT_DIR, 'checkout', data);
                                 }
                             }
@@ -5398,18 +5398,18 @@ define(['require',
                         git.exec(GIT_DIR, ['branch', '-D', targetName], function (err, stdout, stderr) {
                             if (err) {
                                 gitviewlog.error(GIT_DIR, 'branch delete', err);
-                                toastr.error('For more details, refer to the Git view.', 'Git Branch Delete Error');
+                                notify.error('For more details, refer to the Git view.', 'Git Branch Delete Error');
                             } else {
                                 var data = stdout + stderr;
                                 if (data.match(/(fatal|error): .*/)) {
                                     gitviewlog.error(GIT_DIR, 'branch delete', data);
-                                    toastr.error('For more details, refer to the Git view.', 'Git Branch Delete Error');
+                                    notify.error('For more details, refer to the Git view.', 'Git Branch Delete Error');
                                 } else {
                                     treeStore.remove(tree.selectedNode.item.id);
                                     removeBtn.set('disabled', true);
                                     checkoutBtn.set('disabled', true);
 
-                                    toastr.success('', 'Git Branch Delete Success');
+                                    notify.success('', 'Git Branch Delete Success');
                                     gitviewlog.success(GIT_DIR, 'branch delete', data);
                                 }
                             }
@@ -5418,18 +5418,18 @@ define(['require',
                         git.exec(GIT_DIR, ['tag', '-d', targetName], function (err, stdout, stderr) {
                             if (err) {
                                 gitviewlog.error(GIT_DIR, 'tag delete', err);
-                                toastr.error('For more details, refer to the Git view.', 'Git Tag Delete Error');
+                                notify.error('For more details, refer to the Git view.', 'Git Tag Delete Error');
                             } else {
                                 var data = stdout + stderr;
                                 if (data.match(/(fatal|error): .*/)) {
                                     gitviewlog.error(GIT_DIR, 'tag delete', data);
-                                    toastr.error('For more details, refer to the Git view.', 'Git Tag Delete Error');
+                                    notify.error('For more details, refer to the Git view.', 'Git Tag Delete Error');
                                 } else {
                                     gridStore.remove(targetName);
                                     removeBtn.set('disabled', true);
                                     checkoutBtn.set('disabled', true);
 
-                                    toastr.success('', 'Git Tag Delete Success');
+                                    notify.success('', 'Git Tag Delete Success');
                                     gitviewlog.success(GIT_DIR, 'branch delete', data);
                                 }
                             }
@@ -5625,7 +5625,7 @@ define(['require',
 
         git.exec(GIT_DIR, ['submodule', 'update'], function (err, stdout, stderr) {
             if (err) {
-                toastr.error('', 'Git Submodule Error');
+                notify.error('', 'Git Submodule Error');
                 gitviewlog.error(GIT_DIR, 'submodule', err);
             } else {
                 var data = stdout + stderr;
@@ -5633,13 +5633,13 @@ define(['require',
                 if (data) {
                     if (data.match(/(fatal|error): .*/)) {
                         gitviewlog.error(GIT_DIR, 'submodule', data);
-                        toastr.error('For more details, refer to the Git view.', 'Git Submodule Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Submodule Error');
                     } else {
-                        toastr.success('', 'Git Submodule Success');
+                        notify.success('', 'Git Submodule Success');
                         gitviewlog.success(GIT_DIR, 'submodule', data);
                     }
                 } else {
-                    toastr.info('', 'Git Submodule Info');
+                    notify.info('', 'Git Submodule Info');
                     gitviewlog.info(GIT_DIR, 'submodule', 'Already up-to-date.');
                 }
             }
@@ -5683,14 +5683,14 @@ define(['require',
                     workbench.removeJob(jobId);
                     if (err) {
                         gitviewlog.error(path, logTitle, err);
-                        toastr.error('For more details, refer to the Git view.', 'Git Command Error');
+                        notify.error('For more details, refer to the Git view.', 'Git Command Error');
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(path, logTitle, data);
-                            toastr.error('For more details, refer to the Git view.', 'Git Command Error');
+                            notify.error('For more details, refer to the Git view.', 'Git Command Error');
                         } else {
-                            toastr.success('', 'Git Command Success');
+                            notify.success('', 'Git Command Success');
                             gitviewlog.success(path, logTitle, data);
                             refresh(path, true);
                         }

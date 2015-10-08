@@ -18,7 +18,7 @@ define(['require',
         'webida-lib/app',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
         'webida-lib/plugins/workbench/plugin',
-        'plugins/webida.notification/notification-message',
+        'webida-lib/util/notify',
         'external/lodash/lodash.min',
         'external/moment/min/moment.min',
         'webida-lib/plugins/workspace/plugin',
@@ -26,7 +26,7 @@ define(['require',
         'dijit/registry',
         'text!./layer/filePropertiesForm.html'
        ],
-function (require, ide, ButtonedDialog, workbench, toastr, _, moment,
+function (require, ide, ButtonedDialog, workbench, notify, _, moment,
            wv, Deferred, reg, fPropertiesForm) {
     'use strict';
     /* global timedLogger:true */
@@ -142,7 +142,7 @@ function (require, ide, ButtonedDialog, workbench, toastr, _, moment,
                     nodes = wv.getSelectedNodes();
                 }
                 if (!nodes || nodes.length < 1) {
-                    toastr.error(FP_DIALOG_MSG.NO_SELECTED, FP_DIALOG_MSG.ERROR);
+                    notify.error(FP_DIALOG_MSG.NO_SELECTED, FP_DIALOG_MSG.ERROR);
                     return;
                 }
             } catch (err) { // workspace can be disabled
@@ -572,7 +572,7 @@ function (require, ide, ButtonedDialog, workbench, toastr, _, moment,
 
             if (err !== FP_DIALOG_MSG.FORCE_STOP) {
                 // error state close dialog and error message popup
-                toastr.error(err, FP_DIALOG_MSG.OPERATION_FAILED);
+                notify.error(err, FP_DIALOG_MSG.OPERATION_FAILED);
             }
         };
 

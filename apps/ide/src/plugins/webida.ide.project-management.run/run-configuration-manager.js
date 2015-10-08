@@ -27,7 +27,7 @@ define([
     'webida-lib/plugins/workspace/plugin',
     'external/async/dist/async.min',
     'external/lodash/lodash.min',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'webida-lib/util/logger/logger-client'
 ], function (
     ide,
@@ -36,7 +36,7 @@ define([
     workspace,
     async,
     _,
-    toastr,
+    notify,
     Logger
 ) {
     'use strict';
@@ -164,7 +164,7 @@ define([
         fsMount.writeFile(PATH_RUN_CONFIG, runConfigurationFileCache, function (err) {
             isFlushing = false;
             if (err) {
-                toastr.error(err);
+                notify.error(err);
                 logger.error('flushRunConfigurations:writeFile', PATH_RUN_CONFIG);
             }
             if (callback) {

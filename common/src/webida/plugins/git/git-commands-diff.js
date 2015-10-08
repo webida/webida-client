@@ -18,7 +18,7 @@ define(['require',
         'webida-lib/app',
         'plugins/webida.preference/preference-service-factory',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'plugins/webida.notification/notification-message',
+        'webida-lib/util/notify',
         'dojo/Deferred',
         'dijit/registry',
         'external/async/dist/async.min',
@@ -28,7 +28,7 @@ define(['require',
         './lib/jsdifflib/diffview',
         './lib/jsdifflib/difflib'
        ],
-function (require, ide, PreferenceFactory, ButtonedDialog, toastr, Deferred,
+function (require, ide, PreferenceFactory, ButtonedDialog, notify, Deferred,
            registry, async, git, gitviewlog, GitPreferences, diffview, difflib) {
     'use strict';
 
@@ -102,7 +102,7 @@ function (require, ide, PreferenceFactory, ButtonedDialog, toastr, Deferred,
                         } else {
                             if (isDirectory) {
                                 var infoMsg = file + ' is not a file path.';
-                                toastr.info(infoMsg, 'Git Diff Info');
+                                notify.info(infoMsg, 'Git Diff Info');
 
                                 next('INFO');
                             } else {

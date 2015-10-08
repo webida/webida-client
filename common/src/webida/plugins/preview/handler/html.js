@@ -19,8 +19,8 @@
  *
  */
 
-define(['webida-lib/app', 'plugins/webida.notification/notification-message'],
-function (app, toastr) {
+define(['webida-lib/app', 'webida-lib/util/notify'],
+function (app, notify) {
     'use strict';
 
     var fsMount = app.getFSCache();
@@ -32,7 +32,7 @@ function (app, toastr) {
 
         fsMount.addAlias(wsPath, 10, function (err, aliasData) {
             if (err) {
-                toastr.error('Failed to add an alias for the workspace ' +
+                notify.error('Failed to add an alias for the workspace ' +
                              'required to preview an HTML file (' + err + ')');
             } else {
                 var $iframe =

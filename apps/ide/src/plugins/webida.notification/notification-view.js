@@ -20,16 +20,20 @@
  *
  */
 define([
+    'dojo/topic',
     'webida-lib/plugins/workbench/plugin',
-    'webida-lib/widgets/views/view',
-    'text!./layout/notification.html',
     'webida-lib/util/logger/logger-client',
+    'webida-lib/widgets/views/view',
+    './notification',
+    'text!./layout/notification.html',
     'xstyle/css!./style/style.css'
 ], function (
-    Workbench,
+    topic,
+    workbench,
+    Logger,
     View,
-    Template,
-    Logger
+    notification,
+    template
 ) {
     'use strict';
 
@@ -39,10 +43,9 @@ define([
     function getView() {
         if (!this.view) {
             var view = new View('notificationTab', 'Notification');
-            view.setContent('<div id="NotificationTab" style="width:100%; height:100%">');
+            view.setContent('<div id="NotificationTab" style="width:100%; height:100%; overflow:hidden">');
             this.view = view;
         }
-
         return this.view;
     }
 
@@ -51,9 +54,11 @@ define([
             title: 'Notification',
             key: 'N'
         };
-        Workbench.registToViewFocusList(this.view, opt);
-
-        $('#NotificationTab').append(Template);
+        workbench.registToViewFocusList(this.view, opt);
+        $('#NotificationTab').append(template);
+        topic.subscribe('NOTIFY', function(type, msg, title) {
+            notification.setNotification(type, msg, title);
+        });
     }
 
     return {

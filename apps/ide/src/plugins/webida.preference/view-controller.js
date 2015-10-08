@@ -25,7 +25,7 @@ define([
     'webida-lib/util/logger/logger-client',
     'dojo/on',
     'dijit/registry',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     './preference-manager',
     './tree-view-controller',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
@@ -36,7 +36,7 @@ define([
     Logger,
     on,
     reg,
-    topic,
+    notify,
     preferenceManager,
     treeViewController,
     ButtonedDialog,
@@ -160,7 +160,7 @@ define([
             on($('#apply-preference').get(0), 'click', function () {
                 currentPage.store.apply(function (invalidMessage) {
                     if (invalidMessage) {
-                        topic.warning(invalidMessage);
+                        notify.warning(invalidMessage);
                     }
                 });
             }),
@@ -213,7 +213,7 @@ define([
                 saveClose: function () {
                     preferenceManager.saveAllPreference(scope, function (invalidMessages) {
                         if (invalidMessages.trim()) {
-                            topic.warning(invalidMessages);
+                            notify.warning(invalidMessages);
                         }
                         preferenceDlg.hide();
                     });
@@ -227,7 +227,7 @@ define([
                     preferenceDlg.destroyRecursive();
                     preferenceManager.flushPreference(scope, scopeInfo, function (err) {
                         if (err) {
-                            topic.error(err);
+                            notify.error(err);
                         }
                         module.isOpened = false;
                     });

@@ -19,7 +19,7 @@ define([
     'dojo/when',
     'dojo/promise/all',
     'external/lodash/lodash.min',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'plugins/webida.preference/preference-service-factory',
     'require',
     'webida-lib/plugins/workbench/ui/promiseMap',
@@ -30,7 +30,7 @@ define([
     when,
     all,
     _,
-    toastr,
+    notify,
     PreferenceFactory,
     require,
     promiseMap,
@@ -805,7 +805,7 @@ define([
                     switch (viableSCItems.length) {
                     case 0:  // why not just bubble up?
                         if (!skipInvoc && self._options.warnUnviableItems) {
-                            toastr.warning('None of the commands "' + getCmdsStr(shortcutItems) +
+                            notify.warning('None of the commands "' + getCmdsStr(shortcutItems) +
                                            '" bound to the shortcut "' + keys +
                                            '" is viable in the current context of ' +
                                            pluginName + '.');
@@ -819,7 +819,7 @@ define([
                         }
                         break;
                     default:
-                        toastr.error('More than one commands "' + getCmdsStr(viableSCItems) +
+                        notify.error('More than one commands "' + getCmdsStr(viableSCItems) +
                                      '" are bound to the shortcut "' +  keys +
                                      '" in the current context of ' + pluginName + '.');
                     }
@@ -952,7 +952,7 @@ define([
 
         var item = getSubitem(this._wholeItems, itemPath);
         if (!item) {
-            toastr.error('Error: no such item: ' + itemPath);
+            notify.error('Error: no such item: ' + itemPath);
             return;
         }
         if (_.isArray(item)) {
@@ -992,18 +992,18 @@ define([
                                                 func.call(mod, arg1);
                                                 break;
                                             default:
-                                                toastr.error('Invalid terminal item type: ' + item2[0]);
+                                                notify.error('Invalid terminal item type: ' + item2[0]);
                                             }
                                         } else {
-                                            toastr.error('No such function ' + item2[2] + ' in the module ' +
+                                            notify.error('No such function ' + item2[2] + ' in the module ' +
                                                          item2[1]);
                                         }
                                     });
                                 } else if (item2[1] || item2[2]) {
-                                    toastr.error('The viable item is not a valid terminal menu item');
+                                    notify.error('The viable item is not a valid terminal menu item');
                                 }
                             } else {
-                                toastr.error('The viable item is not a valid terminal menu item');
+                                notify.error('The viable item is not a valid terminal menu item');
                             }
 
                             return;
@@ -1011,7 +1011,7 @@ define([
                     }
 
                     if (self._options.warnUnviableItems) {
-                        toastr.warning('The command "' + itemPathToCmdName(itemPath) +
+                        notify.warning('The command "' + itemPathToCmdName(itemPath) +
                                        '" is not viable in the current context of ' +
                                        self._pluginName + '.');
                     }
@@ -1033,13 +1033,13 @@ define([
                     });
 
                 } else {
-                    toastr.error('Module ' + contr.module + ' have to implement a function named ' +
+                    notify.error('Module ' + contr.module + ' have to implement a function named ' +
                           contr.getViableItems);
                 }
             });
 
         } else {
-            toastr.error('Internal Error: Non-terminal menu item invoked: ' + itemPath);
+            notify.error('Internal Error: Non-terminal menu item invoked: ' + itemPath);
             return;
         }
     };

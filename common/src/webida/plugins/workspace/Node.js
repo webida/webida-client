@@ -43,10 +43,10 @@ define(['require',
         'webida-lib/plugins/workbench/plugin',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
         'webida-lib/util/path',
-        'plugins/webida.notification/notification-message'
+        'webida-lib/util/notify',
 ], function (require, _, registry, ide, FSCache, dom, domAttr, domStyle, domClass,
               domGeom, on, topic, Deferred, all, keys, workbench, ButtonedDialog,
-              pathUtil, toastr) {
+              pathUtil, notify) {
     'use strict';
 
     //var lastRenamedNodeId;
@@ -394,13 +394,13 @@ define(['require',
             var cap;
             if (completed) {
                 cap = action === 'copy' ? 'Copied' : 'Moved';
-                toastr.success('', cap + ' successfully');
+                notify.success('', cap + ' successfully');
             } else {
                 cap = action === 'copy' ? 'Copy' : 'Move';
                 if (errMsg) {
-                    toastr.error(errMsg, cap + ' was aborted by an error');
+                    notify.error(errMsg, cap + ' was aborted by an error');
                 } else {
-                    toastr.info('', cap + ' was aborted');
+                    notify.info('', cap + ' was aborted');
                 }
             }
         }
@@ -599,7 +599,7 @@ define(['require',
         }
 
         if (!this.isInternal) {
-            toastr.error('Cannot ' + action + ' to a non-directory "' + this.getPath() + '"');
+            notify.error('Cannot ' + action + ' to a non-directory "' + this.getPath() + '"');
             return;
         }
 
@@ -616,7 +616,7 @@ define(['require',
             for (var i = 0; i < srcNodes.length; i++) {
                 var srcNode = srcNodes[i];
                 if (srcNode.isInternal && this.getPath().indexOf(srcNode.getPath()) === 0) {
-                    toastr.error('Cannot ' + action + ' a directory "' + srcNode.getPath() +
+                    notify.error('Cannot ' + action + ' a directory "' + srcNode.getPath() +
                                  '" to itself or to its descendant "' +  this.getPath() + '"');
                     return;
                 }
@@ -1075,7 +1075,7 @@ define(['require',
 
                 uploadEntries(this, items, printResults.bind(null, true));
             } else {
-                toastr.error('Cannot upload something that is neither a directory nor a file');
+                notify.error('Cannot upload something that is neither a directory nor a file');
                 deferred.resolve(false);
             }
         } else { 
@@ -1127,22 +1127,22 @@ define(['require',
         }
 
         if (!newName) {
-            toastr.warning('Enter a name.');
+            notify.warning('Enter a name.');
             return false;
         } else if (newName.indexOf('/') > -1) {
-            toastr.warning('Slashes are not allowed in a file or directory name.');
+            notify.warning('Slashes are not allowed in a file or directory name.');
             return false;
         } else if (/^(\.|\.\.)$/.test(newName)) {
-            toastr.warning('"' + newName + '" is not allowed as a file or directory name.');
+            notify.warning('"' + newName + '" is not allowed as a file or directory name.');
         } else if (dirNode && dirNode.hasSubnode(newName)) {
-            toastr.error('A file or directory with the name "' + newName + '" already exists.');
+            notify.error('A file or directory with the name "' + newName + '" already exists.');
             return false;
         } else if (getByteLength(newName) > 255) {
-            toastr.error('A file or directory cannot have the name "' + newName +
+            notify.error('A file or directory cannot have the name "' + newName +
                          '" whose byte-length exceeds 255.');
             return false;
         } else if (!consistsOfValidChars(newName)) {
-            toastr.warning('A file or directory cannot have the name "' + newName +
+            notify.warning('A file or directory cannot have the name "' + newName +
                            '" which contains a disallowed character.');
             return false;
         } else {
@@ -1214,10 +1214,10 @@ define(['require',
             function doCreation(newName) {
                 function callback(err) {
                     if (err) {
-                        toastr.error('Failed to create a file or directory (' + err + ')');
+                        notify.error('Failed to create a file or directory (' + err + ')');
                     } else {
                         selectNewNode(newPath);
-                        toastr.success('\'' + newName + '\' successfully created');
+                        notify.success('\'' + newName + '\' successfully created');
                     }
                 }
 
@@ -1372,12 +1372,12 @@ define(['require',
                 fsCache.move(self.id, newPath, function (err) {
                     if (err) {
                         console.log('Failed to rename (' + err + ')');
-                        toastr.error('Failed to rename');
+                        notify.error('Failed to rename');
                     } else {
                         if (reselect) {
                             selectNewNode(newPath);
                         }
-                        toastr.success('Renamed successfully');
+                        notify.success('Renamed successfully');
                     }
                 });
             }
@@ -1406,7 +1406,7 @@ define(['require',
                 } else {
 
                     if (err) {
-                        toastr.error('Failed to list ' + myId + ' (' + err + ')');
+                        notify.error('Failed to list ' + myId + ' (' + err + ')');
                     } else {
                         stats.forEach(function (stat) {
 

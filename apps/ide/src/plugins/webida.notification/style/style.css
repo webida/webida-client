@@ -1,17 +1,15 @@
 .notification-view {
     width: 100%;
     height: 100%;
-    position: relative;
 }
 
 .notification-contents {
-    width: 100%;
-    position: absolute;
-    margin: 10px
+	margin: 10px;
 }
 
 p.notification-message {
     margin-top: 0.3em;
     margin-bottom: 0.3em;
     line-height: 1.3em;
+    font-size: 8pt;
 }

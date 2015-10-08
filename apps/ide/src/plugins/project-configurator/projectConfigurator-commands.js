@@ -35,10 +35,10 @@ define([
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'popup-dialog'
 ], function (ide, pm, pathUtil, topic, runConfHtml, runWidgetHtml, reg, ButtonedDialog,
-              ContentPane, projectConfigurator, pc, workspace, workbench, FileDialog, toastr,
+              ContentPane, projectConfigurator, pc, workspace, workbench, FileDialog, notify,
               PopupDialog) {
 
     'use strict';
@@ -106,13 +106,13 @@ define([
         var openname = projectPath + projectProperty.name;
         var runningWin = window.open('', openname, runObject.openArgument);
         if (!runningWin) {
-            toastr.error('Window can\'t be opened.<br />It might be interrupted by pop-up blocking, please check it.');
+            notify.error('Window can\'t be opened.<br />It might be interrupted by pop-up blocking, please check it.');
             return;
         }
 
         fsMount.addAlias(projectPath, 3600, function (err, data) {
             if (err) {
-                toastr.error(err);
+                notify.error(err);
                 return;
             }
 
@@ -122,7 +122,7 @@ define([
 
             runningWin.location.href = './redirect.html#' + url;
 
-            toastr.success('\'' + projectProperty.name + '\' successfully launched');
+            notify.success('\'' + projectProperty.name + '\' successfully launched');
             if (runningWin.focus) {
                 runningWin.focus();
             }
@@ -274,7 +274,7 @@ define([
 
     function pathButtonClicked(projectProperty, pathInputBox, nameInputBox) {
         if (!projectProperty || !pathInputBox || !projectProperty.name) {
-            toastr.error('Cannot find root path');
+            notify.error('Cannot find root path');
             return;
         }
 
@@ -299,7 +299,7 @@ define([
         dlg.open(function (selected) {
             if (selected) {
                 if (selected.length <= 0) {
-                    toastr.warning('Select a file.');
+                    notify.warning('Select a file.');
                     return;
                 }
                 var pathSplit = selected[0].split(root);
@@ -319,7 +319,7 @@ define([
                         }
                     }
                 } else {
-                    toastr.warning('Select a file.');
+                    notify.warning('Select a file.');
                     return;
                 }
             }
@@ -373,17 +373,17 @@ define([
                                 inputBoxs, readonlyInputBoxs, saveButton, cancelButton, modifyButton,
                                 runButton, deleteButton, pathButton, checkBoxNode) {
         if (!inputBoxs[0].value) {
-            toastr.error('Enter a name.');
+            notify.error('Enter a name.');
             return;
         }
 
         if (isDuplicateRunName(projectProperty, inputBoxs[0].value) && inputBoxs[0].value !== run.name) {
-            toastr.error('Duplicate name');
+            notify.error('Duplicate name');
             return;
         }
 
         if (!readonlyInputBoxs[0].value) {
-            toastr.error('Select a path.');
+            notify.error('Select a path.');
             return;
         }
 
@@ -426,7 +426,7 @@ define([
             run.liveReload = false;
         }
 
-        toastr.success('Successfully modified');
+        notify.success('Successfully modified');
     }
 
     function cancelButtonClicked(saveButton, cancelButton, modifyButton,
@@ -452,7 +452,7 @@ define([
         checkBox.attr('disabled', 'disabled');
         checkBox[0].checked = checkBox[0].oldValue;
 
-        toastr.info('Modification canceled');
+        notify.info('Modification canceled');
     }
 
     function newSaveButtonClicked(projectProperty, child, runList, run, title,
@@ -460,17 +460,17 @@ define([
                                    newCancelButton, modifyButton, runButton, deleteButton, pathButton, checkBox,
                                    createNewButton) {
         if (!inputBoxs[0].value) {
-            toastr.error('Enter a name.');
+            notify.error('Enter a name.');
             return;
         }
 
         if (isDuplicateRunName(projectProperty, inputBoxs[0].value) && inputBoxs[0].value !== run.name) {
-            toastr.error('Duplicate name');
+            notify.error('Duplicate name');
             return;
         }
 
         if (!readonlyInputBoxs[0].value) {
-            toastr.error('Select a path.');
+            notify.error('Select a path.');
             return;
         }
 
@@ -529,13 +529,13 @@ define([
         //pathButton.set('disabled', true);
         createNewButton.set('disabled', false);
 
-        toastr.success('Successfully created');
+        notify.success('Successfully created');
     }
 
     function deleteButtonClicked(projectProperty, run, runListPane, markup) {
         var runList = projectProperty.run;
         if (!runList || !runList.list || runList.list.length < 1) {
-            toastr.error('Cannot read run configurations information');
+            notify.error('Cannot read run configurations information');
             return;
         }
 
@@ -556,9 +556,9 @@ define([
 
             runListPane.removeChild(markup);
 
-            toastr.info('Successfully deleted');
+            notify.info('Successfully deleted');
         }, function () {
-            toastr.info('Deletion canceled');
+            notify.info('Deletion canceled');
             return;
         });
     }
@@ -675,7 +675,7 @@ define([
 
             createNewButton.set('disabled', false);
 
-            toastr.info('Creation canceled');
+            notify.info('Creation canceled');
         });
 
         pathButtonNode.bind('mouseup', function () {
@@ -893,7 +893,7 @@ define([
         var runConf;
 
         if (!projectProperty.run || !projectProperty.run.list || projectProperty.run.list.length === 0) {
-            toastr.info('Cannot find a run configuration. Add a new one.');
+            notify.info('Cannot find a run configuration. Add a new one.');
             openRunConfigurationDialog(projectProperty);
         } else if (projectProperty.run.list.length === 1) {
             runConf = getRunConfigurationByName(projectProperty,
@@ -902,12 +902,12 @@ define([
                 projectProperty.run.selectedId = runConf.name;
                 runProject(projectProperty, runConf);
             } else {
-                toastr.warning('Cannot find a run configuration. Add a new one.');
+                notify.warning('Cannot find a run configuration. Add a new one.');
                 openRunConfigurationDialog(projectProperty);
             }
             return;
         } else if (!projectProperty.run.selectedId) {
-            toastr.warning('Cannot find the latest run. Choose a run configuration and click run button');
+            notify.warning('Cannot find the latest run. Choose a run configuration and click run button');
             openRunConfigurationDialog(projectProperty);
         } else {
             runConf = getRunConfigurationByName(projectProperty,
@@ -915,7 +915,7 @@ define([
             if (runConf) {
                 runProject(projectProperty, runConf, mode);
             } else {
-                toastr.warning('Cannot find the latest run. Choose a run configuration and click run button');
+                notify.warning('Cannot find the latest run. Choose a run configuration and click run button');
                 openRunConfigurationDialog(projectProperty);
             }
         }
@@ -975,7 +975,7 @@ define([
         }
         var contextPath = contextPaths[0];
         if (contextPath === workspace.getRootPath()) {
-            toastr.warning('Cannot run workspace directory');
+            notify.warning('Cannot run workspace directory');
         }
 
         var projectName = parseProjectNameFromPath(contextPath);

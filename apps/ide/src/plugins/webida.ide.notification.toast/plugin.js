@@ -32,7 +32,13 @@ define([
     'use strict';
 // @formatter:on
 
-    topic.subscribe('NOTIFY', function(type, msg) {
-        toastr[type](msg);
+    // init toastr
+    toastr.options = {
+        'closeButton': true,
+        'positionClass': 'toast-top-right'
+    };
+
+    topic.subscribe('NOTIFY', function(type, msg, title) {
+        toastr[type](msg, title);
     });
 });

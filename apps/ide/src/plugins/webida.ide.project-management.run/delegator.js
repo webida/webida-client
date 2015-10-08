@@ -29,7 +29,7 @@ define([
     'dojo/topic',
     './run-configuration-manager',
     'webida-lib/plugins/workspace/plugin',
-    'plugins/webida.notification/notification-message',
+    'webida-lib/util/notify',
     'external/lodash/lodash.min'
 ], function (
     ide,
@@ -38,7 +38,7 @@ define([
     topic,
     runConfigurationManager,
     workspace,
-    toastr,
+    notify,
     _
 ) {
     'use strict';
@@ -269,17 +269,17 @@ define([
         console.log('run', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).run)) {
             var err = 'run function hasn\'t be implemented for the run configurator type(' + runConf.type + ')';
-            toastr.error(err);
+            notify.error(err);
             if (callback) {
                 callback(err);
             }
         } else {
             Delegator.get(runConf.type).run(runConf, function (err) {
                 if (err) {
-                    toastr.error(err);
+                    notify.error(err);
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
-                    toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
+                    notify.success('Run configuration \'' + runConf.project + ':' + runConf.name +
                     '\' was successfully launched');
                 }
                 if (callback) {
@@ -299,17 +299,17 @@ define([
         console.log('debug', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).debug)) {
             var err = 'debug function hasn\'t be implemented for the debug configurator type(' + runConf.type + ')';
-            toastr.error(err);
+            notify.error(err);
             if (callback) {
                 callback(err);
             }
         } else {
             Delegator.get(runConf.type).debug(runConf, function (err) {
                 if (err) {
-                    toastr.error(err);
+                    notify.error(err);
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
-                    toastr.success('Debug configuration \'' + runConf.project + ':' + runConf.name +
+                    notify.success('Debug configuration \'' + runConf.project + ':' + runConf.name +
                     '\' was successfully launched');
                 }
                 if (callback) {
@@ -346,7 +346,7 @@ define([
         } else {
             Delegator.get(type).newConf(content, runConf, function (err, runConf) {
                 if (err) {
-                    toastr.error(err);
+                    notify.error(err);
                 } else {
                     runConfigurationManager.add(runConf);
                 }
@@ -379,7 +379,7 @@ define([
             }
             Delegator.get(runConf.type).loadConf(content, runConf, function (err, runConf) {
                 if (err) {
-                    toastr.error(err);
+                    notify.error(err);
                 }
                 if (callback) {
                     callback(err, runConf);
@@ -448,14 +448,14 @@ define([
                 if (viewController.getWindowOpened()) {
                     Delegator.get(runConf.type).saveConf(runConf, function (err, runConf) {
                         if (err) {
-                            toastr.error(err);
+                            notify.error(err);
                         } else {
                             // validation for mandatory properties (name, project)
                             _validation(runConf, function (errMsg) {
                                 if (!errMsg) {
                                     runConfigurationManager.save(runConf);
                                     viewController.reload();
-                                    toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
+                                    notify.success('Run configuration \'' + runConf.project + ':' + runConf.name +
                                     '\' was successfully saved');
                                 }
                                 callback(errMsg, runConf);
@@ -491,10 +491,10 @@ define([
         } else {
             Delegator.get(runConf.type).deleteConf(runConfName, function (err) {
                 if (err) {
-                    toastr.error(err);
+                    notify.error(err);
                 } else {
                     runConfigurationManager.delete(runConfName);
-                    toastr.success('Run configuration \'' + runConf.project + ':' + runConf.name +
+                    notify.success('Run configuration \'' + runConf.project + ':' + runConf.name +
                     '\' was successfully removed');
                 }
                 if (callback) {
