@@ -136,8 +136,8 @@ define([
             }
             this.emit(PartContainer.PART_CREATED);
 
-            //3. Prepares Part's components
-            part.prepareComponents();
+            //3. Post Part Creation Process 
+            part.onCreate();
         },
 
         /**

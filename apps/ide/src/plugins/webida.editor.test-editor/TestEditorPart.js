@@ -54,8 +54,8 @@ define([
         /**
          * @Override
          */
-        prepareComponents: function() {
-            logger.info('%cprepareComponents()', 'color:orange');
+        onCreate: function() {
+            logger.info('%conCreate()', 'color:orange');
             var container = this.getContainer();
             this.createViewer(container.getContentNode());
         },

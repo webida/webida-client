@@ -74,13 +74,13 @@ define([
     genetic.inherits(Part, EventEmitter, {
 
         /**
-         * Prepares required components.
+         * Called when this part is created.
          * Basically, Part prepares a PartViewer and a PartModel for itself.
-         * But if you need to prepare different components,
+         * But if you need to do different actions for this step,
          * you can override this.
          */
-        prepareComponents: function() {
-            logger.info('%cprepareComponents()', 'color:orange');
+        onCreate: function() {
+            logger.info('%conCreate()', 'color:orange');
             this.prepareVM();
         },
 

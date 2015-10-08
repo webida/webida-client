@@ -73,8 +73,8 @@ define([
         /**
          * Prepares required components.
          */
-        prepareComponents: function() {
-            logger.info('%cprepareComponents()', 'color:orange');
+        onCreate: function() {
+            logger.info('%conCreate()', 'color:orange');
             var container = this.getContainer();
             this.createTabContainer(container.getContentNode());
             this.createContents();
