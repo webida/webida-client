@@ -1,11 +1,11 @@
 {
-    "name": "webida.notification",
+    "name": "webida.ide.notification.view",
     "description": "checking the toastr message",
     "version": "0.0.1",
     "requirement": "webida.common.workbench",
     "extensions": {
         "webida.common.workbench:views" : {
-            "module" : "plugins/webida.notification/notification-view",
+            "module" : "plugins/webida.ide.notification.view/notification-view",
             "location" : "bottom"
         },
         "webida.preference:pages": [

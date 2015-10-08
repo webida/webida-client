@@ -17,7 +17,7 @@
         "plugins/webida.ide.search-result",
         "plugins/uid-menu-items",
         "plugins/webida.terminal",
-        "plugins/webida.notification",
+        "plugins/webida.ide.notification.view",
         "plugins/webida.ide.notification.toast",
         "webida-lib/plugins/editors",
         "webida-lib/plugins/fs-commands",

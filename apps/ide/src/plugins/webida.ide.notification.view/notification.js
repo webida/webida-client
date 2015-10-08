@@ -42,7 +42,6 @@ define([
             }
         },
         setNotification: function(type, message, title) {
-        	console.info('setNotification('+type+', '+message+', '+title+')');
             var messageString = '[' + getNow() + '] ';
             if (title) {
                 messageString += title;
@@ -50,7 +49,6 @@ define([
             if (message) {
                 messageString += message;
             }
-            console.info('colors[type] = ', colors[type], colors, type);
             var $message = $('<p class="notification-message"></p>').addClass(classPrefix + type).css({
                 color: colors[type]
             }).text(messageString);
