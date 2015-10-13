@@ -471,6 +471,7 @@ define(['require',
                                 }
                             });
                         } else {
+                            finalName = finalName.replace(/&nbsp;/g, ' ');
                             var newDir = target.getPath() + finalName;
                             switch (action) {
                                 case 'copy':
@@ -503,7 +504,6 @@ define(['require',
                                     throw new Error('assertion fail: unreachable');
                             }
                         }
-
                     }
 
                     var anotherName;
