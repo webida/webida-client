@@ -110,13 +110,14 @@ define([
                     items['Go to &Matching Brace'] = allItems.navMenuItems['Go to &Matching Brace'];
                 }
 
-                //TODO: widget._ternAddon -> viewer.getPlugin('tern')
-                if (widget._ternAddon) {
-                    widget._ternAddon.request(widget, {
+                //TODO: widget._caController -> viewer.getPlugin('tern-js')
+                
+                if (widget._caController) {
+                    widget._caController.execCommand('request', widget, {
                         type: 'rename',
                         newName: 'merong',
                         fullDocs: true
-                    }, function(error/*, data*/) {
+                    }, function(error) {
                         if (!error) {
                             sourceItems['&Rename Variables'] = allItems.editMenuItems['&Source']['&Rename Variables'];
                         }
@@ -124,7 +125,8 @@ define([
                     });
                 } else {
                     deferred.resolve(items);
-                }
+                }                                                  
+                
             });
 
             return deferred;

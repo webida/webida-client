@@ -3,6 +3,14 @@
     "description": "Code Editor",
     "version": "0.1.0",
     "requirement": "webida.common.editors",
+    "extensionPoints" : {        
+        "webida.editor.code-editor:contentassist" : [
+            { "name" : "controlModule", "type" : "string", "desc" : "Content assist module path" },
+            { "name" : "engineModule", "type" : "string", "desc" : "Content assist engine path" },
+            { "name" : "mode", "type" : "string", "desc" : "Working language mode" },
+            { "name" : "engineName", "type" : "string", "desc" : "Name of engine" }
+        ]
+    },
     "extensions" : {
 
         "webida.common.editors:editor" : {
@@ -69,6 +77,15 @@
                 "specificFileName" : {
                 },
                 "iconCssFilePath" : "./icons.css"
+            }
+        ],
+        
+        "webida.editor.code-editor:contentassist" : [
+            { 
+                "controlModule" : "./content-assist/TernControl", 
+                "engineModule" : "./content-assist/js-hint-server",
+                "mode" : "js",
+                "engineName" : "tern-js"
             }
         ]
     }

@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-define(['require',
-        'webida-lib/app'],
-function (require, ide) {
+define([
+    'require',
+    'webida-lib/app',
+    './CaController'
+], function (
+    require, 
+    ide,
+    CaController
+) {
     'use strict';
     /* global webidaHost: true */
 
@@ -69,8 +75,7 @@ function (require, ide) {
         };
 
         send({type: 'informHost',
-              webidaHost: webidaHost,
-              webidaLibPath: require.toUrl('webida-lib')
+              caExtensionInfos: CaController.getCaExtensionInfos()
              });
     }
 

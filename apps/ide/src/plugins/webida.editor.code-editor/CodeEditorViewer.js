@@ -31,10 +31,12 @@ define([
 	'external/lodash/lodash.min',
 	'external/codemirror/lib/codemirror',
     'webida-lib/plugins/editors/plugin',
+    'webida-lib/plugins/workbench/ui/PartViewer',
 	'webida-lib/util/loadCSSList',
 	'webida-lib/util/logger/logger-client',
-	'plugins/webida.editor.text-editor/TextEditorViewer',
+	'plugins/webida.editor.text-editor/TextEditorViewer',    
 	'./snippet',
+    './content-assist/CaController',
     'dojo/topic'
 ], function (
 	require,
@@ -42,10 +44,12 @@ define([
 	_,
 	codemirror,
     editors,
+    PartViewer,
 	loadCSSList,
 	Logger,
 	TextEditorViewer,
 	Snippet,
+    CaController,
     topic
 ) {
     'use strict';
@@ -331,18 +335,6 @@ define([
         foldCode(cm, cm.getCursor('start'), cm.getCursor('end'));
     };
 
-    codemirror.commands['tern-showtype'] = function (cm) {
-        cm._ternAddon.showType(cm);
-    };
-    codemirror.commands['tern-gotodefinition'] = function (cm) {
-        cm._ternAddon.jumpToDef(cm);
-    };
-    codemirror.commands['tern-jumpback'] = function (cm) {
-        cm._ternAddon.jumpBack(cm);
-    };
-    codemirror.commands['tern-rename'] = function (cm) {
-        cm._ternAddon.rename(cm);
-    };
     /*
     codemirror.commands['tern-showreference'] = function (cm) {
         // Caution: Do not load modules under plugins directory.
@@ -453,9 +445,10 @@ define([
     }
 
     function onBeforeShowHints(cm) {
-        if (cm._ternAddon) {
-            cm._ternAddon.closeArgHints(cm);
+        if (cm._caController) {
+            cm._caController.execCommand('closeArgHints', cm);
         }
+
     }
 
     codemirror.commands.autocomplete = function (cm, options) {
@@ -493,18 +486,6 @@ define([
     codemirror.commands.save = function(cm) {
         topic.publish('editor/save/current');
     };
-
-    function jshint(cm, callback) {
-        if (cm._ternAddon) {
-            cm._ternAddon.getHint(cm, callback);
-        } else {
-            startJavaScriptAssist(cm.__instance, cm, function () {
-                cm._ternAddon.getHint(cm, callback);
-            });
-        }
-    }
-
-    codemirror.registerHelper('hint', 'javascript', jshint);
 
     function mergeResult(resultAll, resultThis) {
         if (resultThis && resultThis.list) {
@@ -588,33 +569,14 @@ define([
         });
 
         return localResult;
-    }
-
+    }    
+    
     function startJavaScriptAssist(editor, cm, c) {
-        if (cm._ternAddon) {
-            if (c) {
-                c();
-            }
-        }
-        require(['./content-assist/js-hint'], function (jshint) {
-            var options = {};
-            options.useWorker = settings.useWorker;
-            options.autoHint = settings.autoHint;
-
-            jshint.startServer(editor.file.path, cm, options, function (server) {
-                cm._ternAddon = server.ternAddon;
-                editor.assister = server;
-                editor.addExtraKeys({
-                    'Ctrl-I': 'tern-showtype',
-                    'Alt-.': 'tern-gotodefinition',
-                    'Alt-,': 'tern-jumpback',
-                    // 'Ctrl-B': 'tern-showreference'
-                });
-                if (c) {
-                    c();
-                }
-            });
-        });
+        var options = {};
+        options.useWorker = settings.useWorker;
+        options.autoHint = settings.autoHint;        
+        
+        var caController = new CaController(editor, cm, options, c);        
     }
 
     function setChangeForAutoHintDebounced() {
@@ -835,6 +797,34 @@ define([
             };
 			this.prepareCreate();
         },
+        
+        /**
+		 * @override
+		 */
+        prepareCreate: function() {
+            logger.info('prepareCreate()');
+            var self = this;
+            // @formatter:off
+            loadCSSList([
+                require.toUrl('plugins/webida.editor.text-editor/css/webida.css'), 
+                require.toUrl('external/codemirror/lib/codemirror.css'), 
+                require.toUrl('external/codemirror/addon/dialog/dialog.css')
+            ], function() {
+                logger.info('*require*');
+                require([
+                    'external/codemirror/addon/dialog/dialog', 
+                    'external/codemirror/addon/search/searchcursor', 
+                    'plugins/webida.editor.text-editor/search-addon', 
+                    'external/codemirror/addon/edit/closebrackets', 
+                    'external/codemirror/addon/edit/closetag', 
+                    'external/codemirror/addon/edit/matchbrackets'
+                ], function() {
+                    logger.info('%cLoad CSS complete', 'color:orange');
+                    self.createEditorWidget(self.getParentNode());                    
+                });
+            });
+            // @formatter:on
+        },
 
 		/**
 		 * @override
@@ -870,52 +860,79 @@ define([
         },
 
 	    setMode : function (mode) {
-	        if (mode === undefined || this.mode === mode) {
-	            return;
-	        }
-	        this.mode = mode;
+            var that = this;
+            var promiseForSetMode = new Promise(function (resolve, reject) {
+                if (mode === undefined || that.mode === mode) {
+                    resolve('no change');
+                    return;
+                }
+                that.mode = mode;
 
-	        var self = this;
+                that.mappedMode = mapMode(mode);
+                loadMode(mode, function () {
+                    if (that.editor) {
+                        that.editor.setOption('mode', that.mappedMode);
+                    }
+                    that.__applyLinter();
+                    that.addDeferredAction(function () {
+                        require(['./emmet'], function () {
+                            // Nothing to do
+                        });
+                    });
+                });
 
-	        this.mappedMode = mapMode(mode);
-	        loadMode(mode, function () {
-	            if (self.editor) {
-	                self.editor.setOption('mode', self.mappedMode);
-	            }
-	            self.__applyLinter();
-	            self.addDeferredAction(function () {
-	                require(['./emmet'], function () {
-	                    // Nothing to do
-	                });
-	            });
-	        });
-
-	        loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css'),
-	             require.toUrl('external/codemirror/addon/hint/show-hint.css'),
-	             require.toUrl('external/codemirror/addon/tern/tern.css'),
-	        ], function () {
-	            require(['external/codemirror/addon/dialog/dialog',
-	                'external/codemirror/addon/hint/show-hint',
-	                'external/codemirror/addon/tern/tern'
-	            ], function () {
-	                self.addDeferredAction(function () {
-	                    if (mode === 'js') {
-	                        _.defer(function () {
-	                            startJavaScriptAssist(self, self.editor);
-	                        });
-	                    } else if (mode === 'html' || mode === 'htmlmixed') {
-	                        var options = {};
-	                        options.async = true;
-	                        options.useWorker = settings.useWorker;
-	                        require(['./content-assist/html-hint'], function (htmlhint) {
-	                            self.assister = htmlhint;
-	                            htmlhint.addFile(self.file.path, self.editor.getDoc().getValue(), options);
-	                        });
-	                    }
-	                    self.editor.on('change', onChangeForAutoHint);
-	                });
-	            });
-	        });
+                loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css'),
+                     require.toUrl('external/codemirror/addon/hint/show-hint.css'),
+                     require.toUrl('external/codemirror/addon/tern/tern.css'),
+                ], function () {
+                    require(['external/codemirror/addon/dialog/dialog',
+                        'external/codemirror/addon/hint/show-hint',
+                        'external/codemirror/addon/tern/tern'
+                    ], function () {
+                        that.addDeferredAction(function () {
+                            if (mode === 'js') {
+                                _.defer(function () {
+                                    startJavaScriptAssist(that, that.editor, function () {
+                                        resolve('js ca started');
+                                    });
+                                });
+                            } else if (mode === 'html' || mode === 'htmlmixed') {
+                                var options = {};
+                                options.async = true;
+                                options.useWorker = settings.useWorker;
+                                var promiseForHtmlHinter = new Promise(function (resolve1, reject1) {
+                                    require(['./content-assist/html-hint'], function (htmlhint) {
+                                        that.assister = htmlhint;
+                                        htmlhint.addFile(that.file.path, that.editor.getDoc().getValue(), options);
+                                        resolve1('html ca started');
+                                    });
+                                });
+                                var promiseJavascriptContentAssist = new Promise(function (resolve1, reject1) {
+                                    _.defer(function () {
+                                        startJavaScriptAssist(that, that.editor, function () {
+                                            resolve1('js ca started');
+                                        });
+                                    });
+                                });
+                                Promise.all([promiseForHtmlHinter, promiseJavascriptContentAssist]).then(function (values) {
+                                    resolve('All ca started');                                   
+                                });
+                            } else {
+                                resolve('no ca started');
+                            }
+                            that.editor.on('change', onChangeForAutoHint);                            
+                        });
+                    });
+                });
+            });
+            promiseForSetMode.then(function (val) {
+                //Let's give a chance to this viewer
+                //that it can register READY event in advance
+                setTimeout(function() {
+                    logger.info('self.emit(PartViewer.READY, self)');
+                    that.emit(PartViewer.READY, that);
+                });
+            });
 	    },
 
 	    //TODO : inherit from TextEditorViewer
@@ -1328,7 +1345,7 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-                editor.execCommand('tern-gotodefinition');
+                editor.execCommand('jsca-gotodefinition');
             });
         },
 
@@ -1337,7 +1354,7 @@ define([
                 var editor = self.editor;
 
                 // rename trigger
-                editor.execCommand('tern-rename');
+                editor.execCommand('jsca-rename');
             });
         },
 
@@ -1404,18 +1421,17 @@ define([
                 // Rename
                 items['&Source'] = sourceItems;
 
-                if (editor._ternAddon) {
-                    editor._ternAddon.request(editor,
-                                              {type: 'rename', newName: 'merong', fullDocs: true},
-                                              function (error/*, data*/) {
+                if (editor._caController) {
+                    editor._caController.execCommand('request', editor, {type: 'rename', newName: 'merong', fullDocs: true},
+                                                    function (error/*, data*/) {
                         if (!error) {
                             sourceItems['&Rename Variables'] = menuItems.editMenuItems['&Source']['&Rename Variables'];
                         }
                         deferred.resolve(items);
                     });
                 } else {
-                	deferred.resolve(items);
-                }
+                    deferred.resolve(items);
+                }                
             } else {
             	deferred.resolve(items);
             }
