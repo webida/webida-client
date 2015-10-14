@@ -22,22 +22,26 @@
 
 define([
     'dojo/topic',
+    'external/eventEmitter/EventEmitter',
     'external/lodash/lodash.min',
     'plugins/project-configurator/project-info-service',
     'webida-lib/app',
     'webida-lib/app-config',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/ui/promiseMap',
+    'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './preference-store'
 ], function (
     topic,
+    EventEmitter,
     _,
     projectService,
     ide,
     conf,
     pluginManager,
     promiseMap,
+    genetic,
     Logger,
     Store
 ) {
@@ -174,8 +178,9 @@ define([
                             fileInfo.scopeInfo,
                             fileInfo.filePath
                         );
+                        var storeExist;
                         store.initialValues(extension.defaultValues, fileInfo.content[extension.id] || {});
-                        var storeExist = _.findIndex(self.preferences, function (ps) {
+                        storeExist = _.findIndex(self.preferences, function (ps) {
                             return ps.id === extension.id &&
                                 ps.scope === fileInfo.scopeName &&
                                 ps.targetFile === fileInfo.filePath;
@@ -185,8 +190,8 @@ define([
                         } else {
                             self.preferences.push(store);
                         }
-                        store.addValueChangeListener(function () {
-                            valueChangeListener(this);
+                        store.on(Store.VALUE_CHANGED, function (store) {
+                            self.emit(self.PREFERENCE_VALUE_CHANGED, store);
                         });
                     });
                 });
@@ -228,91 +233,90 @@ define([
         promiseMap.set('preference/load', init());
     }
 
-    PreferenceManager.prototype.initialize = function () {
-        return promiseMap.get('preference/load');
-    };
+    genetic.inherits(PreferenceManager, EventEmitter, {
 
-    PreferenceManager.prototype.getStore = function (preferenceId, scope, scopeInfo) {
-        if (!preferenceId || !scope || SCOPE[scope.name] === undefined) {
-            return null;
-        }
-        var targetFile = _getFilePath(scope, scopeInfo);
-        return _.find(this.preferences, {id: preferenceId, scope: scope.name, targetFile: targetFile});
-    };
+        initialize: function () {
+            return promiseMap.get('preference/load');
+        },
 
-    PreferenceManager.prototype.getStoresByScope = function (scope, scopeInfo) {
-        if (!scope || SCOPE[scope.name] === undefined) {
-            return null;
-        }
-        var targetFile = _getFilePath(scope, scopeInfo);
-        return _.filter(this.preferences, {scope: scope.name, targetFile: targetFile});
-    };
+        getStore: function (preferenceId, scope, scopeInfo) {
+            if (!preferenceId || !scope || SCOPE[scope.name] === undefined) {
+                return null;
+            }
+            var targetFile = _getFilePath(scope, scopeInfo);
+            return _.find(this.preferences, {id: preferenceId, scope: scope.name, targetFile: targetFile});
+        },
 
-    PreferenceManager.prototype.getStoresById = function (preferenceId) {
-        if (!preferenceId) {
-            return null;
-        }
-        return _.filter(this.preferences, {id: preferenceId});
-    };
+        getStoresByScope: function (scope, scopeInfo) {
+            if (!scope || SCOPE[scope.name] === undefined) {
+                return null;
+            }
+            var targetFile = _getFilePath(scope, scopeInfo);
+            return _.filter(this.preferences, {scope: scope.name, targetFile: targetFile});
+        },
 
-    PreferenceManager.prototype.getParentStore = function (store) {
-        var childPriority = SCOPE[store.scope].priority;
-        var getStoresById = this.getStoresById(store.id);
-        var parentStore;
-        if (getStoresById.length > 0) {
-            for (var i=0; i<getStoresById.length; i++) {
-                var priority = SCOPE[getStoresById[i].scope].priority;
-                if (priority >= childPriority) {
-                    continue;
-                }
-                if (!parentStore || SCOPE[parentStore.scope].priority < priority) {
-                    parentStore = getStoresById[i];
+        getStoresById: function (preferenceId) {
+            if (!preferenceId) {
+                return null;
+            }
+            return _.filter(this.preferences, {id: preferenceId});
+        },
+
+        getParentStore: function (store) {
+            var childPriority = SCOPE[store.scope].priority;
+            var getStoresById = this.getStoresById(store.id);
+            var parentStore;
+            if (getStoresById.length > 0) {
+                for (var i = 0; i < getStoresById.length; i++) {
+                    var priority = SCOPE[getStoresById[i].scope].priority;
+                    if (priority >= childPriority) {
+                        continue;
+                    }
+                    if (!parentStore || SCOPE[parentStore.scope].priority < priority) {
+                        parentStore = getStoresById[i];
+                    }
                 }
             }
-        }
-        return parentStore;
-    };
+            return parentStore;
+        },
 
-    PreferenceManager.prototype.getAllPreferenceTypes = function (scope) {
-        if (scope) {
-            return _.filter(this.extensions, function (ext) {
-                return ext.scope.indexOf(scope.name) > -1;
-            });
-        } else {
-            return [];
-        }
-    };
-
-    PreferenceManager.prototype.saveAllPreference = function (scope, callback) {
-        var storesByScope = this.getStoresByScope(scope);
-        Promise.all(storesByScope.map(function (store) {
-            return new Promise(function (resolve) {
-                store.apply(function (invalid) {
-                    resolve(invalid);
+        getAllPreferenceTypes: function (scope) {
+            if (scope) {
+                return _.filter(this.extensions, function (ext) {
+                    return ext.scope.indexOf(scope.name) > -1;
                 });
-            });
-        })).then(function (invalidMsgs) {
-            callback(invalidMsgs.join(' '));
-        });
-    };
+            } else {
+                return [];
+            }
+        },
 
-    PreferenceManager.prototype.flushPreference = function (scope, scopeInfo, callback) {
-        var storesByScope = this.getStoresByScope(scope, scopeInfo);
-        var storesByScopeGroupedByFile = _.groupBy(storesByScope, 'targetFile');
-        _.forEach(storesByScopeGroupedByFile, function (storesByFile, filePath) {
-            var flushToFile = {};
-            _.forEach(storesByFile, function (store) {
-                flushToFile[store.id] = store.appliedValues;
+        saveAllPreference: function (scope, callback) {
+            var storesByScope = this.getStoresByScope(scope);
+            Promise.all(storesByScope.map(function (store) {
+                return new Promise(function (resolve) {
+                    store.apply(function (invalid) {
+                        resolve(invalid);
+                    });
+                });
+            })).then(function (invalidMsgs) {
+                callback(invalidMsgs.join(' '));
             });
-            fsCache.writeFile(filePath, JSON.stringify(flushToFile), callback);
-        });
-    };
+        },
 
-    PreferenceManager.prototype.setValueChangeListener = function (listener) {
-        promiseMap.get('preference/load').then(function () {
-            valueChangeListener = listener;
-        });
-    };
+        flushPreference: function (scope, scopeInfo, callback) {
+            var storesByScope = this.getStoresByScope(scope, scopeInfo);
+            var storesByScopeGroupedByFile = _.groupBy(storesByScope, 'targetFile');
+            _.forEach(storesByScopeGroupedByFile, function (storesByFile, filePath) {
+                var flushToFile = {};
+                _.forEach(storesByFile, function (store) {
+                    flushToFile[store.id] = store.appliedValues;
+                });
+                fsCache.writeFile(filePath, JSON.stringify(flushToFile), callback);
+            });
+        },
+
+        PREFERENCE_VALUE_CHANGED: 'preferenceValueChanged'
+    });
 
     if (!_preferenceManager) {
         _preferenceManager = new PreferenceManager();

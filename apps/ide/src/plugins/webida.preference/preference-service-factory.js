@@ -37,10 +37,12 @@ define([
     var instances = {};
 
     function _getRealPreferenceValues(store) {
+        var value;
+        var parent;
         if (store) {
-            var value = store.getRealValues();
+            value = store.getRealValues();
             if (!store.status.override) {
-                var parent = preferenceManager.getParentStore(store);
+                parent = preferenceManager.getParentStore(store);
                 if (parent) {
                     value = _getRealPreferenceValues(parent);
                 }
@@ -49,30 +51,34 @@ define([
         }
     }
 
-    preferenceManager.setValueChangeListener(function (store) {
-        var priority = SCOPE[store.scope].priority;
-        var realValues = _getRealPreferenceValues(store);
-        for (var scopeName in SCOPE) {
-            if (SCOPE[scopeName].priority >= priority) {
-                var additionalInfo;
-                if (scopeName === 'PROJECT' && store.scopeInfo) {
-                    additionalInfo = store.scopeInfo.projectName;
-                }
-                var serviceInstance = PreferenceServiceFactory.findServiceInstance(scopeName, additionalInfo);
-                if (serviceInstance) {
-
-                    serviceInstance.callListeners(store.id, realValues);
-                }
-            }
-        }
-    });
-
     /**
      * Factory class for getting instances of preference service
      *
      * @class
      */
-    function PreferenceServiceFactory() {}
+    function PreferenceServiceFactory() {
+    }
+
+    function _init() {
+        preferenceManager.on(preferenceManager.PREFERENCE_VALUE_CHANGED, function (store) {
+            var priority = SCOPE[store.scope].priority;
+            var realValues = _getRealPreferenceValues(store);
+            var additionalInfo;
+            var serviceInstance;
+            var scopeName;
+            for (scopeName in SCOPE) {
+                if (SCOPE[scopeName].priority >= priority) {
+                    if (scopeName === 'PROJECT' && store.scopeInfo) {
+                        additionalInfo = store.scopeInfo.projectName;
+                    }
+                    serviceInstance = PreferenceServiceFactory.findServiceInstance(scopeName, additionalInfo);
+                    if (serviceInstance) {
+                        serviceInstance.callListeners(store.id, realValues);
+                    }
+                }
+            }
+        });
+    }
 
     /**
      * Get a service object bound to a specific scope and additional Info
@@ -118,6 +124,8 @@ define([
                 return instances[scopeName][additionalInfo];
         }
     };
+
+    _init();
 
     return PreferenceServiceFactory;
 });

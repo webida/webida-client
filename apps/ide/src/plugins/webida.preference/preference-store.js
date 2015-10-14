@@ -21,9 +21,13 @@
  */
 
 define([
-    'external/lodash/lodash.min'
+    'external/eventEmitter/EventEmitter',
+    'external/lodash/lodash.min',
+    'webida-lib/util/genetic'
 ], function (
-    _
+    EventEmitter,
+    _,
+    genetic
 ) {
     'use strict';
 
@@ -37,16 +41,14 @@ define([
             dirty: false,
             valid: true,
             override: false
-        }
+        };
         this.invalidMessage = '';
 
         this.defaultValues = {};
         this.appliedValues = {};
         this.currentValues = {};
 
-        this.valueChangeListener = [];  // outer (change to topic)
-        this.statusChangeListener = [];  // inner (view-controller)
-        this.validator = function (key, value) {
+        this.validator = function (/*key, value*/) {
             return;
         };
     }
@@ -54,7 +56,7 @@ define([
     function getRealChangedValues(original, delta) {
         var changed = {};
         for (var key in delta) {
-            if(delta.hasOwnProperty(key)){
+            if (delta.hasOwnProperty(key)) {
                 if (delta[key] !== original[key]) {
                     changed[key] = delta[key];
                 }
@@ -63,122 +65,102 @@ define([
         return changed;
     }
 
-    PreferenceStore.prototype.initialValues = function (defaultValues, appliedValues) {
-        this.defaultValues = defaultValues;
-        this.appliedValues = appliedValues;
-        this.currentValues = _.clone(this.appliedValues, true);
-        if (Object.keys(this.appliedValues).length > 0) {
-            this.setOverride(true);
-        }
-    };
+    genetic.inherits(PreferenceStore, EventEmitter, {
 
-    /**
-     * Set current preference value
-     * @param {string} key - preference key
-     * @param value if it is null or undefined, the preference value of this key will be removed.
-     */
-    PreferenceStore.prototype.setValue = function (key, value) {
-        var dirty = this.status.dirty;
-        var valid = this.status.valid;
-        if (key !== undefined && key !== null) {
-            if (value !== undefined && value !== null) {
-                this.currentValues[key] = value;
+        initialValues: function (defaultValues, appliedValues) {
+            this.defaultValues = defaultValues;
+            this.appliedValues = appliedValues;
+            this.currentValues = _.clone(this.appliedValues, true);
+            if (Object.keys(this.appliedValues).length > 0) {
+                this.setOverride(true, true);
+            }
+        },
+
+        /**
+         * Set current preference value
+         * @param {string} key - preference key
+         * @param value if it is null or undefined, the preference value of this key will be removed.
+         */
+        setValue: function (key, value) {
+            var dirty = this.status.dirty;
+            var valid = this.status.valid;
+            if (key !== undefined && key !== null) {
+                if (value !== undefined && value !== null) {
+                    this.currentValues[key] = value;
+                } else {
+                    delete this.currentValues[key];
+                }
+                dirty = true;
+                this.invalidMessage = this.validator(key, this.currentValues[key]);
+                valid = !this.invalidMessage;
+                this.setStatus({dirty: dirty, valid: valid, override: true});
+            }
+        },
+
+        getValue: function (key) {
+            return (this.currentValues[key] !== undefined) ? this.currentValues[key] : this.defaultValues[key];
+        },
+
+        getRealValues: function () {
+            return _.extend({}, this.defaultValues, this.appliedValues);
+        },
+
+        setValidator: function (validator) {
+            if (validator) {
+                this.validator = validator;
+            }
+        },
+
+        apply: function (callback) {
+            if (this.status.dirty && this.status.valid) {
+                this.appliedValues = _.clone(this.currentValues, true);
+                this.setStatus({dirty: false});
+                this.emit(PreferenceStore.VALUE_CHANGED, this);
+                return callback(null, this.appliedValues);
             } else {
-                delete this.currentValues[key];
+                return callback(this.invalidMessage);
             }
-            dirty = true;
-            this.invalidMessage = this.validator(key, this.currentValues[key]);
-            valid = !this.invalidMessage;
-            this.setStatus({dirty: dirty, valid: valid, override: true});
-        }
-    };
+        },
 
-    PreferenceStore.prototype.getValue = function (key) {
-        return (this.currentValues[key] !== undefined) ? this.currentValues[key] : this.defaultValues[key];
-    };
-
-    PreferenceStore.prototype.getRealValues = function () {
-        return _.extend({}, this.defaultValues, this.appliedValues);
-    };
-
-    PreferenceStore.prototype.setValidator = function (validator) {
-        if (validator) {
-            this.validator = validator;
-        }
-    };
-
-    PreferenceStore.prototype.apply = function (callback) {
-        if (this.status.dirty && this.status.valid) {
-            this.appliedValues = _.clone(this.currentValues, true);
-            this.setStatus({dirty: false});
-            for (var i=0; i<this.valueChangeListener.length; i++) {
-                this.valueChangeListener[i].call(this, this.appliedValues);
+        setStatus: function (status) {
+            // status ['dirty', 'valid', 'override']
+            var changedStatus = getRealChangedValues(this.status, status);
+            _.extend(this.status, changedStatus);
+            if (this.status.valid) {
+                this.invalidMessage = '';
             }
-            return callback(null, this.appliedValues);
-        } else {
-            return callback(this.invalidMessage);
-        }
-    };
+            if (Object.keys(changedStatus).length > 0) {
+                this.emit(PreferenceStore.STATUS_CHANGED, changedStatus);
+            }
+        },
 
-    PreferenceStore.prototype.setStatus = function (status) {
-        // status ['dirty', 'valid', 'override']
-        var changedStatus = getRealChangedValues(this.status, status);
-        _.extend(this.status, changedStatus);
-        if (this.status.valid) {
-            this.invalidMessage = '';
-        }
-        if (Object.keys(changedStatus).length > 0) {
-            // listener
-            for (var i=0; i<this.statusChangeListener.length; i++) {
-                this.statusChangeListener[i].call(this, changedStatus);
+        restore: function () {
+            this.appliedValues = {};
+            this.currentValues = {};
+            this.setOverride(false);
+            this.setStatus({dirty: false, valid: true});
+            this.emit(PreferenceStore.VALUE_CHANGED, this);
+        },
+
+        /**
+         * set override option
+         * @param {boolean} override - override set or not
+         */
+        setOverride: function (override, initialize) {
+            if (override !== this.status.override) {
+                if (override) {
+                    this.currentValues = _.clone(this.getRealValues(), true);
+                } else {
+                    this.currentValues = {};
+                }
+                this.setStatus({override: override, dirty: !initialize, valid: true});
             }
         }
-    };
 
-    PreferenceStore.prototype.restore = function () {
-        this.appliedValues = {};
-        this.currentValues = {};
-        this.setOverride(false);
-        this.setStatus({dirty: false, valid: true});
-        for (var i=0; i<this.valueChangeListener.length; i++) {
-            this.valueChangeListener[i].call(this, this.appliedValues);
-        }
-    };
+    });
 
-    PreferenceStore.prototype.addValueChangeListener = function (listener) {
-        if (this.valueChangeListener.indexOf(listener) === -1) {
-            this.valueChangeListener.push(listener);
-        }
-    };
-
-    PreferenceStore.prototype.removeValueChangeListener = function (listener) {
-        this.valueChangeListener = _.remove(this.valueChangeListener, listener);
-    };
-
-    PreferenceStore.prototype.addStatusChangeListener = function (listener) {
-        if (this.statusChangeListener.indexOf(listener) === -1) {
-            this.statusChangeListener.push(listener);
-        }
-    };
-
-    PreferenceStore.prototype.removeStatusChangeListener = function (listener) {
-        this.statusChangeListener = _.remove(this.statusChangeListener, listener);
-    };
-
-    /**
-     * set override option
-     * @param {boolean} override - override set or not
-     */
-    PreferenceStore.prototype.setOverride = function (override) {
-        if (override !== this.status.override) {
-            if (override) {
-                this.currentValues = _.clone(this.getRealValues(), true);
-            } else {
-                this.currentValues = {};
-            }
-            this.setStatus({override: override, dirty: true, valid: true});
-        }
-    };
+    PreferenceStore.VALUE_CHANGED = 'preferenceStoreValueChanged';
+    PreferenceStore.STATUS_CHANGED = 'preferenceStoreStatusChanged';
 
     return PreferenceStore;
 });
