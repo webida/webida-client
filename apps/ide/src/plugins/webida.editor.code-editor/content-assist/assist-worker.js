@@ -52,7 +52,7 @@ function send(data, c) {
     postMessage(data);
 }
 
-function initServers(/*webidaHost, webidaLibPath, otherLibPath*/) {
+function initServers(caExtensionInfos) {
     if (servers) {
         consoleLike.error('unexpected: servers are already set');
         return;
@@ -68,14 +68,14 @@ function initServers(/*webidaHost, webidaLibPath, otherLibPath*/) {
             acorn: 'lib/acorn',
             'external': '../../../../../bower_components'
         }
-    });
-
+    }); 
+    
     require(['content-assist/file-server',
              'content-assist/js-hint-server',
              'content-assist/css-hint-server',
              'content-assist/html-hint-server'],
-    function (fileServer, jsserver, cssserver, htmlserver) {
-        //'use strict';
+    function (fileServer, ternJsServer, cssServer, htmlServer) {
+        //'use strict'; 
 
         function getRemoteFile(filepath, c) {
             //'use strict';
@@ -88,10 +88,12 @@ function initServers(/*webidaHost, webidaLibPath, otherLibPath*/) {
         fileServer.init(getRemoteFile);
 
         servers = {};
-        servers.js = jsserver;
-        servers.css = cssserver;
-        servers.html = htmlserver;
+        //servers.js = jsserver;
+        servers.css = cssServer;
+        servers.html = htmlServer;
+        servers['js:tern-js'] = ternJsServer;
 
+        
         consoleLike.log('servers set in CA worker');
     });
 }
@@ -164,7 +166,7 @@ onmessage = function (e) {
     //'use strict';
 
     if (e.data.type === 'informHost') {
-        initServers(e.data.webidaHost, e.data.webidaLibPath, e.data.otherLibPath);
+        initServers(e.data.caExtensionInfos);
     } else {
         if (!servers) {
             consoleLike.log('pendingMessages.push(' + e.data.type + ', ' + e.data.server + ')');

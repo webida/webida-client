@@ -44,37 +44,38 @@ function (require, topic, _, ide, codemirror, pathUtil) {
         }
     }
 
-    function WorkerServer(serverId) {
+    function WorkerServer(serverId, langMode, engineName) {
         this.serverId = serverId;
         this.assist = null;
+        this.mode = langMode + ':' + engineName;
     }
 
     WorkerServer.prototype.start = function (c) {
-        var self = this;
+        var that = this;
         require(['./assist'], function (assist) {
-            self.assist = assist;
-            assist.send({mode: 'js', type: 'start', server: self.serverId}, c);
+            that.assist = assist;
+            assist.send({mode: that.mode, type: 'start', server: that.serverId}, c);
         });
     };
     WorkerServer.prototype.stop = function (c) {
-        this.assist.send({mode: 'js', type: 'stop', server: this.serverId}, c);
+        this.assist.send({mode: this.mode, type: 'stop', server: this.serverId}, c);
 
         this.cm.off(this.onCursorActivity);
         this.cm.off(this.onBlur);
     };
     WorkerServer.prototype.addFile = function (filepath, text) {
-        this.assist.send({mode: 'js', type: 'addFile', server: this.serverId, filepath: filepath, text: text});
+        this.assist.send({mode: this.mode, type: 'addFile', server: this.serverId, filepath: filepath, text: text});
     };
     WorkerServer.prototype.delFile = function (filepath) {
-        this.assist.send({mode: 'js', type: 'delFile', server: this.serverId, filepath: filepath});
+        this.assist.send({mode: this.mode, type: 'delFile', server: this.serverId, filepath: filepath});
     };
     WorkerServer.prototype.request = function (body, c) {
-        this.assist.send({mode: 'js', type: 'request', server: this.serverId, body: body}, c);
+        this.assist.send({mode: this.mode, type: 'request', server: this.serverId, body: body}, c);
     };
     WorkerServer.prototype.getFile = function (filepath, c) {
-        this.assist.send({mode: 'js', type: 'getFile', filepath: filepath}, c);
+        this.assist.send({mode: this.mode, type: 'getFile', filepath: filepath}, c);
     };
-
+    
     function Server(serverId) {
         this.serverId = serverId;
         this.server = null;
@@ -114,10 +115,10 @@ function (require, topic, _, ide, codemirror, pathUtil) {
         var server;
 
         if (options.useWorker) {
-            server = new WorkerServer(filepath);
+            server = new WorkerServer(filepath, options.langMode, options.engineName);
         } else {
             server = new Server(filepath);
-        }
+        } 
 
         server.start(function () {
             server.ternAddon = new codemirror.TernServer({
