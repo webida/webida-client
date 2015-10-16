@@ -46,27 +46,27 @@ define([
     var MODULE_PATH_VIEW_CTRL = 'plugins/webida.preference/view-controller';
     var logger = new Logger();
     var module = {};
-    var dialogOpened = false;
 
     var workbenchItems = {
-        '&Preferences' : ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByWorkspaceScope']
+        '&Preferences': ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByWorkspaceScope']
     };
 
     var workspaceItems = {
-        'Preferences' : ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByContext']
+        'Preferences': ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByContext']
     };
 
     var managerInitialized = promiseMap.get('preference/load');
 
-    function _getContextInfo(paths){
+    function _getContextInfo(paths) {
         var info = {
             multi: false,
             nodeType: 'file'
         };
+        var pathSplit;
         if (paths) {
             if (paths.length === 1 && pathUtil.isDirPath(paths[0])) {
                 info.nodeType = 'directory';
-                var pathSplit = paths[0].split('/');
+                pathSplit = paths[0].split('/');
                 if (pathSplit.length === 3) {
                     info.nodeType = 'workspace';
                 } else if (pathSplit.length === 4) {
@@ -82,6 +82,14 @@ define([
         return info;
     }
 
+    function _openDialog(scope, info) {
+        require([MODULE_PATH_VIEW_CTRL], function (viewController) {
+            managerInitialized.then(function () {
+                viewController.openDialog(scope, info);
+            });
+        });
+    }
+
     module.getViableItemsForWorkbench = function () {
         var preferenceTypes = manager.getAllPreferenceTypes(manager.SCOPE['WORKSPACE']);
         return preferenceTypes.length > 0 ? workbenchItems : null;
@@ -94,16 +102,8 @@ define([
         return (viable && preferenceTypes.length > 0) ? workspaceItems : null;
     };
 
-    module.openDialog = function (scope, info) {
-        require([MODULE_PATH_VIEW_CTRL], function (viewController) {
-            managerInitialized.then(function () {
-                viewController.openDialog(scope, info);
-            });
-        });
-    };
-
     module.openDialogByWorkspaceScope = function () {
-        module.openDialog(manager.SCOPE.WORKSPACE);
+        _openDialog(manager.SCOPE.WORKSPACE);
     };
 
     module.openDialogByContext = function () {
@@ -115,7 +115,7 @@ define([
                 scope = manager.SCOPE.PROJECT;
                 info = {projectName: context.projectName};
             }
-            module.openDialog(scope, info);
+            _openDialog(scope, info);
         }
     };
 

@@ -21,25 +21,27 @@
  */
 
 define([
-    'external/lodash/lodash.min',
-    'webida-lib/util/logger/logger-client',
-    'dojo/on',
     'dijit/registry',
+    'dojo/on',
+    'external/lodash/lodash.min',
     'webida-lib/util/notify',
-    './preference-manager',
-    './tree-view-controller',
+    'webida-lib/util/logger/logger-client',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    './preference-manager',
+    './preference-store',
+    './tree-view-controller',
     'text!./layout/preferences.html',
     'xstyle/css!./style/style.css'
 ], function (
-    _,
-    Logger,
-    on,
     reg,
+    on,
+    _,
     notify,
-    preferenceManager,
-    treeViewController,
+    Logger,
     ButtonedDialog,
+    preferenceManager,
+    Store,
+    treeViewController,
     template
 ) {
     'use strict';
@@ -104,7 +106,7 @@ define([
 
             // clear and redraw content area
             if (currentPage) {
-                currentPage.store.removeStatusChangeListener(_onStoreStatusChanged);
+                currentPage.store.off(Store.STATUS_CHANGED, _onStoreStatusChanged);
                 currentPage.onPageRemoved();
                 currentPage = undefined;
             }
@@ -116,7 +118,7 @@ define([
                     pageData = module[extension.pageData]();
                 }
                 currentPage = new Page(store, pageData);
-                currentPage.store.addStatusChangeListener(_onStoreStatusChanged);
+                currentPage.store.on(Store.STATUS_CHANGED, _onStoreStatusChanged);
                 _onStoreStatusChanged();
                 _initializeContentArea(node, store);
                 subContentArea.appendChild(currentPage.getPage());
