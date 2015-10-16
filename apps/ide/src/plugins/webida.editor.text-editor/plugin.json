@@ -16,33 +16,6 @@
             "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
         },
 
-        "webida.common.workbench:preference-page" : [
-            {
-                "module": "plugins/webida.editor.text-editor/preferences/preference-appearance",
-                "hierarchy": "texteditor",
-                "name": "Text Editor",
-                "handler": "editor"
-            },
-            {
-                "module": "plugins/webida.editor.text-editor/preferences/preference-editor",
-                "hierarchy": "texteditor/lines",
-                "name": "Lines",
-                "handler": "editor"
-            },
-            {
-                "module": "plugins/webida.editor.text-editor/preferences/preference-keys",
-                "hierarchy": "texteditor/key-map",
-                "name": "Key Map",
-                "handler": "editor"
-            },
-            {
-                "module": "plugins/webida.editor.text-editor/preferences/preference-show",
-                "hierarchy": "texteditor/show-hide",
-                "name": "Show or Hide",
-                "handler": "editor"
-            }
-        ],
-
         "webida.preference:pages" : [
             {
                 "module": "plugins/webida.editor.text-editor/preferences/preference-appearance",

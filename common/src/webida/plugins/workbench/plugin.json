@@ -4,12 +4,6 @@
     "version": "0.1.0",
     "extensionPoints" : {
 
-        "webida.common.workbench:preference-page" : [
-            {"name": "hierarchy", "type": "string"},
-            {"name": "name", "type": "string"},
-            {"name": "handler", "type": "function"}
-        ],
-
         "webida.common.workbench:views" : [
             { "name": "location", "type": "string",
               "desc": "Returns a string (currently, one of 'top', 'left', 'bottom', and 'center') that indicates the desired location in the workspace." },
