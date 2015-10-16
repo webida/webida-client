@@ -54,7 +54,7 @@ function (ide, pathUtil, wv, webida, notify) {
             'resizable=0';
 
         // launch app
-        var win = webida.app.launchApp('', true, arg, {
+        var win = webida.app.launchApp('ide', true, arg, {
             name: 'deploy',
             specs: specs
         });
