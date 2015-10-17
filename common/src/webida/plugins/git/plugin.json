@@ -98,16 +98,6 @@
             "location": "bottom"
         },
 
-        "webida.common.workbench:preference-page" : [
-            {
-                "module": "webida-lib/plugins/git/preference-git",
-                "hierarchy": "git",
-                "name": "Git",
-                "handler": "view",
-                "visible": "false"
-            }
-        ],
-
         "webida.preference:pages": [
             {
                 "module": "webida-lib/plugins/git/preference-git",

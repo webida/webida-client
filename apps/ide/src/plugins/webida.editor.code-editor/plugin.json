@@ -24,21 +24,6 @@
             "unhandledMimeTypes" : [ "audio/.*", "video/.*", "image/.*" ]
         },
 
-        "webida.common.workbench:preference-page" : [
-            {
-                "module": "plugins/webida.editor.code-editor/preferences/preference-main",
-                "hierarchy": "codeeditor",
-                "name": "Code Editor",
-                "handler": "editor"
-            },
-            {
-                "module": "plugins/webida.editor.code-editor/preferences/preference-contentassist",
-                "hierarchy": "codeeditor/content-assist",
-                "name": "Content Assists",
-                "handler": "editor"
-            }
-        ],
-
         "webida.preference:pages": [
             {
                 "module": "plugins/webida.editor.code-editor/preferences/preference-main",

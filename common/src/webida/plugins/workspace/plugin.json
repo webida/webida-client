@@ -22,15 +22,6 @@
             "cellIndex" : 0
         },
 
-        "webida.common.workbench:preference-page" : [
-            {
-                "module": "webida-lib/plugins/workspace/preference-workspace",
-                "hierarchy": "workspace",
-                "name": "Workspace",
-                "handler": "view"
-            }
-        ],
-
         "webida.preference:pages" : [
             {
                 "id": "workspace.preference",

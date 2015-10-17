@@ -9,15 +9,6 @@
             "location": "bottom"
         },
 
-        "webida.common.workbench:preference-page" : [
-            {
-                "module": "webida-lib/plugins/preview/preview-pref-page",
-                "hierarchy": "preview",
-                "name": "Preview",
-                "handler": "view"
-            }
-        ],
-
         "webida.preference:pages": [
             {
                 "module": "webida-lib/plugins/preview/preview-pref-page",
