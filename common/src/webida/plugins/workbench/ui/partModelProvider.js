@@ -153,7 +153,7 @@ define([
                             && provider.isModelUsed(model) === false) {
                         if (dataSource.isDeleted()) {
                         	provider.unregister(model);
-                        	dsReg.unregisterDataSource(dataSource);
+                        	dsReg.unregister(dataSource);
                         }else{
                         	part.resetModel();
                         }

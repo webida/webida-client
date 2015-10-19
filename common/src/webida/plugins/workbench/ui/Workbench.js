@@ -155,7 +155,7 @@ define([
                 } else {
                     var factory = new DataSourceFactory();
                     dataSource = factory.create(dataSourceId);
-                    dsRegistry.registerDataSource(dataSource);
+                    dsRegistry.register(dataSource);
                 }
                 callback(dataSource);
             });

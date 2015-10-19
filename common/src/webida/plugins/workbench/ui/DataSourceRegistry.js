@@ -60,7 +60,7 @@ define([
         /**
          * @param {DataSource} dataSource
          */
-        registerDataSource: function(dataSource) {
+        register: function(dataSource) {
             if (!( dataSource instanceof DataSource)) {
                 throw new Error('dataSource should implement DataSource interface');
             }
@@ -78,7 +78,7 @@ define([
         /**
          * @param {DataSource} dataSource
          */
-        unregisterDataSource: function(dataSource) {
+        unregister: function(dataSource) {
             var ds = this.getDataSources();
             var index = ds.indexOf(dataSource);
             if (index >= 0) {
