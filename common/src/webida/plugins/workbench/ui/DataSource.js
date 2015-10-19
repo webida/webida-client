@@ -55,6 +55,9 @@ define([
 
         /** @type {Persistence} */
         this.persistence = null;
+
+        /** @type {boolean} */
+        this.deleted = false;
     }
 
 
@@ -139,6 +142,20 @@ define([
          */
         getTitleImage: function() {
             throw new Error('getTitleImage() should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * @param {boolean} deleted
+         */
+        setDeleted: function(deleted) {
+            this.deleted = !!deleted;
+        },
+
+        /**
+         * @return {boolean}
+         */
+        isDeleted: function() {
+            return this.deleted;
         },
 
         toString: function() {
