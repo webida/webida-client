@@ -63,12 +63,9 @@ define([
          * @param {HTMLElement} parentNode
          */
         createWidget: function(parentNode) {
-            var that = this;
             this._prepareElements(parentNode);
             this._bindListeners();
-            setTimeout(function() {
-                that.emit(PartViewer.READY, that);
-            });
+            this.emitLater(PartViewer.READY, this);
         },
 
         /**

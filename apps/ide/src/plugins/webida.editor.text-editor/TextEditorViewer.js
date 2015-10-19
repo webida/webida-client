@@ -262,13 +262,7 @@ define([
                     ], function() {
                         logger.info('%cLoad CSS complete', 'color:orange');
                         self.createEditorWidget(self.getParentNode());
-                        
-                        //Let's give a chance to this viewer
-                        //that it can register READY event in advance
-                        setTimeout(function() {
-                            logger.info('self.emit(PartViewer.READY, self)');
-                            self.emit(PartViewer.READY, self);
-                        });
+                        self.emitLater(PartViewer.READY, self);
                     });
             });
             // @formatter:on

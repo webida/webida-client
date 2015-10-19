@@ -144,17 +144,14 @@ define([
                     viewer.fitSize();
                 });
 
-                //Refresh initial model
-                viewer.refresh(model.getContents());
-
-				//Focus to the part
-				part.focus();
+                //Reflects model's initial contents to the view
+                model.emit(PartModel.CONTENTS_CREATED, model.getContents());
 
                 //Notify user can navigate contents
                 part.emit(Part.CONTENT_READY, part);
 
-                //Check synchronized model's dirty state
-                part.getContainer().updateDirtyState();
+                //Focus to the part
+                part.focus();
 
             }, function(error) {
                 logger.error(error.stack || error);

@@ -162,6 +162,18 @@ define([
             throw new Error('fitSize() should be implemented by ' + this.constructor.name);
         },
 
+        /**
+         * Let's give a chance that somebody can
+         * register READY event in advance
+         */
+        emitLater: function() {
+            var viewer = this;
+            var arg = arguments;
+            setTimeout(function() {
+                EventEmitter.prototype.emit.apply(viewer, arg);
+            });
+        },
+
         toString: function() {
             var res = '<' + this.constructor.name + '>#' + this._viewerId;
             return res;

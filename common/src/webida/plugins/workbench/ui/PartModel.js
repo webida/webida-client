@@ -88,6 +88,18 @@ define([
          */
         update: function(request) {
             throw new Error('update(request) should be implemented by ' + this.constructor.name);
+        },
+
+        /**
+         * Let's give a chance that somebody can
+         * register READY event in advance
+         */
+        emitLater: function() {
+            var model = this;
+            var arg = arguments;
+            setTimeout(function() {
+                EventEmitter.prototype.emit.apply(model, arg);
+            });
         }
     });
 
