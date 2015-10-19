@@ -1,0 +1,114 @@
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+/*loading screen start*/
+.webida-light .app-loading-elem {
+  opacity: 1;
+  -webkit-transition: opacity 1s;
+  transition: opacity 1s;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  box-sizing: border-box;
+  background: radial-gradient(#d0deec, #8ba4be);
+  z-index: 1;
+}
+.webida-light .app-loading-elem.hide {
+  opacity: 0;
+}
+.webida-light .app-loading-emblem {
+  position: absolute;
+  margin: auto;
+  width: 72px;
+  height: 96px;
+  background: url("../images/loading_img.png") no-repeat;
+  z-index: 1;
+}
+.webida-light .app-loading-spinner {
+  position: relative;
+  margin: auto;
+  box-sizing: border-box;
+  background-clip: padding-box;
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  border: 4px solid rgba(0, 0, 0, 0.15);
+  -webkit-transform: perspective(100px) rotateX(66deg);
+  -webkit-transform-origin: 50% 60%;
+  transform: perspective(100px) rotateX(66deg);
+  transform-origin: 50% 60%;
+}
+.webida-light .app-loading-spinner:after {
+  content: "";
+  position: absolute;
+  margin: -4px;
+  box-sizing: inherit;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  opacity: .05;
+  border: inherit;
+  border-color: transparent;
+  -webkit-animation: spinner-spin 1.2s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, spinner-fade 1.2s linear infinite;
+  -moz-animation: spinner-spin 1.2s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, spinner-fade 1.2s linear infinite;
+  animation: spinner-spin 1.2s cubic-bezier(0.6, 0.2, 0, 0.8) infinite, spinner-fade 1.2s linear infinite;
+}
+.webida-light .app-loading-spinner:after {
+  border-top-color: #414850;
+}
+@-webkit-keyframes spinner-spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner-spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+@keyframes spinner-spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spinner-fade {
+  20% {
+    opacity: .1;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: .1;
+  }
+}
+@-moz-keyframes spinner-fade {
+  20% {
+    opacity: .1;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: .1;
+  }
+}
+@keyframes spinner-fade {
+  20% {
+    opacity: .1;
+  }
+  40% {
+    opacity: 1;
+  }
+  60% {
+    opacity: .1;
+  }
+}
+/*loading screen end*/

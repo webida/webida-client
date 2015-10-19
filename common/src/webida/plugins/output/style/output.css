@@ -1,0 +1,110 @@
+.console_toolbar {
+    background-image:url('../resource/setting_nml.png');
+    width:16px;
+    height:16px;
+    float: right;
+    top:7px;
+    cursor: pointer;
+
+}
+
+.console_toolbar_view {
+    float: right;
+    border : 1px;
+    background-color: RGB(54,57,60);
+    border: 1px none RGB(32,32,32);
+    width : 197px;
+    height: 94px;
+    border-radius: 5px;
+    margin-top: -10px;
+    position: absolute;
+    right: 0;
+    top: 40px;
+    padding-left: 11px;
+    padding-top: 11px;
+    -webkit-box-shadow: -1px 2px 5px rgba(054,57,60, 0.75);
+    -moz-box-shadow: -1px 2px 5px rgba(54,57,60, 0.75);
+    box-shadow: -1px 2px 5px rgba(54,57,60, 0.75);
+}
+
+input[type=checkbox] {
+    display:none;
+}
+
+.checkbox_off {
+    padding-left: 25px;
+    height: 16px;
+    width: 16px;
+    background: url('../resource/checkbox_off.png') 0 0px no-repeat;
+}
+
+.checkbox_on {
+    padding-left: 25px;
+    background: url('../resource/checkbox_on.png') 0 0px no-repeat;
+    height: 16px;
+    width: 16px;
+}
+
+.clear {
+    border-radius: 3px;
+    border:1px;
+    border-color: RGB(25,27,28);
+    width:40px;
+    height:18px;
+    color: #FFFFFF;
+    cursor: pointer;
+    background-image: -webkit-linear-gradient(top, RGB(101,114,122) 0%, RGB(55,61,65) 100%);
+    background-image: -moz-linear-gradient(top, RGB(101,114,122) 0%, RGB(55,61,65) 100%);
+    background-image: linear-gradient(to bottom, RGB(101,114,122) 0%, RGB(55,61,65) 100%);
+}
+
+#Output .dijitButton .dijitButtonNode,
+#Output .dijitDropDownButton .dijitButtonNode,
+#Output .dijitComboButton .dijitButtonNode,
+#Output .dijitToggleButton .dijitButtonNode {
+    color: #fff;
+    background-color: #778393;
+}
+/* hover status */
+#Output .dijitButtonHover .dijitButtonNode,
+#Output .dijitDropDownButtonHover .dijitButtonNode,
+#Output .dijitComboButton .dijitButtonNodeHover,
+#Output .dijitComboButton .dijitDownArrowButtonHover,
+#Output .dijitToggleButtonHover .dijitButtonNode {
+    color: #fff;
+    background-color: #626c7a;
+}
+
+/* active, checked status */
+#Output .dijitButtonActive .dijitButtonNode,
+#Output .dijitDropDownButtonActive .dijitButtonNode,
+#Output .dijitComboButtonActive .dijitButtonNode,
+#Output .dijitToggleButtonActive .dijitButtonNode,
+#Output .dijitToggleButtonChecked .dijitButtonNode {
+    color: #fff;
+    background-color: #626c7a;
+}
+#Output {
+    border-top: 1px #fff solid!important;
+    width: 100%!important;
+    position: relative;
+    box-sizing: border-box;
+}
+#Output .consoleViewContentContainer {
+    height: calc(100% - 37px);
+    background-color: #fafaff;
+    border-bottom: 1px #fff solid;
+}
+.viewToolbarBackground {
+    background-color: #cfd4da;
+    background-image: none;
+    height: 28px;
+    width: 100%;
+    overflow: hidden;
+    color: #7e8c9f;
+    left:0px;
+    top:0;
+    border-left: 1px #fff solid;
+    border-right: 1px #fff solid;
+    box-sizing: border-box;
+}

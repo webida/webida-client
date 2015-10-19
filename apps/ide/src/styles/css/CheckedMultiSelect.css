@@ -1,0 +1,214 @@
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.dojoxCheckedMultiSelectHidden {
+  display: none;
+}
+.dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
+  border: solid black 1px;
+  margin: 1px 0;
+  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100px;
+}
+.dj_ie .dojoxCheckedMultiSelectWrapper,
+.dj_webkit .dojoxCheckedMultiSelectWrapper {
+  padding-right: 15px;
+}
+.dojoxMultiSelectItem {
+  cursor: default;
+  padding: 0.1em 0.2em;
+  white-space: nowrap;
+}
+.dojoxCheckedMultiSelectItem {
+  white-space: nowrap;
+  padding: .1em .2em;
+  cursor: default;
+}
+.dojoxCheckedMultiSelectDisabled *,
+.dojoxCheckedMultiSelectReadOnly * {
+  color: gray !important;
+}
+.dojoxCheckedMultiSelectItemLabel {
+  margin-left: .2em;
+}
+.dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
+  margin: 0em 0.1em;
+}
+.dojoxCheckedMultiSelectCheckBoxInput {
+  opacity: 0.01;
+}
+.dj_ie .dojoxCheckedMultiSelectCheckBoxInput {
+  filter: alpha(opacity=0);
+  width: 15px;
+  height: 16px;
+}
+.dijit_a11y .dojoxCheckedMultiSelectCheckBoxInput {
+  opacity: 1;
+  filter: none;
+}
+.dojoxCheckedMultiSelectMenu td.dijitMenuArrowCell {
+  display: none;
+}
+.dojoxCheckedMultiSelectMenu td.dijitMenuItemLabel {
+  position: static;
+  padding: 2px;
+}
+.tundra .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
+  background: #ffffff url("../../../../dijit/themes/tundra/images/validationInputBg.png") repeat-x top left;
+  border: 1px solid #b3b3b3;
+  line-height: normal;
+}
+.tundra .dojoxCheckedMultiSelectFocused .dojoxCheckedMultiSelectWrapper {
+  border-color: #406b9b;
+}
+.soria .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
+  background: #ffffff url("../../../dijit/themes/soria/images/validationInputBg.png") repeat-x top left;
+  border: 1px solid #8ba0bd;
+  line-height: normal;
+}
+.soria .dojoxCheckedMultiSelectFocused .dojoxCheckedMultiSelectWrapper {
+  border-color: #406b9b;
+}
+.nihilo .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
+  background: #ffffff url("../../../dijit/themes/nihilo/images/validationInputBg.png") repeat-x top left;
+  border: 1px solid #d3d3d3;
+  line-height: normal;
+}
+.nihilo .dojoxCheckedMultiSelectFocused .dojoxCheckedMultiSelectWrapper {
+  border-color: #b3b3b3;
+}
+.webida-light .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
+  border: 1px solid #b5bcc7;
+  background-color: #f7fcff;
+  line-height: normal;
+  -webkit-transition-property: background-color, border;
+  -webkit-transition-duration: .35s;
+}
+.webida-light .dojoxCheckedMultiSelectHover .dojoxCheckedMultiSelectWrapper {
+  border-color: #769dc0;
+  background-color: #e9f4fe;
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-repeat: repeat-x;
+  -webkit-transition-duration: .25s;
+}
+.webida-light .dojoxCheckedMultiSelectFocused .dojoxCheckedMultiSelectWrapper {
+  border: 1px solid #769dc0;
+  -webkit-transition-duration: .1s;
+}
+.webida-light .dojoxCheckedMultiSelectMenuCheckBoxItemIcon {
+  background-image: url('../images/checkboxRadioButtonStates.png');
+  background-repeat: no-repeat;
+  background-position: -15px;
+  width: 15px;
+  height: 16px;
+}
+.webida-light .dojoxCheckedMultiSelectMenuRadioItemIcon {
+  background-image: url('../images/checkboxRadioButtonStates.png');
+  background-repeat: no-repeat;
+  background-position: -105px;
+  width: 15px;
+  height: 16px;
+}
+.dj_ie6 .webida-light .dojoxCheckedMultiSelectMenuItemIcon {
+  background-image: url('../images/checkboxRadioButtonStates.png');
+}
+.webida-light .dojoxCheckedMultiSelectMenuItemChecked .dojoxCheckedMultiSelectMenuCheckBoxItemIcon {
+  background-position: 0;
+}
+.webida-light .dojoxCheckedMultiSelectMenuItemChecked .dojoxCheckedMultiSelectMenuRadioItemIcon {
+  background-position: -90px;
+}
+.webida-light .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectButton .dijitButtonText {
+  padding: 2px;
+}
+.webida-light .dojoxCheckedMultiSelectButton {
+  border: 1px solid #b5bcc7;
+  background-color: #ffffff;
+  border-collapse: separate;
+}
+.webida-light .dojoxCheckedMultiSelect .dijitButtonNode {
+  border: 0 solid #b5bcc7;
+  border-width: 0 0 0 0;
+}
+.dj_ie6 .webida-light .dojoxCheckedMultiSelectButton,
+.dj_ie6 .webida-light .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectButton .dijitButtonNode {
+  background-image: none;
+}
+.webida-light .dojoxCheckedMultiSelectButton .dijitButtonContents {
+  border: 0 solid #b5bcc7;
+  border-right-width: 1px;
+}
+.webida-light .dojoxCheckedMultiSelectButton .dijitArrowButton {
+  padding: 0;
+  border: 1px solid #ffffff;
+  border-top: none;
+  background-color: #efefef;
+  background-image: url("images/formHighlight.png");
+  background-repeat: repeat-x;
+}
+.webida-light .dojoxCheckedMultiSelectButton .dijitArrowButton .dijitArrowButtonInner {
+  background-image: url("../images/commonFormArrows.png");
+  background-position: -35px;
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 16px;
+}
+.webida-light .dojoxCheckedMultiSelectButtonHover {
+  border: 1px solid #769dc0;
+  background-color: #e9f4fe;
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-repeat: repeat-x;
+}
+.webida-light .dojoxCheckedMultiSelectButtonHover .dijitButtonContents {
+  border-color: #769dc0;
+}
+.webida-light .dojoxCheckedMultiSelectButtonHover .dijitArrowButton {
+  background-color: #abd6ff;
+}
+.webida-light .dojoxCheckedMultiSelectButtonHover .dijitArrowButton .dijitArrowButtonInner {
+  background-position: -70px;
+}
+.webida-light .dojoxCheckedMultiSelectButtonFocused {
+  border: 1px solid #769dc0;
+}
+.webida-light .dojoxCheckedMultiSelectButtonFocused .dijitButtonContents {
+  border-color: #769dc0;
+}
+.webida-light .dojoxCheckedMultiSelectButtonFocused .dijitArrowButton {
+  background-color: #7dbefa;
+  background-position: 0 -177px;
+  border: none;
+  padding: 0 1px;
+}
+.webida-light .dojoxCheckedMultiSelectButtonFocused .dijitArrowButton .dijitArrowButtonInner {
+  background-position: -70px;
+  margin-bottom: 1px;
+}
+.webida-light .dojoxCheckedMultiSelectButtonDisabled {
+  border: 1px solid #d3d3d3;
+  background-color: #efefef;
+  background-image: none;
+  color: #818181;
+}
+.webida-light .dojoxCheckedMultiSelectButtonDisabled .dijitArrowButton {
+  background-color: #efefef;
+}
+.webida-light .dojoxCheckedMultiSelectButtonDisabled .dijitArrowButton .dijitArrowButtonInner {
+  background-position: 0;
+}

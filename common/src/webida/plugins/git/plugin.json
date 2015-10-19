@@ -112,7 +112,7 @@
         ],
         
         "webida.common.workspace:overlayIcons" : {
-            "iconCssFilePath" : "./icons.css",
+            "iconCssFilePath" : "style/git.css",
             "stateMap" : {
                 "gitStatus": {
                     "gitModified" : "gitModified",

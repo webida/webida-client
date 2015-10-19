@@ -1,0 +1,142 @@
+/* Tree
+ *
+ * Styling Tree mostly means styling the TreeRow (dijitTreeRow)
+ * There are 4 basic states to style:
+ *
+ * Tree Row:
+ * 1. tree row (default styling):
+ * 		.dijitTreeRow - styles for each row of the tree
+ *
+ * 2. hovered tree row (mouse hover on a tree row)
+ * 		.dijitTreeRowHover - styles when mouse over on one row
+ *
+ * 3. active tree row (mouse down on a tree row)
+ * 		.dijitTreeRowActive - styles when mouse down on one row
+ *
+ * 4. selected tree row
+ * 		dijitTreeRowSelected - style when the row has been selected
+ *
+ * Tree Expando:
+ * 	    dijitTreeExpando - the expando at the left of the text of each tree row
+ *
+ * Drag and Drop on TreeNodes: (insert line on dijitTreeContent node so it'll aligned w/ target element)
+ * 		.dijitTreeNode .dojoDndItemBefore/.dojoDndItemAfter - use border style simulate a separate line
+ */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.webida-light {
+  /* Styling for basic tree node (unhovered, unselected)
+   * Also use this styling when dropping between items on the tree (in other words, don't
+   * use hover effect)
+   */
+  /* expando (open/closed) icon */
+  /* Drag and Drop on TreeNodes
+   * Put insert line on dijitTreeContent node so it's aligned w/
+   * (ie, indented equally with) target element, even
+   * though dijitTreeRowNode is the actual "drag object"
+   */
+}
+.webida-light .dijitTreeNode {
+  zoom: 1;
+  /* force layout on IE (TODO: may not be needed anymore) */
+}
+.webida-light .dijitTreeIsRoot {
+  background-image: none;
+}
+.webida-light .dijitTreeRow,
+.webida-light .dijitTreeNode .dojoDndItemBefore,
+.webida-light .dijitTreeNode .dojoDndItemAfter {
+  /* so insert line shows up on IE when dropping after a target element */
+  padding: 4px 0 2px 0;
+  background-color: none;
+  background-color: transparent;
+  background-color: rgba(171, 214, 255, 0);
+  background-position: 0 0;
+  background-repeat: repeat-x;
+  border: solid 0 transparent;
+  -webkit-transition-property: background-color, border-color;
+  -moz-transition-property: background-color, border-color;
+  transition-property: background-color, border-color;
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+  -webkit-transition-timing-function: ease-out;
+  -moz-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+.webida-light .dijitTreeRowSelected {
+  background-color: #43cbff;
+  border-color: transparent;
+  background-image: none;
+  padding: 3px 0 1px;
+  border-width: 1px 0;
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+}
+.webida-light .dijitTreeRowHover {
+  background-color: #bcedff;
+  border-color: transparent;
+  background-image: none;
+  padding: 3px 0 1px;
+  border-width: 1px 0;
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+}
+.webida-light .dijitTreeRowActive {
+  background-color: #43cbff;
+  border-color: transparent;
+  background-image: none;
+  padding: 3px 0 1px;
+  border-width: 1px 0;
+  -webkit-transition-duration: 0.25s;
+  -moz-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+}
+.webida-light .dijitTreeRowFocused {
+  background-repeat: repeat;
+}
+.webida-light .dijitTreeExpando {
+  background-image: url("../images/treeExpandImages.png");
+  width: 16px;
+  height: 16px;
+  background-position: -35px 0;
+  /* for dijitTreeExpandoOpened */
+}
+.webida-light .dj_ie6 .dijitTreeExpando {
+  background-image: url("../images/treeExpandImages8bit.png");
+}
+.webida-light .dijitTreeRowHover .dijitTreeExpandoOpened {
+  background-position: -53px 0;
+}
+.webida-light .dijitTreeExpandoClosed {
+  background-position: 1px 0;
+}
+.webida-light .dijitTreeRowHover .dijitTreeExpandoClosed {
+  background-position: -17px 0;
+}
+.webida-light .dijitTreeExpandoLeaf,
+.webida-light .dj_ie6 .dijitTreeExpandoLeaf {
+  background-image: none;
+}
+.webida-light .dijitTreeExpandoLoading {
+  background-image: url("../images/loadingAnimation.gif");
+}
+.webida-light .dijitTreeNode .dojoDndItemBefore .dijitTreeContent {
+  border-top: 2px solid #759dc0;
+}
+.webida-light .dijitTreeNode .dojoDndItemAfter .dijitTreeContent {
+  border-bottom: 2px solid #759dc0;
+}

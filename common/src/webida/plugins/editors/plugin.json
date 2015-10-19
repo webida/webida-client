@@ -41,7 +41,7 @@
                     "&Save" : [ "cmnd", {
                         "shortcut" : { "keys" : { "default" : "Ctrl+S" }, "desc" : "Save" },
                         "toolbar": {
-                            "icons" : "./styles/webida-images/icons/toolbar_save.png",
+                            "icons" : "/common/src/webida/plugins/workbench/resource/toolbar_save.png",
                             "tooltip" : "Save",
                             "enabledOn" : "editors.dirty.current",
                             "disabledOn" : "editors.clean.current"
@@ -50,7 +50,7 @@
                     "Sav&e All" : [ "cmnd", {
                         "shortcut": {  "keys": { "default": "Ctrl+Shift+S" },  "desc": "Save all" },
                         "toolbar": {
-                            "icons" : "./styles/webida-images/icons/toolbar_saveall.png",
+                            "icons" : "/common/src/webida/plugins/workbench/resource/toolbar_saveall.png",
                             "tooltip" : "Save all",
                             "enabledOn" : "editors.dirty.some",
                             "disabledOn" : "editors.clean.all"
@@ -166,7 +166,7 @@
                 "delim0" : "---",
                 "U&ndo" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+Z" }, "desc": "Undo" } } ],
                 "&Redo" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+Y" }, "desc": "Redo" } } ],
-                "&Save" : [ "cmnd", { "icon" : "styles/webida-images/icons/title_icon_save_nml.png",
+                "&Save" : [ "cmnd", { "icon" : "styles/images/icons/title_icon_save_nml.png",
                                      "shortcut" : { "keys" : { "default" : "Ctrl+S" }, "desc" : "Save" } } ],
                 "delim2" : "---",
                 "&Delete" : [ "cmnd" ],

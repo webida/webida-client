@@ -944,11 +944,11 @@ define([
 	            return;
 	        }
 	        if (theme === 'webida') {
-	            theme = 'webida-dark';
+	            theme = 'webida-light';
 	        }
 	        this.theme = theme;
             if (theme === 'codemirror-default') {
-                theme = this.theme = 'default';                
+                theme = this.theme = 'default';
                 this.addDeferredAction(function (self) {
                     self.editor.setOption('theme', self.theme);
                 });
@@ -968,7 +968,7 @@ define([
 	                break;
 	            }
 	            loadCSSList([require.toUrl(csspath)], function () {
-	                addAvailable('theme', theme);	                
+	                addAvailable('theme', theme);
                     self.addDeferredAction(function (self) {
                         self.editor.setOption('theme', self.theme);
                     });
@@ -1507,7 +1507,7 @@ define([
         var to = editor.getCursor('to');
         var mode1 = editor.getModeAt(from);
         var mode2 = editor.getModeAt(to);
-        return mode1.name === mode2.name && 
+        return mode1.name === mode2.name &&
             mode1.lineComment && mode1.lineComment === mode2.lineComment;
     }
 
@@ -1527,12 +1527,12 @@ define([
         var mode1 = editor.getModeAt(from);
         var mode2 = editor.getModeAt(to);
         var comments;
-        return mode1.name === mode2.name && 
-            mode1.blockCommentStart && 
-            mode1.blockCommentStart === mode2.blockCommentStart && 
-            mode1.blockCommentEnd === mode2.blockCommentEnd && 
-            ( comments = getEnclosingBlockComments(mode1, editor, from, to)) && 
-            (comments.length === 1 || 
+        return mode1.name === mode2.name &&
+            mode1.blockCommentStart &&
+            mode1.blockCommentStart === mode2.blockCommentStart &&
+            mode1.blockCommentEnd === mode2.blockCommentEnd &&
+            ( comments = getEnclosingBlockComments(mode1, editor, from, to)) &&
+            (comments.length === 1 ||
             	(( comments = getEnclosingBlockComments(mode1, editor, from2, to2)) && comments.length === 0));
     }
 
@@ -1548,9 +1548,9 @@ define([
         var mode1 = editor.getModeAt(from);
         var mode2 = editor.getModeAt(to);
         var comments;
-        return mode1.name === mode2.name && mode1.blockCommentStart && 
-            mode1.blockCommentStart === mode2.blockCommentStart && 
-            mode1.blockCommentEnd === mode2.blockCommentEnd && 
+        return mode1.name === mode2.name && mode1.blockCommentStart &&
+            mode1.blockCommentStart === mode2.blockCommentStart &&
+            mode1.blockCommentEnd === mode2.blockCommentEnd &&
             ( comments = getEnclosingBlockComments(mode1, editor, from, to)) && comments.length === 0;
     }
 

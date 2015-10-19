@@ -1,0 +1,70 @@
+/* Editor
+ *
+ * Styling Editor means styling the Editor inside iframe container (dijitEditorIFrameContainer)
+ *
+ * 1. Editor iframe container (default styling):
+ * 		.dijitEditorIFrameContainer - normal state styles: background-color, border, padding
+ *
+ * 2. hovered Editor iframe container (ie, mouse hover on editor)
+ * 		.dijitEditorHover .dijitEditorIFrameContainer/dijitEditorIFrame - styles when mouse hover on the container
+ *
+ * 3. focused Editor iframe container (ie, mouse focus on the editor pane)
+ * 		.dijitEditorFocused .dijitEditorIFrameContainer/dijitEditorIFrame - styles when container focused
+ *
+ * 3. disabled Editor iframe container
+ * 		.dijitEditorDisabled - editor's inner iframe container disable status styles: background, border
+ */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.webida-light {
+  /* Disabled */
+}
+.webida-light .dijitEditorIFrameContainer {
+  padding: 3px 3px 1px 10px;
+}
+.webida-light .dijitEditorIFrame {
+  background-color: #ffffff;
+}
+.webida-light .dijitEditor {
+  border: 1px solid #b5bcc7;
+}
+.webida-light .dijitEditor .dijitEditorIFrameContainer {
+  background-color: #ffffff;
+  background-repeat: repeat-x;
+}
+.webida-light .dijitEditorHover .dijitEditorIFrameContainer,
+.webida-light .dijitEditorHover .dijitEditorIFrameContainer .dijitEditorIFrame {
+  background-color: #e5f2fe;
+}
+.webida-light .dijitEditorFocused .dijitEditorIFrameContainer,
+.webida-light .dijitEditorFocused .dijitEditorIFrameContainer .dijitEditorIFrame {
+  background-color: #ffffff;
+}
+.webida-light .dijitEditorHover .dijitEditorIFrameContainer,
+.webida-light .dijitEditorFocused .dijitEditorIFrameContainer {
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -o-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+}
+.webida-light .dijitEditorDisabled {
+  border: 1px solid #d3d3d3;
+  color: #818181;
+}
+.webida-light .dijitDisabled .dijitEditorIFrame,
+.webida-light .dijitDisabled .dijitEditorIFrameContainer,
+.webida-light .dijitDisabled .dijitEditorIFrameContainer .dijitEditorIFrame {
+  background-color: #efefef;
+  background-image: none;
+}

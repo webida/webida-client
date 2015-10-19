@@ -39,6 +39,15 @@ function (require,
           Logger) {
     'use strict';
 
+    function _loadCss(url) {
+        var link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = url;
+        document.getElementsByTagName('head')[0].appendChild(link);
+    }
+    _loadCss(require.toUrl('./style/preview.css'));
+
 	var singleLogger = new Logger.getSingleton();
 	//var logger = new Logger.getSingleton();
 	//logger.setConfig('level', Logger.LEVELS.log);

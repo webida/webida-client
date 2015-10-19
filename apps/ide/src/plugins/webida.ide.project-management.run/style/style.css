@@ -23,7 +23,7 @@
     margin:8px;
     width:9px;
     height:9px;
-    background:url("./image/runconfig_icon_title_arrow.png") 9px 0;
+    background:url("../resource/runconfig_icon_title_arrow.png") 9px 0;
     cursor:pointer;
 }
 
@@ -45,7 +45,7 @@
     margin:5px;
     width:20px;
     height:20px;
-    background:url("./image/runconfig_icon_run.png") 0 0;
+    background:url("../resource/runconfig_icon_run.png") 0 0;
     cursor:pointer;
 }
 
@@ -55,27 +55,60 @@
     margin:5px;
     width:20px;
     height:20px;
-    background:url("./image/runconfig_icon_delete.png") 0 0;
+    background:url("../resource/runconfig_icon_delete.png") 0 0;
     cursor:pointer;
 }
 
 .rcw-content {
 }
 
+.row-name .rcw-content-table-label,
+.row-project .rcw-content-table-label {
+    width: 10%;
+    color: #000000;
+    line-height: 250%;
+    text-align: center;
+    padding-right: 0;
+    font-weight: bold;
+    text-align: center;
+    background: none;
+    border: none;
+}
+
+.row-name .rcw-content-table-value,
+.row-project .rcw-content-table-value {
+    width: 90%;
+    color: #000000;
+    line-height: 250%;
+    text-align: left;
+    background: none;
+    border: none;
+}
+.row-name .rcw-content-table-value input {
+    width: 450px!important;
+}
+.row-Path {
+    border-top: #CDD8E3 1px solid;
+}
+
 .rcw-content-table-value {
     border-bottom: #CDD8E3 1px solid;
-    background-color:#FFFFFF;
+    background-color:rgba(243,247,251,1);
     width:65%;
     text-indent: 20px;
+    border-right: 1px #CDD8E3 solid;
 }
 
 .rcw-content-table-label {
     border-bottom: #CDD8E3 1px solid;
-    width:33%;
+    border-left: #CDD8E3 1px solid;
+    width:35%;
     color:#000000;
     line-height:250%;
-    text-align:right;
+    text-align: right;
+    padding-right: 15px;
     font-weight: bold;
+    background-color: rgba(226,234,241,1);
 }
 
 .rcw-content-table-inputbox {
@@ -88,7 +121,11 @@
 }
 
 .rcw-content-table-inputbox-edit {
-    border-width:1px;
+    background-color: rgba(230,233,237,1);
+    border: 1px rgba(109,120,134,1) solid;
+    border-radius: 2px;
+    padding: 2px 4px;
+    font-size: 12px;
 }
 
 .rcw-content-table-inputbox-readonly {
@@ -116,7 +153,7 @@
     right:5px;
     width:20px;
     height:20px;
-    background:url('./image/runconfig_icon_modify.png') 0 0;
+    background:url('../resource/runconfig_icon_modify.png') 0 0;
     cursor:pointer;
 }
 
@@ -126,18 +163,18 @@
     right:18px;
     width:20px;
     height:20px;
-    background:url('./image/runconfig_icon_path.png') 0 0;
+    background:url('../resource/runconfig_icon_path.png') 0 0;
     cursor:pointer;
     overflow: hidden;
 }
 
 .rcw-action-save {
-   /* position:absolute;
-    top:5px;
-    right:5px;*/
+    /* position:absolute;
+     top:5px;
+     right:5px;*/
     width:20px;
     height:20px;
-    background:url('./image/runconfig_icon_save.png') 0 0;
+    background:url('../resource/runconfig_icon_save.png') 0 0;
     cursor:pointer;
     margin-top: 10px;
     margin-right: 10px;
@@ -150,7 +187,7 @@
     right:5px;
     width:20px;
     height:20px;
-    background:url('./image/runconfig_icon_save.png') 0 0;
+    background:url('../resource/runconfig_icon_save.png') 0 0;
     cursor:pointer;
 }
 
@@ -160,7 +197,7 @@
     right:32px;
     width:20px;
     height:20px;
-    background:url('./image/runconfig_icon_cancel.png') 0 0;
+    background:url('../resource/runconfig_icon_cancel.png') 0 0;
     cursor:pointer;
 }
 
@@ -170,7 +207,7 @@
     right:32px;
     width:20px;
     height:20px;
-    background:url('./image/runconfig_icon_cancel.png') 0 0;
+    background:url('../resource/runconfig_icon_cancel.png') 0 0;
     cursor:pointer;
 }
 
@@ -211,6 +248,12 @@
     line-height: 33px;
 }
 
+.rcw-table-row:after {
+    display: block;
+    clear: both;
+    content: '';
+}
+
 .rcw-table-col {
     float: left;
     height: 33px;
@@ -218,80 +261,181 @@
     overflow: hidden;
     text-overflow: ellipsis;
     position: relative;
+    font-size: 12px;
+    box-sizing: border-box;
 }
 
 .run-configuration-dialog-container {
-    height:466px;
     position: relative;
     font-size:10pt;
+    margin: -10px;
+    /*font-family: 'Nanum Gothic Coding', Verdana,Arial,sans-serif;*/
 }
 .run-configuration-dialog {
-    height:445px;
     background:#E5ECF2;
-    border: #9EA5AE 1px solid;
-    border-radius: 3px;
 }
 .run-configuration-dialog-header {
-    height:40px;
+    height:28px;
+    background-color: rgba(194,204,212,1);
 }
 .run-configuration-dialog-content {
     height:405px;
     overflow:auto;
     background-color:#FFFFFF !important;
 }
-.run-configuration-detail {
-    border-top: #CDD8E3 1px solid;
+#run-configuration-list {
+    background-color: rgba(212,219,226,1)!important;
+    border: #9EA5AE 1px solid;
 }
 ul.run-configuration-list-tree {
     list-style: none;
     padding: 0;
     margin: 0;
-    white-space: nowrap;
 }
 
 ul.run-configuration-list-tree ul {
-    padding-left: 0px;
+    padding: 0px;
+    margin: 0;
     list-style: none;
 }
 
 ul.run-configuration-list-tree li a {
     text-decoration: none;
-    color: #111111;
+    color: #52575c;
     display: block;
-    padding: 0 5px;
-    margin: 3px 0;
+    padding: 2px;
+    font-size: 12px;
+    font-weight: normal;
 }
-
-ul.run-configuration-list-tree > li > a {
-    font-weight: bold;
-    border-top: 1px solid #bbbbbb;
-    background-color: #eee;
-    padding: 5px;
+ul.run-configuration-list-tree > li a:before {
+    content: '▶';
+    display: inline-block;
+    color: #49525a;
+    font-size: 5px;
+    padding: 0 5px 0 5px;
 }
-
 ul.run-configuration-list-tree li a.selected {
-    background-color: #43cbff;
-    color: #eeffff;
+    background: #7695b6;
+    font-weight: bold;
 }
-
-ul.run-configuration-list-tree > li > a.selected {
-    background-color: #D0EBF5;
-    color: #111111;
-    border-top: 1px solid #43cbff;
+ul.run-configuration-list-tree li > ul li a {
+    padding: 0 5px 0 20px;
 }
-
-ul.run-configuration-list-tree > li > ul {
-    margin-bottom: 5px;
+ul.run-configuration-list-tree li > ul li a.selected {
+    background: #a5b8cc;
 }
-
-ul.run-configuration-list-tree > li > ul > li > a {
-    padding-left: 25px;
-    font-size: 0.9em;
+ul.run-configuration-list-tree > li a.selected:before {
+    content: '▼';
+    display: inline-block;
+    color: #49525a;
+    font-size: 5px;
+    padding: 0 5px 0 5px;
 }
-#run-configuration-list {
-    width: 190px;
-    overflow-x: scroll;
+ul.run-configuration-list-tree > li > ul a:before {
+    content: ''!important;
+    display: none!important;
+}
+ul.run-configuration-list-tree > li {
+    margin-bottom: 10px;
+}
+ul.run-configuration-list-tree > li > a {
+    color: #000000;
+    font-size: 12px;
+    font-weight: bold;
+    white-space:nowrap;
+    padding: 1px 19px 1px 0;
 }
 #run-configuration-list-contentpane {
-    height: 100%;
+    height: 90%;
+    border: #9EA5AE 1px solid;
+}
+
+.webida-light #run-configuration-content .dijitSplitterV {
+    background-color: rgba(96,106,120,1);
+    width: 4px;
+}
+/*run*/
+#run-configuration-create-button {
+    background: url('../resource/icon_run_add.png') no-repeat;
+    width: 20px;
+    height: 20px;
+}
+#run-configuration-delete-button {
+    background: url('../resource/icon_run_del.png') no-repeat;
+    width: 20px;
+    height: 20px;
+}
+.dijitButtonHover #run-configuration-create-button,
+.dijitButtonHover #run-configuration-delete-button {
+    background-position: -20px 0;
+}
+.dijitButtonActive #run-configuration-create-button,
+.dijitButtonActive #run-configuration-delete-button {
+    background-position: -60px 0;
+}
+.dijitButtonDisabled #run-configuration-create-button,
+.dijitButtonDisabled #run-configuration-delete-button {
+    background-position: -40px 0;
+}
+.webida-light #run-configuration-list .dijitButton {
+    margin: 0.2em 0;
+}
+.webida-light #run-configuration-list .dijitButton .dijitButtonNode {
+    border: 0;
+    color: #272a2d;
+    padding: 2px 0px 4px 4px;
+    border-radius: 2px;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    background-color: transparent;
+}
+.webida-light .run-configuration-dialog-container .dijitDialogPaneContentArea {
+    padding: 0;
+}
+.webida-light .run-configuration-dialog-container .row-project .rcw-content-table-value .dijitSelect {
+    width: 510px;
+}
+.webida-light .run-configuration-dialog-container .row-project .rcw-content-table-value {
+    margin-bottom: 15px;
+}
+.webida-light .run-configuration-dialog-container .row-project .rcw-content-table-value .dijitSelect .dijitInline {
+    display: inline;
+    position: absolute;
+    left: 5px;
+    top: 8px;
+}
+.webida-light .run-configuration-dialog-container .row-project .rcw-content-table-value .dijitSelect .dijitArrowButton {
+    width: 7px;
+}
+.webida-light .run-configuration-dialog-container .run-configuration-detail {
+    padding: 7px;
+}
+.webida-light .run-configuration-dialog-container .rcw-content-table-inputbox-readonly {
+    background: transparent;
+}
+.webida-light .run-configuration-dialog-container .row-name .rcw-content-table-label,
+.webida-light .run-configuration-dialog-container .row-project .rcw-content-table-label {
+    text-align: left!important;
+    width: 50px!important;
+}
+.run-configuration-dialog-container .rcw-table-row {
+    width: 565px;
+}
+.webida-light .run-configuration-dialog-container .rcw-content-table-value {
+    text-indent: 5px!important;
+}
+.webida-light .run-configuration-dialog-container .row-name .rcw-content-table-value,
+.webida-light .run-configuration-dialog-container .row-project .rcw-content-table-value {
+    width: 515px!important;
+}
+.webida-light .run-configuration-dialog-container .row-name .rcw-content-table-value .rcw-content-table-inputbox-edit,
+.webida-light .run-configuration-dialog-container .row-project .rcw-content-table-value .rcw-content-table-inputbox-edit {
+    width: 500px!important;
+}
+.webida-light .run-configuration-dialog-container .rcw-table-row .rcw-content-table-inputbox-edit {
+    width: 330px!important;
+}
+.webida-light .run-configuration-dialog-container .rcw-action .dijitButton {
+    margin: 10px 0 0 0;
 }

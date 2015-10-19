@@ -1,0 +1,227 @@
+/* Dialog
+ *
+ * Styling Dialog includes two sections: Dialog and Tooltip & TooltipDialog
+ *
+ * Dialog:
+ * 1. Dialog (default styling):
+ * 		.dijitDialog - styles for dialog's bounding box
+ *
+ * 2. Dialog title
+ * 		.dijitDialogTitleBar - styles for the title container at the top of dialog
+ * 		.dijitDialogTitle - the text container in dialog title
+ *
+ * 3. Dialog content
+ * 		.dijitDialogPaneContent - main container for content area and action bar
+ * 		.dijitDialogPaneContentArea - styles for content container
+ *
+ * 4. Dialog action bar
+ * 		.dijitDialogPaneActionBar - styles for action buttons lie at the bottom of dialog pane content
+ *
+ * 5. Dialog underlay
+ * 		.dijitDialogUnderlay - div under the dialog which used for separate dialog and page content
+ *
+ *
+ * Tooltip & TooltipDialog:
+ * 1. tooltip content container:
+ * 		.dijitTooltipContainer - tooltip content container
+ *
+ * 2. tooltip connector:
+ * 		.dijitTooltipConnector - tooltip anchor includes 4 direction(up, down, left, right)
+ */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.webida-light {
+  /* Tooltip and TooltipDialog */
+}
+.webida-light .dijitDialog {
+  background-color: #606a78;
+  border-radius: 5px;
+  border: 1px solid #31353b;
+  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+}
+.webida-light .dijitDialog .dijitTreeRow {
+  color: #000000;
+}
+.webida-light .dijitDialogPaneContent {
+  border: 0;
+  background-color: transparent;
+  padding: 10px 8px;
+  position: relative;
+}
+.webida-light .dijitDialogPaneContentArea {
+  background-color: #ffffff;
+}
+.webida-light .dijitDialogPaneActionBar {
+  /* gray bar at bottom of dialog with OK/Cancel buttons */
+  background-color: transparent;
+  padding: 3px 5px 8px 7px;
+  text-align: right;
+  margin: 10px -8px -10px;
+}
+.webida-light .dijitTooltipDialog .dijitDialogPaneActionBar {
+  -webkit-border-bottom-right-radius: 4px;
+  -webkit-border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  margin: 10px -10px -8px;
+}
+.webida-light .dijitDialogPaneActionBar .dijitButton {
+  float: none;
+}
+.webida-light .dijitDialogTitleBar {
+  border-radius: 4px;
+  margin: 1px;
+  /*background-image: -webkit-linear-gradient(top, #5e6872 0%, #414850 100%);
+    background-image: -moz-linear-gradient(top, #5e6872 0%, #414850 100%);
+    background-image: -o-linear-gradient(top, #5e6872 0%, #414850 100%);
+    background-image: linear-gradient(to bottom, #5e6872 0%, #414850 100%);*/
+  background-color: #32373f;
+  border: 0;
+  padding: 7px;
+  border-top: none;
+}
+.webida-light .dijitDialogTitle {
+  /* typography and styling of the dialog title */
+  padding: 0 1px;
+  font-size: 1.091em;
+  color: #fff;
+}
+.webida-light .dijitDialogCloseIcon {
+  /* the default close icon for the dialog */
+  background: url("../images/dialogCloseIcon.png");
+  background-repeat: no-repeat;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 6px;
+  right: 6px;
+}
+.webida-light .dj_ie6 .dijitDialogCloseIcon {
+  background-image: url("../images/dialogCloseIcon8bit.png");
+}
+.webida-light .dijitDialogCloseIconHover {
+  background-position: -20px;
+}
+.webida-light .dijitDialogCloseIconActive {
+  background-position: -40px;
+}
+.webida-light .dijitTooltip,
+.webida-light .dijitTooltipDialog {
+  /* the outermost dom node, holding the connector and container */
+  background: transparent;
+  /* make the area on the sides of the arrow transparent */
+}
+.webida-light .dijitTooltipBelow {
+  /* leave room for arrow above content */
+  padding-top: 13px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.webida-light .dijitTooltipAbove {
+  /* leave room for arrow below content */
+  padding-bottom: 13px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+.webida-light .dijitTooltipContainer {
+  /* the part with the text */
+  background-color: #ffffff;
+  background-image: -moz-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
+  background-image: -webkit-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
+  background-image: -o-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
+  background-image: linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
+  background-position: bottom;
+  border: 1px solid #759dc0;
+  padding: 6px 8px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  font-size: 1em;
+  color: #000000;
+}
+.webida-light .dijitTooltipConnector {
+  /* the arrow piece */
+  border: 0;
+  z-index: 2;
+  background-image: url("../images/tooltip.png");
+  background-repeat: no-repeat;
+  width: 16px;
+  height: 14px;
+}
+.webida-light .dj_ie6 .dijitTooltipConnector {
+  background-image: url("../images/tooltip8bit.png");
+}
+.webida-light .dijitTooltipBelow .dijitTooltipConnector {
+  /* the arrow piece for tooltips below an element */
+  top: 0;
+  left: 3px;
+  background-position: -31px 0;
+  width: 16px;
+  height: 14px;
+}
+.webida-light .dijitTooltipAbove .dijitTooltipConnector {
+  /* the arrow piece for tooltips above an element */
+  bottom: 0;
+  left: 3px;
+  background-position: -15px 0;
+  width: 16px;
+  height: 14px;
+}
+.webida-light .dj_ie7 .dijitTooltipAbove .dijitTooltipConnector,
+.webida-light .dj_ie6 .dijitTooltipAbove .dijitTooltipConnector {
+  bottom: -1px;
+}
+.webida-light .dijitTooltipABRight .dijitTooltipConnector {
+  /* above or below tooltip, but the arrow appears on the right,
+        and the right edges of target and tooltip are aligned rather than the left.
+        Override above rules for .dijitTooltipBelow, .dijitTooltipAbove */
+  left: auto;
+  right: 3px;
+}
+.webida-light .dijitTooltipLeft {
+  padding-right: 14px;
+}
+.webida-light .dijitTooltipLeft .dijitTooltipConnector {
+  /* the arrow piece for tooltips to the left of an element, bottom borders aligned */
+  right: 0;
+  background-position: 0 0;
+  width: 16px;
+  height: 14px;
+}
+.webida-light .dijitTooltipRight {
+  padding-left: 14px;
+}
+.webida-light .dijitTooltipRight .dijitTooltipConnector {
+  /* the arrow piece for tooltips to the right of an element, bottom borders aligned */
+  left: 0;
+  background-position: -48px 0;
+  width: 16px;
+  height: 14px;
+}
+.webida-light .dijitDialogUnderlay {
+  background: #ffffff;
+}
+.webida-light .popup-dialog .dijitDialogPaneContentArea,
+.webida-light .buttoned-dialog-text-only .dijitDialogPaneContentArea {
+  background-color: transparent;
+  color: #ffffff;
+  padding: 10px 10px 30px 10px;
+  overflow-wrap: break-word;
+}

@@ -1,0 +1,131 @@
+/* BorderContainer
+
+Splitters and gutters separate panes within a BorderContainer. Splitters can be moved up and down (horizonal splitters) or left and right (vertical splitters), while Gutters are static. A "thumb" is the slit on a Splitter that indicates it is movable.
+
+Styling the BorderContainer widget consists of the following:
+
+.dijitBorderContainer - for border and padding of the entire border container
+
+.dijitSplitContainer-child, .dijitBorderContainer-child - for border or child panes of the border container. By default borders are put on all children of BorderContainer.
+
+.dijitBorderContainer-dijitTabContainerTop,
+.dijitBorderContainer-dijitTabContainerBottom,
+.dijitBorderContainer-dijitTabContainerLeft,
+.dijitBorderContainer-dijitTabContainerRight,
+.dijitBorderContainer-dijitAccordionContainer   -for border of the border containers within TabContainer or AccordionContainer widget
+
+.dijitBorderContainer-dijitBorderContainer - for border and padding of nested BorderContainers
+
+Splitters and gutters:
+
+.dijitSplitterH, .dijitGutterH - for height, background, and border of a horizontal splitter and gutter
+.dijitSplitterH .dijitSplitterThumb - for color, height/width of the thumb on a horizontal splitter
+.dijitSplitterV, .dijitGutterV - - for height, background, and border of a vertical splitter and gutter
+.dijitSplitterV .dijitSplitterThumb - for color, height/width of the thumb on a vertical splitter
+.dijitSplitterHHover - for background-color of a hovered horizontal splitter
+.dijitSplitterHHover .dijitSplitterThumb - for background-color of a hovered thumb on a horizontal splitter
+.dijitSplitterVHover  - for background-color of a hovered vertical splitter
+.dijitSplitterVHover .dijitSplitterThumb - for background-color of a hovered thumb on a vertical splitter
+.dijitSplitterHActive - for background-color of an active horizontal splitter
+.dijitSplitterVActive - for background-color of an active horizontal splitter
+*/
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.webida-light {
+  /* Splitters and gutters */
+  /* hovered splitter */
+  /* active splitter */
+}
+.webida-light .dijitBorderContainer {
+  /* matches the width of the splitters between panes */
+  padding: 0!important;
+  background-color: transparent;
+  border-radius: 0;
+}
+.webida-light .dijitSplitContainer-child,
+.webida-light .dijitBorderContainer-child {
+  /* By default put borders on all children of BorderContainer,
+       *  to give illusion of borders on the splitters themselves.
+       */
+  border: none;
+}
+.webida-light .dijitBorderContainer-dijitTabContainerTop,
+.webida-light .dijitBorderContainer-dijitTabContainerBottom,
+.webida-light .dijitBorderContainer-dijitTabContainerLeft,
+.webida-light .dijitBorderContainer-dijitTabContainerRight,
+.webida-light .dijitBorderContainer-dijitAccordionContainer {
+  /* except that TabContainer defines borders on it's sub-nodes (tablist and dijitTabPaneWrapper),
+       * so override rule setting border on domNode
+       */
+  border: none;
+}
+.webida-light .dijitBorderContainer-dijitBorderContainer {
+  /* make nested BorderContainers look like a single big widget with lots of splitters */
+  border: 0;
+  padding: 0;
+}
+.webida-light .dijitSplitterH,
+.webida-light .dijitGutterH {
+  background: #a0a7ae;
+  height: 6px;
+}
+.webida-light .dj_ios .dijitSplitterH,
+.webida-light .dj_android .dijitSplitterH {
+  height: 11px;
+}
+.webida-light .dijitSplitterH .dijitSplitterThumb {
+  background: transparent;
+  height: 1px;
+  top: 2px;
+  width: 19px;
+}
+.webida-light .dj_ios .dijitSplitterH .dijitSplitterThumb,
+.webida-light .dj_android .dijitSplitterH .dijitSplitterThumb {
+  top: 5px;
+}
+.webida-light .dijitSplitterV,
+.webida-light .dijitGutterV {
+  background: #a0a7ae;
+  border: 0;
+  width: 8px;
+  margin: 0;
+}
+.webida-light .dj_ios .dijitSplitterV,
+.webida-light .dj_android .dijitSplitterV {
+  width: 11px;
+}
+.webida-light .dijitSplitterV .dijitSplitterThumb {
+  left: 3px;
+  width: 3px;
+  /* background-image: -webkit-linear-gradient(left, #949ca3 1px, #a8afb7 2px, #c9cfd5 3px);
+    background-image: -moz-linear-gradient(left, #949ca3 1px, #a8afb7 2px, #c9cfd5 3px);
+    background-image: -o-linear-gradient(left, #949ca3 1px, #a8afb7 2px, #c9cfd5 3px);
+    background-image: linear-gradient(to right, #949ca3 1px, #a8afb7 2px, #c9cfd5 3px);*/
+  top: 3px;
+  height: 99%;
+}
+.webida-light .dj_ios .dijitSplitterV .dijitSplitterThumb,
+.webida-light .dj_android .dijitSplitterV .dijitSplitterThumb {
+  left: 5px;
+}
+.webida-light .dijitSplitterHHover,
+.webida-light .dijitSplitterVHover {
+  font-size: 1px;
+}
+.webida-light .dijitSplitterHActive,
+.webida-light .dijitSplitterVActive {
+  font-size: 1px;
+  background-color: #abd6ff;
+  background-image: none;
+}

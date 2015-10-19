@@ -5,15 +5,46 @@
 }
 
 .search-result-contents {
-    padding: 5px;
-    background-color: #efefef;
+    background-color: #cfd4da;
+    border: 1px #fff solid;
 }
 
 .search-result-toolbar-panel {
     width: 100%;
     height: auto;
     color: #494949;
-    background-image: -webkit-linear-gradient(top, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
-    background-image: -moz-linear-gradient(top, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
-    background-image: linear-gradient(to bottom, #CBD6DC 1px, #D5DEE4 1px, #DEE6EB 26px);
+    padding: 4px 0;
+    box-sizing: border-box;
+}
+.search-result-tree-panel {
+    background-color: #fafaff;
+    padding: 10px;
+    height: calc(100% - 63px);
+}
+
+.search-result-view .dijitButton .dijitButtonNode,
+.search-result-view .dijitDropDownButton .dijitButtonNode,
+.search-result-view .dijitComboButton .dijitButtonNode,
+.search-result-view .dijitToggleButton .dijitButtonNode {
+    color: #fff;
+    background-color: #778393;
+}
+/* hover status */
+.search-result-view .dijitButtonHover .dijitButtonNode,
+.search-result-view .dijitDropDownButtonHover .dijitButtonNode,
+.search-result-view .dijitComboButton .dijitButtonNodeHover,
+.search-result-view .dijitComboButton .dijitDownArrowButtonHover,
+.search-result-view .dijitToggleButtonHover .dijitButtonNode {
+    color: #fff;
+    background-color: #626c7a;
+}
+
+/* active, checked status */
+.search-result-view .dijitButtonActive .dijitButtonNode,
+.search-result-view .dijitDropDownButtonActive .dijitButtonNode,
+.search-result-view .dijitComboButtonActive .dijitButtonNode,
+.search-result-view .dijitToggleButtonActive .dijitButtonNode,
+.search-result-view .dijitToggleButtonChecked .dijitButtonNode {
+    color: #fff;
+    background-color: #626c7a;
 }

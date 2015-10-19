@@ -1,0 +1,80 @@
+/* CheckBox
+ *
+ * Styling CheckBox mainly includes:
+ *
+ * 1. Containers
+ * 		.dijitCheckBox|.dijitCheckBoxIcon - for border, padding, width|height and background image
+ *
+ * 2. CheckBox within ToggleButton
+ * 		.dijitToggleButton|.dijitToggleButtonChecked .* - for background image
+ *
+ * 3. Checked state
+ * 		.dijitCheckBoxChecked - for checked background-color|image
+ * 		.dijitToggleButtonChecked - for border, background-color|image, display and width|height
+ *
+ * 4. Hover state
+ * 		.dijitCheckBoxHover|.dijitCheckBoxCheckedHover - for background image
+ *
+ * 5. Disabled state
+ * 		.dijitCheckBoxDisabled|.dijitCheckBoxCheckedDisabled - for background image
+ */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.dj_ie6 .webida-light .dijitToggleButton .dijitCheckBoxIcon {
+  background-image: url("../images/checkmarkNoBorder.gif");
+}
+.webida-light .dijitToggleButton .dijitCheckBoxIcon {
+  background-image: url("../images/checkmarkNoBorder.png");
+}
+.webida-light .dijitCheckBox,
+.webida-light .dijitCheckBoxIcon {
+  background-image: url("../form/images/checkboxRadioButtonStates.png");
+  /* checkbox sprite image */
+  background-repeat: no-repeat;
+  width: 18px;
+  height: 18px;
+  margin: 0 2px 0 0;
+  padding: 0;
+}
+.webida-light .dj_ie6 .dijitCheckBox,
+.webida-light .dj_ie6 .dijitCheckBoxIcon {
+  background-image: url("../form/images/checkboxAndRadioButtons_IE6.png");
+  /* checkbox sprite image */
+}
+.webida-light .dijitCheckBox,
+.webida-light .dijitToggleButton .dijitCheckBoxIcon {
+  /* unchecked */
+  background-position: -18px;
+}
+.webida-light .dijitCheckBoxChecked,
+.webida-light .dijitToggleButtonChecked .dijitCheckBoxIcon {
+  /* checked */
+  background-position: 0;
+}
+.webida-light .dijitCheckBoxDisabled {
+  /* disabled */
+  background-position: -90px;
+}
+.webida-light .dijitCheckBoxCheckedDisabled {
+  /* disabled but checked */
+  background-position: -72px;
+}
+.webida-light .dijitCheckBoxHover {
+  /* hovering over an unchecked enabled checkbox */
+  background-position: -54px;
+}
+.webida-light .dijitCheckBoxCheckedHover {
+  /* hovering over an checked enabled checkbox */
+  background-position: -36px;
+}

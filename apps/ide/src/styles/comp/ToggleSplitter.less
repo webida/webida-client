@@ -1,0 +1,77 @@
+@import "../less/theme-set";
+
+.dijitBorderContainer .dojoxToggleSplitter .dijitSplitterH {
+	height: 6px;
+}
+.dijitBorderContainer .dojoxToggleSplitter .dijitSplitterV {
+	width: 6px;
+}
+.dijitBorderContainer .dijitSplitterH .dojoxToggleSplitterIcon {
+	background-image: @splitterH-image;
+	background-repeat: no-repeat;
+	width: @splitter-image-width;
+	height: @splitter-image-height;
+    top:1px;
+	left: 50%;
+    margin-left: -31px;
+	cursor: pointer;
+}
+.dijitBorderContainer .dijitSplitterV .dojoxToggleSplitterIcon {
+	background-image: @splitterV-image;
+	background-repeat: no-repeat;
+	vertical-align: middle;
+	width: @splitter-image-height;
+	height: @splitter-image-width;
+	left: 0px;
+	top: 50%;
+    margin-top: -31px;
+	cursor: pointer;
+}
+.dojoxToggleSplitterTop .dojoxToggleSplitterIconOpen,
+.dojoxToggleSplitterBottom .dojoxToggleSplitterIconClosed {
+	background-position: 0 -10px !important;
+}
+.dojoxToggleSplitterBottom .dojoxToggleSplitterIconOpen,
+.dojoxToggleSplitterTop .dojoxToggleSplitterIconClosed {
+	background-position: 0 0px !important;
+}
+.dojoxToggleSplitterLeft .dojoxToggleSplitterIconOpen,
+.dojoxToggleSplitterRight .dojoxToggleSplitterIconClosed {
+	background-position: -5px 0 !important;
+}
+.dojoxToggleSplitterRight .dojoxToggleSplitterIconOpen,
+.dojoxToggleSplitterLeft .dojoxToggleSplitterIconClosed {
+	background-position: -15px 0 !important;
+}
+.dojoxToggleSplitterTop .dojoxToggleSplitterIconOpenHover,
+.dojoxToggleSplitterBottom .dojoxToggleSplitterIconClosedHover {
+	background-position: 0 -10px !important;
+}
+.dojoxToggleSplitterBottom .dojoxToggleSplitterIconOpenHover,
+.dojoxToggleSplitterTop .dojoxToggleSplitterIconClosedHover {
+	background-position: 0 0 !important;
+}
+.dojoxToggleSplitterLeft .dojoxToggleSplitterIconOpenHover,
+.dojoxToggleSplitterRight .dojoxToggleSplitterIconClosedHover {
+	background-position: -5px 0 !important;
+}
+.dojoxToggleSplitterRight .dojoxToggleSplitterIconOpenHover,
+.dojoxToggleSplitterLeft .dojoxToggleSplitterIconClosedHover {
+	background-position: -15px 0 !important;
+}
+.dojoxToggleSplitterTop .dojoxToggleSplitterA11y,
+.dojoxToggleSplitterBottom .dojoxToggleSplitterA11y {
+	display: none;
+	font-size: 6px;
+	text-align: center;
+}
+.dojoxToggleSplitterRight .dojoxToggleSplitterA11y,
+.dojoxToggleSplitterLeft .dojoxToggleSplitterA11y {
+	display: none;
+	font-size: 8px;
+	position: relative;
+	top: 48%;
+}
+.dijit_a11y .dojoxToggleSplitterA11y {
+	display: block;
+}

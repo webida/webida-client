@@ -25,16 +25,18 @@
  */
 
 define([
+    'require',
 	'webida-lib/plugins/workbench/plugin',
 	'external/lodash/lodash.min',
 	'dojo/topic',
 	'dijit/form/CheckBox',
 	'dijit/form/Button',
-	'text!./output-view.html',
-	'text!./templates/_tmplToolbar.html',
+	'text!./layer/output-view.html',
+	'text!./layer/_tmplToolbar.html',
 	'webida-lib/widgets/views/view',
 	'webida-lib/util/logger/logger-client'
 ], function (
+    require,
 	workbench, 
 	_, 
 	topic, 
@@ -46,6 +48,15 @@ define([
 	Logger
 ) {
 	'use strict';
+
+    function _loadCss(url) {
+        var link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = url;
+        document.getElementsByTagName('head')[0].appendChild(link);
+    }
+    _loadCss(require.toUrl('./style/output.css'));
 
 	var singleLogger = new Logger.getSingleton();
 	//var logger = new Logger();

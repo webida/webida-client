@@ -55,7 +55,7 @@ define([
         link.href = url;
         document.getElementsByTagName('head')[0].appendChild(link);
     }
-    _loadCss(require.toUrl('./git.css'));
+    _loadCss(require.toUrl('./style/git.css'));
 
     function codeToIconInfo(code) {
         switch (code) {
