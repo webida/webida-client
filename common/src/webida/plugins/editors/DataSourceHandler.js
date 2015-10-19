@@ -208,7 +208,9 @@ define([
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             var parts = registry.getPartsByDataSource(dataSource);
-            dataSource.setDeleted(true);
+            if (dataSource) {
+                dataSource.setDeleted(true);
+            }
             if (parts.length > 0) {
                 _askClose(dataSource);
             }
