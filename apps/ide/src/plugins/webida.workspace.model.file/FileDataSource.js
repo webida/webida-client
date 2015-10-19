@@ -115,6 +115,9 @@ define([
             logger.info('getData(callback)');
             var that = this;
             var file = this.getPersistence();
+            if (this.isDeleted() === true) {
+                return;
+            }
             if (file.getFlag(Persistence.READ) === false) {
                 this.emit(DataSource.LOAD_START, this);
                 fsCache.readFile(file.getPath(), function(error, data) {
