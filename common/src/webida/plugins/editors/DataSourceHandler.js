@@ -61,7 +61,7 @@ define([
     }
 
     /**
-     * @return {LifecycleManager}
+     * @return {DataSourceHandler}
      */
     DataSourceHandler.getInstance = function() {
         if (singleton === null) {
@@ -114,7 +114,7 @@ define([
          * @private
          */
         _checkCase: function(fsUrl, dir, name, type, movedPath) {
-            logger.info('_checkCase(' + JSON.stringify(arguments) + ')');
+            logger.info('_checkCase(' + this._getArgs(arguments) + ')');
 
             var path = dir + name;
 
@@ -126,8 +126,8 @@ define([
                 }
             } else if (type === 'dir') {
                 path += '/';
-                movedPath += '/';
                 if (movedPath) {
+                    movedPath += '/';
                     this._onDirMoved(path, movedPath);
                 } else {
                     this._onDirDeleted(path);
@@ -174,14 +174,19 @@ define([
          */
         _onDirDeleted: function(dirPath) {
             logger.info('_onDirDeleted(' + dirPath + ')');
-            var dsId;
+            var dataSource;
             var shouldBeClosedParts = [];
             var registry = this._getPartRegistry();
             var editorParts = registry.getEditorParts();
             editorParts.forEach(function(editorPart) {
-                dsId = editorPart.getDataSource().getId();
-                if (dsId.indexOf(dirPath) >= 0) {
-                    shouldBeClosedParts.push(editorPart);
+                dataSource = editorPart.getDataSource();
+                if (dataSource) {
+                    if (dataSource.getId().indexOf(dirPath) >= 0) {
+                        dataSource.setDeleted(true);
+                        dataSource.getPersistence().setContents(null);
+                        editorPart.getContainer().updateDirtyState();
+                        shouldBeClosedParts.push(editorPart);
+                    }
                 }
             });
             shouldBeClosedParts.forEach(function(part) {
@@ -208,7 +213,14 @@ define([
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             var parts = registry.getPartsByDataSource(dataSource);
+            if (dataSource) {
+                dataSource.setDeleted(true);
+                dataSource.getPersistence().setContents(null);
+            }
             if (parts.length > 0) {
+            	parts.forEach(function(part){
+            		part.getContainer().updateDirtyState();
+            	});
                 _askClose(dataSource);
             }
         },
@@ -227,6 +239,17 @@ define([
         _getPartRegistry: function() {
             var page = workbench.getCurrentPage();
             return page.getPartRegistry();
+        },
+
+        /**
+         * @private
+         */
+        _getArgs: function(args) {
+            var res = [];
+            for (var i = 0; i < args.length; i++) {
+                res.push = args[i];
+            }
+            return res.join(', ');
         }
     });
 

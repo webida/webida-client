@@ -141,16 +141,22 @@ define([
         _listenPartRegistry: function() {
             // @formatter:off
             var provider = this;
+            var dsReg = workbench.getDataSourceRegistry();
             var page = workbench.getCurrentPage();
-            var reg = page.getPartRegistry();
-            reg.on(PartRegistry.PART_UNREGISTERED, function(part) {
+            var PartReg = page.getPartRegistry();
+            PartReg.on(PartRegistry.PART_UNREGISTERED, function(part) {
                 var model = part.getModel();
                 if (model) {
                     var dataSource = part.getDataSource();
                     var PartModelClass = model.constructor;
                     if (provider.getPartModel(dataSource, PartModelClass) 
                             && provider.isModelUsed(model) === false) {
-                        part.resetModel();
+                        if (dataSource.isDeleted()) {
+                        	provider.unregister(model);
+                        	dsReg.unregister(dataSource);
+                        }else{
+                        	part.resetModel();
+                        }
                     }                	
                 }
             });

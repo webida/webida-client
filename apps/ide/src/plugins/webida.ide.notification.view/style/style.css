@@ -5,13 +5,13 @@
 
 .notification-contents {
 	margin: 0px;
-    height: calc(100% - 7px);
+	padding-top: 5px;
+    height: calc(100% - 12px);
     background-color: #fafaff;
 }
 
 p.notification-message {
-    margin-top: 0.3em;
-    margin-bottom: 0.3em;
+    margin: 0.3em 0.6em;
     line-height: 1.3em;
     font-size: 8pt;
 }

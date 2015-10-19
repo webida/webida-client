@@ -93,7 +93,7 @@ define([
          * @param {string} contents
          */
         setContents: function(contents) {
-            return this.contents = contents;
+            this.contents = contents;
         },
 
         /**

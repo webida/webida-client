@@ -613,9 +613,8 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
             },
 
-            // writeFile
-            writeFile : function (target, data, cb) {
-                var file;
+			_writeFile: function(target, data, cb){
+				var file;
                 function checkValidWriteFile() {
                     var ret = checkTargetPath(target, undefined);
                     if (isError(ret)) {
@@ -656,6 +655,30 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 } else {
                     mount.writeFile(target, data, withinCache(target) ? callback : cb);
                 }
+			},
+
+            // writeFile
+            writeFile : function (target, data, cb) {
+            	//console.log('writeFile('+target+', data, cb)');
+            	var that = this;
+                var path, dir;
+                path = target.split(/[\\/]/);
+                path.pop();
+                dir = path.join('/');
+                this.isDirectory(dir, function (error, isDir) {
+                	if (isDir === true) {
+                		that._writeFile(target, data, cb);
+                	} else {
+                		//console.log('If dir not exists, create dir then write file');
+                		that.createDirectory(dir, true, function(err) {
+                			if (err) {
+                				cb(err);
+                			} else {
+                				that._writeFile(target, data, cb);
+                			}
+                		});
+                	}
+                });
             },
 
             // setMeta
