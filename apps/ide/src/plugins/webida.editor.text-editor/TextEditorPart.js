@@ -109,8 +109,8 @@ define([
         this.fileSavedHandle = null;
         this.preferences = null;
         this.foldingStatus = null;
-        this.on(Part.CONTENT_READY, function(part) {
-            console.log('Part.CONTENT_READY!!');
+        this.on(Part.CONTENTS_READY, function(part) {
+            console.log('Part.CONTENTS_READY!!');
             var viewer = part.getViewer();
             var ds = part.getDataSource();
             var recentViewer = recentViewers.get(ds);

@@ -181,7 +181,7 @@ define([
     });
 
     /** @constant {string} */
-    PartViewer.CONTENT_CHANGE = 'contentChange';
+    PartViewer.CONTENTS_CHANGE = 'contentsChange';
 
     /**
      *

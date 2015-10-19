@@ -125,7 +125,7 @@ define([
             var part = new PartClass(this);
             this.setPart(part);
             if ( typeof callback === 'function') {
-                part.once(Part.CONTENT_READY, callback);
+                part.once(Part.CONTENTS_READY, callback);
             }
 
             //2. Registers the part

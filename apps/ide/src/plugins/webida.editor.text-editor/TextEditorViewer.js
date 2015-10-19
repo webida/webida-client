@@ -291,7 +291,7 @@ define([
                 var request = new TextChangeRequest();
                 request.setDelta(change);
                 request.setContents(cm.getValue());
-                self.emit(PartViewer.CONTENT_CHANGE, request);
+                self.emit(PartViewer.CONTENTS_CHANGE, request);
             });
 
             this.editor.setOption('showCursorWhenSelecting', true);

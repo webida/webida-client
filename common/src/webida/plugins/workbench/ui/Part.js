@@ -129,7 +129,7 @@ define([
                 });
 
                 //Model listen to viewer's content change
-                eProxy.on(viewer, PartViewer.CONTENT_CHANGE, function(request) {
+                eProxy.on(viewer, PartViewer.CONTENTS_CHANGE, function(request) {
                     part.onViewerChange(request);
                 });
 
@@ -148,7 +148,7 @@ define([
                 model.emit(PartModel.CONTENTS_CREATED, model.getContents());
 
                 //Notify user can navigate contents
-                part.emit(Part.CONTENT_READY, part);
+                part.emit(Part.CONTENTS_READY, part);
 
                 //Focus to the part
                 part.focus();
@@ -393,7 +393,7 @@ define([
      * render(contents) called for the first time.
      * @constant {string}
      */
-    Part.CONTENT_READY = 'contentReady';
+    Part.CONTENTS_READY = 'contentsReady';
 
     return Part;
 });

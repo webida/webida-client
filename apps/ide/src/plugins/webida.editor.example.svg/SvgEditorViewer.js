@@ -163,7 +163,7 @@ define([
             });
             mask.addEventListener('mouseup', function(ev) {
                 if (desc) {
-                    that.emit(PartViewer.CONTENT_CHANGE, new ChangeRequest(desc));
+                    that.emit(PartViewer.CONTENTS_CHANGE, new ChangeRequest(desc));
                 }
                 isDragStart = false;
                 isDragProgress = false;

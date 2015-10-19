@@ -10458,7 +10458,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
 </XPD:OBJ>
 <XPD:OBJ name="Attributes[1]" type="UMLAttribute" guid="EtI8hb2SyEq8UidYtV5FzQAA">
-<XPD:ATTR name="Name" type="string">String CONTENT_READY</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">String CONTENTS_READY</XPD:ATTR>
 <XPD:REF name="Owner">AUeu5FOrl0iZG9PW2WaDmwAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
@@ -12954,7 +12954,7 @@ A factoryId is a path of the DataSourceFactory module.
 <XPD:REF name="Associations[2]">R2A/vQi2hUirRHe0fG/6uQAA</XPD:REF>
 <XPD:ATTR name="#Attributes" type="integer">1</XPD:ATTR>
 <XPD:OBJ name="Attributes[0]" type="UMLAttribute" guid="3kc4XWf+30e/yz9P9S1ZAgAA">
-<XPD:ATTR name="Name" type="string">String CONTENT_CHANGE</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">String CONTENTS_CHANGE</XPD:ATTR>
 <XPD:REF name="Owner">lrW1XP1PdkScJ9YW76/NyAAA</XPD:REF>
 </XPD:OBJ>
 </XPD:OBJ>
