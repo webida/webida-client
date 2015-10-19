@@ -38,7 +38,7 @@ define([
                 id : id,
                 title: title,
                 closable: false,
-                style: 'width:100%; height:100%; padding: 0; border: 1px solid #dadfe4 !important'
+                style: 'width:100%; height:100%; padding: 0;'
             }, option);
             this.contentPane = new ContentPane(options);
         } else {

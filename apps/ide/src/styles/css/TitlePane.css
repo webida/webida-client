@@ -1,0 +1,99 @@
+/* TitlePane and Fieldset
+ *
+ * Styling TitlePane means styling the TitlePane title and its content container  (dijitTitlePane)
+ *
+ * TitlePane title:
+ * 1. TitlePane title (default styling):
+ * 		.dijitTitlePaneTitle - TitlePane's title div style: background-color, border
+ *
+ * 2. hovered TitlePane title (ie, mouse hover on a title bar)
+ * 		.dijitTitlePaneTitleHover - styles when mouse hover on the title div
+ *
+ * 3. active TitlePane title (ie, mouse down on a title bar)
+ * 		.dijitTitlePaneTitleActive - styles when mouse down on the title div
+ *
+ *
+ * TitlePane Content Container:
+ * 1. outer/inner container:
+ * 		.dijitTitlePaneContentOuter / dijitTitlePaneContentInner - styles for the content outer div
+ */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+.dijitTitlePaneTitle {
+  background-color: #efefef;
+  background-image: url("images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+  border: 1px solid #b5bcc7;
+  padding: 0 7px 3px 7px;
+  min-height: 17px;
+  color: #494949;
+}
+.dijitFieldset {
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+}
+.dijitTitlePaneTitleOpen,
+.dijitTitlePaneTitleFixedOpen {
+  background-color: #cfe5fa;
+  color: #000000;
+}
+.dijitTitlePaneTitleHover {
+  background-color: #abd6ff;
+  border-color: #759dc0;
+}
+.dijitTitlePaneTitleActive {
+  background-color: #7dbdfa;
+  border-color: #759dc0;
+  background-image: url("images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+}
+.dijitTitlePaneTitleFocus {
+  margin-top: 3px;
+  padding-bottom: 2px;
+}
+.dijitTitlePane .dijitArrowNode,
+.dijitFieldset .dijitArrowNode {
+  background-image: url("images/spriteArrows.png");
+  background-repeat: no-repeat;
+  height: 8px;
+  width: 7px;
+}
+.dijitTitlePaneTitleOpen .dijitArrowNode,
+.dijitFieldsetTitleOpen .dijitArrowNode {
+  background-position: 0 0;
+}
+.dijitTitlePaneTitleClosed .dijitArrowNode,
+.dijitFieldsetTitleClosed .dijitArrowNode {
+  background-position: -14px 0;
+}
+.dijitTitlePaneContentOuter {
+  background: #ffffff;
+  border: 1px solid #b5bcc7;
+  border-top: none;
+}
+.dijitTitlePaneContentInner {
+  padding: 10px;
+}
+.dijitFieldsetContentInner {
+  padding: 4px;
+}
+.dijitTitlePaneTextNode,
+.dijitFieldsetLegendNode {
+  margin-left: 4px;
+  margin-right: 4px;
+  vertical-align: text-top;
+}

@@ -1,0 +1,163 @@
+/* NumberSpinner - namespace "dijitSpinner"
+ *
+ * Styling NumberSpinner mainly includes:
+ *
+ * 1. Arrows
+ * 		Outer containers: .dijitSpinnerButtonContainer|.dijitSpinnerButtonInner  - for border, padding and position
+ * 		Arrows: .dijitArrowButton|.dijitUpArrowButton.|dijitDownArrowButton
+ * 		Inner container: .dijitArrowButtonInner - for border, padding, width|height and background image
+ *
+ * 2. Hover state
+ * 		.dijitUpArrowButtonHover|.dijitDownArrowButtonHover .*  - for background color|image
+ *
+ * 3. Active state
+ * 		.dijitUpArrowButtonActive|.dijitDownArrowButtonActive .*  - for border, padding, margin and background color|image
+ *
+ * 4. Focused state
+ * 		.dijitSpinnerFocused .* - for background color|image
+ *
+ * 5. Disabled state
+ * 		.dijitSpinnerDisabled .* - for background color|image
+ */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.webida-light {
+  /* button */
+  /* up & down button icons */
+  /** hover & focused status **/
+  /* mouse down status */
+  /* disabled */
+}
+.webida-light .dijitSpinnerButtonContainer {
+  overflow: hidden;
+  position: relative;
+  width: auto;
+  padding: 0 2px;
+}
+.webida-light .dijitSpinnerButtonContainer .dijitSpinnerButtonInner {
+  border-width: 1px 0;
+  /* reserve space to match thecombobox button border with border and not padding to make IE happier */
+  border-style: solid none;
+}
+.webida-light .dijitSpinner .dijitArrowButton {
+  width: auto;
+  background-color: #efefef;
+  background-image: url("../images/standardGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+  overflow: hidden;
+}
+.webida-light .dj_iequirks .dijitSpinner .dijitArrowButton {
+  overflow: visible;
+  /* 0 height w/o this */
+}
+.webida-light .dijitSpinner .dijitSpinnerButtonInner {
+  width: 15px;
+}
+.webida-light .dijitSpinner .dijitArrowButtonInner {
+  border: solid 1px #ffffff;
+  border-bottom-width: 0;
+  /* 2 top borders = 1 top+bottom border in ComboBox */
+  background-image: url("../form/images/commonFormArrows.png");
+  background-repeat: no-repeat;
+  height: 100%;
+  width: 15px;
+  padding-left: 1px;
+  padding-right: 1px;
+  /* for up arrow */
+  background-position: -139px center;
+  /* override button.css (TODO: move to Common.css since ComboBox needs this too) */
+  display: block;
+  margin: -1px 0 -1px 0;
+  /* compensate for inner border */
+}
+.webida-light .dj_iequirks .dijitSpinner .dijitArrowButtonInner,
+.webida-light .dj_ie6 .dijitSpinner .dijitArrowButtonInner,
+.webida-light .dj_ie7 .dijitSpinner .dijitArrowButtonInner,
+.webida-light .dj_ie8 .dijitSpinner .dijitArrowButtonInner {
+  margin-top: 0;
+  /* since its bottom aligned */
+}
+.webida-light .dj_iequirks .dijitSpinner .dijitArrowButtonInner {
+  width: 19px;
+}
+.webida-light .dijitSpinner .dijitDownArrowButton .dijitArrowButtonInner {
+  background-position: -34px;
+}
+.webida-light .dijitSpinner .dijitArrowButtonInner .dijitInputField {
+  padding: 0;
+}
+.webida-light .dijitUpArrowButtonActive,
+.webida-light .dijitDownArrowButtonActive {
+  background-color: #abd6ff;
+}
+.webida-light .dijitSpinner .dijitUpArrowButtonHover,
+.webida-light .dijitSpinner .dijitDownArrowButtonHover,
+.webida-light .dijitSpinnerFocused .dijitArrowButton {
+  background-color: #abd6ff;
+}
+.webida-light .dijitSpinner .dijitUpArrowButtonHover .dijitArrowButtonInner {
+  background-position: -174px;
+}
+.webida-light .dijitSpinner .dijitDownArrowButtonHover .dijitArrowButtonInner {
+  background-position: -69px;
+}
+.webida-light .dijitSpinnerFocused {
+  background-color: #ffffff;
+  background-image: none;
+}
+.webida-light .dijitSpinner .dijitDownArrowButtonActive,
+.webida-light .dijitSpinner .dijitUpArrowButtonActive {
+  background-color: #7dbefa;
+  background-image: url("../images/activeGradient.png");
+  background-repeat: repeat-x;
+  background-image: -moz-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -webkit-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
+  _background-image: none;
+}
+.webida-light .dijitSpinner .dijitUpArrowButtonActive .dijitArrowButtonInner,
+.webida-light .dijitSpinner .dijitDownArrowButtonActive .dijitArrowButtonInner {
+  /* hide inner border while button is depressed */
+  border: 0;
+  padding: 1px;
+  margin-right: 2px;
+  margin-bottom: 1px;
+}
+.webida-light .dijitSpinner .dijitUpArrowButtonActive .dijitArrowButtonInner {
+  background-position: -173px;
+}
+.webida-light .dijitSpinner .dijitDownArrowButtonActive .dijitArrowButtonInner {
+  background-position: -68px;
+}
+.webida-light .dijitSpinnerDisabled .dijitArrowButtonInner {
+  background-color: #efefef;
+}
+.webida-light .dijitSpinnerDisabled .dijitUpArrowButton .dijitArrowButtonInner {
+  background-position: -104px;
+}
+.webida-light .dijitSpinnerDisabled .dijitDownArrowButton .dijitArrowButtonInner {
+  background-position: 1px;
+}
+/** hacks for browsers **/
+/* for IE 7, when div is enlarged,
+ * should be no empty space between dijitInputLayoutContainer and dijitSpinner*/
+.dj_ie7 .dijitSpinner {
+  overflow: visible;
+}

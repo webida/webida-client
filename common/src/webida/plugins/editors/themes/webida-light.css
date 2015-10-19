@@ -1,7 +1,6 @@
 
 .cm-s-webida-light.CodeMirror {
     background: #ffffff; color: #000000;
-    border-top : 5px solid RGB(203,213,225);
 }
 
 .cm-s-webida-light div.CodeMirror-selected {background: #94bbeb !important;}
@@ -41,11 +40,11 @@
     color: #FFFFFF;
 }
 
-.cm-s-webida-light div.CodeMirror-gutter {background: #dedede;}
+.cm-s-webida-light div.CodeMirror-gutter {background: #dadfe4;}
 
 .cm-s-webida-light .CodeMirror-matchingbracket {
     text-decoration: underline;
-    color: #000000 !important;
+    color: #41545b !important;
 }
 
 .cm-s-webida-light .CodeMirror-activeline-background {

@@ -1,0 +1,320 @@
+#gitViewTab {
+    box-sizing: border-box;
+    height: calc(100% - 8px)!important;
+}
+.gv-pannel {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.gv-toolbar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height:29px;
+}
+
+.gv-toolbar-statusbar {
+    position: absolute;
+    top: 31px;
+    width: 100%;
+    height:29px;
+}
+
+.gv-selectedpath {
+    position: absolute;
+    top: 6px;
+    left: 5px;
+}
+
+.gv-contents {
+    word-wrap: break-word;
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    height: calc(100% - 60px);
+    overflow: auto;
+}
+
+.gv-content {
+    margin: 5px;
+    font-size: 10pt;
+    font-family: Courier, 'Courier New';
+}
+
+.gv-contentbody {
+    padding: 10px;
+}
+
+.gv-contentbody-issue:hover {
+    cursor: pointer;
+}
+
+.gv-title {
+    padding: 5px;
+}
+
+.gv-toolbar .gv-menu-container {
+    width: 100%;
+    height: 100%;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+.gv-menuitem {
+    float: left;
+    margin : 4px 3px;
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+}
+
+.sunkenline {
+    float: left;
+    margin-right: 6px;
+    margin-top: 4px;
+    height: 20px;
+    width: 2px;
+}
+
+.disabled { cursor:  not-allowed!important; }
+
+/*git status*/
+.gitModified {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -80px 0 no-repeat;}
+.gitAdded {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -80px -60px no-repeat;}
+.gitRemoved {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -80px -40px no-repeat;}
+.gitChanged {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') 0 -80px no-repeat;}
+.gitConflicted {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -20px -60px no-repeat;}
+.gitUntracked {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -40px -80px no-repeat;}
+.gitIgnored {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -40px -60px no-repeat;}
+.gitTracked {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -20px -80px no-repeat;}
+.gitMissing {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -60px -60px no-repeat;}
+.gitRepoTop {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -80px -20px no-repeat;}
+.gitSubmodule {position:absolute;width:16px;height:16px;background:url('../resource/git_status_transparent.png') -100px -80px no-repeat;}
+
+.git-add { background: url('../resource/git_add.png') no-repeat;}
+.git-add:hover { background: url('../resource/git_add.png') -20px 0 no-repeat;}
+.git-add.disabled, .git-add.disabled:active { background: url('../resource/git_add.png') -40px 0 no-repeat;}
+.git-add:active {background: url('../resource/git_add.png') -60px 0 no-repeat; }
+
+.git-remove { background: url('../resource/git_remove.png') no-repeat;}
+.git-remove:hover { background: url('../resource/git_remove.png') -20px 0 no-repeat;}
+.git-remove.disabled, .git-remove.disabled:active { background: url('../resource/git_remove.png') -40px 0 no-repeat;}
+.git-remove:active { background: url('../resource/git_remove.png') -60px 0 no-repeat;}
+
+.git-untrack { background: url('../resource/git_untrack.png') no-repeat;}
+.git-untrack:hover { background: url('../resource/git_untrack.png') -20px 0 no-repeat;}
+.git-untrack.disabled, .git-untrack.disabled:active { background: url('../resource/git_untrack.png') -40px 0 no-repeat;}
+.git-untrack:active {background: url('../resource/git_untrack.png') -60px 0 no-repeat;}
+
+.git-commit { background: url('../resource/git_commit.png') no-repeat;}
+.git-commit:hover { background: url('../resource/git_commit.png') -20px 0 no-repeat;}
+.git-commit.disabled, .git-commit.disabled:active { background: url('../resource/git_commit.png') -40px 0 no-repeat;}
+.git-commit:active { background: url('../resource/git_commit.png') -60px 0 no-repeat;}
+
+.git-resettocommit { background: url('../resource/git_resettocommit.png') no-repeat;}
+.git-resettocommit:hover { background: url('../resource/git_resettocommit.png') -20px 0 no-repeat;}
+.git-resettocommit.disabled, .git-resettocommit.disabled:active { background: url('../resource/git_resettocommit.png') -40px 0 no-repeat;}
+.git-resettocommit:active { background: url('../resource/git_resettocommit.png') -60px 0 no-repeat;}
+
+.git-stash { background: url('../resource/git_stash.png') no-repeat;}
+.git-stash:hover { background: url('../resource/git_stash.png') -20px 0 no-repeat;}
+.git-stash.disabled, .git-stash.disabled:active { background: url('../resource/git_stash.png') -40px 0 no-repeat;}
+.git-stash:active { background: url('../resource/git_stash.png') -60px 0 no-repeat;}
+
+.git-unstash { background: url('../resource/git_unstash.png') no-repeat;}
+.git-unstash:hover { background: url('../resource/git_unstash.png') -20px 0 no-repeat;}
+.git-unstash.disabled, .git-unstash.disabled:active { background: url('../resource/git_unstash.png') -40px 0 no-repeat;}
+.git-unstash:active { background: url('../resource/git_unstash.png') -60px 0 no-repeat;}
+
+.git-revert { background: url('../resource/git_checkoutfromstage.png') no-repeat;}
+.git-revert:hover { background: url('../resource/git_checkoutfromstage.png') -20px 0 no-repeat;}
+.git-revert.disabled, .git-revert.disabled:active { background: url('../resource/git_checkoutfromstage.png') -40px 0 no-repeat;}
+.git-revert:active { background: url('../resource/git_checkoutfromstage.png') -60px 0 no-repeat;}
+
+.git-rebase { background: url('../resource/git_rebase.png') no-repeat;}
+.git-rebase:hover { background: url('../resource/git_rebase.png') -20px 0 no-repeat;}
+.git-rebase.disabled, .git-rebase.disabled:active { background: url('../resource/git_rebase.png') -40px 0 no-repeat;}
+.git-rebase:active { background: url('../resource/git_rebase.png') -60px 0 no-repeat;}
+
+.git-merge { background: url('../resource/git_merge.png') no-repeat;}
+.git-merge:hover { background: url('../resource/git_merge.png') -20px 0 no-repeat;}
+.git-merge.disabled, .git-merge.disabled:active { background: url('../resource/git_merge.png') -40px 0 no-repeat;}
+.git-merge:active { background: url('../resource/git_merge.png') -60px 0 no-repeat;}
+
+.git-branch { background: url('../resource/git_branch.png') no-repeat;}
+.git-branch:hover { background: url('../resource/git_branch.png') -20px 0 no-repeat;}
+.git-branch.disabled, .git-branch.disabled:active { background: url('../resource/git_branch.png') -40px 0 no-repeat;}
+.git-branch:active { background: url('../resource/git_branch.png') -60px 0 no-repeat;}
+
+.git-preference { background: url('../resource/git_preference.png') no-repeat;}
+.git-preference:hover { background: url('../resource/git_preference.png') -20px 0 no-repeat;}
+.git-preference.disabled, .git-preference.disabled:active { background: url('../resource/git_preference.png') -40px 0 no-repeat;}
+.git-preference:active { background: url('../resource/git_preference.png') -60px 0 no-repeat;}
+
+.git-history { background: url('../resource/git_history.png') no-repeat;}
+.git-history:hover { background: url('../resource/git_history.png') -20px 0 no-repeat;}
+.git-history.disabled, .git-history.disabled:active { background: url('../resource/git_history.png') -40px 0 no-repeat;}
+.git-history:active { background: url('../resource/git_history.png') -60px 0 no-repeat;}
+
+.git-status { background: url('../resource/git_status.png') no-repeat;}
+.git-status:hover { background: url('../resource/git_status.png') -20px 0 no-repeat;}
+.git-status.disabled, .git-status.disabled:active { background: url('../resource/git_status.png') -40px 0 no-repeat;}
+.git-status:active { background: url('../resource/git_status.png') -60px 0 no-repeat;}
+
+.git-repositoryhistory { background: url('../resource/git_repositoryhistory.png') no-repeat;}
+.git-repositoryhistory:hover { background: url('../resource/git_repositoryhistory.png') -20px 0 no-repeat;}
+.git-repositoryhistory.disabled, .git-repositoryhistory.disabled:active { background: url('../resource/git_repositoryhistory.png') -40px 0 no-repeat;}
+.git-repositoryhistory:active { background: url('../resource/git_repositoryhistory.png') -60px 0 no-repeat;}
+
+.git-compare { background: url('../resource/git_compare.png') no-repeat;}
+.git-compare:hover { background: url('../resource/git_compare.png') -20px 0 no-repeat;}
+.git-compare.disabled, .git-compare.disabled:active { background: url('../resource/git_compare.png') -40px 0 no-repeat;}
+.git-compare:active { background: url('../resource/git_compare.png') -60px 0 no-repeat;}
+
+.git-blame { background: url('../resource/git_blame.png') no-repeat;}
+.git-blame:hover { background: url('../resource/git_blame.png') -20px 0 no-repeat;}
+.git-blame.disabled, .git-blame.disabled:active { background: url('../resource/git_blame.png') -40px 0 no-repeat;}
+.git-blame:active { background: url('../resource/git_blame.png') -60px 0 no-repeat;}
+
+.git-push { background: url('../resource/git_push.png') no-repeat;}
+.git-push:hover { background: url('../resource/git_push.png') -20px 0 no-repeat;}
+.git-push.disabled, .git-push.disabled:active { background: url('../resource/git_push.png') -40px 0 no-repeat;}
+.git-push:active { background: url('../resource/git_push.png') -60px 0 no-repeat;}
+
+.git-fetch { background: url('../resource/git_fetch.png') no-repeat;}
+.git-fetch:hover { background: url('../resource/git_fetch.png') -20px 0 no-repeat;}
+.git-fetch.disabled, .git-fetch.disabled:active { background: url('../resource/git_fetch.png') -40px 0 no-repeat;}
+.git-fetch:active { background: url('../resource/git_fetch.png') -60px 0 no-repeat;}
+
+.git-pull { background: url('../resource/git_pull.png') no-repeat;}
+.git-pull:hover { background: url('../resource/git_pull.png') -20px 0 no-repeat;}
+.git-pull.disabled, .git-pull.disabled:active { background: url('../resource/git_pull.png') -40px 0 no-repeat;}
+.git-pull:active { background: url('../resource/git_pull.png') -60px 0 no-repeat;}
+
+.git-remote { background: url('../resource/git_remote.png') no-repeat;}
+.git-remote:hover { background: url('../resource/git_remote.png') -20px 0 no-repeat;}
+.git-remote.disabled, .git-remote.disabled:active { background: url('../resource/git_remote.png') -40px 0 no-repeat;}
+.git-remote:active { background: url('../resource/git_remote.png') -60px 0 no-repeat;}
+
+.git-clone { background: url('../resource/git_clonefromurl.png') no-repeat;}
+.git-clone:hover { background: url('../resource/git_clonefromurl.png') -20px 0 no-repeat;}
+.git-clone.disabled, .git-clone.disabled:active { background: url('../resource/git_clonefromurl.png') -40px 0 no-repeat;}
+.git-clone:active { background: url('../resource/git_clonefromurl.png') -60px 0 no-repeat;}
+
+.git-createrepo { background: url('../resource/git_creativegitrepository.png') no-repeat;}
+.git-createrepo:hover { background: url('../resource/git_creativegitrepository.png') -20px 0 no-repeat;}
+.git-createrepo.disabled, .git-createrepo.disabled:active { background: url('../resource/git_creativegitrepository.png') -40px 0 no-repeat;}
+.git-createrepo:active { background: url('../resource/git_creativegitrepository.png') -60px 0 no-repeat;}
+
+.git-submodule { background: url('../resource/git_updatesubmodules.png') no-repeat;}
+.git-submodule:hover { background: url('../resource/git_updatesubmodules.png') -20px 0 no-repeat;}
+.git-submodule.disabled, .git-submodule.disabled:active { background: url('../resource/git_updatesubmodules.png') -40px 0 no-repeat;}
+.git-submodule:active { background: url('../resource/git_updatesubmodules.png') -60px 0 no-repeat;}
+
+/*
+theme*/
+
+/* git compare sytle */
+#GitHistoryDiffInfo .GitHitoryGreen {background-color: #ddffdd;}
+#GitHistoryDiffInfo .GitHitoryRed {background-color: #ffdddd;}
+#GitHistoryDiffInfo span.cm-meta {color: #a0b !important;}
+#GitHistoryDiffInfo span.cm-error { background-color: black; opacity: 0.4;}
+#GitHistoryDiffInfo span.cm-error.cm-string { background-color: red; }
+#GitHistoryDiffInfo span.cm-error.cm-tag { background-color: #2b2; }
+
+/* git style */
+.gitViewTab {
+    border-bottom: #c1c8cf solid 1px;
+    border-left: #c1c8cf solid 1px;
+    border-right: #c1c8cf solid 1px;
+}
+.gv-pannel {
+    border: 1px #fff solid;
+}
+.gv-toolbar {
+    border-top: 1px solid #dee4e7;
+    background-color: #cfd4da;
+}
+.gv-toolbar-statusbar {
+    border-top: 1px solid #fff;
+    background-color: #e1e6ec;
+}
+.gv-selectedpath {
+    font-weight: bold;
+    color: #494949;
+}
+.gv-contents {
+    background-color: #fafaff;
+}
+.gv-content {
+    border: 1px solid #d0deec;
+}
+.gv-contentbody {
+    background-color: #fff;
+}
+.gv-contentbody-issue {
+    color: #0060ff;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.gv-contentbody-message {
+    color: red;
+    font-weight: bold;
+}
+.gv-contentbody-issue:hover {
+    background-color: #bcedff;
+}
+.gv-title {
+    color: #fff;
+}
+.gv-title.gv-success {
+    background-color: #51a351;
+}
+.gv-title.gv-error {
+    background-color:#bd362f;
+}
+.gv-title.gv-info {
+    background-color: #2f96b4;
+}
+.gv-title.gv-warning {
+    background-color: #f89406;
+}
+.sunkenline {
+    background: url('../resource/sunkenline_02.png') no-repeat;
+}
+.gv-menuitem {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+}
+
+
+#gitViewTab .dijitButton .dijitButtonNode,
+#gitViewTab .dijitDropDownButton .dijitButtonNode,
+#gitViewTab .dijitComboButton .dijitButtonNode,
+#gitViewTab .dijitToggleButton .dijitButtonNode {
+    color: #fff;
+    background-color: #778393;
+}
+/* hover status */
+#gitViewTab .dijitButtonHover .dijitButtonNode,
+#gitViewTab .dijitDropDownButtonHover .dijitButtonNode,
+#gitViewTab .dijitComboButton .dijitButtonNodeHover,
+#gitViewTab .dijitComboButton .dijitDownArrowButtonHover,
+#gitViewTab .dijitToggleButtonHover .dijitButtonNode {
+    color: #fff;
+    background-color: #626c7a;
+}
+
+/* active, checked status */
+#gitViewTab .dijitButtonActive .dijitButtonNode,
+#gitViewTab .dijitDropDownButtonActive .dijitButtonNode,
+#gitViewTab .dijitComboButtonActive .dijitButtonNode,
+#gitViewTab .dijitToggleButtonActive .dijitButtonNode,
+#gitViewTab .dijitToggleButtonChecked .dijitButtonNode {
+    color: #fff;
+    background-color: #626c7a;
+}

@@ -1,0 +1,45 @@
+
+<script>
+
+    var $elem = $('.console_toolbar');
+    var $elemView = $('.console_toolbar_view');
+
+    $elem.bind('click', function(){
+
+        if ($elemView.css('display') === "none") {
+            $elemView.show();
+        } else {
+            $elemView.hide();
+        }
+    });
+
+    function toggleCheckBoxImg(checkboxflag) {
+
+        if ($("input[id="+checkboxflag+"]").attr("checked") == "checked") {
+            $("label[for="+checkboxflag+"]").removeClass("checkbox_on");
+            $("label[for="+checkboxflag+"]").addClass("checkbox_off");
+            $("input[id="+checkboxflag+"]").attr("checked",false);
+
+        } else {
+            $("input[id="+checkboxflag+"]").attr("checked","true");
+            $("label[for="+checkboxflag+"]").removeClass("checkbox_off");
+            $("label[for="+checkboxflag+"]").addClass("checkbox_on");
+        }
+    }
+
+</script>
+
+<div class='console_toolbar'></div>
+
+<div class='console_toolbar_view' style='display:none'>
+    <div style="padding-bottom: 10px;">
+        <input type='checkbox'  checked="checked"  id ="showMsg"  >
+        <label for="showMsg" onclick="toggleCheckBoxImg('showMsg');"  class="checkbox_on">Show on new messages</label>
+    </div>
+    <div style="padding-bottom: 10px;">
+        <input type='checkbox' id="scrollLock" >
+        <label for="scrollLock" onclick="toggleCheckBoxImg('scrollLock');"  class="checkbox_off">Scroll lock</label>
+    </div>
+    <input type='button' class='clear' value='clear'>
+</div>
+

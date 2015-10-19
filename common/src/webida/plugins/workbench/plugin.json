@@ -70,7 +70,7 @@
                                            {
                                                "shortcut" : { "keys" : { "default" : "ctrl+shift+L" }, "desc" : "Shortcut keys" },
                                                "toolbar": {
-                                                   "icons" : "./styles/webida-images/icons/toolbar_shortcuts.png",
+                                                   "icons" : "/common/src/webida/plugins/workbench/resource/toolbar_shortcuts.png",
                                                    "tooltip" : "Shortcut list"
                                                },
                                                "procedural" : true
@@ -79,7 +79,7 @@
                                           {
                                               "shortcut" : { "keys" : { "default" : "Alt+C" }, "desc" : "The list of viable commands from which you can select one and run it" },
                                               "toolbar": {
-                                                  "icons" : "./styles/webida-images/icons/toolbar_command.png",
+                                                  "icons" : "/common/src/webida/plugins/workbench/resource/toolbar_command.png",
                                                   "tooltip" : "Command list"
                                               },
                                               "procedural" : true

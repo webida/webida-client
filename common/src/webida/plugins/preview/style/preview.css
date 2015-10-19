@@ -1,0 +1,66 @@
+#PreviewTab {
+    border-top: 1px #fff solid!important;
+    background-color: transparent;
+    width: 100%!important;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+#preview-image-toolbar {
+    display: none;
+}
+
+.iv-info-size {
+    margin-top: 6px;
+    display: inline-block;
+}
+
+.iv-info-bt-pane {
+    float: right;
+    margin-right: 40px;
+}
+ .preview-toolbar-panel, .preview-toolbar-ext-panel {
+     position: absolute;
+     top: 0px;
+     width: 100%;
+     height: 30px;
+     border-top: 1px solid #ecf1f6;
+     color: #494949;
+     font-weight: bold;
+ }
+.preview-toolbar-ext-panel {
+    position: absolute;
+    top: 31px;
+    padding: 0 0px;
+    border-top: 1px solid #fff;
+    background-color: #e1e6ec;
+    border-left: 1px #fff solid;
+    border-right: 1px #fff solid;
+    box-sizing: border-box;
+}
+.preview-content-panel {
+    position: absolute;
+    top: 60px; /* 30px */
+    width: 100%;
+    height: calc(100% - 69px);
+    overflow: auto;
+    background-color: #fff;
+}
+.preview-panel {
+    background-color: #cfd4da;
+    color: #7e8c9f;
+}
+#preview-default-toolbar {
+    width: 100%!important;
+    height: 29px;
+    border-left: 1px #fff solid;
+    border-right: 1px #fff solid;
+}
+.toolbar-message {
+    padding: 7px;
+    height: 29px;
+    box-sizing: border-box;
+    position: static;
+    top:0;
+    left: 0;
+}

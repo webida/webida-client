@@ -28,7 +28,8 @@
  * @module webida.terminal.plugin
  * @memberOf module:webida.terminal
  */
-define(['webida-lib/util/logger/logger-client',          // Logger
+define(['require',                           //require
+        'webida-lib/util/logger/logger-client',          // Logger
         'external/lodash/lodash.min',  // _
         'webida-lib/app',                   // ide
         'webida-lib/plugins/workbench/plugin',  // workbench
@@ -40,7 +41,8 @@ define(['webida-lib/util/logger/logger-client',          // Logger
         './lib/socket.io-stream',           // ss
         './lib/terminal',                   // Terminal
         'dojo/text!./layout/terminal.html'],  // terminalHtml
-function (Logger,
+function (require,
+          Logger,
           _,
           ide,
           workbench,
@@ -53,6 +55,15 @@ function (Logger,
           Terminal,
           terminalHtml) {
     'use strict';
+
+    function _loadCss(url) {
+        var link = document.createElement('link');
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = url;
+        document.getElementsByTagName('head')[0].appendChild(link);
+    }
+    _loadCss(require.toUrl('./style/terminal.css'));
 
     var logger = new Logger('webida.terminal.plugin');
     //logger.setConfig('level', Logger.LEVELS.log);

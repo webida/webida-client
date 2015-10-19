@@ -1,0 +1,89 @@
+/* RadioButton
+ *
+ * Styling RadioButton mainly includes:
+ *
+ * 1. Containers
+ * 		.dijitRadio|.dijitRadioIcon - for border, padding, width|height and background image
+ *
+ * 2. RadioButton within ToggleButton
+ * 		.dijitToggleButton|.dijitToggleButtonChecked .* - for background image
+ *
+ * 3. Checked state
+ * 		.dijitRadioChecked - for checked background-color|image
+ * 		.dijitToggleButtonChecked - for border, background-color|image, display and width|height
+ *
+ * 4. Hover state
+ * 		.dijitRadioHover|.dijitRadioCheckedHover - for background image
+ *
+ * 5. Disabled state
+ * 		.dijitRadioDisabled|.dijitRadioCheckedDisabled - for background image
+ */
+
+@import "../less/variables";
+@import "../less/theme-set";
+
+.dj_ie6 .dijitToggleButton .dijitRadio,
+.dj_ie6 .dijitToggleButton .dijitRadioIcon {
+  background-image: url("@{image-form-checkbox-and-radios-ie6}");
+}
+
+.@{theme} {
+  .dijitToggleButton .dijitRadio,
+  .dijitToggleButton .dijitRadioIcon {
+    background-image: url("@{image-form-checkbox-and-radios}");
+  }
+
+  .dijitRadio,
+  .dijitRadioIcon {
+    /* inside a toggle button */
+    background-image: url("@{image-form-checkbox-and-radios}"); /* checkbox sprite image */
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    margin: 0 2px 0 0;
+    padding: 0;
+  }
+
+  .dj_ie6 .dijitRadio,
+  .dj_ie6 .dijitRadioIcon {
+    /* inside a toggle button */
+    background-image: url("@{image-form-checkbox-and-radios-ie6}"); /* checkbox sprite image */
+  }
+
+  .dijitRadio {
+    /* unselected */
+    background-position: -126px;
+  }
+
+  .dijitToggleButton .dijitRadioIcon {
+    /* unselected */
+    background-position: -107px;
+  }
+
+  .dijitRadioDisabled {
+    /* unselected and disabled */
+    background-position: -198px;
+  }
+
+  .dijitRadioHover {
+    /* hovering over an unselected enabled radio button */
+    background-position: -162px;
+  }
+
+  .dijitRadioChecked {
+    background-position: -108px;
+  }
+
+  .dijitToggleButtonChecked .dijitRadioIcon {
+    background-position: -92px;
+  }
+
+  .dijitRadioCheckedHover {
+    background-position: -144px;
+  }
+
+  .dijitRadioCheckedDisabled {
+    /* selected but disabled */
+    background-position: -180px;
+  }
+}

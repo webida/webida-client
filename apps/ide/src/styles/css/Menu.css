@@ -1,0 +1,225 @@
+/* Menu
+
+There are three areas of styling for the Menu:
+
+ 1. The menu
+ 	There are three types of menus:
+ 	i) Context Menu
+ 	ii) Drop down Menu
+ 	iii) Navigation Menu
+ 	All three types of menus are affected by the .dijitMenu class in which you can set the background-color, padding and border
+ 	.dijitMenu affects the drop down menu in TimeTextBox, Calendar, ComboBox and FilteringSelect
+  .dijitMenuTable - for padding - also affects Select widget
+
+ 2. The menu bar
+ 	.dijitMenuBar - for border, margins, padding, background-color of the menu bar
+ 	.dijitMenuBar .dijitMenuItem - for padding, text color of menu items in the menu bar (overrides .dijitMenuItem)
+
+ 3. Menu items - items in the menu.
+ 	.dijitMenuItem - for color
+ 	.dijitMenuItemHover, .dijitMenuItemSelected - for background-color, border, text color, padding of a menu item or menubar item that has been hovered over or selected
+ 	.dijitMenuItemActive - for background-color of an active (mousedown) menu item
+	td.dijitMenuItemIconCell - for padding around a  menu item's icon
+	td.dijitMenuItemLabel - for padding around a menu item's label
+	.dijitMenuSeparatorTop - for border, top border, of the separator
+	.dijitMenuSeparatorBottom - for bottom margin of the separator
+
+	Styles specific to ComboBox and FilteringSelect widgets:
+	.dijitComboBoxMenu .dijitMenuItem - for padding and border of a menu item in a ComboBox or FilteringSelect widget's menu
+	.dijitComboBoxMenu .dijitMenuItemSelected- for text color, background-color and border of a menu item in a ComboBox or FilteringSelect widget's menu
+
+*/
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.webida-light {
+  /* this prevents jiggling upon hover of a menu item */
+  /* hover over a MenuItem or MenuBarItem */
+  /* the checked menu item */
+  /*ComboBox Menu*/
+}
+.webida-light .dijitMenuBar {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.webida-light .dijitMenu {
+  background-color: #4e555f;
+  border: 1px solid #000000;
+}
+.webida-light .dijitMenuItem {
+  color: #ffffff;
+}
+.webida-light .dijitMenuBar .dijitMenuItem {
+  background-image: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  top: 1px;
+  padding: 6px 10px 7px;
+  margin: -1px;
+  color: #ffffff;
+}
+.webida-light .dijitMenuBar .dijitMenuItemHover {
+  border-color: #0b3647;
+  background-color: #134b61;
+  /*background-image: -webkit-linear-gradient(top, #2b3035  0%, #363b42 100%);
+    background-image: -moz-linear-gradient(top, #2b3035  0%, #363b42 100%);
+    background-image: -o-linear-gradient(top, #2b3035  0%, #363b42 100%);
+    background-image: linear-gradient(to bottom, #2b3035  0%, #363b42 100%);*/
+}
+.webida-light .dijitMenuBar .dijitMenuItemSelected {
+  border-color: #0b3647;
+  background-color: #134b61;
+  /*background-image: -webkit-linear-gradient(top, #2b3035  0%, #363b42 100%);
+    background-image: -moz-linear-gradient(top, #2b3035  0%, #363b42 100%);
+    background-image: -o-linear-gradient(top, #2b3035  0%, #363b42 100%);
+    background-image: linear-gradient(to bottom, #2b3035  0%, #363b42 100%);*/
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+.webida-light .dijitMenuTable {
+  border-collapse: separate;
+  border-spacing: 0 0;
+  padding: 0;
+}
+.webida-light .dijitMenu .dijitMenuItem td,
+.webida-light .dijitComboBoxMenu .dijitMenuItem {
+  padding: 2px;
+  border-style: solid;
+  border-color: #ffffff;
+}
+.webida-light .dijitMenu .dijitMenuItemHover td,
+.webida-light .dijitMenu .dijitMenuItemSelected td,
+.webida-light .dijitMenuItemHover,
+.webida-light .dijitComboBoxMenu .dijitMenuItemHover,
+.webida-light .dijitMenuItemSelected {
+  border-color: #759dc0;
+  background-color: #91bad4;
+}
+.webida-light .dijitMenuPopup .dijitMenuItem {
+  background-color: transparent;
+  height: 22px;
+}
+.webida-light .dijitMenuPopup .dijitMenuItemSelected {
+  background-color: #53b2da;
+  /*background-image: -webkit-linear-gradient(top, #b3ceec 0%, #92aecd 100%);
+    background-image: -moz-linear-gradient(top, #b3ceec 0%, #92aecd 100%);
+    background-image: -o-linear-gradient(top, #b3ceec 0%, #92aecd 100%);
+    background-image: linear-gradient(to bottom, #b3ceec 0%, #92aecd 100%);*/
+}
+.webida-light .dijitMenuPopup .dijitMenuItemSelected.dijitMenuItemDisabled {
+  background-image: none;
+}
+.webida-light .dijitMenuPopup .dijitMenuItem td,
+.webida-light .dijitMenu .dijitMenuItemHover td {
+  border: 0;
+  background-color: transparent;
+}
+.webida-light .dj_ie .dijitMenuActive .dijitMenuItemHover,
+.webida-light .dj_ie .dijitMenuActive .dijitMenuItemSelected,
+.webida-light .dj_ie .dijitMenuPassive .dijitMenuItemHover,
+.webida-light .dj_ie .dijitMenuPassive .dijitMenuItemSelected {
+  padding-top: 6px;
+  padding-bottom: 5px;
+  margin-top: -3px;
+}
+.webida-light td.dijitMenuItemIconCell {
+  padding: 2px;
+  margin: 0 0 0 4px;
+}
+.webida-light td.dijitMenuItemLabel {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.webida-light .dijitMenuExpand {
+  width: 7px;
+  height: 7px;
+  background-image: url("../images/spriteArrows.png");
+  background-position: -14px 0;
+  margin-right: 3px;
+  margin-bottom: 4px;
+}
+.webida-light .dijitMenuItem .dijitMenuExpand {
+  background-position: -70px 0;
+}
+.webida-light .dijitMenuItem.dijitMenuItemHover .dijitMenuExpand,
+.webida-light .dijitMenuItem.dijitMenuItemSelected .dijitMenuExpand {
+  background-position: -14px 0;
+}
+.webida-light .dijitMenuItemDisabled .dijitMenuItemIconCell {
+  opacity: 1;
+}
+.webida-light .dijitMenuSeparatorTop {
+  height: auto;
+  margin-top: 1px;
+  /* prevents spacing above/below separator */
+  border-bottom: 1px solid #3a4047;
+}
+.webida-light .dijitMenuSeparatorBottom {
+  height: auto;
+  margin-bottom: 1px;
+}
+.webida-light .dijitCheckedMenuItem .dijitMenuItemIcon,
+.webida-light .dijitRadioMenuItem .dijitMenuItemIcon {
+  background-image: url("../form/images/checkboxRadioButtonStates.png");
+  background-repeat: no-repeat;
+  background-position: -15px 50%;
+  /* unchecked checkbox */
+  width: 15px;
+  height: 16px;
+}
+.webida-light .dj_ie6 .dijitCheckedMenuItem .dijitMenuItemIcon,
+.webida-light .dj_ie6 .dijitRadioMenuItem .dijitMenuItemIcon {
+  background-image: url("../form/images/checkboxAndRadioButtons_IE6.png");
+}
+.webida-light .dijitCheckedMenuItemChecked .dijitCheckedMenuItemIcon {
+  background-position: 0 50%;
+  /* checked checkbox */
+}
+.webida-light .dijitRadioMenuItem .dijitMenuItemIcon {
+  background-position: -105px 50%;
+  /* unfilled circle */
+}
+.webida-light .dijitRadioMenuItemChecked .dijitMenuItemIcon {
+  background-position: -90px 50%;
+  /* filled circle */
+}
+.webida-light .dijitComboBoxMenu {
+  margin-left: 0;
+  background-image: none;
+}
+.webida-light .dijitMenu .dijitMenuItemSelected td,
+.webida-light .dijitComboBoxMenu .dijitMenuItemSelected {
+  color: #000000;
+  border-color: #759dc0;
+  background-color: #abd6ff;
+}
+.webida-light .dijitMenu .dijitMenuItemSelected.dijitMenuItemDisabled td,
+.webida-light .dijitComboBoxMenu .dijitMenuItemSelected.dijitMenuItemDisabled {
+  color: inherit;
+}
+.webida-light .dijitMenu .dijitMenuItemSelected td {
+  border: 0;
+  background-color: transparent;
+}
+.webida-light .dijitComboBoxMenuActive .dijitMenuItemSelected {
+  background-color: #7dbdfa;
+  /* TODO: why is this a different color than normal .dijitMenuItemSelected? */
+}
+.webida-light .dijitMenuPreviousButton,
+.webida-light .dijitMenuNextButton {
+  font-style: italic;
+}

@@ -1,0 +1,55 @@
+/* ======= Styling for the document itself (overriding dojo.css) ======== */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.webida-light {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: .688em;
+  color: #131313;
+  /* Headings */
+  /* paragraphs, quotes and lists */
+  /* pre and code */
+  /* tables */
+}
+.webida-light h1 {
+  font-size: 1.545em;
+  margin-bottom: 0.727em;
+}
+.webida-light h2 {
+  font-size: 1.364em;
+  line-height: 1.455em;
+  margin-top: 1em;
+  margin-bottom: 0.60em;
+  font-weight: normal;
+}
+.webida-light h3,
+.webida-light h4,
+.webida-light h5,
+.webida-light h6 {
+  font-size: 1.091em;
+  font-weight: normal;
+}
+.webida-light p {
+  line-height: 1.3em;
+}
+.webida-light pre,
+.webida-light code {
+  font-family: inherit;
+  background-color: #efefef;
+  border: 1px solid #d3d3d3;
+}
+.webida-light table.dojoTabular thead,
+.webida-light table.dojoTabular tfoot {
+  background-color: #efefef;
+  border: 1px solid #d3d3d3;
+}

@@ -1,0 +1,38 @@
+/*loading screen*/
+.app-loading-emblem {
+    left: -webkit-calc(50% - 36px);
+    left: -moz-calc(50% - 36px);
+    left: calc(50% - 36px);
+    top: -webkit-calc(50% - 35px);
+    top: -moz-calc(50% - 35px);
+    top: calc(50% - 35px);
+}
+.app-loading-emblem {
+    left: -webkit-calc(50% - 36px);
+    left: -moz-calc(50% - 36px);
+    left: calc(50% - 36px);
+    top: -webkit-calc(50% - 35px);
+    top: -moz-calc(50% - 35px);
+    top: calc(50% - 35px);
+}
+/*workbench style start*/
+.app-workbench-middle-content {
+    height: -webkit-calc(100% - 80px);
+    height: -moz-calc(100% - 80px);
+    height: calc(100% - 80px);
+}
+.workbenchMenubarHide .app-workbench-middle-content {
+    height: -webkit-calc(100% - 59px);
+    height: -moz-calc(100% - 59px);
+    height: calc(100% - 59px);
+}
+.workbenchToolbarHide .app-workbench-middle-content {
+    height: -webkit-calc(100% - 50px);
+    height: -moz-calc(100% - 50px);
+    height: calc(100% - 50px);
+}
+.workbenchMenubarHide.workbenchToolbarHide .app-workbench-middle-content {
+    height: -webkit-calc(100% - 29px);
+    height: -moz-calc(100% - 29px);
+    height: calc(100% - 29px);
+}

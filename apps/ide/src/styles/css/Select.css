@@ -1,0 +1,97 @@
+/* Select
+ *
+ * Styling Select mainly includes:
+ *
+ * 1. Containers
+ * 		.dijitSelect - for border, background-color
+ * 		.dijitButtonContents - for border
+ *
+ * 2. Arrow
+ * 		.dijitArrowButton - for border, padding and background-color|image
+ * 		.dijitArrowButtonInner - for border, background-color|image, display and width|height
+ *
+ * 3. Menu
+ * 		.dijitSelectMenu .* - for border, padding
+ *
+ * 4. Various states
+ * 		.dijitSelectHover|.dijitSelectFocused|.dijitSelectDisabled .* - for border, padding and background-color|image
+ */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.webida-light {
+  /* normal status */
+  /* hover status */
+  /* focused status */
+  /* disable status */
+  /* Dropdown menu style for select */
+}
+.webida-light .dijitSelect .dijitArrowButtonContainer {
+  border: 0;
+}
+.webida-light .dijitSelect .dijitArrowButton {
+  padding: 0 4px;
+  background-color: #6d7886;
+}
+.webida-light .dijitSelect .dijitArrowButton .dijitArrowButtonInner {
+  height: 16px !important;
+  outline: none;
+  border: none;
+}
+.webida-light .dijitSelectHover {
+  background-color: #e5f2fe;
+  background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: -o-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
+  background-repeat: repeat-x;
+}
+.webida-light .dijitSelectHover .dijitArrowButton {
+  background-color: #abd6ff;
+  border: none;
+}
+.webida-light .dijitSelectHover .dijitArrowButton .dijitArrowButtonInner {
+  background-position: -8px 0;
+}
+.webida-light .dijitSelectFocused .dijitArrowButton {
+  background-color: #7dbefa;
+}
+.webida-light .dijitSelectFocused .dijitArrowButton {
+  border: none;
+}
+.webida-light .dijitSelectFocused .dijitArrowButton .dijitArrowButtonInner {
+  background-position: -24px 0;
+  outline: none;
+  border: none;
+}
+.webida-light .dijitSelectDisabled {
+  border-color: #d3d3d3;
+  background-color: #efefef;
+  background-image: none;
+  color: #818181;
+}
+.webida-light .dijitSelectDisabled .dijitArrowButton .dijitArrowButtonInner {
+  background-position: 0 53%;
+}
+.webida-light .dijitSelectMenu td.dijitMenuItemIconCell,
+.webida-light .dijitSelectMenu td.dijitMenuArrowCell {
+  /* so that arrow and icon cells from MenuItem are not displayed */
+  display: none;
+}
+.webida-light .dijitSelectMenu td.dijitMenuItemLabel {
+  /* line up menu text with text in select box (in LTR and RTL modes) */
+  padding: 2px;
+}
+.webida-light .dijitSelectMenu .dijitMenuSeparatorTop {
+  border-bottom: 1px solid #759dc0;
+}

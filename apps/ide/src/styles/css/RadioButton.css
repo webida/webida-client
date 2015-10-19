@@ -1,0 +1,87 @@
+/* RadioButton
+ *
+ * Styling RadioButton mainly includes:
+ *
+ * 1. Containers
+ * 		.dijitRadio|.dijitRadioIcon - for border, padding, width|height and background image
+ *
+ * 2. RadioButton within ToggleButton
+ * 		.dijitToggleButton|.dijitToggleButtonChecked .* - for background image
+ *
+ * 3. Checked state
+ * 		.dijitRadioChecked - for checked background-color|image
+ * 		.dijitToggleButtonChecked - for border, background-color|image, display and width|height
+ *
+ * 4. Hover state
+ * 		.dijitRadioHover|.dijitRadioCheckedHover - for background image
+ *
+ * 5. Disabled state
+ * 		.dijitRadioDisabled|.dijitRadioCheckedDisabled - for background image
+ */
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.dj_ie6 .dijitToggleButton .dijitRadio,
+.dj_ie6 .dijitToggleButton .dijitRadioIcon {
+  background-image: url("../form/images/checkboxAndRadioButtons_IE6.png");
+}
+.webida-light .dijitToggleButton .dijitRadio,
+.webida-light .dijitToggleButton .dijitRadioIcon {
+  background-image: url("../form/images/checkboxRadioButtonStates.png");
+}
+.webida-light .dijitRadio,
+.webida-light .dijitRadioIcon {
+  /* inside a toggle button */
+  background-image: url("../form/images/checkboxRadioButtonStates.png");
+  /* checkbox sprite image */
+  background-repeat: no-repeat;
+  width: 18px;
+  height: 18px;
+  margin: 0 2px 0 0;
+  padding: 0;
+}
+.webida-light .dj_ie6 .dijitRadio,
+.webida-light .dj_ie6 .dijitRadioIcon {
+  /* inside a toggle button */
+  background-image: url("../form/images/checkboxAndRadioButtons_IE6.png");
+  /* checkbox sprite image */
+}
+.webida-light .dijitRadio {
+  /* unselected */
+  background-position: -126px;
+}
+.webida-light .dijitToggleButton .dijitRadioIcon {
+  /* unselected */
+  background-position: -107px;
+}
+.webida-light .dijitRadioDisabled {
+  /* unselected and disabled */
+  background-position: -198px;
+}
+.webida-light .dijitRadioHover {
+  /* hovering over an unselected enabled radio button */
+  background-position: -162px;
+}
+.webida-light .dijitRadioChecked {
+  background-position: -108px;
+}
+.webida-light .dijitToggleButtonChecked .dijitRadioIcon {
+  background-position: -92px;
+}
+.webida-light .dijitRadioCheckedHover {
+  background-position: -144px;
+}
+.webida-light .dijitRadioCheckedDisabled {
+  /* selected but disabled */
+  background-position: -180px;
+}

@@ -1,0 +1,177 @@
+/* Button | DropDownButton | ComboButton | ToggleButton
+ *
+ * Styling Buttons mainly includes:
+ *
+ * 1. Containers
+ * 		.dijitButton
+ * 		.dijitDropDownButton
+ * 		.dijitComboButton
+ * 		.dijitButtonNode - common button/arrow wrapper shared across all three button types
+ *
+ * 2. Button text
+ * 		.dijitButtonText
+ *
+ * 3. Arrows - only for DropDownButton and ComboButton
+ * 	     There are total four directions arrows - down, left, right, up:
+ * 		.dijitArrowButtonInner - down arrow by default
+ *      .dijitLeftArrowButton .dijitArrowButtonInner - left arrow
+ *      .dijitRightArrowButton .dijitArrowButtonInner - right arrow
+ *      .dijitUpArrowButton .dijitArrowButtonInner - up arrow
+ *
+ * 4. States - Hover, Active, Disabled, e.g.
+ * 		.dijitButtonHover .dijitButtonNode
+ * 		.dijitButtonActive .dijitButtonNode
+ * 		.dijitButtonDisabled .dijitButtonNode
+ *
+ *      .dijitDisabled .dijitArrowButtonInner  - disabled arrow states
+ */
+/*theme*/
+/*GNB*/
+/*toolbar*/
+/*workspace*/
+/*button*/
+/*Gutter*/
+/*footer*/
+.menubar-gradient {
+  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+}
+.toolbar-gradient {
+  background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
+}
+.webida-light {
+  /*arrow styles for down/up/left/right directions*/
+  /* hover status */
+  /* active, checked status */
+  /*select
+    background-color: rgba(92,156,205,1);
+  color: rgba(39,42,45,1);
+  */
+  /* disabled status */
+  /* for ComboButton */
+}
+.webida-light .dijitButtonNode {
+  /* rules for dijit.form.*Button widgets and arrow nodes on ComboBox, Spinner etc. */
+  -webkit-transition-property: background-color;
+  -moz-transition-property: background-color;
+  transition-property: background-color;
+  -webkit-transition-duration: 0.3s;
+  -moz-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+}
+.webida-light .dijitButton .dijitButtonNode,
+.webida-light .dijitDropDownButton .dijitButtonNode,
+.webida-light .dijitComboButton .dijitButtonNode,
+.webida-light .dijitToggleButton .dijitButtonNode {
+  border: 0;
+  color: #272a2d;
+  padding: 2px 4px 4px 4px;
+  border-radius: 2px;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  background-color: #93a7c3;
+  /*background-image: -webkit-linear-gradient(#EAF5FF 0%, #D7E2EC 20%, #ADBBC7 100%);
+    background-image: -moz-linear-gradient(#EAF5FF 0%, #D7E2EC 20%, #ADBBC7 100%);
+    background-image: -o-linear-gradient(#EAF5FF 0%, #D7E2EC 20%, #ADBBC7 100%);
+    background-image: linear-gradient(#EAF5FF 0%, #D7E2EC 20%, #ADBBC7 100%);*/
+}
+.webida-light .dijitComboButton .dijitArrowButton {
+  border-left-width: 0;
+  padding: 2px 4px 4px 4px;
+  /* TODO: still needed? */
+}
+.webida-light .dijitArrowButtonInner {
+  width: 15px;
+  height: 15px;
+  margin: 0 auto;
+  background-image: url("../form/images/buttonArrows.png");
+  background-repeat: no-repeat;
+  background-position: -51px 53%;
+}
+.webida-light .dijitLeftArrowButton .dijitArrowButtonInner {
+  background-position: -77px 53%;
+}
+.webida-light .dijitRightArrowButton .dijitArrowButtonInner {
+  background-position: -26px 53%;
+}
+.webida-light .dijitUpArrowButton .dijitArrowButtonInner {
+  background-position: 0 53%;
+}
+.webida-light .dijitDisabled .dijitArrowButtonInner {
+  background-position: -151px 53%;
+}
+.webida-light .dijitDisabled .dijitLeftArrowButton .dijitArrowButtonInner {
+  background-position: -177px 53%;
+}
+.webida-light .dijitDisabled .dijitRightArrowButton .dijitArrowButtonInner {
+  background-position: -126px 53%;
+}
+.webida-light .dijitDisabled .dijitUpArrowButton .dijitArrowButtonInner {
+  background-position: -100px 53%;
+}
+.webida-light .dijitButtonText {
+  padding: 0 0.3em;
+  text-align: center;
+}
+.webida-light .dijitButtonHover .dijitButtonNode,
+.webida-light .dijitDropDownButtonHover .dijitButtonNode,
+.webida-light .dijitComboButton .dijitButtonNodeHover,
+.webida-light .dijitComboButton .dijitDownArrowButtonHover,
+.webida-light .dijitToggleButtonHover .dijitButtonNode {
+  /*background-image: -webkit-linear-gradient(#EAF5FF 0%, #C2D7EA 20%, #9BB2C6 100%);
+    background-image: -moz-linear-gradient(#EAF5FF 0%, #C2D7EA 20%, #9BB2C6 100%);
+    background-image: -o-linear-gradient(#EAF5FF 0%, #C2D7EA 20%, #9BB2C6 100%);
+    background-image: linear-gradient(#EAF5FF 0%, #C2D7EA 20%, #9BB2C6 100%);*/
+  background-color: #a2b7d4;
+  color: #272a2d;
+}
+.webida-light .dijitButtonActive .dijitButtonNode,
+.webida-light .dijitDropDownButtonActive .dijitButtonNode,
+.webida-light .dijitComboButtonActive .dijitButtonNode,
+.webida-light .dijitToggleButtonActive .dijitButtonNode,
+.webida-light .dijitToggleButtonChecked .dijitButtonNode {
+  background-color: #424c5b;
+  color: #191b1c;
+  -webkit-transition-duration: 0.1s;
+  -moz-transition-duration: 0.1s;
+  transition-duration: 0.1s;
+}
+.webida-light .dijitButtonDisabled,
+.webida-light .dijitDropDownButtonDisabled,
+.webida-light .dijitComboButtonDisabled,
+.webida-light .dijitToggleButtonDisabled {
+  outline: none;
+  opacity: 0.4;
+}
+.webida-light .dijitButtonDisabled .dijitButtonNode,
+.webida-light .dijitDropDownButtonDisabled .dijitButtonNode,
+.webida-light .dijitComboButtonDisabled .dijitButtonNode,
+.webida-light .dijitToggleButtonDisabled .dijitButtonNode {
+  background-color: #efefef;
+  border: solid 1px #d3d3d3;
+  color: #818181;
+  -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  background-image: url("images/buttonDisabled.png");
+  background-image: -moz-linear-gradient(#ffffff 0%, rgba(255, 255, 255, 0) 40%);
+  background-image: -webkit-linear-gradient(#ffffff 0%, rgba(255, 255, 255, 0) 40%);
+  background-image: -o-linear-gradient(#ffffff 0%, rgba(255, 255, 255, 0) 40%);
+  background-image: linear-gradient(#ffffff 0%, rgba(255, 255, 255, 0) 40%);
+  _background-image: none;
+}
+.webida-light .dijitComboButtonDisabled .dijitArrowButton {
+  border-left-width: 0;
+}
+.webida-light table.dijitComboButton {
+  border-collapse: separate;
+  /* override dijit.css so that ComboBox rounded corners work */
+}
+.webida-light .dijitComboButton .dijitStretch {
+  -moz-border-radius: 2px 0 0 2px;
+  border-radius: 2px 0 0 2px;
+}
+.webida-light .dijitComboButton .dijitArrowButton {
+  -moz-border-radius: 0 2px 2px 0;
+  border-radius: 0 2px 2px 0;
+}

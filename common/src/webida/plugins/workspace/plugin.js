@@ -1706,7 +1706,7 @@ define([
                 document.getElementsByTagName('head')[0].appendChild(link);
             }
 
-            _loadCss(require.toUrl('webida-lib/plugins/workspace/wv.css'));
+            _loadCss(require.toUrl('webida-lib/plugins/workspace/style/wv.css'));
 
             //topic.subscribe('projectConfig.loadCompleted', function() {
 

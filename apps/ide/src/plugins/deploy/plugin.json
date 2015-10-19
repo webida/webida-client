@@ -12,7 +12,7 @@
                              {
                                  "shortcut" : { "keys" : { "default" : "Shift+Alt+D" }, "desc" : "deploy" },
                                  "toolbar": {
-                                     "icons" : "./styles/webida-images/icons/toolbar_deployhistory.png",
+                                     "icons" : "./styles/images/icons/toolbar_deployhistory.png",
                                      "tooltip" : "Deploy",
                                      "enabledOn":"toolbar.deploy.enable",
                                      "disabledOn":"toolbar.deploy.disable"
