@@ -64,12 +64,19 @@ define([
             logger.info('createViewer(' + parentNode + ', callback)');
             var dataSource = this.getDataSource();
             var pre = document.createElement('pre');
+            this.setViewer(pre);
             dataSource.getData(function(data) {
                 pre.textContent = data;
             });
             pre.contentEditable = true;
             pre.style.fontSize = '8pt';
             parentNode.appendChild(pre);
+            this.focus();
+        },
+
+        focus: function() {
+        	logger.info('focus()');
+            this.getViewer().focus();
         }
     });
 
