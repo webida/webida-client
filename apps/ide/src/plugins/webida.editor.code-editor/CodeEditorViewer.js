@@ -926,12 +926,7 @@ define([
                 });
             });
             promiseForSetMode.then(function (val) {
-                //Let's give a chance to this viewer
-                //that it can register READY event in advance
-                setTimeout(function() {
-                    logger.info('self.emit(PartViewer.READY, self)');
-                    that.emit(PartViewer.READY, that);
-                });
+                that.emitLater(PartViewer.READY, that);
             });
 	    },
 

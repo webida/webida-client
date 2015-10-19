@@ -129,7 +129,7 @@ define([
                 });
 
                 //Model listen to viewer's content change
-                eProxy.on(viewer, PartViewer.CONTENT_CHANGE, function(request) {
+                eProxy.on(viewer, PartViewer.CONTENTS_CHANGE, function(request) {
                     part.onViewerChange(request);
                 });
 
@@ -144,17 +144,14 @@ define([
                     viewer.fitSize();
                 });
 
-                //Refresh initial model
-                viewer.refresh(model.getContents());
-
-				//Focus to the part
-				part.focus();
+                //Reflects model's initial contents to the view
+                model.emit(PartModel.CONTENTS_CREATED, model.getContents());
 
                 //Notify user can navigate contents
-                part.emit(Part.CONTENT_READY, part);
+                part.emit(Part.CONTENTS_READY, part);
 
-                //Check synchronized model's dirty state
-                part.getContainer().updateDirtyState();
+                //Focus to the part
+                part.focus();
 
             }, function(error) {
                 logger.error(error.stack || error);
@@ -396,7 +393,7 @@ define([
      * render(contents) called for the first time.
      * @constant {string}
      */
-    Part.CONTENT_READY = 'contentReady';
+    Part.CONTENTS_READY = 'contentsReady';
 
     return Part;
 });

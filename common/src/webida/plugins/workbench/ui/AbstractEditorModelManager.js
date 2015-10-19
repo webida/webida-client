@@ -137,14 +137,7 @@ define([
             this.getDataSource().getData(function(data) {
                 model.createContents(data);
                 that._execFunc(callback, model);
-                //Let's give a chance to this model
-                //that it can register READY event in advance
-                //in case of synchronous getData().
-                //See FileDataSource > getData()'s else block.
-                setTimeout(function() {
-                    logger.info('model.emit(PartModel.READY, model)');
-                    model.emit(PartModel.READY, model);
-                });
+                model.emitLater(PartModel.READY, model);
             });
             return model;
         },
@@ -174,10 +167,7 @@ define([
                 if (persistence.getFlag(Persistence.READ) === true) {
                     //Model and data exists
                     this._execFunc(callback, model);
-                    setTimeout(function() {
-                        logger.info('model.emit(PartModel.READY, model)');
-                        model.emit(PartModel.READY, model);
-                    });
+                    model.emitLater(PartModel.READY, model);
                 } else {
                     //Model exists but data has not been arrived yet.
                     //Case : call createModel() but still running

@@ -61,7 +61,7 @@ define([
         createContents: function(data) {
             var contents = data.split('\n');
             this.setContents(contents);
-            this.emit(PartModel.CONTENTS_CREATED, contents);
+           	this.emit(PartModel.CONTENTS_CREATED, contents);
         },
 
         serialize: function() {

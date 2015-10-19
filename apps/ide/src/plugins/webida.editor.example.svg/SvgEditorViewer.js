@@ -63,12 +63,9 @@ define([
          * @param {HTMLElement} parentNode
          */
         createWidget: function(parentNode) {
-            var that = this;
             this._prepareElements(parentNode);
             this._bindListeners();
-            setTimeout(function() {
-                that.emit(PartViewer.READY, that);
-            });
+            this.emitLater(PartViewer.READY, this);
         },
 
         /**
@@ -166,7 +163,7 @@ define([
             });
             mask.addEventListener('mouseup', function(ev) {
                 if (desc) {
-                    that.emit(PartViewer.CONTENT_CHANGE, new ChangeRequest(desc));
+                    that.emit(PartViewer.CONTENTS_CHANGE, new ChangeRequest(desc));
                 }
                 isDragStart = false;
                 isDragProgress = false;

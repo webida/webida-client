@@ -105,12 +105,10 @@ define([
         var dataSource = container.getDataSource();
         //TODO remove all dependency to file
         this.file = dataSource.getPersistence();
-        this.fileOpenedHandle = null;
-        this.fileSavedHandle = null;
         this.preferences = null;
         this.foldingStatus = null;
-        this.on(Part.CONTENT_READY, function(part) {
-            console.log('Part.CONTENT_READY!!');
+        this.on(Part.CONTENTS_READY, function(part) {
+            console.log('Part.CONTENTS_READY!!');
             var viewer = part.getViewer();
             var ds = part.getDataSource();
             var recentViewer = recentViewers.get(ds);
@@ -254,24 +252,11 @@ define([
         onDestroy: function() {
             logger.info('onDestroy()');
             EditorPart.prototype.onDestroy.apply(this);
-            if (this.viewer) {
-                this.viewer.destroyWidget();
-                this.viewer = null;
-            } else {
-                logger.info('this.viewer not found');
-                logger.trace();
-            }
+            this.getViewer().destroyWidget();
+            this.setViewer(null);
             //unset preferences
             if (this.preferences) {
                 this.preferences.unsetFields();
-            }
-            //unsubscribe topic
-            if (this.fileOpenedHandle !== null) {
-                logger.info('this.fileOpenedHandle.remove()');
-                this.fileOpenedHandle.remove();
-            }
-            if (this.fileSavedHandle !== null) {
-                this.fileSavedHandle.remove();
             }
         },
 
