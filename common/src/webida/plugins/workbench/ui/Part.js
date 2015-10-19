@@ -147,6 +147,9 @@ define([
                 //Refresh initial model
                 viewer.refresh(model.getContents());
 
+				//Focus to the part
+				part.focus();
+
                 //Notify user can navigate contents
                 part.emit(Part.CONTENT_READY, part);
 

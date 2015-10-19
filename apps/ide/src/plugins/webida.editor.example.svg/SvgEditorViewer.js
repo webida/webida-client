@@ -183,7 +183,7 @@ define([
             });
             this.svg = dom.makeSvgElement('svg', {
                 'shape-rendering': 'optimizeQuality',
-                'style': 'position:absolute; width:100%; height:100%'
+                'style': 'position:absolute; width:100%; height:100%; background-color:#fff'
             });
             wrapper.appendChild(this.svg);
             this.feedback = dom.makeSvgElement('svg', {
