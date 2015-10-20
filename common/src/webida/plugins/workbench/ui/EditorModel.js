@@ -46,6 +46,7 @@ define([
 
     function EditorModel() {
         logger.info('new EditorModel()');
+        PartModel.apply(this, arguments);
     }
 
 
