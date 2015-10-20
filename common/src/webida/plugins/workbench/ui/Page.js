@@ -27,11 +27,13 @@
 define([
 	'webida-lib/util/genetic',
 	'webida-lib/util/logger/logger-client',
+	'./LayoutPane',
 	'./LayoutTree',
 	'./PartRegistry'
 ], function(
 	genetic, 
 	Logger,
+	LayoutPane,
 	LayoutTree,
 	PartRegistry
 ) {
@@ -74,6 +76,37 @@ define([
          */
         getPartRegistry: function() {
             return this.partRegistry;
+        },
+
+        /**
+         * Returns parts that only included in LayoutPanes,
+         * not nested parts such as MultiContentEditorPart's nested parts.
+         * @param {Function} [PartType]
+         * @return {Array.<Part>}
+         */
+        getExposedParts: function(PartType) {
+            var parts = [];
+            function walk(layoutTree) {
+                var children = layoutTree.getChildren();
+                if (children.length > 0) {
+                    children.forEach(function(child) {
+                        if ( child instanceof LayoutPane) {
+                            child.getPartContainers().forEach(function(container) {
+                                if ( typeof PartType === 'function') {
+                                    if (container.getPart() instanceof PartType) {
+                                        parts.push(container.getPart());
+                                    }
+                                } else {
+                                    parts.push(container.getPart());
+                                }
+                            });
+                            walk(child);
+                        }
+                    });
+                }
+            };
+            walk(this);
+            return parts;
         }
     });
 
