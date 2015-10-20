@@ -74,8 +74,14 @@ define([
             return this.contentPane;
         },
 
+        /**
+         * @override
+         * Propagate to the MultiContentEditorPart's PartContainer
+         */
         updateDirtyState: function() {
-            this.getParent().updateDirtyState();
+            var multiContentLayoutPane = this.getParent();
+            var partContainer = multiContentLayoutPane.getOwner().getContainer();
+            partContainer.updateDirtyState();
         }
     });
 
