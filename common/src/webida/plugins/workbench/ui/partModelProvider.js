@@ -62,6 +62,10 @@ define([
             return this.modelRegistry;
         },
 
+        /**
+         * @private
+         * @return {Map.<Function, PartModel>}
+         */
         _getModelsByDataSource: function(dataSource) {
             return this._getModelRegistry().get(dataSource);
         },
@@ -138,6 +142,60 @@ define([
             return result;
         },
 
+        /**
+         * Whether the model which related to the given dataSource
+         * exist in the partModelProvider
+         *
+         * @param {PartModel} model
+         * @return {boolean}
+         */
+        isDataSourceUsed: function(dataSource) {
+            var used = false;
+            var provider = this;
+            var modelsOfDs = this._getModelsByDataSource(dataSource);
+            modelsOfDs.forEach(function(model) {
+                if (provider.isModelUsed(model) === true) {
+                    used = true;
+                }
+            });
+            return used;
+        },
+
+        /**
+         * Whether the model is existed in the partModelProvider
+         *
+         * @param {PartModel} model
+         * @return {boolean}
+         */
+        isModelProvided: function(model) {
+            var provided = false, PartModelClass;
+            if (!( model instanceof PartModel)) {
+                return false;
+            }
+            PartModelClass = model.constructor;
+            this._getModelRegistry().forEach(function(modelMap) {
+                modelMap.forEach(function(_model) {
+                    if (_model === model) {
+                        provided = true;
+                    }
+                });
+            });
+            return provided;
+        },
+
+        /**
+         * Unregister Models related to the given dataSource.
+         *
+         * @param {DataSource} dataSource
+         */
+        unregisterModels: function(dataSource) {
+            var provider = this;
+            var modelsOfDs = this._getModelsByDataSource(dataSource);
+            modelsOfDs.forEach(function(model) {
+                provider.unregister(model);
+            });
+        },
+
         _listenPartRegistry: function() {
             // @formatter:off
             var provider = this;
@@ -145,19 +203,14 @@ define([
             var page = workbench.getCurrentPage();
             var PartReg = page.getPartRegistry();
             PartReg.on(PartRegistry.PART_UNREGISTERED, function(part) {
+                var dataSource = part.getDataSource();
                 var model = part.getModel();
-                if (model) {
-                    var dataSource = part.getDataSource();
-                    var PartModelClass = model.constructor;
-                    if (provider.getPartModel(dataSource, PartModelClass) 
-                            && provider.isModelUsed(model) === false) {
-                        if (dataSource.isDeleted()) {
-                        	provider.unregister(model);
-                        	dsReg.unregister(dataSource);
-                        }else{
-                        	part.resetModel();
-                        }
-                    }                	
+                if (provider.isModelProvided(model) === true
+                        && provider.isDataSourceUsed(dataSource) === false) {
+                    if (dataSource.isDeleted()) {
+                        dsReg.unregister(dataSource);
+                    }
+                    provider.unregisterModels(dataSource);
                 }
             });
             // @formatter:on

@@ -269,7 +269,9 @@ define([
          */
         close: function() {
             logger.info('close()');
-            this.getContainer().destroyPart();
+            if (this.getContainer()) {
+                this.getContainer().destroyPart();
+            }
         },
 
         /**

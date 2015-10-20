@@ -100,6 +100,11 @@ define([
             setTimeout(function() {
                 EventEmitter.prototype.emit.apply(model, arg);
             });
+        },
+
+        toString: function() {
+            var res = '<' + this.constructor.name + '>#' + this._partModelId;
+            return res;
         }
     });
 

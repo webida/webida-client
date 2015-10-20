@@ -16,7 +16,7 @@
 
 /**
  * Constructor
- * EditorModel
+ * MultiContentLayoutPane
  *
  * @see
  * @since: 2015.07.15
@@ -27,11 +27,11 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    './PartModel'
+    './LayoutPane'
 ], function(
     genetic, 
     Logger,
-    PartModel
+    LayoutPane
 ) {
     'use strict';
 // @formatter:on
@@ -44,36 +44,29 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function EditorModel() {
-        logger.info('new EditorModel()');
-        PartModel.apply(this, arguments);
+    function MultiContentLayoutPane(id, owner) {
+        logger.info('new MultiContentLayoutPane(' + id + ', ' + owner + ')');
+        LayoutPane.call(this, id);
+        this.setOwner(owner);
     }
 
 
-    genetic.inherits(EditorModel, PartModel, {
+    genetic.inherits(MultiContentLayoutPane, LayoutPane, {
 
         /**
-         * Serializes model to a string
-         * @return {String} Serialized Data
+         * @param {Part} owner
          */
-        serialize: function() {
-            throw new Error('serialize() should be implemented by ' + this.constructor.name);
+        setOwner: function(owner) {
+            this.owner = owner;
         },
 
         /**
-         * @param {Object} contents
+         * @return {Part}
          */
-        setContents: function(contents) {
-            this.contents = contents;
-        },
-
-        /**
-         * @return {Object}
-         */
-        getContents: function() {
-            return this.contents;
+        getOwner: function() {
+            return this.owner;
         }
     });
 
-    return EditorModel;
+    return MultiContentLayoutPane;
 });

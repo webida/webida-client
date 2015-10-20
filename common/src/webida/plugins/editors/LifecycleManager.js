@@ -33,6 +33,8 @@ define([
     'external/lodash/lodash.min',
     'webida-lib/plugins/workbench/plugin', //TODO : refactor
     'webida-lib/plugins/workbench/ui/DataSource',
+    'webida-lib/plugins/workbench/ui/EditorPart',
+    'webida-lib/plugins/workbench/ui/LayoutPane',
     'webida-lib/plugins/workbench/ui/TabPartContainer',
     'webida-lib/plugins/workbench/ui/Workbench',
     'webida-lib/util/genetic',
@@ -45,6 +47,8 @@ define([
     _,
     workbench,
     DataSource,
+    EditorPart,
+    LayoutPane,
     TabPartContainer,
     Workbench,
     genetic, 
@@ -308,8 +312,8 @@ define([
         _closeOtherParts: function() {
             var registry = this._getPartRegistry();
             var currentPart = registry.getCurrentEditorPart();
-            var editorParts = registry.getEditorParts();
-            editorParts.forEach(function(part) {
+            var page = workbench.getCurrentPage();
+            page.getExposedParts(EditorPart).forEach(function(part) {
                 if (part !== currentPart) {
                     part.close();
                 }
@@ -317,8 +321,9 @@ define([
         },
 
         _closeAllParts: function() {
-            var editorParts = this._getPartRegistry().getEditorParts();
-            editorParts.forEach(function(part) {
+            logger.info('_closeAllParts()');
+            var page = workbench.getCurrentPage();
+            page.getExposedParts(EditorPart).forEach(function(part) {
                 part.close();
             });
         },

@@ -30,6 +30,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './EditorPart',
+    './MultiContentLayoutPane',
     './MultiContentPartContainer',
     './Part'
 ], function(
@@ -38,6 +39,7 @@ define([
     genetic, 
     Logger,
     EditorPart,
+    MultiContentLayoutPane,
     MultiContentPartContainer,
     Part
 ) {
@@ -51,6 +53,8 @@ define([
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
+
+    var _paneId = 0;
 
     function MultiContentEditorPart(container) {
         logger.info('new MultiContentEditorPart(' + container + ')');
@@ -81,6 +85,27 @@ define([
         },
 
         /**
+         * @override
+         */
+        close: function() {
+            logger.info('%cclose()', 'color:orange');
+            var mPart = this;
+            var close = function() {
+                mPart.getParts().forEach(function(part) {
+                    Part.prototype.close.call(part);
+                });
+                Part.prototype.close.call(mPart);
+            };
+            if (this.isDirty()) {
+                this._askSaveThen(function() {
+                    close();
+                });
+            } else {
+                close();
+            }
+        },
+
+        /**
          * Create contents and add to sub-tab.
          * @abstract
          */
@@ -94,6 +119,7 @@ define([
          */
         createTabContainer: function(parentNode) {
             logger.info('createTabContainer(' + parentNode + ')');
+            var paneId = 'multi-content-part-' + (_paneId++);
             var container = new TabContainer({
                 style: 'width: 100%; height: 100%;',
                 tabPosition: 'bottom',
@@ -106,6 +132,7 @@ define([
 
             this.setContainerEvent(container);
             this.tabContainer = container;
+            this._setLayoutPane(new MultiContentLayoutPane(paneId, this));
         },
 
         /**
@@ -178,7 +205,7 @@ define([
                 var part
                 var partContainer;
                 partContainer = new MultiContentPartContainer(dataSource, pane);
-                partContainer.setParent(that.getContainer());
+                partContainer.setParent(that._getLayoutPane());
                 partContainer.createPart(PartClass, callback);
                 part = partContainer.getPart();
                 pane.startup();
@@ -247,6 +274,36 @@ define([
          */
         getContents: function() {
             return this.contents;
+        },
+
+        /**
+         * @return {Array.<Part>}
+         */
+        getParts: function() {
+            var parts = [];
+            var contents = this.getContents();
+            contents.forEach(function(content) {
+                if ( content instanceof Part) {
+                    parts.push(content);
+                }
+            });
+            return parts;
+        },
+
+        /**
+         * @private
+         * @param {MultiContentLayoutPane} pane
+         */
+        _setLayoutPane: function(pane) {
+            this.layoutPane = pane;
+        },
+
+        /**
+         * @private
+         * @return {MultiContentLayoutPane}
+         */
+        _getLayoutPane: function() {
+            return this.layoutPane;
         },
 
         /**
