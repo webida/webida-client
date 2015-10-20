@@ -110,7 +110,7 @@ function (pm,
         if (imgClass) {
             imgClass += ' webida-tool-bar-icon webida-tool-bar-icon-normal';
             img = img + '<img class="' + imgClass + '"' +
-                             'src="/common/src/webida/plugins/workbench/resource/transparent.png" draggable="false" />';
+                             'src="./styles/images/icons/transparent.png" draggable="false" />';
             item.attr('label', img);
 
             // icon changed setting
