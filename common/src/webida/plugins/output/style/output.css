@@ -26,11 +26,6 @@
     -moz-box-shadow: -1px 2px 5px rgba(54,57,60, 0.75);
     box-shadow: -1px 2px 5px rgba(54,57,60, 0.75);
 }
-
-input[type=checkbox] {
-    display:none;
-}
-
 .checkbox_off {
     padding-left: 25px;
     height: 16px;
