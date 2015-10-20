@@ -47,7 +47,7 @@ define(function() {
             var target = {};
             for (var i = 0; i < arguments.length; i++) {
                 source = arguments[i];
-                for (prop in source) {
+                for (var prop in source) {
                     target[prop] = source[prop];
                 }
             }
