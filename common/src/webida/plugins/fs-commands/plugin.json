@@ -16,7 +16,7 @@
                         "&File" : [ "cmnd",
                                    {
                                        "toolbar": {
-                                           "icons" : "/common/src/webida/plugins/workbench/resource/toolbar_file.png",
+                                           "icons" : "./styles/images/icons/toolbar_file.png",
                                            "tooltip" : "New File",
                                            "enabledOn":"toolbar.newfile.enable",
                                            "disabledOn":"toolbar.newfile.disable"

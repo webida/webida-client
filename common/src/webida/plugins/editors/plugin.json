@@ -41,7 +41,7 @@
                     "&Save" : [ "cmnd", {
                         "shortcut" : { "keys" : { "default" : "Ctrl+S" }, "desc" : "Save" },
                         "toolbar": {
-                            "icons" : "/common/src/webida/plugins/workbench/resource/toolbar_save.png",
+                            "icons" : "./styles/images/icons/toolbar_save.png",
                             "tooltip" : "Save",
                             "enabledOn" : "editors.dirty.current",
                             "disabledOn" : "editors.clean.current"
@@ -50,7 +50,7 @@
                     "Sav&e All" : [ "cmnd", {
                         "shortcut": {  "keys": { "default": "Ctrl+Shift+S" },  "desc": "Save all" },
                         "toolbar": {
-                            "icons" : "/common/src/webida/plugins/workbench/resource/toolbar_saveall.png",
+                            "icons" : "./styles/images/icons/toolbar_saveall.png",
                             "tooltip" : "Save all",
                             "enabledOn" : "editors.dirty.some",
                             "disabledOn" : "editors.clean.all"
