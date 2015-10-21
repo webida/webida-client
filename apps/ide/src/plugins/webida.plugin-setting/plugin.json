@@ -1,5 +1,5 @@
 {
-    "name": "webida.plugin",
+    "name": "webida.plugin-setting",
     "description": "Plugin configurator UI manager",
     "version": "0.1.0",
     "requirement": "webida.common.workbench",

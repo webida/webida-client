@@ -19,7 +19,7 @@
         "plugins/webida.terminal.restrict",
         "plugins/webida.ide.notification.view",
         "plugins/webida.ide.notification.toast",
-        "plugins/webida.plugin",
+        "plugins/webida.plugin-setting",
         "webida-lib/plugins/editors",
         "webida-lib/plugins/fs-commands",
         "webida-lib/plugins/git",

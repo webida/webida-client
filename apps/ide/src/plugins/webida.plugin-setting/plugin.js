@@ -34,7 +34,7 @@ define([
             return {
                 'Plugin Setting': [
                     'cmnd',
-                    'plugins/webida.plugin/dialog-controller',
+                    'plugins/webida.plugin-setting/dialog-controller',
                     'openDialog'
                 ]
             };
