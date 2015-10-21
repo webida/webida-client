@@ -64,8 +64,7 @@ define([
         if (typeof ext[property] === 'string') {
             if (ext[property] !== '') {
                 var path = URI(ext[property]).absoluteTo(ext.__plugin__.loc + '/').toString();
-                var resolvedPath = require.toUrl(path);
-                return resolvedPath;
+                return path;
             } else {
                 console.error('Null string.'); 
             }
