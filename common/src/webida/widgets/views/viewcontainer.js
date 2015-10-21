@@ -607,8 +607,11 @@ define([
 		_contentPaneClose : function (pane, closable) {
 			logger.info('_contentPaneClose('+pane+')');
 			var view = this._getViewByContentPane(pane);
-			var part = view.partContainer.getPart();
-			topic.publish('editor/close/part', part);
+			//lagacy code
+			if (view.partContainer) {
+			    var part = view.partContainer.getPart();
+			    topic.publish('editor/close/part', part);
+			}
 		},
 
         _contentPaneQuit : function (pane) {
