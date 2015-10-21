@@ -604,15 +604,31 @@ define([
             }
         },
 
-		_contentPaneClose : function (pane, closable) {
-			logger.info('_contentPaneClose('+pane+')');
-			var view = this._getViewByContentPane(pane);
-			//lagacy code
-			if (view.partContainer) {
-			    var part = view.partContainer.getPart();
-			    topic.publish('editor/close/part', part);
-			}
-		},
+        _contentPaneClose : function (pane, closable) {
+            logger.info('_contentPaneClose(' + pane + ')');
+            var event;
+            var self = this;
+            var view = this._getViewByContentPane(pane);
+            if (view.partContainer) {
+                //For EditoPart
+                //This code will be refactored when new view system implemented
+                var part = view.partContainer.getPart();
+                topic.publish('editor/close/part', part);
+            } else {
+                event = new ViewContainerEvent('view.close');
+                event.view = self._getViewByContentPane(pane);
+                event.viewContainer = self;
+                event.closable = true;
+                event.noClose = function() {
+                    event.closable = false;
+                };
+                topic.publish('view.close', event, lang.hitch(this, function() {
+                    if (event.closable) {
+                        this._remove(event.view, true);
+                    }
+                }));
+            }
+        },
 
         _contentPaneQuit : function (pane) {
             var _self = this;
