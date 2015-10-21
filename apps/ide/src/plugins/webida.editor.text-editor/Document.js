@@ -46,7 +46,7 @@ define([
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
-    //logger.off();
+    logger.off();
 
     function Document(text) {
         logger.info('new Document(' + text + ')', this);
