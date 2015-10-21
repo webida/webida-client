@@ -8,7 +8,7 @@ The setting is handled by files on `{workspace}/.workspace/plugin-settings.json`
 ## Structure
 
 ```
-webida.ide.project-management.run
+webida.plugin-setting
  ├── dialog-controller.js                   - Controller for view of plugin setting dialog
  ├── plugin.js
  ├── plugin.json
