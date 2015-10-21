@@ -35,8 +35,8 @@ function (webida, _, URI, all, request, topic, Logger) {
 
     'use strict';
 
-	var singleLogger = new Logger.getSingleton();
-	var logger = new Logger();
+    var singleLogger = new Logger.getSingleton();
+    var logger = new Logger();
 	//logger.setConfig('level', Logger.LEVELS.log);
 	//logger.off();
     var wholePlugins = {}; // including disabled ones.
@@ -45,6 +45,9 @@ function (webida, _, URI, all, request, topic, Logger) {
     var wholeExt = {}, activeExt = {};
     var appConfigs = {};
 
+    var mount;
+    var fsid;
+    var ws;
 
     function preparePlugins(appPath, locs, disabledLocs, startLocs, nextJob) {
 
@@ -498,6 +501,38 @@ function (webida, _, URI, all, request, topic, Logger) {
         return bag;
     }
 
+    var pluginSettingsProperties = ['plugins', 'start-plugins', 'disabled-plugins'];
+    function trimPluginSettings(settings) {
+        var trimed = {};
+
+        pluginSettingsProperties.forEach(function (p) {
+            if (settings[p]) {
+                trimed[p] = settings[p].map(function (str) { return str.trim(); });
+            }
+        });
+
+        return trimed;
+    }
+
+    function readUserPluginSettings(callback) {
+        var settingsFile = ws + '/.workspace/plugin-settings.json';
+        mount.readFile(settingsFile, function (err, text) {
+            var o;
+            var userPluginSettings = {};
+            if (err) {
+                console.log('Unable to read user plugin settings (' + err + ')');
+            } else {
+                try { o = JSON.parse(text); } catch (e) { }
+                if (o) {
+                    userPluginSettings = trimPluginSettings(o);
+                } else {
+                    console.log('Failed to parse user plugin settings (disabled)');
+                }
+            }
+            callback(userPluginSettings);
+        });
+    }
+
     return {
         /**
          * read and anlayze the manifest files (plugin.json's) of plugins
@@ -512,24 +547,10 @@ function (webida, _, URI, all, request, topic, Logger) {
          */
         initPlugins: function (appPath, workspace, nextJob) {  //
             //console.log('hina temp: entering initPlugins()');
-            var fsid, ws, mount;
             var appPluginSettings, userPluginSettings;
 
-            var pluginSettingsProperties = ['plugins', 'start-plugins', 'disabled-plugins'];
-            function trimPluginSettings(settings) {
-                var trimed = {};
-
-                pluginSettingsProperties.forEach(function (p) {
-                    if (settings[p]) {
-                        trimed[p] = settings[p].map(function (str) { return str.trim(); });
-                    }
-                });
-
-                return trimed;
-            }
-
             // read plugins/start-plugins.json and set startPlugins
-            function readAppPluginSettings() {
+            function readAppPluginSettings(callback) {
                 webida.getPluginSettingsPath(function (path) {
                     var settingsFile = URI(appPath).segment(path).pathname();
                     require(['dojo/text!' + settingsFile], function (text) {
@@ -537,7 +558,10 @@ function (webida, _, URI, all, request, topic, Logger) {
                         try { o = JSON.parse(text); } catch (e) { }
                         if (o) {
                             appPluginSettings = trimPluginSettings(o);
-                            readUserPluginSettings();
+                            readUserPluginSettings(function (settings) {
+                                userPluginSettings = settings;
+                                callback();
+                            });
                         } else {
                             alert('Failed to parse the app plugin settings file ' + appPluginSettings);
                         }
@@ -546,41 +570,23 @@ function (webida, _, URI, all, request, topic, Logger) {
                 });
             }
 
-            // read PLUGIN_SETTINGS_FILE in <ws>, set pluginDirs, plugins and disabledPlugins,
-            // and update startPlugins
-            function readUserPluginSettings() {
-                var settingsFile = ws + '/.workspace/plugin-settings.json';
-                mount.readFile(settingsFile, function (err, text) {
-                    if (err) {
-                        console.log('Unable to read user plugin settings (' + err + ')');
-                        userPluginSettings = {};
-                    } else {
-                        var o;
-                        try { o = JSON.parse(text); } catch (e) { }
-                        if (o) {
-                            userPluginSettings = trimPluginSettings(o);
-                        } else {
-                            console.log('Failed to parse user plugin settings (disabled)');
-                        }
-                    }
-
-                    // merge settings and prepare plugins
-                    var plugins =  _.union(appPluginSettings.plugins || [],
-                                           userPluginSettings.plugins || []);
-                    var disabledPlugins =  _.union(appPluginSettings['disabled-plugins'] || [],
-                                                   userPluginSettings['disabled-plugins'] || []);
-                    var startPlugins =  _.union(appPluginSettings['start-plugins'] || [],
-                                                userPluginSettings['start-plugins'] || []);
-
-                    preparePlugins(appPath, plugins, disabledPlugins, startPlugins, nextJob);
-                });
-            }
-
             fsid = workspace.substring(0, workspace.indexOf('/'));
             ws = workspace.substr(workspace.indexOf('/'));
             mount = webida.fs.mountByFSID(fsid);
 
-            readAppPluginSettings();
+            // read PLUGIN_SETTINGS_FILE in <ws>, set pluginDirs, plugins and disabledPlugins,
+            // and update startPlugins
+            readAppPluginSettings(function () {
+                // merge settings and prepare plugins
+                var plugins =  _.union(appPluginSettings.plugins || [],
+                    userPluginSettings.plugins || []);
+                var disabledPlugins =  _.union(appPluginSettings['disabled-plugins'] || [],
+                    userPluginSettings['disabled-plugins'] || []);
+                var startPlugins =  _.union(appPluginSettings['start-plugins'] || [],
+                    userPluginSettings['start-plugins'] || []);
+
+                preparePlugins(appPath, plugins, disabledPlugins, startPlugins, nextJob);
+            });
         },
 
         /**
@@ -603,7 +609,7 @@ function (webida, _, URI, all, request, topic, Logger) {
          * returns a structure (an object) which keeps the information of the whole plugins's shortcut
          *
          * @memberof plugin-manager-0.1
-         * @method getWholeShortCutInfo
+         * @method getExtensionPoints
          * @returns an object, key of shortcut's area, value is shortcut's info object
          */
         getExtensionPoints: function () {
@@ -617,6 +623,38 @@ function (webida, _, URI, all, request, topic, Logger) {
             } else {
                 return null;
             }
+        },
+
+        /**
+         * returns an object that contains whole plugins
+         *
+         * @memberof plugin-manager-0.1
+         * @method getAllPluginSettings
+         *
+         * @returns an object that contains whole plugins
+         */
+        getAllPluginSettings: function () {
+            return _.clone(wholePlugins, true);
+        },
+
+        /**
+         * set user specific plugin settings
+         *
+         * @memberof plugin-manager-0.1
+         * @method setUserPluginSettings
+         * @params {string} propertyName - name of the property in the plugin setting
+         *      e.g. 'disabled-plugins'
+         * @params {array} settings - property value
+         * @paramas {Function} callback - function called after writing job is done
+         */
+        setUserPluginSettings: function (propertyName, settings, callback) {
+            var settingsFile = ws + '/.workspace/plugin-settings.json';
+            readUserPluginSettings(function (userSettings) {
+                userSettings[propertyName] = settings;
+                mount.writeFile(settingsFile, JSON.stringify(userSettings), function (err) {
+                    callback(err);
+                });
+            });
         }
     };
 });
