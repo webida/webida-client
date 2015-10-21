@@ -1,0 +1,16 @@
+{
+    "name": "webida.editor.code-editor.content-assist.tern",
+    "description": "Code Editor Contenet assist plugin for tern.js",
+    "version": "0.1.0",
+    "requirement": "webida.editor.code-editor",    
+    "extensions" : {        
+        "webida.editor.code-editor:contentassist" : [
+            { 
+                "controlModule" : "./TernControl", 
+                "engineModule" : "./js-hint-server",
+                "langMode" : "js",
+                "engineName" : "tern-js"
+            }
+        ]
+    }
+}

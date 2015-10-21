@@ -17,11 +17,11 @@
 define([
     'require',
     'webida-lib/app',
-    './CaController'
+    './ContentAssistController'
 ], function (
     require, 
     ide,
-    CaController
+    ContentAssistController
 ) {
     'use strict';
     /* global webidaHost: true */
@@ -75,7 +75,7 @@ define([
         };
 
         send({type: 'informHost',
-              caExtensionInfos: CaController.getCaExtensionInfos()
+              caExtensionInfos: ContentAssistController.getCaExtensionInfos()
              });
     }
 

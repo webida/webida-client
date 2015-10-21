@@ -61,20 +61,18 @@ function initServers(caExtensionInfos) {
     require.config({
         baseUrl: '..',
         paths: {
-            // 'webida-lib': '//library.' + webidaHost + '/webida',
             'webida-lib': '../../../../../common/src/webida',
             text: 'lib/text',
-            tern: 'lib/ternjs',
             acorn: 'lib/acorn',
+            plugins: '..',
             'external': '../../../../../bower_components'
         }
     }); 
     
-    require(['content-assist/file-server',
-             'content-assist/js-hint-server',
+    require(['plugins/webida.editor.code-editor/content-assist/file-server',
              'content-assist/css-hint-server',
              'content-assist/html-hint-server'],
-    function (fileServer, ternJsServer, cssServer, htmlServer) {
+    function (fileServer, cssServer, htmlServer) {
         //'use strict'; 
 
         function getRemoteFile(filepath, c) {
@@ -87,12 +85,28 @@ function initServers(caExtensionInfos) {
 
         fileServer.init(getRemoteFile);
 
-        servers = {};
-        //servers.js = jsserver;
-        servers.css = cssServer;
-        servers.html = htmlServer;
-        servers['js:tern-js'] = ternJsServer;
-
+        var serversTemp = {};
+        serversTemp.css = cssServer;
+        serversTemp.html = htmlServer;      
+                
+        var promisesForEngines = [];
+        
+        caExtensionInfos.forEach(function (caExtensionInfo) {
+            promisesForEngines.push(new Promise(function (resolve, reject) {
+                require([caExtensionInfo.engineModulePath], function (engineModule) {
+                    serversTemp[caExtensionInfo.langMode + ':' + caExtensionInfo.engineName] = engineModule;
+                    resolve('Engine module [' + caExtensionInfo.engineName + '] is loaded.');
+                });
+            }));
+        });
+        
+        if (caExtensionInfos.length === 0) {
+            servers = serversTemp;
+        } else {
+            Promise.all(promisesForEngines).then(function (values) {
+                servers = serversTemp;                
+            });
+        }
         
         consoleLike.log('servers set in CA worker');
     });
