@@ -183,6 +183,134 @@
     padding-left: 2px;
   }
 
+  /*view drag feedback style start*/
+
+  .viewContainerEventElem {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 0;
+  }
+
+  .titleFeedbackContainer {
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 100;
+  }
+
+  .viewContainerTitleFeedback {
+    background-color: rgb(0, 128, 255);
+    background-color: rgba(0, 128, 255, 0.7);
+    position: absolute;
+    width: 5px;
+    height:100%;
+    border-radius: 2px;
+  }
+
+  .viewContaienrEventElem .contentFeedbackContainer {
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .viewContaienrEventElem .contentFeedbackContainer .viewContainerFeedbackCenter {
+    border-color: transparent;
+    background-color: rgb(0, 128, 255);
+    background-color: rgba(0, 128, 255, 0.7);
+  }
+
+  .contentFeedbackContainer {
+    /*background-color: rgba(50, 50, 50, 0.7);*/
+    position: absolute;
+  }
+
+  .viewContainerFeedback {
+    border-color: transparent;
+    background-color: transparent;
+    border-style: solid;
+    position: absolute;
+    border-width: 0;
+  }
+
+  .viewContainerFeedbackLeft {
+    border-left-color: rgb(0, 128, 255);
+    border-left-color: rgba(0, 128, 255, 0.3);
+  }
+  .viewContainerFeedbackTop {
+    border-top-color: rgb(0, 128, 255);
+    border-top-color: rgba(0, 128, 255, 0.3);
+  }
+  .viewContainerFeedbackRight {
+    border-right-color: rgb(0, 128, 255);
+    border-right-color: rgba(0, 128, 255, 0.3);
+  }
+  .viewContainerFeedbackBottom {
+    border-bottom-color: rgb(0, 128, 255);
+    border-bottom-color: rgba(0, 128, 255, 0.3);
+  }
+
+  .viewContainerFeedbackCenter {
+    background-color: rgb(0, 128, 255);
+    background-color: rgba(0, 128, 255, 0.3);
+    border-width: 0;
+  }
+
+  .viewContainerFeedbackCenter.activate {
+    background-color: rgb(0, 128, 255);
+    background-color: rgba(0, 128, 255, 0.7);
+  }
+
+  .viewContainerFeedbackLeft.activate {
+    border-left-color: rgb(0, 128, 255);
+    border-left-color: rgba(0, 128, 255, 0.7);
+  }
+  .viewContainerFeedbackTop.activate {
+    border-top-color: rgb(0, 128, 255);
+    border-top-color: rgba(0, 128, 255, 0.7);
+  }
+  .viewContainerFeedbackRight.activate {
+    border-right-color: rgb(0, 128, 255);
+    border-right-color: rgba(0, 128, 255, 0.7);
+  }
+  .viewContainerFeedbackBottom.activate {
+    border-bottom-color: rgb(0, 128, 255);
+    border-bottom-color: rgba(0, 128, 255, 0.7);
+  }
+
+  /*Console View Start*/
+
+  .consoleViewContentContainer {
+    position: absolute;
+    top: 28px;
+    overflow: auto;
+    width: 100%;
+    height: -webkit-calc(100% - 28px);
+    height: -moz-calc(100% - 28px);
+    height: calc(100% - 28px);
+  }
+
+  .consoleViewContentContainer .fileloc_link {
+    cursor: pointer;
+    color: #1C38AA;
+  }
+  .consoleViewContentContainer .fileloc_link:hover {
+    color: #57C25B;
+  }
+
+  .consoleViewContentContainer .fileloc_link_clicked {
+    color: #8629AA;
+  }
+
+  .consoleViewContentContainer .console_message_item {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  .pre_whitespace {
+    white-space: pre;
+  }
+
+  /*Console View End*/
 
   #app-workbench-border-container {
     background-color: rgba(214,220,226,1) !important;
@@ -281,5 +409,150 @@
     background-color: transparent;
   }
   div, span, pre {&:focus{outline: none;}}
+
+  /*view drag feedback style start*/
+
+  .viewContainerEventElem {
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 0;
+  }
+
+  .titleFeedbackContainer {
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 100;
+  }
+
+  .viewContainerTitleFeedback {
+    background-color: rgb(0, 128, 255);
+    background-color: rgba(0, 128, 255, 0.7);
+    position: absolute;
+    width: 5px;
+    height:100%;
+    border-radius: 2px;
+  }
+
+  .viewContaienrEventElem .contentFeedbackContainer {
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .viewContaienrEventElem .contentFeedbackContainer .viewContainerFeedbackCenter {
+    border-color: transparent;
+    background-color: rgb(0, 128, 255);
+    background-color: rgba(0, 128, 255, 0.7);
+  }
+
+  .contentFeedbackContainer {
+    /*background-color: rgba(50, 50, 50, 0.7);*/
+    position: absolute;
+  }
+
+  .viewContainerFeedback {
+    border-color: transparent;
+    background-color: transparent;
+    border-style: solid;
+    position: absolute;
+    border-width: 0;
+  }
+
+  .viewContainerFeedbackLeft {
+    border-left-color: rgb(0, 128, 255);
+    border-left-color: rgba(0, 128, 255, 0.3);
+  }
+  .viewContainerFeedbackTop {
+    border-top-color: rgb(0, 128, 255);
+    border-top-color: rgba(0, 128, 255, 0.3);
+  }
+  .viewContainerFeedbackRight {
+    border-right-color: rgb(0, 128, 255);
+    border-right-color: rgba(0, 128, 255, 0.3);
+  }
+  .viewContainerFeedbackBottom {
+    border-bottom-color: rgb(0, 128, 255);
+    border-bottom-color: rgba(0, 128, 255, 0.3);
+  }
+
+  .viewContainerFeedbackCenter {
+    background-color: rgb(0, 128, 255);
+    background-color: rgba(0, 128, 255, 0.3);
+    border-width: 0;
+  }
+
+  .viewContainerFeedbackCenter.activate {
+    background-color: rgb(0, 128, 255);
+    background-color: rgba(0, 128, 255, 0.7);
+  }
+
+  .viewContainerFeedbackLeft.activate {
+    border-left-color: rgb(0, 128, 255);
+    border-left-color: rgba(0, 128, 255, 0.7);
+  }
+  .viewContainerFeedbackTop.activate {
+    border-top-color: rgb(0, 128, 255);
+    border-top-color: rgba(0, 128, 255, 0.7);
+  }
+  .viewContainerFeedbackRight.activate {
+    border-right-color: rgb(0, 128, 255);
+    border-right-color: rgba(0, 128, 255, 0.7);
+  }
+  .viewContainerFeedbackBottom.activate {
+    border-bottom-color: rgb(0, 128, 255);
+    border-bottom-color: rgba(0, 128, 255, 0.7);
+  }
+
+  /*Console View Start*/
+
+  .consoleViewContentContainer {
+    position: absolute;
+    top: 28px;
+    overflow: auto;
+    width: 100%;
+    height: -webkit-calc(100% - 28px);
+    height: -moz-calc(100% - 28px);
+    height: calc(100% - 28px);
+  }
+
+  .consoleViewContentContainer .fileloc_link {
+    cursor: pointer;
+    color: #1C38AA;
+  }
+  .consoleViewContentContainer .fileloc_link:hover {
+    color: #57C25B;
+  }
+
+  .consoleViewContentContainer .fileloc_link_clicked {
+    color: #8629AA;
+  }
+
+  .consoleViewContentContainer .console_message_item {
+    margin-top: 2px;
+    margin-bottom: 2px;
+  }
+
+  .pre_whitespace {
+    white-space: pre;
+  }
+
+  /*Console View End*/
+
+  .dijitMenuItemAccelKey {
+    color: gray;
+  }
+
+  .webidaMenuItemAccelKeyHover {
+    vertical-align: 2px;
+    text-decoration: underline;
+    color: blue !important;
+  }
+
+  /* WTC-3050 */
+  .dijitButtonContents:focus .dijitButtonText {
+    text-decoration: underline;
+  }
+
 }
 
