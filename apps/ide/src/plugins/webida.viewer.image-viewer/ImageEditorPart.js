@@ -99,7 +99,7 @@ define([
                     img.src = alias.url + '/' + fileName;
                     img.addEventListener('load', function(event) {
                         var div = document.createElement('DIV');
-                        div.setAttribute('style', 'width:100%; height:100%; overflow:auto');
+                        div.setAttribute('style', 'width:100%; height:100%; overflow:auto; background-color:white');
                         div.appendChild(this);
                         parent.appendChild(div);
                         ImageEditorPart.setZoomCursor(this);
