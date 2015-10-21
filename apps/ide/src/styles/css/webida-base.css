@@ -11,6 +11,10 @@
   /*status bar start*/
   /*status bar end*/
   /*scroll*/
+  /*view drag feedback style start*/
+  /*Console View Start*/
+  /*Console View End*/
+  /* WTC-3050 */
 }
 .webida-light .webida-tool-bar-icon-normal {
   background-position: 0 0;
@@ -276,4 +280,122 @@
 .webida-light span:focus,
 .webida-light pre:focus {
   outline: none;
+}
+.webida-light .viewContainerEventElem {
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  z-index: 0;
+}
+.webida-light .titleFeedbackContainer {
+  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 100;
+}
+.webida-light .viewContainerTitleFeedback {
+  background-color: #0080ff;
+  background-color: rgba(0, 128, 255, 0.7);
+  position: absolute;
+  width: 5px;
+  height: 100%;
+  border-radius: 2px;
+}
+.webida-light .viewContaienrEventElem .contentFeedbackContainer {
+  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.webida-light .viewContaienrEventElem .contentFeedbackContainer .viewContainerFeedbackCenter {
+  border-color: transparent;
+  background-color: #0080ff;
+  background-color: rgba(0, 128, 255, 0.7);
+}
+.webida-light .contentFeedbackContainer {
+  /*background-color: rgba(50, 50, 50, 0.7);*/
+  position: absolute;
+}
+.webida-light .viewContainerFeedback {
+  border-color: transparent;
+  background-color: transparent;
+  border-style: solid;
+  position: absolute;
+  border-width: 0;
+}
+.webida-light .viewContainerFeedbackLeft {
+  border-left-color: #0080ff;
+  border-left-color: rgba(0, 128, 255, 0.3);
+}
+.webida-light .viewContainerFeedbackTop {
+  border-top-color: #0080ff;
+  border-top-color: rgba(0, 128, 255, 0.3);
+}
+.webida-light .viewContainerFeedbackRight {
+  border-right-color: #0080ff;
+  border-right-color: rgba(0, 128, 255, 0.3);
+}
+.webida-light .viewContainerFeedbackBottom {
+  border-bottom-color: #0080ff;
+  border-bottom-color: rgba(0, 128, 255, 0.3);
+}
+.webida-light .viewContainerFeedbackCenter {
+  background-color: #0080ff;
+  background-color: rgba(0, 128, 255, 0.3);
+  border-width: 0;
+}
+.webida-light .viewContainerFeedbackCenter.activate {
+  background-color: #0080ff;
+  background-color: rgba(0, 128, 255, 0.7);
+}
+.webida-light .viewContainerFeedbackLeft.activate {
+  border-left-color: #0080ff;
+  border-left-color: rgba(0, 128, 255, 0.7);
+}
+.webida-light .viewContainerFeedbackTop.activate {
+  border-top-color: #0080ff;
+  border-top-color: rgba(0, 128, 255, 0.7);
+}
+.webida-light .viewContainerFeedbackRight.activate {
+  border-right-color: #0080ff;
+  border-right-color: rgba(0, 128, 255, 0.7);
+}
+.webida-light .viewContainerFeedbackBottom.activate {
+  border-bottom-color: #0080ff;
+  border-bottom-color: rgba(0, 128, 255, 0.7);
+}
+.webida-light .consoleViewContentContainer {
+  position: absolute;
+  top: 28px;
+  overflow: auto;
+  width: 100%;
+  height: -webkit-calc(72%);
+  height: -moz-calc(72%);
+  height: calc(72%);
+}
+.webida-light .consoleViewContentContainer .fileloc_link {
+  cursor: pointer;
+  color: #1C38AA;
+}
+.webida-light .consoleViewContentContainer .fileloc_link:hover {
+  color: #57C25B;
+}
+.webida-light .consoleViewContentContainer .fileloc_link_clicked {
+  color: #8629AA;
+}
+.webida-light .consoleViewContentContainer .console_message_item {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+.webida-light .pre_whitespace {
+  white-space: pre;
+}
+.webida-light .dijitMenuItemAccelKey {
+  color: gray;
+}
+.webida-light .webidaMenuItemAccelKeyHover {
+  vertical-align: 2px;
+  text-decoration: underline;
+  color: blue !important;
+}
+.webida-light .dijitButtonContents:focus .dijitButtonText {
+  text-decoration: underline;
 }
