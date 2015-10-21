@@ -1,0 +1,16 @@
+{
+    "name": "webida.plugin",
+    "description": "Plugin configurator UI manager",
+    "version": "0.1.0",
+    "requirement": "webida.common.workbench",
+
+    "extensions": {
+        "webida.common.workbench:menu" : {
+            "location" : "/&Help/",
+            "wholeItems" : {
+                "Plugin Setting" : [ "cmnd"]
+            },
+            "getViableItems" : "getViableItems"
+        }
+    }
+}
