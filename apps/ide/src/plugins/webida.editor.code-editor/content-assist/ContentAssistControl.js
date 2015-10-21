@@ -16,7 +16,7 @@
 
 /**
  * Constructor function
- * CaControl abstract class
+ * ContentAssistControl abstract class
  * This should be an ancestor of all content assist control modules.
  *
  * @constructor
@@ -40,12 +40,12 @@ define([
     var logger = new Logger();
     logger.off(); 
 
-    function CaControl() {
-        logger.info('new CaControl()');
+    function ContentAssistControl() {
+        logger.info('new ContentAssistControl()');
 
     }
 
-    genetic.inherits(CaControl, Object, {
+    genetic.inherits(ContentAssistControl, Object, {
 
         /**
          * Returns whether the command is supported
@@ -71,5 +71,5 @@ define([
         }
     });
 
-    return CaControl;
+    return ContentAssistControl;
 });

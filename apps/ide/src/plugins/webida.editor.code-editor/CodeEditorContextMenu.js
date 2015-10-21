@@ -110,10 +110,10 @@ define([
                     items['Go to &Matching Brace'] = allItems.navMenuItems['Go to &Matching Brace'];
                 }
 
-                //TODO: widget._caController -> viewer.getPlugin('tern-js')
+                //TODO: widget._contentAssistController -> viewer.getPlugin('tern-js')
                 
-                if (widget._caController) {
-                    widget._caController.execCommand('request', widget, {
+                if (widget._contentAssistController) {
+                    widget._contentAssistController.execCommand('request', widget, {
                         type: 'rename',
                         newName: 'merong',
                         fullDocs: true

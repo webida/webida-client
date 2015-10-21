@@ -7,7 +7,7 @@
         "webida.editor.code-editor:contentassist" : [
             { "name" : "controlModule", "type" : "string", "desc" : "Content assist module path" },
             { "name" : "engineModule", "type" : "string", "desc" : "Content assist engine path" },
-            { "name" : "mode", "type" : "string", "desc" : "Working language mode" },
+            { "name" : "langMode", "type" : "string", "desc" : "Working language mode" },
             { "name" : "engineName", "type" : "string", "desc" : "Name of engine" }
         ]
     },
@@ -62,15 +62,6 @@
                 "specificFileName" : {
                 },
                 "iconCssFilePath" : "./icons.css"
-            }
-        ],
-        
-        "webida.editor.code-editor:contentassist" : [
-            { 
-                "controlModule" : "./content-assist/TernControl", 
-                "engineModule" : "./content-assist/js-hint-server",
-                "mode" : "js",
-                "engineName" : "tern-js"
             }
         ]
     }

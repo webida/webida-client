@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-define(['tern/lib/infer',
-        'tern/lib/tern',
+define(['./lib/ternjs/lib/infer',
+        './lib/ternjs/lib/tern',
         'acorn/util/walk',
         'webida-lib/util/path'],
 function (infer, tern, walk, path) {

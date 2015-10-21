@@ -83,11 +83,12 @@ function (require, topic, _, ide, codemirror, pathUtil) {
 
     Server.prototype.start = function (c) {
         var self = this;
+        /* TODO: We will not use Server finally.
         require(['./js-hint-server'], function (server) {
             self.server = server;
             server.startServer(self.serverId);
             c();
-        });
+        });*/
     };
     Server.prototype.stop = function () {
         this.server.stopServer();

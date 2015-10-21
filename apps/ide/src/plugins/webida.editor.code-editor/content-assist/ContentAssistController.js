@@ -16,7 +16,7 @@
 
 /**
  * Constructor function
- * CaController  class
+ * ContentAssistController  class
  * Content assist controller module.
  *
  * @constructor
@@ -33,17 +33,15 @@ define([
     'webida-lib/plugin-manager-0.1',
     'webida-lib/util/genetic',    
     'webida-lib/util/logger/logger-client',
-    './CaControl',
-    './TernControl'
-], function(
+    './ContentAssistControl'
+], function (
     codemirror,
     URI,
     require,
     pluginManager,
     genetic,
     Logger,
-    CaControl,
-    TernControl
+    ContentAssistControl
 ) {
     'use strict';
     // @formatter:on
@@ -62,7 +60,7 @@ define([
     
     var promiseForExtensionsInfo;
 
-    function extractModulePath (ext, property) {
+    function extractModulePath(ext, property) {
         if (typeof ext[property] === 'string') {
             if (ext[property] !== '') {
                 var path = URI(ext[property]).absoluteTo(ext.__plugin__.loc + '/').toString();
@@ -79,14 +77,14 @@ define([
     function loadCaControlsConstructors() {
         var promisesForConstructors = [];
         
-        promiseForExtensionsInfo = new Promise(function(resolve, reject) {
+        promiseForExtensionsInfo = new Promise(function (resolve, reject) {
             
             caExtensions.forEach(function (ext) {
                 var caExtensionInfo = {};            
                 var controlModulePath = extractModulePath(ext, 'controlModule');
                 var engineModulePath = extractModulePath(ext, 'engineModule');
 
-                caExtensionInfo.mode = ext.mode;
+                caExtensionInfo.langMode = ext.langMode;
                 caExtensionInfo.engineName = ext.engineName;
                 caExtensionInfo.engineModulePath = engineModulePath; 
                 caExtensionInfo.controlModulePath = controlModulePath;
@@ -95,7 +93,7 @@ define([
                 promisesForConstructors.push(new Promise(function (resolve1, reject1) {
                     require([controlModulePath], function (CaControlConstructor) {
                         CaControlConstructor.ENGINE_NAME = caExtensionInfo.engineName;
-                        CaControlConstructor.TARGET_MODE = caExtensionInfo.mode;
+                        CaControlConstructor.TARGET_MODE = caExtensionInfo.langMode;
                         caControlConstructors.push(CaControlConstructor);
                         resolve1('A CA control module constructor loaded');
                     });
@@ -113,19 +111,19 @@ define([
     
     loadCaControlsConstructors();
 
-    function CaController(viewer, cm, options, c) {
-        logger.info('new CaController()');
+    function ContentAssistController(viewer, cm, options, c) {
+        logger.info('new ContentAssistController()');
 
         var that = this;
         var promises = [promiseForExtensionsInfo];      
         
         this.controls = [];
-        cm._caController = that;
+        cm._contentAssistController = that;
         
         promises.push(new Promise(function (resolve, reject) {
             caControlConstructors.forEach(function (CaControlConstructor) {
                 that.controls.push(new CaControlConstructor(viewer, cm, options, function () {
-                    resolve('CaControl created');
+                    resolve('ContentAssistControl created');
                 }));
             });
         }));     
@@ -144,23 +142,23 @@ define([
     }
 
     function jshint(cm, callback) {
-        if (cm._caController) {
-            cm._caController.execCommand('getHint', cm, callback);
+        if (cm._contentAssistController) {
+            cm._contentAssistController.execCommand('getHint', cm, callback);
         }
     }
 
     function setCodemirrorCommandsAndHelpers() {
         codemirror.commands['jsca-showtype'] = function (cm) {
-            cm._caController.execCommand('showType', cm);           
+            cm._contentAssistController.execCommand('showType', cm);           
         };
         codemirror.commands['jsca-gotodefinition'] = function (cm) {
-            cm._caController.execCommand('jumpToDef', cm);
+            cm._contentAssistController.execCommand('jumpToDef', cm);
         };
         codemirror.commands['jsca-jumpback'] = function (cm) {
-            cm._caController.execCommand('jumpBack', cm);
+            cm._contentAssistController.execCommand('jumpBack', cm);
         };
         codemirror.commands['jsca-rename'] = function (cm) {
-            cm._caController.execCommand('rename', cm);
+            cm._contentAssistController.execCommand('rename', cm);
         };
 
         codemirror.registerHelper('hint', 'javascript', jshint);        
@@ -168,7 +166,7 @@ define([
 
     setCodemirrorCommandsAndHelpers();
 
-    genetic.inherits(CaController, CaControl, {
+    genetic.inherits(ContentAssistController, ContentAssistControl, {
 
 
         /**
@@ -213,9 +211,9 @@ define([
          *
          * @return {object}
          */
-    CaController.getCaExtensionInfos = function () {
+    ContentAssistController.getCaExtensionInfos = function () {
         return caExtensionInfos;
     };
 
-    return CaController;
+    return ContentAssistController;
 });
