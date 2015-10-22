@@ -66,10 +66,10 @@ define([
                 var path = URI(ext[property]).absoluteTo(ext.__plugin__.loc + '/').toString();
                 return path;
             } else {
-                console.error('Null string.');
+                logger.error('Null string.');
             }
         } else {
-            console.error('Type of ext[' + property + '] should be string.');
+            logger.error('Type of ext[' + property + '] should be string.');
         }
     }
 
@@ -205,7 +205,7 @@ define([
                     return this.controls[i].execCommand.apply(this.controls[i], args);
                 }
             }
-            console.error('CaCommand[' + command + '] is not supported.');
+            logger.error('CaCommand[' + command + '] is not supported.');
         }
     });
 
