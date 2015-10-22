@@ -36,7 +36,7 @@ define([
 	'webida-lib/util/logger/logger-client',
 	'plugins/webida.editor.text-editor/TextEditorViewer',    
 	'./snippet',
-    './content-assist/ContentAssistController',
+    './content-assist/ContentAssistDelegator',
     'dojo/topic'
 ], function (
 	require,
@@ -49,7 +49,7 @@ define([
 	Logger,
 	TextEditorViewer,
 	Snippet,
-    ContentAssistController,
+    ContentAssistDelegator,
     topic
 ) {
     'use strict';
@@ -445,8 +445,8 @@ define([
     }
 
     function onBeforeShowHints(cm) {
-        if (cm._contentAssistController) {
-            cm._contentAssistController.execCommand('closeArgHints', cm);
+        if (cm._contentAssistDelegator) {
+            cm._contentAssistDelegator.execCommand('closeArgHints', cm);
         }
 
     }
@@ -576,7 +576,7 @@ define([
         options.useWorker = settings.useWorker;
         options.autoHint = settings.autoHint;        
         
-        var caController = new ContentAssistController(editor, cm, options, c);        
+        var contentAssistDelegator = new ContentAssistDelegator(editor, cm, options, c);        
     }
 
     function setChangeForAutoHintDebounced() {
@@ -1416,8 +1416,8 @@ define([
                 // Rename
                 items['&Source'] = sourceItems;
 
-                if (editor._contentAssistController) {
-                    editor._contentAssistController.execCommand('request', editor, {type: 'rename', newName: 'merong', fullDocs: true},
+                if (editor._contentAssistDelegator) {
+                    editor._contentAssistDelegator.execCommand('request', editor, {type: 'rename', newName: 'merong', fullDocs: true},
                                                     function (error/*, data*/) {
                         if (!error) {
                             sourceItems['&Rename Variables'] = menuItems.editMenuItems['&Source']['&Rename Variables'];

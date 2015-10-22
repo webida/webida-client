@@ -8,7 +8,7 @@
 ## Extension points
 ### webida.editor.code-editor:contentassist
 
-```javascript
+```
 extensionPoints" : {
     ...
     "webida.editor.code-editor:contentassist" : [
@@ -21,7 +21,7 @@ extensionPoints" : {
 }
 ```
 - controlModule
-  - Path of the control module which returns a constructor function which inherits ContentAssistControl.
+  - Path of the control module which returns a constructor function which inherits IContentAssist.
   - Control module instance must provide the following methods.
     - canExecute
     - execCommand

@@ -7,7 +7,7 @@ This plugin provides ter.js content assist engine and control.
 ## Extensions
 ### webida.editor.code-editor:contentassist
 
-```javascript
+```
 extensions" : {
     "webida.editor.code-editor:contentassist" : [
         { 

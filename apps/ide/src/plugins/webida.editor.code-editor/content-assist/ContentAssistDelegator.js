@@ -16,8 +16,8 @@
 
 /**
  * Constructor function
- * ContentAssistController  class
- * Content assist controller module.
+ * ContentAssistDelegator  class
+ * Content assist delegator module.
  *
  * @constructor
  * @since: 2015.10.11
@@ -33,7 +33,7 @@ define([
     'webida-lib/plugin-manager-0.1',
     'webida-lib/util/genetic',    
     'webida-lib/util/logger/logger-client',
-    './ContentAssistControl'
+    './IContentAssist'
 ], function (
     codemirror,
     URI,
@@ -41,7 +41,7 @@ define([
     pluginManager,
     genetic,
     Logger,
-    ContentAssistControl
+    IContentAssist
 ) {
     'use strict';
     // @formatter:on
@@ -110,19 +110,19 @@ define([
     
     loadCaControlsConstructors();
 
-    function ContentAssistController(viewer, cm, options, c) {
-        logger.info('new ContentAssistController()');
+    function ContentAssistDelegator(viewer, cm, options, c) {
+        logger.info('new ContentAssistDelegator()');
 
         var that = this;
         var promises = [promiseForExtensionsInfo];      
         
         this.controls = [];
-        cm._contentAssistController = that;
+        cm._contentAssistDelegator = that;
         
         promises.push(new Promise(function (resolve, reject) {
             caControlConstructors.forEach(function (CaControlConstructor) {
                 that.controls.push(new CaControlConstructor(viewer, cm, options, function () {
-                    resolve('ContentAssistControl created');
+                    resolve('IContentAssist created');
                 }));
             });
         }));     
@@ -141,23 +141,23 @@ define([
     }
 
     function jshint(cm, callback) {
-        if (cm._contentAssistController) {
-            cm._contentAssistController.execCommand('getHint', cm, callback);
+        if (cm._contentAssistDelegator) {
+            cm._contentAssistDelegator.execCommand('getHint', cm, callback);
         }
     }
 
     function setCodemirrorCommandsAndHelpers() {
         codemirror.commands['jsca-showtype'] = function (cm) {
-            cm._contentAssistController.execCommand('showType', cm);           
+            cm._contentAssistDelegator.execCommand('showType', cm);           
         };
         codemirror.commands['jsca-gotodefinition'] = function (cm) {
-            cm._contentAssistController.execCommand('jumpToDef', cm);
+            cm._contentAssistDelegator.execCommand('jumpToDef', cm);
         };
         codemirror.commands['jsca-jumpback'] = function (cm) {
-            cm._contentAssistController.execCommand('jumpBack', cm);
+            cm._contentAssistDelegator.execCommand('jumpBack', cm);
         };
         codemirror.commands['jsca-rename'] = function (cm) {
-            cm._contentAssistController.execCommand('rename', cm);
+            cm._contentAssistDelegator.execCommand('rename', cm);
         };
 
         codemirror.registerHelper('hint', 'javascript', jshint);        
@@ -165,7 +165,7 @@ define([
 
     setCodemirrorCommandsAndHelpers();
 
-    genetic.inherits(ContentAssistController, ContentAssistControl, {
+    genetic.inherits(ContentAssistDelegator, IContentAssist, {
 
 
         /**
@@ -210,9 +210,9 @@ define([
          *
          * @return {object}
          */
-    ContentAssistController.getCaExtensionInfos = function () {
+    ContentAssistDelegator.getCaExtensionInfos = function () {
         return caExtensionInfos;
     };
 
-    return ContentAssistController;
+    return ContentAssistDelegator;
 });

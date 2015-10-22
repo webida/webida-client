@@ -23,7 +23,7 @@ define(['require',
 function (require, topic, _, ide, codemirror, pathUtil) {
     'use strict';
 
-    var jshint = {};
+    var ternServerStarter = {};
 
     function moveToPosition(data) {
         require(['plugins/webida.editor.text-editor/TextEditorPart'], function (TextEditorPart) {
@@ -52,7 +52,7 @@ function (require, topic, _, ide, codemirror, pathUtil) {
 
     WorkerServer.prototype.start = function (c) {
         var that = this;
-        require(['./assist'], function (assist) {
+        require(['plugins/webida.editor.code-editor/content-assist/assist'], function (assist) {
             that.assist = assist;
             assist.send({mode: that.mode, type: 'start', server: that.serverId}, c);
         });
@@ -110,7 +110,7 @@ function (require, topic, _, ide, codemirror, pathUtil) {
     };
 
 
-    jshint.startServer = function (filepath, cm, options, c) {
+    ternServerStarter.startServer = function (filepath, cm, options, c) {
         options = options || {};
 
         var server;
@@ -167,5 +167,5 @@ function (require, topic, _, ide, codemirror, pathUtil) {
         });
     };
 
-    return jshint;
+    return ternServerStarter;
 });
