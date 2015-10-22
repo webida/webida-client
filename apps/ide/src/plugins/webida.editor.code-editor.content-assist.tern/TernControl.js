@@ -20,7 +20,6 @@
  * Tern based javascript content assist control module.
  *
  * @constructor
- * @see ContentAssistControl
  * @since: 2015.09.18
  * @author: h.m.kwom
  *
@@ -32,13 +31,13 @@ define([
     'require',
     'webida-lib/util/genetic',    
     'webida-lib/util/logger/logger-client',
-    'plugins/webida.editor.code-editor/content-assist/ContentAssistControl'
+    'plugins/webida.editor.code-editor/content-assist/IContentAssist'
 ], function (
     codemirror,
     require,
     genetic,
     Logger,
-    ContentAssistControl
+    IContentAssist
 ) {
     'use strict';
 // @formatter:on
@@ -77,10 +76,10 @@ define([
         logger.info('new TernControl()');
      
         var that = this;
-        require(['plugins/webida.editor.code-editor/content-assist/js-hint'], function (jshint) {            
+        require(['./tern-server-starter'], function (starter) {            
             options.engineName = TernControl.ENGINE_NAME;
             options.langMode = TernControl.TARGET_MODE;
-            jshint.startServer(viewer.file.path, cm, options, function (server) {               
+            starter.startServer(viewer.file.path, cm, options, function (server) {               
                 that.ternAddon = server.ternAddon;
                 that.server = server;
                 viewer.assister = server;                
@@ -99,7 +98,7 @@ define([
         return serverCommands.indexOf(command) >= 0;
     }  
 
-    genetic.inherits(TernControl, ContentAssistControl, {
+    genetic.inherits(TernControl, IContentAssist, {
         
 
         /**

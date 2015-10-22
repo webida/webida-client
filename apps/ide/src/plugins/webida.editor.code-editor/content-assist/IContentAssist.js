@@ -16,7 +16,7 @@
 
 /**
  * Constructor function
- * ContentAssistControl abstract class
+ * IContentAssist interface
  * This should be an ancestor of all content assist control modules.
  *
  * @constructor
@@ -40,12 +40,12 @@ define([
     var logger = new Logger();
     logger.off(); 
 
-    function ContentAssistControl() {
-        logger.info('new ContentAssistControl()');
+    function IContentAssist() {
+        logger.info('new IContentAssist()');
 
     }
 
-    genetic.inherits(ContentAssistControl, Object, {
+    genetic.inherits(IContentAssist, Object, {
 
         /**
          * Returns whether the command is supported
@@ -71,5 +71,5 @@ define([
         }
     });
 
-    return ContentAssistControl;
+    return IContentAssist;
 });
