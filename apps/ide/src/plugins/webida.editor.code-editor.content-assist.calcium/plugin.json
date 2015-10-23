@@ -1,0 +1,16 @@
+{
+    "name": "webida.editor.code-editor.content-assist.calcium",
+    "description": "Code Editor Content assist plugin for calcium",
+    "version": "0.1.0",
+    "requirement": "webida.editor.code-editor",
+    "extensions" : {
+        "webida.editor.code-editor:contentassist" : [
+            {
+                "controlModule" : "./CalciumControl",
+                "engineModule" : "./calcium-server",
+                "langMode" : "js",
+                "engineName" : "calcium"
+            }
+        ]
+    }
+}
