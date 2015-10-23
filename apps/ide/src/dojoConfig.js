@@ -23,6 +23,10 @@ var connHostUrl = decodeURIComponent(
     document.cookie.replace(/(?:(?:^|.*;\s*)webida\.connHostUrl\s*\=\s*([^;]*).*$)|^.*$/, '$1')
 );
 
+var webidaLocale = decodeURIComponent(
+    document.cookie.replace(/(?:(?:^|.*;\s*)webida\.locale\s*\=\s*([^;]*).*$)|^.*$/, '$1')
+);
+
 var dojoConfig = {
     async: true,
     baseUrl: '.',
@@ -33,7 +37,9 @@ var dojoConfig = {
         { name: 'jquery', location: '../../../bower_components/jquery/dist', main: 'jquery.min' },
         { name: 'showdown', location: '../../../bower_components/showdown/dist', main: 'showdown.min' }
     ],
-    locale: location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us',
+    locale: ((webidaLocale === 'default') || (webidaLocale === '')) ?
+        (location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us') : webidaLocale,
+    extraLocale: ['zh-cn', 'zh-tw'],
     paths: {
         'webida-lib': '../../../common/src/webida',
         'lib' : 'lib',
