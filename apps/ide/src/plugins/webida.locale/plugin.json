@@ -1,0 +1,20 @@
+{
+    "name": "webida.locale",
+    "description": "internationalization",
+    "version": "0.1.0",
+    "requirement": "webida.preference",
+    "extensions": {
+        "webida.preference:pages": [
+            {
+                "module": "plugins/webida.locale/locale-preference",
+                "id": "webidaLocale",
+                "hierarchy": "",
+                "name": "Locale",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "getDefault": "getDefault",
+                "scope": ["WORKSPACE"]
+            }
+        ]
+    }
+}
