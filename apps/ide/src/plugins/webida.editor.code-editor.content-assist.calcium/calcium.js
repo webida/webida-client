@@ -294,6 +294,7 @@ define(['require',
                 },
                 function (error, data) {
                     logger.info(data);
+                    closeArgHints(cm);
                     showArgHints(data, cm, argPos);
                 }
             );
@@ -334,7 +335,7 @@ define(['require',
         function closeArgHints(cm) {
             if (cm.calciumAddon.status.activeArgHints) {
                 remove(cm.calciumAddon.status.activeArgHints);
-                cm.calciumAddon.activeArgHints = null;
+                cm.calciumAddon.status.activeArgHints = null;
             }
         }
 
