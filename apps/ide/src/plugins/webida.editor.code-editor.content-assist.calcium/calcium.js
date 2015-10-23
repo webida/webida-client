@@ -376,7 +376,9 @@ define(['require',
                             code: cm.getValue()
                         }
                     },
-                    c);
+                    function (error, data) {
+                        c(data === null);
+                    });
                     break;
                 default: throw new Error('Unknown request type');
             }
