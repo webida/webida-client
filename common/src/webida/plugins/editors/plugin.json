@@ -126,7 +126,7 @@
                 "module": "webida-lib/plugins/editors/viable-menu-items",
                 "location" : "/&Navigate/",
                 "wholeItems" : {
-                    "&Go to Definition" : [ "cmnd" ],
+                    "&Go to Definition" : [ "cmnd", { "shortcut": { "keys": { "default" : "Alt+." }, "desc": "Go to definition" } } ],
                     "G&o to Line" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+D" }, "desc": "Go to line" } } ],
                     "Go to &Matching Brace" : [ "cmnd" ],
                     "&Navigate Editors" : {

@@ -202,9 +202,9 @@ define([
         var layoutEditorsItems = {};
         if (editors.splitViewContainer.getShowedViewContainers().length > 1) {
             if (editors.splitViewContainer.get('verticalSplit') === true) {
-                layoutEditorsItems['&Horizontal'] = menuItems.viewMenuItems['Spl&it Editors']['&Horizontal'];
-            } else {
                 layoutEditorsItems['&Vertical'] = menuItems.viewMenuItems['Spl&it Editors']['&Vertical'];
+            } else {                
+                layoutEditorsItems['&Horizontal'] = menuItems.viewMenuItems['Spl&it Editors']['&Horizontal'];
             }
         } else {
             layoutEditorsItems['&Vertical'] = menuItems.viewMenuItems['Spl&it Editors']['&Vertical'];
