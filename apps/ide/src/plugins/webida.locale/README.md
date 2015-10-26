@@ -13,7 +13,7 @@ webida.locale
 │├┬─ en-us                  
 ││└── resource.js           - english resource bundle.
 │└┬─ zh-cn
-│　└── resource.js          - chinese resource bundle.
+│ └── resource.js           - chinese resource bundle.
 ├── plugin.js               - Main plugin module.
 ├── plugin.json             - Plugin manifest file.
 ├── README.md               - This document.
