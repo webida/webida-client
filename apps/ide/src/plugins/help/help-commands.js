@@ -27,7 +27,7 @@
 define(['require'], function (require) {
     'use strict';
 
-    var version = '1.4.1';
+    var version = '1.5.0';
 
     function showHelpDocument() {
         require(['webida-lib/webida-0.3'], function (webida) {
