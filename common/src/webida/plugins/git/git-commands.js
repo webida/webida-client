@@ -4007,9 +4007,9 @@ define(['require',
                 height: $(window).height() * 0.8
             });
 
-            $('#GitCompareView').height($('#GitCompare').height() - 25);
+            $('#GitCompareView').height($('#GitCompare').height() - 45);
             var height = $('#GitCompareView').height() + 8;
-            var width = $('#GitCompare').width() - 8;
+            var width = $('#GitCompare').width() - 20;
 
             var revisionList = [];
             git.exec(GIT_DIR, ['log', '--format=raw', relativeFilepath], function (err, result) {

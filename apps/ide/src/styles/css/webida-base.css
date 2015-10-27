@@ -8,6 +8,8 @@
 .webida-light {
   /*logo*/
   /*userinfo*/
+  /*menubar separator*/
+  /*workbench style end*/
   /*view drag feedback style start*/
   /*Console View Start*/
   /*Console View End*/
@@ -128,8 +130,8 @@
   padding: 0;
   background: transparent;
 }
-.webida-light .dijitTabListWrapper {
-  left: 0 !important;
+.webida-light .dijitTabInnerDiv[aria-disabled='true'] ~ .dijitTabListWrapper {
+  left: 0px!important;
 }
 .webida-light #editor-tab .dijitBorderContainer-dijitContentPane {
   background-color: #a0a7ae;
@@ -193,6 +195,32 @@
   border-width: 1px;
   border-left-width: 0;
   padding-left: 2px;
+}
+.webida-light .top-level-menu-separator {
+  width: 100%;
+  height: 9px;
+  background-image: -moz-linear-gradient(top, #414850 5px, #313437 100%);
+  background-image: -webkit-linear-gradient(top, #414850 5px, #313437 100%);
+  background-image: -o-linear-gradient(top, #414850 5px, #313437 100%);
+  background-image: linear-gradient(to bottom, #414850 5px, #313437 100%);
+  background-position-y: 0;
+  display: none;
+}
+.webida-light .separator-collapse-btn {
+  width: 40px;
+  height: 9px;
+  top: 0;
+  background-image: url('../images/top_collapse_bt.png');
+  cursor: pointer;
+}
+.webida-light .separator-collapse-btn:hover {
+  background-position-y: -9px;
+}
+.webida-light .separator-collapse-btn:active {
+  background-position-y: -18px;
+}
+.webida-light .workbenchMenubarHide .top-level-menu-separator {
+  display: block;
 }
 .webida-light .viewContainerEventElem {
   width: 100%;
@@ -385,11 +413,6 @@
 }
 .webida-light ::-webkit-scrollbar-corner {
   background-color: transparent;
-}
-.webida-light div:focus,
-.webida-light span:focus,
-.webida-light pre:focus {
-  outline: none;
 }
 .webida-light .viewContainerEventElem {
   width: 100%;

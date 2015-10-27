@@ -108,6 +108,13 @@
 .webida-light .dijitTreeRowFocused {
   background-repeat: repeat;
 }
+.webida-light .dijitTreeRow.focused {
+  border: 1px #759dc0 solid;
+  padding: 3px 0 1px;
+}
+.webida-light .dijitTreeRow .dijitTreeLabel {
+  outline: none;
+}
 .webida-light .dijitTreeExpando {
   background-image: url("../images/treeExpandImages.png");
   width: 16px;

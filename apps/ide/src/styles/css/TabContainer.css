@@ -144,6 +144,13 @@
   background-color: #cfe5fa;
   color: #43caff;
 }
+.webida-light .dijitTab.dijitFocused {
+  border: 1px #759dc0 solid!important;
+  padding: 3px 0 1px;
+}
+.webida-light .dijitTab .tabLabel {
+  outline: none;
+}
 .webida-light .dijitTabDisabled {
   background-color: #d3d3d3;
 }
