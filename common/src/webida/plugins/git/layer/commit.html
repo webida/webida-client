@@ -1,33 +1,35 @@
-<div style="width:600px;padding-bottom:5px;">
-    <div style="width: 100px;display:inline-block;">
-        <strong>Current branch:</strong>
+<div style="padding: 7px">
+    <div style="width:600px;padding-bottom:5px;">
+        <div style="width: 100px;display:inline-block;">
+            <strong>Current branch:</strong>
+        </div>
+        <div style="display:inline-block;" id="GitCommitBranchInfo"></div>
     </div>
-    <div style="display:inline-block;" id="GitCommitBranchInfo"></div>
+    <div style="padding-bottom:5px;">
+        <label for="GitCommitMessage"><strong>Commit message</strong></label>
+    </div>
+    <div id="GitCommitMessage" data-dojo-type="dijit/form/SimpleTextarea" style="width:595px;height:130px;resize:none;overflow:auto" title="You can change the commit message format in the 'Menu > Git > Configure Dialog'."></div>
+    <div style="padding-top:5px;padding-bottom:5px;">
+        <div style="width:50px;display:inline-block;">
+            <label for="GitAuthorInput">
+                <strong>Author:</strong>
+            </label>
+        </div>
+        <input type="text" id="GitAuthorInput" data-dojo-type="dijit/form/TextBox" data-dojo-props="placeHolder: 'eg: AuthorName <AuthorName@Email.com>'" style="width:545px;" title="eg: AuthorName <AuthorName@Email.com>"/>
+    </div>
+    <div style="padding-bottom: 5px;">
+        <div style="width:200px;display:inline-block;">
+            <input id="GitCommitAmendCheckbox" data-dojo-type="dijit/form/CheckBox" />
+            <label for="GitCommitAmendCheckbox">Amend previous commit</label>
+        </div>
+        <div style="width:180px;display:inline-block;">
+            <input id="GitCommitChangeIdCheckbox" data-dojo-type="dijit/form/CheckBox" />
+            <label for="GitCommitChangeIdCheckbox">Generate Change-Id</label>
+        </div>
+        <div style="width:180px;display:inline-block;">
+            <input id="GitCommitSignedOffByCheckbox" data-dojo-type="dijit/form/CheckBox" />
+            <label for="GitCommitSignedOffByCheckbox">Signed-off-by</label>
+        </div>
+    </div>
+    <div id="GitCommitGrid"></div>
 </div>
-<div style="padding-bottom:5px;">
-    <label for="GitCommitMessage"><strong>Commit message</strong></label>
-</div>
-<div id="GitCommitMessage" data-dojo-type="dijit/form/SimpleTextarea" style="width:595px;height:130px;resize:none;overflow:auto" title="You can change the commit message format in the 'Menu > Git > Configure Dialog'."></div>
-<div style="padding-top:5px;padding-bottom:5px;">
-    <div style="width:50px;display:inline-block;">
-        <label for="GitAuthorInput">
-            <strong>Author:</strong>
-        </label>
-    </div>
-    <input type="text" id="GitAuthorInput" data-dojo-type="dijit/form/TextBox" data-dojo-props="placeHolder: 'eg: AuthorName <AuthorName@Email.com>'" style="width:545px;" title="eg: AuthorName <AuthorName@Email.com>"/>
-</div>
-<div style="padding-bottom: 5px;">
-    <div style="width:200px;display:inline-block;">
-        <input id="GitCommitAmendCheckbox" data-dojo-type="dijit/form/CheckBox" />
-        <label for="GitCommitAmendCheckbox">Amend previous commit</label>
-    </div>
-    <div style="width:180px;display:inline-block;">
-        <input id="GitCommitChangeIdCheckbox" data-dojo-type="dijit/form/CheckBox" />
-        <label for="GitCommitChangeIdCheckbox">Generate Change-Id</label>
-    </div>
-    <div style="width:180px;display:inline-block;">
-        <input id="GitCommitSignedOffByCheckbox" data-dojo-type="dijit/form/CheckBox" />
-        <label for="GitCommitSignedOffByCheckbox">Signed-off-by</label>
-    </div>
-</div>
-<div id="GitCommitGrid"></div>

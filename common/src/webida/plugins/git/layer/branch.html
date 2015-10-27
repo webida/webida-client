@@ -1,30 +1,31 @@
 <style>
     .dojoxGridScrollbox { overflow-x: hidden; }
 </style>
-
-<div style="width:480px;padding-bottom:5px;">
-    <div style="width: 100px; display:inline-block;">
-        <strong>Switch to:</strong>
+    <div style="padding: 7px">
+    <div style="width:480px;padding-bottom:5px;">
+        <div style="width: 100px; display:inline-block;">
+            <strong>Switch to:</strong>
+        </div>
+        <div style="width:100px;display:inline-block;">
+            <input id="GitBranchRadioBtn" data-dojo-type="dijit/form/RadioButton" name="group1" data-dojo-props="checked: true"/>
+            <label for="GitBranchRadioBtn">Branch</label>
+        </div>
+        <div style="display:inline-block;">
+            <input id="GitTagRadioBtn" name="group1" data-dojo-type="dijit/form/RadioButton"/>
+            <label for="GitTagRadioBtn">Tag</label>
+        </div>
     </div>
-    <div style="width:100px;display:inline-block;">
-        <input id="GitBranchRadioBtn" data-dojo-type="dijit/form/RadioButton" name="group1" data-dojo-props="checked: true"/>
-        <label for="GitBranchRadioBtn">Branch</label>
+    <div style="padding-bottom:5px;">
+        <button id="GitCheckoutBtn" data-dojo-type="dijit/form/Button" data-dojo-props="disabled:true">
+            <div style="width: 55px">Checkout</div>
+        </button>
+        <button id="GitCreateBtn" data-dojo-type="dijit/form/Button">
+            <div style="width: 55px">Create</div>
+        </button>
+        <button id="GitRemoveBtn" data-dojo-type="dijit/form/Button" data-dojo-props="disabled:true">
+            <div style="width: 55px">Remove</div>
+        </button>
     </div>
-    <div style="display:inline-block;">
-        <input id="GitTagRadioBtn" name="group1" data-dojo-type="dijit/form/RadioButton"/>
-        <label for="GitTagRadioBtn">Tag</label>
-    </div>
+    <div id="GitBranchTree"></div>
+    <div id="GitTagGrid"></div>
 </div>
-<div style="padding-bottom:5px;">
-    <button id="GitCheckoutBtn" data-dojo-type="dijit/form/Button" data-dojo-props="disabled:true">
-        <div style="width: 55px">Checkout</div>
-    </button>
-    <button id="GitCreateBtn" data-dojo-type="dijit/form/Button">
-        <div style="width: 55px">Create</div>
-    </button>
-    <button id="GitRemoveBtn" data-dojo-type="dijit/form/Button" data-dojo-props="disabled:true">
-        <div style="width: 55px">Remove</div>
-    </button>
-</div>
-<div id="GitBranchTree"></div>
-<div id="GitTagGrid"></div>

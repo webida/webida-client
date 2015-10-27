@@ -1,28 +1,30 @@
-<div style="width: 450px;padding-bottom: 5px;">
-    <div style="width: 110px; display:inline-block;">
-        <strong>Current branch:</strong>
+<div style="padding: 7px">
+    <div style="width: 450px;padding-bottom: 5px;">
+        <div style="width: 110px; display:inline-block;">
+            <strong>Current branch:</strong>
+        </div>
+        <div style="width:320px;display:inline-block;">
+            <div id="GitRebaseBranchInfo"></div>
+        </div>
     </div>
-    <div style="width:320px;display:inline-block;">
-        <div id="GitRebaseBranchInfo"></div>
-    </div>
-</div>
-<div>
-    <div style="width:110px;display:inline-block;">
-        <strong>
-            <label for="GitRebaselocalBranchSelect">Upstream branch:</label>
-        </strong>
-    </div>
-    <div style="width:320px;display:inline-block;">
-        <select id="GitRebaselocalBranchSelect" style="width: 100%" data-dojo-type="dijit/form/Select"></select>
-    </div>
-</div>
-<!-- options block -->
-<fieldset style="padding: 5px; border: 1px solid gray">
-    <legend>
-        <strong>Options</strong>
-    </legend>
     <div>
-        <input id="GitRebasePreserveMergesCheckbox" data-dojo-type="dijit/form/CheckBox"/>
-        <label for="GitRebasePreserveMergesCheckbox">Preserve-merges</label>
+        <div style="width:110px;display:inline-block;">
+            <strong>
+                <label for="GitRebaselocalBranchSelect">Upstream branch:</label>
+            </strong>
+        </div>
+        <div style="width:320px;display:inline-block;">
+            <select id="GitRebaselocalBranchSelect" style="width: 100%" data-dojo-type="dijit/form/Select"></select>
+        </div>
     </div>
-</fieldset>
+    <!-- options block -->
+    <fieldset style="padding: 5px; border: 1px solid gray">
+        <legend>
+            <strong>Options</strong>
+        </legend>
+        <div>
+            <input id="GitRebasePreserveMergesCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitRebasePreserveMergesCheckbox">Preserve-merges</label>
+        </div>
+    </fieldset>
+</div>
