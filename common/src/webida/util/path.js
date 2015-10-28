@@ -93,8 +93,9 @@ define([], function () {
      * @param {string} filePath
      */
     mod.detachSlash = function (path) {
+			
         var len = path.length;
-        if (path[len - 1] === '/') {
+        if (path !== '/' && path[len - 1] === '/') {
             return path.substr(0, len - 1);
         } else {
             return path;

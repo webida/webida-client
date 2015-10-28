@@ -664,7 +664,11 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 var path, dir;
                 path = target.split(/[\\/]/);
                 path.pop();
-                dir = path.join('/');
+				if (path.length === 1) {
+					dir = '/'
+				} else {
+	                dir = path.join('/');
+				}
                 this.isDirectory(dir, function (error, isDir) {
                 	if (isDir === true) {
                 		that._writeFile(target, data, cb);
