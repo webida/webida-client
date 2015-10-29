@@ -51,6 +51,6 @@
 }
 .webida-light .dijitSplitContainer-dijitContentPane,
 .webida-light .dijitBorderContainer-dijitContentPane {
-  background-color: transparent;
+  background-color: #d6dce2;
   padding: 8px;
 }
