@@ -665,7 +665,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 path = target.split(/[\\/]/);
                 path.pop();
 				if (path.length === 1) {
-					dir = '/'
+					dir = '/';
 				} else {
 	                dir = path.join('/');
 				}
@@ -1569,6 +1569,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
                 path = pathParsed.path;
             }
+            path += '/';
             return dirsToCache.some(function (cached) { return path.indexOf(cached) === 0; });
         }
         function getName(obj) { return obj.name; }
