@@ -125,9 +125,8 @@
       background-color: @selected-background-color;
       color: @workspace-tab-on-text-color;
   }
-  .dijitTab.dijitFocused {
+  .dijitSplitter ~ .dijitBorderContainerPane .dijitTab.dijitFocused {
     border: 1px #759dc0 solid!important;
-    padding: 3px 0 1px;
   }
   .dijitTab .tabLabel {
     outline: none;
@@ -155,26 +154,6 @@
   }
   #editor .dijitTabContainerTop-tabs .dijitTabHover, #editor .dijitTabContainerTop-tabs .dijitTabActive {
     color: #fff;
-  }
-
-  #editor .cm-s-webida-dark .CodeMirror-linenumber.CodeMirror-gutter-elt {
-    color: #35c8ff;
-  }
-  #editor .cm-s-webida-dark div.CodeMirror-gutter {
-    background: #27282c;
-  }
-  #editor .cm-s-webida-dark.CodeMirror {
-    background: #1a1b1c;
-    color: #d4e2fa;
-    border-top: 1px solid #3a3e47;
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-  #editor .cm-s-webida-dark .CodeMirror-gutters {
-  }
-  #editor .cm-s-webida-dark .CodeMirror-activeline-background {
-    background: #394554;
   }
 
   .dijitTabContainerTop-tabs .dijitTab {

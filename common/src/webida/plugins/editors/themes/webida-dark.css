@@ -2,7 +2,6 @@
 .cm-s-webida-dark.CodeMirror {
     background: #101010;
     color: #d4e2fa;
-    border-top : 5px solid RGB(65,72,80);
 }
 
 /* .cm-s-webida-dark div.CodeMirror-selected {background: #b36539 !important;} */

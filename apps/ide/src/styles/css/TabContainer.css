@@ -144,9 +144,8 @@
   background-color: #cfe5fa;
   color: #43caff;
 }
-.webida-light .dijitTab.dijitFocused {
+.webida-light .dijitSplitter ~ .dijitBorderContainerPane .dijitTab.dijitFocused {
   border: 1px #759dc0 solid!important;
-  padding: 3px 0 1px;
 }
 .webida-light .dijitTab .tabLabel {
   outline: none;
@@ -170,23 +169,6 @@
 .webida-light #editor .dijitTabContainerTop-tabs .dijitTabHover,
 .webida-light #editor .dijitTabContainerTop-tabs .dijitTabActive {
   color: #fff;
-}
-.webida-light #editor .cm-s-webida-dark .CodeMirror-linenumber.CodeMirror-gutter-elt {
-  color: #35c8ff;
-}
-.webida-light #editor .cm-s-webida-dark div.CodeMirror-gutter {
-  background: #27282c;
-}
-.webida-light #editor .cm-s-webida-dark.CodeMirror {
-  background: #1a1b1c;
-  color: #d4e2fa;
-  border-top: 1px solid #3a3e47;
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-.webida-light #editor .cm-s-webida-dark .CodeMirror-activeline-background {
-  background: #394554;
 }
 .webida-light .dijitTabContainerTop-tabs .dijitTab {
   top: 1px;
