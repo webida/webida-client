@@ -23,7 +23,7 @@
         "socket.io-client": "git://github.com/automattic/socket.io-client#~1.3.5",
         "eventEmitter": "~4.2.11",
         "bootstrap-treeview": "~1.2.0",
-        "calcium": "git://github.com/webida/calcium#60d3523e4ec908f9e6523501229ed1f292b1f34c",
+        "calcium": "git://github.com/webida/calcium#f2fe931899f4d719879683cb5d5d8201508292b5",
         "smalot-bootstrap-datetimepicker": "~2.3.4"
     } 
 }
