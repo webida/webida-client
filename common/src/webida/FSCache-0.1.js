@@ -665,7 +665,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 path = target.split(/[\\/]/);
                 path.pop();
 				if (path.length === 1) {
-					dir = '/'
+					dir = '/';
 				} else {
 	                dir = path.join('/');
 				}
