@@ -30,10 +30,8 @@ define(['require'], function (require) {
     var version = '1.5.0';
 
     function showHelpDocument() {
-        require(function () {
-            var helpURL = 'https://github.com/webida/webida-client/wiki';
-            window.open(helpURL);
-        });
+        var helpURL = 'https://github.com/webida/webida-client/wiki';
+        window.open(helpURL);
     }
 
     function showAPIDocument() {
