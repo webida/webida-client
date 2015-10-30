@@ -20,15 +20,16 @@
 
 // @formatter:off
 define([
-	'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client'
 ], function(
-	Logger
+    Logger
 ){
     'use strict';
 // @formatter:on
 
     var colors = {};
     var classPrefix = 'notification-message-';
+    var classLabelPrefix = 'notification-label-';
     var notification = {
         setPreferenceColor: function(values) {
             for (var key in values) {
@@ -38,10 +39,17 @@ define([
                     $('#log').find('.' + classPrefix + type).css({
                         color: colors[type]
                     });
+                    $('#log').find('.' + classLabelPrefix + type).css({
+                        'background-color': colors[type]
+                    });
                 }
             }
         },
         setNotification: function(type, message, title) {
+            var $label = $('<span class="notification-label"></span>').addClass(classLabelPrefix + type).css({
+                'background-color': colors[type]
+            }).text(type);
+
             var messageString = '[' + getNow() + '] ';
             if (title) {
                 messageString += title;
@@ -49,10 +57,21 @@ define([
             if (message) {
                 messageString += message;
             }
-            var $message = $('<p class="notification-message"></p>').addClass(classPrefix + type).css({
+            var $message = $('<span class="notification-message"></span>').addClass(classPrefix + type).css({
                 color: colors[type]
             }).text(messageString);
-            $('#log').append($message);
+
+            var notiWrapper = $('<div class="notification-line">');
+            notiWrapper.append($label);
+            notiWrapper.append($message);
+
+            $('#log').append(notiWrapper);
+            this.setScrollBot();
+        },
+        setScrollBot: function() {
+            var $notiContent = $('.notification-contents'),
+            notiScrollHeight = $notiContent[0].scrollHeight
+            $notiContent.scrollTop(notiScrollHeight);
         }
     };
 
