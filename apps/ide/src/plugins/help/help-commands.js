@@ -30,11 +30,9 @@ define(['require'], function (require) {
     var version = '1.5.0';
 
     function showHelpDocument() {
-        require(['webida-lib/webida-0.3'], function (webida) {
-            var appid = 'wikida';
-            var win = webida.app.launchApp(appid, true);
-
-            win.focus();
+        require(function () {
+            var helpURL = 'https://github.com/webida/webida-client/wiki';
+            window.open(helpURL);
         });
     }
 
