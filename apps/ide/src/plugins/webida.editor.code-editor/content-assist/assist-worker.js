@@ -125,28 +125,56 @@ function handleMessage(message) {
     }
     switch (message.type) {
     case 'start':
-        server.startServer(message.server);
-        send({type: 'callback', id: message.id});
+        try {
+            server.startServer(message.server);
+        } catch (err) {
+            consoleLike.error(err.stack);
+        } finally {
+            send({type: 'callback', id: message.id});
+        }
         break;
     case 'stop':
-        server.stopServer(message.server);
-        send({type: 'callback', id: message.id});
+        try {
+            server.stopServer(message.server);
+        } catch (err) {
+            consoleLike.error(err.stack);
+        } finally {
+            send({type: 'callback', id: message.id});
+        }
         break;
     case 'addFile':
-        server.addFile(message.server, message.filepath, message.text);
+        try {
+            server.addFile(message.server, message.filepath, message.text);
+        } catch (err) {
+            consoleLike.error(err.stack);
+        }
         break;
     case 'delFile':
-        server.delFile(message.server, message.filepath);
+        try {
+            server.delFile(message.server, message.filepath);
+        } catch (err) {
+            consoleLike.error(err.stack);
+        }
         break;
     case 'getFile':
-        server.getFile(message.filepath, function (error, data) {
-            send({type: 'callback', error: error, data: data, id: message.id});
-        });
+        try {
+            server.getFile(message.filepath, function (error, data) {
+                send({type: 'callback', error: error, data: data, id: message.id});
+            });
+        } catch (err) {
+            consoleLike.error(err.stack);
+            send({type: 'callback', error: {message: 'Exception occurred.'}, id: message.id});
+        }
         break;
     case 'request':
-        server.request(message.server, message.body, function (error, data) {
-            send({type: 'callback', error: error && error.message, data: data, id: message.id});
-        });
+        try {
+            server.request(message.server, message.body, function (error, data) {
+                send({type: 'callback', error: error && error.message, data: data, id: message.id});
+            });
+        } catch (err) {
+            send({type: 'callback', error: {message: 'Exception occurred.'}, id: message.id});
+            consoleLike.error(err.stack);
+        }
         break;
     case 'callback':
         if (message.id && msgCallbacks[message.id]) {
