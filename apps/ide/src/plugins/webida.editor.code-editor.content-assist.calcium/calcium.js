@@ -149,7 +149,7 @@ define(['require',
                         // then do nothing.
                         return;
                     }
-                    var oldName = data[0].name;
+                    var oldName = data.varName;
                     dialog(cm, 'New name for ' + oldName, oldName, function(newName) {
                         var lengthDiff = newName.length - oldName.length;
                         renameCount++;
