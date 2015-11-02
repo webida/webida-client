@@ -81,18 +81,23 @@ define([
         }
 
         var path = '';
-        var callPath = (new Error()).stack.split('\n')[4].split('/');
-        var lastIndex = callPath.length - 1;
-        for (var j = callPath.length - pathDepth; j < lastIndex ; j++) {
-            if (callPath[j]) {
-                path += callPath[j] + '/';
+        // FIXME In case of IE10~11, below line throws a error because the stack property is set to undefined
+        // when the error is constructed.
+        // So I made this code to be more safe.
+        var stack = (new Error()).stack;
+        if(stack) {
+            var callPath = stack.split('\n')[4].split('/');
+            var lastIndex = callPath.length - 1;
+            for (var j = callPath.length - pathDepth; j < lastIndex; j++) {
+                if (callPath[j]) {
+                    path += callPath[j] + '/';
+                }
             }
+            var fileToken = callPath[lastIndex].split(':');
+            var basename = '<' + path + fileToken[0].split('?')[0] + ':' + fileToken[1] + '>';
+            ([]).push.call(args, basename);
         }
-        var fileToken = callPath[lastIndex].split(':');
-        var basename = '<' + path + fileToken[0].split('?')[0] + ':' + fileToken[1] + '>';
-
         ([]).unshift.call(args, prefix);
-        ([]).push.call(args, basename);
 
         return args;
     }
@@ -104,7 +109,7 @@ define([
         return singlton;
     };
 
-	Logger.LEVELS = LoggerInterface.LEVELS;
+    Logger.LEVELS = LoggerInterface.LEVELS;
 
     return Logger;
 });
