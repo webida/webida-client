@@ -4,14 +4,27 @@
 }
 
 .notification-contents {
-	margin: 0px;
-	padding-top: 5px;
-    height: calc(100% - 12px);
+    margin: 0px;
+    padding-top: 5px;
+    height: calc(100% - 5px);
     background-color: #fafaff;
+    overflow: auto;
 }
 
-p.notification-message {
+.notification-message {
     margin: 0.3em 0.6em;
     line-height: 1.3em;
     font-size: 8pt;
+}
+.notification-line {
+    margin: 5px;
+}
+
+.notification-label {
+    display: inline-block;
+    padding: 3px 4px;
+    font-weight: bold;
+    line-height: 1;
+    border-radius: 2px;
+    color: #fff;
 }
