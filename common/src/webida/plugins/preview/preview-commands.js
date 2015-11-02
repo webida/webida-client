@@ -19,15 +19,27 @@
  *
  */
 
-define(['./preview-view',
-        './preview-pref-values',
-        'dojo/topic',
-        'external/lodash/lodash.min',            // _
-        'webida-lib/util/path',                             // pathUtil
-        'webida-lib/plugins/workspace/plugin',                   // ws
-        'dojo/Deferred'                               // Deferred
-       ],
-function (view, options, topic, _, pathUtil, ws, Deferred) {
+define([
+    './preview-view',
+    './preview-pref-values',
+    'dojo/i18n!./nls/resource',
+    'dojo/string',
+    'dojo/topic',
+    'external/lodash/lodash.min',           // _
+    'webida-lib/util/path',                 // pathUtil
+    'webida-lib/plugins/workspace/plugin',  // ws
+    'dojo/Deferred'                         // Deferred
+], function (
+    view,
+    options,
+    i18n,
+    string,
+    topic,
+    _,
+    pathUtil,
+    ws,
+    Deferred
+) {
     'use strict';
 
     var FORMAT_HANDLER_PATH = 'webida-lib/plugins/preview/handler';
@@ -60,7 +72,7 @@ function (view, options, topic, _, pathUtil, ws, Deferred) {
         }
 
         function showDefaultToolbar(msg) {
-            msg = msg || 'No preview';
+            msg = msg || i18n.noPreview;
 
             $('#preview-default-toolbar').fadeIn().find('.toolbar-message').text(msg);
         }
@@ -100,22 +112,26 @@ function (view, options, topic, _, pathUtil, ws, Deferred) {
             var ext = getFileExt(name);
             ext = ext.toLowerCase();
             getHandler(ext).then(function (handler) {
-                showDefaultToolbar('Preview: ' + id);
+                showDefaultToolbar(string.substitute(i18n.previewId, {id: id}));
                 handler.preview(id);
                 previewView.select();
                 lastHandler = handler;
             }, function () {
                 //console.error('Failed to get a handler', e);
-                showDefaultToolbar('Preview not supported for "' + id + '"');
+                showDefaultToolbar(
+                    string.substitute(
+                        i18n.previewNotSupportedForId, {id : id}));
             });
             return true;
         } else {
             // Not supported
             var msg = '';
             if (!path) {
-                msg = 'No selection in workspace';
+                msg = i18n.noSelectionInWorkspace;
             } else if (pathUtil.isDirPath(path)) {
-                msg = 'Preview not supported for a directory "' + id + '"';
+                msg = showDefaultToolbar(
+                    string.substitute(
+                        i18n.preivewNotSupportedForADirectory, {id : id}));
             }
             showDefaultToolbar(msg);
         }

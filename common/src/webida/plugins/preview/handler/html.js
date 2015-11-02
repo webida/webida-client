@@ -19,8 +19,17 @@
  *
  */
 
-define(['webida-lib/app', 'webida-lib/util/notify'],
-function (app, notify) {
+define([
+    'dojo/i18n!./../nls/resource',
+    'dojo/string',
+    'webida-lib/app',
+    'webida-lib/util/notify'
+], function (
+    i18n,
+    string,
+    app,
+    notify
+) {
     'use strict';
 
     var fsMount = app.getFSCache();
@@ -32,8 +41,8 @@ function (app, notify) {
 
         fsMount.addAlias(wsPath, 10, function (err, aliasData) {
             if (err) {
-                notify.error('Failed to add an alias for the workspace ' +
-                             'required to preview an HTML file (' + err + ')');
+                notify.error(
+                    string.substitute(i18n.failedNotifyHTML, {err : err}));
             } else {
                 var $iframe =
                     $('<iframe frameborder="0" border="0" scrolling="auto" src="' +
