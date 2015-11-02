@@ -26,28 +26,32 @@
 
 define([
     'require',
-	'webida-lib/plugins/workbench/plugin',
-	'external/lodash/lodash.min',
-	'dojo/topic',
-	'dijit/form/CheckBox',
-	'dijit/form/Button',
-	'text!./layer/output-view.html',
-	'text!./layer/_tmplToolbar.html',
-	'webida-lib/widgets/views/view',
-	'webida-lib/util/logger/logger-client'
+    'webida-lib/plugins/workbench/plugin',
+    'external/lodash/lodash.min',
+    'dojo/i18n!./nls/resource',
+    'dojo/topic',
+    'dijit/form/CheckBox',
+    'dijit/form/Button',
+    'text!./layer/output-view.html',
+    'text!./layer/_tmplToolbar.html',
+    'webida-lib/widgets/views/view',
+    'webida-lib/util/locale',
+    'webida-lib/util/logger/logger-client'
 ], function (
     require,
-	workbench, 
-	_, 
-	topic, 
-	CheckBox, 
-	Button, 
-	consoleViewHtml, 
-	toolbarTmpl, 
-	View, 
-	Logger
+    workbench,
+    _,
+    i18n,
+    topic,
+    CheckBox,
+    Button,
+    consoleViewHtml,
+    toolbarTmpl,
+    View,
+    locale,
+    Logger
 ) {
-	'use strict';
+    'use strict';
 
     function _loadCss(url) {
         var link = document.createElement('link');
@@ -58,16 +62,16 @@ define([
     }
     _loadCss(require.toUrl('./style/output.css'));
 
-	var singleLogger = new Logger.getSingleton();
-	//var logger = new Logger();
-	//logger.setConfig('level', Logger.LEVELS.log);
-	//logger.off();
+    var singleLogger = new Logger.getSingleton();
+    //var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     singleLogger.log('loaded modules required by output. initializing output plugin\'s module');
 
     var consoleMgr;
     var mod = {};
-    var defaultConsoleId = 'Output';
+    var defaultConsoleId = i18n.output;
     var tabs;
 
     function transformerFileLoc(filelocInfo) {
@@ -237,7 +241,7 @@ define([
         }, self.$titleElem.find('.chk-scrolllock')[0]);
 
         void new Button({
-            label: 'Clear',
+            label: i18n.clear,
             style: 'position:absolute; right:5px',
             onClick: function () {
                 self.clearContents();
@@ -327,7 +331,7 @@ define([
                         });
 
                         self.logQueue.splice(0, MAX_COUNT);
-                        if(range < MAX_COUNT){
+                        if (range < MAX_COUNT) {
                             clearInterval(self.interval);
                             self.interval = null;
                         }
@@ -476,9 +480,10 @@ define([
         var view = this.getDefaultConsole().view;
         if (view) {
             var opt = {};
-            opt.title = 'Output';
+            opt.title = i18n.output;
             opt.key = 'O';
             workbench.registToViewFocusList(view, opt);
+            locale.convertMessage(i18n, 'data-message');
         }
     };
 
