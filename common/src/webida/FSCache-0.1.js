@@ -1565,7 +1565,6 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
                 path = pathParsed.path;
             }
-            path += '/';
             return dirsToCache.some(function (cached) { return path.indexOf(cached) === 0; });
         }
         function getName(obj) { return obj.name; }

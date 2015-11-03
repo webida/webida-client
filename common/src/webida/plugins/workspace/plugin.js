@@ -757,7 +757,7 @@ define([
 
             if (item.toRefresh) {
                 item.toRefresh = false;
-                fsCache.refreshHierarchy(item.id, {
+                fsCache.refreshHierarchy(item.getPath(), {
                     level: 1
                 }, expandNode);
             } else {
