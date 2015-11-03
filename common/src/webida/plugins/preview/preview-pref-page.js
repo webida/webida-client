@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-define([], function () {
+define([
+    'dojo/i18n!./nls/resource',
+], function (
+    i18n
+) {
     'use strict';
     return {
         getDefault: function () {
@@ -29,27 +33,27 @@ define([], function () {
                     key: 'preview:autoContentsChange',
                     type: 'checkbox',
                     opt: {
-                        name: 'Respond automatically to the selection in Workspace'
+                        name: i18n.previewRespond
                     }
                 },
                 {
                     key: 'preview:liveReload',
                     type: 'checkbox',
                     opt: {
-                        name: 'Enable live reload'
+                        name: i18n.previewReload
                     }
                 }
             ];
         },
         view: function (fieldCreator) {
             fieldCreator.addField('preview:autoContentsChange', 'checkbox', {
-                title: 'Preview',
-                name: 'Respond automatically to the selection in Workspace',
+                title: i18n.preview,
+                name: i18n.previewRespond,
                 'default': false
             });
 
             fieldCreator.addField('preview:liveReload', 'checkbox', {
-                name: 'Enable live reload',
+                name: i18n.previewReload,
                 'default': true
             });
         }

@@ -22,21 +22,27 @@
 /* global timedLogger:true */
 
 var t;
-define([(t = timedLogger.getLoggerTime(), 'require'),
-        'webida-lib/plugins/workbench/plugin',
-        'webida-lib/widgets/views/view',              // View
-        'webida-lib/widgets/views/viewToolbar',       // ViewToolbar
-        'text!./layout/preview.html',                 // previewTemplate
-        'text!./layout/preview-toolbar.html',         // previewToolbarTemplate
-        'webida-lib/util/logger/logger-client'
-       ],
-function (require,
-          workbench,
-          View,
-          ViewToolbar,
-          previewTemplate,
-          previewToolbarTemplate,
-          Logger) {
+define([
+    (t = timedLogger.getLoggerTime(), 'require'),
+    'dojo/i18n!./nls/resource',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/widgets/views/view',              // View
+    'webida-lib/widgets/views/viewToolbar',       // ViewToolbar
+    'text!./layout/preview.html',                 // previewTemplate
+    'text!./layout/preview-toolbar.html',         // previewToolbarTemplate
+    'webida-lib/util/locale',
+    'webida-lib/util/logger/logger-client'
+], function (
+    require,
+    i18n,
+    workbench,
+    View,
+    ViewToolbar,
+    previewTemplate,
+    previewToolbarTemplate,
+    locale,
+    Logger
+) {
     'use strict';
 
     function _loadCss(url) {
@@ -48,17 +54,17 @@ function (require,
     }
     _loadCss(require.toUrl('./style/preview.css'));
 
-	var singleLogger = new Logger.getSingleton();
-	//var logger = new Logger.getSingleton();
-	//logger.setConfig('level', Logger.LEVELS.log);
-	//logger.off();
+    var singleLogger = new Logger.getSingleton();
+    //var logger = new Logger.getSingleton();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     singleLogger.log('loaded modules required by preview. initializing preview\'s module');
 
     var previewView;
     function getView() {
         if (!previewView) {
-            previewView = new View('previewTab', 'Preview');
+            previewView = new View('previewTab', i18n.preview);
             previewView.setContent('<div id="PreviewTab" style="width:100%; height:100%">');
         }
         return previewView;
@@ -67,7 +73,7 @@ function (require,
     function onViewAppended() {
         console.assert(previewView, 'assertion fail: getView must be called previously');
         var opt = {};
-        opt.title = 'Preview';
+        opt.title = i18n.preview;
         opt.key = 'P';
         workbench.registToViewFocusList(previewView, opt);
 
@@ -78,6 +84,7 @@ function (require,
         var vt = new ViewToolbar($('.preview-toolbar-panel')[0],
                                  previewView.contentPane);
         vt.setContent(previewToolbarTemplate);
+        locale.convertMessage(i18n, 'data-message');
 
         require(['./preview-pref-values', './preview-commands'], function () { });
     }

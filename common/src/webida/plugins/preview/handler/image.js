@@ -19,14 +19,25 @@
  *
  */
 
-define(['webida-lib/app',
-        'webida-lib/util/path',
-        'webida-lib/util/notify',
-        'dijit/registry',
-        'dijit/form/Button',
-        'text!../layout/image-toolbar.html'
-       ],
-function (app, pathUtil, notify, reg, Button, toolbarTemplate) {
+define([
+    'dojo/i18n!./nls/resource',
+    'dojo/string',
+    'webida-lib/app',
+    'webida-lib/util/path',
+    'webida-lib/util/notify',
+    'dijit/registry',
+    'dijit/form/Button',
+    'text!../layout/image-toolbar.html'
+], function (
+    i18n,
+    string,
+    app,
+    pathUtil,
+    notify,
+    reg,
+    Button,
+    toolbarTemplate
+) {
     'use strict';
 
     var fsMount = app.getFSCache();
@@ -94,8 +105,8 @@ function (app, pathUtil, notify, reg, Button, toolbarTemplate) {
         var name = arr[1];
         fsMount.addAlias(parent, 10, function (err, aliasData) {
             if (err) {
-                notify.error('Failed to add an alias for the path of the image file (' +
-                             err + ')');
+                notify.error(
+                    string.substitute(i18n.failedNotifyImageFile, {err : err}));
             } else {
                 var $imgElem = $('.preview-content-panel').find('img');
                 if (!!$imgElem && $imgElem.length > 0) {
