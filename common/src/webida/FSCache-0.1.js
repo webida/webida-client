@@ -659,29 +659,25 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
 
             // writeFile
             writeFile : function (target, data, cb) {
-            	//console.log('writeFile('+target+', data, cb)');
-            	var that = this;
+                //console.log('writeFile('+target+', data, cb)');
+                var that = this;
                 var path, dir;
                 path = target.split(/[\\/]/);
                 path.pop();
-				if (path.length === 1) {
-					dir = '/';
-				} else {
-	                dir = path.join('/');
-				}
+                dir = path.join('/');
                 this.isDirectory(dir, function (error, isDir) {
-                	if (isDir === true) {
-                		that._writeFile(target, data, cb);
-                	} else {
-                		//console.log('If dir not exists, create dir then write file');
-                		that.createDirectory(dir, true, function(err) {
-                			if (err) {
-                				cb(err);
-                			} else {
-                				that._writeFile(target, data, cb);
-                			}
-                		});
-                	}
+                    if (isDir === true) {
+                        that._writeFile(target, data, cb);
+                    } else {
+                        //console.log('If dir not exists, create dir then write file');
+                        that.createDirectory(dir, true, function(err) {
+                            if (err) {
+                                cb(err);
+                            } else {
+                                that._writeFile(target, data, cb);
+                            }
+                        });
+                    }
                 });
             },
 

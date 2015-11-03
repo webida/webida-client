@@ -109,7 +109,7 @@ define(['require',
     });
 
     var HELP_KEY_SETTING = 'Verify your \'Public SSH Key\' setting in Development Center.';
-    var COMMIT_TEMPLATE_PATH = '/.gitmessage';
+    var COMMIT_TEMPLATE_PATH = '/.userinfo/.gitmessage';
 
     // css load routine
     function _loadCss(url) {
@@ -3608,7 +3608,7 @@ define(['require',
                                     }
                                 });
                             } else {
-                                var COMMIT_TEMPLATE_PATH = '/.gitmessage';
+                                var COMMIT_TEMPLATE_PATH = '/.userinfo/.gitmessage';
 
                                 fsCache.exists(COMMIT_TEMPLATE_PATH, function (err, exists) {
                                     if (err) {
