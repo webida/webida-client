@@ -22,7 +22,7 @@ define([], function () {
     );
 
     return {
-        clientId: 'CLIENT_ID_TO_BE_SET',
+        clientId: 'IDE_CLIENT_ID',
         appRoute: {
             site: 'apps/desktop/index.html'/*,
             desktop: 'apps/desktop/index.html',
