@@ -16,11 +16,13 @@
 
 // @formatter:off
 define([
+    'dojo/i18n!./nls/resource',
+    'webida-lib/util/notify',
     'webida-lib/webida-0.3',
-    'webida-lib/util/notify'
-], function(
-    webida,
-    notify
+], function (
+    i18n,
+    notify,
+    webida
 ) {
     'use strict';
 // @formatter:on
@@ -33,10 +35,9 @@ define([
     }
 
     function signOut() {
-        webida.auth.logout(function(e) {
+        webida.auth.logout(function (e) {
             if (e) {
-                notify.error('Could not sign out.');
-                console.log('logout error: ' + e);
+                notify.error(i18n.errorSignOut);
             } else {
                 window.location.replace('//' + webidaHost);
                 // webidaHost is defined in dojoConfig.js
