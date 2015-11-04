@@ -17,13 +17,16 @@
                 <select id="scope-select" data-dojo-type="dijit/form/ComboBox" style="width:100%"></select>
             </div>
             <div style="padding-left:20px;boder:1px;display:inline-block;">
-                <label for="regular-expression"><input type='checkbox' id="regular-expression" data-dojo-type="dijit/form/CheckBox" data-dojo-props="checked: false"/> as a regular expression</label>
+                <input type='checkbox' id="regular-expression" data-dojo-type="dijit/form/CheckBox" data-dojo-props="checked: false"/>
+                <label for="regular-expression" data-message="asARegularExpression"> as a regular expression</label>
             </div>
             <div style="padding-left:20px;boder:1px;display:inline-block;">
-                <label for="ignore-case"><input type='checkbox' id="ignore-case" data-dojo-type="dijit/form/CheckBox" data-dojo-props="checked: false"/> ignore case</label>
+                <input type='checkbox' id="ignore-case" data-dojo-type="dijit/form/CheckBox" data-dojo-props="checked: false"/>
+                <label for="ignore-case" data-message="ignoreCase"> ignore case</label>
             </div>
             <div style="padding-left:20px;boder:1px;display:inline-block;">
-                <label for="whole-word"><input type="checkbox" id="whole-word" data-dojo-type="dijit/form/CheckBox" data-dojo-props="checked: false"/> whole words only</label>
+                <input type="checkbox" id="whole-word" data-dojo-type="dijit/form/CheckBox" data-dojo-props="checked: false"/>
+                <label for="whole-word" data-message="wholeWordsOnly"> whole words only</label>
             </div>
             <div style="padding-left:20px;boder:1px;display:inline-block;">
                 <button id="clear-button" data-dojo-type="dijit/form/Button">Clear</button>
