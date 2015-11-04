@@ -1,4 +1,4 @@
-idefine({
+define({
     failedNotifyHTML: 'Failed to add alias for the workspace require to preview an HTML file ( ${err})',
     failedNotifyImageFile: 'Failed to add an alias for the path of the image file (${err})',
     noPreview: 'No preview',
