@@ -32,7 +32,7 @@ define([
     './PartRegistry'
 ], function(
     workbench,
-    genetic, 
+    genetic,
     Logger,
     PartModel,
     PartRegistry
@@ -207,9 +207,7 @@ define([
                 var model = part.getModel();
                 if (provider.isModelProvided(model) === true
                         && provider.isDataSourceUsed(dataSource) === false) {
-                    if (dataSource.isDeleted()) {
-                        dsReg.unregister(dataSource);
-                    }
+                    dsReg.unregister(dataSource);
                     provider.unregisterModels(dataSource);
                 }
             });
