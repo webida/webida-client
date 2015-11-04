@@ -21,35 +21,39 @@
  * @author : minsung-jin
  */
 define([
-    'webida-lib/plugins/workbench/plugin',
-    'webida-lib/widgets/checkbox-tree/CheckBoxTree',
-    'webida-lib/widgets/views/view',
-    'text!./layout/search-result.html',
     'dijit/form/Button',
     'dijit/form/CheckBox',
     'dijit/form/ComboBox',
     'dijit/registry',
     'dijit/tree/ObjectStoreModel',
+    'dojo/i18n!./nls/resource',
     'dojo/html',
     'dojo/store/Memory',
     'dojo/store/Observable',
     'dojo/topic',
+    'text!./layout/search-result.html',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/util/locale',
+    'webida-lib/widgets/checkbox-tree/CheckBoxTree',
+    'webida-lib/widgets/views/view',
     './search-result-controller',
     'xstyle/css!./style/search-result.css',
 ], function (
-    workbench,
-    Tree,
-    View,
-    Template,
     button,
     checkBox,
     comboBox,
     registry,
     ObjectStoreModel,
+    i18n,
     html,
     Memory,
     Observable,
     topic,
+    Template,
+    workbench,
+    locale,
+    Tree,
+    View,
     controller
 ) {
     'use strict';
@@ -59,7 +63,7 @@ define([
     function getView() {
 
         if (!SearchResultView) {
-            var view = new View('searchResultTab', 'Search');
+            var view = new View('searchResultTab', i18n.search);
             view.setContent(Template);
             SearchResultView = view;
         }
@@ -72,7 +76,7 @@ define([
         var view = SearchResultView;
         if (view) {
             var opt = {
-                title: 'Search',
+                title: i18n.search,
                 key: 'N'
             };
             workbench.registToViewFocusList(view, opt);
@@ -89,9 +93,9 @@ define([
         var wholeWord = registry.byId('whole-word');
         var clearButton = registry.byId('clear-button');
         var scopeStore = [
-            { name: 'Workspace', id: 'W' },
-            { name: 'Project', id: 'P' },
-            { name: 'Selection', id: 'S'}
+            { name: i18n.workspace, id: 'W' },
+            { name: i18n.project, id: 'P' },
+            { name: i18n.selection, id: 'S'}
         ];
         scopeSelect.set({
             store: new Observable(new Memory({ data: scopeStore })),
@@ -103,6 +107,14 @@ define([
             searchDelay: 300,
             value: scopeStore[2].name
         });
+
+        findInput.set('placeHolder', i18n.keyword);
+        findButton.set('label', i18n.find);
+        replaceInput.set('placeHolder', i18n.with);
+        replaceButton.set('label', i18n.replace);
+        clearButton.set('label', i18n.clear);
+
+        locale.convertMessage(i18n, 'data-message');
 
         function _removeTreePanel() {
             while ($('.search-result-tree-panel').get(0).hasChildNodes()) {
@@ -311,7 +323,7 @@ define([
 
             _removeTreePanel();
             pressFindButton = true;
-            var jobId = workbench.addJob('Searching... ');
+            var jobId = workbench.addJob(i18n.searching);
             controller.handleFind(_getMetadata(), function (err, data) {
                 _setTree(err, data);
                 workbench.removeJob(jobId);
@@ -322,7 +334,7 @@ define([
 
             _removeTreePanel();
             pressFindButton = false;
-            var jobId = workbench.addJob('Replacing... ');
+            var jobId = workbench.addJob(i18n.replacing);
             var metadata = _getMetadata();
             controller.handleReplace(metadata, function (err, title) {
                 if (err) {
