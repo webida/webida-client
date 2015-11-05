@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-define([], function () {
+define([
+    '/webida/api/app/configs?callback=define'
+], function (
+    serverConf
+) {
     'use strict';
-
-    var serverDomain = decodeURIComponent(
-        document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-    );
-
+    var APP_ID = 'webida-client';
     return {
+        appId: APP_ID,
         clientId: 'IDE_CLIENT_ID',
-        appRoute: {
-            site: 'apps/desktop/index.html'/*,
-            desktop: 'apps/desktop/index.html',
-            ide: 'apps/ide/src/index.html',
-            dashboard: 'apps/dashboard/index.html',
-            deploy: 'apps/deploy/index.html',
-            default: 'apps/site/index.html'*/
-        },
-        redirectUrl: window.location.protocol + '//' + window.location.host + '/auth.html',
-        guestMode: false,
+        redirectUrl: serverConf.systemApps[APP_ID].baseUrl + '/auth.html',
+        guestMode: !!serverConf.featureEnables.guestMode,
         meta: {
             user: {
                 dir: '.userInfo',
