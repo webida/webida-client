@@ -91,7 +91,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'deploy/',
-                        src: ['**/*.js', '!node_modules/*.js', '!node_modules/**/*.js', '!**/lib/**/*.js', '!&&/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js'],
+                        src: ['**/*.js', '!node_modules/*.js', '!node_modules/**/*.js', '!**/lib/**/*.js', '!&&/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js', , '!bower_components/**/*.js'],
                         dest: 'deploy/'
                     }
                 ]
@@ -106,7 +106,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'deploy/',
-                        src: ['**/*.js', '!node_modules/**/*.js', '!node_modules/*.js', '!**/lib/**/*.js', '!**/lib/*.js'],
+                        src: ['**/*.js', '!node_modules/**/*.js', '!node_modules/*.js', '!**/lib/**/*.js', '!**/lib/*.js', '!bower_components/**/*.js'],
                         dest: 'deploy/'
                     }
                 ]

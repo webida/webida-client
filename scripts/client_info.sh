@@ -2,7 +2,7 @@
 
 # rewrite client ID to app-config.js for system client apps
 
-echo "Rewrite Client ID[$1] to spp-config.js"
+echo "Rewrite Client ID[$1] to app-config.js"
 
 SCRIPT_PATH=`dirname -- $0`
 CLIENT_ID=$1
