@@ -17,7 +17,7 @@
 define([
     'webida',
     'q'
-], function ( webida, Q) {
+], function (webida, Q) {
     'use strict';
     var App = function () {};
     
@@ -55,7 +55,7 @@ define([
             });
             return defer.promise;
         },
-        getDeployedAppUrl: function(domain){
+        getDeployedAppUrl: function (domain) {
             return webida.app.getDeployedAppUrl(domain);
         }
     });

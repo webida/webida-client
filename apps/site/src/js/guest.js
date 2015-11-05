@@ -24,10 +24,10 @@
 require([
     'webida',
     'toastr'
-], function(
+], function (
     webida,
     toastr
-){
+) {
     'use strict';
 
     var fsid;
@@ -57,7 +57,7 @@ require([
         noMyFsFallback: {
             method: webida.fs.addMyFS,
             bypass: function (err) {
-                return !(err === ERR_NO_FS);
+                return (err !== ERR_NO_FS);
             },
             prog: {
                 percent: 60,
@@ -91,6 +91,7 @@ require([
     };
 
     function thenable(opt) {
+         /*jshint validthis:true */
         var self = this;
         return function () {
             return new Promise(function (resolve, reject) {
@@ -110,23 +111,24 @@ require([
                 opt.method.apply(self, opt.params);
             });
 
-        }
+        };
     }
 
     function catchable(opt) {
+         /*jshint validthis:true */
         var self = this;
         return function (err) {
-            if(opt.bypass) {
+            if (opt.bypass) {
                 if (opt.bypass(err)) {
                     throw err;
                 }
             }
             return thenable(opt).apply(self);
-        }
+        };
     }
 
     function _startRun(progress) {
-        if(progress) {
+        if (progress) {
             $('.login-button, .cancel-button').addClass('hidden');
             $('.progress, .progress-message').removeClass('hidden');
             $('.progress-bar').addClass('active');
@@ -209,7 +211,7 @@ require([
                     toastr.error(cause);
                 }
             });
-    };
+    }
 
     $(document).ready(function () {
         $('#loginButton').click(function () {

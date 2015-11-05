@@ -23,8 +23,8 @@
 
 require([
     'src/js/util'
-], function (util){
-
+], function (util) {
+    'use strict';
     var router = {
         home: {
             style: {
@@ -57,8 +57,10 @@ require([
         });
 
         if (router[hash].style) {
-            for(var selector in router[hash].style) {
-                $(selector).css(router[hash].style[selector]);
+            for (var selector in router[hash].style) {
+                if (router[hash].style.hasOwnProperty(selector)) {
+                    $(selector).css(router[hash].style[selector]);
+                }
             }
         }
 
@@ -74,7 +76,7 @@ require([
         }
     }
 
-    $(window).on('hashchange', function(e) {
+    $(window).on('hashchange', function () {
         var hash = location.hash;
         if (hash.substr(1, 12) === 'access_token') {
             var targetOrigin = util.getLocationOrigin();

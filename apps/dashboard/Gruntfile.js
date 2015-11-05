@@ -99,7 +99,7 @@ module.exports = function (grunt) {
             all : ['deploy'],
             unnecessary: ['deploy/Gruntfile.js', 'deploy/node_modules']
         },
-        fix_source_maps: {
+        fixSourceMaps: {
             files: {
                 expand: true,
                 cwd: 'deploy/',
@@ -113,9 +113,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
-    grunt.registerMultiTask('fix_source_maps', 'Fixes uglified source maps', function () {
+    grunt.registerMultiTask('fixSourceMaps', 'Fixes uglified source maps', function () {
         this.files.forEach(function (f) {
-            var json, new_file_value, src;
+            var json, src;
             src = f.src.filter(function (filepath) {
                 if (!grunt.file.exists(filepath)) {
                     grunt.log.warn('Source file "' + filepath + '" not found.');
@@ -141,7 +141,7 @@ module.exports = function (grunt) {
                                    'copy:uncompressed', 
                                    'clean:unnecessary', 
                                    'uglify:debug', 
-                                   'fix_source_maps']);
+                                   'fixSourceMaps']);
     
     grunt.registerTask('release', ['clean:all', 
                                    'copy:all', 

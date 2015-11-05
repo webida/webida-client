@@ -116,7 +116,9 @@ define(['webida'], function (webida) {
         webida.ensureAuthorize(restApi);
     };
     
-    mod.ProfilingService.prototype.getCurrentReqsStat = function (isPeriod, startTime, endTime, options, params, isMergeResult, cb) {
+    mod.ProfilingService.prototype.getCurrentReqsStat = 
+        function (isPeriod, startTime, endTime, options, params, isMergeResult, cb) {
+        
         function restApi() {
             var data = {
                 period: isPeriod,
@@ -138,7 +140,9 @@ define(['webida'], function (webida) {
     };
     
     
-    mod.ProfilingService.prototype.getStatisticsHistory = function (unitTime, startTime, endTime, options, isMergeResult, cb) {
+    mod.ProfilingService.prototype.getStatisticsHistory = 
+        function (unitTime, startTime, endTime, options, isMergeResult, cb) {
+        
         function restApi() {
             var data = {
                 unitTime: unitTime,
