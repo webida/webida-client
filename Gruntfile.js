@@ -80,10 +80,10 @@ module.exports = function (grunt) {
                     mangle: true,
                     compress: true,
                     preserveComments: false,
-                    sourceMap: function(path) {
+                    sourceMap: function (path) {
                         return path + '.map';
                     },
-                    sourceMappingURL: function(path) {
+                    sourceMappingURL: function (path) {
                         return path.substring(path.lastIndexOf('/') + 1) + '.map';
                     }
                 },
@@ -91,7 +91,8 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'deploy/',
-                        src: ['**/*.js', '!node_modules/*.js', '!node_modules/**/*.js', '!**/lib/**/*.js', '!&&/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js'],
+                        src: ['**/*.js', '!node_modules/*.js', '!node_modules/**/*.js',
+                              '!**/lib/**/*.js', '!&&/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js'],
                         dest: 'deploy/'
                     }
                 ]
@@ -106,7 +107,8 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'deploy/',
-                        src: ['**/*.js', '!node_modules/**/*.js', '!node_modules/*.js', '!**/lib/**/*.js', '!**/lib/*.js'],
+                        src: ['**/*.js', '!node_modules/**/*.js',
+                              '!node_modules/*.js', '!**/lib/**/*.js', '!**/lib/*.js'],
                         dest: 'deploy/'
                     }
                 ]
@@ -116,7 +118,7 @@ module.exports = function (grunt) {
             all: ['deploy'],
             unnecessary: ['deploy/Gruntfile.js', 'deploy/node_modules']
         },
-        fix_source_maps: {
+        fixSourceMaps: {
             files: {
                 expand: true,
                 cwd: 'deploy/',
@@ -131,10 +133,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-bower-task');
 
-    grunt.registerMultiTask('fix_source_maps', 'Fixes uglified source maps', function() {
-        this.files.forEach(function(f) {
+    grunt.registerMultiTask('fixSourceMaps', 'Fixes uglified source maps', function () {
+        this.files.forEach(function (f) {
             var json, src;
-            src = f.src.filter(function(filepath) {
+            src = f.src.filter(function (filepath) {
                 if (!grunt.file.exists(filepath)) {
                     grunt.log.warn('Source file "' + filepath + '" not found.');
                     return false;
@@ -144,17 +146,19 @@ module.exports = function (grunt) {
             });
             json = grunt.file.readJSON(src);
             var length = json.sources.length;
-            for(var i = 0; i < length; i++) {
+            for (var i = 0; i < length; i++) {
                 json.sources[i] = json.sources[i].substring(json.sources[i].lastIndexOf('/') + 1);
                 json.sources[i] = json.sources[i].substring(0, json.sources[i].lastIndexOf('.js')) + '.uncompressed.js';
             }
-            json.file= json.file.substring(json.file.lastIndexOf('/') + 1);
+            json.file = json.file.substring(json.file.lastIndexOf('/') + 1);
             grunt.file.write(f.dest, JSON.stringify(json));
             grunt.log.writeln('Source map in ' + src + ' fixed');
         });
     });
 
-    grunt.registerTask('default', ['clean:all', 'bower', 'copy:all'/*, 'copy:uncompressed', 'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
+    grunt.registerTask('default', ['clean:all', 'bower', 'copy:all'/*, 'copy:uncompressed', 
+                            'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
+    
     grunt.registerTask('release', ['clean:all', 'bower', 'copy:all', 'clean:unnecessary', 'uglify:release']);
     grunt.registerTask('convention', ['jshint']);
 };

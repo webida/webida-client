@@ -16,7 +16,7 @@
 
 
 require([ 'webida-lib/app-config',
-         'webida', 'left', 'right', 'toastr'], function (AppConfig, webida, left, right, toastr) {
+         'webida', 'left', 'right'/*, 'toastr'*/], function (AppConfig, webida, left, right/*, toastr*/) {
     'use strict';
     
     webida.auth.initAuth(AppConfig.clientId, AppConfig.redirectUrl);
@@ -49,7 +49,7 @@ require([ 'webida-lib/app-config',
             }		
         });
         
-        $(window).bind('hashchange', function() {
+        $(window).bind('hashchange', function () {
             var hash = location.hash;
 
             if (hash === '') {

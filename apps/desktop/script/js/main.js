@@ -239,7 +239,7 @@ require(['common', 'underscore', 'async', 'toastr', 'md5', 'sly'], function (com
                     var self = $(this);
                     var workspace = '?workspace=' + webidaFs.fsid + '/' + self.attr('data-workspacename');
                     // webidaApp.launchApp('devenv', true, workspace);
-										window.open('../ide/src/index.html'+workspace);
+                    window.open('../ide/src/index.html' + workspace);
                 });
             } else {
                 console.log(err);

@@ -13,7 +13,7 @@
         "waits",
         "waitsFor",
         "runs",
-
+        "Promise",
         "define",
         "require",
         "requirejs",

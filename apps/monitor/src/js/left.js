@@ -1,7 +1,7 @@
 
 
 
-define(['toastr'], function (toastr) {
+define(/*['toastr'],*/ function (/*toastr*/) {
    
     'use strict';
     

@@ -1,4 +1,7 @@
-define(['monitorApi', 'js/data', 'toastr', 'moment'], function (monitorApi, dataMgr, toastr, moment){
+// TODO : some codes are camel case which is against to code convention. Please check and fix them.
+/* jshint camelcase:false */
+
+define(['monitorApi', 'js/data', 'toastr', 'moment'], function (monitorApi, dataMgr, toastr, moment) {
     'use strict';
     function init() {
 
@@ -12,9 +15,11 @@ define(['monitorApi', 'js/data', 'toastr', 'moment'], function (monitorApi, data
 
             $('#stat-history-option-svctype').find('option:not(:first)').remove();
             for (var i in result) {
-                var val = result[i];
-                var o = new Option(val.svc_type, val.svc_type);
-                $('#stat-history-option-svctype').append(o);
+                if (result.hasOwnProperty(i)) {
+                    var val = result[i];
+                    var o = new Option(val.svc_type, val.svc_type);
+                    $('#stat-history-option-svctype').append(o);
+                }
             }  
         });
         
@@ -26,9 +31,11 @@ define(['monitorApi', 'js/data', 'toastr', 'moment'], function (monitorApi, data
 
             $('#stat-history-option-svcname').find('option:not(:first)').remove();
             for (var i in result) {
-                var val = result[i];
-                var o = new Option(val.inst_name, val.inst_name);
-                $('#stat-history-option-svcname').append(o);
+                if (result.hasOwnProperty(i)) {
+                    var val = result[i];
+                    var o = new Option(val.inst_name, val.inst_name);
+                    $('#stat-history-option-svcname').append(o);
+                }
             }  
         });
         
@@ -40,11 +47,13 @@ define(['monitorApi', 'js/data', 'toastr', 'moment'], function (monitorApi, data
 
             $('#stat-history-option-url').find('option:not(:first)').remove();
             for (var i in result) {
-                var val = result[i];
-                var url = val.req_url + '+' + val.req_method;
+                if (result.hasOwnProperty(i)) {
+                    var val = result[i];
+                    var url = val.req_url + '+' + val.req_method;
 
-                var o = new Option(url, url);
-                $('#stat-history-option-url').append(o);
+                    var o = new Option(url, url);
+                    $('#stat-history-option-url').append(o);
+                }
             }  
         });
         
@@ -106,9 +115,11 @@ define(['monitorApi', 'js/data', 'toastr', 'moment'], function (monitorApi, data
             return sel.options[sel.selectedIndex].text;
         }
 
+        /* jshint ignore:start */
         function isEmptyObj(obj) {
             return JSON.stringify(obj) === '{}';
         }
+        /* jshint ignore:end */
 
         function getQueryOptions() {
 
@@ -141,43 +152,46 @@ define(['monitorApi', 'js/data', 'toastr', 'moment'], function (monitorApi, data
             return val;
         }
         
+        /*
         function getPeriodOption() {
             var val = getSel('#stat-history-option-period');
             if (val !== 'All') {
                 return true;
             }
             return false;
-        }
+        }*/
 
         $('#stat-history-btn-query').click(function () {
             var startTime = $('#stat-history-tmstart').val();
             var endTime = $('#stat-history-tmend').val();
             var options = getQueryOptions();
             console.log('options = ', options);
-            var params = {};
-            var isPeriod = getPeriodOption();
+            //var params = {};
+            //var isPeriod = getPeriodOption();
             
             
             var unitTime = getUnitTime();
             
-            pf.getStatisticsHistory(unitTime, startTime, endTime, options, false, function (err, result){
+            pf.getStatisticsHistory(unitTime, startTime, endTime, options, false, function (err, result) {
                 if (err) {
                     console.error('failed to get currentReqs');
                 } else {
                     for (var i in result) {
-                        var val = result[i];
-                        var row = {
-                            Name: val.inst_name,
-                            Type: val.svc_type,
-                            URL: val['req_url'],
-                            Method: val['req_method'],
-                            Min: val['min'],
-                            Max: val['max'],
-                            Avg: val['avg'],
-                            Total: val['total'],
-                            Date: val.issue_date
-                        };
-                        gridObj.jsGrid('insertItem', row);
+                        if (result.hasOwnProperty(i)) {
+                            var val = result[i];
+                            var row = {
+                                Name: val.inst_name,
+                                Type: val.svc_type,
+                                URL: val.req_url,
+                                Method: val.req_method,
+                                Min: val.min,
+                                Max: val.max,
+                                Avg: val.avg,
+                                Total: val.total,
+                                Date: val.issue_date
+                            };
+                            gridObj.jsGrid('insertItem', row);
+                        }
                     }
                 }
             });
