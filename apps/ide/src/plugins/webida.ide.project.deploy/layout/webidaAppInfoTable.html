@@ -1,0 +1,53 @@
+<div>
+    <div class='table-title'>
+        <div class='table-title-arrow' title='Fold/Unfold'></div>
+        <div class='table-title-name'></div>
+        <div class='table-title-setting' title='Select files to deploy'></div>
+        <div class='table-title-newsetting' title='Select files to deploy'></div>
+        <div class='table-title-trash' title='Delete app'></div>
+        <div class='table-title-changeinfo' title='Edit app information'></div>
+        <div class='table-title-cancel' title='Cancel'></div>
+        <div class='table-title-newappcancel' title='Cancel'></div>
+    </div>
+    <div class='table-content'>
+
+        <table class='table-content-table'>
+            <tr>
+                <th class='table-content-table-label'>Name</th>
+                <td width='209px' class='table-content-table-value'><input style='width:calc(100% - 15px)'
+                                                                           class='table-content-table-inputbox'
+                                                                           readonly/></td>
+                <th class='table-content-table-label'>Subdomain</th>
+                <td class='table-content-table-value'><label class='table-content-table-inputbox-label'></label><input
+                        style='width:calc(100% - 72px)' class='table-content-table-inputbox' readonly/></td>
+            </tr>
+            <!--<tr><th class='table-content-table-label'>Type</th><td width='209px' class='table-content-table-value'><input style='width:calc(100% - 16px)' class='table-content-table-inputbox-readonly'  readonly/></td><th class='table-content-table-label'>Owner</th><td class='table-content-table-value'><input style='width:calc(100% - 16px)' class='table-content-table-inputbox-readonly'  readonly/></td></tr> -->
+            <tr>
+                <th class='table-content-table-label'>Status</th>
+                <td class='table-content-table-value' colspan=3><input style='width:454px'
+                                                                       class='table-content-table-inputbox-readonly'
+                                                                       readonly/></td>
+            </tr>
+            <tr>
+                <th class='table-content-table-label'>URL</th>
+                <td class='table-content-table-value' colspan=3><a href='' target='_blank'
+                                                                   class='table-content-table-url'></a></td>
+            </tr>
+            <tr>
+                <th class='table-content-table-label'>Desc.</th>
+                <td height='102px' class='table-content-table-value' colspan=3><textarea
+                        class='table-content-table-inputbox' style='height:79px; width:calc(100% - 15px);  resize:none;'
+                        cols='30' rows='30' readonly></textarea></td>
+            </tr>
+        </table>
+
+    </div>
+    <div class='table-action'>
+        <div class='table-action-progress' data-dojo-type="dijit/ProgressBar" label=''></div>
+        <div class='table-action-deploy' title='Deploy app'></div>
+        <div class='table-action-start' title='Start app'></div>
+        <div class='table-action-stop' title='Stop app'></div>
+        <div class='table-action-save' title='Save'></div>
+        <div class='table-action-newappsave' title='Save'></div>
+    </div>
+</div>
