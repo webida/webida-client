@@ -12,7 +12,7 @@
         "plugins/webida.viewer.image-viewer",
         "plugins/webida.editor.example.svg",
         "plugins/webida.editor.example.multi-content",
-        "plugins/deploy",
+        "plugins/webida.ide.project.deploy",
         "plugins/help",
         "plugins/webida.preference",
         "plugins/project-configurator",
