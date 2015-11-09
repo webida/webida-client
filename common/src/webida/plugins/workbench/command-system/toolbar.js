@@ -98,13 +98,13 @@ function (pm,
         else if (iconNormal) {
             var menuitem = item.attr('data-menuitem');
             // convert id to valid class name e.g. /&File/&New/&File -> __File__New__File
-            var iconClass = menuitem.replace(/&/g, '').replace(/\//g, '__').replace(/ /g, '_') + '_wticons';
+            var editedIconClass = menuitem.replace(/&/g, '').replace(/\//g, '__').replace(/ /g, '_') + '_wticons';
             img = '<style type="text/css">' +
-                      '.' + iconClass + ' {' +
+                      '.' + editedIconClass + ' {' +
                           'background-image: url("' + iconNormal + '");' +
                       '}' +
                     '</style>';
-            imgClass = iconClass;
+            imgClass = editedIconClass;
         }
 
         if (imgClass) {
@@ -171,7 +171,6 @@ function (pm,
         });
     }
 
-   
     function handleTerminalItem(menuItem, loc, bag) { 
         
         var item, tooltip;
@@ -179,6 +178,7 @@ function (pm,
         function enableToolbarItem() { 
             //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
             // enable toolbar item
+            /*jshint validthis: true */
             this.set('disabled', false);
 
             $(this.containerNode).find('.webida-tool-bar-icon')
@@ -191,6 +191,7 @@ function (pm,
         function disableToolbarItem() { 
             //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
             // disable toolbar item
+            /*jshint validthis: true */
             this.set('disabled', true);
 
             $(this.containerNode).find('.webida-tool-bar-icon')

@@ -25,6 +25,23 @@ var LoggerInterface = require('./logger');
 var FileAppender = require('./appenders/file-appender');
 var singlton;
 
+function formater(args, action/*, logger*/) {
+    var now = new Date();
+    var prefix = '[' + now.toISOString() + '] [' + action.toUpperCase() + ']';
+    var regExp = /\(([^)]+)\)/;
+    /*jshint -W058 */
+    var x = regExp.exec((new Error).stack.split('\n')[4])[1].split(':');
+    /*jshint +W058 */
+    x.pop();
+    var basename = x.join(':');
+
+    ([]).unshift.call(args, prefix);
+    ([]).push.call(args, basename);
+
+    return args;
+}
+
+
 function Logger() {
 	LoggerInterface.apply(this, arguments);
 	this.setFormater(formater);
@@ -35,20 +52,7 @@ function Logger() {
 Logger.prototype = Object.create(LoggerInterface.prototype);
 Logger.prototype.constructor = Logger;
 
-function formater(args, action, logger) {
-	var now = new Date();
-	var prefix = '[' + now.toISOString() + '] ['+action.toUpperCase()+']';
-	var regExp = /\(([^)]+)\)/;
-	var x = regExp.exec((new Error).stack.split('\n')[4])[1].split(':');
-	x.pop();
-	var basename = x.join(':');
-
-	([]).unshift.call(args, prefix);
-	([]).push.call(args, basename);
-
-	return args;
-}
-
+/* jshint ignore: start */
 function getNow() {
 	var result = [], now = new Date();
 	result.push(now.getHours());
@@ -69,6 +73,7 @@ function getNow() {
 	}
 	return result.join(':');
 }
+/* jshint ignore:end */
 
 Logger.getSingleton = function getSingleton() {
 	if (!singlton) {

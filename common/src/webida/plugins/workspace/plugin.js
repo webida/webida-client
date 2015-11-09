@@ -232,9 +232,9 @@ define([
         }
     });
 
-    overlayIconsExtensions.forEach(function(ext) {
+    overlayIconsExtensions.forEach(function (ext) {
         for (var stateSet in ext.stateMap) {
-            if ( typeof stateSet === 'string') {
+            if (typeof stateSet === 'string') {
                 stateSetIconClassMap[stateSet] = ext.stateMap[stateSet];
             }
         }        
@@ -242,13 +242,13 @@ define([
         extractCssFilePathList(ext, cssFilePathList); 
     });
 
-    loadCSSList(cssFilePathList, function() {
+    loadCSSList(cssFilePathList, function () {
     });
 
     function selectNode(node) {
-    	singleLogger.info('selectNode(node)');
-    	singleLogger.trace();
-        if ( typeof node === 'string') {
+        singleLogger.info('selectNode(node)');
+        singleLogger.trace();
+        if (typeof node === 'string') {
             node = getNode(node);
         }
         if (!node) {
@@ -287,7 +287,7 @@ define([
         workspacePath = ide.getPath();
 
         // get last status
-        var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace', function() {
+        var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace', function () {
             var ret = {};
 
             var selected = getSelectedPath();
@@ -320,7 +320,7 @@ define([
         var store = new Memory();
         //store.setData([tempRoot]);
         store.setData(data);
-        store.getChildren = function(node) {
+        store.getChildren = function (node) {
             return this.query({
                 parent: node.id
             }, {
@@ -335,7 +335,7 @@ define([
             query: {
                 id: workspacePath
             },
-            mayHaveChildren: function(node) {
+            mayHaveChildren: function (node) {
                 return node.isInternal;
             }
         });
@@ -354,20 +354,20 @@ define([
         // create tree
         tree = new Tree({
             model: model,
-            _createTreeNode: function(args) {
+            _createTreeNode: function (args) {
                 return new TreeNode(args);
             },
             openOnDblClick: true,
             tabindex: 0,
-            getIconClass: function(item, opened) {
+            getIconClass: function (item, opened) {
                 //console.log('hina temp: entered getIconClass() with ' + (item ?
                 // item.id: item));
-                setTimeout(function() {
+                setTimeout(function () {
                     item.updateOverlayIcon();
                 }, 0);
                 if (!item || item.isInternal) {
                     // directory
-                    return ( opened ? 'dijitFolderOpened' : 'dijitFolderClosed');
+                    return (opened ? 'dijitFolderOpened' : 'dijitFolderClosed');
                 } else {
                     // file                    
                     return getItemIconClass(item);
@@ -384,7 +384,7 @@ define([
                 refreshItemClassesRecursively(this.rootNode);
             },
 
-            onDblClick: function(item) {
+            onDblClick: function (item) {
                 if (item) {
                     if (item.isInternal) {
                         var nodes = this.getNodesByItem(item);
@@ -400,13 +400,13 @@ define([
                 }
             },
 
-            onBlur: function() {
+            onBlur: function () {
                 if (focusedNode) {
                     $(focusedNode).removeClass('focused');
                 }
             },
 
-            checkItemAcceptance: function(target, source) {
+            checkItemAcceptance: function (target, source) {
                 var treeNode = registry.byId(dijit.getEnclosingWidget(target).id);
                 if (treeNode && treeNode.item) {
                     var targetNode = treeNode.item;
@@ -419,7 +419,7 @@ define([
                 }
             },
 
-            onMouseDown: function(event) {
+            onMouseDown: function (event) {
                 var id = dijit.getEnclosingWidget(event.target).id;
                 if (id === 'wv-tree' || id === 'workspace') {
                     return;
@@ -447,7 +447,7 @@ define([
             }
         }, 'wv-tree');
 
-        aspect.after(tree, 'focusNode', function() {
+        aspect.after(tree, 'focusNode', function () {
             if (focusedNode) {
                 $(focusedNode).removeClass('focused');
             }
@@ -471,8 +471,8 @@ define([
         tree.dndController.events[4].splice(0, 1);
         tree.dndController.events.splice(4, 1);
 
-        aspect.around(tree, '_getNext', function() {
-            return function(node) {
+        aspect.around(tree, '_getNext', function () {
+            return function (node) {
                 if (node.isExpandable && node.isExpanded && node.hasChildren()) {
                     // if this is an expanded node, get the first child
                     var children = node.getChildren();
@@ -501,8 +501,8 @@ define([
             };
         });
 
-        aspect.around(tree, '_onRightArrow', function() {
-            return function(event, node) {
+        aspect.around(tree, '_onRightArrow', function () {
+            return function (event, node) {
                 if (node.isExpandable && !node.isExpanded) {
                     this._expandNode(node);
                 } else if (node.hasChildren()) {
@@ -520,8 +520,8 @@ define([
             };
         });
 
-        aspect.around(tree, '_onUpArrow', function() {
-            return function(event, node) {
+        aspect.around(tree, '_onUpArrow', function () {
+            return function (event, node) {
                 var previousSibling = node.getPreviousSibling();
                 if (previousSibling) {
                     while (!previousSibling.isFocusable()) {
@@ -559,8 +559,8 @@ define([
             };
         });
 
-        aspect.around(tree.dndController, 'onClickPress', function() {
-            return function(e) {
+        aspect.around(tree.dndController, 'onClickPress', function () {
+            return function (e) {
                 // summary:
                 //		Event processor for onmousedown/ontouchstart/onkeydown
                 // corresponding to a click event
@@ -600,13 +600,13 @@ define([
             };
         });
 
-        aspect.around(tree.dndController, '_onDragMouse', function(original) {
-            return function() {
+        aspect.around(tree.dndController, '_onDragMouse', function (original) {
+            return function () {
                 if (this.current.item && this.current.item.isInternal) {
                     var currentItem = this.current.item;
                     if (dragEnterNode !== this.current.item) {
                         dragEnterNode = this.current.item;
-                        setTimeout(function() {
+                        setTimeout(function () {
                             if (dragEnterNode === currentItem) {
                                 currentItem.expandItem();
                             }
@@ -617,8 +617,8 @@ define([
             };
         });
 
-        aspect.around(tree.dndController, 'onMouseUp', function(original) {
-            return function() {
+        aspect.around(tree.dndController, 'onMouseUp', function (original) {
+            return function () {
                 if (this.mouseDown) {
                     dragEnterNode = null;
                 }
@@ -627,8 +627,8 @@ define([
         });
 
         // multi selection limit : all selected nodes have a same parent.
-        aspect.around(tree.dndController, 'userSelect', function(original) {
-            return function(node, multi, range) {
+        aspect.around(tree.dndController, 'userSelect', function (original) {
+            return function (node, multi, range) {
                 if (multi || range) {
                     var anchorItem;
                     if (this.anchor) {
@@ -678,7 +678,7 @@ define([
         });
 
         // context menu handle
-        on(tree, 'contextmenu', function(event) {
+        on(tree, 'contextmenu', function (event) {
             var id = dijit.getEnclosingWidget(event.target).id;
             var treeNode = registry.byId(id);
             if (!treeNode || !treeNode.item) {
@@ -698,7 +698,7 @@ define([
             selectNode(rootNode);
         }
 
-        tree.onOpen = function(item) {
+        tree.onOpen = function (item) {
             var self = this;
             function expandNode() {
                 //console.log('hina temp: onOpen on node ' + item.id);
@@ -709,7 +709,7 @@ define([
 
                 //var t = timedLogger.log('expanding directory "' + item.id +
                 // '"');
-                item.fetchChildren(function(/*alreadyFetched*/) {
+                item.fetchChildren(function (/*alreadyFetched*/) {
                     //console.log('hina temp: callback of fetchChildren ');
                     /*
                      switch (alreadyFetched) {
@@ -740,7 +740,7 @@ define([
                             }
 
                             var j;
-                            if (lastExpanded && lastExpanded.length > 0 && ( j = lastExpanded.indexOf(child.id)) >= 0) {
+                            if (lastExpanded && lastExpanded.length > 0 && (j = lastExpanded.indexOf(child.id)) >= 0) {
                                 lastExpanded.splice(j, 1);
                                 child.expandItem();
                             }
@@ -802,7 +802,7 @@ define([
                 switch (c) {
                     case 'innerToInner':
                         dragged = getSelectedNodes();
-                        var droppable = dragged && dragged.length && dragged.every(function(n) {
+                        var droppable = dragged && dragged.length && dragged.every(function (n) {
                             return n !== target && n.getParentNode() !== target && !n.isAncestorOf(target);
                         });
                         if (!droppable) {
@@ -824,7 +824,7 @@ define([
                         if (treeNode.item.isInternal) {
                             dragEnterNode = treeNode;
                             if (!isTimerInstalled) {
-                                setTimeout(function() {
+                                setTimeout(function () {
                                     if (dragEnterNode === treeNode) {
                                         dragEnterNode.item.expandItem();
                                     }
@@ -887,7 +887,7 @@ define([
                         srcPath = pathUtil.detachSlash(srcPath);
 
                         var srcNodes = [], quit = false;
-                        paths.forEach(function(path) {
+                        paths.forEach(function (path) {
                             if (quit) {
                                 return;
                             }
@@ -937,7 +937,7 @@ define([
 
                             // Chrome or future Firefox
 
-                            for ( i = 0; i < dt.items.length; i++) {
+                            for (i = 0; i < dt.items.length; i++) {
                                 selected.push(dt.items[i].webkitGetAsEntry());
                             }
                             targetNode.upload(selected);
@@ -945,7 +945,7 @@ define([
 
                             // Firefox 31.x
 
-                            for ( i = 0; i < dt.files.length; i++) {
+                            for (i = 0; i < dt.files.length; i++) {
                                 selected.push(dt.files[i]);
                             }
                             targetNode.upload(selected);
@@ -1000,7 +1000,7 @@ define([
             function setContentsForInternalDnD(nodes, dt) {
                 var nodePath = '';
                 var fsid = ide.getFsid();
-                nodes.forEach(function(node) {
+                nodes.forEach(function (node) {
                     nodePath += fsid + node.getPath() + ':';
                 });
                 dt.setData(MIME_TYPE_WEBIDA_RESOURCE_PATH, nodePath);
@@ -1013,7 +1013,7 @@ define([
                 //console.log('hina temp: auth token used in download by dragging
                 // = ' + authToken);
                 if (len > 1) {
-                    nodes.forEach(function(node) {
+                    nodes.forEach(function (node) {
                         sources += node.getPath() + ';';
                     });
                     sources = sources.substring(0, sources.lastIndexOf(';'));
@@ -1027,7 +1027,7 @@ define([
                 }
                 ide.getMount().makeDnDDownloadUrl(
                     (len > 1 || nodes[0].isInternal), sources, downloadFileName,
-                    function(err, downloadUrl) {
+                    function (err, downloadUrl) {
                     dt.setData('DownloadURL', downloadUrl);
                 });
             }
@@ -1078,24 +1078,24 @@ define([
             title: 'Delete',
             message: msg,
             type: 'error'
-        }).then(function() {
+        }).then(function () {
             if (nodes.length > 1) {
-                var toDelete = nodes.map(function(n) {
+                var toDelete = nodes.map(function (n) {
                     return n.getPath();
                 });
                 toDelete.deleted = [];
                 topic.publish('workspace.nodes.deleting', toDelete);
             }
             var parentNode = nodes[0].getParentNode();
-            async.each(nodes, function(node, callback) {
-                fsCache['delete'](node.id, node.isInternal, function(err) {
+            async.each(nodes, function (node, callback) {
+                fsCache['delete'](node.id, node.isInternal, function (err) {
                     if (err) {
                         callback(err);
                     } else {
                         callback();
                     }
                 });
-            }, function(err) {
+            }, function (err) {
                 if (err) {
                     console.log('Failed to delete (' + err + ')');
                     notify.error('Failed to delete');
@@ -1106,14 +1106,14 @@ define([
                     notify.success('All files have been deleted successfully');
                 }
             });
-        }, function() {
+        }, function () {
             workbench.focusLastWidget();
         });
     }
 
     function copySelected() {
         var targetNodes = getSelectedNodes();
-        if (targetNodes && targetNodes.length > 0 && targetNodes.every(function(node) {
+        if (targetNodes && targetNodes.length > 0 && targetNodes.every(function (node) {
             return !node.isRoot();
         })) {
             copied = targetNodes;
@@ -1123,7 +1123,7 @@ define([
 
     function cutSelected() {
         var targetNodes = getSelectedNodes();
-        if (targetNodes && targetNodes.length > 0 && targetNodes.every(function(node) {
+        if (targetNodes && targetNodes.length > 0 && targetNodes.every(function (node) {
             return !node.isRoot();
         })) {
             copied = null;
@@ -1165,7 +1165,7 @@ define([
 
     function getSelectedPaths() {
         var arr = tree ? (tree.selectedItems || []) : [];
-        return arr.map(function(i) {
+        return arr.map(function (i) {
             return i.getPath();
         });
     }
@@ -1194,13 +1194,13 @@ define([
         function expandAncestorInner(node, segments) {
             var deferred = new Deferred();
 
-            node.expandItem().then(function(result) {
+            node.expandItem().then(function (result) {
                 if (result === true) {
                     if (segments.length > 0) {
                         var s = node.getSubnode(segments[0]);
                         if (s) {
                             segments.shift();
-                            expandAncestorInner(s, segments).then(function(val) {
+                            expandAncestorInner(s, segments).then(function (val) {
                                 deferred.resolve(val);
                             });
                         } else {
@@ -1232,11 +1232,11 @@ define([
     }
 
     function initializeSyncEditorFocus() {
-        topic.subscribe('partContainerSelected', function(container) {
+        topic.subscribe('partContainerSelected', function (container) {
             var persistence = container.getDataSource().getPersistence();
-        	var path = persistence.getPersistenceId();
+            var path = persistence.getPersistenceId();
             if (syncingWithEditor) {
-                expandAncestors(path).then(function(result) {
+                expandAncestors(path).then(function (result) {
                     if (result === true) {
                         var node = tree.model.store.get(path);
                         if (node) {
@@ -1252,7 +1252,7 @@ define([
             editorsSelection = path;
         });
 
-        topic.subscribe('editors.closed', function(path) {
+        topic.subscribe('editors.closed', function (path) {
             if (editorsSelection === path) {
                 editorsSelection = null;
             }
@@ -1262,21 +1262,21 @@ define([
         // 1) The file has been opened already (Part exists in the registry)
         // 2) If the file is opened, the part should be hidden.
         // TODO : Can workspace view plugin know PartRegistry and EditorPart?
-        topic.subscribe('workspace.node.selected', function(path) {
+        topic.subscribe('workspace.node.selected', function (path) {
             if (syncingWithEditor && !pathUtil.isDirPath(path) && getSelectedNodes().length === 1) {
-	            var partRegistry = _getPartRegistry();
-	            var dsRegistry = workbench.getDataSourceRegistry();
-	            var dataSource = dsRegistry.getDataSourceById(path);
-	            if(dataSource){
-	            	var parts = partRegistry.getPartsByDataSource(dataSource);
-	                if (parts.length > 0) {
-	                    var currentPart = _getPartRegistry().getCurrentEditorPart();
-	                    var currentPath = currentPart.getDataSource().getId();
-	                    if (path !== currentPath) {
-	                        topic.publish('editor/open', path);
-	                    }
-	                }
-	            }
+                var partRegistry = _getPartRegistry();
+                var dsRegistry = workbench.getDataSourceRegistry();
+                var dataSource = dsRegistry.getDataSourceById(path);
+                if (dataSource) {
+                    var parts = partRegistry.getPartsByDataSource(dataSource);
+                    if (parts.length > 0) {
+                        var currentPart = _getPartRegistry().getCurrentEditorPart();
+                        var currentPath = currentPart.getDataSource().getId();
+                        if (path !== currentPath) {
+                            topic.publish('editor/open', path);
+                        }
+                    }
+                }
             }
         });
     }
@@ -1318,7 +1318,7 @@ define([
         domStyle.set(item, 'margin-top', '4px');
         domStyle.set(item, 'margin-right', '4px');
 
-        on(item, 'mouseover', function() {
+        on(item, 'mouseover', function () {
             if (options.isToggle) {
                 if (toggleFlags[options.id]) {
                     domClass.replace(item, options.iconHover + 'Toggled');
@@ -1329,7 +1329,7 @@ define([
                 domClass.replace(item, options.iconHover);
             }
         });
-        on(item, 'mouseout', function() {
+        on(item, 'mouseout', function () {
             if (options.isToggle) {
                 if (toggleFlags[options.id]) {
                     domClass.replace(item, options.iconNormal + 'Toggled');
@@ -1340,7 +1340,7 @@ define([
                 domClass.replace(item, options.iconNormal);
             }
         });
-        on(item, 'mousedown', function() {
+        on(item, 'mousedown', function () {
             if (options.isToggle) {
                 toggleFlags[options.id] = !toggleFlags[options.id];
                 var tooltip = (toggleFlags[options.id] === true) ? options.tooltip.toggle : options.tooltip.normal;
@@ -1357,7 +1357,7 @@ define([
             }
             item._mousePushed = true;
         });
-        on(item, 'mouseup', function() {
+        on(item, 'mouseup', function () {
             item.mousepushed = false;
             if (options.isToggle) {
                 if (toggleFlags[options.id]) {
@@ -1369,7 +1369,7 @@ define([
                 domClass.replace(item, options.iconNormal);
             }
         });
-        on(item, 'click', function() {
+        on(item, 'click', function () {
             options.onClick();
         });
 
@@ -1378,7 +1378,7 @@ define([
 
     function initializeToolbar() {
 
-        var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace:Toolbar', function() {
+        var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace:Toolbar', function () {
             var ret = {};
             ret.syncingWithEditor = syncingWithEditor;
             return ret;
@@ -1399,10 +1399,10 @@ define([
                 normal: 'Stop Sync',
                 toggle: 'Sync with Editor'
             },
-            onClick: function() {
+            onClick: function () {
                 syncingWithEditor = !syncingWithEditor;
                 if (syncingWithEditor && editorsSelection) {
-                    expandAncestors(editorsSelection).then(function(result) {
+                    expandAncestors(editorsSelection).then(function (result) {
                         if (result === true) {
                             var node = tree.model.store.get(editorsSelection);
                             if (node) {
@@ -1427,18 +1427,18 @@ define([
                 normal: 'Collapse All',
                 toggle: 'Collapse All'
             },
-            onClick: function() {
+            onClick: function () {
                 tree.collapseAll();
             }
         });
     }
 
     function initializeFocus() {
-        topic.subscribe('workspace.node.selected', function() {
+        topic.subscribe('workspace.node.selected', function () {
             var nodes = getSelectedNodes();
             if (nodes && nodes.length > 0) {
                 var paths = [];
-                nodes.forEach(function(node) {
+                nodes.forEach(function (node) {
                     paths.push(node.id);
                 });
                 workbench.setContext(paths);
@@ -1449,7 +1449,7 @@ define([
     function initializeFiltering() {
         function hideNodes(filterFunc, bHide) {
             var data = tree.model.store.data;
-            data.forEach(function(elem) {
+            data.forEach(function (elem) {
                 if (filterFunc(elem)) {
                     if (bHide) {
                         elem.hide();
@@ -1534,7 +1534,7 @@ define([
             });*/
         }
 
-        function applyPreferences(values, contextInfo) {
+        function applyPreferences(values/*, contextInfo*/) {
             function addFilterFunc(func) {
                 wvfilterFuncs.push(func);
                 hideNodes(func, true);
@@ -1678,7 +1678,7 @@ define([
     function getChildrenPaths(path) {
         var node = getNode(path);
         if (node) {
-            return (node.getSubnodes() || []).map(function(n) {
+            return (node.getSubnodes() || []).map(function (n) {
                 return n.getPath();
             });
         } else {
@@ -1688,7 +1688,7 @@ define([
 
     var workspaceView = {
         // for webida.common.workbench:views extension point
-        getView: function() {
+        getView: function () {
             if (!view) {
                 view = new View('workspaceView', 'Workspace');
                 view.setContent(domConstruct.toDom(markup));
@@ -1697,7 +1697,7 @@ define([
         },
 
         // for webida.common.workbench:views extension point
-        onViewAppended: function() {
+        onViewAppended: function () {
             function _loadCss(url) {
                 var link = document.createElement('link');
                 link.type = 'text/css';
@@ -1745,7 +1745,7 @@ define([
         copySelected: copySelected,
         cutSelected: cutSelected,
         pasteToSelected: pasteToSelected,
-        isCopiedOrCut: function() {
+        isCopiedOrCut: function () {
             return copied || cut;
         },
 
@@ -1770,7 +1770,7 @@ define([
         expandAncestors: expandAncestors,
         upload: upload,
 
-        getStateSetIconClassMap: function() {
+        getStateSetIconClassMap: function () {
             return stateSetIconClassMap;
         }
     };

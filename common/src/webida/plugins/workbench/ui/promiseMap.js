@@ -25,9 +25,9 @@
 
 // @formatter:off
 define([
-    'webida-lib/util/logger/logger-client'
-], function(
-    Logger
+//    'webida-lib/util/logger/logger-client'
+], function (
+//    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -36,7 +36,7 @@ define([
      * @typedef {Object} Promise
      */
 
-    var logger = new Logger();
+    //var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
@@ -48,14 +48,14 @@ define([
          * @param {String} id
          * @param {Promise} promise
          */
-        set: function(id, promise) {
+        set: function (id, promise) {
             this.promises[id] = promise;
         },
 
         /**
          * @return {Promise}
          */
-        get: function(id) {
+        get: function (id) {
             return this.promises[id];
         },
     };

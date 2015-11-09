@@ -28,7 +28,7 @@ define([
     'webida-lib/util/path', // pathUtil
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify', // notify
-], function(
+], function (
     wv,
     ExtensionManager,
     _,
@@ -40,7 +40,7 @@ define([
     'use strict';
 // @formatter:on
 
-    var logger = new Logger();
+    //var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
@@ -50,7 +50,7 @@ define([
 
     var module = {
 
-        getViableItemsForWorkbenchAtFile: function() {
+        getViableItemsForWorkbenchAtFile: function () {
             var items = {
                 '&Download Files': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDownloadZip'],
                 'Duplica&te': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDuplicate']
@@ -63,7 +63,7 @@ define([
 
                 // 'Refresh' and 'Upload File' when every selected node is a
                 // directory
-                if (selPaths.every(function(path) {
+                if (selPaths.every(function (path) {
                     return pathUtil.isDirPath(path);
                 })) {
                     items['&Refresh'] = ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRefresh'];
@@ -82,13 +82,16 @@ define([
                     var selPath = selPaths[0];
                     if (pathUtil.isDirPath(selPath)) {
                         items['&New'] = {};
-                        items['&New']['&File'] = ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFile'];
-                        items['&New']['&Directory'] = ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFolder'];
+                        items['&New']['&File'] = ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands',
+                                                  'handleNewFile'];
+                        
+                        items['&New']['&Directory'] = ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 
+                                                       'handleNewFolder'];
                     }
                 }
 
                 // 'Open File' when every selected node is a file
-                if (selPaths.every(function(path) {
+                if (selPaths.every(function (path) {
                     return !pathUtil.isDirPath(path);
                 })) {
                     items['Open &File'] = ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleEdit'];
@@ -98,7 +101,7 @@ define([
             return items;
         },
 
-        getViableItemsForWorkbenchAtFind: function() {
+        getViableItemsForWorkbenchAtFind: function () {
             var items = {
                 '&Find in Files': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'findInCurDir']
             };
@@ -111,7 +114,7 @@ define([
             return null;
         },
 
-        getViableItemsForWorkbenchAtNavigate: function() {
+        getViableItemsForWorkbenchAtNavigate: function () {
             var items = {
                 'Go to &File': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'gotoFileInCurDir']
             };
@@ -124,15 +127,15 @@ define([
             return null;
         },
 
-        getOpenWithEditorsArray: function() {
+        getOpenWithEditorsArray: function () {
             return openWithEditorNames;
         },
 
-        getOpenWithParts: function() {
+        getOpenWithParts: function () {
             return openWithParts;
         },
 
-        getViableItemsForWorkspaceView: function() {
+        getViableItemsForWorkspaceView: function () {
             var paths = wv.getSelectedPaths();
             var i = 0;
             var ext;
@@ -140,14 +143,16 @@ define([
             // processing for open with
             openWithEditorNames = [];
             openWithParts = [];
-            if (paths && paths.length > 0 && paths.every(function(n) {
+            if (paths && paths.length > 0 && paths.every(function (n) {
                 return !pathUtil.isDirPath(n);
             })) {
                 var availableExtensions = extensionManager.getExtensionsForType(pathUtil.getFileExt(paths[0]));
-                for ( i = 0; i < paths.length; i++) {
+                for (i = 0; i < paths.length; i++) {
                     if (i > 0) {
                         if (availableExtensions) {
-                            var availableExtensions2 = extensionManager.getExtensionsForType(pathUtil.getFileExt(paths[i]));
+                            var availableExtensions2 = 
+                                extensionManager.getExtensionsForType(pathUtil.getFileExt(paths[i]));
+                            
                             if (availableExtensions2) {
                                 availableExtensions = _.intersection(availableExtensions, availableExtensions2);
                             } else {
@@ -160,7 +165,7 @@ define([
                 }
 
                 if (availableExtensions) {
-                    for ( i = 0; i < availableExtensions.length; i++) {
+                    for (i = 0; i < availableExtensions.length; i++) {
                         ext = availableExtensions[i];
                         openWithEditorNames.push(ext.name);
                         openWithParts.push(ext.__plugin__.loc + '/' + ext.editorPart);
@@ -169,138 +174,142 @@ define([
             }
 
             var candidateItemSets = [
-            // Open
-            {
-                isApplicableTo: function(paths) {
-                    return paths.length > 0 && (paths.every(function(n) {
-                        return !pathUtil.isDirPath(n);
-                    }) || paths.every(function(n) {
-                        return pathUtil.isDirPath(n);
-                    }));
-                },
-                items: {
-                    'Open': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleOpen']
-                }
-            },
-
-            // Open with
-            {
-                isApplicableTo: function(paths) {
-                    return paths.length > 0 && paths.every(function(n) {
-                        return !pathUtil.isDirPath(n);
-                    });
-                },
-                items: {
-                    'Open with': ['enum', 'webida-lib/plugins/fs-commands/fs-commands', 'handleOpenWith', openWithEditorNames]
-                }
-            },
-
-            // items for multiple selection
-            {
-                isApplicableTo: function(paths) {
-                    return paths.length > 1;
-                },
-                items: {
-                    //'Properti&es':
-                    // [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands',
-                    // 'handleFileProperties' ],
-                    'Dow&nload': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDownloadZip']
-                }
-            }, {
-                isApplicableTo: function(paths) {
-                    return paths.length > 1 && paths.every(function(p) {
-                        return pathUtil.getLevel(p) !== 1;
-                    });
-                },
-                items: {
-                    '&Copy': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCopy'],
-                    'Cu&t': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCut'],
-                    '&Delete': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDelete']
-                }
-            },
-
-            // items for single selection
-            // folder items
-            {
-                isApplicableTo: function(paths) {
-                    return paths.length === 1 && pathUtil.isDirPath(paths[0]);
-                },
-                items: {
-                    'New': {
-                        '&File': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFile'],
-                        '&Directory': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFolder']
+                // Open
+                {
+                    isApplicableTo: function (paths) {
+                        return paths.length > 0 && (paths.every(function (n) {
+                            return !pathUtil.isDirPath(n);
+                        }) || paths.every(function (n) {
+                            return pathUtil.isDirPath(n);
+                        }));
                     },
-                    'Dow&nload': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDownloadZip']
-                }
-            }, {
-                isApplicableTo: function(paths) {
-                    // folder && not workspace && not project
-                    return paths.length === 1 && pathUtil.isDirPath(paths[0]) && (pathUtil.getLevel(paths[0]) !== 1);
+                    items: {
+                        'Open': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleOpen']
+                    }
                 },
-                items: {
-                    //'Properti&es':
-                    // [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands',
-                    // 'handleFileProperties' ],
-                    'Dup&licate': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDuplicate'],
-                    '&Copy': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCopy'],
-                    'Cu&t': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCut']
-                }
-            }, {
-                isApplicableTo: function(paths) {
-                    return paths.length === 1 && wv.isCopiedOrCut();
-                },
-                items: {
-                    '&Paste': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handlePaste']
-                }
-            }, {
-                isApplicableTo: function(paths) {
-                    return paths.length === 1 && pathUtil.isDirPath(paths[0]) && pathUtil.getLevel(paths[0]) !== 1;
-                    // folder && not workspace && not project
-                },
-                items: {
-                    '&Delete': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDelete'],
-                    'Ren&ame': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRename']
-                }
-            }, {
-                isApplicableTo: function(paths) {
-                    return paths.length === 1 && pathUtil.isDirPath(paths[0]);
-                },
-                items: {
-                    //'&Upload Files':
-                    // [ 'cmnd',
-                    // 'webida-lib/plugins/fs-commands/fs-commands-upload',
-                    // 'handleUploadFiles' ],
-                    'Refres&h': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRefresh'],
-                    '&Find in Files': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'findInCurDir'],
-                    'Go to File': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'gotoFileInCurDir']
-                }
-            },
 
-            // file items
-            {
-                isApplicableTo: function(paths) {
-                    return paths.length === 1 && !pathUtil.isDirPath(paths[0]);
+                // Open with
+                {
+                    isApplicableTo: function (paths) {
+                        return paths.length > 0 && paths.every(function (n) {
+                            return !pathUtil.isDirPath(n);
+                        });
+                    },
+                    items: {
+                        'Open with': ['enum', 'webida-lib/plugins/fs-commands/fs-commands', 
+                                      'handleOpenWith', openWithEditorNames]
+                    }
                 },
-                items: {
-                    //'Properti&es':
-                    // [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands',
-                    // 'handleFileProperties' ],
-                    'Dup&licate': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDuplicate'],
-                    '&Copy': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCopy'],
-                    'Cu&t': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCut'],
-                    '&Delete': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDelete'],
-                    'Refres&h': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRefresh'],
-                    'Ren&ame': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRename'],
-                    'Dow&nload': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDownloadZip']
+
+                // items for multiple selection
+                {
+                    isApplicableTo: function (paths) {
+                        return paths.length > 1;
+                    },
+                    items: {
+                        //'Properti&es':
+                        // [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands',
+                        // 'handleFileProperties' ],
+                        'Dow&nload': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDownloadZip']
+                    }
+                }, {
+                    isApplicableTo: function (paths) {
+                        return paths.length > 1 && paths.every(function (p) {
+                            return pathUtil.getLevel(p) !== 1;
+                        });
+                    },
+                    items: {
+                        '&Copy': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCopy'],
+                        'Cu&t': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCut'],
+                        '&Delete': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDelete']
+                    }
+                },
+
+                // items for single selection
+                // folder items
+                {
+                    isApplicableTo: function (paths) {
+                        return paths.length === 1 && pathUtil.isDirPath(paths[0]);
+                    },
+                    items: {
+                        'New': {
+                            '&File': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFile'],
+                            '&Directory': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleNewFolder']
+                        },
+                        'Dow&nload': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDownloadZip']
+                    }
+                }, {
+                    isApplicableTo: function (paths) {
+                        // folder && not workspace && not project
+                        return paths.length === 1 && pathUtil.isDirPath(paths[0]) && (pathUtil.getLevel(paths[0]) !==
+                            1);
+                    },
+                    items: {
+                        //'Properti&es':
+                        // [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands',
+                        // 'handleFileProperties' ],
+                        'Dup&licate': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDuplicate'],
+                        '&Copy': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCopy'],
+                        'Cu&t': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCut']
+                    }
+                }, {
+                    isApplicableTo: function (paths) {
+                        return paths.length === 1 && wv.isCopiedOrCut();
+                    },
+                    items: {
+                        '&Paste': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handlePaste']
+                    }
+                }, {
+                    isApplicableTo: function (paths) {
+                        return paths.length === 1 && pathUtil.isDirPath(paths[0]) && pathUtil.getLevel(paths[0]) !==
+                            1;
+                        // folder && not workspace && not project
+                    },
+                    items: {
+                        '&Delete': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDelete'],
+                        'Ren&ame': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRename']
+                    }
+                }, {
+                    isApplicableTo: function (paths) {
+                        return paths.length === 1 && pathUtil.isDirPath(paths[0]);
+                    },
+                    items: {
+                        //'&Upload Files':
+                        // [ 'cmnd',
+                        // 'webida-lib/plugins/fs-commands/fs-commands-upload',
+                        // 'handleUploadFiles' ],
+                        'Refres&h': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRefresh'],
+                        '&Find in Files': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'findInCurDir'],
+                        'Go to File': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'gotoFileInCurDir']
+                    }
+                },
+
+                // file items
+                {
+                    isApplicableTo: function (paths) {
+                        return paths.length === 1 && !pathUtil.isDirPath(paths[0]);
+                    },
+                    items: {
+                        //'Properti&es':
+                        // [ 'cmnd', 'webida-lib/plugins/fs-commands/fs-commands',
+                        // 'handleFileProperties' ],
+                        'Dup&licate': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDuplicate'],
+                        '&Copy': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCopy'],
+                        'Cu&t': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleCut'],
+                        '&Delete': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDelete'],
+                        'Refres&h': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRefresh'],
+                        'Ren&ame': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleRename'],
+                        'Dow&nload': ['cmnd', 'webida-lib/plugins/fs-commands/fs-commands', 'handleDownloadZip']
+                    }
                 }
-            }];
+            ];
 
             // TODO: remove the following (too much complicated)
             function accumulateItems(target, source) {
-                Object.keys(source).forEach(function(key) {
+                Object.keys(source).forEach(function (key) {
                     var val = source[key];
                     if (val) {
-                        var valType = ( val instanceof Array) ? 'array' : typeof val;
+                        var valType = (val instanceof Array) ? 'array' : typeof val;
                         if (valType === 'array') {
                             if (target[key]) {
                                 notify.error('This plug-in has a duplicate or inconsistent key: ' + key);
@@ -310,7 +319,7 @@ define([
                             }
                         } else if (valType === 'object') {
                             if (target[key]) {
-                                if ( typeof target[key] === 'object') {
+                                if (typeof target[key] === 'object') {
                                     accumulateItems(target[key], val);
                                 } else {
                                     notify.error('This plug-in has an inconsistent command hierarchy at ' + key);
@@ -340,7 +349,7 @@ define([
             if (paths && paths.length > 0) {
                 var items = {};
                 var iEnd = candidateItemSets.length;
-                for ( i = 0; i < iEnd; i++) {
+                for (i = 0; i < iEnd; i++) {
                     var candidateItemSet = candidateItemSets[i];
                     if (candidateItemSet.isApplicableTo(paths)) {
                         if (candidateItemSet.items['Open with']) {
@@ -354,13 +363,13 @@ define([
                 }
 
                 var itemOpen;
-                if (( itemOpen = items.Open)) {
+                if ((itemOpen = items.Open)) {
                     if (pathUtil.isDirPath(paths[0])) {
-                        if (paths.every(function(p) {
+                        if (paths.every(function (p) {
                             return wv.isExpandedNode(p);
                         })) {
                             itemOpen.alternateLabel = 'Collapse';
-                        } else if (paths.every(function(p) {
+                        } else if (paths.every(function (p) {
                             return !wv.isExpandedNode(p);
                         })) {
                             itemOpen.alternateLabel = 'Expand';
@@ -378,8 +387,8 @@ define([
             }
         },
 
-        onNodeSelected: function(path) {
-            setTimeout(function() {// Without this setTimeout, the following
+        onNodeSelected: function (/*path*/) {
+            setTimeout(function () {// Without this setTimeout, the following
                 // getSelectedPaths sometimes wrongly returns an empty array
                 // when the IDE starts and a node is selected for the first time.
                 // Maybe this setTimeout has the effect of waiting for the

@@ -27,13 +27,16 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+/* global Map */
+
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './WidgetAdapter'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -67,7 +70,7 @@ define([
          * @param {Object} key
          * @param {Object} plugin
          */
-        installPlugin: function(key, plugin) {
+        installPlugin: function (key, plugin) {
             throw new Error('destroy() should be implemented by ' + this.constructor.name);
         },
 
@@ -76,7 +79,7 @@ define([
          * @abstract
          * @param {Object} key
          */
-        activatePlugin: function(key) {
+        activatePlugin: function (key) {
             throw new Error('destroy() should be implemented by ' + this.constructor.name);
         },
 
@@ -86,7 +89,7 @@ define([
          * @abstract
          * @param {Object} key
          */
-        resetPlugins: function() {
+        resetPlugins: function () {
             throw new Error('destroy() should be implemented by ' + this.constructor.name);
         },
 
@@ -95,7 +98,7 @@ define([
          * @abstract
          * @param {Object} contents
          */
-        setContents: function(contents) {
+        setContents: function (contents) {
             throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
         },
 
@@ -104,7 +107,7 @@ define([
          * @abstract
          * @return {Object} contents
          */
-        getContents: function() {
+        getContents: function () {
             throw new Error('getContents() should be implemented by ' + this.constructor.name);
         }
     });

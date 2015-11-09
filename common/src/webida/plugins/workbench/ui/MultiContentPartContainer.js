@@ -29,7 +29,7 @@ define([
     'webida-lib/util/logger/logger-client',
     './MultiContentPartContainerWidgetAdapter',
     './PartContainer'
-], function(
+], function (
     genetic, 
     Logger,
     MultiContentPartContainerWidgetAdapter,
@@ -61,16 +61,16 @@ define([
         /**
          * @override
          */
-        createWidgetAdapter: function() {
+        createWidgetAdapter: function () {
             logger.info('createWidgetAdapter()');
             this.setWidgetAdapter(new MultiContentPartContainerWidgetAdapter(this));
         },
 
-        setContentPane: function(contentPane) {
+        setContentPane: function (contentPane) {
             this.contentPane = contentPane;
         },
 
-        getContentPane: function(contentPane) {
+        getContentPane: function (/*contentPane*/) {
             return this.contentPane;
         },
 
@@ -78,7 +78,7 @@ define([
          * @override
          * Propagate to the MultiContentEditorPart's PartContainer
          */
-        updateDirtyState: function() {
+        updateDirtyState: function () {
             var multiContentLayoutPane = this.getParent();
             var partContainer = multiContentLayoutPane.getOwner().getContainer();
             partContainer.updateDirtyState();

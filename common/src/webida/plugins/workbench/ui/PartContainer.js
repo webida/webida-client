@@ -23,6 +23,8 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'dojo/topic',
@@ -34,7 +36,7 @@ define([
     './DataSource',
     './EditorPart',
     './Part'
-], function(
+], function (
     topic,
     EventEmitter,
     EventProxy,
@@ -80,12 +82,12 @@ define([
         this.decorateTitle();
 
         //In case of rename, move persistence
-        this.eventProxy.on(dataSource, DataSource.ID_CHANGE, function() {
+        this.eventProxy.on(dataSource, DataSource.ID_CHANGE, function () {
             that.decorateTitle();
         });
 
         //In case of save
-        this.eventProxy.on(dataSource, DataSource.AFTER_SAVE, function() {
+        this.eventProxy.on(dataSource, DataSource.AFTER_SAVE, function () {
             that.updateDirtyState();
         });
     }
@@ -96,42 +98,42 @@ define([
         /**
          * @param {DataSource} dataSource
          */
-        setDataSource: function(dataSource) {
+        setDataSource: function (dataSource) {
             this.dataSource = dataSource;
         },
 
         /**
          * @return {DataSource} dataSource
          */
-        getDataSource: function() {
+        getDataSource: function () {
             return this.dataSource;
         },
 
         /**
          * Initializes own Part
          */
-        initializePart: function() {
+        initializePart: function () {
 
         },
 
         /**
          * Creates a new Part using DataSource
          */
-        createPart: function(PartClass, callback) {
+        createPart: function (PartClass, callback) {
             logger.info('%ccreatePart(' + PartClass.name + ', ' + typeof callback + ')', 'color:orange');
-            var that = this;
+            //var that = this;
 
             //1. Creates a new Part
             var part = new PartClass(this);
             this.setPart(part);
-            if ( typeof callback === 'function') {
+            if (typeof callback === 'function') {
                 part.once(Part.CONTENTS_READY, callback);
             }
 
             //2. Registers the part
             var registry = this._getRegistry();
             registry.registerPart(part);
-            if ( part instanceof EditorPart) {
+            if (part instanceof EditorPart) {
                 registry.setCurrentEditorPart(part);
             }
             this.emit(PartContainer.PART_CREATED);
@@ -143,7 +145,7 @@ define([
         /**
          * Close this container
          */
-        destroyPart: function() {
+        destroyPart: function () {
             logger.info('destroyPart()');
 
             //1. Destroy Part
@@ -165,7 +167,7 @@ define([
         /**
          * @param {Part} part
          */
-        setPart: function(part) {
+        setPart: function (part) {
             if (this.part && part === null) {
                 this.part.setContainer(null);
             } else {
@@ -177,56 +179,56 @@ define([
         /**
          * @return {Part} part
          */
-        getPart: function() {
+        getPart: function () {
             return this.part;
         },
 
         /**
          * @param {Object} parent
          */
-        setParent: function(parent) {
+        setParent: function (parent) {
             this.parent = parent;
         },
 
         /**
          * @return {Object} parent
          */
-        getParent: function() {
+        getParent: function () {
             return this.parent;
         },
 
         /**
          * @param {HTMLElement} contentNode
          */
-        setContentNode: function(contentNode) {
+        setContentNode: function (contentNode) {
             this.contentNode = contentNode;
         },
 
         /**
          * @param {Object} parent
          */
-        getContentNode: function() {
+        getContentNode: function () {
             return this.contentNode;
         },
 
         /**
          * @param {string} title
          */
-        setTitle: function(title) {
+        setTitle: function (title) {
             this.title = title;
         },
 
         /**
          * @return {string} title
          */
-        getTitle: function() {
+        getTitle: function () {
             return this.title;
         },
 
         /**
          * @param {ImageDescriptor} imageDescriptor
          */
-        setTitleImage: function(imageDescriptor) {
+        setTitleImage: function (imageDescriptor) {
             this.titleImage = imageDescriptor;
             //TODO
         },
@@ -234,28 +236,28 @@ define([
         /**
          * @return {ImageDescriptor} imageDescriptor
          */
-        getTitleImage: function() {
+        getTitleImage: function () {
             //TODO
         },
 
         /**
          * @param {string} toolTip
          */
-        setToolTip: function(toolTip) {
+        setToolTip: function (toolTip) {
             this.toolTip = toolTip;
         },
 
         /**
          * @return {string} title
          */
-        getToolTip: function() {
+        getToolTip: function () {
             return this.toolTip;
         },
 
         /**
          * Decorates title bar of Container
          */
-        decorateTitle: function() {
+        decorateTitle: function () {
             var dataSource = this.getDataSource();
             this.setTitle(dataSource.getTitle());
             this.setToolTip(dataSource.getToolTip());
@@ -270,21 +272,21 @@ define([
          * @callback PartContainer~createWidgetAdapterCallback
          * @param {PartContainer} container
          */
-        createWidgetAdapter: function(callback) {
+        createWidgetAdapter: function (callback) {
             throw new Error('createWidgetAdapter() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {WidgetAdapter} adapter
          */
-        setWidgetAdapter: function(adapter) {
+        setWidgetAdapter: function (adapter) {
             this.adapter = adapter;
         },
 
         /**
          * @return {WidgetAdapter}
          */
-        getWidgetAdapter: function() {
+        getWidgetAdapter: function () {
             return this.adapter;
         },
 
@@ -292,10 +294,10 @@ define([
          * Convenient method for LayoutPane.CONTAINER_SELECT event
          * @see LayoutPane
          */
-        onSelect: function() {
+        onSelect: function () {
             var part = this.getPart();
             var registry = this._getRegistry();
-            if ( part instanceof EditorPart) {
+            if (part instanceof EditorPart) {
                 registry.setCurrentEditorPart(part);
             }
         },
@@ -304,7 +306,7 @@ define([
          * Updates this container's part's dirty state.
          * After update publishes corresponding topic
          */
-        updateDirtyState: function() {
+        updateDirtyState: function () {
 
             logger.info('updateDirtyState()');
             logger.trace();
@@ -337,7 +339,7 @@ define([
             }
         },
 
-        _getRegistry: function() {
+        _getRegistry: function () {
             var page = workbench.getCurrentPage();
             return page.getPartRegistry();
         },
@@ -345,7 +347,7 @@ define([
         /**
          * @override
          */
-        toString: function() {
+        toString: function () {
             var res = '<' + this.constructor.name + '>#' + this.getTitle();
             return res;
         }

@@ -20,15 +20,15 @@ define([
     'webida-lib/plugins/workbench/plugin', 
     'webida-lib/widgets/views/viewmanager', 
     'webida-lib/util/logger/logger-client', 
-    'dojo/topic', 
-    'external/lodash/lodash.min'
-], function(
+    'dojo/topic'/*, 
+    'external/lodash/lodash.min'*/
+], function (
     editors,
     workbench,
     vm,
     Logger,
-    topic,
-    _
+    topic/*,
+    _*/
 ) {
     'use strict';
 // @formatter:on
@@ -259,9 +259,9 @@ define([
                 spContainer.moveView(targetView, view);
                 view.select(true);
             } else {
-                var j = views.indexOf(view);
-                var nextSelectedView = (j > 0 ? views[j - 1] : views[1]);
-                var nextSelectedFile = editors.getFileByViewId(nextSelectedView.getId());
+                //var j = views.indexOf(view);
+               // var nextSelectedView = (j > 0 ? views[j - 1] : views[1]);
+                //var nextSelectedFile = editors.getFileByViewId(nextSelectedView.getId());
                 spContainer.moveView(targetView, view);
                 view.select(true);
             }

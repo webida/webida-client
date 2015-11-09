@@ -74,7 +74,7 @@ define([
 
                     if (link[sheet]) {
                         clearInterval(intervalId);
-                        logger.log(link.href+' loaded');
+                        logger.log(link.href + ' loaded');
                         onload(true);
                     } else {
                         failedCounter++;

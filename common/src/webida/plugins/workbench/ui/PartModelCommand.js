@@ -27,7 +27,7 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     genetic, 
     Logger
 ) {
@@ -52,35 +52,35 @@ define([
         /**
          * @abstract
          */
-        execute: function() {
+        execute: function () {
             throw new Error('execute() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {PartModel}
          */
-        setModel: function(model) {
+        setModel: function (model) {
             this.model = model;
         },
 
         /**
          * @return {PartModel}
          */
-        getModel: function() {
+        getModel: function () {
             return this.model;
         },
 
         /**
          * @param {ChangeRequest}
          */
-        setRequest: function(request) {
+        setRequest: function (request) {
             this.request = request;
         },
 
         /**
          * @return {ChangeRequest}
          */
-        getRequest: function() {
+        getRequest: function () {
             return this.request;
         }
     });

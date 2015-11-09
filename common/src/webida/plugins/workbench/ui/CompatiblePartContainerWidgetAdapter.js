@@ -31,17 +31,15 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/widgets/views/view',
     './PartContainer',
-    './PartContainerWidgetAdapter',
-    './WidgetAdapter'
-], function(
+    './PartContainerWidgetAdapter'
+], function (
     EventEmitter,
     _,
     genetic, 
     Logger,
     View,
     PartContainer,
-    PartContainerWidgetAdapter,
-    WidgetAdapter
+    PartContainerWidgetAdapter
 ) {
     'use strict';
 // @formatter:on
@@ -67,7 +65,7 @@ define([
         persistence.viewId = viewId;
         //TODO remove widget.partContainer
         widget.partContainer = container;
-        dojo.connect(widget.contentPane, 'resize', function(changeSize) {
+        dojo.connect(widget.contentPane, 'resize', function (changeSize) {
             container.emit(PartContainer.CONTAINER_RESIZE, changeSize);
         });
         this.setWidget(widget);
@@ -79,21 +77,21 @@ define([
         /**
          * @param {string} title
          */
-        setTitle: function(title) {
+        setTitle: function (title) {
             this.getWidget().setTitle(title);
         },
 
         /**
          * @param {string} tooltip
          */
-        setToolTip: function(tooltip) {
+        setToolTip: function (tooltip) {
             this.getWidget().setTooltip(tooltip);
         },
 
         /**
          * @return {HTMLElement}
          */
-        getContentNode: function() {
+        getContentNode: function () {
             return this.getWidget().getContent();
         }
     });

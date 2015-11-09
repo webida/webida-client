@@ -26,7 +26,7 @@
 define([
     'dojo/topic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     topic,
     Logger
 ) {
@@ -41,7 +41,7 @@ define([
          * @param {string} msg
          * @param {string} [title]
          */
-        info: function(msg, title) {
+        info: function (msg, title) {
             title = title ? '[' + title + '] ' : '';
             logger.info('notify > ' + title + msg);
             topic.publish('NOTIFY', 'info', msg, title);
@@ -51,7 +51,7 @@ define([
          * @param {string} msg
          * @param {string} [title]
          */
-        warning: function(msg, title) {
+        warning: function (msg, title) {
             title = title ? '[' + title + '] ' : '';
             logger.warn('notify > ' + title + msg);
             topic.publish('NOTIFY', 'warning', msg, title);
@@ -61,7 +61,7 @@ define([
          * @param {string} msg
          * @param {string} [title]
          */
-        error: function(msg, title) {
+        error: function (msg, title) {
             title = title ? '[' + title + '] ' : '';
             logger.error('notify > ' + title + msg);
             topic.publish('NOTIFY', 'error', msg, title);
@@ -71,20 +71,20 @@ define([
          * @param {string} msg
          * @param {string} [title]
          */
-        success: function(msg, title) {
+        success: function (msg, title) {
             title = title ? '[' + title + '] ' : '';
             logger.info('notify > ' + title + msg);
             topic.publish('NOTIFY', 'success', msg, title);
         },
 
-        clear: function() {
+        clear: function () {
             topic.publish('NOTIFY', 'clear');
         },
 
-        remove: function() {
+        remove: function () {
             topic.publish('NOTIFY', 'remove');
         }
-    }
+    };
 
     return notify;
 });

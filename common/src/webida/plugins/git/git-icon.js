@@ -339,7 +339,7 @@ define([
                                     if (repoTopPath) {
                                         //console.log('hina temp: found a git repo top: ' +
                                         //            repoTopNode.getPath());
-                                        git.recordGitRepoPath(parentPath, repoTopPath);                                        
+                                        git.recordGitRepoPath(parentPath, repoTopPath);
                                         setGitOverlayIconState(parentPath, 'gitSubmodule');
                                         
                                     } else {

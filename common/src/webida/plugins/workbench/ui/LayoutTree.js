@@ -33,13 +33,15 @@
  * @author: hw.shim
  */
 
+/* jshint unused: false */
+
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './DataSource'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -107,7 +109,7 @@ define([
          * new LayoutTree('webida.layout_pane.left')
          * @return {string} layout tree's id
          */
-        getId: function() {
+        getId: function () {
             return this.id;
         },
 
@@ -118,7 +120,7 @@ define([
          * @param {number} [index=LayoutTree.FIRST] (LayoutTree.FIRST |
          * LayoutTree.SECOND)
          */
-        insertChild: function(layoutTree, index) {
+        insertChild: function (layoutTree, index) {
             if (arguments.length === 1) {
                 index = LayoutTree.FIRST;
             }
@@ -133,7 +135,7 @@ define([
         /**
          * @param {number} index
          */
-        removeChild: function(index) {
+        removeChild: function (index) {
             var children = this.getChildren();
             this.getChild(index).setParent(null);
             children.splice(index, 1);
@@ -142,7 +144,7 @@ define([
         /**
          * @return {Map.<number, LayoutTree>}
          */
-        getChildren: function() {
+        getChildren: function () {
             return this.children;
         },
 
@@ -150,56 +152,56 @@ define([
          * @param {number} index
          * @return {LayoutTree}
          */
-        getChild: function(index) {
+        getChild: function (index) {
             return this.getChildren()[index];
         },
 
         /**
          * @param {LayoutTree} parent
          */
-        setParent: function(parent) {
+        setParent: function (parent) {
             this.parent = parent;
         },
 
         /**
          * @return {LayoutTree} Parent node
          */
-        getParent: function() {
+        getParent: function () {
             return this.parent;
         },
 
         /**
          * @param {number} orientation HORIZONTAL(0) | VERTICAL(1)
          */
-        setOrientation: function(orientation) {
+        setOrientation: function (orientation) {
             this.orientation = orientation;
         },
 
         /**
          * @return {number} HORIZONTAL(0) | VERTICAL(1)
          */
-        getOrientation: function() {
+        getOrientation: function () {
             return this.orientation;
         },
 
         /**
          * @param {Array.<number, number>}
          */
-        setRatio: function(ratio) {
+        setRatio: function (ratio) {
             this.ratio = ratio;
         },
 
         /**
          * @return {Array.<number, number>}
          */
-        getRatio: function() {
+        getRatio: function () {
             return this.ratio;
         },
 
         /**
          * @param {Rectangle} bounds
          */
-        setBounds: function(bounds) {
+        setBounds: function (bounds) {
             this.bounds = bounds;
             this.emit(LayoutTree.BOUNDS_CHANGED, bounds);
         },
@@ -207,7 +209,7 @@ define([
         /**
          * @return {Rectangle} bounds
          */
-        getBounds: function() {
+        getBounds: function () {
             return this.bounds;
         },
 
@@ -216,18 +218,20 @@ define([
          * @param {string} layout tree's id
          * @return {LayoutTree}
          */
-        getChildById: function(id) {
+        getChildById: function (id) {
             var child;
             var result;
             var children = this.getChildren();
             for (var i in children) {
-                child = children[i];
-                if (child.getId() === id) {
-                    return child;
-                } else {
-                    result = child.getChildById(id);
-                    if ( result instanceof LayoutTree) {
-                        return result;
+                if (children.hasOwnProperty(i)) {
+                    child = children[i];
+                    if (child.getId() === id) {
+                        return child;
+                    } else {
+                        result = child.getChildById(id);
+                        if (result instanceof LayoutTree) {
+                            return result;
+                        }
                     }
                 }
             }

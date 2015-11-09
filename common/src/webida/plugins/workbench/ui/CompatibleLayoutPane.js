@@ -23,6 +23,8 @@
  * @author: hw.shim
  */
 
+/* global  Map */
+
 // @formatter:off
 define([
     'dojo/topic',
@@ -30,7 +32,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './LayoutPane'
-], function(
+], function (
     topic,
     EventEmitter,
     genetic, 
@@ -53,7 +55,7 @@ define([
         var that = this;
         LayoutPane.call(this, id);
         this.widgetToContainerMap = new Map();
-        topic.subscribe('compatible.view.selected', function(widget) {
+        topic.subscribe('compatible.view.selected', function (widget) {
             var container = that._getContainerByWidget(widget);
             that.emit(LayoutPane.CONTAINER_SELECT, container);
         });
@@ -83,7 +85,7 @@ define([
         return viewContainer;
     }
 
-    function _findViewIndexUsingSibling(viewContainer, file, siblings, editors) {
+    function _findViewIndexUsingSibling(viewContainer, file, siblings/*, editors*/) {
         logger.info('_findViewIndexUsingSibling(' + viewContainer + ', ' + file + ', siblings, editors)');
         var workbench = require('webida-lib/plugins/workbench/plugin');
         var dsReg = workbench.getDataSourceRegistry();
@@ -96,7 +98,7 @@ define([
         }
         var found = false;
         var dataSource;
-        for ( i = 0; i < siblings.length; i++) {
+        for (i = 0; i < siblings.length; i++) {
             sibling = siblings[i];
             if (sibling === file.path) {
                 found = true;
@@ -114,12 +116,12 @@ define([
         var views = viewContainer.getChildren();
         //find from nextSilings
         found = false;
-        for ( i = 0; i < nextSiblings.length; i++) {
+        for (i = 0; i < nextSiblings.length; i++) {
             sibling = nextSiblings[i];
             if (found) {
                 break;
             }
-            for ( j = 0; j < views.length; j++) {
+            for (j = 0; j < views.length; j++) {
                 view = views[j];
                 if (sibling === view.getId()) {
                     index = j;
@@ -130,12 +132,12 @@ define([
         }
         if (!found) {
             //find from previousSiblings
-            for ( i = previousSiblings.length - 1; i >= 0; i--) {
+            for (i = previousSiblings.length - 1; i >= 0; i--) {
                 sibling = previousSiblings[i];
                 if (found) {
                     break;
                 }
-                for ( j = 0; j < views.length; j++) {
+                for (j = 0; j < views.length; j++) {
                     view = views[j];
                     if (sibling === view.getId()) {
                         index = j + 1;
@@ -155,7 +157,7 @@ define([
          * @override
          * @param {PartContainer} container
          */
-        addPartContainer: function(container, options, editors) {
+        addPartContainer: function (container, options, editors) {
             logger.info('addPartContainer(' + container + ', index, options)');
 
             //Call super class
@@ -184,7 +186,7 @@ define([
          * @override
          * @param {PartContainer} container
          */
-        removePartContainer: function(container) {
+        removePartContainer: function (container) {
             logger.info('removePartContainer(' + container + ')');
 
             //Remove Tab Widget
@@ -206,7 +208,7 @@ define([
          * @param {Object} widget
          * @param {PartContainer} container
          */
-        _setContainerMap: function(widget, container) {
+        _setContainerMap: function (widget, container) {
             this.widgetToContainerMap.set(widget, container);
         },
 
@@ -216,7 +218,7 @@ define([
          * @param {Object} widget
          * @return {PartContainer} container
          */
-        _getContainerByWidget: function(widget) {
+        _getContainerByWidget: function (widget) {
             return this.widgetToContainerMap.get(widget);
         }
     });

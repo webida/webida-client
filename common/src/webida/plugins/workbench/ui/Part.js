@@ -23,6 +23,8 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
@@ -31,7 +33,7 @@ define([
     'webida-lib/util/logger/logger-client',
     './PartModel',
     './PartViewer'
-], function(
+], function (
 	EventEmitter,
 	EventProxy,
     genetic,
@@ -79,7 +81,7 @@ define([
          * But if you need to do different actions for this step,
          * you can override this.
          */
-        onCreate: function() {
+        onCreate: function () {
             logger.info('%conCreate()', 'color:orange');
             this.prepareVM();
         },
@@ -89,7 +91,7 @@ define([
          * If you need different way for your Part,
          * override this method.
          */
-        prepareVM: function() {
+        prepareVM: function () {
             logger.info('%cprepareVM()', 'color:orange');
 
             var container = this.getContainer();
@@ -110,37 +112,37 @@ define([
          * @param {Promise} createViewer
          * @param {Promise} createModel
          */
-        bindVM: function(createViewer, createModel) {
+        bindVM: function (createViewer, createModel) {
             logger.info('%cbindVM(' + createViewer + ', ' + createModel + ')', 'color:orange');
 
             var part = this;
             var eProxy = this.eventProxy;
             var container = this.getContainer();
 
-            Promise.all([createViewer, createModel]).then(function(result) {
+            Promise.all([createViewer, createModel]).then(function (result) {
 
                 var viewer = result[0];
                 var model = result[1];
 
                 //Refresh model's contents
-                eProxy.on(model, PartModel.CONTENTS_CREATED, function(contents) {
+                eProxy.on(model, PartModel.CONTENTS_CREATED, function (contents) {
                     viewer.refresh(contents);
                     container.updateDirtyState();
                 });
 
                 //Model listen to viewer's content change
-                eProxy.on(viewer, PartViewer.CONTENTS_CHANGE, function(request) {
+                eProxy.on(viewer, PartViewer.CONTENTS_CHANGE, function (request) {
                     part.onViewerChange(request);
                 });
 
                 //Viewer listen to model's content change
-                eProxy.on(model, PartModel.CONTENTS_CHANGE, function(modelEvent) {
+                eProxy.on(model, PartModel.CONTENTS_CHANGE, function (modelEvent) {
                     part.onModelChange(modelEvent);
                     container.updateDirtyState();
                 });
 
                 //Viewer listen to container's size change
-                eProxy.on(container, 'resize', function(changeSize) {
+                eProxy.on(container, 'resize', function (/*changeSize*/) {
                     viewer.fitSize();
                 });
 
@@ -153,7 +155,7 @@ define([
                 //Focus to the part
                 part.focus();
 
-            }, function(error) {
+            }, function (error) {
                 logger.error(error.stack || error);
             });
         },
@@ -162,23 +164,23 @@ define([
          * Return Promise to create Viewer(s) or Model
          * @return {Promise}
          */
-        promiseFor: function(Type, param) {
+        promiseFor: function (Type, param) {
             logger.info('promiseFor(' + Type + ', ' + param + ')');
             var part = this;
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 try {
-                    var obj = part['create'+Type](param);
-                    if ( obj instanceof Type) {
-                        obj.once(Type.READY, function(obj) {
+                    var obj = part['create' + Type](param);
+                    if (obj instanceof Type) {
+                        obj.once(Type.READY, function (obj) {
                             resolve(obj);
                         });
                     } else {
                         // @formatter:off
-                        throw new Error(part.constructor.name + ' create' + Type 
-                            + '(' + (param || '') + ') method should return ' + Type);
+                        throw new Error(part.constructor.name + ' create' + Type  +
+                             '(' + (param || '') + ') method should return ' + Type);
                         // @formatter:on
                     }
-                } catch(e) {
+                } catch (e) {
                     reject(e);
                 }
             });
@@ -189,21 +191,21 @@ define([
          * @return {PartViewer}
          * @abstract
          */
-        createViewer: function(parentNode) {
+        createViewer: function (parentNode) {
             throw new Error('createViewer(parentNode) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {PartViewer} viewer
          */
-        setViewer: function(viewer) {
+        setViewer: function (viewer) {
             this.viewer = viewer;
         },
 
         /**
          * @return {PartViewer}
          */
-        getViewer: function() {
+        getViewer: function () {
             return this.viewer;
         },
 
@@ -211,21 +213,21 @@ define([
          * @return {PartModel}
          * @abstract
          */
-        createModel: function() {
+        createModel: function () {
             throw new Error('createModel() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {PartModel} model
          */
-        setModel: function(model) {
+        setModel: function (model) {
             this.model = model;
         },
 
         /**
          * @return {PartModel}
          */
-        getModel: function() {
+        getModel: function () {
             return this.model;
         },
 
@@ -233,7 +235,7 @@ define([
          * Reset model it's last saved state
          * @abstract
          */
-        resetModel: function() {
+        resetModel: function () {
             throw new Error('resetModel() should be implemented by ' + this.constructor.name);
         },
 
@@ -246,7 +248,7 @@ define([
          * @param {ChangeRequest} request
          * @abstract
          */
-        onViewerChange: function(request) {
+        onViewerChange: function (request) {
             throw new Error('onViewerChange(request) should be implemented by ' + this.constructor.name);
         },
 
@@ -260,14 +262,14 @@ define([
          * @param {PartModelEvent} modelEvent
          * @abstract
          */
-        onModelChange: function(modelEvent) {
+        onModelChange: function (modelEvent) {
             throw new Error('onModelChange(modelEvent) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * Closes this Part
          */
-        close: function() {
+        close: function () {
             logger.info('close()');
             if (this.getContainer()) {
                 this.getContainer().destroyPart();
@@ -277,7 +279,7 @@ define([
         /**
          * Convenient method for PartContainer.PART_DESTROYED event
          */
-        onDestroy: function() {
+        onDestroy: function () {
             if (this.eventProxy) {
                 this.eventProxy.offAll();
             }
@@ -287,19 +289,20 @@ define([
          * Convenient method to get DataSource
          * @return {DataSource}
          */
-        getDataSource: function() {
+        getDataSource: function () {
             return this.getContainer().getDataSource();
         },
 
-        setContainer: function(container) {
+        setContainer: function (container) {
             this.container = container;
         },
 
-        getContainer: function() {
+        getContainer: function () {
             return this.container;
         },
 
-        setFlag: function(/*int*/flag, /*boolean*/value) {
+        /* jshint bitwise:false */
+        setFlag: function (/*int*/flag, /*boolean*/value) {
             if (!flag) {
                 throw new Error('Invalid flag name');
             }
@@ -310,29 +313,30 @@ define([
             }
         },
 
-        getFlag: function(/*int*/flag) {
-            return (this.flags & flag) != 0;
+        getFlag: function (/*int*/flag) {
+            return (this.flags & flag) !== 0;
         },
-
-        setParentElement: function(/*HtmlElement*/parent) {
+         /* jshint bitwise:true */
+        
+        setParentElement: function (/*HtmlElement*/parent) {
             this.parent = parent;
         },
 
-        getParentElement: function() {
+        getParentElement: function () {
             return this.parent;
         },
 
         /**
          * @param {ModelManager} modelManager
          */
-        setModelManager: function(modelManager) {
+        setModelManager: function (modelManager) {
             this.modelManager = modelManager;
         },
 
         /**
          * @return {ModelManager}
          */
-        getModelManager: function() {
+        getModelManager: function () {
             return this.modelManager;
         },
 
@@ -340,14 +344,14 @@ define([
          * @return {PartModelCommand}
          * @abstract
          */
-        getCommand: function(request) {
+        getCommand: function (request) {
             throw new Error('getCommand(request) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @return {boolean}
          */
-        hasCommandStack: function() {
+        hasCommandStack: function () {
             return false;
         },
 
@@ -355,7 +359,7 @@ define([
          * @return {CommandStack}
          * @abstract
          */
-        getCommandStack: function() {
+        getCommandStack: function () {
             throw new Error('getCommandStack() should be implemented by ' + this.constructor.name);
         },
 
@@ -364,7 +368,7 @@ define([
          * @param {Object} allItems
          * @return {Thenable}
          */
-        getContextMenuItems: function(allItems) {
+        getContextMenuItems: function (allItems) {
             return null;
         },
 
@@ -373,15 +377,15 @@ define([
          * Parts must assign focus to one of the widget contained
          * in the part's parent composite.
          */
-        focus: function() {
+        focus: function () {
             throw new Error('focus() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @private
          */
-        _execFunc: function(callback, param) {
-            if ( typeof callback === 'function') {
+        _execFunc: function (callback, param) {
+            if (typeof callback === 'function') {
                 callback(param);
             }
         }

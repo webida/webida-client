@@ -85,7 +85,7 @@ define([
         // when the error is constructed.
         // So I made this code to be more safe.
         var stack = (new Error()).stack;
-        if(stack) {
+        if (stack) {
             var callPath = stack.split('\n')[4].split('/');
             var lastIndex = callPath.length - 1;
             for (var j = callPath.length - pathDepth; j < lastIndex; j++) {

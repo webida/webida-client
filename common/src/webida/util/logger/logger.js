@@ -18,7 +18,11 @@
  * LoggerInterface for client and server
  * @author hw.shim
  */
+
+/* jshint ignore: start */
+
 'use strict';
+
 (function (global) {
 
     var LEVELS = {
@@ -114,6 +118,7 @@
         this.setConfig('level', LEVELS.off);
     };
 
+    
     //amd
     if (global && typeof global.define === 'function') {
         define(function (require, exports, module) {

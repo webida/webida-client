@@ -29,7 +29,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './AbstractEditorModelManager'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -74,12 +74,12 @@ define([
          * @callback EditorModelManager~saveModelCallback
          * @param {EditorModel} model
          */
-        saveModel: function(callback) {
+        saveModel: function (callback) {
             if (this.canSaveModel() === true) {
-                var that = this;
+                //var that = this;
                 var model = this.getModel();
                 var dataSource = this.getDataSource();
-                dataSource.setData(model.serialize(), function(data) {
+                dataSource.setData(model.serialize(), function () {
                     callback(model);
                 });
             }
@@ -89,7 +89,7 @@ define([
          * Returns whether the EditorModel can be saved or not.
          * @return {boolean}
          */
-        canSaveModel: function() {
+        canSaveModel: function () {
             if (this.getModel()) {
                 var model = this.getModel();
                 var dataSource = this.getDataSource();
@@ -107,10 +107,10 @@ define([
         /**
          * Resets the given EditorModel to its last saved state.
          */
-        resetModel: function() {
+        resetModel: function () {
             logger.info('resetModel()');
             var model = this.getModel();
-            this.getDataSource().reload(function(data) {
+            this.getDataSource().reload(function (data) {
                 model.createContents(data);
             });
         },

@@ -30,7 +30,7 @@ define([
 	'./LayoutPane',
 	'./LayoutTree',
 	'./PartRegistry'
-], function(
+], function (
 	genetic, 
 	Logger,
 	LayoutPane,
@@ -62,19 +62,19 @@ define([
 
     genetic.inherits(Page, LayoutTree, {
 
-        setName: function(name) {
+        setName: function (name) {
             /** @type {string} */
             this.name = name;
         },
 
-        getName: function() {
+        getName: function () {
             return this.name;
         },
 
         /**
          * @return {PartRegistry}
          */
-        getPartRegistry: function() {
+        getPartRegistry: function () {
             return this.partRegistry;
         },
 
@@ -84,15 +84,15 @@ define([
          * @param {Function} [PartType]
          * @return {Array.<Part>}
          */
-        getExposedParts: function(PartType) {
+        getExposedParts: function (PartType) {
             var parts = [];
             function walk(layoutTree) {
                 var children = layoutTree.getChildren();
                 if (children.length > 0) {
-                    children.forEach(function(child) {
-                        if ( child instanceof LayoutPane) {
-                            child.getPartContainers().forEach(function(container) {
-                                if ( typeof PartType === 'function') {
+                    children.forEach(function (child) {
+                        if (child instanceof LayoutPane) {
+                            child.getPartContainers().forEach(function (container) {
+                                if (typeof PartType === 'function') {
                                     if (container.getPart() instanceof PartType) {
                                         parts.push(container.getPart());
                                     }
@@ -104,7 +104,7 @@ define([
                         }
                     });
                 }
-            };
+            }
             walk(this);
             return parts;
         }

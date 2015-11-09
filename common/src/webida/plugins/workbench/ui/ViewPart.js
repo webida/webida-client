@@ -26,7 +26,7 @@
 define([
     'webida-lib/util/genetic',
     './Part'
-], function(
+], function (
     genetic,
     Part
 ) {

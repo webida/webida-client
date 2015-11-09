@@ -29,7 +29,7 @@ define([
 	'webida-lib/util/genetic',
 	'webida-lib/util/logger/logger-client',
 	'./DataSource'
-], function(
+], function (
 	EventEmitter,
 	genetic, 
 	Logger,
@@ -60,8 +60,8 @@ define([
         /**
          * @param {DataSource} dataSource
          */
-        register: function(dataSource) {
-            if (!( dataSource instanceof DataSource)) {
+        register: function (dataSource) {
+            if (!(dataSource instanceof DataSource)) {
                 throw new Error('dataSource should implement DataSource interface');
             }
             var ds = this.getDataSources();
@@ -78,7 +78,7 @@ define([
         /**
          * @param {DataSource} dataSource
          */
-        unregister: function(dataSource) {
+        unregister: function (dataSource) {
             var ds = this.getDataSources();
             var index = ds.indexOf(dataSource);
             if (index >= 0) {
@@ -92,7 +92,7 @@ define([
          * For the Object type dataSourceId this method compares reference.
          * @param {Object} dataSourceId
          */
-        getDataSourceById: function(dataSourceId) {
+        getDataSourceById: function (dataSourceId) {
             var ds = this.getDataSources();
             for (var i = 0; i < ds.length; i++) {
                 if (ds[i].getId() === dataSourceId) {
@@ -106,7 +106,7 @@ define([
          * Retrive all registered DataSources
          * @return {Array}
          */
-        getDataSources: function() {
+        getDataSources: function () {
             return this.dataSources;
         }
     });
