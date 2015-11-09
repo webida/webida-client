@@ -1,14 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="./bower_components/requirejs/require.js"></script>
     <script src="./common/src/webida/util/browserUtil.global.js"></script>
     <script>
-        require(['./common/src/webida/app-config'], function(config) {
-            var hash = parseHash();
-            sendMessage(hash.access_token);
-            route(hash.state, config.appRoute);
-        });
+        sendMessage(parseHash().access_token);
 
         function parseHash(){
             var result = {};
@@ -33,11 +28,6 @@
             }
         }
 
-        function route(state, appRoute){
-            if(state && appRoute[state]){
-                window.location.replace(appRoute[state]);
-            }
-        }
     </script>
 </head>
 <body>
