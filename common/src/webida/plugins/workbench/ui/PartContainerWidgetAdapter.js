@@ -29,7 +29,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './WidgetAdapter'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,

@@ -613,7 +613,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
             },
 
-			_writeFile: function(target, data, cb){
+			_writeFile: function (target, data, cb) {
 				var file;
                 function checkValidWriteFile() {
                     var ret = checkTargetPath(target, undefined);
@@ -670,7 +670,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                         that._writeFile(target, data, cb);
                     } else {
                         //console.log('If dir not exists, create dir then write file');
-                        that.createDirectory(dir, true, function(err) {
+                        that.createDirectory(dir, true, function (err) {
                             if (err) {
                                 cb(err);
                             } else {

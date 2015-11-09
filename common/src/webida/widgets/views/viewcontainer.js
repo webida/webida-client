@@ -411,8 +411,8 @@ define([
         },
 
         select : function (view, forceFireEvent) {
-        	logger.info('select()');
-        	logger.trace();
+            logger.info('select()');
+            logger.trace();
             if (view) {
                 var selectedCp = this.tabContainer.get('selectedChildWidget');
                 if (selectedCp === view.contentPane && forceFireEvent) {
@@ -592,7 +592,7 @@ define([
         },
 
         _contentPaneSelected : function (pane) {
-			logger.info('_contentPaneSelected('+pane+')');
+			logger.info('_contentPaneSelected(' + pane + ')');
             var _self = this;
             var event = new ViewContainerEvent('view.selected');
             event.view = _self._getViewByContentPane(pane);
@@ -604,7 +604,7 @@ define([
             }
         },
 
-        _contentPaneClose : function (pane, closable) {
+        _contentPaneClose : function (pane/*, closable*/) {
             logger.info('_contentPaneClose(' + pane + ')');
             var event;
             var self = this;
@@ -619,10 +619,10 @@ define([
                 event.view = self._getViewByContentPane(pane);
                 event.viewContainer = self;
                 event.closable = true;
-                event.noClose = function() {
+                event.noClose = function () {
                     event.closable = false;
                 };
-                topic.publish('view.close', event, lang.hitch(this, function() {
+                topic.publish('view.close', event, lang.hitch(this, function () {
                     if (event.closable) {
                         this._remove(event.view, true);
                     }
@@ -662,7 +662,7 @@ define([
             var connectHandlerKey = view.getId();
             if (this._dojoHandlerMap.hasOwnProperty(connectHandlerKey)) {
                 var handlerList = this._dojoHandlerMap[connectHandlerKey];
-                _.forEach(handlerList, function(handler) {
+                _.forEach(handlerList, function (handler) {
                     dojo.disconnect(handler);
                 });
             }

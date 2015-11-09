@@ -34,7 +34,7 @@ define([
     'webida-lib/util/logger/logger-client',
     './DataSource',
     './FlagSupport'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -63,36 +63,36 @@ define([
         /**
          * Creates a PartModel
          */
-        createModel: function() {
+        createModel: function () {
             throw new Error('createModel() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * Reset a PartModel to an initial state.
          */
-        resetModel: function() {
+        resetModel: function () {
             throw new Error('resetModel() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {PartModel} model
          */
-        setModel: function(model) {
+        setModel: function (model) {
             this.model = model;
         },
 
         /**
          * @return {PartModel}
          */
-        getModel: function() {
+        getModel: function () {
             return this.model;
         },
 
         /**
          * @private
          */
-        _execFunc: function(callback, param) {
-            if ( typeof callback === 'function') {
+        _execFunc: function (callback, param) {
+            if (typeof callback === 'function') {
                 callback(param);
             }
         }

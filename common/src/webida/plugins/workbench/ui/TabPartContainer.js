@@ -23,12 +23,14 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './PartContainer'
-], function(
+], function (
     genetic, 
     Logger,
     PartContainer

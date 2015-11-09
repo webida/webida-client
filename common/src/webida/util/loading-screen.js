@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['webida-lib/util/logger/logger-client','dojo/domReady!'], function (Logger) {
+define(['webida-lib/util/logger/logger-client', 'dojo/domReady!'], function (Logger) {
     'use strict';
 
 	var singleLogger = new Logger.getSingleton();

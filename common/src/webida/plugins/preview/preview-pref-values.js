@@ -20,15 +20,15 @@
  */
 
 define([
-    'plugins/webida.preference/preference-service-factory',
-	'webida-lib/util/logger/logger-client'
+    'plugins/webida.preference/preference-service-factory'/*,
+	'webida-lib/util/logger/logger-client'*/
 ], function (
-    PreferenceFactory,
-    Logger
+    PreferenceFactory/*,
+    Logger*/
 ) {
     'use strict';
 
-	var logger = new Logger();
+	//var logger = new Logger();
 	//logger.setConfig('level', Logger.LEVELS.log);
 	//logger.off();
     var preferences = PreferenceFactory.get('WORKSPACE');

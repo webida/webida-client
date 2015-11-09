@@ -21,17 +21,18 @@
  * @author: hw.shim
  */
 
-define(function() {
+define(function () {
+    'use strict';
     return {
         /**
          * Inherit prototype props from parent
          * and add new prototypes.
          */
-        inherits: function(child, parent, props) {
+        inherits: function (child, parent, props) {
             child.prototype = Object.create(parent.prototype);
             child.prototype.constructor = child;
-            if ( typeof props === 'object') {
-                Object.keys(props).forEach(function(key) {
+            if (typeof props === 'object') {
+                Object.keys(props).forEach(function (key) {
                     if (key !== 'constructor') {
                         child.prototype[key] = props[key];
                     }
@@ -42,16 +43,18 @@ define(function() {
         /**
          * Simply mixin object arguments.
          */
-        mixin: function() {
+        mixin: function () {
             var source;
             var target = {};
             for (var i = 0; i < arguments.length; i++) {
                 source = arguments[i];
                 for (var prop in source) {
-                    target[prop] = source[prop];
+                    if (source.hasOwnProperty(prop)) {
+                        target[prop] = source[prop];
+                    }
                 }
             }
             return target;
         }
-    }
+    };
 });

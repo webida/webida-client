@@ -25,16 +25,16 @@
 
 // @formatter:off
 define([
-    'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client'
-], function(
-    genetic, 
-    Logger
+    'webida-lib/util/genetic'/*,
+    'webida-lib/util/logger/logger-client'*/
+], function (
+    genetic/*, 
+    Logger*/
 ) {
     'use strict';
 // @formatter:on
 
-    var logger = new Logger();
+    //var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
@@ -53,7 +53,7 @@ define([
          * Sets alterations
          * @param {Object} delta
          */
-        setDelta: function(delta) {
+        setDelta: function (delta) {
             this.delta = delta;
         },
 
@@ -61,11 +61,11 @@ define([
          * Retives alterations
          * @return {Object}
          */
-        getDelta: function() {
+        getDelta: function () {
             return this.delta;
         },
 
-        toString: function() {
+        toString: function () {
             return '<' + this.constructor.name + '>#' + this._changeRequestId;
         }
     });

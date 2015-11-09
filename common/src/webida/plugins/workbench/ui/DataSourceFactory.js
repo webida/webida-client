@@ -23,11 +23,13 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
 	'webida-lib/util/genetic',
 	'webida-lib/util/logger/logger-client'
-], function(
+], function (
 	genetic, 
 	Logger
 ) {
@@ -47,9 +49,9 @@ define([
         /**
          * @param {Object} dataSourceId
          */
-        create: function(dataSourceId) {
-			throw new Error('create(dataSourceId) should be implemented by ' 
-				+ this.constructor.name);
+        create: function (dataSourceId) {
+			throw new Error('create(dataSourceId) should be implemented by ' +
+                            this.constructor.name);
         }
     });
 

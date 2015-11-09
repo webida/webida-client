@@ -23,13 +23,15 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './DataSource'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -57,8 +59,8 @@ define([
          * @param {object} dataSourceId
          * @return {string} DataSourceFactory module's path
          */
-        getDataSourceFactory: function(dataSourceId) {
-        	//TODO : refactor when implementing webida.workspace.model.file plugin
+        getDataSourceFactory: function (dataSourceId) {
+           //TODO : refactor when implementing webida.workspace.model.file plugin
             return 'plugins/webida.workspace.model.file/FileDataSourceFactory';
         }
     });

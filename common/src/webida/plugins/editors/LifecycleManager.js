@@ -41,7 +41,7 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     './ExtensionManager'
-], function(
+], function (
     topic,
     EventEmitter,
     _,
@@ -86,12 +86,12 @@ define([
     /**
      * @return {LifecycleManager}
      */
-    LifecycleManager.getInstance = function() {
+    LifecycleManager.getInstance = function () {
         if (singleton === null) {
             singleton = new this();
         }
         return singleton;
-    }
+    };
 
     genetic.inherits(LifecycleManager, EventEmitter, {
 
@@ -99,7 +99,7 @@ define([
          * subscribe to topic
          * @private
          */
-        _subscribe: function() {
+        _subscribe: function () {
             //open
             this.subscribed.push(topic.subscribe('editor/open', this._openDataSource.bind(this)));
 
@@ -120,8 +120,8 @@ define([
          * unsubscribe topics
          * @private
          */
-        _unsubscribe: function() {
-            this.subscribed.forEach(function(subscribed) {
+        _unsubscribe: function () {
+            this.subscribed.forEach(function (subscribed) {
                 subscribed.remove();
             });
         },
@@ -130,7 +130,7 @@ define([
          * @private
          * @return {ExtensionManager}
          */
-        _getExtensionManager: function() {
+        _getExtensionManager: function () {
             return this.extensionManager;
         },
 
@@ -147,7 +147,7 @@ define([
          * @callback _openDataSourceCallback
          * @param {Part} part
          */
-        _openDataSource: function(dataSourceId, options, callback) {
+        _openDataSource: function (dataSourceId, options, callback) {
             logger.info('> _openDataSource(' + dataSourceId + ', ', options, ', ' + typeof callback + ')');
             logger.trace();
 
@@ -159,7 +159,7 @@ define([
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             if (dataSource === null) {
-                workbench.createDataSource(dataSourceId, function(dataSource) {
+                workbench.createDataSource(dataSourceId, function (dataSource) {
                     that._showPart(dataSource, options, callback);
                 });
             } else {
@@ -172,7 +172,7 @@ define([
          *
          * @private
          */
-        _showPart: function(dataSource, options, callback) {
+        _showPart: function (dataSource, options, callback) {
             logger.info('_showPart(' + dataSource + ', ' + options + ', callback)');
 
             var that = this;
@@ -180,11 +180,13 @@ define([
             try {
                 var partClassPath = extMgr.getPartPath(dataSource, options);
                 logger.info('%c partClassPath = ' + partClassPath, 'color:green');
-            } catch(e) {
+            } catch (e) {
                 notify.info(e.message);
                 return;
             }
-            require([partClassPath], function(PartClass) {
+            
+            /*jshint -W038 */
+            require([partClassPath], function (PartClass) {
                 PartClass.classPath = partClassPath;
                 var registry = that._getPartRegistry();
                 var parts = registry.getPartsByClass(dataSource, PartClass);
@@ -204,12 +206,13 @@ define([
                 // Recent DataSource
                 registry.setRecentDataSourceId(dataSource.getId());
             });
+            /*jshint +W038 */
         },
 
         /**
          * @private
          */
-        _createPart: function(PartClass, dataSource, options, callback) {
+        _createPart: function (PartClass, dataSource, options, callback) {
             logger.info('_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
 
             var page = workbench.getCurrentPage();
@@ -226,14 +229,15 @@ define([
         /**
          * @private
          */
-        _showExistingPart: function(PartClass, dataSource, options, callback) {
+        _showExistingPart: function (PartClass, dataSource, options, callback) {
             logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
+            logger.info(callback);
         },
 
         /**
          * @private
          */
-        _getPartRegistry: function() {
+        _getPartRegistry: function () {
             var page = workbench.getCurrentPage();
             return page.getPartRegistry();
         },
@@ -251,14 +255,14 @@ define([
          * @callback _saveByDataSourceIdCallback
          * @param {Part} part
          */
-        _saveByDataSourceId: function(dataSourceId, callback) {
+        _saveByDataSourceId: function (dataSourceId, callback) {
             logger.info('> _saveCurrentPart(' + dataSourceId + ', ' + typeof callback + ')');
             var part, parts;
             var registry = this._getPartRegistry();
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             parts = registry.getPartsByDataSource(dataSource);
-            if ( parts instanceof Array && parts.length > 0) {
+            if (parts instanceof Array && parts.length > 0) {
                 part = parts[0];
             }
             part.save(callback);
@@ -274,7 +278,7 @@ define([
          * @callback _saveCurrentPartCallback
          * @param {Part} part
          */
-        _saveCurrentPart: function(callback) {
+        _saveCurrentPart: function (callback) {
             logger.info('> _saveCurrentPart(' + typeof callback + ')');
             var registry = this._getPartRegistry();
             var part = registry.getCurrentEditorPart();
@@ -284,61 +288,61 @@ define([
         /**
          * Saves all parts
          */
-        _saveAllParts: function() {
+        _saveAllParts: function () {
             logger.info('_saveAllParts()');
             var registry = this._getPartRegistry();
             var parts = registry.getDirtyParts();
-            parts.forEach(function(part) {
+            parts.forEach(function (part) {
                 part.save();
             });
         },
 
         // ************* Close ************* //
 
-        _closePart: function(part) {
+        _closePart: function (part) {
             part.close();
         },
 
         /**
          * Closes current active EditorPart
          */
-        _closeCurrentPart: function() {
+        _closeCurrentPart: function () {
             logger.info('_closeCurrentPart()');
             var registry = this._getPartRegistry();
             var part = registry.getCurrentEditorPart();
             part.close();
         },
 
-        _closeOtherParts: function() {
+        _closeOtherParts: function () {
             var registry = this._getPartRegistry();
             var currentPart = registry.getCurrentEditorPart();
             var page = workbench.getCurrentPage();
-            page.getExposedParts(EditorPart).forEach(function(part) {
+            page.getExposedParts(EditorPart).forEach(function (part) {
                 if (part !== currentPart) {
                     part.close();
                 }
             });
         },
 
-        _closeAllParts: function() {
+        _closeAllParts: function () {
             logger.info('_closeAllParts()');
             var page = workbench.getCurrentPage();
-            page.getExposedParts(EditorPart).forEach(function(part) {
+            page.getExposedParts(EditorPart).forEach(function (part) {
                 part.close();
             });
         },
 
-        _closeByDataSourceId: function(dataSourceId) {
+        _closeByDataSourceId: function (dataSourceId) {
             logger.info('_closeByDataSourceId(' + dataSourceId + ')');
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             var partRegistry = this._getPartRegistry();
             var parts = partRegistry.getPartsByDataSource(dataSource);
             var partsCopy = [];
-            parts.forEach(function(part) {
+            parts.forEach(function (part) {
                 partsCopy.push(part);
             });
-            partsCopy.forEach(function(part) {
+            partsCopy.forEach(function (part) {
                 part.close();
             });
         }

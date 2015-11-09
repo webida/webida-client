@@ -40,6 +40,8 @@ define([
     function escape(str) {
         return _.escape(str).replace(/ /g, '&nbsp;');
     }
+    
+    /* jshint ignore:start */
     function hidePassword(url) {
         var uri = new URI(url);
         if (uri.password()) {
@@ -48,6 +50,7 @@ define([
             return url;
         }
     }
+    /* jshint ignore:end */
 
     function _messageParse(gitroot, msg, id) {
         var parseLog = msg.split(/\r*\n/).map(function (line) {

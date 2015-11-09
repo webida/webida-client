@@ -33,7 +33,6 @@ define(['webida-lib/util/browserInfo',
        function (brInfo, loadingScreen, webida, msgAgent, _, notify, pm,
                   FSCache, URI, PopupDialog, topic, lang, Logger) {
     'use strict';
-    /* global timedLogger: true */
 
 	var singleLogger = new Logger.getSingleton();
 	var logger = new Logger();
@@ -90,7 +89,7 @@ define(['webida-lib/util/browserInfo',
     var lastStatusFile = '/.workspace/last-status<%user-id%>.json';
 
     function getStatusStringToSave() {
-    	logger.info('getStatusStringToSave()');
+        logger.info('getStatusStringToSave()');
         var accum = {};
         Object.keys(lastStatusContributors).sort().forEach(function (key) {
             var contributor = lastStatusContributors[key];
@@ -113,7 +112,7 @@ define(['webida-lib/util/browserInfo',
     }
 
     function saveStatusSync() {
-    	logger.info('saveStatusSync()');
+        logger.info('saveStatusSync()');
         var statusString = getStatusStringToSave();
         if (statusString) {
             var formData = new FormData();
@@ -153,7 +152,7 @@ define(['webida-lib/util/browserInfo',
     }
 
     function saveStatus(cb, eb) {
-    	logger.info('saveStatus(cb, eb)');
+        logger.info('saveStatus(cb, eb)');
         var statusString = getStatusStringToSave();
         if (statusString) {
             mount.writeFile(path + lastStatusFile, statusString, function (err) {
@@ -292,10 +291,10 @@ define(['webida-lib/util/browserInfo',
         // read last status file and set appLastStatus
         // (this must be done before loading any plugin)
         function restoreLastStatusOfApp() {
-        	logger.info('restoreLastStatusOfApp()');
+            logger.info('restoreLastStatusOfApp()');
             singleLogger.log('(B) verified the workspace');
             mount.readFile(path + lastStatusFile, function (err, content) {
-            	//logger.info('content = ', content);
+                //logger.info('content = ', content);
                 if (err) {
                     singleLogger.log('(C) not read last status file (' + err + ')');
                 } else {
@@ -651,22 +650,22 @@ define(['webida-lib/util/browserInfo',
         window.location.reload();
     }
 
-    function getWorkspaceInfo(callback){
+    function getWorkspaceInfo(callback) {
         var fsCache = getFSCache();
         var workspacePath = getPath();
         var result = {
             name: workspacePath.substring(1)
         };
-        if(fsCache && workspacePath){
+        if (fsCache && workspacePath) {
             fsCache.list(workspacePath, function (err, files) {
                 if (err) {
                     callback(err);
                 } else {
-                    result.projects = _.filter(files, function(file){
+                    result.projects = _.filter(files, function (file) {
                         return file.isDirectory && file.name.charAt(0) !== '.';
                     });
-                    result.projects = result.projects.map(function(project){
-                       return project.name;
+                    result.projects = result.projects.map(function (project) {
+                        return project.name;
                     });
                     callback(null, result);
                 }
@@ -677,20 +676,20 @@ define(['webida-lib/util/browserInfo',
     }
 
 
-    function _checkProjectInfoDir(projectName, callback){
+    function _checkProjectInfoDir(projectName, callback) {
         var fsCache = getFSCache();
         var projectPath = getPath() + '/' + projectName;
         var projectInfoDir = projectPath + '/.project';
         fsCache.exists(projectPath, function (err, exist) {
-            if(err){
+            if (err) {
                 return callback(err);
             } else {
-                if(exist){
-                    fsCache.exists(projectInfoDir, function(err, exist){
-                        if(err) {
+                if (exist) {
+                    fsCache.exists(projectInfoDir, function (err, exist) {
+                        if (err) {
                             return callback(err);
                         } else {
-                            if(exist){
+                            if (exist) {
                                 return callback();
                             } else {
                                 fsCache.createDirectory(projectInfoDir, function (err) {
@@ -706,11 +705,11 @@ define(['webida-lib/util/browserInfo',
         });
     }
 
-    function _addProjectInfo(projectName, callback){
+    function _addProjectInfo(projectName, callback) {
         var fsCache = getFSCache();
         var projectInfoPath = getPath() + '/' + projectName + '/.project/project.json';
-        _checkProjectInfoDir(projectName, function(err){
-            if(err){
+        _checkProjectInfoDir(projectName, function (err) {
+            if (err) {
                 return callback(err);
             } else {
                 //make project.json file
@@ -724,7 +723,7 @@ define(['webida-lib/util/browserInfo',
                 };
 
                 fsCache.writeFile(projectInfoPath, JSON.stringify(projectInfo), function (err) {
-                    if(err){
+                    if (err) {
                         return callback(err);
                     } else {
                         return callback(null, projectInfo);
@@ -734,23 +733,23 @@ define(['webida-lib/util/browserInfo',
         });
     }
 
-    function getProjectInfo(projectName, callback){
+    function getProjectInfo(projectName, callback) {
         var fsCache = getFSCache();
         var projectInfoPath = getPath() + '/' + projectName + '/.project/project.json';
         fsCache.exists(projectInfoPath, function (err, exist) {
-            if(err){
+            if (err) {
                 return callback(err);
             } else {
-                if(exist){
+                if (exist) {
                     fsCache.readFile(projectInfoPath, function (err, content) {
-                        if(err){
+                        if (err) {
                             return callback(err);
                         } else {
                             return callback(null, JSON.parse(content));
                         }
                     });
                 } else {
-                    _addProjectInfo(projectName, function(err, projectInfo){
+                    _addProjectInfo(projectName, function (err, projectInfo) {
                         return callback(err, projectInfo);
                     });
                 }

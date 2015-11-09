@@ -23,13 +23,15 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './DataSource'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -61,7 +63,7 @@ define([
          * @param {}
          * @return {Array}
          */
-        aaaa: function() {
+        aaaa: function () {
             return this.bbb;
         }
     });

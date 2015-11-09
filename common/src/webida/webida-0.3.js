@@ -29,6 +29,8 @@
 /* global sio: true */
 /* global io: true */
 
+ /* jshint camelcase: false */
+
 var ENV_TYPE;
 
 (function (root, factory) {
@@ -99,6 +101,7 @@ var ENV_TYPE;
     var mod = {};
     mod.getHostParam = getHostParam;
     
+   
     var webidaHost = (typeof window !== 'undefined' && window && window.webida_host) ||
         getParamByName('webida.host') || readCookie('webida.host') || getHostFromLocation() || 'https://webida.org';
     var fsServer = getHostParam('webida.fsHostUrl', 'fs', webidaHost);
@@ -2210,7 +2213,7 @@ var ENV_TYPE;
      * @param callback
      * @memberOf module:webida.FSService.FileSystem
      */
-    FileSystem.prototype.makeDnDDownloadUrl = function(archiving, sources, downloadFileName, callback) {
+    FileSystem.prototype.makeDnDDownloadUrl = function (archiving, sources, downloadFileName, callback) {
         var self = this;
         ensureAuthorize(function () {
             var downloadUrl = 'application/octet-stream:' + downloadFileName + ':' +
@@ -2807,11 +2810,11 @@ var ENV_TYPE;
      * @returns {string} accessible url
      * @memberOf module:webida.AppService
      */
-    mod.AppService.prototype.getDeployedAppUrl = function(domain, queryString) {
+    mod.AppService.prototype.getDeployedAppUrl = function (domain, queryString) {
         var deployConf = mod.conf.deploy;
 
         var addr = mod.app.getHost();
-        if(deployConf.type === 'domain' || domain === '') {
+        if (deployConf.type === 'domain' || domain === '') {
             // When system deployType is 'domain' or this app is a system client app(domain is empty).
             addr = (domain ? domain + '.' : '') + addr;
         } else {

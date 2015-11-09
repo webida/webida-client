@@ -23,17 +23,17 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './DataSource'
-], function(
+    'webida-lib/util/logger/logger-client'
+], function (
     EventEmitter,
     genetic, 
-    Logger,
-    DataSource
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -62,7 +62,7 @@ define([
          * @abstract
          * @param {String} data Source data to build new contents of the model.
          */
-        createContents: function(data) {
+        createContents: function (data) {
             throw new Error('createContents(data) should be implemented by ' + this.constructor.name);
         },
 
@@ -70,7 +70,7 @@ define([
          * @abstract
          * @param {Object} contents
          */
-        setContents: function(contents) {
+        setContents: function (contents) {
             throw new Error('setContents(contents) should be implemented by ' + this.constructor.name);
         },
 
@@ -78,7 +78,7 @@ define([
          * @abstract
          * @return {Object}
          */
-        getContents: function() {
+        getContents: function () {
             throw new Error('getContents() should be implemented by ' + this.constructor.name);
         },
 
@@ -86,7 +86,7 @@ define([
          * @abstract
          * @param {ChangeRequest} request
          */
-        update: function(request) {
+        update: function (request) {
             throw new Error('update(request) should be implemented by ' + this.constructor.name);
         },
 
@@ -94,15 +94,15 @@ define([
          * Let's give a chance that somebody can
          * register READY event in advance
          */
-        emitLater: function() {
+        emitLater: function () {
             var model = this;
             var arg = arguments;
-            setTimeout(function() {
+            setTimeout(function () {
                 EventEmitter.prototype.emit.apply(model, arg);
             });
         },
 
-        toString: function() {
+        toString: function () {
             var res = '<' + this.constructor.name + '>#' + this._partModelId;
             return res;
         }
@@ -117,7 +117,7 @@ define([
     /** @constant {string} */
     PartModel.READY = 'partModelReady';
 
-    PartModel.toString = function() {
+    PartModel.toString = function () {
         return 'Model';
     };
 

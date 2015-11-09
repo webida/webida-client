@@ -29,7 +29,7 @@ define([
     'webida-lib/widgets/views/viewmanager',
     './LifecycleManager',
     './plugin'
-], function(
+], function (
     domStyle,
     geometry,
     topic,
@@ -53,7 +53,7 @@ define([
 
     var lastStatus;
 
-    var lifecycleManager = LifecycleManager.getInstance();
+    //var lifecycleManager = LifecycleManager.getInstance();
 
     var paneElement = $('<div id="editor" tabindex="0" style="position:absolute; ' +
     'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];
@@ -85,7 +85,7 @@ define([
         }, 'editor-tab');
         vm.addToGroup(editors.splitViewContainer, 'editorView');
 
-        topic.subscribe('editor-panel-resize', function() {
+        topic.subscribe('editor-panel-resize', function () {
             var borderContainer = editors.splitViewContainer.widgetObject;
             var children = borderContainer.getChildren();
             var totalW = 5;
@@ -96,13 +96,13 @@ define([
             var child;
             var i;
             var ratioW, ratioH;
-            for ( i = 0; i < children.length; i++) {
+            for (i = 0; i < children.length; i++) {
                 child = children[i];
                 totalW += geometry.getMarginBox(child.domNode).w;
                 totalH += geometry.getMarginBox(child.domNode).h;
             }
 
-            for ( i = 1; i < children.length; i++) {
+            for (i = 1; i < children.length; i++) {
                 child = children[i];
                 width = geometry.getMarginBox(child.domNode).w;
                 height = geometry.getMarginBox(child.domNode).h;
@@ -143,7 +143,7 @@ define([
          });
          */
 
-        topic.subscribe('view.focused', function(event) {
+        topic.subscribe('view.focused', function (event) {
             logger.info('view.focused');
             logger.trace();
             var view = event.view;
@@ -165,7 +165,7 @@ define([
         function _getDirtyFileNames() {
             var dataSource, file, fileNames = [];
             var parts = _getPartRegistry().getDirtyParts();
-            parts.forEach(function(part) {
+            parts.forEach(function (part) {
                 dataSource = part.getDataSource();
                 file = dataSource.getPersistence();
                 fileNames.push(file.getName());
@@ -176,12 +176,12 @@ define([
         function checkDirtyFiles() {
             var dirtyFileNames = _getDirtyFileNames();
             if (dirtyFileNames.length > 0) {
-                return "'" + dirtyFileNames.join(', ') + "' has been modified";
+                return '"' + dirtyFileNames.join(', ') + '" has been modified';
             }
         }
 
 
-        topic.subscribe('view.quit', function() {
+        topic.subscribe('view.quit', function () {
             logger.info('view.quit');
 
             var dirtyFileNames = _getDirtyFileNames();
@@ -190,8 +190,8 @@ define([
                     window.focus();
                     if (!window.opener) {
                         // @formatter:off
-                        alert('Quit does not work when IDE was opened by a direct URL.\n'
-                            + 'Please close the browser tab to quit the IDE.');
+                        alert('Quit does not work when IDE was opened by a direct URL.\n' +
+                              'Please close the browser tab to quit the IDE.');
                             // @formatter:on
                     } else {
                         //window.opener = window;
@@ -237,7 +237,7 @@ define([
             var viewContainers = splitVc.getViewContainers();
             var registry = _getPartRegistry();
 
-            viewContainers.forEach(function(vc) {
+            viewContainers.forEach(function (vc) {
                 if (vc.getViewList().length > 0) {
                     totalW += geometry.getContentBox(vc.topContainer.domNode).w;
                     totalH += geometry.getContentBox(vc.topContainer.domNode).h;
@@ -253,11 +253,11 @@ define([
             var partContainer;
 
             // status.viewContainers
-            viewContainers.forEach(function(vc) {
+            viewContainers.forEach(function (vc) {
                 tabs = [];
                 width = 0;
                 height = 0;
-                vc.getViewList().forEach(function(view) {
+                vc.getViewList().forEach(function (view) {
                     partContainer = view.partContainer;
                     tabs.push({
                         dataSourceId: partContainer.getDataSource().getId(),
@@ -315,12 +315,12 @@ define([
 
             var option;
 
-            lastStatus.viewContainers.forEach(function(vc, vcIndex) {
+            lastStatus.viewContainers.forEach(function (vc, vcIndex) {
                 var siblingList = [];
-                vc.tabs.forEach(function(tab) {
+                vc.tabs.forEach(function (tab) {
                     siblingList.push(tab.dataSourceId);
                 });
-                vc.tabs.forEach(function(tab, index) {
+                vc.tabs.forEach(function (tab/*, index*/) {
                     option = {
                         cellIndex: vcIndex,
                         siblingList: siblingList,
@@ -343,7 +343,7 @@ define([
         }
 
         if (lastStatus && lastStatus.viewContainers) {
-            promiseMap.get('preference/load').then(function() {
+            promiseMap.get('preference/load').then(function () {
                 recoverLastStatus();
             });
         }

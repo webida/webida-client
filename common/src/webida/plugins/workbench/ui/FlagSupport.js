@@ -27,7 +27,7 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     genetic, 
     Logger
 ) {
@@ -46,7 +46,8 @@ define([
 
     genetic.inherits(FlagSupport, Object, {
 
-        setFlag: function(/*int*/flag, /*boolean*/value) {
+        /* jshint bitwise:false */
+        setFlag: function (/*int*/flag, /*boolean*/value) {
             if (!flag) {
                 throw new Error('Invalid flag name');
             }
@@ -57,9 +58,10 @@ define([
             }
         },
 
-        getFlag: function(/*int*/flag) {
-            return (this.flags & flag) != 0;
+        getFlag: function (/*int*/flag) {
+            return (this.flags & flag) !== 0;
         }
+        /*jshint bitwise:true */
     });
 
     return FlagSupport;

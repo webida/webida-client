@@ -20,6 +20,7 @@
  * @author: Koong Kyungmi (kyungmi.k@samsung.com)
  */
 
+/* global Modernizr */
 
 define([], function () {
     'use strict';

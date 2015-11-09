@@ -20,6 +20,8 @@
  * @see EditorPart
  */
 
+/* global Map */
+
 // @formatter:off
 define([
     'dojo/topic',
@@ -67,15 +69,15 @@ define([
 
     var dsRegistry = workbench.getDataSourceRegistry();
     var lifecycleManager = LifecycleManager.getInstance();
-    var dataSourceHandler = DataSourceHandler.getInstance();
+ //   var dataSourceHandler = DataSourceHandler.getInstance();
 
     function subscribeToTopics() {
 
-        topic.subscribe('editors.closed', function(dataSourceId, view) {
+        topic.subscribe('editors.closed', function (dataSourceId, view) {
             editors.editorTabFocusController.unregisterView(view);
         });
 
-        topic.subscribe('fs.cache.file.invalidated', function(fsURL, path) {
+        topic.subscribe('fs.cache.file.invalidated', function (fsURL, path) {
             logger.info('fs.cache.file.invalidated arrived');
             var file = editors.getFile(path);
             if (file) {
@@ -87,19 +89,19 @@ define([
             }
         });
 
-        topic.subscribe('fs.cache.file.set', function(fsUrl, target, reason) {
+        topic.subscribe('fs.cache.file.set', function (fsUrl, target, reason) {
             if (reason === 'refreshed') {
                 topic.publish('data-source/content-change', target);
             }
         });
 
-        topic.subscribe('editor/not-exists', function() {
+        topic.subscribe('editor/not-exists', function () {
             topic.publish('editors.clean.all');
             topic.publish('editors.clean.current');
         });
 
         //Compatibility
-        topic.subscribe('current-part-changed', function(oldPart, newPart) {
+        topic.subscribe('current-part-changed', function (oldPart, newPart) {
 
             logger.info('current-part-changed arrived');
 
@@ -150,7 +152,7 @@ define([
     topic.publish('editors.clean.all');
 
     var fsCache = ide.getFSCache();
-    var asked = [];
+   // var asked = [];
 
     /** @module editors */
     var editors = {
@@ -168,17 +170,17 @@ define([
         parts: new Map()
     };
 
-    editors.getFileByViewId = function(viewId) {
+    editors.getFileByViewId = function (viewId) {
         return _.findWhere(editors.files, {
             viewId: viewId
         });
     };
 
-    editors.quit = function() {
+    editors.quit = function () {
         topic.publish('view.quit');
     };
 
-    editors.setCursor = function(file, pos) {
+    editors.setCursor = function (file, pos) {
         if (file.viewer) {
             if (file.viewer.setCursor) {
                 file.viewer.setCursor(pos);
@@ -186,14 +188,15 @@ define([
         }
     };
 
-    editors.getCursor = function(file) {
+    editors.getCursor = function (file) {
         if (file.viewer) {
             if (file.viewer.getCursor) {
                 return file.viewer.getCursor();
             }
         }
     };
-
+    
+    /* jshint ignore:start */
     function getViewContainer(view, file, option) {
         //cellCount=2, cellIndex=-1
         var viewContainer;
@@ -217,12 +220,13 @@ define([
         }
         return viewContainer;
     }
+    /* jshint ignore:end */
 
     /**
      * @private
      * @Override
      */
-    lifecycleManager._showExistingPart = function(PartClass, dataSource, options, callback) {
+    lifecycleManager._showExistingPart = function (PartClass, dataSource, options, callback) {
         logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
 
         var page = workbench.getCurrentPage();
@@ -230,16 +234,16 @@ define([
         var part = registry.getRecentEditorPart(dataSource, PartClass);
 
         //Compatibility start
-        var persistence = dataSource.getPersistence();
+        //var persistence = dataSource.getPersistence();
         var view = part.getContainer().getWidgetAdapter().getWidget();
-        var viewContainer = getViewContainer(view, persistence, options);
+        //var viewContainer = getViewContainer(view, persistence, options);
         if (view.getParent()) {
             view.getParent().select(view);
             part.focus();
         }
         //Compatibility end
 
-        if ( typeof callback === 'function') {
+        if (typeof callback === 'function') {
             callback(part);
         }
     };
@@ -248,7 +252,7 @@ define([
      * @private
      * @Override
      */
-    lifecycleManager._createPart = function(PartClass, dataSource, options, callback) {
+    lifecycleManager._createPart = function (PartClass, dataSource, options, callback) {
         logger.info('%c_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)', 'color:green');
 
         //Compatibility start
@@ -273,7 +277,7 @@ define([
      */
     editors.openFile = lifecycleManager._openDataSource;
 
-    editors.execCommandForCurrentEditorViewer = function(commandKey) {
+    editors.execCommandForCurrentEditorViewer = function (commandKey) {
         logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');
 
         // Command means a method of EditorViewer which have no arguments
@@ -283,11 +287,11 @@ define([
         }
     };
 
-    editors.getCurrentEditorPart = function() {
+    editors.getCurrentEditorPart = function () {
         return this.currentEditorPart;
     };
 
-    editors.getCurrentPart = function() {
+    editors.getCurrentPart = function () {
         logger.info('getCurrentPart()');
         if (this.currentFile) {
             return this.getPart(this.currentFile);
@@ -296,7 +300,7 @@ define([
         }
     };
 
-    editors.getPart = function(file) {
+    editors.getPart = function (file) {
         var dataSource = dsRegistry.getDataSourceById(file.getPath());
         var registry = workbench.getCurrentPage().getPartRegistry();
         var parts = registry.getPartsByDataSource(dataSource);
@@ -314,7 +318,7 @@ define([
 
     //Compatibility
     //TODO remove
-    editors.getFile = function(dataSourceId) {
+    editors.getFile = function (dataSourceId) {
         logger.info('getFile(' + dataSourceId + ')');
         var dataSource = dsRegistry.getDataSourceById(dataSourceId);
         if (dataSource) {
@@ -323,16 +327,16 @@ define([
     };
 
     //TODO remove
-    editors.getDataSourceById = function(dsId) {
+    editors.getDataSourceById = function (dsId) {
         return dsRegistry.getDataSourceById(dsId);
     };
 
     //TODO remove
-    editors.getDataSource = function(persistence) {
+    editors.getDataSource = function (persistence) {
         return dsRegistry.getDataSourceById(persistence.getPersistenceId());
     };
 
-    editors.getPartRegistry = function() {
+    editors.getPartRegistry = function () {
         var page = workbench.getCurrentPage();
         return page.getPartRegistry();
     };

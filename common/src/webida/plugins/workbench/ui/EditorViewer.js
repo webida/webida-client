@@ -27,12 +27,14 @@
  *
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './PartViewer'
-], function(
+], function (
     genetic,
     Logger,
     PartViewer
@@ -56,7 +58,7 @@ define([
          * Command can be any form of object (String, Object)
          * @abstract
          */
-        execute: function(command) {
+        execute: function (command) {
             throw new Error('execute(command) should be implemented by ' + this.constructor.name);
         },
 
@@ -66,65 +68,65 @@ define([
          * @return {boolean}
          * @abstract
          */
-        canExecute: function(command) {
+        canExecute: function (command) {
             throw new Error('canExecute(command) should be implemented by ' + this.constructor.name);
         },
 
         // ----------- TODO Legacy methods : To be refactored ----------- //
 
-        addFocusListener: function(listener) {
+        addFocusListener: function (listener) {
             throw new Error('addFocusListener() should be implemented by ' + this.constructor.name);
         },
 
-        addBlurListener: function(listener) {
+        addBlurListener: function (listener) {
             throw new Error('addBlurListener() should be implemented by ' + this.constructor.name);
         },
 
-        addEventListener: function(type, listener) {
+        addEventListener: function (type, listener) {
             throw new Error('addEventListener() should be implemented by ' + this.constructor.name);
         },
 
-        triggerEvent: function(type, event) {
+        triggerEvent: function (type, event) {
             throw new Error('triggerEvent() should be implemented by ' + this.constructor.name);
         },
 
-        getKeymap: function() {
+        getKeymap: function () {
             throw new Error('getKeymap() should be implemented by ' + this.constructor.name);
         },
 
-        setKeymap: function(keymap) {
+        setKeymap: function (keymap) {
             throw new Error('setKeymap() should be implemented by ' + this.constructor.name);
         },
 
-        clearHistory: function() {
+        clearHistory: function () {
             throw new Error('clearHistory() should be implemented by ' + this.constructor.name);
         },
 
-        focus: function() {
+        focus: function () {
             throw new Error('focus() should be implemented by ' + this.constructor.name);
         },
 
-        undo: function() {
+        undo: function () {
             throw new Error('undo() should be implemented by ' + this.constructor.name);
         },
 
-        redo: function() {
+        redo: function () {
             throw new Error('redo() should be implemented by ' + this.constructor.name);
         },
 
-        isDefaultKeyMap: function() {
+        isDefaultKeyMap: function () {
             throw new Error('isDefaultKeyMap() should be implemented by ' + this.constructor.name);
         },
 
-        getWorkbenchShortcuts: function(desc) {
+        getWorkbenchShortcuts: function (desc) {
             throw new Error('getWorkbenchShortcuts() should be implemented by ' + this.constructor.name);
         },
 
-        getMenuItemsUnderEdit: function(items, menuItems, deferred) {
+        getMenuItemsUnderEdit: function (items, menuItems, deferred) {
             throw new Error('getMenuItemsUnderEdit() should be implemented by ' + this.constructor.name);
         },
 
-        getContextMenuItems: function(opened, items, menuItems, deferred) {
+        getContextMenuItems: function (opened, items, menuItems, deferred) {
             //TODO refactor the location of the implementaion
             deferred.resolve(items);
         }

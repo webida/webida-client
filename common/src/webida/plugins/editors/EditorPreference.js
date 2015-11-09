@@ -59,7 +59,7 @@ define([
             logger.info('setFields(' + configs + ')');
             var that = this;
             this.configs = configs;
-
+            /*jshint -W083 */ 
             for (var i = 0; i < that.preferenceIds.length; i++) {
                 preferences.getValues(that.preferenceIds[i], function (values) {
                     for (var key in values) {
@@ -70,6 +70,7 @@ define([
                 });
                 preferences.addFieldChangeListener(that.preferenceIds[i], that.listener);
             }
+            /*jshint +W083 */ 
         },
         unsetFields: function () {
             logger.info('unsetFields()');
