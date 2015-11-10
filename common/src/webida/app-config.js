@@ -15,17 +15,34 @@
  */
 
 define([
-    '/webida/api/app/configs?callback=define'
+    'webida-lib/webida-0.3',
+    'webida-lib/util/logger/logger-client'
 ], function (
-    serverConf
+    webida,
+    Logger
 ) {
     'use strict';
+    var logger = new Logger();
     var APP_ID = 'webida-client';
+    var serverConf;
+
+    try {
+        serverConf = JSON.parse($.ajax({
+            type: 'GET',
+            url: webida.conf.appApiBaseUrl + '/configs',
+            async: false
+        }).responseText);
+    } catch (e) {
+        logger.warn('Failed to load configs. Using default one: ' + e.message);
+        serverConf = {
+            systemApps: { 'webida-client': { baseUrl: window.location.protocol + '//' + window.location.host } }
+        };
+    }
+
     return {
         appId: APP_ID,
         clientId: 'IDE_CLIENT_ID',
         redirectUrl: serverConf.systemApps[APP_ID].baseUrl + '/auth.html',
-        guestMode: !!serverConf.featureEnables.guestMode,
         meta: {
             user: {
                 dir: '.userInfo',
