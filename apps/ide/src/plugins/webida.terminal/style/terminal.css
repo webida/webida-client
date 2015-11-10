@@ -1,22 +1,14 @@
-.terminal-view .terminaljs {
+.terminal-view {
     width: 100%;
-    font-size: 100%;
-    font-family: Courier, monospace;
-    display: inline-block;
-    border: 0;
     height: 100%;
     background: black;
     color: white;
+    font-size: 13px;
+    font-family: Courier, monospace;
+    display: inline-block;
+    border: 0;
     padding: 10px;
-    box-sizing: border-box;
 }
-.terminal-view {
-    height: calc(100% - 7px);
-}
-.terminal-box {
-    box-sizing: border-box;
-    background: black;
-}
-#generalTerminalView {
-    overflow: hidden;
+.terminal-view .terminal .terminal-cursor {
+    background: green;
 }

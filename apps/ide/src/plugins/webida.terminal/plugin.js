@@ -28,124 +28,139 @@
  * @module webida.terminal.plugin
  * @memberOf module:webida.terminal
  */
-define(['require',                           //require
-        'webida-lib/util/logger/logger-client',          // Logger
-        'external/lodash/lodash.min',  // _
-        'webida-lib/app',                   // ide
-        'webida-lib/plugins/workbench/plugin',  // workbench
-        'webida-lib/webida-0.3',            // webida
-        'webida-lib/widgets/views/view',    // View
-        'dojo/query',                       // query
-        'external/URIjs/src/URI',              // URI
-        'external/socket.io-client/socket.io',    // io
-        './lib/socket.io-stream',           // ss
-        './lib/terminal',                   // Terminal
-        'dojo/text!./layout/terminal.html'],  // terminalHtml
-function (require,
-          Logger,
-          _,
-          ide,
-          workbench,
-          webida,
-          View,
-          query,
-          URI,
-          io,
-          ss,
-          Terminal,
-          terminalHtml) {
+define([
+    'dojo/query',                           // query
+    'dojo/topic',                           // topic
+    'external/lodash/lodash.min',           // _
+    'external/socket.io-client/socket.io',  // io
+    'external/term.js/src/term',            // Terminal
+    'external/URIjs/src/URI',               // URI
+    'webida-lib/app',                       // ide
+    'webida-lib/plugins/workbench/plugin',  // workbench
+    'webida-lib/util/logger/logger-client', // Logger
+    'webida-lib/webida-0.3',                // webida
+    'webida-lib/widgets/views/view',        // View
+    'dojo/text!./layout/terminal.html',     // terminalHtml
+    'xstyle/css!./style/terminal.css'
+], function (
+    query,
+    topic,
+    _,
+    io,
+    Terminal,
+    URI,
+    ide,
+    workbench,
+    Logger,
+    webida,
+    View,
+    terminalHtml
+) {
     'use strict';
 
-    function _loadCss(url) {
-        var link = document.createElement('link');
-        link.type = 'text/css';
-        link.rel = 'stylesheet';
-        link.href = url;
-        document.getElementsByTagName('head')[0].appendChild(link);
-    }
-    _loadCss(require.toUrl('./style/terminal.css'));
+    Terminal = window.Terminal; // Required because term.js is not an AMD module
 
     var logger = new Logger('webida.terminal.plugin');
-    //logger.setConfig('level', Logger.LEVELS.log);
-    logger.off();
-    var mod = {};
 
-    function measureText(text, styleObj) {
-        var divElem = document.createElement('div');
-        var textDim;
+    var mod = {
+        term: null,
+        socket: null,
+        terminalNode: null,
+        viewNode: null,
+        _view: null,
+        width: 800,
+        height: 400
+    };
 
-        document.body.appendChild(divElem);
+    var VIEW_ID = 'generalTerminalView';
+    var DEFAULT_COLS = 80;
+    var DEFAULT_ROWS = 24;
 
-        if (!styleObj) {
-            _.extend(divElem.style, styleObj);
-        }
-        divElem.style.position = 'absolute';
-        divElem.style.left = -1000;
-        divElem.style.top = -1000;
-
-        divElem.innerHTML = text;
-
-        textDim = {
-            width: divElem.clientWidth,
-            height: divElem.clientHeight
-        };
-
-        document.body.removeChild(divElem);
-        divElem = null;
-
-        return textDim;
+    function createTerm(socket, opts) {
+        destroy();
+        socket.emit('create', {
+            cols: opts.cols || DEFAULT_COLS,
+            rows: opts.rows || DEFAULT_ROWS,
+            cwd: opts.cwd
+        }, function (err) {
+            var term;
+            if (err) {
+                logger.error('failed to create term');
+                destroy();
+                return;
+            }
+            logger.info('create');
+            term = mod.term = new Terminal({
+                cols: opts.cols || DEFAULT_COLS,
+                rows: opts.rows || DEFAULT_ROWS,
+                screenKeys: true,
+                cursorBlink: true
+            });
+            term.on('data', function (data) {
+                socket.emit('data', data);
+            });
+            term.on('title', function (title) {
+                logger.info('title changed', title);
+                // TODO: show title somewhere
+            });
+            term.open(mod.viewNode);
+            adjustTermSize();
+            mod.terminalNode = query('.terminal', mod._view.getTopContainer().containerNode)[0];
+        });
     }
 
-    mod._init = function () {
+    function init() {
         var TERMINAL_SERVICE_PATH = '/pty';
-        var termUriObj = URI(webida.conf.fsServer).pathname(TERMINAL_SERVICE_PATH)
-        .search('?access_token=' + webida.auth.getToken() +
-                '&fsid=' + ide.getFsid());
-        var containers = document.getElementsByClassName('terminaljs');
-        var socket = io(termUriObj.href());
-        var term;
-        var stream;
-        var i;
-        var fontDim = measureText('A', {fontSize: '100%', 'fontFamily': 'Courier, monospace'});
-        var container;
-        var parent;
-        var clientWidth;
-        var clientHeight;
-        var options;
+        var termUri = URI(webida.conf.fsServer).pathname(TERMINAL_SERVICE_PATH)
+            .search('?access_token=' + webida.auth.getToken() +
+                '&fsid=' + ide.getFsid()).href();
+        var socket = mod.socket = io(termUri);
         var cwd = ide.getPath();
+        var opts = {
+            cwd: cwd
+        };
 
-        logger.info(fontDim);
+        socket.on('connect', function () {
+            logger.info('terminal connect');
+            createTerm(socket, opts);
+        });
+        socket.on('data', function (data) {
+            mod.term.write(data);
+        });
+        socket.on('disconnect', function () {
+            logger.info('terminal disconnect');
+            // TODO: defer destroy to keep connection during short disconnection
+            destroy();
+        });
+        socket.on('close', function () {
+            logger.info('terminal close');
+            // reconnect on close(ie. shell exit)
+            createTerm(socket, opts);
+        });
+    }
 
-        for (i = 0; i < containers.length; i++) {
-            container = containers[i];
-            parent = container.parentNode;
-            clientWidth = parent.clientWidth;
-            clientHeight = parent.clientHeight;
-
-            logger.info(clientWidth);
-            logger.info(clientHeight);
-
-            options = {columns: Math.floor((clientWidth - 0) / fontDim.width),
-                    rows: Math.floor((clientHeight - 0) / fontDim.height),
-                    cwd: cwd};
-            logger.info(options);
-
-            // setting tabindex makes the element focusable
-            container.tabindex = 0;
-
-            // use data-* attributes to configure terminal and child_pty
-            term = new Terminal(options);
-
-            // Create bidirectional stream
-            stream = ss.createStream({decodeStrings: false, encoding: 'utf-8'});
-
-            // Send stream and options to the server
-            ss(socket).emit('new', stream, options);
-
-            // Connect everything up
-            stream.pipe(term).dom(container).pipe(stream);
+    function adjustTermSize() {
+        resizeTerm({w: mod.width, h: mod.height});
+    }
+    function resizeTerm(resizeEvent) {
+        mod.width = resizeEvent.w;
+        mod.height = resizeEvent.h;
+        var col = Math.floor(resizeEvent.w / 9);
+        var row = Math.floor(resizeEvent.h / 16);
+        if (!mod.term) {
+            return;
         }
-    };
+        logger.info('terminal resize', resizeEvent, col, row);
+        mod.term.resize(col, row);
+        mod.socket.emit('resize', col, row);
+    }
+
+    function destroy() {
+        if (mod.term) {
+            mod.term.destroy();
+            mod.term = null;
+        }
+    }
 
     /**
      * Get terminal view
@@ -154,7 +169,11 @@ function (require,
     mod.getView = function () {
         logger.log('getView');
         if (!mod._view) {
-            mod._view = new View('generalTerminalView', 'Terminal');
+            mod._view = new View(VIEW_ID, 'Terminal', {
+                resize: function (ev) {
+                    resizeTerm(ev);
+                }
+            });
         }
         return mod._view;
     };
@@ -166,12 +185,48 @@ function (require,
     mod.onViewAppended = function () {
         logger.log('onViewAppended');
         var opt = {};
-        mod._view.setContent(terminalHtml);
-        mod._init();
-
         opt.title = 'Terminal';
         opt.key = 'T';
         workbench.registToViewFocusList(mod._view, opt);
+        mod._view.setContent(terminalHtml);
+        mod.viewNode = query('.terminal-view', mod._view.getTopContainer().containerNode)[0];
+        init();
+        topic.subscribe('view.selected', function (event) {
+            var view = event.view;
+            if (view.getId() === VIEW_ID) {
+                // to enable key input directly after view is changed by shortcut or selection
+                mod._focusTerminalView();
+            }
+        });
+    };
+
+    /**
+     * Show this view
+     * @memberOf module: webida.terminal.plugin
+     */
+    mod.showView = function () {
+        var view = mod._view;
+
+        if (view) {
+            view.select();
+            mod._focusTerminalView();
+        }
+    };
+
+    /**
+     * Focus terminal view then you can type in the terminal commands
+     */
+    mod._focusTerminalView = function () {
+        if (!mod.terminalNode) {
+            return;
+        }
+        mod.terminalNode.focus();
+    };
+
+    mod.getViableItems = function () {
+        return {
+            'Terminal': ['cmnd', 'plugins/webida.terminal/plugin', 'showView']
+        };
     };
 
     return mod;
