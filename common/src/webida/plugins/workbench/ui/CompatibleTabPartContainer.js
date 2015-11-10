@@ -32,7 +32,7 @@ define([
     'webida-lib/plugins/workbench/ui/CompatiblePartContainerWidgetAdapter',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/TabPartContainer'
-], function(
+], function (
     topic,
     genetic, 
     Logger,
@@ -63,7 +63,7 @@ define([
         /**
          * @override
          */
-        createWidgetAdapter: function() {
+        createWidgetAdapter: function () {
             logger.info('createWidgetAdapter()');
             var adapter = new CompatiblePartContainerWidgetAdapter(this);
             this.setWidgetAdapter(adapter);
@@ -73,21 +73,21 @@ define([
         /**
          * @override
          */
-        setTitle: function(title) {
+        setTitle: function (title) {
             TabPartContainer.prototype.setTitle.call(this, title);
             if (this.getWidgetAdapter()) {
                 this.getWidgetAdapter().setTitle(title);
             }
         },
 
-        setToolTip: function(tooltip) {
+        setToolTip: function (tooltip) {
             TabPartContainer.prototype.setToolTip.call(this, tooltip);
             if (this.getWidgetAdapter()) {
                 this.getWidgetAdapter().setToolTip(tooltip);
             }
         },
 
-        setTitleImage: function(titleImage) {
+        setTitleImage: function (/*titleImage*/) {
             //TODO
         },
 
@@ -96,7 +96,7 @@ define([
          * @see LayoutPane
          * @override
          */
-        onSelect: function() {
+        onSelect: function () {
             logger.info('onSelect()');
             TabPartContainer.prototype.onSelect.call(this);
             topic.publish('partContainerSelected', this);

@@ -27,7 +27,7 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     genetic, 
     Logger
 ) {
@@ -48,28 +48,28 @@ define([
         /**
          * @param {Object} delta
          */
-        setDelta: function(delta) {
+        setDelta: function (delta) {
             this.delta = delta;
         },
 
         /**
          * @return {Object}
          */
-        getDelta: function() {
+        getDelta: function () {
             return this.delta;
         },
 
         /**
          * @param {Object} contents
          */
-        setContents: function(contents) {
+        setContents: function (contents) {
             this.contents = contents;
         },
 
         /**
          * @return {Object}
          */
-        getContents: function() {
+        getContents: function () {
             return this.contents;
         }
     });

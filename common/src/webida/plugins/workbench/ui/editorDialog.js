@@ -29,7 +29,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'
-], function(
+], function (
     topic,
     genetic, 
     Logger,
@@ -44,10 +44,10 @@ define([
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
-    //logger.off();
+    logger.off();
 
     function _getPartRegistry() {
-    	var workbench = require('webida-lib/plugins/workbench/plugin');
+        var workbench = require('webida-lib/plugins/workbench/plugin');
         var page = workbench.getCurrentPage();
         return page.getPartRegistry();
     }
@@ -55,7 +55,7 @@ define([
     var QUIT = 'Quit';
 
     var editorDialog = {
-        create: function(file, title, action, canceled) {
+        create: function (file, title, action, canceled) {
             var dialog = new ButtonedDialog({
                 title: 'Unsaved Changes in the File',
                 buttons: [{
@@ -69,34 +69,34 @@ define([
                     methodOnClick: 'canceled'
                 }],
                 methodOnEnter: 'saveAnd' + title,
-                saveAndAction: function() {
+                saveAndAction: function () {
                     if (title === QUIT) {
                         var registry = _getPartRegistry();
                         var parts = registry.getDirtyParts();
-                        parts.forEach(function(part) {
+                        parts.forEach(function (part) {
                             part.save();
                         });
                         action();
                         dialog.hide();
                     } else {
-                        topic.publish('editor/save/data-source-id', file.getPath(), function() {
+                        topic.publish('editor/save/data-source-id', file.getPath(), function () {
                             action();
                             dialog.hide();
                         });
                     }
                 },
-                closeWithoutSave: function() {
+                closeWithoutSave: function () {
                     action();
                     this.hide();
                 },
-                canceled: function() {
+                canceled: function () {
                     if (canceled) {
                         canceled();
                     }
                     this.hide();
                 },
                 buttonsWidth: '140px',
-                onHide: function() {
+                onHide: function () {
                     dialog.destroyRecursive();
                 },
                 dialogClass: 'buttoned-dialog-text-only'
@@ -110,8 +110,7 @@ define([
             }
             // @formatter:off
             dialog.setContentArea(
-                "'" + name + "' has been modified. "
-                + 'Save and ' + title + '?');
+                '\'' + name + '\' has been modified. Save and ' + title + '?');
             // @formatter:on
             dialog.show();
         }

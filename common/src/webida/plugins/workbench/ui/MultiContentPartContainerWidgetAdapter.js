@@ -30,7 +30,7 @@ define([
     'webida-lib/util/logger/logger-client',
     './PartContainer',
     './PartContainerWidgetAdapter'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -50,7 +50,7 @@ define([
 
     function MultiContentPartContainerWidgetAdapter(container) {
         logger.info('new MultiContentPartContainerWidgetAdapter(container)');
-        dojo.connect(container.getContentPane(), 'resize', function(changeSize) {
+        dojo.connect(container.getContentPane(), 'resize', function (changeSize) {
             container.emit(PartContainer.CONTAINER_RESIZE, changeSize);
         });
         this.setWidget(container.getContentPane());

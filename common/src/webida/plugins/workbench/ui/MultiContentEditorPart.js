@@ -33,7 +33,7 @@ define([
     './MultiContentLayoutPane',
     './MultiContentPartContainer',
     './Part'
-], function(
+], function (
     TabContainer,
     ContentPane,
     genetic, 
@@ -77,7 +77,7 @@ define([
         /**
          * Prepares required components.
          */
-        onCreate: function() {
+        onCreate: function () {
             logger.info('%conCreate()', 'color:orange');
             var container = this.getContainer();
             this.createTabContainer(container.getContentNode());
@@ -87,17 +87,17 @@ define([
         /**
          * @override
          */
-        close: function() {
+        close: function () {
             logger.info('%cclose()', 'color:orange');
             var mPart = this;
-            var close = function() {
-                mPart.getParts().forEach(function(part) {
+            var close = function () {
+                mPart.getParts().forEach(function (part) {
                     Part.prototype.close.call(part);
                 });
                 Part.prototype.close.call(mPart);
             };
             if (this.isDirty()) {
-                this._askSaveThen(function() {
+                this._askSaveThen(function () {
                     close();
                 });
             } else {
@@ -109,7 +109,7 @@ define([
          * Create contents and add to sub-tab.
          * @abstract
          */
-        createContents: function() {
+        createContents: function () {
             throw new Error('createContents() should be implemented by ' + this.constructor.name);
         },
 
@@ -117,7 +117,7 @@ define([
          * Create TabContainer
          * @param {HTMLElement} parentNode
          */
-        createTabContainer: function(parentNode) {
+        createTabContainer: function (parentNode) {
             logger.info('createTabContainer(' + parentNode + ')');
             var paneId = 'multi-content-part-' + (_paneId++);
             var container = new TabContainer({
@@ -139,9 +139,9 @@ define([
          * Sets Container Event
          * If you want different event binding, override this method.
          */
-        setContainerEvent: function(container) {
+        setContainerEvent: function (container) {
             var that = this;
-            container.watch('selectedChildWidget', function(name, oldTab, newTab) {
+            container.watch('selectedChildWidget', function (name, oldTab, newTab) {
                 var content = that.getContentByTab(newTab);
                 if (content) {
                     that.setActiveContent(content);
@@ -152,7 +152,7 @@ define([
         /**
          * @private
          */
-        _addContent: function(id, title, index, callback, exec) {
+        _addContent: function (id, title, index, callback, exec) {
             var content;
             var pane = new ContentPane({
                 title: title
@@ -178,8 +178,8 @@ define([
          * @callback MultiContentEditorPart~addHtmlElementCallback
          * @param {HTMLElement} content
          */
-        addHtmlElement: function(id, title, index, element, callback) {
-            this._addContent(id, title, index, callback, function(pane) {
+        addHtmlElement: function (id, title, index, element, callback) {
+            this._addContent(id, title, index, callback, function (pane) {
                 pane.domNode.appendChild(element);
                 pane.startup();
                 return element;
@@ -198,13 +198,13 @@ define([
          * @callback MultiContentEditorPart~addPartCallback
          * @param {Part} part
          */
-        addPart: function(id, title, index, PartClass, dataSource, callback) {
+        addPart: function (id, title, index, PartClass, dataSource, callback) {
             var that = this;
-            var dataSource = dataSource || this.getDataSource();
-            this._addContent(id, title, index, callback, function(pane) {
-                var part
+            var ds = dataSource || this.getDataSource();
+            this._addContent(id, title, index, callback, function (pane) {
+                var part;
                 var partContainer;
-                partContainer = new MultiContentPartContainer(dataSource, pane);
+                partContainer = new MultiContentPartContainer(ds, pane);
                 partContainer.setParent(that._getLayoutPane());
                 partContainer.createPart(PartClass, callback);
                 part = partContainer.getPart();
@@ -216,18 +216,18 @@ define([
         /**
          * @param {EditorContent} content
          */
-        removeContent: function(content) {
+        removeContent: function (/*content*/) {
             //TODO
         },
 
         /**
          * @param {EditorContent} content
          */
-        setActiveContent: function(content) {
+        setActiveContent: function (content) {
             logger.info('setActiveContent(' + content + ')');
             var that = this;
             this.activeContent = content;
-            setTimeout(function() {
+            setTimeout(function () {
                 that.emit(MultiContentEditorPart.TAB_SELECT, content);
             });
         },
@@ -235,7 +235,7 @@ define([
         /**
          * @return {(Part|HTMLElement)}
          */
-        getActiveContent: function() {
+        getActiveContent: function () {
             return this.activeContent;
         },
 
@@ -243,14 +243,14 @@ define([
          * @param {Object} id
          * @return {(Part|HTMLElement)}
          */
-        getContentById: function(id) {
+        getContentById: function (id) {
             return this.getContents().get(id);
         },
 
         /**
          * @return {TabContainer}
          */
-        getTabContainer: function() {
+        getTabContainer: function () {
             return this.tabContainer;
         },
 
@@ -258,32 +258,32 @@ define([
          * @param {Object} tab
          * @return {(Part|HTMLElement)}
          */
-        getContentByTab: function(tab) {
+        getContentByTab: function (tab) {
             return this.getTabToContentMap().get(tab);
         },
 
         /**
          * @return {Map.<Object, {(Part|HTMLElement)}>}
          */
-        getTabToContentMap: function() {
+        getTabToContentMap: function () {
             return this.tabToContentMap;
         },
 
         /**
          * @return {Map.<Object, {(Part|HTMLElement)}>}
          */
-        getContents: function() {
+        getContents: function () {
             return this.contents;
         },
 
         /**
          * @return {Array.<Part>}
          */
-        getParts: function() {
+        getParts: function () {
             var parts = [];
             var contents = this.getContents();
-            contents.forEach(function(content) {
-                if ( content instanceof Part) {
+            contents.forEach(function (content) {
+                if (content instanceof Part) {
                     parts.push(content);
                 }
             });
@@ -294,7 +294,7 @@ define([
          * @private
          * @param {MultiContentLayoutPane} pane
          */
-        _setLayoutPane: function(pane) {
+        _setLayoutPane: function (pane) {
             this.layoutPane = pane;
         },
 
@@ -302,16 +302,16 @@ define([
          * @private
          * @return {MultiContentLayoutPane}
          */
-        _getLayoutPane: function() {
+        _getLayoutPane: function () {
             return this.layoutPane;
         },
 
         /**
          * @override
          */
-        save: function() {
+        save: function () {
             var content = this.getActiveContent();
-            if ( content instanceof EditorPart) {
+            if (content instanceof EditorPart) {
                 return content.save();
             }
         },
@@ -319,9 +319,9 @@ define([
         /**
          * @override
          */
-        isDirty: function() {
+        isDirty: function () {
             var content = this.getActiveContent();
-            if ( content instanceof EditorPart) {
+            if (content instanceof EditorPart) {
                 return content.isDirty();
             } else {
                 return false;
@@ -331,7 +331,7 @@ define([
         /**
          * @override
          */
-        getContextMenuItems: function(allItems) {
+        getContextMenuItems: function (allItems) {
             var content = this.getActiveContent();
             if (content) {
                 return content.getContextMenuItems(allItems);

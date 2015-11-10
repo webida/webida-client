@@ -27,13 +27,11 @@
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './DataSource'
-], function(
+    'webida-lib/util/logger/logger-client'
+], function (
     EventEmitter,
     genetic, 
-    Logger,
-    DataSource
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -61,7 +59,7 @@ define([
          * @param {}
          * @return {Array}
          */
-        aaaa: function() {
+        aaaa: function () {
             return this.bbb;
         }
     });

@@ -27,7 +27,7 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     genetic, 
     Logger
 ) {
@@ -36,7 +36,7 @@ define([
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
-    //logger.off();
+    logger.off();
 
     var _changeRequestId = 0;
 
@@ -53,7 +53,7 @@ define([
          * Sets alterations
          * @param {Object} delta
          */
-        setDelta: function(delta) {
+        setDelta: function (delta) {
             this.delta = delta;
         },
 
@@ -61,11 +61,11 @@ define([
          * Retives alterations
          * @return {Object}
          */
-        getDelta: function() {
+        getDelta: function () {
             return this.delta;
         },
 
-        toString: function() {
+        toString: function () {
             return '<' + this.constructor.name + '>#' + this._changeRequestId;
         }
     });

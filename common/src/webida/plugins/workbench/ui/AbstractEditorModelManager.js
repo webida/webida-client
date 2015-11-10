@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/*jshint unused:false*/
+
 /**
  * Constructor
  * editorModelManager
@@ -36,7 +38,7 @@ define([
     './PartModelManager',
     './partModelProvider',
     './Persistence'
-], function(
+], function (
     workbench,
     genetic, 
     Logger,
@@ -75,7 +77,7 @@ define([
         /**
          * Saves a EditorModel to a Persistence
          */
-        saveModel: function() {
+        saveModel: function () {
             throw new Error('saveModel() should be implemented by ' + this.constructor.name);
         },
 
@@ -83,14 +85,14 @@ define([
          * Returns whether the EditorModel can be saved or not.
          * @return {boolean}
          */
-        canSaveModel: function() {
+        canSaveModel: function () {
             throw new Error('canSaveModel() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * Resets the given EditorModel to its last saved state.
          */
-        resetModel: function() {
+        resetModel: function () {
             throw new Error('resetModel() should be implemented by ' + this.constructor.name);
         },
 
@@ -102,7 +104,7 @@ define([
          * @param {EditorModel} otherModel
          * @param {PartModelEvent} modelEvent
          */
-        syncTo: function(otherModel, modelEvent) {
+        syncTo: function (otherModel, modelEvent) {
             throw new Error('syncTo(otherModel, modelEvent) should be implemented by ' + this.constructor.name);
         },
 
@@ -114,7 +116,7 @@ define([
          * @param {EditorModel} otherModel
          * @param {PartModelEvent} modelEvent
          */
-        syncFrom: function(otherModel, modelEvent) {
+        syncFrom: function (otherModel, modelEvent) {
             throw new Error('syncFrom(otherModel, modelEvent) should be implemented by ' + this.constructor.name);
         },
 
@@ -129,12 +131,12 @@ define([
          * @callback editorModelManager~createModelCallback
          * @param {EditorModel} model
          */
-        createModel: function(ModelClass, callback) {
+        createModel: function (ModelClass, callback) {
             logger.info('createModel(ModelClass, callback)');
             var that = this;
             var model = new ModelClass();
             this.setModel(model);
-            this.getDataSource().getData(function(data) {
+            this.getDataSource().getData(function (data) {
                 model.createContents(data);
                 that._execFunc(callback, model);
                 model.emitLater(PartModel.READY, model);
@@ -155,7 +157,7 @@ define([
          * @callback editorModelManager~getSynchronized
          * @param {EditorModel} model
          */
-        getSynchronized: function(ModelClass, callback) {
+        getSynchronized: function (ModelClass, callback) {
             logger.info('getSynchronized(' + ModelClass.name + ', callback)');
             var that = this;
             var dataSource = this.getDataSource();
@@ -176,7 +178,7 @@ define([
                     //When the model's data ready,
                     //1) set this ModelManager's saved data
                     //2) then execute callback.
-                    model.once(PartModel.READY, function(model) {
+                    model.once(PartModel.READY, function (model) {
                         that._execFunc(callback, model);
                     });
                 }
@@ -194,18 +196,18 @@ define([
          *
          * @param {Function} ModelClass
          */
-        synchronize: function(ModelClass) {
+        synchronize: function (ModelClass) {
             logger.info('synchronize(' + ModelClass.name + ')');
             var that = this;
             var myModel = this.getModel();
             var otherManager = new (this.constructor)(this.getDataSource());
-            var otherModel = otherManager.getSynchronized(ModelClass, function(otherModel) {
-                myModel.on(PartModel.CONTENTS_CHANGE, function(modelEvent) {
+            var otherModel = otherManager.getSynchronized(ModelClass, function (otherModel) {
+                myModel.on(PartModel.CONTENTS_CHANGE, function (modelEvent) {
                     if (myModel.serialize() !== otherModel.serialize()) {
                         that.syncTo(otherModel, modelEvent);
                     }
                 });
-                otherModel.on(PartModel.CONTENTS_CHANGE, function(modelEvent) {
+                otherModel.on(PartModel.CONTENTS_CHANGE, function (modelEvent) {
                     if (myModel.serialize() !== otherModel.serialize()) {
                         that.syncFrom(otherModel, modelEvent);
                     }
@@ -216,14 +218,14 @@ define([
         /**
          * @param {DataSource} dataSource
          */
-        setDataSource: function(dataSource) {
+        setDataSource: function (dataSource) {
             this.dataSource = dataSource;
         },
 
         /**
          * @return {DataSource}
          */
-        getDataSource: function() {
+        getDataSource: function () {
             return this.dataSource;
         }
     });

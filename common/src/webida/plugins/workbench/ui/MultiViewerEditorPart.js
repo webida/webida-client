@@ -30,16 +30,14 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
-    './EditorPart',
-    './Part'
+    './EditorPart'
 ], function (
     TabContainer,
     ContentPane,
     EventEmitter,
     genetic,
     Logger,
-    EditorPart,
-    Part
+    EditorPart
 ) {
     'use strict';
 // @formatter:on
@@ -73,14 +71,14 @@ define([
         /**
          * @override
          */
-        createViewer: function(parent, callback) {
+        createViewer: function (parent, callback) {
             logger.info('createViewer(' + parent.tagName + ', callback)');
             this.setParentElement(parent);
             this.createCallback = callback;
             this.initialize();
         },
 
-        destroy: function() {
+        destroy: function () {
             logger.info('destroy()');
             //unset preferences
             if (this.preferences) {
@@ -96,7 +94,7 @@ define([
             }
         },
 
-        initialize: function() {
+        initialize: function () {
             logger.info('initialize()');
             this.createTabContainer();
             this.createViewers();
@@ -105,7 +103,7 @@ define([
         /**
          * Create TabContainer
          */
-        createTabContainer: function() {
+        createTabContainer: function () {
             logger.info('createTabContainer()');
             var parent = this.getParentElement();
             var container = new TabContainer({
@@ -127,9 +125,9 @@ define([
          *
          * If you want different event binding, override this method.
          */
-        setContainerEvent: function(container) {
+        setContainerEvent: function (container) {
             var that = this;
-            container.watch('selectedChildWidget', function(name, oldTab, newTab) {
+            container.watch('selectedChildWidget', function (name, oldTab, newTab) {
                 var viewer = that.getViewerByTab(newTab);
                 if (viewer) {
                     that.setActiveViewer(viewer);
@@ -142,21 +140,21 @@ define([
          *
          * @abstract
          */
-        createViewers: function() {
+        createViewers: function () {
             throw new Error('createViewers() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @return {Map.<Object, EditorViewer>}
          */
-        getViewers: function() {
+        getViewers: function () {
             return this.viewers;
         },
 
         /**
          * @return {Map.<Object, EditorViewer>}
          */
-        getTabToViewerMap: function() {
+        getTabToViewerMap: function () {
             return this.tabToViewerMap;
         },
 
@@ -171,7 +169,7 @@ define([
          * @callback MultiViewerEditorPart~addViewerCallback
          * @param {HTMLElement} parentNode
          */
-        addViewer: function(id, title, viewer, index, callback) {
+        addViewer: function (id, title, viewer, index, callback) {
             logger.info('addViewer(' + id + ', ' + title + ', ' + viewer + ', ' + index + ', callback)');
             var pane = new ContentPane({
                 title: title
@@ -180,7 +178,7 @@ define([
             this.getTabContainer().addChild(pane, index);
             this.getViewers().set(id, viewer);
             this.getTabToViewerMap().set(pane, viewer);
-            if ( typeof callback === 'function') {
+            if (typeof callback === 'function') {
                 callback(pane.domNode);
             }
             if (this.getViewers().size === 1) {
@@ -191,14 +189,14 @@ define([
         /**
          * @param {EditorViewer} viewer
          */
-        removeViewer: function(viewer) {
+        removeViewer: function (/*viewer*/) {
             //TODO
         },
 
         /**
          * @param {EditorViewer} viewer
          */
-        setActiveViewer: function(viewer) {
+        setActiveViewer: function (viewer) {
             logger.info('setActiveViewer(' + viewer + ')');
             this.activeViewer = viewer;
             //viewer.refresh();
@@ -208,7 +206,7 @@ define([
         /**
          * @return {EditorViewer} viewer
          */
-        getActiveViewer: function() {
+        getActiveViewer: function () {
             return this.activeViewer;
         },
 
@@ -216,7 +214,7 @@ define([
          * @param {Object} id
          * @return {EditorViewer}
          */
-        getViewerById: function(id) {
+        getViewerById: function (id) {
             return this.getViewers().get(id);
         },
 
@@ -224,21 +222,21 @@ define([
          * @param {Object} tab
          * @return {EditorViewer}
          */
-        getViewerByTab: function(tab) {
+        getViewerByTab: function (tab) {
             return this.getTabToViewerMap().get(tab);
         },
 
         /**
          * @return {TabContainer}
          */
-        getTabContainer: function() {
+        getTabContainer: function () {
             return this.tabContainer;
         },
 
         /**
          * TODO refactor
          */
-        getContextMenuItems: function(opened, items, menuItems, deferred) {
+        getContextMenuItems: function (opened, items, menuItems, deferred) {
             var activeViewer = this.getActiveViewer();
             if (activeViewer) {
                 activeViewer.getContextMenuItems(opened, items, menuItems, deferred);

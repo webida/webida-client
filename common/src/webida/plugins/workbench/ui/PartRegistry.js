@@ -25,25 +25,27 @@
 
 // @formatter:off
 define([
-	'dojo/topic',
-	'external/eventEmitter/EventEmitter',
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client',
-	'./DataSource',
-	'./DataSourceRegistry',
-	'./EditorPart',
-	'./Part'
-], function(
-	topic,
-	EventEmitter,
-	genetic, 
-	Logger,
-	DataSource,
-	DataSourceRegistry,
-	EditorPart,
-	Part
+    'dojo/topic',
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client',
+    './DataSource',
+    './DataSourceRegistry',
+    './EditorPart',
+    './ViewPart',
+    './Part'
+], function (
+    topic,
+    EventEmitter,
+    genetic, 
+    Logger,
+    DataSource,
+    DataSourceRegistry,
+    EditorPart,
+    ViewPart,
+    Part
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     /**
@@ -79,7 +81,7 @@ define([
         /**
          * @param {Part} part
          */
-        registerPart: function(part) {
+        registerPart: function (part) {
             if (!( part instanceof Part)) {
                 throw new Error('part should implement Part interface');
             }
@@ -95,7 +97,7 @@ define([
         /**
          * @param {Part} part
          */
-        unregisterPart: function(part) {
+        unregisterPart: function (part) {
             logger.info('unregisterPart(' + part + ')');
             var dataSource = part.getContainer().getDataSource();
             var parts = this.getParts();
@@ -119,7 +121,7 @@ define([
          * @return {Array} Parts related to the specified dataSource.
          * If not found returns undefined.
          */
-        getPartsByDataSource: function(dataSource) {
+        getPartsByDataSource: function (dataSource) {
             return this.getParts().get(dataSource) || [];
         },
 
@@ -128,12 +130,12 @@ define([
          * @param {Function} PartClass
          * @return {Array} Parts with DataSource and PartClass
          */
-        getPartsByClass: function(dataSource, PartClass) {
+        getPartsByClass: function (dataSource, PartClass) {
             var partsOfDs = this.getPartsByDataSource(dataSource);
             var result = [];
             if (partsOfDs) {
-                partsOfDs.forEach(function(part) {
-                    if ( part instanceof PartClass) {
+                partsOfDs.forEach(function (part) {
+                    if (part instanceof PartClass) {
                         result.push(part);
                     }
                 });
@@ -146,11 +148,11 @@ define([
          * @param {string} PartClassName
          * @return {Array} Parts with DataSource and PartClass
          */
-        getPartsByClassName: function(dataSource, PartClassName) {
+        getPartsByClassName: function (dataSource, PartClassName) {
             var partsOfDs = this.getPartsByDataSource(dataSource);
             var result = [];
             if (partsOfDs) {
-                partsOfDs.forEach(function(part) {
+                partsOfDs.forEach(function (part) {
                     if (part.constructor === PartClassName) {
                         result.push(part);
                     }
@@ -163,9 +165,9 @@ define([
          * Remember recently opened EditorPart
          * @param {EditorPart} part
          */
-        setRecentEditorPart: function(part) {
+        setRecentEditorPart: function (part) {
             logger.info('setRecentEditorPart(' + part + ')');
-            if ( part instanceof EditorPart) {
+            if (part instanceof EditorPart) {
                 var dataSource = part.getContainer().getDataSource();
                 if (this.recentEditorParts.has(dataSource) === false) {
                     this.recentEditorParts.set(dataSource, new Map());
@@ -180,7 +182,7 @@ define([
          * @return {EditorPart} Recently opened EditorPart with given DataSource
          * and PartClass. If not found returns undefined.
          */
-        getRecentEditorPart: function(dataSource, PartClass) {
+        getRecentEditorPart: function (dataSource, PartClass) {
             logger.info('getRecentEditorPart(' + dataSource + ', PartClass)');
             if (this.recentEditorParts.has(dataSource)) {
                 var partsOfDs = this.recentEditorParts.get(dataSource);
@@ -193,7 +195,7 @@ define([
          * Remember recently opened DataSource's Id
          * @param {String} dataSourceId
          */
-        setRecentDataSourceId: function(dataSourceId) {
+        setRecentDataSourceId: function (dataSourceId) {
             logger.info('setRecentDataSourceId(' + dataSourceId + ')');
             var recents = this.getRecentDataSourceIds();
             var index = recents.indexOf(dataSourceId);
@@ -210,7 +212,7 @@ define([
          * Returns recently opened DataSources's Ids
          * @param {Array.<String>}
          */
-        getRecentDataSourceIds: function() {
+        getRecentDataSourceIds: function () {
             return this.recentDataSourceIds;
         },
 
@@ -220,7 +222,7 @@ define([
          * @see setRecentEditorPart()
          * @param {EditorPart} part
          */
-        setCurrentEditorPart: function(part) {
+        setCurrentEditorPart: function (part) {
             logger.info('setCurrentEditorPart(' + part + ')');
             if (part === null || part instanceof EditorPart) {
                 var oldPart = this.getCurrentEditorPart();
@@ -236,24 +238,24 @@ define([
          * Returns currently focused EditorPart
          * @return {EditorPart}
          */
-        getCurrentEditorPart: function() {
+        getCurrentEditorPart: function () {
             return this.currentEditorPart;
         },
 
         /**
          * @return {Map.<DataSource, {Array.<Part>}>} PartMap
          */
-        getParts: function() {
+        getParts: function () {
             return this.parts;
         },
 
         /**
          * @return {Array.<Part>} Dirty state Part array
          */
-        getDirtyParts: function() {
+        getDirtyParts: function () {
             var dirtyParts = [];
-            this.getParts().forEach(function(parts, dataSource) {
-                parts.forEach(function(part) {
+            this.getParts().forEach(function (parts) {
+                parts.forEach(function (part) {
                     if (part.isDirty()) {
                         dirtyParts.push(part);
                     }
@@ -265,11 +267,11 @@ define([
         /**
          * @return {Array.<EditorPart>} EditorPart array
          */
-        getEditorParts: function() {
+        getEditorParts: function () {
             var editorParts = [];
-            this.getParts().forEach(function(parts, dataSource) {
-                parts.forEach(function(part) {
-                    if ( part instanceof EditorPart) {
+            this.getParts().forEach(function (parts) {
+                parts.forEach(function (part) {
+                    if (part instanceof EditorPart) {
                         editorParts.push(part);
                     }
                 });
@@ -280,11 +282,11 @@ define([
         /**
          * @return {Array.<ViewPart>} ViewPart array
          */
-        getViewParts: function() {
+        getViewParts: function () {
             var viewParts = [];
-            this.getParts().forEach(function(parts, dataSource) {
-                parts.forEach(function(part) {
-                    if ( part instanceof ViewPart) {
+            this.getParts().forEach(function (parts) {
+                parts.forEach(function (part) {
+                    if (part instanceof ViewPart) {
                         viewParts.push(part);
                     }
                 });
