@@ -18,6 +18,7 @@
  * webida - preview plugin
  *
  */
+/* jshint unused:false */
 
 define([
     'plugins/webida.preference/preference-service-factory',

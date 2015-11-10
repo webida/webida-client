@@ -225,7 +225,7 @@ define([], function () {
         return this.endsWith(path, '.json', true);
     };
 
-    mod.getProjectRootPath = function(childPath) {
+    mod.getProjectRootPath = function (childPath) {
         if (!childPath) {
             return null;
         }

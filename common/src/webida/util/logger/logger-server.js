@@ -19,11 +19,27 @@
  * @author hw.shim
  */
 
+/* jshint unused:false */
+
 'use strict';
 
 var LoggerInterface = require('./logger');
 var FileAppender = require('./appenders/file-appender');
 var singlton;
+
+function formater(args, action, logger) {
+    var now = new Date();
+    var prefix = '[' + now.toISOString() + '] [' + action.toUpperCase() + ']';
+    var regExp = /\(([^)]+)\)/;
+    var x = regExp.exec((new Error()).stack.split('\n')[4])[1].split(':');
+    x.pop();
+    var basename = x.join(':');
+
+    ([]).unshift.call(args, prefix);
+    ([]).push.call(args, basename);
+
+    return args;
+}
 
 function Logger() {
 	LoggerInterface.apply(this, arguments);
@@ -35,19 +51,6 @@ function Logger() {
 Logger.prototype = Object.create(LoggerInterface.prototype);
 Logger.prototype.constructor = Logger;
 
-function formater(args, action, logger) {
-	var now = new Date();
-	var prefix = '[' + now.toISOString() + '] ['+action.toUpperCase()+']';
-	var regExp = /\(([^)]+)\)/;
-	var x = regExp.exec((new Error).stack.split('\n')[4])[1].split(':');
-	x.pop();
-	var basename = x.join(':');
-
-	([]).unshift.call(args, prefix);
-	([]).push.call(args, basename);
-
-	return args;
-}
 
 function getNow() {
 	var result = [], now = new Date();
@@ -57,7 +60,7 @@ function getNow() {
 	var resultToString;
 	for (var i = 0; i < result.length; i++) {
 		resultToString = result[i].toString();
-		if (resultToString.length == 1) {
+		if (resultToString.length === 1) {
 			result[i] = '0' + resultToString;
 		}
 	}

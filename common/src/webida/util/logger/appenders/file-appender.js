@@ -21,29 +21,29 @@
 
 'use strict';
 
-function FileAppender(logDir){
+function FileAppender(logDir) {
 	this.logDir = logDir || './';
 }
-FileAppender.prototype.log = function(){
+FileAppender.prototype.log = function () {
 	this.write.apply(this, arguments);
 };
-FileAppender.prototype.info = function(){
+FileAppender.prototype.info = function () {
 	this.write.apply(this, arguments);
 };
-FileAppender.prototype.warn = function(){
+FileAppender.prototype.warn = function () {
 	this.write.apply(this, arguments);
 };
-FileAppender.prototype.error = function(){
+FileAppender.prototype.error = function () {
 	this.write.apply(this, arguments);
 };
-FileAppender.prototype.trace = function(){
+FileAppender.prototype.trace = function () {
 	this.write.apply(this, arguments);
 };
-FileAppender.prototype.write = function(){
+FileAppender.prototype.write = function () {
 	var fs = require('fs');
 	var os = require('os');
-	var msg = ([]).join.call(arguments,' ');
-	fs.writeFileSync(this.logDir+'server.log', msg+os.EOL, {flag:'a'});
+	var msg = ([]).join.call(arguments, ' ');
+	fs.writeFileSync(this.logDir + 'server.log', msg + os.EOL, {flag: 'a'});
 	//TODO Log rotate
 };
 

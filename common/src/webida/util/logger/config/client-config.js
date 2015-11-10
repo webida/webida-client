@@ -2,7 +2,7 @@
  * Global Config
  */
 'use strict';
-define(function(/*require, exports, module*/) {
+define(function (/*require, exports, module*/) {
 	var LEVELS = {
 		off : 0,
 		log : 1,

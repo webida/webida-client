@@ -98,13 +98,13 @@ function (pm,
         else if (iconNormal) {
             var menuitem = item.attr('data-menuitem');
             // convert id to valid class name e.g. /&File/&New/&File -> __File__New__File
-            var iconClass = menuitem.replace(/&/g, '').replace(/\//g, '__').replace(/ /g, '_') + '_wticons';
+            var modifiedIconClass = menuitem.replace(/&/g, '').replace(/\//g, '__').replace(/ /g, '_') + '_wticons';
             img = '<style type="text/css">' +
-                      '.' + iconClass + ' {' +
+                      '.' + modifiedIconClass + ' {' +
                           'background-image: url("' + iconNormal + '");' +
                       '}' +
                     '</style>';
-            imgClass = iconClass;
+            imgClass = modifiedIconClass;
         }
 
         if (imgClass) {
@@ -176,6 +176,7 @@ function (pm,
         
         var item, tooltip;
         var cmndInfo = menuItem[1];
+        /*jshint validthis:true */
         function enableToolbarItem() { 
             //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
             // enable toolbar item
@@ -199,6 +200,7 @@ function (pm,
             .removeClass('webida-tool-bar-icon-hover')
             .removeClass('webida-tool-bar-icon-clicked');        
         } 
+        /*jshint validthis:false */
         
         function doCommonJobsForToolbarItem() { 
             // set unique identifier for toolbar icon
