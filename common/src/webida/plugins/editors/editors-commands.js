@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     './plugin', 
@@ -22,7 +24,7 @@ define([
     'webida-lib/util/logger/logger-client', 
     'dojo/topic', 
     'external/lodash/lodash.min'
-], function(
+], function (
     editors,
     workbench,
     vm,

@@ -22,37 +22,43 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
-define(function(module) {
-    "use strict";
+define(function (module) {
+    'use strict';
 // @formatter:on
 
     return {
 
-        byId: function(id) {
+        byId: function (id) {
             return document.getElementById(id);
         },
 
-        byTag: function(tagName) {
+        byTag: function (tagName) {
             return document.getElementsByTagName(tagName);
         },
 
-        bySelector: function(selector, element) {
+        bySelector: function (selector, element) {
             element = element || document;
             return element.querySelectorAll(selector);
         },
 
-        getAppliedStyleClone: function(element) {
+        getAppliedStyleClone: function (element) {
+            /*jshint -W010 */
             var prop, result = new Object();
+            /*jshint +W010 */
             for (prop in element.style) {
-                result[prop] = element.style[prop];
+                if (element.style.hasOwnProperty(prop)) {
+                    result[prop] = element.style[prop];
+                }
             }
             return result;
         },
 
-        getComputedStyleClone: function(element) {
+        getComputedStyleClone: function (element) {
             var styles = window.getComputedStyle(element), len = styles.length, i, prop, result = {};
-            for ( i = 0; i < len; i++) {
+            for (i = 0; i < len; i++) {
                 prop = styles[i];
                 //result[prop] = styles[prop];
                 result[prop] = styles.getPropertyValue(prop);
@@ -60,68 +66,78 @@ define(function(module) {
             return result;
         },
 
-        getComputedStyleDiff: function(styleOrg, styleVar) {
+        getComputedStyleDiff: function (styleOrg, styleVar) {
             var prop, result = {};
             for (prop in styleOrg) {
-                if (styleOrg[prop] != styleVar[prop]) {
+                if (styleOrg[prop] !== styleVar[prop]) {
                     result[prop] = styleVar[prop];
                 }
             }
             return result;
         },
 
-        checkComputedStyleDiff: function(styleOrg, styleVar) {
+        checkComputedStyleDiff: function (styleOrg, styleVar) {
             var i, check = false, result = this.getComputedStyleDiff(styleOrg, styleVar);
             for (i in result) {
-                //console.log(i+' = '+result[i]);
-                check = true;
+                if (result.hasOwnProperty(i)) {
+                    //console.log(i+' = '+result[i]);
+                    check = true;
+                }
             }
             return check;
         },
 
-        getStyle: function(element, prop) {
+        getStyle: function (element, prop) {
             var styles = window.getComputedStyle(element);
             //return styles[prop];
             return styles.getPropertyValue(prop);
         },
 
-        setStyles: function(element, propSet) {
+        setStyles: function (element, propSet) {
             //console.log('dom.setStyles('+element.id+', propSet)');
             var prop, style = element.style;
             for (prop in propSet) {
-                style.setProperty(prop, propSet[prop]);
+                if (propSet.hasOwnProperty(prop)) {
+                    style.setProperty(prop, propSet[prop]);
+                }
             }
         },
 
-        setAttributes: function(element, propSet) {
+        setAttributes: function (element, propSet) {
             var prop;
             for (prop in propSet) {
-                element.setAttribute(prop, propSet[prop]);
+                if (propSet.hasOwnProperty(prop)) {
+                    element.setAttribute(prop, propSet[prop]);
+                }
             }
         },
 
-        makeElementNs: function(tag, namespace, properties) {
+        makeElementNs: function (tag, namespace, properties) {
             var element = document.createElementNS(namespace, tag);
             if (properties) {
                 for (var p in properties) {
-                    element.setAttribute(p, properties[p]);
+                    if (properties.hasOwnProperty(p)) {
+                        element.setAttribute(p, properties[p]);
+                    }
                 }
             }
             return element;
         },
 
-        makeSvgElement: function(tag, properties) {
+        makeSvgElement: function (tag, properties) {
             return this.makeElementNs(tag, 'http://www.w3.org/2000/svg', properties);
         },
 
-        makeElement: function(tag, properties, where, win) {
-            if ( typeof win == 'undefined') {
+        makeElement: function (tag, properties, where, win) {
+            if (typeof win === 'undefined') {
                 win = window;
             }
             var element = win.document.createElement(tag);
             if (properties) {
                 for (var p in properties) {
-                    element.setAttribute(p, properties[p]);
+                    if (properties.hasOwnProperty(p)) {
+                        element.setAttribute(p, properties[p]);
+                    }
                 }
             }
             if (where) {

@@ -36,7 +36,7 @@ define([
 ) {
     'use strict';
 
-    var logger = new Logger();
+   // var logger = new Logger();
 
     function EngineAdapterFactory() {       
 

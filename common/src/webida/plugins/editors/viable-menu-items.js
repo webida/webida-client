@@ -21,7 +21,7 @@ define([
     'dojo/Deferred', 
     'external/lodash/lodash.min',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     editors, 
     menuItems, 
     Deferred, 
@@ -126,7 +126,8 @@ define([
 
         // Navigate Editors
         var naviEditorsItems = {};
-        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 'Move Tab to &Other Container', '&Ex-Selected Tab', 'Switch &Tab Container'];
+        var itemsList = ['&Select Tab from List', '&Previous Tab', '&Next Tab', 'Move Tab to &Other Container', 
+                         '&Ex-Selected Tab', 'Switch &Tab Container'];
 
         function getViewRunnableMenuItems(menuName) {
             var splitContainer = editors.splitViewContainer;
@@ -172,7 +173,7 @@ define([
         }
 
 
-        _.each(itemsList, function(item) {
+        _.each(itemsList, function (item) {
             if (getViewRunnableMenuItems(item)) {
                 naviEditorsItems[item] = menuItems.navMenuItems['&Navigate Editors'][item];
             }
@@ -217,7 +218,7 @@ define([
 
     function getContextMenuItems() {
         logger.info('getContextMenuItems()');
-        var items;
+        //var items;
         var registry = _getPartRegistry();
         var currentPart = registry.getCurrentEditorPart();
         if (!currentPart) {
@@ -225,7 +226,7 @@ define([
         } else {
             try {
                 return currentPart.getContextMenuItems(menuItems);
-            } catch(e) {
+            } catch (e) {
                 logger.error(e);
             }
         }

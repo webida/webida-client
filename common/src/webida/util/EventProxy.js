@@ -27,7 +27,7 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     genetic, 
     Logger
 ) {
@@ -48,14 +48,14 @@ define([
 
     genetic.inherits(EventProxy, Object, {
 
-        on: function(target, eventName, handle) {
+        on: function (target, eventName, handle) {
             target.on(eventName, handle);
             this.events.push([target, eventName, handle]);
         },
 
-        offAll: function() {
+        offAll: function () {
             var target, eventName, handle;
-            this.events.forEach(function(arr) {
+            this.events.forEach(function (arr) {
                 target = arr[0];
                 eventName = arr[1];
                 handle = arr[2];

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* jshint unused:false */
 define(['./plugin',
         'external/codemirror/lib/codemirror',
         'external/lodash/lodash.min'

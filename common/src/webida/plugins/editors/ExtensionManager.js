@@ -26,6 +26,8 @@
  * @author: hw.shim
  */
 
+/* global  _ */
+
 // @formatter:off
 define([
     'external/eventEmitter/EventEmitter',
@@ -33,7 +35,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'text!./ext-to-mime.json'
-], function(
+], function (
     EventEmitter,
     pluginManager,
     genetic, 
@@ -68,19 +70,19 @@ define([
     /**
      * @return {ExtensionManager}
      */
-    ExtensionManager.getInstance = function() {
+    ExtensionManager.getInstance = function () {
         if (singleton === null) {
             singleton = new this();
         }
         return singleton;
-    }
+    };
 
     genetic.inherits(ExtensionManager, Object, {
 
         /**
          * @return {Array}
          */
-        getExtensions: function() {
+        getExtensions: function () {
             if (this.extensions instanceof Array) {
                 return this.extensions;
             } else {
@@ -92,7 +94,7 @@ define([
          * @return {string} Mime Type
          * @private
          */
-        _getMimeType: function(resourceExt) {
+        _getMimeType: function (resourceExt) {
             return this.mimeType[resourceExt];
         },
 
@@ -102,7 +104,7 @@ define([
          * For example, something like this..
          * plugin.getPartPath() or plugin.getAttr('partPath');
          */
-        _getPathByExt: function(ext) {
+        _getPathByExt: function (ext) {
             return ext.__plugin__.loc + '/' + ext.editorPart;
         },
 
@@ -115,7 +117,7 @@ define([
          *
          * @return {string} Part's Class Path
          */
-        getPartPath: function(dataSource, options) {
+        getPartPath: function (dataSource, options) {
             logger.info('getPartPath(' + dataSource + ', options)');
             //Case 1. 'open with specific editor' case
             if ('openWithPart' in options) {
@@ -145,7 +147,7 @@ define([
          * @return {string} Part's Class Path
          * @private
          */
-        _getPathForName: function(persistence) {
+        _getPathForName: function (persistence) {
             logger.info('_getPathForName(' + persistence + ')');
             var ext, extensions = this.getExtensions();
             //Case 2. specific resource name
@@ -168,7 +170,7 @@ define([
          * @return {string} Part's Class Path
          * @private
          */
-        _getPathForType: function(persistence) {
+        _getPathForType: function (persistence) {
             logger.info('_getPathForType(' + persistence + ')');
             var resourceExt = persistence.getExtension();
             var results = this.getExtensionsForType(resourceExt);
@@ -186,29 +188,29 @@ define([
          * @param {string} resourceExt
          * @return {Array}
          */
-        getExtensionsForType: function(resourceExt) {
+        getExtensionsForType: function (resourceExt) {
             logger.info('getExtensionsForType(' + resourceExt + ')');
 
             var extensions = this.getExtensions();
             var mime = this._getMimeType(resourceExt);
 
-            var viable1 = extensions.filter(function(ext) {
-                return ext.handledFileExt.some(function(supportedExt) {
+            var viable1 = extensions.filter(function (ext) {
+                return ext.handledFileExt.some(function (supportedExt) {
                     return resourceExt.match('^' + supportedExt + '$');
                 });
             });
-            var viable2 = extensions.filter(function(ext) {
-                return ext.handledMimeTypes.some(function(supportedMime) {
+            var viable2 = extensions.filter(function (ext) {
+                return ext.handledMimeTypes.some(function (supportedMime) {
                     return mime && mime.match('^' + supportedMime + '$');
                 });
             });
-            var unviable1 = extensions.filter(function(ext) {
-                return ext.unhandledFileExt.some(function(supportedExt) {
+            var unviable1 = extensions.filter(function (ext) {
+                return ext.unhandledFileExt.some(function (supportedExt) {
                     return resourceExt.match('^' + supportedExt + '$');
                 });
             });
-            var unviable2 = extensions.filter(function(ext) {
-                return ext.unhandledMimeTypes.some(function(supportedMime) {
+            var unviable2 = extensions.filter(function (ext) {
+                return ext.unhandledMimeTypes.some(function (supportedMime) {
                     return mime && mime.match('^' + supportedMime + '$');
                 });
             });

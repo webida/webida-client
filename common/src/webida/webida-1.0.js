@@ -93,8 +93,10 @@ var ENV_TYPE;
     }
 
     var mod = {};
+    /* jshint camelcase:false */
     var webidaHost = (typeof window !== 'undefined' && window && window.webida_host) ||
         getParamByName('webida.host') || readCookie('webida.host') || 'https://webida.org';
+    /* jshint camelcase:true */
     var fsServer = getHostParam('webida.fsHostUrl', 'fs', webidaHost);
     var authServer = getHostParam('webida.authHostUrl', 'auth', webidaHost);
     var appServer = getHostParam('webida.appHostUrl', 'app', webidaHost);
@@ -1096,9 +1098,11 @@ var ENV_TYPE;
      *
      * @since 1.0
      * @method getQuota
-     * @param {module:webida.request_callback_with_filesystem_quota} callback - (error:callback_error, [quota:quota_info]) → undefined
+     * @param {module:webida.request_callback_with_filesystem_quota} callback - 
+     *        (error:callback_error, [quota:quota_info]) → undefined
      *        <br>If function finished successfully then error is undefined.
-     *        And <tt>usage</tt> is the size of all data in the filesystem in bytes. This value might not be updated up to 1 minute.
+     *        And <tt>usage</tt> is the size of all data in the filesystem in bytes. 
+     *        This value might not be updated up to 1 minute.
      *        And <tt>limit</tt> is the limit of all data in the filesystem in bytes.
      * @memberOf module:webida.FSService.FileSystem
      */
@@ -2273,7 +2277,7 @@ var ENV_TYPE;
      * @param callback
      * @memberOf module:webida.FSService.FileSystem
      */
-    FileSystem.prototype.makeDnDDownloadUrl = function(archiving, sources, downloadFileName, callback) {
+    FileSystem.prototype.makeDnDDownloadUrl = function (archiving, sources, downloadFileName, callback) {
         var self = this;
         ensureAuthorize(function () {
             var downloadUrl = 'application/octet-stream:' + downloadFileName + ':' +
@@ -2285,7 +2289,7 @@ var ENV_TYPE;
             }
             callback(null, downloadUrl);
         });
-    }
+    };
 
     /**
     * Get FileSystem object indicating the given Webida file system url
@@ -2367,6 +2371,7 @@ var ENV_TYPE;
     * @memberOf module:webida.FSService
     */
     mod.FSService.prototype.addMyFS = function (callback) {
+        /* jshint unused:false */
         function restApi() {
             mod.auth.getMyInfo(function (err, myinfo) {
                 if (err) { return callback(err); }
@@ -2381,6 +2386,7 @@ var ENV_TYPE;
                 });
             });
         }
+        /* jshint unused:true */
         ensureAuthorize(restApi);
     };
 
@@ -2870,11 +2876,11 @@ var ENV_TYPE;
      * @returns {string} accessible url
      * @memberOf module:webida.AppService
      */
-    mod.AppService.prototype.getDeployedAppUrl = function(domain, queryString) {
+    mod.AppService.prototype.getDeployedAppUrl = function (domain, queryString) {
         var deployConf = mod.conf.deploy;
 
         var addr = mod.app.getHost();
-        if(deployConf.type === 'domain' || domain === '') {
+        if (deployConf.type === 'domain' || domain === '') {
             // When system deployType is 'domain' or this app is a system client app(domain is empty).
             addr = (domain ? domain + '.' : '') + addr;
         } else {

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* jshint ignore:start */
+
 /**
  * LoggerInterface for client and server
  * @author hw.shim
