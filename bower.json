@@ -25,6 +25,7 @@
         "bootstrap-treeview": "~1.2.0",
         "calcium": "git://github.com/webida/calcium#cc21bef268fe22483e8ab79fe302f6c1945493c4",
         "smalot-bootstrap-datetimepicker": "~2.3.4",
-        "es6-shim": "~0.33.9"
+        "es6-shim": "~0.33.9",
+        "term.js": "git://github.com/chjj/term.js.git#~v0.0.7"
     }
 }
