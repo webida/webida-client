@@ -135,7 +135,6 @@ define([
                     break;
                 case 'js':
                     viewer.setLinter('js', false);
-                    viewer.setHinters('javascript', ['javascript']);
                     break;
                 case 'css':
                     viewer.setLinter('css', true);
@@ -143,8 +142,6 @@ define([
                     break;
                 case 'html':
                     viewer.setLinter('html', true);
-                    viewer.setHinters('html', ['html', 'htmlLink', 'htmlSmart']);
-                    viewer.setHinters('htmlmixed', ['html', 'htmlLink', 'htmlSmart']);
                     viewer.setHinters('css', ['css', 'cssSmart']);
                     break;
                 default:

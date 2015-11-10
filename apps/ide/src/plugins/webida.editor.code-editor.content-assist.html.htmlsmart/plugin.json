@@ -1,0 +1,18 @@
+{
+    "name": "webida.editor.code-editor.content-assist.html.htmlsmart",
+    "description": "Code Editor Contenet assist plugin for html smart",
+    "version": "0.1.0",
+    "requirement": "webida.editor.code-editor",    
+    "extensions" : {        
+        "webida.editor.code-editor:contentassist" : [
+            { 
+                "controlModule" : "./HtmlSmartControl", 
+                "engineModule" : "./html-hint-server",
+                "langMode" : "html",
+                "engineName" : "HtmlSmart",
+                "hinterModes" : ["html", "htmlmixed"],
+                "hinterNames" : ["htmlSmart"]
+            }
+        ]
+    }
+}

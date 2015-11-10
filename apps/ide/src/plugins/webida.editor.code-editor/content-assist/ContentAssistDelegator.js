@@ -21,9 +21,11 @@
  *
  * @constructor
  * @since: 2015.10.11
- * @author: h.m.kwom
+ * @author: h.m.kwon
  *
  */
+
+/*jshint unused:false*/
 
 // @formatter:off
 define([
@@ -66,7 +68,8 @@ define([
                 var path = URI(ext[property]).absoluteTo(ext.__plugin__.loc + '/').toString();
                 return path;
             } else {
-                logger.error('Null string.');
+                logger.log('Null content assist module path.');
+                return null;
             }
         } else {
             logger.error('Type of ext[' + property + '] should be string.');
@@ -87,6 +90,10 @@ define([
                 caExtensionInfo.engineName = ext.engineName;
                 caExtensionInfo.engineModulePath = engineModulePath;
                 caExtensionInfo.controlModulePath = controlModulePath;
+                caExtensionInfo.hinterNames = ext.hinterNames;
+                caExtensionInfo.hinterModes = ext.hinterModes;
+                caExtensionInfo.pluginLoc = ext.__plugin__.loc;
+                
                 caExtensionInfos.push(caExtensionInfo);
 
                 promisesForConstructors.push(new Promise(function (resolve1, reject1) {
@@ -140,13 +147,7 @@ define([
             }
         });
     }
-
-    function jshint(cm, callback) {
-        if (cm._contentAssistDelegator) {
-            cm._contentAssistDelegator.execCommand('getHint', cm, callback);
-        }
-    }
-
+    
     function setCodemirrorCommandsAndHelpers() {
         codemirror.commands['jsca-showtype'] = function (cm) {
             cm._contentAssistDelegator.execCommand('showType', cm);
@@ -163,8 +164,6 @@ define([
         codemirror.commands['jsca-selectVariables'] = function (cm) {
             cm._contentAssistDelegator.execCommand('selectVariables', cm);
         };
-
-        codemirror.registerHelper('hint', 'javascript', jshint);
     }
 
     setCodemirrorCommandsAndHelpers();

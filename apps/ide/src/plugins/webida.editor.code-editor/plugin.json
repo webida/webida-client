@@ -8,7 +8,9 @@
             { "name" : "controlModule", "type" : "string", "desc" : "Content assist module path" },
             { "name" : "engineModule", "type" : "string", "desc" : "Content assist engine path" },
             { "name" : "langMode", "type" : "string", "desc" : "Working language mode" },
-            { "name" : "engineName", "type" : "string", "desc" : "Name of engine" }
+            { "name" : "engineName", "type" : "string", "desc" : "Name of engine" },
+            { "name" : "hinterModes", "type" : "array", "desc" : "Mode names for hinters" },
+            { "name" : "hinterNames", "type" : "array", "desc" : "Array of hinter names" }            
         ]
     },
     "extensions" : {

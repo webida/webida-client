@@ -16,8 +16,8 @@
 
 define(['external/lodash/lodash.min',
         'webida-lib/util/path',
-        './file-server',
-        './reference'],
+        'plugins/webida.editor.code-editor/content-assist/file-server',
+        'plugins/webida.editor.code-editor/content-assist/reference'],
 function (_, pathUtil, fileServer, reference) {
     'use strict';
 

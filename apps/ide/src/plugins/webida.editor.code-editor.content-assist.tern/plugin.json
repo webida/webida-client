@@ -9,7 +9,9 @@
                 "controlModule" : "./TernControl", 
                 "engineModule" : "./js-hint-server",
                 "langMode" : "js",
-                "engineName" : "tern-js"
+                "engineName" : "tern-js",
+                "hinterModes" : ["javascript"],
+                "hinterNames" : ["javascript"]
             }
         ]
     }

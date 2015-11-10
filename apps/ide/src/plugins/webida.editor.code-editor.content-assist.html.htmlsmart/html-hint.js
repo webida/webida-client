@@ -22,14 +22,15 @@ function (require, _, CodeMirror) {
 
     var _assist = null;
     var _htmlServer = null;
+    var mode;
 
     function requestToWorker(serverId, body, c) {
         if (_assist) {
-            _assist.send({mode: 'html', type: 'request', server: serverId, body: body}, c);
+            _assist.send({mode:  mode, type: 'request', server: serverId, body: body}, c);
         } else {
-            require(['./assist'], function (assist) {
+            require(['plugins/webida.editor.code-editor/content-assist/assist'], function (assist) {
                 _assist = assist;
-                assist.send({mode: 'html', type: 'request', server: serverId, body: body}, c);
+                assist.send({mode: mode, type: 'request', server: serverId, body: body}, c);
             });
         }
     }
@@ -97,6 +98,9 @@ function (require, _, CodeMirror) {
 
 
     return {
+        setModes: function (langMode, engineName) {
+            mode =  langMode + ':' + engineName;
+        },
         addFile: function (filepath, text, options) {
             var req;
 
