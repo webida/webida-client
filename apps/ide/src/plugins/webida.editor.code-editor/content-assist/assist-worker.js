@@ -18,6 +18,7 @@
 /* global postMessage: true */
 /* global importScripts: true */
 /* global onmessage: true */
+/*jshint unused:false*/
 
 var msgId = 0, msgCallbacks = {};
 var pendingMessages = [];
@@ -70,9 +71,8 @@ function initServers(caExtensionInfos) {
     }); 
     
     require(['plugins/webida.editor.code-editor/content-assist/file-server',
-             'content-assist/css-hint-server',
-             'content-assist/html-hint-server'],
-    function (fileServer, cssServer, htmlServer) {
+             'content-assist/css-hint-server'],
+    function (fileServer, cssServer) {
         //'use strict'; 
 
         function getRemoteFile(filepath, c) {
@@ -86,17 +86,20 @@ function initServers(caExtensionInfos) {
         fileServer.init(getRemoteFile);
 
         var serversTemp = {};
-        serversTemp.css = cssServer;
-        serversTemp.html = htmlServer;      
+        serversTemp.css = cssServer;  
                 
         var promisesForEngines = [];
         
         caExtensionInfos.forEach(function (caExtensionInfo) {
             promisesForEngines.push(new Promise(function (resolve, reject) {
-                require([caExtensionInfo.engineModulePath], function (engineModule) {
-                    serversTemp[caExtensionInfo.langMode + ':' + caExtensionInfo.engineName] = engineModule;
-                    resolve('Engine module [' + caExtensionInfo.engineName + '] is loaded.');
-                });
+                if (caExtensionInfo.engineModulePath) {
+                    require([caExtensionInfo.engineModulePath], function (engineModule) {
+                        serversTemp[caExtensionInfo.langMode + ':' + caExtensionInfo.engineName] = engineModule;
+                        resolve('Engine module [' + caExtensionInfo.engineName + '] is loaded.');
+                    });
+                } else {
+                    resolve('No engine module case.');                    
+                }
             }));
         });
         

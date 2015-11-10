@@ -9,7 +9,9 @@
                 "controlModule" : "./CalciumControl",
                 "engineModule" : "./calcium-server",
                 "langMode" : "js",
-                "engineName" : "calcium"
+                "engineName" : "calcium",
+                "hinterModes" : ["javascript"],
+                "hinterNames" : ["javascript"]
             }
         ]
     }

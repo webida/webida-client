@@ -24,12 +24,15 @@
  * @refactor: hw.shim (2015.06.25)
  */
 
+/*jshint unused:false*/
+
 // @formatter:off
 define([
 	'require',
 	'webida-lib/util/genetic',
 	'external/lodash/lodash.min',
 	'external/codemirror/lib/codemirror',
+    'external/URIjs/src/URI',
     'webida-lib/plugins/editors/plugin',
     'webida-lib/plugins/workbench/ui/PartViewer',
 	'webida-lib/util/loadCSSList',
@@ -43,6 +46,7 @@ define([
 	genetic,
 	_,
 	codemirror,
+    URI,
     editors,
     PartViewer,
 	loadCSSList,
@@ -66,31 +70,14 @@ define([
         autoHintDelay: 300
     };
 
-    var _localHinterSchemes = [];
+    var _localHinterSchemes = {};
     var _globalHinterSchemes = [];
 
-    var hintersMap = {
-        'javascript': {
-            name: 'javascript',
-            requires: []
-        },
+    var hintersMap = {        
         'coffee': {
             name: 'coffeescript',
             requires: ['external/codemirror/addon/hint/javascript-hint']
-        },
-        'html': {
-            name: 'html',
-            requires: ['external/codemirror/addon/hint/xml-hint',
-                       'external/codemirror/addon/hint/html-hint']
-        },
-        'htmlLink': {
-            name: 'htmlLink',
-            requires: ['./content-assist/html-hint-link']
-        },
-        'htmlSmart': {
-            name: 'htmlSmart',
-            requires: ['./content-assist/html-hint']
-        },
+        },        
         'xml': {
             name: 'xml',
             requires: ['external/codemirror/addon/hint/xml-hint']
@@ -334,36 +321,7 @@ define([
     codemirror.commands.foldselection = function (cm) {
         foldCode(cm, cm.getCursor('start'), cm.getCursor('end'));
     };
-
-    /*
-    codemirror.commands['tern-showreference'] = function (cm) {
-        // Caution: Do not load modules under plugins directory.
-        require(['plugins/search-view/plugin'], function (SearchView) {
-            cm._ternAddon.showReferences(cm, function (error, refs) {
-                if (!error) {
-                    SearchView.showResult({
-                        items: _.map(refs.refs, function (ref) {
-                            return {
-                                path: ref.file,
-                                location: {
-                                    start: eventTransformers.cmLoc2wrapperLoc(ref.start),
-                                    end: eventTransformers.cmLoc2wrapperLoc(ref.end)
-                                }
-                            };
-                        }),
-                        columns: [
-                            {id: 'path', label: 'File name',
-                             formatter: function (path) { return path.substring(path.lastIndexOf('/') + 1); }},
-                            {id: 'location', label: 'Location'},
-                            {id: 'path', label: 'File Path',
-                             formatter: function (path) { return path.substring(0, path.lastIndexOf('/') + 1); }}
-                        ]
-                    });
-                }
-            });
-        });
-    };
-     */
+    
     codemirror.commands.gotoLine = function (cm) {
         if (cm.getOption('keyMap') === 'default') {
             var dialog = 'Go to line: <input type="text" style="width: 10em"/> <span style="color: #888"></span>';
@@ -509,6 +467,38 @@ define([
             resultAll.hintContinue = resultAll.hintContinue || resultThis.hintContinue;
         }
     }
+    
+    function setHinterSchemes() {
+        var extInfos = ContentAssistDelegator.getCaExtensionInfos();
+        
+        loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
+            require(['external/codemirror/addon/hint/show-hint'], function () {
+                _.each(extInfos, function (extInfo) {                   
+                    if (extInfo.hinterModes) {
+                        _.each(extInfo.hinterModes, function (hinterMode) {
+                            if (extInfo.hinterNames) {
+                                _.each(extInfo.hinterNames, function (hinterName) {
+                                    if (_localHinterSchemes[hinterMode]) {
+                                        _localHinterSchemes[hinterMode].push({name: hinterName});
+                                    } else {
+                                        _localHinterSchemes[hinterMode] = [{name: hinterName}];
+                                    }
+                                });
+                            }                           
+                        });
+                    } else {
+                        if (extInfo.hinterNames) {
+                            _.each(extInfo.hinterNames, function (hinterName) {
+                                _globalHinterSchemes.push({name: hinterName});
+                            });
+                        }
+                    }
+                });
+            });
+        });        
+    }
+    
+    setHinterSchemes();
 
     function hint(cm, callback, options) {
         var modeName = cm.getModeAt(cm.getCursor()).name;
@@ -571,12 +561,12 @@ define([
         return localResult;
     }    
     
-    function startJavaScriptAssist(editor, cm, c) {
+    function startContentAssist(editor, cm, c) {
         var options = {};
         options.useWorker = settings.useWorker;
         options.autoHint = settings.autoHint;        
         
-        var contentAssistDelegator = new ContentAssistDelegator(editor, cm, options, c);        
+        return new ContentAssistDelegator(editor, cm, options, c);        
     }
 
     function setChangeForAutoHintDebounced() {
@@ -892,30 +882,15 @@ define([
                         that.addDeferredAction(function () {
                             if (mode === 'js') {
                                 _.defer(function () {
-                                    startJavaScriptAssist(that, that.editor, function () {
+                                    startContentAssist(that, that.editor, function () {
                                         resolve('js ca started');
                                     });
                                 });
                             } else if (mode === 'html' || mode === 'htmlmixed') {
-                                var options = {};
-                                options.async = true;
-                                options.useWorker = settings.useWorker;
-                                var promiseForHtmlHinter = new Promise(function (resolve1, reject1) {
-                                    require(['./content-assist/html-hint'], function (htmlhint) {
-                                        that.assister = htmlhint;
-                                        htmlhint.addFile(that.file.path, that.editor.getDoc().getValue(), options);
-                                        resolve1('html ca started');
+                                _.defer(function () {
+                                    startContentAssist(that, that.editor, function () {
+                                        resolve('js ca started');
                                     });
-                                });
-                                var promiseJavascriptContentAssist = new Promise(function (resolve1, reject1) {
-                                    _.defer(function () {
-                                        startJavaScriptAssist(that, that.editor, function () {
-                                            resolve1('js ca started');
-                                        });
-                                    });
-                                });
-                                Promise.all([promiseForHtmlHinter, promiseJavascriptContentAssist]).then(function (values) {
-                                    resolve('All ca started');                                   
                                 });
                             } else {
                                 resolve('no ca started');
@@ -1113,7 +1088,7 @@ define([
 	        }
 	    },
 
-	    setHinters : function (mode, hinterNames) {
+        setHinters : function (mode, hinterNames) {
 	        if (mode && hinterNames) {
 	            var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
 	            var paths = ['external/codemirror/addon/hint/show-hint'];
@@ -1122,12 +1097,14 @@ define([
 	            });
 	            loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
 	                require(paths, function () {
-	                    _localHinterSchemes[mode] = hinterSchms;
+                        if (hinterSchms.length > 0) {
+	                        _localHinterSchemes[mode] = hinterSchms;
+                        }
 	                });
 	            });
 	        }
 	    },
-
+        
 	    setGlobalHinters : function (hinterNames) {
 	        _globalHinterSchemes = [];
 	        if (hinterNames) {
@@ -1417,13 +1394,17 @@ define([
                 items['&Source'] = sourceItems;
 
                 if (editor._contentAssistDelegator) {
-                    editor._contentAssistDelegator.execCommand('request', editor, {type: 'rename', newName: 'merong', fullDocs: true},
-                                                    function (error/*, data*/) {
-                        if (!error) {
-                            sourceItems['&Rename Variables'] = menuItems.editMenuItems['&Source']['&Rename Variables'];
+                    editor._contentAssistDelegator.execCommand(
+                        'request', editor, 
+                        {type: 'rename', newName: 'merong', fullDocs: true},
+                        function (error/*, data*/) {
+                            if (!error) {
+                                sourceItems['&Rename Variables'] = 
+                                    menuItems.editMenuItems['&Source']['&Rename Variables'];
+                            }
+                            deferred.resolve(items);
                         }
-                        deferred.resolve(items);
-                    });
+                    );
                 } else {
                     deferred.resolve(items);
                 }                
@@ -1487,7 +1468,8 @@ define([
     };
     CodeEditorViewer.getAvailableThemes = function () {
         return [
-            'codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
+            'codemirror-default', 'ambiance', 'aptana', 'blackboard',
+            'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
             'midnight', 'monokai', 'neat', 'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight',
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
@@ -1501,10 +1483,10 @@ define([
         var from = editor.getCursor('from');
         var to = editor.getCursor('to');
         var mode1 = editor.getModeAt(from);
-        var mode2 = editor.getModeAt(to);
+        var mode2 = editor.getModeAt(to);        
         return mode1.name === mode2.name &&
             mode1.lineComment && mode1.lineComment === mode2.lineComment;
-    }
+    };
 
     CodeEditorViewer.isBlockCommentable = function(editor) {
         var doc = editor.getDoc();
@@ -1529,7 +1511,7 @@ define([
             ( comments = getEnclosingBlockComments(mode1, editor, from, to)) &&
             (comments.length === 1 ||
             	(( comments = getEnclosingBlockComments(mode1, editor, from2, to2)) && comments.length === 0));
-    }
+    };
 
     CodeEditorViewer.selectionCommentable = function(editor) {
         var from = editor.getCursor('from');
@@ -1547,7 +1529,7 @@ define([
             mode1.blockCommentStart === mode2.blockCommentStart &&
             mode1.blockCommentEnd === mode2.blockCommentEnd &&
             ( comments = getEnclosingBlockComments(mode1, editor, from, to)) && comments.length === 0;
-    }
+    };
 
     return CodeEditorViewer;
 });

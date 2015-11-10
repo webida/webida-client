@@ -2,6 +2,9 @@
     "plugins" : [
         "plugins/webida.editor.text-editor",
         "plugins/webida.editor.code-editor",
+        "plugins/webida.editor.code-editor.content-assist.html.htmlsmart",
+        "plugins/webida.editor.code-editor.content-assist.html.html-link",        
+        "plugins/webida.editor.code-editor.content-assist.html.default", 
         "plugins/webida.editor.code-editor.content-assist.tern",
         "plugins/webida.editor.example.simple-editor",
         "plugins/webida.viewer.image-viewer",

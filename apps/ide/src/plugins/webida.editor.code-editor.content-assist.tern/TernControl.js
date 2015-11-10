@@ -21,7 +21,7 @@
  *
  * @constructor
  * @since: 2015.09.18
- * @author: h.m.kwom
+ * @author: h.m.kwon
  *
  */
 
@@ -44,6 +44,18 @@ define([
 
     var logger = new Logger();
     logger.off();     
+    
+    function jshint(cm, callback) {
+        if (cm._contentAssistDelegator) {
+            cm._contentAssistDelegator.execCommand('getHint', cm, callback);
+        }
+    }
+        
+    function setCodemirrorCommandsAndHelpers() {
+        codemirror.registerHelper('hint', 'javascript', jshint);
+    }
+
+    setCodemirrorCommandsAndHelpers();
     
     /* Assist server commands
      * Refer js-jints.js    

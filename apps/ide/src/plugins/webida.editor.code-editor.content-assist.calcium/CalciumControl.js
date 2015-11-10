@@ -43,7 +43,19 @@ define([
 
     var logger = new Logger();
     logger.off();
+    
+    function jshint(cm, callback) {
+        if (cm._contentAssistDelegator) {
+            cm._contentAssistDelegator.execCommand('getHint', cm, callback);
+        }
+    }
 
+    function setCodemirrorCommandsAndHelpers() {
+        codemirror.registerHelper('hint', 'javascript', jshint);
+    }
+
+    setCodemirrorCommandsAndHelpers();
+        
     // Assist server commands
     var serverCommands = [
         'start',
