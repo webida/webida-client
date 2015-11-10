@@ -101,7 +101,7 @@ define([
                             next(err);
                         } else {
                             runConfigurationFileCache = content || '{}';
-                            workspaceObj = JSON.parse(content);
+                            workspaceObj = JSON.parse(runConfigurationFileCache);
                             if (workspaceObj.run && Object.getOwnPropertyNames(workspaceObj.run).length > 0) {
                                 runConfigurations = sortKeysBy(workspaceObj.run);
                                 next();
