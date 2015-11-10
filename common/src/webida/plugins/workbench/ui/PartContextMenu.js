@@ -27,7 +27,7 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     genetic, 
     Logger
 ) {
@@ -57,35 +57,35 @@ define([
          * @return {Thenable}
          * @abstract
          */
-        getPromiseForAvailableItems: function() {
+        getPromiseForAvailableItems: function () {
             throw new Error('getPromiseForAvailableItems() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {Object}
          */
-        setAllItems: function(allItems) {
+        setAllItems: function (allItems) {
             this.allItems = allItems;
         },
 
         /**
          * @return {Object}
          */
-        getAllItems: function(allItems) {
+        getAllItems: function () {
             return this.allItems;
         },
 
         /**
          * @param {Part}
          */
-        setPart: function(part) {
+        setPart: function (part) {
             this.part = part;
         },
 
         /**
          * @return {Part}
          */
-        getPart: function() {
+        getPart: function () {
             return this.part;
         },
 
@@ -93,7 +93,7 @@ define([
          * Convenient method
          * @return {PartRegistry}
          */
-        getPartRegistry: function() {
+        getPartRegistry: function () {
             var workbench = require('webida-lib/plugins/workbench/plugin');
             var page = workbench.getCurrentPage();
             return page.getPartRegistry();

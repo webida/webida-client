@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/*jshint bitwise:false*/
+
 /**
  * Constructor
  * FlagSupport
@@ -27,7 +29,7 @@
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     genetic, 
     Logger
 ) {
@@ -46,7 +48,7 @@ define([
 
     genetic.inherits(FlagSupport, Object, {
 
-        setFlag: function(/*int*/flag, /*boolean*/value) {
+        setFlag: function (/*int*/flag, /*boolean*/value) {
             if (!flag) {
                 throw new Error('Invalid flag name');
             }
@@ -57,8 +59,8 @@ define([
             }
         },
 
-        getFlag: function(/*int*/flag) {
-            return (this.flags & flag) != 0;
+        getFlag: function (/*int*/flag) {
+            return (this.flags & flag) !== 0;
         }
     });
 

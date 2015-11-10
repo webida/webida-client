@@ -14,6 +14,9 @@
 * limitations under the License.
 */
 
+/*jshint unused:false*/
+/*jshint forin:false*/
+
 /**
  * Constructor
  * Workbench
@@ -33,7 +36,7 @@ define([
     './LayoutPane',
     './Page',
     './WorkspaceModel'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -76,7 +79,7 @@ define([
         /**
          * @param {Page} page
          */
-        addPage: function(page) {
+        addPage: function (page) {
             this.pages.push(page);
             page.setParent(this);
         },
@@ -84,7 +87,7 @@ define([
         /**
          * @param {Page} page
          */
-        removePage: function(page) {
+        removePage: function (page) {
             var index = this.pages.indexOf(page);
             if (index >= 0) {
                 page.setParent(null);
@@ -95,28 +98,28 @@ define([
         /**
          * @return {Page[]}
          */
-        getPages: function() {
+        getPages: function () {
             return this.pages;
         },
 
         /**
          * @param {Page} page
          */
-        setCurrentPage: function(page) {
+        setCurrentPage: function (page) {
             this.currentPage = page;
         },
 
         /**
          * @return {Page}
          */
-        getCurrentPage: function() {
+        getCurrentPage: function () {
             return this.currentPage;
         },
 
         /**
          * @return {DataSourceRegistry}
          */
-        getDataSourceRegistry: function() {
+        getDataSourceRegistry: function () {
             return this.dataSourceRegistry;
         },
 
@@ -124,7 +127,7 @@ define([
          * Return true if specified dataSource is used
          * @return {boolean}
          */
-        isDataSourceUsed: function(dataSource) {
+        isDataSourceUsed: function (dataSource) {
             var reg, parts;
             var pages = this.getPages();
             for (var i in pages) {
@@ -141,12 +144,12 @@ define([
          * @param {Object} dataSourceId
          * @param {Function} callback
          */
-        createDataSource: function(dataSourceId, callback) {
+        createDataSource: function (dataSourceId, callback) {
             logger.info('createDataSource(' + dataSourceId + ', callback)');
             var dsRegistry = this.getDataSourceRegistry();
             var wsModel = this.getWorkspaceModel();
             var factoryId = wsModel.getDataSourceFactory(dataSourceId);
-            require([factoryId], function(DataSourceFactory) {
+            require([factoryId], function (DataSourceFactory) {
                 var dataSource;
                 var existingDs = dsRegistry.getDataSourceById(dataSourceId);
                 //To solve async creation of DataSource check exists again
@@ -164,14 +167,14 @@ define([
         /**
          * @param {WorkspaceModel}
          */
-        getWorkspaceModel: function() {
+        getWorkspaceModel: function () {
             return this.workspaceModel;
         },
 
         /**
          * @param {WorkbenchModel} model
          */
-        parseModel: function(workbenchModel) {
+        parseModel: function (workbenchModel) {
 
             //TODO : if(!(model instanceof WorkbenchModel)){return;}
 
@@ -180,7 +183,7 @@ define([
                     'Page': Page,
                     'LayoutPane': LayoutPane,
                     'CompatibleLayoutPane': CompatibleLayoutPane
-                }
+                };
                 var layoutTree, split, children, child;
                 if ('type' in model) {
                     layoutTree = new LayoutClass[model.type](model.id, model.name);

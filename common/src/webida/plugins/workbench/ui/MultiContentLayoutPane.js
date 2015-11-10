@@ -28,7 +28,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './LayoutPane'
-], function(
+], function (
     genetic, 
     Logger,
     LayoutPane
@@ -56,14 +56,14 @@ define([
         /**
          * @param {Part} owner
          */
-        setOwner: function(owner) {
+        setOwner: function (owner) {
             this.owner = owner;
         },
 
         /**
          * @return {Part}
          */
-        getOwner: function() {
+        getOwner: function () {
             return this.owner;
         }
     });

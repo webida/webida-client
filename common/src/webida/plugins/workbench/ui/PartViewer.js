@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/*jshint unused:false*/
+
 /**
  * Constructor
  * PartViewer
@@ -27,13 +29,11 @@
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './DataSource'
-], function(
+    'webida-lib/util/logger/logger-client'
+], function (
     EventEmitter,
     genetic, 
-    Logger,
-    DataSource
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -68,7 +68,7 @@ define([
          * @param {HTMLElement} parentNode
          * @abstract
          */
-        createWidget: function(parentNode) {
+        createWidget: function (parentNode) {
             throw new Error('createWidget(parentNode) should be implemented by ' + this.constructor.name);
         },
 
@@ -78,21 +78,21 @@ define([
          *
          * @abstract
          */
-        destroyWidget: function() {
+        destroyWidget: function () {
             throw new Error('destroyWidget() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {WidgetAdapter} widget
          */
-        setWidget: function(widget) {
+        setWidget: function (widget) {
             this.widget = widget;
         },
 
         /**
          * @return {WidgetAdapter}
          */
-        getWidget: function() {
+        getWidget: function () {
             return this.widget;
         },
 
@@ -102,7 +102,7 @@ define([
          * @param {Object} delta
          * @abstract
          */
-        render: function(delta) {
+        render: function (delta) {
             throw new Error('render(delta) should be implemented by ' + this.constructor.name);
         },
 
@@ -112,14 +112,14 @@ define([
          * @param {Object} contents
          * @abstract
          */
-        refresh: function(contents) {
+        refresh: function (contents) {
             throw new Error('refresh(contents) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {HTMLElement} element
          */
-        setParentNode: function(element) {
+        setParentNode: function (element) {
             //TODO remove this.elem
             this.elem = element;
             this.parentNode = element;
@@ -128,7 +128,7 @@ define([
         /**
          * @return {HTMLElement}
          */
-        getParentNode: function() {
+        getParentNode: function () {
             return this.parentNode;
         },
 
@@ -139,7 +139,7 @@ define([
          * @param {number} height
          * @abstract
          */
-        setSize: function(width, height) {
+        setSize: function (width, height) {
             throw new Error('setSize(width, height) should be implemented by ' + this.constructor.name);
         },
 
@@ -149,7 +149,7 @@ define([
          * @return {Object}
          * @abstract
          */
-        getSize: function() {
+        getSize: function () {
             throw new Error('getSize() should be implemented by ' + this.constructor.name);
         },
 
@@ -158,7 +158,7 @@ define([
          *
          * @abstract
          */
-        fitSize: function() {
+        fitSize: function () {
             throw new Error('fitSize() should be implemented by ' + this.constructor.name);
         },
 
@@ -166,15 +166,15 @@ define([
          * Let's give a chance that somebody can
          * register READY event in advance
          */
-        emitLater: function() {
+        emitLater: function () {
             var viewer = this;
             var arg = arguments;
-            setTimeout(function() {
+            setTimeout(function () {
                 EventEmitter.prototype.emit.apply(viewer, arg);
             });
         },
 
-        toString: function() {
+        toString: function () {
             var res = '<' + this.constructor.name + '>#' + this._viewerId;
             return res;
         }
@@ -189,7 +189,7 @@ define([
      */
     PartViewer.READY = 'viewerReady';
 
-    PartViewer.toString = function() {
+    PartViewer.toString = function () {
         return 'Viewer';
     };
 

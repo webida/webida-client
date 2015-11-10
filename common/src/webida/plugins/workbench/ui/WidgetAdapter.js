@@ -32,7 +32,7 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger
@@ -62,7 +62,7 @@ define([
          * Set widget instance to adapt.
          * @param {Object}
          */
-        setWidget: function(widget) {
+        setWidget: function (widget) {
             this.widget = widget;
         },
 
@@ -71,7 +71,7 @@ define([
          * For example codemirror, ace, tree viewer...
          * @return {Object}
          */
-        getWidget: function() {
+        getWidget: function () {
             return this.widget;
         }
     });

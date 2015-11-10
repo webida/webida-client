@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/*jshint unused:false*/
+
 /**
  * Constructor
  * DataSource
@@ -25,15 +27,15 @@
 
 // @formatter:off
 define([
-	'external/eventEmitter/EventEmitter',
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client'
-], function(
-	EventEmitter,
-	genetic, 
-	Logger
+    'external/eventEmitter/EventEmitter',
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client'
+], function (
+    EventEmitter,
+    genetic, 
+    Logger
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     /**
@@ -66,7 +68,7 @@ define([
         /**
          * @param {Object}
          */
-        setId: function(dataSourceId) {
+        setId: function (dataSourceId) {
             if (this.dataSourceId !== dataSourceId) {
                 this.emit(DataSource.ID_CHANGE, this, this.dataSourceId, dataSourceId);
             }
@@ -76,28 +78,28 @@ define([
         /**
          * @return {Object}
          */
-        getId: function() {
+        getId: function () {
             return this.dataSourceId;
         },
 
         /**
          * @param {Persistence}
          */
-        setPersistence: function(persistence) {
-            return this.persistence = persistence;
+        setPersistence: function (persistence) {
+            this.persistence = persistence;
         },
 
         /**
          * @return {Persistence}
          */
-        getPersistence: function() {
+        getPersistence: function () {
             return this.persistence;
         },
 
         /**
          * @param {DataSource} dataSource
          */
-        equals: function(dataSource) {
+        equals: function (dataSource) {
             throw new Error('equals(dataSource) should be implemented by ' + this.constructor.name);
         },
 
@@ -105,60 +107,60 @@ define([
          * @param {Object} data
          * @param {Function} callback
          */
-        setData: function(data, callback) {
+        setData: function (data, callback) {
             throw new Error('setData(contents, callback) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {Function} callback
          */
-        getData: function(callback) {
+        getData: function (callback) {
             throw new Error('getData(callback) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {Function} callback
          */
-        reload: function(callback) {
+        reload: function (callback) {
             throw new Error('reload(callback) should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @return {string} title
          */
-        getTitle: function() {
+        getTitle: function () {
             throw new Error('getTitle() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @return {string} toolTip
          */
-        getToolTip: function() {
+        getToolTip: function () {
             throw new Error('getToolTip() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @return {ImageDescriptor} imageDescriptor
          */
-        getTitleImage: function() {
+        getTitleImage: function () {
             throw new Error('getTitleImage() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {boolean} deleted
          */
-        setDeleted: function(deleted) {
+        setDeleted: function (deleted) {
             this.deleted = !!deleted;
         },
 
         /**
          * @return {boolean}
          */
-        isDeleted: function() {
+        isDeleted: function () {
             return this.deleted;
         },
 
-        toString: function() {
+        toString: function () {
             var res = '<' + this.constructor.name + '>#' + this._dataSourceId;
             return res;
         }

@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/*jshint unused:false*/
+
 /**
  * Constructor
  * LayoutPane
@@ -28,7 +30,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './LayoutTree'
-], function(
+], function (
     genetic, 
     Logger,
     LayoutTree
@@ -53,7 +55,7 @@ define([
         /** @type {Array.<PartContainer>} */
         this.containers = [];
 
-        this.on(LayoutPane.CONTAINER_SELECT, function(container) {
+        this.on(LayoutPane.CONTAINER_SELECT, function (container) {
             if (container) {
                 container.onSelect();
                 container.updateDirtyState();
@@ -67,7 +69,7 @@ define([
         /**
          * @param {PartContainer} container
          */
-        addPartContainer: function(container) {
+        addPartContainer: function (container) {
             logger.info('addPartContainer(' + container + ')');
             var containers = this.getPartContainers();
             if (containers.indexOf(container) < 0) {
@@ -79,7 +81,7 @@ define([
         /**
          * @param {PartContainer} container
          */
-        removePartContainer: function(container) {
+        removePartContainer: function (container) {
             var containers = this.getPartContainers();
             var index = containers.indexOf(container);
             if (index >= 0) {
@@ -91,7 +93,7 @@ define([
         /**
          * @return {Array.<PartContainer>} partContainers
          */
-        getPartContainers: function() {
+        getPartContainers: function () {
             return this.containers;
         },
 
@@ -99,7 +101,7 @@ define([
          * Get PartContainer corresponding tabIndex
          * @param {number} tabIndex
          */
-        getPartContainer: function(tabIndex) {
+        getPartContainer: function (tabIndex) {
             //TODO
         },
 
@@ -109,7 +111,7 @@ define([
          * @param {PartContainer} container
          * @param {number} tabIndex
          */
-        movePartContainer: function(container, tabIndex) {
+        movePartContainer: function (container, tabIndex) {
             //TODO
         }
     });

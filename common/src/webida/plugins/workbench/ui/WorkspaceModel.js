@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/*jshint unused:false*/
+
 /**
  * Constructor
  * WorkspaceModel
@@ -27,13 +29,11 @@
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './DataSource'
-], function(
+    'webida-lib/util/logger/logger-client'
+], function (
     EventEmitter,
     genetic, 
-    Logger,
-    DataSource
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -57,8 +57,8 @@ define([
          * @param {object} dataSourceId
          * @return {string} DataSourceFactory module's path
          */
-        getDataSourceFactory: function(dataSourceId) {
-        	//TODO : refactor when implementing webida.workspace.model.file plugin
+        getDataSourceFactory: function (dataSourceId) {
+            //TODO : refactor when implementing webida.workspace.model.file plugin
             return 'plugins/webida.workspace.model.file/FileDataSourceFactory';
         }
     });

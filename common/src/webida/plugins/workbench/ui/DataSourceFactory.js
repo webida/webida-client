@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/*jshint unused:false*/
+
 /**
  * Constructor
  * DataSourceFactory
@@ -25,13 +27,13 @@
 
 // @formatter:off
 define([
-	'webida-lib/util/genetic',
-	'webida-lib/util/logger/logger-client'
-], function(
-	genetic, 
-	Logger
+    'webida-lib/util/genetic',
+    'webida-lib/util/logger/logger-client'
+], function (
+    genetic, 
+    Logger
 ) {
-	'use strict';
+    'use strict';
 // @formatter:on
 
     var logger = new Logger();
@@ -47,9 +49,9 @@ define([
         /**
          * @param {Object} dataSourceId
          */
-        create: function(dataSourceId) {
-			throw new Error('create(dataSourceId) should be implemented by ' 
-				+ this.constructor.name);
+        create: function (dataSourceId) {
+            throw new Error('create(dataSourceId) should be implemented by ' +
+                this.constructor.name);
         }
     });
 

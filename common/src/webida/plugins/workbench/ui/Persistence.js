@@ -14,6 +14,8 @@
 * limitations under the License.
 */
 
+/*jshint bitwise:false*/
+
 /**
  * Constructor
  * Persistence
@@ -27,13 +29,11 @@
 define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './DataSource'
-], function(
+    'webida-lib/util/logger/logger-client'
+], function (
     EventEmitter,
     genetic, 
-    Logger,
-    DataSource
+    Logger
 ) {
     'use strict';
 // @formatter:on
@@ -69,7 +69,7 @@ define([
         /**
          * @return {Object}
          */
-        getPersistenceId: function() {
+        getPersistenceId: function () {
             return this.persistenceId;
         },
 
@@ -77,7 +77,7 @@ define([
          * @abstract
          * @return {string}
          */
-        getName: function() {
+        getName: function () {
             throw new Error('getName() should be implemented by ' + this.constructor.name);
         },
 
@@ -85,25 +85,25 @@ define([
          * @abstract
          * @return {string}
          */
-        getExtension: function() {
+        getExtension: function () {
             throw new Error('getExtension() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {string} contents
          */
-        setContents: function(contents) {
+        setContents: function (contents) {
             this.contents = contents;
         },
 
         /**
          * @return {string} contents
          */
-        getContents: function() {
+        getContents: function () {
             return this.contents;
         },
 
-        setFlag: function(/*int*/flag, /*boolean*/value) {
+        setFlag: function (/*int*/flag, /*boolean*/value) {
             if (!flag) {
                 throw new Error('Invalid flag name');
             }
@@ -114,8 +114,8 @@ define([
             }
         },
 
-        getFlag: function(/*int*/flag) {
-            return (this.flags & flag) != 0;
+        getFlag: function (/*int*/flag) {
+            return (this.flags & flag) !== 0;
         }
     });
 

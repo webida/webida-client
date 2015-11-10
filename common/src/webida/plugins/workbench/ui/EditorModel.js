@@ -28,7 +28,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './PartModel'
-], function(
+], function (
     genetic, 
     Logger,
     PartModel
@@ -56,21 +56,21 @@ define([
          * Serializes model to a string
          * @return {String} Serialized Data
          */
-        serialize: function() {
+        serialize: function () {
             throw new Error('serialize() should be implemented by ' + this.constructor.name);
         },
 
         /**
          * @param {Object} contents
          */
-        setContents: function(contents) {
+        setContents: function (contents) {
             this.contents = contents;
         },
 
         /**
          * @return {Object}
          */
-        getContents: function() {
+        getContents: function () {
             return this.contents;
         }
     });

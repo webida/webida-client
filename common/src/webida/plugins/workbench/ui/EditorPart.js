@@ -30,7 +30,7 @@ define([
     'webida-lib/util/logger/logger-client',
     './editorDialog',
     './Part'
-], function(
+], function (
     genetic,
     Logger,
     editorDialog,
@@ -58,38 +58,38 @@ define([
          *
          * @return {boolean}
          */
-        isDirty: function() {
+        isDirty: function () {
             var manager = this.getModelManager();
             return manager ? manager.canSaveModel() : false;
         },
 
-        save: function(callback) {
+        save: function (callback) {
             logger.info('save()');
             var that = this;
             if (this.getModelManager()) {
-                this.getModelManager().saveModel(function() {
+                this.getModelManager().saveModel(function () {
                     that._execFunc(callback, that);
                 });
             }
         },
 
-        saveAs: function() {
+        saveAs: function () {
             throw new Error('saveAs() should be implemented by ' + this.constructor.name);
         },
 
-        canSaveAs: function() {
+        canSaveAs: function () {
             throw new Error('canSaveAs() should be implemented by ' + this.constructor.name);
         },
 
-        focus: function() {
+        focus: function () {
             logger.info('focus() //do nothing');
         },
 
-        close: function() {
+        close: function () {
             logger.info('close()');
             var that = this;
             if (this.isDirty()) {
-                this._askSaveThen(function() {
+                this._askSaveThen(function () {
                     Part.prototype.close.call(that);
                 });
             } else {
@@ -100,7 +100,7 @@ define([
         /**
          * Reset model it's last saved state
          */
-        resetModel: function() {
+        resetModel: function () {
             logger.info('resetModel()');
             if (this.getModelManager()) {
                 this.getModelManager().resetModel();
@@ -111,7 +111,7 @@ define([
          * @See Part's onViewerChange()
          * @param {ChangeRequest} request
          */
-        onViewerChange: function(request) {
+        onViewerChange: function (request) {
             logger.info('onViewerChange(' + request + ')');
             var command = this.getCommand(request);
             if (this.hasCommandStack()) {
@@ -125,12 +125,12 @@ define([
          * @See Part's onModelChange()
          * @param {PartModelEvent} modelEvent
          */
-        onModelChange: function(modelEvent) {
+        onModelChange: function (modelEvent) {
             logger.info('onModelChange(' + modelEvent + ')');
             this.getViewer().render(modelEvent.getDelta());
         },
 
-        toString: function() {
+        toString: function () {
             var res = '<' + this.constructor.name + '>#' + this._partId;
             if (this.file) {
                 res += '(' + this.file.name + ')';
@@ -142,7 +142,7 @@ define([
          * @private
          * TODO : refactor
          */
-        _askSaveThen: function(callback) {
+        _askSaveThen: function (callback) {
             var file = this.getDataSource().getPersistence();
             editorDialog.create(file, 'Close', callback);
         }
