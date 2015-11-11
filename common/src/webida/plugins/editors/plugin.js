@@ -97,8 +97,8 @@ define([
         });
 
         topic.subscribe('editor/not-exists', function () {
-            topic.publish('editors.clean.all');
-            topic.publish('editors.clean.current');
+            topic.publish('editor/clean/all');
+            topic.publish('editor/clean/current');
         });
 
         //Compatibility
@@ -149,8 +149,8 @@ define([
     }
 
 
-    topic.publish('editors.clean.current');
-    topic.publish('editors.clean.all');
+    topic.publish('editor/clean/current');
+    topic.publish('editor/clean/all');
 
     var fsCache = ide.getFSCache();
     var asked = [];
