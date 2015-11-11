@@ -82,14 +82,6 @@ define([
             name: 'xml',
             requires: ['external/codemirror/addon/hint/xml-hint']
         },
-        'css': {
-            name: 'css',
-            requires: ['external/codemirror/addon/hint/css-hint']
-        },
-        'cssSmart': {
-            name: 'cssSmart',
-            requires: ['./content-assist/css-hint']
-        },
         'word': {
             name: 'anyword',
             requires: ['external/codemirror/addon/hint/anyword-hint']
@@ -880,16 +872,13 @@ define([
                         'external/codemirror/addon/tern/tern'
                     ], function () {
                         that.addDeferredAction(function () {
-                            if (mode === 'js') {
+                            if (mode === 'js' || 
+                                mode === 'html' || 
+                                mode === 'htmlmixed' ||
+                                mode === 'css') {
                                 _.defer(function () {
                                     startContentAssist(that, that.editor, function () {
-                                        resolve('js ca started');
-                                    });
-                                });
-                            } else if (mode === 'html' || mode === 'htmlmixed') {
-                                _.defer(function () {
-                                    startContentAssist(that, that.editor, function () {
-                                        resolve('js ca started');
+                                        resolve('ca started');
                                     });
                                 });
                             } else {

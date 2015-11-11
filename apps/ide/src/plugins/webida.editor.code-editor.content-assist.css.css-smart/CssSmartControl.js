@@ -16,11 +16,11 @@
 
 /**
  * Constructor function
- * HtmlSmartControl  class
- * Html smart  content assist control module.
+ * CssSmartControl  class
+ * Css smart  content assist control module.
  *
  * @constructor
- * @since: 2015.11.03
+ * @since: 2015.11.10
  * @author: h.m.kwon
  *
  */
@@ -33,7 +33,7 @@ define([
     'webida-lib/util/genetic',    
     'webida-lib/util/logger/logger-client',
     'plugins/webida.editor.code-editor/content-assist/IContentAssist',
-    './html-hint'
+    './css-hint'
 ], function (
     codemirror,
      _,
@@ -54,25 +54,25 @@ define([
         'addFile'
     ];
     
-    function HtmlSmartControl(viewer, cm, options, c) {
-        logger.info('new HtmlSmartControl()'); 
-
+    function CssSmartControl(viewer, cm, options, c) {
+        logger.info('new CssSmartControl()');
+        
         this.server = server;
         viewer.assister = server;
-        server.setModes(HtmlSmartControl.TARGET_MODE, HtmlSmartControl.ENGINE_NAME);
-        var optionsCopied = _.clone(options);
-        optionsCopied.async = true;
-        server.addFile(viewer.file.path, viewer.editor.getDoc().getValue(), optionsCopied);
+        server.setModes(CssSmartControl.TARGET_MODE, CssSmartControl.ENGINE_NAME);
+        //var optionsCopied = _.clone(options);
+        //optionsCopied.async = true;
+        //server.addFile(viewer.file.path, viewer.editor.getDoc().getValue(), optionsCopied);
         if (c) {
             c();
-        }               
+        }     
     }
     
     function isServerCommand(command) {
         return serverCommands.indexOf(command) >= 0;
     }  
 
-    genetic.inherits(HtmlSmartControl, IContentAssist, {
+    genetic.inherits(CssSmartControl, IContentAssist, {
         
 
         /**
@@ -107,5 +107,5 @@ define([
         }
     }); 
 
-    return HtmlSmartControl;
+    return CssSmartControl;
 });

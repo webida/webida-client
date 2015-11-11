@@ -70,9 +70,8 @@ function initServers(caExtensionInfos) {
         }
     }); 
     
-    require(['plugins/webida.editor.code-editor/content-assist/file-server',
-             'content-assist/css-hint-server'],
-    function (fileServer, cssServer) {
+    require(['plugins/webida.editor.code-editor/content-assist/file-server'],
+    function (fileServer) {
         //'use strict'; 
 
         function getRemoteFile(filepath, c) {
@@ -85,8 +84,7 @@ function initServers(caExtensionInfos) {
 
         fileServer.init(getRemoteFile);
 
-        var serversTemp = {};
-        serversTemp.css = cssServer;  
+        var serversTemp = {}; 
                 
         var promisesForEngines = [];
         

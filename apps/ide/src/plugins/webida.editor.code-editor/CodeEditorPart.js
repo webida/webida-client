@@ -138,11 +138,9 @@ define([
                     break;
                 case 'css':
                     viewer.setLinter('css', true);
-                    viewer.setHinters('css', ['css', 'cssSmart']);
                     break;
                 case 'html':
                     viewer.setLinter('html', true);
-                    viewer.setHinters('css', ['css', 'cssSmart']);
                     break;
                 default:
                     viewer.setHinters('word', ['word']);

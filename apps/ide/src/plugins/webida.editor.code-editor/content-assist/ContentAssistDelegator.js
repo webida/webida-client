@@ -92,7 +92,6 @@ define([
                 caExtensionInfo.controlModulePath = controlModulePath;
                 caExtensionInfo.hinterNames = ext.hinterNames;
                 caExtensionInfo.hinterModes = ext.hinterModes;
-                caExtensionInfo.pluginLoc = ext.__plugin__.loc;
                 
                 caExtensionInfos.push(caExtensionInfo);
 
