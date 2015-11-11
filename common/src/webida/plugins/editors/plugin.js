@@ -92,7 +92,7 @@ define([
 
         topic.subscribe('fs.cache.file.set', function (fsUrl, target, reason) {
             if (reason === 'refreshed') {
-                topic.publish('data-source/content-change', target);
+                topic.publish('data-source/content-changed', target);
             }
         });
 
