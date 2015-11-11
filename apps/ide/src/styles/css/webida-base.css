@@ -1,14 +1,3 @@
-@font-face {
-    font-family: "Nanum Gothic Coding";
-    src: url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-.body{
-   font-family: "Nanum Gothic Coding", Verdana,Arial,sans-serif;
-}
-
 /*theme*/
 /*GNB*/
 /*toolbar*/
@@ -31,6 +20,7 @@
   /*Console View Start*/
   /*Console View End*/
   /* WTC-3050 */
+  /*plugin*/
 }
 .webida-light .webida-tool-bar-icon-normal {
   background-position: 0 0;
@@ -542,4 +532,10 @@
 }
 .webida-light .dijitButtonContents:focus .dijitButtonText {
   text-decoration: underline;
+}
+.webida-light #plugin-settings-dialog-main {
+  width: 364px;
+  height: 300px;
+  overflow: auto;
+  padding: 10px;
 }

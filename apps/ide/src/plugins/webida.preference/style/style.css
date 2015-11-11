@@ -25,8 +25,15 @@
     border: 1px solid #9EA5AE;
 }
 
-#prefDlgContent .preferenceview-content {
+.webida-light #prefDlgContent .preferenceview-content {
     padding: 0;
+    border-top: #9EA5AE 1px solid;
+    border-right: #9EA5AE 1px solid;
+    border-bottom: #9EA5AE 1px solid;
+    border-left: 0;
+    width: calc(100% - 203px)!important;
+    background-color: #fff!important;
+    box-sizing: border-box;
 }
 
 #prefDlgContent .preferenceview-content-title {
@@ -73,7 +80,7 @@
 }
 
 #prefDlgContent .dijitSplitterV {
-    width: 2px;
+    width: 0px;
 }
 
 #prefDlgContent .preferenceview-category-item__tree {

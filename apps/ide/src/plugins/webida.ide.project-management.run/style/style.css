@@ -286,6 +286,7 @@
 #run-configuration-list {
     background-color: rgba(212,219,226,1)!important;
     border: #9EA5AE 1px solid;
+    margin-left: 5px;
 }
 ul.run-configuration-list-tree {
     list-style: none;
@@ -346,13 +347,17 @@ ul.run-configuration-list-tree > li > a {
     padding: 1px 19px 1px 0;
 }
 #run-configuration-list-contentpane {
-    height: 90%;
-    border: #9EA5AE 1px solid;
+    width: calc(100% - 224px)!important;
+    border-top: #9EA5AE 1px solid;
+    border-right: #9EA5AE 1px solid;
+    border-bottom: #9EA5AE 1px solid;
+    border-left: 0;
+    background-color: #fff;
 }
 
 .webida-light #run-configuration-content .dijitSplitterV {
-    background-color: rgba(96,106,120,1);
-    width: 4px;
+    background-color: transparent;
+    width: 0px;
 }
 /*run*/
 #run-configuration-create-button {
@@ -439,3 +444,4 @@ ul.run-configuration-list-tree > li > a {
 .webida-light .run-configuration-dialog-container .rcw-action .dijitButton {
     margin: 10px 0 0 0;
 }
+

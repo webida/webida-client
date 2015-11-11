@@ -318,3 +318,11 @@ theme*/
     color: #fff;
     background-color: #626c7a;
 }
+
+#GitHistoryTab {
+    padding: 0;
+}
+#GitHistoryTab .dijitSplitterH,
+#GitHistoryTab .dijitSplitterV {
+    background-color: transparent;
+}
