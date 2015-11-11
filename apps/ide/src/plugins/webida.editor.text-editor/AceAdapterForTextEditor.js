@@ -25,6 +25,9 @@
  * 
  */
 
+/* jshint unused:false */
+/* global ace */
+
 define([
     'require',
     'webida-lib/util/genetic',
@@ -51,7 +54,7 @@ define([
     function AceAdapterForTextEditor(parentElem, file, startedListener) {
         var self = this;
         this.parentElem = parentElem;
-        this.wrapperElem = document.createElement("div");
+        this.wrapperElem = document.createElement('div');
         this.parentElem.appendChild(this.wrapperElem);
         
         this.wrapperElem.style.height = 'auto';
@@ -334,15 +337,16 @@ define([
             }
 
             this.addDeferredAction(function (self) {
+                var wrapper;
                 if (typeof height === 'number') { //applying border correction
-                    var wrapper = self.wrapperElem;
+                    wrapper = self.wrapperElem;
                     
                     wrapper.style.width = width + 'px';                    
                     wrapper.style.height = height + 'px';                    
                     self.editor.resize();
                    
                 } else {                    
-                    var wrapper = self.wrapperElem;
+                    wrapper = self.wrapperElem;
 
                     wrapper.style.width = width;                    
                     wrapper.style.height = height;
@@ -739,9 +743,13 @@ define([
                 }
                 //lineItems['&Copy Line'] = menuItems.editMenuItems['&Line']['&Copy Line'];
                 lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
-                lineItems['Move Cursor Line to Middle'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
+                lineItems['Move Cursor Line to Middle'] = 
+                    menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
+                
                 lineItems['Move Cursor Line to Top'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
-                lineItems['Move Cursor Line to Bottom'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
+                
+                lineItems['Move Cursor Line to Bottom'] = 
+                    menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
 
                 if (_.values(lineItems).length > 0) {
                     items['&Line'] = lineItems;

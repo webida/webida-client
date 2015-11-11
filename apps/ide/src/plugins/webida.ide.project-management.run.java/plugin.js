@@ -173,7 +173,8 @@ define([
             ui.pathButton = $(child).find('.rcw-action-path').get(0);
 
             on(ui.content, 'input, select:change', function () {
-                topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {isValid: !_checkInvalidField(), isDirty: true});
+                topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, 
+                              {isValid: !_checkInvalidField(), isDirty: true});
             });
 
             ui.content.own(

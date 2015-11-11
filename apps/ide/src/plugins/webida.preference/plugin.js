@@ -22,6 +22,8 @@
  * @module webida.preference
  */
 
+/* jshint unused:false */
+
 define([
     'dojo/topic',
     'external/lodash/lodash.min',
@@ -91,7 +93,7 @@ define([
     }
 
     module.getViableItemsForWorkbench = function () {
-        var preferenceTypes = manager.getAllPreferenceTypes(manager.SCOPE['WORKSPACE']);
+        var preferenceTypes = manager.getAllPreferenceTypes(manager.SCOPE.WORKSPACE);
         return preferenceTypes.length > 0 ? workbenchItems : null;
     };
 

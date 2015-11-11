@@ -1,3 +1,6 @@
+/* global CodeMirror */
+/*jshint unused:false*/
+
 (function (mod) {
     'use strict';
     if (typeof exports === 'object' && typeof module === 'object') {// CommonJS
@@ -60,7 +63,9 @@
         }
 
         CodeMirror.on(rulerElement, 'click', function (e) {
+            /* jshint camelcase: false */
             CodeMirror.e_preventDefault(e);
+            /* jshint camelcase: true */
             var rect = rulerElement.getBoundingClientRect();
             var scrollInfo = cm.getScrollInfo();
             var newScrollTop = (e.clientY - rect.top) * scrollInfo.height / rect.height;
@@ -77,6 +82,7 @@
         $(wrapper).css({ right: '0px' });
     }
 
+    
     function RulerAnnotation(cm, options) {
         //TODO
     }

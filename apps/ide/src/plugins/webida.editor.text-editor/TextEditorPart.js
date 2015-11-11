@@ -50,7 +50,7 @@ define([
     './TextEditorContextMenu',
     './TextEditorViewer',
     'dojo/domReady!'
-], function(
+], function (
     topic,
     _,
     genetic,
@@ -86,13 +86,14 @@ define([
     var logger = new Logger();
     //logger.off();
 
-    var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 'texteditor.show-hide', 'content-assist'];
+    var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 
+                         'texteditor.show-hide', 'content-assist'];
 
     //To support synchronizeWidgetModel
     //TODO : refactor
     var recentViewers = new Map();
     var partRegistry = workbench.getCurrentPage().getPartRegistry();
-    partRegistry.on(PartRegistry.PART_UNREGISTERED, function(part) {
+    partRegistry.on(PartRegistry.PART_UNREGISTERED, function (part) {
         if (partModelProvider.isModelUsed(part.getModel()) === false) {
             recentViewers['delete'](part.getDataSource());
         }
@@ -101,13 +102,13 @@ define([
     function TextEditorPart(container) {
         logger.info('new TextEditorPart(' + container + ')');
         EditorPart.apply(this, arguments);
-        var that = this;
+        //var that = this;
         var dataSource = container.getDataSource();
         //TODO remove all dependency to file
         this.file = dataSource.getPersistence();
         this.preferences = null;
         this.foldingStatus = null;
-        this.on(Part.CONTENTS_READY, function(part) {
+        this.on(Part.CONTENTS_READY, function (part) {
             console.log('Part.CONTENTS_READY!!');
             var viewer = part.getViewer();
             var ds = part.getDataSource();
@@ -122,14 +123,14 @@ define([
 
     genetic.inherits(TextEditorPart, EditorPart, {
 
-        initialize: function() {
+        initialize: function () {
             logger.info('initialize()');
             this.initializeViewer();
             this.initializeListeners();
             this.initializePreferences();
         },
 
-        initializeViewer: function() {
+        initializeViewer: function () {
             logger.info('initializeViewer()');
             var that = this;
             var viewer = this.getViewer();
@@ -138,7 +139,7 @@ define([
             viewer.markClean();
             viewer.setSize(parent.offsetWidth, parent.offsetHeight);
             viewer.setMatchBrackets(true);
-            var setStatusBarText = function() {
+            var setStatusBarText = function () {
                 var workbench = require('webida-lib/plugins/workbench/plugin');
                 var file = that.file;
                 var viewer = that.getViewer();
@@ -151,14 +152,14 @@ define([
             };
             viewer.addCursorListener(setStatusBarText);
             viewer.addFocusListener(setStatusBarText);
-            viewer.addCursorListener(function(viewer) {
+            viewer.addCursorListener(function (viewer) {
                 TextEditorPart.pushCursorLocation(viewer.file, viewer.getCursor());
             });
             viewer.addExtraKeys({
-                'Ctrl-Alt-Left': function() {
+                'Ctrl-Alt-Left': function () {
                     TextEditorPart.moveBack();
                 },
-                'Ctrl-Alt-Right': function() {
+                'Ctrl-Alt-Right': function () {
                     TextEditorPart.moveForth();
                 }
             });
@@ -168,16 +169,16 @@ define([
          * To initialize listeners you want
          * override this
          */
-        initializeListeners: function() {
+        initializeListeners: function () {
             logger.info('initializeListeners()');
             var that = this;
             //TODO : remove listener
-            this.on(EditorPart.AFTER_SAVE, function() {
+            this.on(EditorPart.AFTER_SAVE, function () {
                 that.foldingStatus = that.getViewer().getFoldings();
             });
         },
 
-        initializePreferences: function() {
+        initializePreferences: function () {
             logger.info('initializePreferences()');
             var viewer = this.getViewer();
             var file = this.file;
@@ -185,7 +186,7 @@ define([
             this.preferences = new EditorPreference(preferenceIds, viewer);
             this.preferences.setFields(this.getPreferences());
             //editorconfig
-            this.preferences.getField('texteditor', 'webida.editor.text-editor:editorconfig', function(value) {
+            this.preferences.getField('texteditor', 'webida.editor.text-editor:editorconfig', function (value) {
                 if (value === true) {
                     configloader.editorconfig(viewer, file);
                 }
@@ -198,7 +199,7 @@ define([
          *
          * @returns preferenceConfig for TextEditor
          */
-        getPreferences: function() {
+        getPreferences: function () {
             return preferenceConfig;
         },
 
@@ -208,14 +209,14 @@ define([
          *
          * @returns TextEditorViewer
          */
-        getViewerClass: function() {
+        getViewerClass: function () {
             return TextEditorViewer;
         },
 
         /**
          * TODO : move to CodeEditorPart
          */
-        getFoldingStatus: function() {
+        getFoldingStatus: function () {
             return this.foldingStatus;
         },
 
@@ -223,11 +224,11 @@ define([
          * @param {HTMLElement} parent
          * @return {Viewer}
          */
-        createViewer: function(parentNode) {
+        createViewer: function (parentNode) {
             logger.info('%c createViewer(' + parentNode.tagName + ')', 'color:green');
             //TODO : remove
             this.setParentElement(parentNode);
-            var that = this;
+            //var that = this;
 
             //Viewer
             var ViewerClass = this.getViewerClass();
@@ -240,7 +241,7 @@ define([
         /**
          * @return {Document}
          */
-        createModel: function() {
+        createModel: function () {
             logger.info('%c createModel()', 'color:green');
             this.setModelManager(new EditorModelManager(this.getDataSource()));
             var model = this.getModelManager().getSynchronized(Document);
@@ -249,7 +250,7 @@ define([
             return model;
         },
 
-        onDestroy: function() {
+        onDestroy: function () {
             logger.info('onDestroy()');
             EditorPart.prototype.onDestroy.apply(this);
             this.getViewer().destroyWidget();
@@ -260,7 +261,7 @@ define([
             }
         },
 
-        focus: function() {
+        focus: function () {
             logger.info('focus()');
             this.getViewer().focus();
         },
@@ -268,36 +269,36 @@ define([
         /**
          * @return {DocumentCommand}
          */
-        getCommand: function(request) {
+        getCommand: function (request) {
             return new DocumentCommand(this.getModel(), request);
         },
 
-        getContextMenuClass: function() {
+        getContextMenuClass: function () {
             return TextEditorContextMenu;
         },
 
-        getContextMenuItems: function(allItems) {
+        getContextMenuItems: function (allItems) {
             logger.info('getContextMenuItems(' + allItems + ')');
             var contextMenu = new (this.getContextMenuClass())(allItems, this);
             return contextMenu.getPromiseForAvailableItems();
         },
 
-        save: function(callback) {
+        save: function (callback) {
             logger.info('save(' + typeof callback + ')');
             var that = this;
             this._beforeSave();
             //TODO Refactor : find more neat way without setTimeout
-            setTimeout(function() {
+            setTimeout(function () {
                 EditorPart.prototype.save.call(that, callback);
             });
         },
 
-        _beforeSave: function() {
+        _beforeSave: function () {
             logger.info('_beforeSave');
             var viewer = this.getViewer();
             var doc = this.getModel();
             var text = doc.getContents();
-            if ( typeof text === 'undefined') {
+            if (typeof text === 'undefined') {
                 return;
             }
 
@@ -317,16 +318,16 @@ define([
             }
 
             if (viewer.retabIndentations) {
-                var getSpaces = function(n) {
+                var getSpaces = function (n) {
                     var spaces = ['', ' ', '  ', '   ', '    '];
                     if (spaces[n] === undefined) {
-                        return (spaces[n] = ( n ? ' ' + getSpaces(n - 1) : ''));
+                        return (spaces[n] = (n ? ' ' + getSpaces(n - 1) : ''));
                     } else {
                         return spaces[n];
                     }
                 };
                 var unit = viewer.options.indentUnit, re = /^(( )*)\t/m, m;
-                while (( m = text.match(re))) {
+                while ((m = text.match(re))) {
                     text = text.replace(re, '$1' + getSpaces(unit - (m[0].length - 1) % unit));
                 }
             }
@@ -349,10 +350,10 @@ define([
         forth: []
     };
 
-    TextEditorPart.moveTo = function(location) {
+    TextEditorPart.moveTo = function (location) {
         topic.publish('editor/open', location.filepath, {
             show: true
-        }, function(part) {
+        }, function (part) {
             var viewer = part.getViewer();
             if (location.start && location.end) {
                 viewer.setSelection(location.start, location.end);
@@ -360,13 +361,13 @@ define([
                 viewer.setCursor(location.cursor);
             }
 
-            viewer.addDeferredAction(function(viewer) {
+            viewer.addDeferredAction(function (viewer) {
                 viewer.editor.focus();
             });
         });
     };
 
-    TextEditorPart.moveBack = function() {
+    TextEditorPart.moveBack = function () {
         if (cursorStacks.back.length > 1) {
             var popped = cursorStacks.back.pop();
             if (popped) {
@@ -376,7 +377,7 @@ define([
         }
     };
 
-    TextEditorPart.moveForth = function() {
+    TextEditorPart.moveForth = function () {
         var popped = cursorStacks.forth.pop();
         if (popped) {
             cursorStacks.back.push(popped);
@@ -384,9 +385,9 @@ define([
         }
     };
 
-    TextEditorPart.pushCursorLocation = function(file, cursor, forced) {
+    TextEditorPart.pushCursorLocation = function (file, cursor, forced) {
         logger.info('pushCursorLocation(file, ' + cursor + ', forced)');
-        var filepath = ( typeof file === 'string') ? file : file.getPath();
+        var filepath = (typeof file === 'string') ? file : file.getPath();
         var thisLocation = {
             filepath: filepath,
             cursor: cursor,
@@ -397,9 +398,9 @@ define([
         function compareLocations(cursor1, cursor2, colspan, rowspan, timespan) {
             if (cursor1.filepath === cursor2.filepath) {
                 // @formatter:off
-                if (((!colspan || (Math.abs(cursor1.cursor.col - cursor2.cursor.col) < colspan)) 
-                	&& (!rowspan || (Math.abs(cursor1.cursor.row - cursor2.cursor.row) < rowspan))) 
-                	|| (!timespan || (Math.abs(cursor1.timestamp - cursor2.timestamp) < timespan))) {
+                if (((!colspan || (Math.abs(cursor1.cursor.col - cursor2.cursor.col) < colspan)) && 
+                     (!rowspan || (Math.abs(cursor1.cursor.row - cursor2.cursor.row) < rowspan))) ||
+                    (!timespan || (Math.abs(cursor1.timestamp - cursor2.timestamp) < timespan))) {
                     return true;
                 }
                 // @formatter:on
@@ -420,8 +421,8 @@ define([
         if (cursorStacks.back.length > 0) {
             var latest = cursorStacks.back.pop();
             // @formatter:off
-            if (((forced || latest.forced) && !identicalLocations(thisLocation, latest)) 
-            	|| (!similarLocations(thisLocation, latest))) {
+            if (((forced || latest.forced) && !identicalLocations(thisLocation, latest)) ||
+                (!similarLocations(thisLocation, latest))) {
                 cursorStacks.back.push(latest);
                 cursorStacks.forth = [];
             }

@@ -23,6 +23,8 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'dojo/Deferred',
@@ -30,7 +32,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './CodeEditorViewer'
-], function(
+], function (
     Deferred,
     TextEditorContextMenu,
     genetic, 
@@ -60,7 +62,7 @@ define([
          * Creates Available Menu Items then return Thenable
          * @return {Thenable}
          */
-        getPromiseForAvailableItems: function() {
+        getPromiseForAvailableItems: function () {
 
             var superDeferred = TextEditorContextMenu.prototype.getPromiseForAvailableItems.call(this);
 
@@ -73,7 +75,7 @@ define([
             var registry = this.getPartRegistry();
             var editorParts = registry.getEditorParts();
 
-            superDeferred.then(function(items) {
+            superDeferred.then(function (items) {
 
                 // Source
                 var sourceItems = {};
@@ -117,7 +119,7 @@ define([
                         type: 'rename',
                         newName: 'merong',
                         fullDocs: true
-                    }, function(error) {
+                    }, function (error) {
                         if (!error) {
                             sourceItems['&Rename Variables'] = allItems.editMenuItems['&Source']['&Rename Variables'];
                         }

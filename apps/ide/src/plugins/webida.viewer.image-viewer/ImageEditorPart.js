@@ -26,6 +26,9 @@
  *
  */
 
+/* global toastr */
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'webida-lib/app',
@@ -37,7 +40,7 @@ define([
     'dojo/topic',
     'webida-lib/util/logger/logger-client',
     'dojo/domReady!'
-], function(
+], function (
     app,
     pathUtil,
     genetic,
@@ -54,17 +57,19 @@ define([
     //logger.off();
 
     var dom = {
-        getStyle: function(element, prop) {
+        getStyle: function (element, prop) {
             var styles = window.getComputedStyle(element);
             return styles.getPropertyValue(prop);
         },
-        setStyles: function(element, propSet) {
+        setStyles: function (element, propSet) {
             var prop, style = element.style;
             for (prop in propSet) {
-                style.setProperty(prop, propSet[prop]);
+                if (propSet.hasOwnProperty(prop)) {
+                    style.setProperty(prop, propSet[prop]);
+                }
             }
         },
-    }
+    };
 
     function ImageEditorPart(container) {
         logger.info('new ImageEditorPart(' + container + ')');
@@ -77,34 +82,34 @@ define([
         /**
          * @Override
          */
-        onCreate: function() {
+        onCreate: function () {
             logger.info('%conCreate()', 'color:orange');
             var container = this.getContainer();
             this.createViewer(container.getContentNode());
         },
 
-        renderImage: function() {
+        renderImage: function () {
             logger.info('renderImage()');
             var fs = app.getFSCache();
             var parent = this.getParentElement();
             var arr = pathUtil.dividePath(this.getDataSource().getId());
             var dir = arr[0];
             var fileName = arr[1];
-            fs.addAlias(dir, 10, function(err, alias) {
+            fs.addAlias(dir, 10, function (err, alias) {
                 if (err) {
                     toastr.error('Failed to add an alias for the path of the file (' + err + ')');
                 } else {
                     var isFull = true;
                     var img = new Image();
                     img.src = alias.url + '/' + fileName;
-                    img.addEventListener('load', function(event) {
+                    img.addEventListener('load', function (event) {
                         var div = document.createElement('DIV');
                         div.setAttribute('style', 'width:100%; height:100%; overflow:auto; background-color:white');
                         div.appendChild(this);
                         parent.appendChild(div);
                         ImageEditorPart.setZoomCursor(this);
                     });
-                    img.addEventListener('click', function(event) {
+                    img.addEventListener('click', function (event) {
                         if (isFull === true) {
                             ImageEditorPart.sizeToFit(img);
                             isFull = false;
@@ -118,14 +123,14 @@ define([
             });
         },
 
-        createViewer: function(parentNode, callback) {
+        createViewer: function (parentNode, callback) {
             logger.info('createViewer(' + parentNode.tagName + ', callback)');
             this.setParentElement(parentNode);
             this.renderImage();
         }
     });
 
-    ImageEditorPart.sizeToFit = function(img) {
+    ImageEditorPart.sizeToFit = function (img) {
         var style;
         var parent = img.parentNode;
         var parentBounds = parent.getBoundingClientRect();
@@ -144,14 +149,14 @@ define([
         }
     };
 
-    ImageEditorPart.sizeToOrigin = function(img) {
+    ImageEditorPart.sizeToOrigin = function (img) {
         dom.setStyles(img, {
             width: img.naturalWidth + 'px',
             height: img.naturalHeight + 'px'
         });
     };
 
-    ImageEditorPart.setZoomCursor = function(img) {
+    ImageEditorPart.setZoomCursor = function (img) {
         var parent = img.parentNode;
         var imgRect = img.getBoundingClientRect();
         var parentRect = parent.getBoundingClientRect();

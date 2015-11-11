@@ -24,7 +24,6 @@ define([
     ContentAssistDelegator
 ) {
     'use strict';
-    /* global webidaHost: true */
 
     var worker = null;
 

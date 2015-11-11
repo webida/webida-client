@@ -36,6 +36,8 @@ define(['webida-lib/app',            // ide
 function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, Util) {
     'use strict';
 
+    // Commented because of Jshint error
+     /*
     function isRunnableProjectPath(projectLevelPath) {
         if (!projectLevelPath || !pathUtil.isDirPath(projectLevelPath)) {
             return false;
@@ -52,11 +54,12 @@ function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, 
 
         return true;
     }
-
+    
     function isRunnablePath(path) {
         var projectPath = pathUtil.getProjectRootPath(path);
         return isRunnableProjectPath(projectPath);
     }
+    */
 
     return {
         getViableItems : function () {
@@ -87,13 +90,16 @@ function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, 
             var context = workbench.getContext();
             if (context && context.paths) {
                 contextPaths = context.paths;
+                // Commented because of Jshint error
+                /*
                 if (contextPaths.length === 1) {
                     var isRunnable = isRunnablePath(contextPaths[0]);
                     if (isRunnable === true) {
                         // FIXME:: Refactoring to use extension point
 //                        items = $.extend(items, itemsContext);
                     }
-                }
+               }
+               */
             }
             return items;
         },
