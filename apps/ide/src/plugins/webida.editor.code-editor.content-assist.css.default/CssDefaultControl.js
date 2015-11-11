@@ -16,32 +16,34 @@
 
 /**
  * Constructor function
- * HtmlSmartControl  class
- * Html smart  content assist control module.
+ * HtmlDefaultControl  class
+ * Html default content assist control module.
  *
  * @constructor
- * @since: 2015.11.03
+ * @since: 2015.11.10
  * @author: h.m.kwon
  *
  */
 
+/*jshint unused:false*/
+
 // @formatter:off
 define([
+    'external/codemirror/addon/hint/css-hint',
     'external/codemirror/lib/codemirror',
     'external/lodash/lodash.min',
     'require',
     'webida-lib/util/genetic',    
     'webida-lib/util/logger/logger-client',
-    'plugins/webida.editor.code-editor/content-assist/IContentAssist',
-    './html-hint'
+    'plugins/webida.editor.code-editor/content-assist/IContentAssist'
 ], function (
+    cssHint,
     codemirror,
      _,
     require,
     genetic,
     Logger,
-    IContentAssist,
-    server
+    IContentAssist
 ) {
     'use strict';
 // @formatter:on
@@ -49,30 +51,15 @@ define([
     var logger = new Logger();
     logger.off();     
     
-    
-    var serverCommands = [
-        'addFile'
-    ];
-    
-    function HtmlSmartControl(viewer, cm, options, c) {
-        logger.info('new HtmlSmartControl()'); 
+    function CssDefaultControl(viewer, cm, options, c) {
+        logger.info('new CssDefaultControl()');   
 
-        this.server = server;
-        viewer.assister = server;
-        server.setModes(HtmlSmartControl.TARGET_MODE, HtmlSmartControl.ENGINE_NAME);
-        var optionsCopied = _.clone(options);
-        optionsCopied.async = true;
-        server.addFile(viewer.file.path, viewer.editor.getDoc().getValue(), optionsCopied);
         if (c) {
             c();
-        }               
+        }    
     }
     
-    function isServerCommand(command) {
-        return serverCommands.indexOf(command) >= 0;
-    }  
-
-    genetic.inherits(HtmlSmartControl, IContentAssist, {
+    genetic.inherits(CssDefaultControl, IContentAssist, {
         
 
         /**
@@ -83,7 +70,7 @@ define([
          * @return {boolean}
          */
         canExecute: function (command) {            
-            return  isServerCommand(command);
+            return false;
         },
 
         /**
@@ -96,16 +83,9 @@ define([
          * @return {all}
          */
         execCommand: function (command) {
-            var slice = Array.prototype.slice;
-            var args = slice.apply(arguments);
-            args.splice(0, 1);
-            if (isServerCommand(command)) {
-                return this.server[command].apply(this.server, args);
-            } else {
-                console.error('Command[' + command + '] is not supported.');
-            }
+            console.error('Command[' + command + '] is not supported.');
         }
     }); 
 
-    return HtmlSmartControl;
+    return CssDefaultControl;
 });
