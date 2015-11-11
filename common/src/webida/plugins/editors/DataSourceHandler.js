@@ -82,7 +82,7 @@ define([
             this.subscribed.push(topic.subscribe('fs.cache.node.deleted', this._checkCase.bind(this)));
 
             //on content changed
-            this.subscribed.push(topic.subscribe('data-source/content-change', this._onContentChange.bind(this)));
+            this.subscribed.push(topic.subscribe('data-source/content-changed', this._onContentChange.bind(this)));
         },
 
         /**
