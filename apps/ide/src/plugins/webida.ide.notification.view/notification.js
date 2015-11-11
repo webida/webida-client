@@ -21,9 +21,9 @@
 // @formatter:off
 define([
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     Logger
-){
+) {
     'use strict';
 // @formatter:on
 
@@ -34,7 +34,7 @@ define([
     var classPrefix = 'notification-message-';
     var classLabelPrefix = 'notification-label-';
     var notification = {
-        setPreferenceColor: function(values) {
+        setPreferenceColor: function (values) {
             for (var key in values) {
                 if (values.hasOwnProperty(key) && key.endsWith('-color')) {
                     var type = key.substring(0, key.indexOf('-color'));
@@ -48,7 +48,7 @@ define([
                 }
             }
         },
-        setNotification: function(type, message, title) {
+        setNotification: function (type, message, title) {
             var $label = $('<span class="notification-label"></span>').addClass(classLabelPrefix + type).css({
                 'background-color': colors[type]
             }).text(type);
@@ -71,16 +71,15 @@ define([
             $('#log').append(notiWrapper);
             this.setScrollBot();
         },
-        setScrollBot: function() {
-            var $notiContent = $('.notification-contents'),
-            notiScrollHeight = $notiContent[0].scrollHeight;
+        setScrollBot: function () {
+            var $notiContent = $('.notification-contents'), notiScrollHeight = $notiContent[0].scrollHeight;
             $notiContent.scrollTop(notiScrollHeight);
         }
     };
 
     function getNow() {
         var result = [], now = new Date();
-        var ymd = now.getFullYear() + '.' + now.getMonth() + '.' + now.getDate() + ' ';
+        var ymd = now.getFullYear() + '.' + (now.getMonth() + 1) + '.' + now.getDate() + ' ';
         result.push(now.getHours());
         result.push(now.getMinutes());
         result.push(now.getSeconds());
