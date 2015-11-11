@@ -26,11 +26,13 @@
  *
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'webida-lib/util/genetic',    
     'webida-lib/util/logger/logger-client',
-], function(
+], function (
        genetic,
         Logger
        ) {
@@ -55,7 +57,7 @@ define([
          * @return {boolean}
          * @abstract
          */
-        canExecute: function(command) {
+        canExecute: function (command) {
             throw new Error('canExecute(parentNode) should be implemented by ' + this.constructor.name);
         },
 
@@ -66,7 +68,7 @@ define([
          *
          * @abstract
          */
-        execCommand: function(command) {
+        execCommand: function (command) {
             throw new Error('execCommand() should be implemented by ' + this.constructor.name);
         }
     });

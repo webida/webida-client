@@ -40,6 +40,7 @@ define([
     var logger = new Logger();
     logger.off();
 
+    /* jshint validthis:true */
     function getView() {
         if (!this.view) {
             var view = new View('notificationTab', 'Notification');
@@ -56,10 +57,11 @@ define([
         };
         workbench.registToViewFocusList(this.view, opt);
         $('#NotificationTab').append(template);
-        topic.subscribe('NOTIFY', function(type, msg, title) {
+        topic.subscribe('NOTIFY', function (type, msg, title) {
             notification.setNotification(type, msg, title);
         });
     }
+    /* jshint validthis:false */
 
     return {
         getView : getView,

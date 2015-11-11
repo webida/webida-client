@@ -61,15 +61,15 @@ define([
             if (schema) {
                 var type = schema.type;
                 var opt = schema.opt;
-                switch(type) {
+                switch (type) {
                     case 'checkbox':
-                        if(!_.isBoolean(value)) {
+                        if (!_.isBoolean(value)) {
                             invalidMsg = 'The value of \'' + opt.name + '\' should be boolean';
                         }
                         break;
                     case 'select':
                         var matched = false;
-                        for(var i=0; i<opt.items.length; i++) {
+                        for (var i = 0; i < opt.items.length; i++) {
                             if ((opt.items[i].value && opt.items[i].value === value) ||
                                 (!opt.items[i].value && opt.items[i] === value)) {
                                 matched = true;
@@ -101,9 +101,9 @@ define([
     genetic.inherits(SimplePage, PreferencePage, {
         getPage: function () {
             var fieldSchema = this.pageData;
-            if(fieldSchema) {
+            if (fieldSchema) {
                 for (var i = 0; i < fieldSchema.length; i++) {
-                    if(fieldSchema[i].type === 'group') {
+                    if (fieldSchema[i].type === 'group') {
                         this._addGroup(fieldSchema[i].title);
                         continue;
                     }
@@ -116,7 +116,7 @@ define([
             PreferencePage.prototype.onPageAppended.call(this);
         },
         onPageRemoved: function () {
-            for (var i=0; i<this.components.length; i++) {
+            for (var i = 0;  i < this.components.length; i++) {
                 this.components[i].destroy();
             }
             PreferencePage.prototype.onPageRemoved.call(this);
@@ -269,7 +269,9 @@ define([
                     break;
             }
             if (opt && opt.enabledOn) {
+                /*jshint -W004 */
                 var checkbox;
+                /*jshint +W004 */
                 if ((checkbox = reg.byId(opt.enabledOn)) && checkbox.isInstanceOf(CheckBox)) {
                     added.set('disabled', !checkbox.get('value'));
                     aspect.after(checkbox, 'onChange', function (newVal) {

@@ -1394,7 +1394,7 @@ define([
             var editor = this.editor;
 
             if (editor) {
-                var selected = editor.getSelection();
+                //var selected = editor.getSelection();
 
                 // Undo, Redo
                 var history = editor.getHistory();
@@ -1451,7 +1451,7 @@ define([
             var editor = this.editor;
             var part = editors.getCurrentPart();
             if (editor) {
-                var selected = editor.getSelection();
+               // var selected = editor.getSelection();
 
                 // Close Others, Close All
                 if (opened.length > 1) {
@@ -1497,9 +1497,13 @@ define([
                 }
                 //lineItems['&Copy Line'] = menuItems.editMenuItems['&Line']['&Copy Line'];
                 lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
-                lineItems['Move Cursor Line to Middle'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
+                lineItems['Move Cursor Line to Middle'] = 
+                    menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
+                
                 lineItems['Move Cursor Line to Top'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
-                lineItems['Move Cursor Line to Bottom'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
+                
+                lineItems['Move Cursor Line to Bottom'] = 
+                    menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
 
                 if (_.values(lineItems).length > 0) {
                     items['&Line'] = lineItems;

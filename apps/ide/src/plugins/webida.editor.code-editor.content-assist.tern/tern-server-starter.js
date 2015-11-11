@@ -81,8 +81,8 @@ function (require, topic, _, ide, codemirror, pathUtil) {
         this.server = null;
     }
 
-    Server.prototype.start = function (c) {
-        var self = this;
+    Server.prototype.start = function (/*c*/) {
+        //var self = this;
         /* TODO: We will not use Server finally.
         require(['./js-hint-server'], function (server) {
             self.server = server;

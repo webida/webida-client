@@ -128,10 +128,12 @@ define([
             if (contextPaths.length === 1) {
                 var bRunnable = isRunnablePath(contextPaths[0]);
 
+                /*jshint -W069 */
                 if (bRunnable === true) {
                     items['&Run'] = workbenchWholeItems['&Run'];
                     items['Debug'] = workbenchWholeItems['Debug'];
                 }
+                /*jshint +W069 */
                 contextProjectName = _parseProjectNameFromPath(contextPaths[0]);
             }
         }
@@ -232,6 +234,7 @@ define([
 
         contextMenuItems.push('---');
 
+        /*jshint -W069 */
         items['&Run'] = workspaceWholeItems['&Run'];
         contextRunMenuItems = _.clone(contextMenuItems);
         contextRunMenuItems.push(RUN_CONFIGURATIONS);
@@ -245,7 +248,7 @@ define([
         items['Debug with'] = workspaceWholeItems['Debug with'];
         items['Debug with'][3] = contextDebugMenuItems;
         items['Debug with'][4] = disableList;
-
+        /*jshint +W069 */
         return items;
     };
 

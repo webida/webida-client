@@ -34,6 +34,7 @@ define([
     PreferencePage,
     template
 ) {
+    'use strict';
     function NotificationPreferencePage(store, pageData) {
         PreferencePage.apply(this, arguments);
         this.pageData = pageData;

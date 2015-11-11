@@ -25,6 +25,8 @@
  * 
  */
 
+/* jshint unused:false */
+
 define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',

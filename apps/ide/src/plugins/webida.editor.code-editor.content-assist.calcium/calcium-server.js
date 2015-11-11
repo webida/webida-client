@@ -19,6 +19,8 @@
  * @author: Se-won Kim
  */
 
+/* jshint unused:false */
+
 define([
         'external/calcium/dist/calcium',
         'webida-lib/util/logger/logger-client',

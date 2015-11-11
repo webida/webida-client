@@ -20,6 +20,8 @@
  * @author: Koong Kyungmi (kyungmi.k@samsung.com)
  */
 
+/* jshint unused:false */
+
 define([
     'dojo/topic',
     'external/eventEmitter/EventEmitter',

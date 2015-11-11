@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/* jshint unused:false */
+
 define(['../CodeEditorViewer'], function (CodeEditorViewer) {
     'use strict';
 
@@ -22,7 +24,7 @@ define(['../CodeEditorViewer'], function (CodeEditorViewer) {
             return {};
         },
         editor: function () {
-        	//TODO : fill something needed
+            //TODO : fill something needed
         }
     };
 });

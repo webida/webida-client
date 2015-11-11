@@ -1,4 +1,6 @@
 /* global QUnit */
+/* jshint unused:false */
+
 require(['plugins/webida.editor.code-editor/CodeEditorPart'], function (CodeEditorPart) {
     'use strict';
     var part = new CodeEditorPart();

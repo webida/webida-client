@@ -22,6 +22,8 @@
  * @module webida.preference.service.ProjectPreferenceService
  */
 
+/* global self */
+
 define([
     'webida-lib/util/genetic',
     './preference-service',

@@ -23,13 +23,15 @@
  * @author: hw.shim
  */
 
+/*jshint unused:false*/
+
 // @formatter:off
 define([
     'dojo/Deferred',
     'webida-lib/plugins/workbench/ui/PartContextMenu',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
-], function(
+], function (
     Deferred,
     PartContextMenu,
     genetic, 
@@ -46,6 +48,7 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
+    
     function TextEditorContextMenu(menuItems, part) {
         logger.info('new TextEditorContextMenu(menuItems, part)');
         PartContextMenu.apply(this, arguments);
@@ -58,7 +61,7 @@ define([
          * Creates Available Menu Items then return Thenable
          * @return {Thenable}
          */
-        getPromiseForAvailableItems: function() {
+        getPromiseForAvailableItems: function () {
 
             var items = {};
             var menuItems = this.getAllItems();
@@ -66,7 +69,7 @@ define([
             var part = this.getPart();
             var viewer = part.getViewer();
             var widget = viewer.getWidget();
-            var selected = widget.getSelection();
+            //var selected = widget.getSelection();
             var registry = this.getPartRegistry();
             var editorParts = registry.getEditorParts();
 

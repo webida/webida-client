@@ -32,7 +32,7 @@ define([
     'dojo/topic',
     'webida-lib/util/logger/logger-client',
     'dojo/domReady!'
-], function(
+], function (
     genetic,
     EditorPart,
     topic,
@@ -54,18 +54,19 @@ define([
         /**
          * @Override
          */
-        onCreate: function() {
+        onCreate: function () {
             logger.info('%conCreate()', 'color:orange');
             var container = this.getContainer();
             this.createViewer(container.getContentNode());
         },
 
-        createViewer: function(parentNode, callback) {
+        /* jshint unused:false */
+        createViewer: function (parentNode, callback) {
             logger.info('createViewer(' + parentNode + ', callback)');
             var dataSource = this.getDataSource();
             var pre = document.createElement('pre');
             this.setViewer(pre);
-            dataSource.getData(function(data) {
+            dataSource.getData(function (data) {
                 pre.textContent = data;
             });
             pre.contentEditable = true;
@@ -73,9 +74,10 @@ define([
             parentNode.appendChild(pre);
             this.focus();
         },
+        /* jshint unused:true */
 
-        focus: function() {
-        	logger.info('focus()');
+        focus: function () {
+            logger.info('focus()');
             this.getViewer().focus();
         }
     });

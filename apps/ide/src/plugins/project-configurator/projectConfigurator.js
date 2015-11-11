@@ -36,29 +36,6 @@ define(['webida-lib/app',
     projectConfigurator.DEBUG_MODE = 'debug';
     projectConfigurator.RUN_MODE = 'run';
 
-    var projectConfigurationLoadPromise = readProjectRunConfigurations()
-        .then(getConfigurationObjectByProject)
-        .then(function () {
-            topic.publish('projectConfig.loadCompleted');
-            // FIXME this module has no relation with runAs
-            if (projectPropertyList.length === 0 && noProjectList.length === 0) {
-                topic.publish('toolbar.runas.disable');
-            }
-        });
-
-    function readProjectRunConfigurations() {
-        return new Promise(function (resolve, reject) {
-            fsMount.list(ide.getPath(), function (err, projectList) {
-                if (err) {
-                    notify.error(err);
-                    reject(err);
-                } else {
-                    resolve(projectList);
-                }
-            });
-        });
-    }
-
     function getConfigurationObjectByProject(projectList) {
         return Promise.all(projectList.map(function (project) {
             return new Promise(function (resolve) {
@@ -77,6 +54,31 @@ define(['webida-lib/app',
             });
         }));
     }
+    
+    function readProjectRunConfigurations() {
+        return new Promise(function (resolve, reject) {
+            fsMount.list(ide.getPath(), function (err, projectList) {
+                if (err) {
+                    notify.error(err);
+                    reject(err);
+                } else {
+                    resolve(projectList);
+                }
+            });
+        });
+    }
+
+
+    var projectConfigurationLoadPromise = readProjectRunConfigurations()
+        .then(getConfigurationObjectByProject)
+        .then(function () {
+            topic.publish('projectConfig.loadCompleted');
+            // FIXME this module has no relation with runAs
+            if (projectPropertyList.length === 0 && noProjectList.length === 0) {
+                topic.publish('toolbar.runas.disable');
+            }
+        });
+
 
     //readProjectRunConfigurations();
 

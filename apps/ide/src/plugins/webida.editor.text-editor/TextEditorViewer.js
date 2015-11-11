@@ -62,7 +62,7 @@ define([
 
     function foldCode(cm, start, end) {
         var myWidget = $('<span class="CodeMirror-foldmarker">').text('\u2194')[0];
-        codemirror.on(myWidget, 'mousedown', function() {
+        codemirror.on(myWidget, 'mousedown', function () {
             myRange.clear();
         });
         var myRange = cm.markText(start, end, {
@@ -73,16 +73,16 @@ define([
     }
 
 
-    codemirror.commands.foldselection = function(cm) {
+    codemirror.commands.foldselection = function (cm) {
         foldCode(cm, cm.getCursor('start'), cm.getCursor('end'));
     };
 
-    codemirror.commands.gotoLine = function(cm) {
+    codemirror.commands.gotoLine = function (cm) {
         if (cm.getOption('keyMap') === 'default') {
             var dialog = 'Go to line: <input type="text" style="width: 10em"/> <span style="color: #888"></span>';
-            loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css')], function() {
-                require(['external/codemirror/addon/dialog/dialog'], function() {
-                    cm.openDialog(dialog, function(query) {
+            loadCSSList([require.toUrl('external/codemirror/addon/dialog/dialog.css')], function () {
+                require(['external/codemirror/addon/dialog/dialog'], function () {
+                    cm.openDialog(dialog, function (query) {
                         var line = Math.floor(+query - 1);
                         cm.__instance.setCursor({
                             row: line,
@@ -95,7 +95,7 @@ define([
             return codemirror.Pass;
         }
     };
-    codemirror.commands.handleTab = function(cm) {
+    codemirror.commands.handleTab = function (cm) {
         if (!cm.__instance.options.indentWithTabs) {
             codemirror.commands.insertSoftTab(cm);
         } else {
@@ -119,7 +119,7 @@ define([
     var eventTransformers = {
         // TODO 예전 에이스 에디터의 잔해
         // row, col 사용은 제거해도 무방할 듯
-        wrapperLoc2cmLoc: function(loc) {
+        wrapperLoc2cmLoc: function (loc) {
             if (loc.hasOwnProperty('row') && loc.hasOwnProperty('col')) {
                 return {
                     line: loc.row,
@@ -129,7 +129,7 @@ define([
                 return loc;
             }
         },
-        cmLoc2wrapperLoc: function(loc) {
+        cmLoc2wrapperLoc: function (loc) {
             if (loc.hasOwnProperty('line') && loc.hasOwnProperty('ch')) {
                 return {
                     row: loc.line,
@@ -139,8 +139,8 @@ define([
                 return loc;
             }
         },
-        change: function(self, listener) {
-            return function(_, e) {
+        change: function (self, listener) {
+            return function (_, e) {
                 var event;
                 if (e.removed.length > 1 || e.removed[0] !== '') {
                     // something removed
@@ -175,16 +175,18 @@ define([
                 }
             };
         },
-        cursor: function(self, listener) {
-            return function() {
+        cursor: function (self, listener) {
+            return function () {
                 listener(self);
             };
         }
     };
 
-    codemirror.commands.save = function(cm) {
+    /* jshint unused:false */
+    codemirror.commands.save = function (cm) {
         topic.publish('editor/save/current');
     };
+    /* jshint unused:true */
 
     function scrollToCursor(cm, position) {
         var lineNum = cm.getCursor().line;
@@ -218,8 +220,8 @@ define([
 
     genetic.inherits(TextEditorViewer, EditorViewer, {
 
-        init: function(file) {
-            var self = this;
+        init: function (file) {
+            //var self = this;
             //TODO remove this.file
             this.file = file;
             this.options = {};
@@ -232,7 +234,7 @@ define([
             this.deferredActions = [];
         },
 
-        createWidget: function(parentNode) {
+        createWidget: function (parentNode) {
             logger.info('createWidget(' + parentNode + ')');
             this.options.extraKeys = {
                 'Tab': 'handleTab',
@@ -242,33 +244,32 @@ define([
             this.prepareCreate();
         },
 
-        prepareCreate: function() {
+        prepareCreate: function () {
             logger.info('prepareCreate()');
             var self = this;
             // @formatter:off
             loadCSSList([
-                    require.toUrl('plugins/webida.editor.text-editor/css/webida.css'), 
-                    require.toUrl('external/codemirror/lib/codemirror.css'), 
-                    require.toUrl('external/codemirror/addon/dialog/dialog.css')
-                ], function() {
-                    logger.info('*require*');
-                    require([
-                        'external/codemirror/addon/dialog/dialog', 
-                        'external/codemirror/addon/search/searchcursor', 
-                        'plugins/webida.editor.text-editor/search-addon', 
-                        'external/codemirror/addon/edit/closebrackets', 
-                        'external/codemirror/addon/edit/closetag', 
-                        'external/codemirror/addon/edit/matchbrackets'
-                    ], function() {
-                        logger.info('%cLoad CSS complete', 'color:orange');
-                        self.createEditorWidget(self.getParentNode());
-                        self.emitLater(PartViewer.READY, self);
-                    });
+                require.toUrl('plugins/webida.editor.text-editor/css/webida.css'),
+                require.toUrl('external/codemirror/lib/codemirror.css'),
+                require.toUrl('external/codemirror/addon/dialog/dialog.css')
+            ], function () {
+                logger.info('*require*');
+                require([
+                    'external/codemirror/addon/dialog/dialog',
+                    'external/codemirror/addon/search/searchcursor',
+                    'plugins/webida.editor.text-editor/search-addon',
+                    'external/codemirror/addon/edit/closebrackets',
+                    'external/codemirror/addon/edit/closetag',
+                    'external/codemirror/addon/edit/matchbrackets'
+                ], function () {
+                    logger.info('%cLoad CSS complete', 'color:orange');
+                    self.createEditorWidget(self.getParentNode());
+                    self.emitLater(PartViewer.READY, self);
+                });
             });
             // @formatter:on
         },
-
-        createEditorWidget: function(parentNode) {
+        createEditorWidget: function (parentNode) {
             logger.info('createEditorWidget(' + parentNode + ')');
             if (this.editor !== undefined) {
                 return;
@@ -287,7 +288,7 @@ define([
             this.setWidget(this.editor);
 
             //TODO : This code should be moved to TextEditorAdapter
-            this.editor.on('change', function(cm, change) {
+            this.editor.on('change', function (cm, change) {
                 var request = new TextChangeRequest();
                 request.setDelta(change);
                 request.setContents(cm.getValue());
@@ -299,18 +300,18 @@ define([
             $(this.editor.getWrapperElement()).addClass('maincodeeditor');
 
             if (this.deferredActions) {
-                _.each(this.deferredActions, function(action) {
+                _.each(this.deferredActions, function (action) {
                     action(self);
                 });
                 delete this.deferredActions;
             }
 
-            this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function() {
+            this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function () {
                 self.checkSizeChange();
             });
 
             // conditionally indent on paste
-            self.editor.on('change', function(cm, e) {
+            self.editor.on('change', function (cm, e) {
                 if (self.editor.options.indentOnPaste && e.origin === 'paste' && e.text.length > 1) {
                     for (var i = 0; i <= e.text.length; i++) {
                         cm.indentLine(e.from.line + i);
@@ -319,14 +320,14 @@ define([
             });            
         },
 
-        synchronizeWidgetModel: function(recentViewer) {
+        synchronizeWidgetModel: function (recentViewer) {
             logger.info('synchronizeWidgetModel(' + recentViewer + ')');
             this.editor.swapDoc(recentViewer.editor.getDoc().linkedDoc({
                 sharedHist: true
             }));
         },
 
-        addDeferredAction: function(action) {
+        addDeferredAction: function (action) {
             if (this.editor) {
                 action(this);
             } else {
@@ -334,7 +335,7 @@ define([
             }
         },
 
-        setOption: function(key, value, condition, defaultValue) {
+        setOption: function (key, value, condition, defaultValue) {
             if (condition === undefined) {
                 if (value !== undefined) {
                     this.cmOptions[key] = value;
@@ -348,7 +349,7 @@ define([
             }
         },
 
-        addOptions: function() {
+        addOptions: function () {
             this.setOption('electricChars', false);
             this.setOption('flattenSpans', false);
             this.setOption('autoCloseBrackets', this.keymap !== 'vim');
@@ -365,11 +366,11 @@ define([
             this.setOption('mode', 'text/plain');
         },
 
-        getMode: function() {
+        getMode: function () {
             return this.mode;
         },
 
-        checkSizeChange: function() {
+        checkSizeChange: function () {
             if (this.editor) {
                 var visible = $(this.elem).is(':visible');
                 if (visible) {
@@ -390,7 +391,7 @@ define([
             }
         },
 
-        destroyWidget: function() {
+        destroyWidget: function () {
             //unsubscribing topics
 
             if (this.resizeTopicHandler) {
@@ -401,29 +402,29 @@ define([
             $(this.elem).html('');
         },
 
-        addCursorListener: function(listener) {
+        addCursorListener: function (listener) {
             var tListener = eventTransformers.cursor(this, listener);
             this.cursorListeners.push(listener);
-            this.addDeferredAction(function(self) {
+            this.addDeferredAction(function (self) {
                 self.editor.on('cursorActivity', tListener);
             });
         },
 
-        addFocusListener: function(listener) {
+        addFocusListener: function (listener) {
             this.focusListeners.push(listener);
-            this.addDeferredAction(function(self) {
+            this.addDeferredAction(function (self) {
                 self.editor.on('focus', listener);
             });
         },
 
-        addBlurListener: function(listener) {
+        addBlurListener: function (listener) {
             this.blurListeners.push(listener);
-            this.addDeferredAction(function(self) {
+            this.addDeferredAction(function (self) {
                 self.editor.on('blur', listener);
             });
         },
 
-        addEventListener: function(type, listener) {
+        addEventListener: function (type, listener) {
             if (this.customListeners === undefined) {
                 this.customListeners = {};
             }
@@ -433,52 +434,53 @@ define([
             this.customListeners[type].push(listener);
         },
 
-        addExtraKeys: function(extraKeys) {
+        addExtraKeys: function (extraKeys) {
             this.options.extraKeys = _.extend(this.options.extraKeys, extraKeys);
             if (this.editor) {
                 this.editor.setOption('extraKeys', this.options.extraKeys);
             }
         },
 
-        triggerEvent: function(type, event) {
+        triggerEvent: function (type, event) {
             logger.info('triggerEvent(' + type + ', event)');
             var self = this;
             if (this.customListeners !== undefined) {
                 if (this.customListeners[type] !== undefined) {
-                    _.each(this.customListeners[type], function(listener) {
+                    _.each(this.customListeners[type], function (listener) {
                         listener(self, event);
                     });
                 }
             }
         },
 
-        setCursor: function(cursor) {
+        setCursor: function (cursor) {
             this.cursor = cursor;
-            this.addDeferredAction(function(self) {
+            this.addDeferredAction(function (self) {
                 self.editor.getDoc().setCursor(eventTransformers.wrapperLoc2cmLoc(cursor));
             });
             if (!this.editor) {
                 var self = this;
-                _.each(this.cursorListeners, function(listener) {
+                _.each(this.cursorListeners, function (listener) {
                     listener(self, cursor);
                 });
             }
         },
 
-        setSelection: function(anchor, head) {
+        setSelection: function (anchor, head) {
             this.cursor = head;
-            this.addDeferredAction(function(self) {
-                self.editor.getDoc().setSelection(eventTransformers.wrapperLoc2cmLoc(anchor), eventTransformers.wrapperLoc2cmLoc(head));
+            this.addDeferredAction(function (self) {
+                self.editor.getDoc().setSelection(eventTransformers.wrapperLoc2cmLoc(anchor), 
+                                                  eventTransformers.wrapperLoc2cmLoc(head));
             });
             if (!this.editor) {
                 var self = this;
-                _.each(this.cursorListeners, function(listener) {
+                _.each(this.cursorListeners, function (listener) {
                     listener(self, head);
                 });
             }
         },
 
-        getCursor: function() {
+        getCursor: function () {
             if (this.editor) {
                 return eventTransformers.cmLoc2wrapperLoc(this.editor.getDoc().getCursor());
             } else {
@@ -490,28 +492,28 @@ define([
                     };
                 }
                 this.cursor = cursor;
-                this.addDeferredAction(function(self) {
+                this.addDeferredAction(function (self) {
                     self.editor.getDoc().setCursor(eventTransformers.wrapperLoc2cmLoc(cursor));
                 });
                 return this.cursor;
             }
         },
 
-        setSize: function(width, height) {
-            if ( typeof width === 'number') {
+        setSize: function (width, height) {
+            if (typeof width === 'number') {
                 this.__width = width;
             } else {
                 this.__width = null;
             }
 
-            if ( typeof height === 'number') {
+            if (typeof height === 'number') {
                 this.__height = height;
             } else {
                 this.__height = null;
             }
 
-            this.addDeferredAction(function(self) {
-                if ( typeof height === 'number') {//applying border correction
+            this.addDeferredAction(function (self) {
+                if (typeof height === 'number') {//applying border correction
                     var wrapper = self.editor.getWrapperElement();
 
                     self.editor.setSize(width, height);
@@ -530,16 +532,16 @@ define([
          * @param {Object} options
          */
         setHighlight: function (query, options) {
-            this.addDeferredAction(function(self) {
+            this.addDeferredAction(function (self) {
                 self.editor.setHighlight(query, options);
             });
         },
 
-        getTheme: function() {
+        getTheme: function () {
             return this.theme;
         },
 
-        setTheme: function(theme) {
+        setTheme: function (theme) {
             if (theme === undefined) {
                 return;
             }
@@ -567,7 +569,7 @@ define([
                         csspath = 'external/codemirror/theme/solarized.css';
                         break;
                 }
-                loadCSSList([require.toUrl(csspath)], function() {
+                loadCSSList([require.toUrl(csspath)], function () {
                     addAvailable('theme', theme);                   
                     self.addDeferredAction(function (self) {
                         self.editor.setOption('theme', self.theme);
@@ -576,11 +578,11 @@ define([
             }
         },
 
-        getKeymap: function() {
+        getKeymap: function () {
             return (this.keymap) ? this.keymap : 'default';
         },
 
-        setKeymap: function(keymap) {
+        setKeymap: function (keymap) {
             if (keymap === undefined) {
                 return;
             }
@@ -600,7 +602,7 @@ define([
                         this.editor.setOption('autoCloseBrackets', false);
                     }
                     this.keymap = keymap;
-                    require(['external/codemirror/keymap/' + keymap], function() {
+                    require(['external/codemirror/keymap/' + keymap], function () {
                         addAvailable('keymap', keymap);
                         if (self.editor) {
                             self.editor.setOption('keyMap', keymap);
@@ -612,10 +614,10 @@ define([
             }
         },
 
-        setFontFamily: function(fontFamily) {
+        setFontFamily: function (fontFamily) {
             if (fontFamily !== undefined) {
                 this.fontFamily = fontFamily;
-                this.addDeferredAction(function(self) {
+                this.addDeferredAction(function (self) {
                     $(self.elem).find('.CodeMirror').css({
                         fontFamily: fontFamily
                     });
@@ -625,10 +627,10 @@ define([
             }
         },
 
-        setFontSize: function(fontSize) {
+        setFontSize: function (fontSize) {
             if (fontSize !== undefined) {
                 this.fontSize = fontSize;
-                this.addDeferredAction(function(self) {
+                this.addDeferredAction(function (self) {
                     $(self.elem).find('.CodeMirror').css({
                         fontSize: fontSize
                     });
@@ -637,18 +639,18 @@ define([
             }
         },
 
-        _gutterOn: function(gutterName) {
+        _gutterOn: function (gutterName) {
             if (this.editor) {
                 var gutters = this.editor.getOption('gutters');
                 if (!_.contains(gutters, gutterName)) {
                     var i, newgutters = [];
                     var order = ['CodeMirror-linenumbers', 'CodeMirror-lint-markers', 'CodeMirror-foldgutter'];
-                    for ( i = 0; i < order.length; i++) {
+                    for (i = 0; i < order.length; i++) {
                         if (_.contains(gutters, order[i]) || order[i] === gutterName) {
                             newgutters.push(order[i]);
                         }
                     }
-                    for ( i = 0; i < gutters.length; i++) {
+                    for (i = 0; i < gutters.length; i++) {
                         if (!_.contains(order, gutters[i])) {
                             newgutters.push(gutters[i]);
                         }
@@ -658,72 +660,72 @@ define([
             }
         },
 
-        _gutterOff: function(gutterName) {
+        _gutterOff: function (gutterName) {
             if (this.editor) {
                 var gutters = this.editor.getOption('gutters');
                 this.editor.setOption('gutters', _.without(gutters, gutterName));
             }
         },
 
-        setStyleActiveLine: function(highlight) {
+        setStyleActiveLine: function (highlight) {
             if (highlight !== undefined) {
                 this.styleActiveLine = highlight;
                 if (highlight) {
                     var self = this;
-                    require(['external/codemirror/addon/selection/active-line'], function() {
-                        self.addDeferredAction(function(self) {
+                    require(['external/codemirror/addon/selection/active-line'], function () {
+                        self.addDeferredAction(function (self) {
                             self.editor.setOption('styleActiveLine', highlight);
                         });
                     });
                 } else if (this.editor) {
-                    this.addDeferredAction(function(self) {
+                    this.addDeferredAction(function (self) {
                         self.editor.setOption('styleActiveLine', highlight);
                     });
                 }
             }
         },
 
-        setMatchBrackets: function(match) {
+        setMatchBrackets: function (match) {
             if (match === undefined) {
                 return;
             }
             this.matchBrackets = match;
             if (match) {
                 var self = this;
-                require(['external/codemirror/addon/edit/matchbrackets'], function() {
-                    self.addDeferredAction(function(self) {
+                require(['external/codemirror/addon/edit/matchbrackets'], function () {
+                    self.addDeferredAction(function (self) {
                         self.editor.setOption('matchBrackets', match);
                     });
                 });
             } else if (this.editor) {
-                this.addDeferredAction(function(self) {
+                this.addDeferredAction(function (self) {
                     self.editor.setOption('matchBrackets', match);
                 });
             }
         },
 
-        setHighlightSelection: function(highlight) {
+        setHighlightSelection: function (highlight) {
             if (highlight === undefined) {
                 return;
             }
             this.highlightSelection = highlight;
             if (highlight) {
                 var self = this;
-                loadCSSList([require.toUrl('./css/match-highlighter.css')], function() {
-                    require(['external/codemirror/addon/search/match-highlighter'], function() {
-                        self.addDeferredAction(function(self) {
+                loadCSSList([require.toUrl('./css/match-highlighter.css')], function () {
+                    require(['external/codemirror/addon/search/match-highlighter'], function () {
+                        self.addDeferredAction(function (self) {
                             self.editor.setOption('highlightSelectionMatches', highlight);
                         });
                     });
                 });
             } else if (this.editor) {
-                this.addDeferredAction(function(self) {
+                this.addDeferredAction(function (self) {
                     self.editor.setOption('highlightSelectionMatches', highlight);
                 });
             }
         },
 
-        setTabSize: function(tabSize) {
+        setTabSize: function (tabSize) {
             if (tabSize !== undefined) {
                 this.options.tabSize = tabSize;
                 if (this.editor) {
@@ -732,7 +734,7 @@ define([
             }
         },
 
-        setIndentWithTabs: function(indentWithTabs) {
+        setIndentWithTabs: function (indentWithTabs) {
             if (indentWithTabs !== undefined) {
                 this.options.indentWithTabs = indentWithTabs;
                 if (this.editor) {
@@ -741,7 +743,7 @@ define([
             }
         },
 
-        setIndentUnit: function(indentUnit) {
+        setIndentUnit: function (indentUnit) {
             if (indentUnit !== undefined) {
                 this.options.indentUnit = indentUnit;
                 if (this.editor) {
@@ -750,7 +752,7 @@ define([
             }
         },
 
-        setIndentOnPaste: function(indentOnPaste) {
+        setIndentOnPaste: function (indentOnPaste) {
             if (indentOnPaste !== undefined) {
                 this.options.indentOnPaste = indentOnPaste;
                 if (this.editor) {
@@ -759,51 +761,52 @@ define([
             }
         },
 
-        setTrimTrailingWhitespaces: function(trimTrailingWhitespaces) {
+        setTrimTrailingWhitespaces: function (trimTrailingWhitespaces) {
             if (trimTrailingWhitespaces !== undefined) {
                 this.trimTrailingWhitespaces = trimTrailingWhitespaces;
             }
         },
 
-        setInsertFinalNewLine: function(insertFinalNewLine) {
+        setInsertFinalNewLine: function (insertFinalNewLine) {
             if (insertFinalNewLine !== undefined) {
                 this.insertFinalNewLine = insertFinalNewLine;
             }
         },
 
-        setRetabIndentations: function(retabIndentations) {
+        setRetabIndentations: function (retabIndentations) {
             if (retabIndentations !== undefined) {
                 this.retabIndentations = retabIndentations;
             }
         },
 
-        setShowInvisibles: function(showingInvisibles) {
+        setShowInvisibles: function (showingInvisibles) {
             this.showingInvisibles = showingInvisibles;
             if (showingInvisibles) {
-                this.addDeferredAction(function(self) {
+                this.addDeferredAction(function (self) {
                     self.editor.addOverlay(TextEditorViewer._whitespaceOverlay);
                 });
             } else {
-                this.addDeferredAction(function(self) {
+                this.addDeferredAction(function (self) {
                     self.editor.removeOverlay(TextEditorViewer._whitespaceOverlay);
                 });
             }
         },
 
-        setLineWrapping: function(lineWrapping) {
+        setLineWrapping: function (lineWrapping) {
             this.options.lineWrapping = lineWrapping;
             if (this.editor) {
                 this.editor.setOption('lineWrapping', lineWrapping);
             }
         },
 
-        setCodeFolding: function(codeFolding) {
+        setCodeFolding: function (codeFolding) {
             this.options.setCodeFolding = codeFolding;
             if (codeFolding) {
                 var self = this;
-                loadCSSList([require.toUrl('./css/codefolding.css')], function() {
-                    require(['external/codemirror/addon/fold/foldcode', 'external/codemirror/addon/fold/foldgutter', 'external/codemirror/addon/fold/brace-fold'], function() {
-                        self.addDeferredAction(function(self) {
+                loadCSSList([require.toUrl('./css/codefolding.css')], function () {
+                    require(['external/codemirror/addon/fold/foldcode', 'external/codemirror/addon/fold/foldgutter', 
+                             'external/codemirror/addon/fold/brace-fold'], function () {
+                        self.addDeferredAction(function (self) {
                             self._gutterOn('CodeMirror-foldgutter');
                             var rf = new codemirror.fold.combine(codemirror.fold.brace);
                             self.editor.setOption('foldGutter', {
@@ -813,21 +816,21 @@ define([
                     });
                 });
             } else {
-                this.addDeferredAction(function(self) {
+                this.addDeferredAction(function (self) {
                     self.editor.setOption('foldGutter', false);
                     self._gutterOff('CodeMirror-foldgutter');
                 });
             }
         },
 
-        setShowLineNumbers: function(showLineNumbers) {
+        setShowLineNumbers: function (showLineNumbers) {
             this.options.setShowLineNumbers = showLineNumbers;
-            this.addDeferredAction(function(self) {
+            this.addDeferredAction(function (self) {
                 self.editor.setOption('lineNumbers', showLineNumbers);
             });
         },
 
-        getValue: function() {
+        getValue: function () {
             return this.editor ? this.editor.getValue() : undefined;
         },
 
@@ -835,14 +838,14 @@ define([
          * Update Viewer's content
          * @param {Object} delta
          */
-        render: function(newText) {
+        render: function (newText) {
             //logger.info('render(' + newText.substr(0, 10) + ')');
             if (this.editor.getDoc().getValue() !== newText) {
                 this.editor.setValue(newText);
             }
         },
 
-        refresh: function(contents) {
+        refresh: function (contents) {
             logger.info('refresh(' + contents + ')');
             this.editor.setValue(contents);
             if (!this.contentsInitialized) {
@@ -851,47 +854,47 @@ define([
             }
         },
 
-        foldCodeRange: function(range) {
+        foldCodeRange: function (range) {
             if (this.editor) {
                 foldCode(this.editor, range.from, range.to);
             }
         },
 
-        getFoldings: function() {
+        getFoldings: function () {
             if (this.editor) {
                 var cm = this.editor;
-                var foldings = _.filter(cm.getAllMarks(), function(mark) {
+                var foldings = _.filter(cm.getAllMarks(), function (mark) {
                     return mark.__isFold;
                 });
-                return _.map(foldings, function(fold) {
+                return _.map(foldings, function (fold) {
                     return fold.find();
                 });
             }
         },
 
-        clearHistory: function() {
-            this.addDeferredAction(function(self) {
+        clearHistory: function () {
+            this.addDeferredAction(function (self) {
                 self.editor.clearHistory();
             });
         },
 
-        markClean: function() {
-            this.addDeferredAction(function(self) {
+        markClean: function () {
+            this.addDeferredAction(function (self) {
                 self.editor.markClean();
             });
         },
 
-        focus: function() {
+        focus: function () {
             logger.info('focus()');
             if (this.editor) {
                 var editor = this.editor;
-                setTimeout(function() {
+                setTimeout(function () {
                     editor.focus();
                 });
             }
         },
 
-        fitSize: function() {
+        fitSize: function () {
             logger.info('fitSize()');
             if (this.editor) {
                 var parentNode = this.getParentNode();
@@ -901,43 +904,43 @@ define([
         },
 
         //methods from editors-commands
-        undo: function() {
-            this.addDeferredAction(function(self) {
+        undo: function () {
+            this.addDeferredAction(function (self) {
                 self.focus();
                 self.editor.undo();
             });
         },
 
-        redo: function() {
-            this.addDeferredAction(function(self) {
+        redo: function () {
+            this.addDeferredAction(function (self) {
                 self.focus();
                 self.editor.redo();
             });
         },
 
-        cursorLineToMiddle: function() {
-            this.addDeferredAction(function(self) {
+        cursorLineToMiddle: function () {
+            this.addDeferredAction(function (self) {
                 self.focus();
                 scrollToCursor(self.editor, 'center');
             });
         },
 
-        cursorLineToTop: function() {
-            this.addDeferredAction(function(self) {
+        cursorLineToTop: function () {
+            this.addDeferredAction(function (self) {
                 self.focus();
                 scrollToCursor(self.editor, 'top');
             });
         },
 
-        cursorLineToBottom: function() {
-            this.addDeferredAction(function(self) {
+        cursorLineToBottom: function () {
+            this.addDeferredAction(function (self) {
                 self.focus();
                 scrollToCursor(self.editor, 'bottom');
             });
         },
 
-        del: function() {
-            this.addDeferredAction(function(self) {
+        del: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
                 // delete
@@ -972,8 +975,8 @@ define([
             });
         },
 
-        selectAll: function() {
-            this.addDeferredAction(function(self) {
+        selectAll: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
@@ -996,8 +999,8 @@ define([
             });
         },
 
-        selectLine: function() {
-            this.addDeferredAction(function(self) {
+        selectLine: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
@@ -1021,8 +1024,8 @@ define([
             });
         },
 
-        lineIndent: function() {
-            this.addDeferredAction(function(self) {
+        lineIndent: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
@@ -1055,8 +1058,8 @@ define([
             });
         },
 
-        lineDedent: function() {
-            this.addDeferredAction(function(self) {
+        lineDedent: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
@@ -1092,13 +1095,13 @@ define([
             });
         },
 
-        lineMoveUp: function() {
-            this.addDeferredAction(function(self) {
+        lineMoveUp: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
                 // line move up
-                var moveUp = function(pos) {
+                var moveUp = function (pos) {
                     var srcLineNum = pos.line;
                     var desLineNum = pos.line - 1;
                     var srcLineText = editor.getLine(srcLineNum);
@@ -1171,13 +1174,13 @@ define([
             });
         },
 
-        lineMoveDown: function() {
-            this.addDeferredAction(function(self) {
+        lineMoveDown: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
                 // line move down
-                var moveDown = function(pos) {
+                var moveDown = function (pos) {
                     var srcLineNum = pos.line;
                     var desLineNum = pos.line + 1;
                     var srcLineText = editor.getLine(srcLineNum);
@@ -1257,8 +1260,8 @@ define([
             });
         },
 
-        lineDelete: function() {
-            this.addDeferredAction(function(self) {
+        lineDelete: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
@@ -1292,8 +1295,8 @@ define([
             });
         },
 
-        foldCode: function() {
-            this.addDeferredAction(function(self) {
+        foldCode: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
@@ -1310,54 +1313,54 @@ define([
             });
         },
 
-        replace: function() {
-            this.addDeferredAction(function(self) {
+        replace: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;                
                 editor.execCommand('replace');
             });
         },
 
-        find: function() {
-            this.addDeferredAction(function(self) {
+        find: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;                
                 editor.execCommand('find');
             });
         },
 
-        quickFind: function() {
-            this.addDeferredAction(function(self) {
+        quickFind: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
                 editor.execCommand('highlightSearch');
             });
         },
 
-        findNext: function() {
-            this.addDeferredAction(function(self) {
+        findNext: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
                 editor.execCommand('findNext');
             });
         },
 
-        findPrev: function() {
-            this.addDeferredAction(function(self) {
+        findPrev: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
                 editor.execCommand('findPrev');
             });
         },
 
-        gotoLine: function() {
-            this.addDeferredAction(function(self) {
+        gotoLine: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
                 editor.execCommand('gotoLine');
             });
         },
 
-        gotoMatchingBrace: function() {
-            this.addDeferredAction(function(self) {
+        gotoMatchingBrace: function () {
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
 
@@ -1377,7 +1380,7 @@ define([
 
         // From editors viable-menu-items
 
-        isThereMatchingBracket: function() {
+        isThereMatchingBracket: function () {
             if (this.editor) {
                 var editor = this.editor;
                 return !!(editor.findMatchingBracket(editor.getCursor(), false));
@@ -1386,7 +1389,7 @@ define([
             }
         },
 
-        isDefaultKeyMap: function() {
+        isDefaultKeyMap: function () {
             if (this.editor) {
                 var editor = this.editor;
                 return editor.getOption('keyMap') === 'default';
@@ -1397,7 +1400,7 @@ define([
 
         // From from editors plugin.js
 
-        getScrollInfo: function() {
+        getScrollInfo: function () {
             if (this.editor) {
                 var editor = this.editor;
                 return editor.getScrollInfo();
@@ -1406,18 +1409,18 @@ define([
             }
         },
 
-        scrollToScrollInfo: function(scrollInfo) {
+        scrollToScrollInfo: function (scrollInfo) {
             if (this.editor && scrollInfo) {
                 var editor = this.editor;
                 editor.scrollTo(scrollInfo.left, scrollInfo.top);
             }
         },
 
-        getWorkbenchShortcuts: function(desc) {
+        getWorkbenchShortcuts: function (desc) {
             if (this.editor) {
                 var editor = this.editor;
                 var currentKeyMap = editor.getOption('keyMap');
-                var merge = function(current, processed, keymap) {
+                var merge = function (current, processed, keymap) {
                     var curKeyMap = codemirror.keyMap[current];
                     keymap = _.extend(keymap, curKeyMap);
                     if (curKeyMap.fallthrough && !_.contains(processed, curKeyMap.fallthrough)) {
@@ -1437,12 +1440,13 @@ define([
                     keymap = _.extend(keymap, extraKeys);
                 }
                 //console.log('Keymap:', keymap);
-                return _.compact(_.map(keymap, function(name, key) {
-                    if (( typeof name) === 'string') {
+                return _.compact(_.map(keymap, function (name, key) {
+                    if ((typeof name) === 'string') {
                         var d = desc[name];
                         if (d) {
                             return {
-                                keys: key.replace(/Ctrl\-/g, 'Ctrl+').replace(/Alt\-/g, 'Alt+').replace(/Shift\-/g, 'Shift+'),
+                                keys: key.replace(/Ctrl\-/g, 'Ctrl+').replace(/Alt\-/g, 'Alt+')
+                                               .replace(/Shift\-/g, 'Shift+'),
                                 desc: d,
                                 viable: true
                             };
@@ -1458,7 +1462,7 @@ define([
             }
         },
 
-        existSearchQuery: function() {
+        existSearchQuery: function () {
             if (this.editor) {
                 var editor = this.editor;
                 var query = editor && editor.state && editor.state.search && editor.state.search.query;
@@ -1472,11 +1476,11 @@ define([
             }
         },
 
-        getMenuItemsUnderEdit: function(items, menuItems, deferred) {
+        getMenuItemsUnderEdit: function (items, menuItems, deferred) {
             var editor = this.editor;
 
             if (editor) {
-                var selected = editor.getSelection();
+                //var selected = editor.getSelection();
 
                 // Undo, Redo
                 var history = editor.getHistory();
@@ -1530,7 +1534,7 @@ define([
          * Execute command for this EditorViewer
          * @param {Object} command
          */
-        execute: function(command) {
+        execute: function (command) {
             logger.info('execute(' + command + ')');
             return this[command]();
         },
@@ -1540,7 +1544,7 @@ define([
          * @param {Object} command
          * @return {boolean}
          */
-        canExecute: function(command) {
+        canExecute: function (command) {
             if ( typeof this[command] === 'function') {
                 return true;
             } else {
@@ -1551,7 +1555,7 @@ define([
 
     //Static
 
-    TextEditorViewer.getAvailableThemes = function() {
+    TextEditorViewer.getAvailableThemes = function () {
         // @formatter:off
         return ['codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse',
         'elegant', 'erlang-dark', 'lesser-dark', 'midnight', 'monokai', 'neat',
@@ -1559,12 +1563,12 @@ define([
         'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'];
         // @formatter:on
     };
-    TextEditorViewer.getAvailableKeymaps = function() {
+    TextEditorViewer.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
     };
 
     TextEditorViewer._whitespaceOverlay = {
-        token: function(stream) {
+        token: function (stream) {
             if (stream.eatWhile(/\S/)) {
                 return null;
             }
@@ -1580,11 +1584,11 @@ define([
         }
     };
 
-    TextEditorViewer.getEnclosingDOMElem = function() {
+    TextEditorViewer.getEnclosingDOMElem = function () {
         return document.getElementById('editor');
     };
 
-    TextEditorViewer.getShortcuts = function() {
+    TextEditorViewer.getShortcuts = function () {
         return [{
             keys: 'shift+alt+P',
             title: 'TEST C, viable',

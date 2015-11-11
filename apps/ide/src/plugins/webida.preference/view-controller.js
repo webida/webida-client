@@ -66,6 +66,7 @@ define([
 
     var onChangingPage = false;
 
+    /* jshint validthis: true */
     function _onStoreStatusChanged(status) {
         reg.byId('restore-preference').set('disabled', !currentPage.store.status.override);
         if (currentPage.store.status.dirty) {
@@ -92,7 +93,7 @@ define([
     }
 
     function _onChangeTreeSelection(node) {
-        if(!onChangingPage) {
+        if (!onChangingPage) {
             onChangingPage = true;
             treeViewController.blockTreeSelection(true);
             // get preference store
@@ -195,7 +196,7 @@ define([
     module.openDialog = function (thisScope, info) {
         scope = thisScope;
         scopeInfo = info;
-        if(!module.isOpened) {
+        if (!module.isOpened) {
             preferenceDlg = new ButtonedDialog({
                 buttons: [
                     {

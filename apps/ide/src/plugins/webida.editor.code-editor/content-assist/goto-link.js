@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+/* jshint unused:false */
 // @formatter:off
 define([
     'dojo/topic',
     'webida-lib/util/path',
     'webida-lib/plugins/editors/plugin'
-], function(
+], function (
     topic,
     path,
     editors
@@ -41,7 +42,7 @@ define([
             $wrapper.find('span.cm-link').addClass('cm-link-active');
             _gotoLinkActivated = true;
 
-            var onKeyUp = function(e) {
+            var onKeyUp = function (e) {
                 if (e.keyCode === 18) {
                     $wrapper.find('span.cm-link').removeClass('cm-link-active');
                     _gotoLinkActivated = false;

@@ -133,6 +133,7 @@ define([
         return result && result[key];
     };
 
+    /* global self */
     PreferenceService.prototype.setValues = function (preferenceId, values, callback) {
         var store = preferenceManager.getStore(preferenceId, self.scope);
         if (values) {

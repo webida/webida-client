@@ -29,7 +29,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/Persistence'
-], function(
+], function (
     EventEmitter,
     genetic, 
     Logger,
@@ -64,7 +64,7 @@ define([
         /**
          * @param {string} file's path
          */
-        setPath: function(path) {
+        setPath: function (path) {
 
             /** @type {string} a/b/c.d.e */
             this.path = path;
@@ -73,7 +73,7 @@ define([
             this.name = path.split(/[\\/]/).pop();
 
             /** @type {string} c.d */
-            this.basename = this.name.replace(/(.*)\.(.*)$/, "$1");
+            this.basename = this.name.replace(/(.*)\.(.*)$/, '$1');
 
             /** @type {string} e */
             this.extension = path.indexOf('.') >= 0 ? path.split('.').pop() : '';
@@ -83,7 +83,7 @@ define([
          * a/b/c.d.txt
          * @return {string} file's path
          */
-        getPath: function() {
+        getPath: function () {
             return this.path;
         },
 
@@ -91,7 +91,7 @@ define([
          * c.d.txt
          * @return {string} file's name
          */
-        getName: function() {
+        getName: function () {
             return this.name;
         },
 
@@ -99,7 +99,7 @@ define([
          * c.d
          * @return {string} file's basename
          */
-        getBaseName: function() {
+        getBaseName: function () {
             return this.basename;
         },
 
@@ -107,11 +107,11 @@ define([
          * txt
          * @return {string} file's extension
          */
-        getExtension: function() {
+        getExtension: function () {
             return this.extension;
         },
 
-        toString: function() {
+        toString: function () {
             return '<' + this.constructor.name + '>#' + this._persistenceId + this.path;
         }
     });

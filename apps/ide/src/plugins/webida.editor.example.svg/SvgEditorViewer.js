@@ -23,6 +23,8 @@
  * @author: hw.shim
  */
 
+/* jshint unused:false */
+
 // @formatter:off
 define([
     'webida-lib/util/dom',
@@ -31,7 +33,7 @@ define([
     'webida-lib/plugins/workbench/ui/ChangeRequest',
     'webida-lib/plugins/workbench/ui/EditorViewer',
     'webida-lib/plugins/workbench/ui/PartViewer'
-], function(
+], function (
     dom,
     genetic,
     Logger,
@@ -62,7 +64,7 @@ define([
         /**
          * @param {HTMLElement} parentNode
          */
-        createWidget: function(parentNode) {
+        createWidget: function (parentNode) {
             this._prepareElements(parentNode);
             this._bindListeners();
             this.emitLater(PartViewer.READY, this);
@@ -72,19 +74,19 @@ define([
          * Refreshes all of the view with contents
          * @param {Object} contents
          */
-        refresh: function(contents) {
+        refresh: function (contents) {
             logger.info('refresh(' + contents + ')');
             var that = this, path;
             this.svg.innerHTML = '';
-            if ( contents instanceof Array) {
-                contents.forEach(function(line) {
+            if (contents instanceof Array) {
+                contents.forEach(function (line) {
                     path = that.svg.appendChild(that._createPath());
                     path.setAttribute('d', line);
                 });
             }
         },
 
-        render: function(delta) {
+        render: function (delta) {
             logger.info('render(' + delta + ')');
             var path = this.svg.appendChild(this._createPath());
             path.setAttribute('d', delta);
@@ -93,11 +95,11 @@ define([
         /**
          * Updates widget size according to the parent of the widget
          */
-        fitSize: function() {
+        fitSize: function () {
             //logger.info('fitSize() //do nothing');
         },
 
-        _bindListeners: function() {
+        _bindListeners: function () {
             var that = this;
             var mask = this.mask;
             var feedback = this.feedback;
@@ -117,13 +119,13 @@ define([
             var dx, dy;
             var layerXBack, layerYBack;
             var desc = '';
-            var posInEl = function(oEvent) {
+            var posInEl = function (oEvent) {
                 return {
                     x: oEvent.offsetX || oEvent.layerX,
                     y: oEvent.offsetY || oEvent.layerY
                 };
             };
-            mask.addEventListener('mousemove', function(ev) {
+            mask.addEventListener('mousemove', function (ev) {
                 if (isDragStart === true) {
                     var dxFromStart = Math.abs(startPos.x - posInEl(ev).x);
                     var dyFromStart = Math.abs(startPos.y - posInEl(ev).y);
@@ -131,7 +133,7 @@ define([
                         isDragProgress = true;
                     }
                     if (isDragProgress === true) {
-                        if ( typeof layerXBack !== 'undefined' && typeof layerYBack !== 'undefined') {
+                        if (typeof layerXBack !== 'undefined' && typeof layerYBack !== 'undefined') {
                             dx = posInEl(ev).x - layerXBack;
                             dy = posInEl(ev).y - layerYBack;
                         }
@@ -149,7 +151,7 @@ define([
                     }
                 }
             });
-            mask.addEventListener('mousedown', function(ev) {
+            mask.addEventListener('mousedown', function (ev) {
                 desc = '';
                 isDragStart = true;
                 dx = dy = 0;
@@ -161,7 +163,7 @@ define([
                 feedbackPath = that._createPath();
                 feedback.appendChild(feedbackPath);
             });
-            mask.addEventListener('mouseup', function(ev) {
+            mask.addEventListener('mouseup', function (ev) {
                 if (desc) {
                     that.emit(PartViewer.CONTENTS_CHANGE, new ChangeRequest(desc));
                 }
@@ -173,7 +175,7 @@ define([
             });
         },
 
-        _prepareElements: function(parentNode) {
+        _prepareElements: function (parentNode) {
             // @formatter:off
             var wrapper = dom.makeElement('DIV', {
                 'style': 'position:relative; width:100%; height:100%'
@@ -196,7 +198,7 @@ define([
             // @formatter:on
         },
 
-        _createPath: function() {
+        _createPath: function () {
             var path = dom.makeSvgElement('path', {
                 'id': 'path' + (this.pathId++),
                 'style': 'stroke:rgb(0,102,255); stroke-width:1; fill:none;'

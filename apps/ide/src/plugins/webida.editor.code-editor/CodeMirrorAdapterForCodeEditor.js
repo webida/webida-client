@@ -1161,16 +1161,19 @@ define([
                                     this.editor.setOption('lint', {
                                         async: true,
                                         getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-                                            CodeMirrorAdapterForCodeEditor.jsHintWorker(editorValue, jshintrc, function (data) {
-                                                updateLinting(editor, data.annotations);
-                                            });
+                                            CodeMirrorAdapterForCodeEditor.jsHintWorker(
+                                                editorValue, jshintrc,
+                                                function (data) {
+                                                    updateLinting(editor, data.annotations);
+                                                });
                                         }
                                     });
                                 } else {
                                     this.editor.setOption('lint', {
                                         async: true,
                                         getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-                                            CodeMirrorAdapterForCodeEditor.jsHintWorker(editorValue, false, function (data) {
+                                            CodeMirrorAdapterForCodeEditor.jsHintWorker(
+                                                editorValue, false, function (data) {
                                                 updateLinting(editor, data.annotations);
                                             });
                                         }
@@ -1593,9 +1596,14 @@ define([
                 }
                 //lineItems['&Copy Line'] = menuItems.editMenuItems['&Line']['&Copy Line'];
                 lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
-                lineItems['Move Cursor Line to Middle'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
-                lineItems['Move Cursor Line to Top'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
-                lineItems['Move Cursor Line to Bottom'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
+                lineItems['Move Cursor Line to Middle'] = 
+                    menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
+                
+                lineItems['Move Cursor Line to Top'] = 
+                    menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
+                
+                lineItems['Move Cursor Line to Bottom'] = 
+                    menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
 
                 if (_.values(lineItems).length > 0) {
                     items['&Line'] = lineItems;
@@ -1716,8 +1724,9 @@ define([
     };
     CodeMirrorAdapterForCodeEditor.getAvailableThemes = function () {
         return [
-            'codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 'elegant', 'erlang-dark', 'lesser-dark',
-            'midnight', 'monokai', 'neat', 'night', 'rubyblue', 'solarized dark', 'solarized light', 'twilight',
+            'codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 
+            'elegant', 'erlang-dark', 'lesser-dark', 'midnight', 'monokai', 'neat', 'night', 
+            'rubyblue', 'solarized dark', 'solarized light', 'twilight',
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
     };

@@ -33,7 +33,7 @@ define([], function () {
     function PreferencePage(store, pageData) {
         this.store = store;
         this.pageData = pageData;
-        this.store.setValidator(function (values) {
+        this.store.setValidator(function (/*values*/) {
             return;
         });
 
