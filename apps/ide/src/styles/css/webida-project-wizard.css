@@ -142,7 +142,7 @@ button.pkg-download.to-device:before {
 .pwBody {
     width: 100%;
     min-width: 940px;
-    max-width: 100%;
+    max-width: calc(100% - 20px);
     height: 100%;
     min-height: 700px;
     max-height: 100%;
@@ -150,7 +150,12 @@ button.pkg-download.to-device:before {
     background-color: #ecf1f6;
     font-family: "Nanum Gothic Coding";
     font-size: 10pt;
+    padding: 10px;
+    background-color: #606A78;
     /* overflow: hidden; */
+}
+#pwQuickStart, #pwProjectWizard {
+    background-color: #ECF1F6;
 }
 
 .pwBody .dijitTreeRowSelected {
