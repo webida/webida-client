@@ -138,8 +138,6 @@ define([
                             file.toRefresh = false;
                             fsCache.refreshFileContents(file.path);
                         }
-
-                        topic.publish('editors.selected', file.path, file);
                     }
                 } else {
                     editors.currentFile = null;
