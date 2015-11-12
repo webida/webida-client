@@ -41,11 +41,6 @@ function (
 ) {
     'use strict';
 
-    var webidaHost = decodeURIComponent(
-        document.cookie.replace(
-            /(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-    );
-
     var CheckBoxTreeNode = declare([Tree._TreeNode], {
 
         templateString: CheckBoxTreeNodeTemplate,
@@ -76,8 +71,8 @@ function (
         }
     });
 
-    var _template =
-        CheckBoxTreeTemplate.replace(/<%webida-host%>/g, webidaHost);
+    var _template = CheckBoxTreeTemplate;
+        //CheckBoxTreeTemplate.replace(/<%webida-host%>/g, webidaHost);
 
     var _checkBoxTree = declare([Tree], {
         openOnDbClick: true,

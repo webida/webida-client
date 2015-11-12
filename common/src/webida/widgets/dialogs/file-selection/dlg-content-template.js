@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define([], function () {
+define(['webida-lib/app-config'], function (appConfig) {
     'use strict';
 
     var template =
@@ -26,7 +26,7 @@ define([], function () {
         '        } ' +
         '        .selDirSelectedExpanded' +
         '        { ' +
-        '            background-image: url("//<%webida-host%>/common/src/webida/' +
+        '            background-image: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folderopen.png");' +
         '            background-position: 0, 0;' +
         '            background-repeat: no-repeat;' +
@@ -35,7 +35,7 @@ define([], function () {
         '        }' +
         '        .selDirDeselectedExpanded' +
         '        { ' +
-        '            background-image: url("//<%webida-host%>/common/src/webida/' +
+        '            background-image: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folderopen.png");' +
         '            background-position: -32px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -44,7 +44,7 @@ define([], function () {
         '        }' +
         '        .selDirPartialExpanded' +
         '        { ' +
-        '            background-image: url("//<%webida-host%>/common/src/webida/' +
+        '            background-image: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folderopen.png");' +
         '            background-position: -16px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -53,7 +53,7 @@ define([], function () {
         '        }' +
         '        .selDirSelectedCollapsed' +
         '        { ' +
-        '            background-image: url("//<%webida-host%>/common/src/webida/' +
+        '            background-image: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folder.png");' +
         '            background-position: 0, 0;' +
         '            background-repeat: no-repeat;' +
@@ -62,7 +62,7 @@ define([], function () {
         '        }' +
         '        .selDirDeselectedCollapsed' +
         '        { ' +
-        '            background-image: url("//<%webida-host%>/common/src/webida/' +
+        '            background-image: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folder.png");' +
         '            background-position: -32px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -71,7 +71,7 @@ define([], function () {
         '        }' +
         '        .selDirPartialCollapsed' +
         '        { ' +
-        '            background-image: url("//<%webida-host%>/common/src/webida/' +
+        '            background-image: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_folder.png");' +
         '            background-position: -16px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -80,7 +80,7 @@ define([], function () {
         '        }' +
         '        .selFileSelected' +
         '        { ' +
-        '            background-image: url("//<%webida-host%>/common/src/webida/' +
+        '            background-image: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_file.png");' +
         '            background-position: 0, 0;' +
         '            background-repeat: no-repeat;' +
@@ -89,7 +89,7 @@ define([], function () {
         '        }' +
         '        .selFileDeselected' +
         '        { ' +
-        '            background-image: url("//<%webida-host%>/common/src/webida/' +
+        '            background-image: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/select_state_file.png");' +
         '            background-position: -16px, 0;' +
         '            background-repeat: no-repeat;' +
@@ -97,7 +97,7 @@ define([], function () {
         '            height: 16px;' +
         '        }' +
         '        .fileIcon' +
-        '        { background: url("//<%webida-host%>/common/src/webida/' +
+        '        { background: url("' + appConfig.baseUrl + '/common/src/webida/' +
         'widgets/dialogs/file-selection/icons/fileIcon.png") no-repeat; width: 16px; height: 16px; }' +
         '    </style> ' +
         '    <div class="dijitDialogPaneContentArea">' +
