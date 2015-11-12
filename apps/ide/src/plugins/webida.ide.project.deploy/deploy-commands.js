@@ -21,7 +21,6 @@ define([
     'webida-lib/util/path',
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/locale',
-    'webida-lib/util/logger/logger-client',
     './content-view-controller',
     './deploy',
     './workspace-view-controller',
@@ -34,7 +33,6 @@ define([
     pathUtil,
     wv,
     locale,
-    Logger,
     contentViewController,
     deploy,
     workspaceViewController,
@@ -44,8 +42,6 @@ define([
 
     var module = {};
     var ui = {};
-
-    var logger = new Logger();
 
     module.openDialog = function () {
         deploy.init(ide.getFsid() + pathUtil.detachSlash(wv.getSelectedPath()));
