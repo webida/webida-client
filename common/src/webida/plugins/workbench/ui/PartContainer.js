@@ -316,23 +316,23 @@ define([
             var currentPart = registry.getCurrentEditorPart();
 
             if (registry.getDirtyParts().length === 0) {
-                topic.publish('editors.clean.all');
+                topic.publish('editor/clean/all');
             } else {
-                topic.publish('editors.dirty.some');
+                topic.publish('editor/dirty/some');
             }
 
             if (!part) {
-                topic.publish('editors.clean.current');
+                topic.publish('editor/clean/current');
             } else {
                 if (part.isDirty()) {
                     this.setTitle('*' + title);
                     if (part === currentPart) {
-                        topic.publish('editors.dirty.current');
+                        topic.publish('editor/dirty/current');
                     }
                 } else {
                     this.setTitle(title);
                     if (part === currentPart) {
-                        topic.publish('editors.clean.current');
+                        topic.publish('editor/clean/current');
                     }
                 }
             }

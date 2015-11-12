@@ -43,8 +43,8 @@
                         "toolbar": {
                             "icons" : "./styles/images/icons/toolbar_save.png",
                             "tooltip" : "Save",
-                            "enabledOn" : "editors.dirty.current",
-                            "disabledOn" : "editors.clean.current"
+                            "enabledOn" : "editor/dirty/current",
+                            "disabledOn" : "editor/clean/current"
                         }
                     }],
                     "Sav&e All" : [ "cmnd", {
@@ -52,8 +52,8 @@
                         "toolbar": {
                             "icons" : "./styles/images/icons/toolbar_saveall.png",
                             "tooltip" : "Save all",
-                            "enabledOn" : "editors.dirty.some",
-                            "disabledOn" : "editors.clean.all"
+                            "enabledOn" : "editor/dirty/some",
+                            "disabledOn" : "editor/clean/all"
                         }
                     }],
                     "&Close" : [ "cmnd" ],

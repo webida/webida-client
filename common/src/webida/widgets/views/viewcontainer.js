@@ -420,8 +420,6 @@ define([
                     event.view = view;
                     event.viewContainer = this;
                     topic.publish('view.selected', event);
-                    //TODO : should be refactored with CompatiblePartContainerWidgetAdapter
-                    topic.publish('compatible.view.selected', event.view);
                 } else {
                     this.tabContainer.selectChild(view.contentPane, true);
                 }
@@ -599,8 +597,6 @@ define([
             event.viewContainer = _self;
             if (event.view) {
                 topic.publish('view.selected', event);
-                //TODO : should be refactored with CompatiblePartContainerWidgetAdapter
-                topic.publish('compatible.view.selected', event.view);
             }
         },
 

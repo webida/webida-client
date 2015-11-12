@@ -317,15 +317,19 @@ define([
         },
 
         /**
+         * Return true if anyone of the Part inside of
+         * the MultiContentEditorPart is dirty
+         * 
          * @override
          */
         isDirty: function () {
-            var content = this.getActiveContent();
-            if (content instanceof EditorPart) {
-                return content.isDirty();
-            } else {
-                return false;
+            var parts = this.getParts();
+            for (var i = 0; i < parts.length; i++) {
+                if (parts[i].isDirty()) {
+                    return true;
+                }
             }
+            return false;
         },
 
         /**

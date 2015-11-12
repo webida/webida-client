@@ -92,13 +92,13 @@ define([
 
         topic.subscribe('fs.cache.file.set', function (fsUrl, target, reason) {
             if (reason === 'refreshed') {
-                topic.publish('data-source/content-change', target);
+                topic.publish('data-source/content-changed', target);
             }
         });
 
         topic.subscribe('editor/not-exists', function () {
-            topic.publish('editors.clean.all');
-            topic.publish('editors.clean.current');
+            topic.publish('editor/clean/all');
+            topic.publish('editor/clean/current');
         });
 
         //Compatibility
@@ -138,8 +138,6 @@ define([
                             file.toRefresh = false;
                             fsCache.refreshFileContents(file.path);
                         }
-
-                        topic.publish('editors.selected', file.path, file);
                     }
                 } else {
                     editors.currentFile = null;
@@ -149,8 +147,8 @@ define([
     }
 
 
-    topic.publish('editors.clean.current');
-    topic.publish('editors.clean.all');
+    topic.publish('editor/clean/current');
+    topic.publish('editor/clean/all');
 
     var fsCache = ide.getFSCache();
     var asked = [];
