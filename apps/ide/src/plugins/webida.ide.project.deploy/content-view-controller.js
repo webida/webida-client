@@ -33,8 +33,8 @@ define([
     'webida-lib/webida-0.3',
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg3States', // FileDialog
     './deploy',
-    'text!./layout/webidaCreateApp.html',
-    'text!./layout/webidaAppInfoTable.html'
+    'text!./layout/app-creation-form.html',
+    'text!./layout/app-information.html'
 ], function (
     ContentPane,
     Dialog,
