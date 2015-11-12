@@ -21,18 +21,22 @@
  */
 
 define([
+    'dojo/i18n!../nls/resource',
     'external/lodash/lodash.min',
     'webida-lib/util/genetic',
     '../lib/jquery.minicolors.min',
     'plugins/webida.preference/pages/PreferencePage',
     'text!../layout/notification-preference.html',
+    'webida-lib/util/locale',
     'xstyle/css!../style/jquery.minicolors.css'
 ], function (
+    i18n,
     _,
     genetic,
     minicolors,
     PreferencePage,
-    template
+    template,
+    locale
 ) {
     'use strict';
     function NotificationPreferencePage(store, pageData) {
@@ -70,6 +74,7 @@ define([
         },
         onPageAppended: function () {
             PreferencePage.prototype.onPageAppended.call(this);
+            locale.convertMessage(i18n, 'data-message');
         },
         onPageRemoved: function () {
             var $ui = $(this.ui);

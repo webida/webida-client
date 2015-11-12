@@ -20,6 +20,7 @@
  *
  */
 define([
+    'dojo/i18n!./nls/resource',
     'dojo/topic',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/util/logger/logger-client',
@@ -28,6 +29,7 @@ define([
     'text!./layout/notification.html',
     'xstyle/css!./style/style.css'
 ], function (
+    i18n,
     topic,
     workbench,
     Logger,
@@ -43,7 +45,7 @@ define([
     /* jshint validthis:true */
     function getView() {
         if (!this.view) {
-            var view = new View('notificationTab', 'Notification');
+            var view = new View('notificationTab', i18n.viewTitle);
             view.setContent('<div id="NotificationTab" style="width:100%; height:100%; overflow:hidden">');
             this.view = view;
         }
@@ -52,7 +54,7 @@ define([
 
     function onViewAppended() {
         var opt = {
-            title: 'Notification',
+            title: i18n.viewTitle,
             key: 'N'
         };
         workbench.registToViewFocusList(this.view, opt);
