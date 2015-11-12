@@ -222,7 +222,6 @@
 .webida-light .popup-dialog .dijitDialogPaneContentArea,
 .webida-light .buttoned-dialog-text-only .dijitDialogPaneContentArea {
   background-color: transparent;
-  color: #ffffff;
   padding: 10px 10px 30px 10px;
   overflow-wrap: break-word;
 }
