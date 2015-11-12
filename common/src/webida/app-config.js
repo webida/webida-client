@@ -43,6 +43,7 @@ define([
         appId: APP_ID,
         clientId: 'IDE_CLIENT_ID',
         redirectUrl: serverConf.systemApps[APP_ID].baseUrl + '/auth.html',
+        baseUrl: serverConf.systemApps[APP_ID].baseUrl,
         meta: {
             user: {
                 dir: '.userInfo',
