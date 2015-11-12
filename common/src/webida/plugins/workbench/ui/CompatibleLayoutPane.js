@@ -53,8 +53,8 @@ define([
         var that = this;
         LayoutPane.call(this, id);
         this.widgetToContainerMap = new Map();
-        topic.subscribe('compatible.view.selected', function (widget) {
-            var container = that._getContainerByWidget(widget);
+        topic.subscribe('view.selected', function (event) {
+            var container = that._getContainerByWidget(event.view);
             that.emit(LayoutPane.CONTAINER_SELECT, container);
         });
     }
