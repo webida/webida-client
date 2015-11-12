@@ -50,7 +50,7 @@ define([
     module.openDialog = function () {
         deploy.init(ide.getFsid() + pathUtil.detachSlash(wv.getSelectedPath()));
         ui.dialog = new Dialog({
-            title: i18n.dialogTitle,
+            title: i18n.titleDialog,
             style: 'width: 810px; height: 650px',
             refocus: false,
             onHide: function () {

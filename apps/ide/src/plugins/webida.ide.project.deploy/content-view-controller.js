@@ -24,16 +24,18 @@ define([
     'dijit/form/ComboBox',
     'dijit/layout/LinkPane',
     'dijit/registry',
+    'dojo/i18n!./nls/resource',
     'dojo/parser',
     'dojo/store/Memory',
+    'dojo/string',
     'dojox/layout/TableContainer',
     'popup-dialog',
+    'webida-lib/util/locale',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     'webida-lib/webida-0.3',
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg3States', // FileDialog
     './deploy',
-    'text!./layout/app-creation-form.html',
     'text!./layout/app-information.html'
 ], function (
     ContentPane,
@@ -45,16 +47,18 @@ define([
     ComboBox,
     LinkPane,
     reg,
+    i18n,
     parser,
     Memory,
+    string,
     TableContainer,
     PopupDialog,
+    locale,
     Logger,
     notify,
     webida,
     FileDialog,
     deploy,
-    createMarkup,
     appInfoMarkup
 ) {
     'use strict';
@@ -66,38 +70,35 @@ define([
     var createButton = null;
     var noAppLabel = null;
 
-    //var STR_HTTPS = 'https://';
     var STR_DOT = '.';
     var STR_ARCHIVE_PATH = '/.project/deploy.zip';
-    var STR_API_CALL_FAIL = 'Failed to call Webida API.';
-    var CONTENT_NO_DEPLOYED_APP_INFORMATION =
-        'This project has no deployed apps. Please click the \'Create New Deploy\' button.';
-
-    var CREATE_NEW_APP_ENTER_NAME_DOMAIN_TOASTR = 'Enter a name and a domain.';
-    var EDIT_APP_SUCCESS_TOASTR = 'Successfully edited the app information.';
-    var EDIT_APP_CANCEL_TOASTR = 'Canceled editing the app information.';
-    var EDIT_APP_FAIL_TOASTR = 'Failed to edit the app information.';
-    var SELECTIVE_SETTING_TITLE_DIALOG = 'Select Files to Deploy';
-    var SELECTIVE_SETTING_SUCCESS_TOASTR = 'Files to deploy were selected successfully.';
-    var SELECTIVE_SETTING_CANCEL_TOASTR = 'Canceled file selection.';
-    var SELECTIVE_SETTING_FAIL_TOASTR = 'Failed to select files to deploy.';
-    var DELETE_APP_TITLE_DIALOG = 'Delete Deployed App';
-    var DELETE_APP_MESSAGE_DIALOG = 'Are you sure to delete this deployed app?';
-    var DELETE_APP_SUCCESS_TOASTR = 'Successfully deleted the deployed app.';
-    var DELETE_APP_CANCEL_TOASTR = 'Canceled to delete the deployed app.';
-    var DEPLOY_APP_ING_PROGRESS = 'Deploying...';
-    var DEPLOY_APP_SUCCESS = '\'{0}\' was successfully deployed';
-    var DEPLOY_APP_FAIL_TOASTR = 'Failed to deploy the app.';
-    var START_APP_SUCCESS_TOASTR = 'Successfully started the deployed app.';
-    var STOP_APP_SUCCESS_TOASTR = 'Successfully stopped the deployed app.';
-    var CHECK_AVAILABLE = 'Available';
-    var CHECK_NOT_AVAILABLE = 'This domain is not available.';
-    var CHECK_NAME_NO_NAME_TOOLTIP = 'Enter a name.';
-    var CHECK_NAME_CONTAIN_SPACE_TOOLTIP = 'Names cannot contain spaces.';
-    var CHECK_NAME_ALREADY_EXIST_TOOLTIP = 'This name already exists in the project.';
-    var CHECK_DOMAIN_GET_FAIL_TOOLTIP = 'Failed to receive a deploy domain.';
-    var CHECK_NAME_NO_DOMAIN_TOOLTIP = 'Enter a deploy project domain postfix.';
-    var SHOW_STATUS_ERROR = 'Unknown app status';
+    var STR_API_CALL_FAIL = i18n.messageFailCallAPI;
+    var CONTENT_NO_DEPLOYED_APP_INFORMATION = i18n.noContent;
+    var CREATE_NEW_APP_ENTER_NAME_DOMAIN_TOASTR = i18n.validationNoNameOrDomain;
+    var EDIT_APP_SUCCESS_TOASTR = i18n.messageSuccessEdit;
+    var EDIT_APP_CANCEL_TOASTR = i18n.messageCancelEdit;
+    var EDIT_APP_FAIL_TOASTR = i18n.messageFailEdit;
+    var SELECTIVE_SETTING_TITLE_DIALOG = i18n.messageInformSelectFiles;
+    var SELECTIVE_SETTING_SUCCESS_TOASTR = i18n.messageSuccessSelectFiles;
+    var SELECTIVE_SETTING_CANCEL_TOASTR = i18n.messageCancelSelectFiles;
+    var SELECTIVE_SETTING_FAIL_TOASTR = i18n.messageFailSelectFiles;
+    var DELETE_APP_TITLE_DIALOG = i18n.titleDeleteAppDialog;
+    var DELETE_APP_MESSAGE_DIALOG = i18n.contentDeleteAppDialog;
+    var DELETE_APP_SUCCESS_TOASTR = i18n.messageSuccessDeleteApp;
+    var DELETE_APP_CANCEL_TOASTR = i18n.messageCancelDeleteApp;
+    var DEPLOY_APP_ING_PROGRESS = i18n.messageInformProgressDeploy;
+    var DEPLOY_APP_SUCCESS = i18n.messageSuccessDeploy;
+    var DEPLOY_APP_FAIL_TOASTR = i18n.messageFailDeploy;
+    var START_APP_SUCCESS_TOASTR = i18n.messageSuccessStartApp;
+    var STOP_APP_SUCCESS_TOASTR = i18n.messageSuccessStopApp;
+    var CHECK_AVAILABLE = i18n.messageAvailable;
+    var CHECK_NOT_AVAILABLE = i18n.messageNotAvailable;
+    var CHECK_NAME_NO_NAME_TOOLTIP = i18n.validationNoName;
+    var CHECK_NAME_CONTAIN_SPACE_TOOLTIP = i18n.validationNameContainSpaces;
+    var CHECK_NAME_ALREADY_EXIST_TOOLTIP = i18n.validationNameExist;
+    var CHECK_DOMAIN_GET_FAIL_TOOLTIP = i18n.messageFailCheckDomain;
+    var CHECK_NAME_NO_DOMAIN_TOOLTIP = i18n.validationNoDomain;
+    var SHOW_STATUS_ERROR = i18n.messageError;
 
     String.prototype.format = function () {
         var args = arguments;
@@ -631,6 +632,7 @@ define([
         });
 
         showAppPane.addChild(markup, 0);
+        locale.convertMessage(i18n, 'data-message');
 
         var child = markup.domNode;
 
@@ -975,7 +977,7 @@ define([
                             notify.error(STR_API_CALL_FAIL);
                             setProgressInfo(parent, true, DEPLOY_APP_FAIL_TOASTR, 0, false);
                         } else {
-                            var msg = DEPLOY_APP_SUCCESS.format(appID);
+                            var msg = string.substitute(DEPLOY_APP_SUCCESS, {appId: appID});
                             notify.success(msg);
                             setProgressInfo(parent, true, msg, 100, false);
                         }
@@ -1118,6 +1120,7 @@ define([
             content: appInfoMarkup
         });
         showAppPane.addChild(markup);
+        locale.convertMessage(i18n, 'data-message');
 
         var child = markup.domNode;
         var arrow = $(child).find('.table-title-arrow');
@@ -1217,7 +1220,7 @@ define([
     function createApp(tab, fCreate) {
         var pane = new ContentPane({
             style: 'background-color:#E1E2E2; position:relative; padding:10px; font-weight:bold; font-size:1.2em;',
-            content: 'App Information'
+            content: i18n.titleContentArea
         });
 
         fCreate(pane);
@@ -1241,8 +1244,8 @@ define([
         beforeChange: function (cb) {
             if (existUnsaved() === true) {
                 PopupDialog.yesno({
-                    title: 'Leave This Page?',
-                    message: 'Any unsaved change(s) will be lost. Are you sure?',
+                    title: i18n.titleLeaveDialog,
+                    message: i18n.contentLeaveDialog,
                     type: 'info'
                 }).then(function () {
                     cb(true);
