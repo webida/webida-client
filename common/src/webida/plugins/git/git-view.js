@@ -20,39 +20,40 @@
  */
 
 define([
-    'dojo/topic',
-    'webida-lib/plugins/workspace/plugin',
     './git-core',
     './gitview-log',
-    'text!./layer/gitviewtoolbarcontent.html',
-    'webida-lib/plugins/workbench/plugin',
-    'webida-lib/widgets/views/view',
-    'webida-lib/widgets/views/viewToolbar',
-    'webida-lib/util/path',
+    'dojo/i18n!./nls/resource',
+    'dojo/topic',
     'dijit/form/Button',
     'require',
-    'webida-lib/util/logger/logger-client'
+    'text!./layer/gitviewtoolbarcontent.html',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/path',
+    'webida-lib/widgets/views/view',
+    'webida-lib/widgets/views/viewToolbar'
 ], function (
-	topic,
-	wv,
-	git,
-	gitviewlog,
-	toolbarContentTmpl,
-	workbench,
-	View,
-	ViewToolbar,
-	pathUtil,
-	Button,
-	require,
-	Logger
+    git,
+    gitviewlog,
+    i18n,
+    topic,
+    Button,
+    require,
+    toolbarContentTmpl,
+    workbench,
+    wv,
+    Logger,
+    pathUtil,
+    View,
+    ViewToolbar
 ) {
-
     'use strict';
 
-	var singleLogger = new Logger.getSingleton();
-	//var logger = new Logger();
-	//logger.setConfig('level', Logger.LEVELS.log);
-	//logger.off();
+    var singleLogger = new Logger.getSingleton();
+    //var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     singleLogger.log('loaded modules required by git-view. initializing git-view\'s module');
 
@@ -149,20 +150,20 @@ define([
                             }
                         }
 
-                        var path = 'Selected Git project: ' + GIT_DIR + ' [' + curBranch + ']';
+                        var path = i18n.selectedGitProject + GIT_DIR + ' [' + curBranch + ']';
 
                         statusbar.text(path);
                     }
                 });
             } else {
-                statusbar.text('Selected Git project: none');
+                statusbar.text(i18n.selectedGitProject + i18n.none);
             }
         }
     }
 
     var gitView;
     function getView() {
-        var view = new View('gitviewTab', 'Git');
+        var view = new View('gitviewTab', i18n.git);
         view.setContent('<div id="gitViewTab" style="width:100%; height:100%">');
         gitView = view;
 
@@ -174,7 +175,7 @@ define([
         var view = gitView;
         if (view) {
             var opt = {};
-            opt.title = 'Git';
+            opt.title = i18n.git;
             opt.key = 'G';
             workbench.registToViewFocusList(view, opt);
         }
@@ -199,7 +200,7 @@ define([
             }
 
             void new Button({
-                label: 'Clear',
+                label: i18n.clear,
                 style: 'position:absolute; right:5px',
                 onClick: function () {
                     var contents = dojo.query('.gv-contents');
