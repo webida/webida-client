@@ -15,31 +15,34 @@
  */
 
 define([
-	'require',
-    'dojo/topic',
-    'webida-lib/plugins/workspace/plugin',
     './git-core',
+    'dojo/i18n!./nls/resource',
+    'dojo/string',
+    'dojo/topic',
+    'require',
     'webida-lib/app',
+    'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/path',
     'webida-lib/util/notify',
     'webida-lib/util/logger/logger-client'
 ], function (
-	require, 
-	topic, 
-	wv, 
-	git, 
-	ide, 
-	pathUtil, 
-	notify, 
-	Logger
+    git,
+    i18n,
+    string,
+    topic,
+    require,
+    ide,
+    wv,
+    pathUtil,
+    notify,
+    Logger
 ) {
-
     'use strict';
 
-	var singleLogger = new Logger.getSingleton();
-	//var logger = new Logger();
-	//logger.setConfig('level', Logger.LEVELS.log);
-	//logger.off();
+    var singleLogger = new Logger.getSingleton();
+    //var logger = new Logger();
+    //logger.setConfig('level', Logger.LEVELS.log);
+    //logger.off();
 
     var THROTTLE_DELAY = 100;
     var EMPTY_MAP = {};
@@ -84,7 +87,7 @@ define([
             }
         }
     }
-    
+
     function setGitOverlayIconState(nodePath, newState) {
         topic.publish('workspace.node.overlayicon.state.changed', nodePath, GIT_OVERLAY_ICON_STATE_MAP_KEY, newState); 
     }
@@ -154,7 +157,7 @@ define([
         function setIconInfoWithin(path) {
             var myRepoPath = git.findGitRootPath(path);
             if (myRepoPath !== repoPath) {
-                return;		// another git repo in a subdirectory
+                return;     // another git repo in a subdirectory
             }
 
             var absPath = pathUtil.detachSlash(path);
@@ -227,7 +230,7 @@ define([
                 git.exec(repoPath, ['status', '--ignored', '-z'], function (err, stdout, stderr) {
                     singleLogger.log('received the response to the git status request for ' + repoPath);
                     if (err) {
-                        notify.error('git status failed for ' + repoPath + ' (' + err + ')');
+                        notify.error(string.substitute(i18n.gitStatusFailed, {path: repoPath, err: err}));
                     } else if (stderr) {
                         console.log('git status emitted stderr msg for ' + repoPath + ' (' + stderr + ')');
                     } else {
@@ -237,7 +240,7 @@ define([
                             setIconInfo(repoPath, pathToCode);
                         } else {
                             console.error('failed to parse a git status result for ' + repoPath);
-                            console.log('	stdout = "' + stdout + '"');
+                            console.log('   stdout = "' + stdout + '"');
                         }
                     }
 
@@ -287,13 +290,14 @@ define([
                     }
                 }
 
-                singleLogger.log('received the response to the first git status request for ' +
-                                parentPath);
+                singleLogger.log(
+                    'received the response to the first git status request for ' + parentPath);
                 if (err) {
-                    notify.error('git status failed for ' + parentPath + ' (' + err + ')');
+                    notify.error(
+                        string.substitute(i18n.gitStatusFailed, {path: parentPath, err: err}));
                 } else if (stderr) {
-                    console.log('git status emitted stderr msg for ' + parentPath + ' (' +
-                                stderr + ')');
+                    console.log(
+                        'git status emitted stderr msg for ' + parentPath + ' (' + stderr + ')');
                 } else {
                     var pathToCode = stdout ? git.parseStatusZ(stdout) : EMPTY_MAP;
                     if (pathToCode) {
@@ -332,16 +336,17 @@ define([
                                 }
 
                                 if (err) {
-                                    notify.error('Failed to read a file ' + path + ' (' +
-                                                 err + ')');
+                                    notify.error(string.substitute(
+                                        i18n.failedToReadAFile, {path: path, err: err}));
                                 } else {
                                     var repoTopPath = getRepoTopPath(content);
                                     if (repoTopPath) {
                                         //console.log('hina temp: found a git repo top: ' +
                                         //            repoTopNode.getPath());
-                                        git.recordGitRepoPath(parentPath, repoTopPath);
+                                        git.recordGitRepoPath(
+                                            parentPath, repoTopPath);
                                         setGitOverlayIconState(parentPath, 'gitSubmodule');
-                                        
+
                                     } else {
                                         console.warn('Expected ' + path + ' to be a git submodule, ' +
                                                      'but could not find its top repository');
@@ -354,7 +359,7 @@ define([
                         }
                     } else {
                         console.error('failed to parse a git status result for ' + parentPath);
-                        console.log('	stdout = "' + stdout + '"');
+                        console.log('   stdout = "' + stdout + '"');
                     }
                 }
             });
@@ -425,7 +430,7 @@ define([
                 var iconInfo = wv.getNodeOverlayIconInfo(path, GIT_OVERLAY_ICON_STATE_MAP_KEY);
                 if (iconInfo === 'gitIgnored' ||
                     (iconInfo === 'gitUntracked' && !mayConvertUntrackedToTracked)) {
-                    return;		// do nothing. just ignore
+                    return;     // do nothing. just ignore
                 }
             }
 

@@ -14,22 +14,39 @@
  * limitations under the License.
  */
 
-define(['require',
-        'webida-lib/app',
-        'plugins/webida.preference/preference-service-factory',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'webida-lib/util/notify',
-        'dojo/Deferred',
-        'dijit/registry',
-        'external/async/dist/async.min',
-        './git-core',
-        './gitview-log',
-        './preference-git',
-        './lib/jsdifflib/diffview',
-        './lib/jsdifflib/difflib'
-       ],
-function (require, ide, PreferenceFactory, ButtonedDialog, notify, Deferred,
-           registry, async, git, gitviewlog, GitPreferences, diffview, difflib) {
+define([
+    'dojo/Deferred',
+    'dojo/i18n!./nls/resource',
+    'dojo/string',
+    'dijit/registry',
+    'external/async/dist/async.min',
+    'plugins/webida.preference/preference-service-factory',
+    'require',
+    'webida-lib/app',
+    'webida-lib/util/notify',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    './git-core',
+    './gitview-log',
+    './lib/jsdifflib/diffview',
+    './lib/jsdifflib/difflib',
+    './preference-git'
+], function (
+    Deferred,
+    i18n,
+    string,
+    registry,
+    async,
+    PreferenceFactory,
+    require,
+    ide,
+    notify,
+    ButtonedDialog,
+    git,
+    gitviewlog,
+    diffview,
+    difflib,
+    GitPreferences
+) {
     'use strict';
 
     var fsCache = ide.getFSCache();
@@ -40,7 +57,7 @@ function (require, ide, PreferenceFactory, ButtonedDialog, notify, Deferred,
 
     GitDiff.prototype._getLinesOfContext = function () {
         var linesOfContext = preferences.getValue(GitPreferences.PREFIX,
-            GitPreferences.getKey(GitPreferences.LINES_OF_CONTEXT));
+                GitPreferences.getKey(GitPreferences.LINES_OF_CONTEXT));
         return linesOfContext || 10;
     };
 
@@ -54,18 +71,18 @@ function (require, ide, PreferenceFactory, ButtonedDialog, notify, Deferred,
             var srcPath = GIT_DIR + file;
             var CUR_REVISION_TEXT;
             var HEAD_TEXT;
-            var STR_CUR_REVISION_TEXT = ARG_LEN > 2 ? commitId : 'Current Revision';
-            var STR_HEAD_TEXT = ARG_LEN > 2 ? commitId + '^' : 'HEAD';
+            var STR_CUR_REVISION_TEXT = ARG_LEN > 2 ? commitId : i18n.CurrentRevision;
+            var STR_HEAD_TEXT = ARG_LEN > 2 ? commitId + '^' : i18n.head;
             var sm;
             var opcodes;
             var diffDlg = new ButtonedDialog({
                 buttons: [{
-                    caption: 'Close',
+                    caption: i18n.close,
                     methodOnClick: 'hide'
                 }],
                 methodOnEnter: 'hide',
 
-                title: 'Diff - ' + GIT_DIR + file,
+                title: i18n.diff + GIT_DIR + file,
                 style: 'width: 70%;',
                 onHide: function () {
                     diffDlg.destroyRecursive();
@@ -78,7 +95,6 @@ function (require, ide, PreferenceFactory, ButtonedDialog, notify, Deferred,
             var viewType = 1; // default = 1 (unified mode);
 
             function renderDiffView(contextSize, viewType) {
-                console.log('renderDiffView', contextSize);
                 diffoutput.empty();
 
                 var output = diffview.buildView({
@@ -101,8 +117,8 @@ function (require, ide, PreferenceFactory, ButtonedDialog, notify, Deferred,
                             next('ERROR: isDirectory - ' + err);
                         } else {
                             if (isDirectory) {
-                                var infoMsg = file + ' is not a file path.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                var infoMsg = string.substitute(i18n.directoryPath, {file: file});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
 
                                 next('INFO');
                             } else {
@@ -207,16 +223,16 @@ function (require, ide, PreferenceFactory, ButtonedDialog, notify, Deferred,
 
                             buttons: [
                                 { id: 'gdApply',
-                                 caption: 'OK',
+                                 caption: i18n.ok,
                                  methodOnClick: 'apply'
                                 },
                                 { id: 'gdClose',
-                                 caption: 'Close',
+                                 caption: i18n.close,
                                  methodOnClick: 'hide'
                                 }
                             ],
                             methodOnEnter: 'hide',
-                            title: 'Diff Preferences',
+                            title: i18n.diffPreferences,
                             refocus: false,
 
                             onHide: function () {
