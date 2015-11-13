@@ -37,6 +37,8 @@ define(['require',
     'webida-lib/util/notify',
     'popup-dialog',
     'dijit/registry',
+    'dojo/i18n!./nls/resource',
+    'dojo/string',
     'dojo/store/Memory',
     'dojo/data/ObjectStore',
     'dojo/store/Observable',
@@ -58,32 +60,37 @@ define(['require',
     'dijit/DropDownMenu',
     'dijit/form/CheckBox',
     'dijit/form/SimpleTextarea',
-], function (require, _,
-              webida,
-              ide,
-              pathUtil,
-              wv,
-              git,
-              gitviewlog,
-              async,
-              gitIcon,
-              Github,
-              diffview,
-              difflib,
-              workbench,
-              BubblingArray,
-              notify,
-              PopupDialog,
-              registry,
-              Memory,
-              ObjectStore,
-              Observable,
-              ObjectStoreModel,
-              ItemFileWriteStore,
-              ButtonedDialog,
-              Tree,
-              DataGrid,
-              EnhancedGrid) {
+], function (
+    require,
+    _,
+    webida,
+    ide,
+    pathUtil,
+    wv,
+    git,
+    gitviewlog,
+    async,
+    gitIcon,
+    Github,
+    diffview,
+    difflib,
+    workbench,
+    BubblingArray,
+    notify,
+    PopupDialog,
+    registry,
+    i18n,
+    string,
+    Memory,
+    ObjectStore,
+    Observable,
+    ObjectStoreModel,
+    ItemFileWriteStore,
+    ButtonedDialog,
+    Tree,
+    DataGrid,
+    EnhancedGrid
+) {
 
     'use strict';
 
@@ -325,18 +332,18 @@ define(['require',
                 git.exec(path, ['stash', 'save'].concat(stashArgs), function (err, stdout, stderr) {
                     if (err) {
                         gitviewlog.error(path, 'stash', err);
-                        notify.error('For more details, refer to the Git view.', 'Git Stash Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitStashError);
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(path, 'stash', data);
-                            notify.error('For more details, refer to the Git view.', 'Git Stash Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitStashError);
                         } else {
                             if (data.match('No local changes to save')) {
-                                notify.info('No local changes to save', 'Git Stash Info');
+                                notify.info(i18n.noLocalChangesToSave, i18n.gitStashInfo);
                                 gitviewlog.info(path, 'stash', data);
                             } else {
-                                notify.success('', 'Git Stash Success');
+                                notify.success('', i18n.gitStashSuccess);
                                 gitviewlog.success(path, 'stash', data);
                                 refresh(gitRootPath, true);
                             }
@@ -349,12 +356,12 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitStashBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'gitStash',
                         disabledOnShow: true
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -368,7 +375,7 @@ define(['require',
                     stashDialog.hide();
                 },
 
-                title: 'Stash Changes',
+                title: i18n.stashChanges,
                 onHide: function (evt) {
                     stashDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -403,12 +410,12 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitUnStashApplyBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'gitUnstash',
                         disabledOnShow: true
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -419,7 +426,7 @@ define(['require',
                     }
 
                     if (branchCheckbox.get('checked') && !branchInput.get('value')) {
-                        notify.error('Enter a new branch name');
+                        notify.error(i18n.enterANewBranchName);
                         return;
                     }
 
@@ -427,7 +434,7 @@ define(['require',
                     unstashDialog.hide();
                 },
 
-                title: 'Unstash Changes',
+                title: i18n.unstashChanges,
                 onHide: function (evt) {
                     unstashDialog.destroyRecursive();
                 }
@@ -449,23 +456,23 @@ define(['require',
                 var warningMsg = 'Do you want to remove ' + reflog + ' ?';
 
                 PopupDialog.yesno({
-                    title: 'Unstash',
+                    title: i18n.unstash,
                     message: warningMsg,
                     type: 'info'
                 }).then(function () {
                     git.exec(path, ['stash', 'drop', reflog], function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(path, 'unstash', err);
-                            notify.error('For more details, refer to the Git view.', 'Git UnStash Drop Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitUnstashDropError);
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'unstash', data);
-                                notify.error('For more details, refer to the Git view.', 'Git UnStash Drop Error');
+                                notify.error(i18n.forMoreDetails, i18n.gitUnstashDropError);
                             } else {
                                 grid.store.deleteItem(item[0]);
                                 gitviewlog.success(path, 'unstash', data);
-                                notify.success('', 'Git Stash Drop Success');
+                                notify.success('', i18n.gitStashDropSuccess);
                             }
                         }
                     });
@@ -476,29 +483,29 @@ define(['require',
 
             function clearEvent(path) {
                 if (grid.rowCount === 0) {
-                    notify.warning('No stashed states exist', 'Git Stash Clear Warning');
+                    notify.warning(i18n.noStashStatesExist, i18n.gitStashClearWarning);
                     return;
                 }
 
                 var warningMsg = 'Do you want to remove all stashed states?';
 
                 PopupDialog.yesno({
-                    title: 'Clear Stash',
+                    title: i18n.clearStash,
                     message: warningMsg,
                     type: 'info'
                 }).then(function () {
                     git.exec(path, ['stash', 'clear'], function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(path, 'unstash', err);
-                            notify.error('For more details, refer to the Git view.', 'Git UnStash Clear Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitUnstashClearError);
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'unstash', data);
-                                notify.error('For more details, refer to the Git view.', 'Git UnStash Clear Error');
+                                notify.error(i18n.forMoreDetails, i18n.gitUnstashClearError);
                             } else {
                                 gitviewlog.success(path, 'unstash', 'Removed all the stashed states');
-                                notify.success('', 'Git Stash Clear Success');
+                                notify.success('', i18n.gitStashClearSuccess);
                                 grid.setStore(null);
                                 applyButton.set('disabled', true);
                                 dropButton.set('disabled', true);
@@ -535,15 +542,15 @@ define(['require',
                 git.exec(path, stashArgs, function (err, stdout, stderr) {
                     if (err) {
                         gitviewlog.error(path, 'unstash', err);
-                        notify.error('For more details, refer to the Git view.', 'Git Unstash Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitUnstashError);
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(path, 'unstash', data);
-                            notify.error('For more details, refer to the Git view.', 'Git Unstash Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitUnstashError);
                         } else {
                             gitviewlog.success(path, 'unstash', data);
-                            notify.success('', 'Git Unstash Success');
+                            notify.success('', i18n.gitUnstashSuccess);
 
                             refresh(gitRootPath, true);
 
@@ -592,7 +599,7 @@ define(['require',
                     grid = new DataGrid({
                         store: dataStore,
                         structure: layout,
-                        noDataMessage: '<strong>No data to display</strong>',
+                        noDataMessage: i18n.noDataToDisplay,
                         selectionMode: 'single',
                         onSelectionChanged: function () {
                             var item = this.selection.getSelected();
@@ -653,17 +660,17 @@ define(['require',
                 git.exec(path, ['checkout'].concat(checklist), function (err, stdout, stderr) {
                     if (err) {
                         gitviewlog.error(path, 'checkout', err);
-                        notify.error('For more details, refer to the Git view.', 'Git Checkout Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitCheckoutError);
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(path, 'checkout', data);
-                            notify.error('For more details, refer to the Git view.', 'Git Checkout Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitCheckoutError);
                         } else {
                             var msg = checklist.join(': checkout\n') + ': checkout';
 
                             gitviewlog.success(path, 'checkout', msg);
-                            notify.success('', 'Git Checkout Success');
+                            notify.success('', i18n.gitCheckoutSuccess);
 
                             refresh(gitRootPath);
                         }
@@ -676,12 +683,12 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitRevertBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'checkout',
                         disabledOnShow: true
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -695,7 +702,7 @@ define(['require',
                     revertDialog.hide();
                 },
 
-                title: 'Checkout from Stage',
+                title: i18n.checkoutFromStage,
                 onHide: function (evt) {
                     revertDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -751,7 +758,7 @@ define(['require',
                             action: new RegExp(/[A-Z].?/)
                         },
                         structure: layout,
-                        noDataMessage: '<strong>No data to display</strong>',
+                        noDataMessage: i18n.noDataToDisplay,
                         rowSelector: '20px',
                         canSort: function () {
                             return false;
@@ -780,11 +787,13 @@ define(['require',
                             var infoMsg;
 
                             if (status === '??') {
-                                infoMsg = filepath + ' has been newly added.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(
+                                    i18n.hasBeenNewlyAdded, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else if (status === 'D') {
-                                infoMsg = filepath + ' file has been deleted.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(
+                                    i18n.hasBeenDeleted, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else {
                                 _diff(gitRootPath, filepath);
                             }
@@ -819,13 +828,15 @@ define(['require',
         require(['text!./layer/history.html', './lib/md5'], function (historyView) {
             var title;
             if (relPath === '.') {
-                title = 'Show Repository History - ' + pathUtil.detachSlash(gitRootPath);
+                title = string.substitute(
+                    i18n.showRepositoryHistory, {path: pathUtil.detachSlash(gitRootPath)});
             } else {
-                title = 'Show File History - ' + gitRootPath + relPath;
+                title = string.substitute(
+                    i18n.showFileHistory, {rootPath: gitRootPath, relPath: relPath});
             }
             var historyDialog = new ButtonedDialog({
                 buttons: [{
-                    caption: 'Close',
+                    caption: i18n.close,
                     methodOnClick: 'hide'
                 }],
                 methodOnEnter: 'hide',
@@ -860,7 +871,7 @@ define(['require',
 
             historyInfoGrid = new EnhancedGrid({
                 style: 'width: 100%; height: 100%;',
-                noDataMessage: '<strong>No data to display</strong>',
+                noDataMessage: i18n.noDataToDisplay,
                 structure: historyInfolayout,
                 rowSelector: '20px',
                 selectionMode: 'single'
@@ -1026,7 +1037,7 @@ define(['require',
                         style: 'width: 100%; height: 100%;',
                         store: dataStore,
                         structure: layout,
-                        noDataMessage: '<strong>No data to display</strong>',
+                        noDataMessage: i18n.noDataToDisplay,
                         rowSelector: '20px',
                         plugins: {
                             pagination: {
@@ -1097,7 +1108,7 @@ define(['require',
                         var msg = MSG + visitURL;
 
                         gitviewlog.info(GIT_DIR, 'clone', msg);
-                        notify.info('For more details, refer to the Git view', 'Info');
+                        notify.info(i18n.forMoreDetails, i18n.gitCloneInfo);
                     } else {
                         var gt = new Github(data.tokenKey);
 
@@ -1107,7 +1118,7 @@ define(['require',
                                 var msg = MSG + visitURL;
 
                                 gitviewlog.info(GIT_DIR, 'clone', msg);
-                                notify.info('For more details, refer to the Git view', 'Info');
+                                notify.info(i18n.forMoreDetails, i18n.gitCloneInfo);
                             } else {
                                 var sshURL = _.pluck(repos, 'ssh_url');
                                 var httpsURL = _.pluck(repos, 'clone_url');
@@ -1126,7 +1137,7 @@ define(['require',
                                 });
 
                                 sessionStorage.setItem('GIT_URL_HISTORY', JSON.stringify(URLSource));
-                                notify.success('Fetched your repository lists from GitHub', 'Success');
+                                notify.success(i18n.fetchedYourRepository, i18n.sucess);
 
                                 fetchFlag = true;
                             }
@@ -1140,12 +1151,12 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitCloneBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'gitClone',
                         disabledOnShow: true
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -1159,7 +1170,7 @@ define(['require',
                     cloneDialog.hide();
                 },
 
-                title: 'Clone from URL',
+                title: i18n.cloneFromURL,
                 onHide: function (evt) {
                     cloneDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -1266,12 +1277,12 @@ define(['require',
                 }
                 options.push(target);
 
-                var jobId = workbench.addJob('git clone : ' + url + ' into ' + target, 'Processing...');
+                var jobId = workbench.addJob('git clone : ' + url + ' into ' + target, i18n.processing);
 
                 git.exec(path, ['clone'].concat(options), function (err, stdout, stderr) {
                     if (err) {
                         workbench.removeJob(jobId);
-                        notify.error('For more details, refer to the Git view.', 'Git Clone Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitCloneError);
                         gitviewlog.error(path, 'clone', err);
                     } else {
                         var data = stdout + stderr;
@@ -1279,7 +1290,7 @@ define(['require',
                             workbench.removeJob(jobId);
 
                             fsCache.refreshHierarchy(selectedPath, { level: 1 });
-                            notify.error('For more details, refer to the Git view.', 'Git Clone Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitCloneError);
 
                             /*
                             if (data.match(/correct access rights/)) {
@@ -1304,7 +1315,7 @@ define(['require',
                             sessionStorage.setItem('GIT_URL_HISTORY', JSON.stringify(URLSource));
 
                             var msg = data + '\n\'' + url + '\' cloned.';
-                            notify.success('', 'Git Clone Success');
+                            notify.success('', i18n.gitCloneSuccess);
                             gitviewlog.success(target, 'clone', msg);
                         }
                     }
@@ -1317,7 +1328,7 @@ define(['require',
 
             URLComboBox.set({
                 regExp: '(^http|^https|^git|^ssh).*',
-                invalidMessage: 'Verify the protocol. (Support http, https, git, ssh)',
+                invalidMessage: i18n.verifyTheProtocol,
                 placeHolder: 'eg: (protocol)://[user:password@](servername)[:port]/(path)',
                 store: dataAdapter,
                 searchAttr: 'name',
@@ -1363,11 +1374,11 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitPushBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'gitPush'
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -1381,7 +1392,7 @@ define(['require',
                     pushDialog.hide();
                 },
 
-                title: 'Push to Remote',
+                title: i18n.pushToRemote,
                 onHide: function (evt) {
                     pushDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -1398,7 +1409,7 @@ define(['require',
                 var selectRepo = remoteRepoSelect.get('value');
                 var toBranch = pushDestInput.get('value');
 
-                var jobId = workbench.addJob('git push : ' + GIT_DIR, 'Processing...');
+                var jobId = workbench.addJob('git push : ' + GIT_DIR, i18n.processing);
                 var cmd = ['push'];
 
                 if (tagChkBtn.checked) {
@@ -1416,12 +1427,12 @@ define(['require',
 
                     git.exec(path, cmd, function (err, stdout, stderr) {
                         if (err) {
-                            notify.error('For more details, refer to the Git view.', 'Git Push Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitPushError);
                             gitviewlog.error(path, 'push', err);
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
-                                notify.error('For more details, refer to the Git view.', 'Git Push Error');
+                                notify.error(i18n.forMoreDetails, i18n.gitPushError);
 
                                 /*
                                 if (data.match(/correct access rights/)) {
@@ -1433,10 +1444,10 @@ define(['require',
                                 gitviewlog.error(path, 'push', data);
                             } else {
                                 if (data.match('Everything up-to-date')) {
-                                    notify.info('Everything up-to-date', 'Git Push Success');
+                                    notify.info(i18n.everythingUpToDate, i18n.gitPushSuccess);
                                     gitviewlog.info(path, 'push', data);
                                 } else {
-                                    notify.success('For more details, refer to the Git view.', 'Git Push Success');
+                                    notify.success(i18n.forMoreDetails, i18n.gitPushSuccess);
                                     gitviewlog.success(path, 'push', data + '\nSuccessfully pushed.');
 
                                     refresh(gitRootPath);		// is this necessary?
@@ -1496,7 +1507,7 @@ define(['require',
                                     '\' have diverged.\nBefore pushing,\nRun \'git pull\' or \'git merge ' +
                                     devergedBranch + '\'';
 
-                                notify.info('For more details, refer to the Git view.', 'Git Push Info');
+                                notify.info(i18n.forMoreDetails, i18n.gitPushInfo);
                                 gitviewlog.info(GIT_DIR, 'push', msg);
 
                                 next(null, 0);
@@ -1514,7 +1525,7 @@ define(['require',
                                 msg = 'This job is expected the result that Non-fast forward updates were ' +
                                     'rejected, Run \'git pull\'.';
 
-                                notify.info('For more details, refer to the Git view.', 'Git Push Info');
+                                notify.info(i18n.forMoreDetails, i18n.gitPushInfo);
                                 gitviewlog.info(GIT_DIR, 'push', msg);
 
                                 next(null, 0);
@@ -1557,7 +1568,7 @@ define(['require',
                                 var grid = new DataGrid({
                                     store: dataStore,
                                     structure: layout,
-                                    noDataMessage: '<strong>No data to display</strong>'
+                                    noDataMessage: i18n.noDataToDisplay
                                 }, dojo.query('#GitPushGrid')[0]);
 
                                 grid.startup();
@@ -1673,11 +1684,11 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitPullBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'gitPull'
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -1694,7 +1705,7 @@ define(['require',
                     pullDialog.hide();
                 },
 
-                title: 'Pull from Remote',
+                title: i18n.pullFromRemote,
                 onHide: function (evt) {
                     pullDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -1718,7 +1729,7 @@ define(['require',
                 var noFastFoward = noFastFowardCheckBox.checked;
                 var refspec = sourceRefSelect.get('value') + ':' + destinationRefSelect.get('value');
                 var options = [];
-                var jobId = workbench.addJob('git pull : ' + GIT_DIR, 'Processing...');
+                var jobId = workbench.addJob('git pull : ' + GIT_DIR, i18n.merge);
 
                 if (noCommitOption) {
                     options.push('--no-commit');
@@ -1741,11 +1752,11 @@ define(['require',
                     if (err) {
                         workbench.removeJob(jobId);
                         gitviewlog.error(GIT_DIR, 'pull', err);
-                        notify.error('For more details, refer to the Git view', 'Git Pull Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitPullError);
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
-                            notify.error('For more details, refer to the Git view', 'Git Pull Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitPullError);
 
                             /*
                             if (data.match(/correct access rights/)) {
@@ -1756,25 +1767,25 @@ define(['require',
                              */
                             gitviewlog.error(GIT_DIR, 'pull', data);
                         } else if (data.match(/You asked to pull from the remote '.*'/)) {
-                            notify.warning('For more details, refer to the Git view', 'Git Pull Warning');
+                            notify.warning(i18n.forMoreDetails, i18n.gitPullWarning);
                             gitviewlog.warning(GIT_DIR, 'pull', data);
                         }  else if (data.match(/CONFLICT .*/)) {
                             gitviewlog.warning(GIT_DIR, 'pull', data);
-                            notify.warning('For more details, refer to the Git view.', 'Git Pull Conflict Warning');
+                            notify.warning(i18n.forMoreDetails, i18n.gitPullConflict);
 
                             refresh(gitRootPath);
                         } else {
-                            if (data.match('Already up-to-date')) {
+                            if (data.match(i18n.alreadyUpToDate)) {
                                 uptodate = true;
                             }
 
                             if (!uptodate) {
                                 refresh(gitRootPath);
-                                notify.success('', 'Git Pull Success');
+                                notify.success('', i18n.gitPullSuccess);
                                 gitviewlog.success(GIT_DIR, 'pull ' + repo, data + '\nSuccessfuly pulled');
                             } else {
-                                notify.info('Already up-to-date', 'Git Pull Info');
-                                gitviewlog.info(GIT_DIR, 'pull ' +  repo, 'Already up-to-date');
+                                notify.info(i18n.alreadyUpToDate, i18n.gitPullInfo);
+                                gitviewlog.info(GIT_DIR, 'pull ' +  repo, i18n.alreadyUpToDate);
                             }
                         }
 
@@ -1862,7 +1873,7 @@ define(['require',
                             sourceRefSelect.set({
                                 store: new Memory({ data: localBranch }),
                                 searchAttr: 'name',
-                                placeHolder: 'Select branch or enter a source ref',
+                                placeHolder: i18n.selectBranch,
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
@@ -1872,7 +1883,7 @@ define(['require',
                             destinationRefSelect.set({
                                 store: new Memory({ data: remoteBranch }),
                                 searchAttr: 'name',
-                                placeHolder: 'Select remote-tracking branch or enter a destionation ref',
+                                placeHolder: i18n.selectRemote,
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
@@ -1981,22 +1992,22 @@ define(['require',
             // run 'git merge' command
             git.exec(GIT_DIR, ['merge'].concat(options), function (err, stdout, stderr) {
                 if (err) {
-                    notify.error('For more details, refer to the Git view.', 'Git Merge Error');
+                    notify.error(i18n.forMoreDetails, i18n.gitMergeError);
                     gitviewlog.error(GIT_DIR, 'merge', err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
                         gitviewlog.error(GIT_DIR, 'merge', data);
-                        notify.error('For more details, refer to the Git view.', 'Git Merge Error');
-                    } else if (data.match('Already up-to-date')) {
+                        notify.error(i18n.forMoreDetails, i18n.gitMergeError);
+                    } else if (data.match(i18n.alreadyUpToDate)) {
                         gitviewlog.info(GIT_DIR, 'merge', data);
-                        notify.info('Already up-to-date', 'Git Merge Info');
+                        notify.info(i18n.alreadyUpToDate, i18n.gitMergeInfo);
                     } else if (data.match(/CONFLICT .*/)) {
                         gitviewlog.warning(GIT_DIR, 'merge', data);
-                        notify.warning('For more details, refer to the Git view.', 'Git Merge Conflict Warning');
+                        notify.warning(i18n.forMoreDetails, i18n.gitMergeConflict);
                         refresh(gitRootPath);
                     } else {
-                        notify.success('', 'Git Merge Success');
+                        notify.success('', i18n.gitMergeSuccess);
                         gitviewlog.success(GIT_DIR, 'merge', data);
                         refresh(gitRootPath);
                     }
@@ -2008,16 +2019,16 @@ define(['require',
             git.exec(path, ['merge', '--abort'], function (err, stdout, stderr) {
                 if (err) {
                     gitviewlog.error(GIT_DIR, 'merge --abort', err);
-                    notify.error('For more details, refer to the Git view.', 'Git Merge Error');
+                    notify.error(i18n.forMoreDetails, i18n.gitMergeError);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
                         gitviewlog.error(GIT_DIR, 'merge --abort', data);
-                        notify.error('For more details, refer to the Git view.', 'Git Merge Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitMergeError);
                     } else {
                         refresh(gitRootPath);
                         gitviewlog.success(GIT_DIR, 'merge --abort', data);
-                        notify.success('', 'Git Merge Abort Success');
+                        notify.success('', i18n.gitMergeAbort);
                     }
                 }
             });
@@ -2029,11 +2040,11 @@ define(['require',
                     buttons: [
                         {
                             id: 'GitMergeApplyBtn',
-                            caption: 'Apply',
+                            caption: i18n.apply,
                             methodOnClick: 'merge'
                         },
                         {
-                            caption: 'Close',
+                            caption: i18n.close,
                             methodOnClick: 'hide'
                         }
                     ],
@@ -2046,7 +2057,7 @@ define(['require',
                         }
                     },
 
-                    title: 'Merge',
+                    title: i18n.merge,
                     style: 'width:500px;',
                     onHide: function (evt) {
                         mergeDialog.destroyRecursive();
@@ -2152,11 +2163,11 @@ define(['require',
                 var mergeProcessingDialog = new ButtonedDialog({
                     buttons: [
                         {
-                            caption: 'Abort',
+                            caption: i18n.abort,
                             methodOnClick: 'mergeAbort',
                         },
                         {
-                            caption: 'Close',
+                            caption: i18n.close,
                             methodOnClick: 'hide'
                         }
                     ],
@@ -2167,7 +2178,7 @@ define(['require',
                         mergeProcessingDialog.hide();
                     },
 
-                    title: 'Merge',
+                    title: i18n.merge,
                     //style: 'width:500px;',
                     onHide: function (evt) {
                         mergeProcessingDialog.destroyRecursive();
@@ -2182,7 +2193,7 @@ define(['require',
         git.exec(GIT_DIR, ['status'], function (err, data) {
             if (err) {
                 gitviewlog.error(GIT_DIR, 'merge', err);
-                notify.error('For more details, refer to the Git view.', 'Git Merge Error');
+                notify.error(i18n.forMoreDetails, i18n.gitMergeError);
             } else {
                 if (data.match(/All conflicts fixed but you are still merging./)) {
                     mergeProcessingDlg();
@@ -2202,21 +2213,21 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitFetchComboBtn',
-                        caption: 'Fetch',
+                        caption: i18n.fetch,
                         methodOnClick: 'gitFetchOnly',
                         subitems: [
                             {
-                                caption: 'Fetch',
+                                caption: i18n.fetch,
                                 methodOnClick: 'gitFetchOnly'
                             },
                             {
-                                caption: 'Fetch and Rebase',
+                                caption: i18n.fetchAndRebase,
                                 methodOnClick: 'gitFetchAndRebase'
                             }
                         ]
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -2239,7 +2250,7 @@ define(['require',
                     fetchDialog.hide();
                 },
 
-                title: 'Fetch from Remote',
+                title: i18n.fetchFromRemote,
                 onHide: function (evt) {
                     fetchDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -2261,7 +2272,7 @@ define(['require',
             function fetchEvent(path, repo) {
                 var options = [];
                 var refspec;
-                var jobId = workbench.addJob('git fetch : ' + GIT_DIR, 'Processing...');
+                var jobId = workbench.addJob('git fetch : ' + GIT_DIR, i18n.processing);
                 var sourceRef = sourceRefSelect.get('value');
                 var destinationRef = destinationRefSelect.get('value');
 
@@ -2291,11 +2302,11 @@ define(['require',
                     if (err) {
                         workbench.removeJob(jobId);
                         gitviewlog.error(GIT_DIR, 'fetch ' + repo, err);
-                        notify.error('For more details, refer to the Git view.', 'Git Fetch Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitFetchError);
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
-                            notify.error('For more details, refer to the Git view.', 'Git Fetch Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitFetchError);
 
                             /*
                             if (data.match(/correct access rights/)) {
@@ -2307,7 +2318,7 @@ define(['require',
                             gitviewlog.error(GIT_DIR, 'fetch ', data);
                         } else {
                             gitviewlog.success(GIT_DIR, 'fetch ', data + '\nSuccessfully fetched');
-                            notify.success('For more details, refer to the Git view.', 'Git Fetch Success');
+                            notify.success(i18n.forMoreDetails, i18n.gitFetchSuccess);
 
                             if (rebaseFlag) {
                                 _rebase(gitRootPath);
@@ -2398,7 +2409,7 @@ define(['require',
                             sourceRefSelect.set({
                                 store: new Memory({ data: localBranch }),
                                 searchAttr: 'name',
-                                placeHolder: 'Select branch or enter a source ref',
+                                placeHolder: i18n.selectBranch,
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
@@ -2408,7 +2419,7 @@ define(['require',
                             destinationRefSelect.set({
                                 store: new Memory({ data: remoteBranch }),
                                 searchAttr: 'name',
-                                placeHolder: 'Select remote-tracking branch or enter a destionation ref',
+                                placeHolder: i18n.selectRemote,
                                 queryExpr: '*${0}*',
                                 autoComplete: false,
                                 trim: true,
@@ -2485,37 +2496,37 @@ define(['require',
 
             git.exec(GIT_DIR, ['rebase'].concat(option), function (err, stdout, stderr) {
                 if (err) {
-                    notify.error('For more details, refer to the Git view.', 'Git Rebase Error');
+                    notify.error(i18n.forMoreDetails, i18n.gitRebaseError);
                     gitviewlog.error(GIT_DIR, 'rebase ' + upstramBranch, err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
-                        notify.error('For more details, refer to the Git view.', 'Git Rebase Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitRebaseError);
                         gitviewlog.error(GIT_DIR, 'rebase ' + upstramBranch, data);
                     } else {
                         if (data.match(/CONFLICT .*/)) {
-                            notify.warning('For more details, refer to the Git view.', 'Git Rebase Conflict Warning');
+                            notify.warning(i18n.forMoreDetails, i18n.gitRebaseConflictWarning);
                             gitviewlog.warning(GIT_DIR, 'rebase ' + upstramBranch, data);
 
                             refresh(gitRootPath);
                         } else if (data.match(/Cannot rebase: .*/)) {
-                            notify.warning(data, 'Git Rebase Warning');
+                            notify.warning(data, i18n.gitRebaseWarning);
                             gitviewlog.warning(GIT_DIR, 'rebase ' + upstramBranch, data);
                         } else if (data.match(/Applying: .*/)) {
-                            notify.success('', 'Git Rebase Success');
+                            notify.success('', i18n.gitRebaseSuccess);
                             gitviewlog.success(GIT_DIR, 'rebase ' + upstramBranch, data);
 
                             refresh(gitRootPath);
                         } else if (data.match(/Current branch .* is up to date./)) {
-                            notify.info(data, 'Git Rebase Info');
+                            notify.info(data, i18n.gitRebaseInfo);
                             gitviewlog.info(GIT_DIR, 'rebase ' + upstramBranch, data);
                         } else if (data.match(/Fast-forwarded .* to .*/)) {
-                            notify.success('', 'Git Rebase Success');
+                            notify.success('', i18n.gitRebaseSuccess);
                             gitviewlog.success(GIT_DIR, 'rebase ' + upstramBranch, data);
 
                             refresh(gitRootPath);
                         } else if (data.match(/First, rewinding head .*/)) {
-                            notify.success('', 'Git Rebase Success');
+                            notify.success('', i18n.gitRebaseSuccess);
                             gitviewlog.success(GIT_DIR, 'rebase ' + upstramBranch, data);
 
                             refresh(gitRootPath);
@@ -2583,16 +2594,16 @@ define(['require',
         function _rebaseContinueEvent() {
             git.exec(GIT_DIR, ['rebase', '--continue'], function (err, stdout, stderr) {
                 if (err) {
-                    notify.error('For more details, refer to the Git view.', 'Git Rebase Continue Error');
+                    notify.error(i18n.forMoreDetails, i18n.gitRebaseContinueError);
                     gitviewlog.error(GIT_DIR, 'rebase --continue', err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
-                        notify.error('For more details, refer to the Git view', 'Git Rebase Continue Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitRebaseContinueError);
                         gitviewlog.error(GIT_DIR, 'rebase --continue', data);
                     } else {
                         if (data.match(/CONFLICT .*/)) {
-                            notify.warning('For more details, refer to the Git view', 'Git Rebase Conflict Warning');
+                            notify.warning(i18n.forMoreDetails, i18n.gitRebaseConflictWarning);
                             gitviewlog.warning(GIT_DIR, 'rebase --continue', data);
                             refresh(gitRootPath);
                         } else if (data.match(/Cannot rebase: .*/)) {
@@ -2603,11 +2614,11 @@ define(['require',
                             gitviewlog.success(GIT_DIR, 'rebase --continue', data);
                             refresh(gitRootPath);
                         } else if (/.* needs merge/) {
-                            notify.warning('For more details, refer to the Git view', 'Git Rebase Continue Warning');
+                            notify.warning(i18n.forMoreDetails, i18n.gitRebaseContinueWarning);
                             gitviewlog.warning(GIT_DIR, 'rebase --continue', data);
                             refresh(gitRootPath);
                         } else {
-                            notify.success('', 'Git Rebase Success');
+                            notify.success('', i18n.gitRebaseSuccess);
                             gitviewlog.success(GIT_DIR, 'rebase --continue', data);
                             refresh(gitRootPath);
                         }
@@ -2619,20 +2630,20 @@ define(['require',
         function _rebaseSkipEvent() {
             git.exec(GIT_DIR, ['rebase', '--skip'], function (err, stdout, stderr) {
                 if (err) {
-                    notify.error('For more details, refer to the Git view.', 'Git Rebase Skip Error');
+                    notify.error(i18n.forMoreDetails, i18n.gitRebaseSkipError);
                     gitviewlog.error(GIT_DIR, 'rebase --skip', err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
-                        notify.error('For more details, refer to the Git view', 'Git Rebase Skip Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitRebaseSkipError);
                         gitviewlog.error(GIT_DIR, 'rebase --skip', data);
                     } else {
                         if (data.match(/CONFLICT .*/)) {
-                            notify.warning('For more details, refer to the Git view.', 'Git Rebase Conflict Warning');
+                            notify.warning(i18n.forMoreDetails, i18n.gitRebaseConflictWarning);
                             gitviewlog.warning(GIT_DIR, 'rebase --skip', data);
                             refresh(gitRootPath);
                         } else {
-                            notify.success('', 'Git Rebase Success');
+                            notify.success('', i18n.gitRebaseSuccess);
                             gitviewlog.success(GIT_DIR, 'rebase --skip', data);
                             refresh(gitRootPath);
                         }
@@ -2644,15 +2655,15 @@ define(['require',
         function _rebaseAbortEvent() {
             git.exec(GIT_DIR, ['rebase', '--abort'], function (err, stdout, stderr) {
                 if (err) {
-                    notify.error('For more details, refer to the Git view.', 'Git Rebase Abort Error');
+                    notify.error(i18n.forMoreDetails, i18n.gitRebaseAbortError);
                     gitviewlog.error(GIT_DIR, 'rebase --abort', err);
                 } else {
                     var data = stdout + stderr;
                     if (data.match(/(fatal|error): .*/)) {
-                        notify.error('For more details, refer to the Git view', 'Git Rebase Abort Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitRebaseAbortError);
                         gitviewlog.error(GIT_DIR, 'rebase --abort', data);
                     } else {
-                        notify.success('', 'Git Rebase Aboart Success');
+                        notify.success('', i18n.gitRebaseAbortSuccess);
                         gitviewlog.success(GIT_DIR, 'rebase --abort', data);
                         refresh(gitRootPath);
                     }
@@ -2664,22 +2675,22 @@ define(['require',
         git.exec(GIT_DIR, ['status'], function (err, data) {
             if (err) {
                 gitviewlog.error(GIT_DIR, '', err);
-                notify.error('For more details, refer to the Git view.', 'Git Rebase Error');
+                notify.error(i18n.forMoreDetails, i18n.gitRebaseError);
             } else {
                 if (data.match(/You are currently rebasing/)) {
                     require(['text!./layer/rebaseprocessing.html'], function (rebaseProcessingView) {
                         var rebaseProcessingDialog = new ButtonedDialog({
                             buttons: [
                                 {
-                                    caption: 'Continue',
+                                    caption: i18n.continue,
                                     methodOnClick: 'continueRebase'
                                 },
                                 {
-                                    caption: 'Skip',
+                                    caption: i18n.skip,
                                     methodOnClick: 'skipRebase'
                                 },
                                 {
-                                    caption: 'Abort',
+                                    caption: i18n.abort,
                                     methodOnClick: 'abortRebase'
                                 }
                             ],
@@ -2698,7 +2709,7 @@ define(['require',
                                 this.hide();
                             },
 
-                            title: 'Rebase',
+                            title: i18n.rebase,
                             style: 'width:273px;',
                             onHide: function (evt) {
                                 rebaseProcessingDialog.destroyRecursive();
@@ -2714,12 +2725,12 @@ define(['require',
                             buttons: [
                                 {
                                     id: 'GitApplyBtn',
-                                    caption: 'Apply',
+                                    caption: i18n.apply,
                                     methodOnClick: 'rebase',
                                     disabledOnShow: true
                                 },
                                 {
-                                    caption: 'Close',
+                                    caption: i18n.close,
                                     methodOnClick: 'hide'
                                 }
                             ],
@@ -2733,7 +2744,7 @@ define(['require',
                                 }
                             },
 
-                            title: 'Rebase',
+                            title: i18n.rebase,
                             style: 'width:450px;',
                             onHide: function (evt) {
                                 rebaseDialog.destroyRecursive();
@@ -2799,7 +2810,7 @@ define(['require',
                 ], function (err) {
                     if (err) {
                         gitviewlog.error(GIT_DIR, 'add', err);
-                        notify.error('For more details, refer to the Git view.', 'Git Add Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitAddError);
                     } else {
                         var add;
                         var rm;
@@ -2817,7 +2828,7 @@ define(['require',
 
                         gitIcon.refreshGitIconsInRepoOf(path, true);
 
-                        notify.success('', 'Git Add Success');
+                        notify.success('', i18n.gitAddSuccess);
                         gitviewlog.success(GIT_DIR, 'add', add + rm);
                     }
                 });
@@ -2828,12 +2839,12 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitAddToStageBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'addToStage',
                         disabledOnShow: true
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -2847,7 +2858,7 @@ define(['require',
                     addToStageDialog.hide();
                 },
 
-                title: 'Add to Stage',
+                title: i18n.addToStage,
                 onHide: function (evt) {
                     addToStageDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -2904,12 +2915,12 @@ define(['require',
                             action: new RegExp(/[A-Z?].?/)
                         },
                         structure: layout,
-                        noDataMessage: '<strong>No data to display</strong>',
+                        noDataMessage: i18n.noDataToDisplay,
                         rowSelector: '20px',
                         canSort: function () {
                             return false;
                         },
-                        loadingMessage: 'Loading...',
+                        loadingMessage: i18n.loading,
                         plugins: {
                             indirectSelection: {
                                 headerSelector: true,
@@ -2934,14 +2945,14 @@ define(['require',
                             var infoMsg;
 
                             if (status === '??') {
-                                infoMsg = filepath + ' has been newly added.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.hasBeenNewlyAdded, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else if (status === 'A') {
-                                infoMsg = filepath + ' has been newly added.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.hasBeenNewlyAdded, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else if (status === 'D') {
-                                infoMsg = filepath + ' has been deleted.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.hasBeenDeleted, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else {
                                 _diff(gitRootPath, filepath);
                             }
@@ -2998,12 +3009,12 @@ define(['require',
                     git.exec(path, ['rm'].concat(options, relPath), function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(path, 'untrack', err);
-                            notify.error('For more details, refer to the Git view.', 'Git Untrack Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitUntrackError);
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'untrack', data);
-                                notify.error('For more details, refer to the Git view.', 'Git Untrack Error');
+                                notify.error(i18n.forMoreDetails, i18n.gitUntrackError);
                             } else {
                                 if (refreshFlag) {
                                     refresh(gitRootPath);
@@ -3012,7 +3023,7 @@ define(['require',
                                 }
 
                                 gitviewlog.success(path, 'untrack', relPath + ': untracked');
-                                notify.success('', 'Git Untrack Success');
+                                notify.success('', i18n.gitUntrackSuccess);
                             }
                         }
                     });
@@ -3021,11 +3032,11 @@ define(['require',
                 var untrackDialog = new ButtonedDialog({
                     buttons: [
                         {
-                            caption: 'Apply',
+                            caption: i18n.apply,
                             methodOnClick: 'gitUntrack'
                         },
                         {
-                            caption: 'Close',
+                            caption: i18n.close,
                             methodOnClick: 'hide'
                         }
                     ],
@@ -3035,7 +3046,7 @@ define(['require',
                         _untrackEvent(GIT_DIR);
                         untrackDialog.hide();
                     },
-                    title: 'Untrack',
+                    title: i18n.untrack,
                     onHide: function (evt) {
                         untrackDialog.destroyRecursive();
                         workbench.focusLastWidget();
@@ -3070,9 +3081,11 @@ define(['require',
                     var rt = git.parseStatus(data);
 
                     if (rt.length && rt[0].action.match(/[D?]/)) {
-                        notify.warning(relPath + ' is already untracked', 'Git Untrack Warning');
+                        notify.warning(string.substitute(
+                            i18n.isAlreadyUntrack, {path: relPath}), i18n.gitUntrackWarning);
                     } else if (rt.length && rt[0].action.match(/[!]/)) {
-                        notify.warning(relPath + ' is ignored.', 'Git Untrack Warning');
+                        notify.warning(string.substitute(
+                            i18n.isIgnored, {path: relPath}), i18n.gitUntrackWarning);
                     } else {
                         _untrackUX();
                     }
@@ -3107,12 +3120,12 @@ define(['require',
                     console.log(err, stdout, stderr);
                     if (err) {
                         gitviewlog.error(GIT_DIR, 'remove from stage', err);
-                        notify.error('For more details, refer to the Git view.', 'Git Reset Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitResetError);
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(GIT_DIR, 'remove from stage', data);
-                            notify.error('For more details, refer to the Git view.', 'Git Reset Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitResetError);
                         } else {
                             if (refreshFlag) {
                                 refresh(gitRootPath, true);
@@ -3127,7 +3140,7 @@ define(['require',
                             gitviewlog.success(GIT_DIR,
                                                'remove from stage',
                                                checklist.join(': remove from stage\n') + ': remove from stage');
-                            notify.success('', 'Git Remove Success');
+                            notify.success('', i18n.gitRemoveSueecss);
                         }
                     }
                 });
@@ -3138,22 +3151,22 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitRemoveFromStageComboBtn',
-                        caption: 'Remove',
+                        caption: i18n.remove,
                         methodOnClick: 'removeOnly',
                         disabledOnShow: true,
                         subitems: [
                             {
-                                caption: 'Remove',
+                                caption: i18n.remove,
                                 methodOnClick: 'removeOnly'
                             },
                             {
-                                caption: 'Remove and Checkout',
+                                caption: i18n.removeAndCheckout,
                                 methodOnClick: 'removeAndCheckout'
                             }
                         ]
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -3172,7 +3185,7 @@ define(['require',
                     removeFromStageDialog.hide();
                 },
 
-                title: 'Remove from Stage',
+                title: i18n.removeFromStage,
                 onHide: function (evt) {
                     removeFromStageDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -3229,12 +3242,12 @@ define(['require',
                             action: new RegExp(/[A-Z?].?/)
                         },
                         structure: layout,
-                        noDataMessage: '<strong>No data to display</strong>',
+                        noDataMessage: i18n.noDataToDisplay,
                         rowSelector: '20px',
                         canSort: function () {
                             return false;
                         },
-                        loadingMessage: 'Loading...',
+                        loadingMessage: i18n.loading,
                         plugins: {
                             indirectSelection: {
                                 headerSelector: true,
@@ -3259,14 +3272,14 @@ define(['require',
                             var infoMsg;
 
                             if (status === 'A') {
-                                infoMsg = filepath + ' has been newly added.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.hasBeenNewlyAdded, {paht: filePath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else if (status === 'R') {
-                                infoMsg = 'The specified path ' + filepath + ' was renamed.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.renamePath, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else if (status === 'D') {
-                                infoMsg = filepath + ' has been deleted.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.hasBeenDeleted, {paht: filePath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else {
                                 _diff(gitRootPath, filepath);
                             }
@@ -3303,7 +3316,7 @@ define(['require',
             function resetCommitEvent(path) {
                 var item = grid.selection.getSelected();
                 var id = grid.store.getValue(item[0], 'id');
-                var warningMsg = 'Do you want to reset to the commit?';
+                var warningMsg = i18n.resetToTheCommit;
                 var resetType = null;
 
                 if (softTypeRadioButton.checked) {
@@ -3317,7 +3330,7 @@ define(['require',
                 }
 
                 PopupDialog.yesno({
-                    title: 'Reset',
+                    title: i18n.reset,
                     message: warningMsg,
                     type: 'info'
                 }).then(function () {
@@ -3326,17 +3339,17 @@ define(['require',
 
                         if (err) {
                             gitviewlog.error(path, 'reset to commit', err);
-                            notify.error('For more details, refer to the Git view.', 'Git Reset to ' +
-                                         omittedID + ' Error');
+                            notify.error(i18n.forMoreDetails,
+                                         string.substitute(i18n.gitResetCommitError, {id: ommittedID}));
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'reset to commit', err);
-                                notify.error('For more details, refer to the Git view.', 'Git Reset to ' +
-                                             omittedID + ' Error');
+                                notify.error(i18n.forMoreDetails,
+                                             string.substitute(i18n.gitResetCommitError, {id: ommittedID}));
                             } else  {
                                 gitviewlog.success(path, 'reset to commit', 'Successfully Reset to ' + id);
-                                notify.success('', 'Git Reset to ' + omittedID + ' Success');
+                                notify.success('', string.substitute(i18n.gitResetCommitSuccess, {id: ommittedID}));
 
                                 refresh(gitRootPath, resetType !== '--soft');
                             }
@@ -3354,12 +3367,12 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitResetBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'resetCommit',
                         disabledOnShow: true
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -3371,7 +3384,7 @@ define(['require',
                     }
                 },
 
-                title: 'Reset to Commit',
+                title: i18n.resetToCommit,
                 onHide: function (evt) {
                     resetToDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -3453,7 +3466,7 @@ define(['require',
                         style: 'width: 650px;',
                         store: dataStore,
                         structure: layout,
-                        noDataMessage: '<strong>No data to display</strong>',
+                        noDataMessage: i18n.noDataToDisplay,
                         selectionMode: 'single',
                         rowSelector: '20px',
                         plugins: {
@@ -3515,13 +3528,13 @@ define(['require',
 
                 buttons: [
                     {id: 'GitCommitComboBtn',
-                     caption: 'Commit',
+                     caption: i18n.commit,
                      methodOnClick: 'commitOnly',
                      disabledOnShow: true,
-                     subitems: [ { caption: 'Commit', methodOnClick: 'commitOnly' },
-                                 { caption: 'Commit and Push', methodOnClick: 'commitAndPush' } ]
+                     subitems: [ { caption: i18n.commit, methodOnClick: 'commitOnly' },
+                                { caption: i18n.commitToPush, methodOnClick: 'commitAndPush' } ]
                     },
-                    { caption: 'Close', methodOnClick: 'hide' }
+                    { caption: i18n.close, methodOnClick: 'hide' }
                 ],
                 methodOnEnter: null,
 
@@ -3537,7 +3550,7 @@ define(['require',
                     commitEvent(GIT_DIR);
                 },
 
-                title: 'Commit',
+                title: i18n.commit,
                 onHide: function (evt) {
                     commitDialog.destroyRecursive();
                 }
@@ -3676,7 +3689,7 @@ define(['require',
                         style: 'height:230px;',
                         store:  new ObjectStore({ objectStore: dataStore }),
                         structure: layout,
-                        noDataMessage: '<strong>No data to display</strong>',
+                        noDataMessage: i18n.noDataToDisplay,
                         rowSelector: '20px',
                         canSort: function () {
                             return false;
@@ -3696,14 +3709,14 @@ define(['require',
                             var infoMsg;
 
                             if (status === '??') {
-                                infoMsg = filepath + ' has been newly added.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.hasBeenDeleted, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else if (status === 'D') {
-                                infoMsg = filepath + ' has been deleted.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.hasBeenDeleted, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else if (status === 'R') {
-                                infoMsg = 'The specified path ' + filepath + ' was renamed.';
-                                notify.info(infoMsg, 'Git Diff Info');
+                                infoMsg = string.substitute(i18n.renamePath, {path: filepath});
+                                notify.info(infoMsg, i18n.gitDiffInfo);
                             } else {
                                 _diff(gitRootPath, filepath);
                             }
@@ -3796,7 +3809,7 @@ define(['require',
 
                 // check whether the author-info is empty or not
                 if (author === '') {
-                    notify.warning('Author is not specified', 'Git Commit Warning');
+                    notify.warning(i18n.authorSpecified, i18n.gitCommitWarning);
                     return;
                 }
 
@@ -3805,7 +3818,7 @@ define(['require',
                 if (m) {
                     commitArgs.push('--author=' + author);
                 } else {
-                    notify.warning('Verify the author information format.', 'Git Commit Warning');
+                    notify.warning(i18n.verifyTheAuthor, i18n.gitCommitWarning);
                     gitviewlog.warning(path,
                        'commit', 'Specify author information\n\nEx.) AuthorName <AuthorName@Email.li>');
                     return;
@@ -3834,7 +3847,7 @@ define(['require',
 
 
                 if (!changes && commitOption === '') {
-                    notify.info('No changes detected');
+                    notify.info(i18n.noChangeDetect);
                     return;
                 }
 
@@ -3887,16 +3900,16 @@ define(['require',
                         git.exec(path, commitArgs, function (err, stdout, stderr) {
                             if (err) {
                                 gitviewlog.error(path, 'commit', err);
-                                notify.error('For more details, refer to the Git view.', 'Git Commit Error');
+                                notify.error(i18n.forMoreDetails, i18n.gitCommitError);
                             } else {
                                 var data = stdout + stderr;
                                 if (data.match(/(fatal|error): .*/)) {
                                     gitviewlog.error(path, 'commit', data);
-                                    notify.error('For more details, refer to the Git view.', 'Git Commit Error');
+                                    notify.error(i18n.forMoreDetails, i18n.gitCommitError);
                                 } else {
                                     gitIcon.refreshGitIconsInRepoOf(path, true);
 
-                                    notify.success('For more details, refer to the Git view.', 'Git Commit Success');
+                                    notify.success(i18n.forMoreDetails, i18n.gitCommitSuccess);
                                     gitviewlog.success(path, 'commit', data);
 
                                     if (pushFlag) {
@@ -3928,7 +3941,7 @@ define(['require',
 
                     commitMsgInput.setValue(msg.trim() + changeId);
                 } else if (checked && m) {
-                    notify.info('The Change-Id already exists.', 'Info');
+                    notify.info(i18n.changeIdExist, i18n.gitChangeIdInfo);
                 }
             });
 
@@ -3970,7 +3983,7 @@ define(['require',
             var relativeFilepath = null;
             var absoluteFilepath = null;
             var theme = 'default';
-            var title = 'Compare (Read Only) - ';
+            var title = i18n.compare;
 
             if (filepath) {
                 // commit 에서 compare 호출시
@@ -3986,7 +3999,7 @@ define(['require',
 
             var compareDialog = new ButtonedDialog({
                 buttons: [{
-                    caption: 'Close',
+                    caption: i18n.close,
                     methodOnClick: 'hide'
                 }],
                 methodOnEnter: 'hide',
@@ -4103,11 +4116,11 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitCreateRepoBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'gitCreateRepo'
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -4131,7 +4144,7 @@ define(['require',
                                 createRepoLocal(nodePath, dirName);
                                 createDialog.hide();
                             } else {
-                                notify.error('Select a directory to make a repository');
+                                notify.error(i18n.selectADirectoryToMakeARepository);
                             }
                         }
                     }
@@ -4221,7 +4234,7 @@ define(['require',
                                 console.error('Failed to create a repo', err);
                                 var errorMsg = JSON.parse(err.request.responseText).message;
                                 gitviewlog.error('', 'create repository',  '\'' + options.name + '\' ' + errorMsg);
-                                notify.error('For more details, refer to the Git view.', 'Git Create Repository Error');
+                                notify.error(i18n.forMoreDetails, 'Git Create Repository Error');
                             } else {
                                 /* jshint camelcase: false */
                                 var msg = 'Successfully created repository to GitHub.\n\n' +
@@ -4236,7 +4249,7 @@ define(['require',
                                     'For more information, visit ' + repo.html_url;
                                 /* jshint camelcase: true */
 
-                                notify.success('For more details, refer to the Git view.',
+                                notify.success(i18n.forMoreDetails,
                                                'Git Create Repository Success');
                                 gitviewlog.success('', 'create repository', msg);
 
@@ -4259,7 +4272,7 @@ define(['require',
                     GIT_DIR = path;
                 }
 
-                var jobId = workbench.addJob('git init ' + GIT_DIR, 'Processing...');
+                var jobId = workbench.addJob('git init ' + GIT_DIR, i18n.processing);
                 async.waterfall([
                     function (next) {
                         if (where) {
@@ -4335,7 +4348,7 @@ define(['require',
                     if (err) {
                         workbench.removeJob(jobId);
                         gitviewlog.error(GIT_DIR, 'create git repository', err);
-                        notify.error('For more details, refer to the Git view.', 'Git Create Repository Error');
+                        notify.error(i18n.forMoreDetails, 'Git Create Repository Error');
                     } else {
                         workbench.removeJob(jobId);
                         gitviewlog.success(GIT_DIR, 'create git repository', resultString);
@@ -4425,7 +4438,7 @@ define(['require',
                 var dlg = new FileDialog({
                     mount : fsCache,
                     root: rootPath,
-                    title: 'Select a Directory',
+                    title: i18n.selectADirectory,
                     singular: true,
                     dirOnly: true
                 });
@@ -4452,13 +4465,13 @@ define(['require',
 
             var blameDialog = new ButtonedDialog({
                 buttons: [{
-                    caption: 'Close',
+                    caption: i18n.close,
                     methodOnClick: 'hide'
                 }],
                 methodOnEnter: 'hide',
 
                 style: 'overflow:hidden;',
-                title: 'Blame - ' + gitRootPath + relPath,
+                title: string.substitute(i18n.blamePath, {rootPath: gitRootPath, path: relPath}),
                 onHide: function (evt) {
                     blameDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -4544,7 +4557,7 @@ define(['require',
             var remoteDialog = new ButtonedDialog({
                 buttons: [
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -4566,11 +4579,11 @@ define(['require',
                 var remoteAddDlg = new ButtonedDialog({
                     buttons: [
                         {
-                            caption: 'Apply',
+                            caption: i18n.apply,
                             methodOnClick: 'gitRemoteAdd'
                         },
                         {
-                            caption: 'Close',
+                            caption: i18n.close,
                             methodOnClick: 'hide'
                         }
                     ],
@@ -4584,10 +4597,10 @@ define(['require',
                         var options = [];
 
                         if (!remoteName) {
-                            notify.warning('Enter remote repository name');
+                            notify.warning(string.substitute(i18n.enterRemoteRepositoryArg, {arg: 'name'}));
                             return;
                         } else if (!remoteLOC) {
-                            notify.warning('Enter remote repository URL');
+                            notify.warning(string.substitute(i18n.enterRemoteRepositoryArg, {arg: 'URL'}));
                             return;
                         }
 
@@ -4613,11 +4626,11 @@ define(['require',
 
                         remoteAddDlg.hide();
 
-                        var jobId = workbench.addJob('git remote add ' + remoteName + ' ' + remoteLOC, 'Processing...');
+                        var jobId = workbench.addJob('git remote add ' + remoteName + ' ' + remoteLOC, i18n.processing);
                         git.exec(GIT_DIR, ['remote', 'add'].concat(options), function (err, stdout, stderr) {
                             if (err) {
                                 workbench.removeJob(jobId);
-                                notify.error(err, 'Git Remote Error');
+                                notify.error(err, i18n.gitRemoteError);
                                 gitviewlog.error(GIT_DIR, 'remote', err);
                             } else {
                                 var data = stdout + stderr;
@@ -4625,9 +4638,9 @@ define(['require',
                                 if (data.match(/(fatal|error): .*/)) {
                                     workbench.removeJob(jobId);
                                     if (data.match(/Could not fetch/)) {
-                                        var WARN_MSG = 'Check whether the remote repository url information is valid.';
+                                        var WARN_MSG = i18n.checkRemoteRepository;
 
-                                        notify.warning('For more details, refer to the Git view.',
+                                        notify.warning(i18n.forMoreDetails,
                                                        'Git Remote Warning');
                                         gitviewlog.warning(GIT_DIR, 'remote', WARN_MSG + '\n' + data);
 
@@ -4638,7 +4651,7 @@ define(['require',
 
                                     } else {
                                         gitviewlog.error(GIT_DIR, 'remote rm', data);
-                                        notify.error('For more details, refer to the Git view.', 'Git Remote Error');
+                                        notify.error(i18n.forMoreDetails, i18n.gitRemoteError);
                                     }
                                 } else {
                                     workbench.removeJob(jobId);
@@ -4647,7 +4660,7 @@ define(['require',
                                         location: remoteLOC
                                     });
 
-                                    notify.success('For more details, refer to the Git view.', 'Git Remote Success');
+                                    notify.success(i18n.forMoreDetails, i18n.gitRemoteSuccess);
                                     gitviewlog.success(GIT_DIR, 'remote add',
                                                        'Successfully added remote \'' + remoteName + '\' repository.');
                                 }
@@ -4691,22 +4704,22 @@ define(['require',
 
                 PopupDialog.yesno({
                     title: 'Remove',
-                    message: WARN_MSG,
+                    message: string.substitute(i18n.removeRemoteRepository, {name: remoteName}),
                     type: 'info'
                 }).then(function () {
                     git.exec(GIT_DIR, ['remote', 'rm', remoteName], function (err, stdout, stderr) {
                         if (err) {
                             gitviewlog.error(GIT_DIR, 'remote', err);
-                            notify.error('For more details, refer to the Git view.', 'Git Remote Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitRemoteError);
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(GIT_DIR, 'remote rm', data);
-                                notify.error('For more details, refer to the Git view.', 'Git Remote Error');
+                                notify.error(i18n.forMoreDetails, i18n.gitRemoteError);
                             } else {
                                 grid.store.deleteItem(item[0]);
 
-                                notify.success('For more details, refer to the Git view.', 'Git Remote Success');
+                                notify.success(i18n.forMoreDetails, i18n.gitRemoteSuccess);
                                 gitviewlog.success(GIT_DIR, 'remote rm', 'Successfully removed remote \'' +
                                                    remoteName + '\' repository.');
                             }
@@ -4762,7 +4775,7 @@ define(['require',
                         style: 'width: 100%;',
                         store: dataStore,
                         structure: layout,
-                        noDataMessage: '<strong>No data to display</strong>',
+                        noDataMessage: i18n.noDataToDisplay,
                         selectionMode: 'single',
                         onSelectionChanged: function () {
                             var items = this.selection.getSelected();
@@ -4789,12 +4802,12 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitConfigApplyBtn',
-                        caption: 'Apply',
+                        caption: i18n.apply,
                         methodOnClick: 'gitConfigure',
                         disabledOnShow: true
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -4853,10 +4866,10 @@ define(['require',
                     ], function (err) {
                         if (err) {
                             gitviewlog.error(GIT_DIR, 'configure', err);
-                            notify.error('', 'Git Configure Change Error');
+                            notify.error('', i18n.gitConfigureError);
                         } else {
                             gitviewlog.success(GIT_DIR, 'configure', 'Successfully changed git configure.');
-                            notify.success('', 'Git Configure Setting Success');
+                            notify.success('', i18n.gitConfigureError);
                         }
                     });
                 },
@@ -4994,12 +5007,12 @@ define(['require',
             var branchDialog = new ButtonedDialog({
                 buttons: [
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
                 methodOnEnter: null,
-                title: 'Branch / Tag',
+                title: i18n.branchOrTag,
                 onHide: function (evt) {
                     branchDialog.destroyRecursive();
                     workbench.focusLastWidget();
@@ -5091,20 +5104,20 @@ define(['require',
                 var title;
 
                 if (branchRBtn.checked) {
-                    title = 'Create branch';
+                    title = i18n.createBranch;
                 } else {
-                    title = 'Create tag';
+                    title = i18n.createTag;
                 }
 
                 var createBranchDialog = new ButtonedDialog({
                     buttons: [
                         {
                             id: 'GitCreateBranchBtn',
-                            caption: 'Apply',
+                            caption: i18n.apply,
                             methodOnClick: 'gitCreate'
                         },
                         {
-                            caption: 'Close',
+                            caption: i18n.close,
                             methodOnClick: 'hide'
                         }
                     ],
@@ -5117,7 +5130,7 @@ define(['require',
                         var cmd = [];
 
                         if (target === '') {
-                            notify.warning('Enter name.');
+                            notify.warning(i18n.enterName);
                             return;
                         }
 
@@ -5129,7 +5142,7 @@ define(['require',
                             }
                         } else {
                             if (message.length === 0) {
-                                notify.warning('Enter message.');
+                                notify.warning(i18n.enterMessage);
                                 return;
                             }
 
@@ -5155,7 +5168,7 @@ define(['require',
                                 break;
                             case STR_TAG:
                                 if (stTag === '') {
-                                    notify.warning('Select a tag.');
+                                    notify.warning(i18n.selectATag);
                                     return;
                                 }
 
@@ -5163,7 +5176,7 @@ define(['require',
                                 break;
                             case STR_COMMIT:
                                 if (sha === '') {
-                                    notify.warning('Enter commit-id.');
+                                    notify.warning(i18n.enterCommitId);
                                     return;
                                 }
                                 cmd.push(sha);
@@ -5177,7 +5190,7 @@ define(['require',
                                 var data = stdout + stderr;
 
                                 if (data.match(/(fatal|error): .*/)) {
-                                    notify.error('For more details, refer to the Git view.', 'Git Error');
+                                    notify.error(i18n.forMoreDetails, gitCreateError);
                                     gitviewlog.error(GIT_DIR, cmd[0], data);
                                 } else {
                                     if (branchRBtn.checked) {
@@ -5195,7 +5208,7 @@ define(['require',
                                                            'Sucessfully ' + '\'' + target + '\' taged.');
                                     }
 
-                                    notify.success('For more details, refer to the Git view.', 'Git Success');
+                                    notify.success(i18n.forMoreDetails, i18n.gitCreageSuccess);
 
                                 }
                             }
@@ -5229,13 +5242,15 @@ define(['require',
                 var createApplyBtn = registry.byId('GitCreateBranchBtn');
                 var startPoint = STR_HEAD;
 
-//                var cCommitInfoBtn = registry.byId('GitCommitInfoBtn');
+                //                var cCommitInfoBtn = registry.byId('GitCommitInfoBtn');
 
                 if (branchRBtn.checked) {
-                    createText.set('placeHolder', 'Enter branch name.');
+                    createText.set('placeHolder',
+                                   string.substitute(i18n.enterArgName, {arg: 'branch'}));
                 } else {
                     $('#GitTagMessage').show();
-                    createText.set('placeHolder', 'Enter tag name.');
+                    createText.set('placeHolder',
+                                   string.substitute(i18n.enterArgName, {arg: 'tag'}));
                     cCheckoutChk.set('disabled', true);
                 }
 
@@ -5288,10 +5303,10 @@ define(['require',
                     if (cCommitIdRBtn.checked) {
                         cCommitIdText.set('disabled', false);
                         startPoint = STR_COMMIT;
-//                        cCommitInfoBtn.set('disabled', false);
+                        //                        cCommitInfoBtn.set('disabled', false);
                     } else {
                         cCommitIdText.set('disabled', true);
-//                        cCommitInfoBtn.set('disabled', true);
+                        //                        cCommitInfoBtn.set('disabled', true);
                     }
                 });
 
@@ -5306,7 +5321,7 @@ define(['require',
                         });
 
                         if (rt.length) {
-                            MSG = 'Warning - branch \'' + tmp + '\' already exists.';
+                            MSG = string.substitute(i18n.alreadyExist, {arg: 'branch', name: tmp});
                             createApplyBtn.set('disabled', true);
                             $('#GitTargetInfoText').text(MSG).css({'color': 'red'});
                         } else {
@@ -5319,7 +5334,7 @@ define(['require',
                         });
 
                         if (rt.length) {
-                            MSG = 'Warning - tag \'' + tmp + '\' already exists.';
+                            MSG = string.substitute(i18n.alreadyExist, {arg: 'tag', name: tmp});
                             $('#GitTargetInfoText').text(MSG).css({'color': 'red'});
                             createApplyBtn.set('disabled', true);
                         } else {
@@ -5336,12 +5351,12 @@ define(['require',
                 // if branch radio button checked
                 if (branchRBtn.checked) {
                     targetName = tree.selectedNode.label;
-                    MSG = 'Do you want to checkout the branch \'' + targetName + '\'?';
+                    MSG = string.substitute(i18n.checkoutArg, {arg: 'branch', name: targetName});
                 } else {
                     // if tag radio buttion checked
                     var item = grid.selection.getSelected();
                     targetName = item[0].name;
-                    MSG = 'Do you want to checkout the tag \'' + targetName + '\'?';
+                    MSG = string.substitute(i18n.checkoutArg, {arg: 'tag', name: targetName});
                 }
 
                 PopupDialog.yesno({
@@ -5356,7 +5371,7 @@ define(['require',
                             var data = stdout + stderr;
                             if (data) {
                                 if (data.match(/(fatal|error): .*/)) {
-                                    notify.error('For more details, refer to the Git view.', 'Git Checkout Error');
+                                    notify.error(i18n.forMoreDetails, i18n.gitCheckoutError);
                                     gitviewlog.error(GIT_DIR, 'checkout', data);
                                 } else {
                                     redrawTree();
@@ -5366,7 +5381,7 @@ define(['require',
                                     removeBtn.set('disabled', true);
                                     checkoutBtn.set('disabled', true);
 
-                                    notify.success('For more details, refer to the Git view.', 'Git Checkout Success');
+                                    notify.success(i18n.forMoreDetails, i18n.gitCheckoutSuccess);
                                     gitviewlog.success(GIT_DIR, 'checkout', data);
                                 }
                             }
@@ -5382,11 +5397,11 @@ define(['require',
 
                 if (branchRBtn.checked) {
                     targetName = tree.selectedNode.label;
-                    MSG = 'Do you want to delete the branch \'' + targetName + '\'?';
+                    MSG = string.substitute(i18n.deleteArg, {arg: 'branch', name: targetName});
                 } else {
                     var item = grid.selection.getSelected();
                     targetName = item[0].name;
-                    MSG = 'Do you want to delete the tag \'' + targetName + '\'?';
+                    MSG = string.substitute(i18n.deleteArg, {arg: 'tag', name: targetName});
                 }
 
                 PopupDialog.yesno({
@@ -5398,18 +5413,18 @@ define(['require',
                         git.exec(GIT_DIR, ['branch', '-D', targetName], function (err, stdout, stderr) {
                             if (err) {
                                 gitviewlog.error(GIT_DIR, 'branch delete', err);
-                                notify.error('For more details, refer to the Git view.', 'Git Branch Delete Error');
+                                notify.error(i18n.forMoreDetails, i18n.gitBranchDeleteError);
                             } else {
                                 var data = stdout + stderr;
                                 if (data.match(/(fatal|error): .*/)) {
                                     gitviewlog.error(GIT_DIR, 'branch delete', data);
-                                    notify.error('For more details, refer to the Git view.', 'Git Branch Delete Error');
+                                    notify.error(i18n.forMoreDetails, i18n.gitBranchDeleteError);
                                 } else {
                                     treeStore.remove(tree.selectedNode.item.id);
                                     removeBtn.set('disabled', true);
                                     checkoutBtn.set('disabled', true);
 
-                                    notify.success('', 'Git Branch Delete Success');
+                                    notify.success('', i18n.gitBranchDeleteSuccess);
                                     gitviewlog.success(GIT_DIR, 'branch delete', data);
                                 }
                             }
@@ -5418,18 +5433,18 @@ define(['require',
                         git.exec(GIT_DIR, ['tag', '-d', targetName], function (err, stdout, stderr) {
                             if (err) {
                                 gitviewlog.error(GIT_DIR, 'tag delete', err);
-                                notify.error('For more details, refer to the Git view.', 'Git Tag Delete Error');
+                                notify.error(i18n.forMoreDetails, i18n.gitTagDeleteError);
                             } else {
                                 var data = stdout + stderr;
                                 if (data.match(/(fatal|error): .*/)) {
                                     gitviewlog.error(GIT_DIR, 'tag delete', data);
-                                    notify.error('For more details, refer to the Git view.', 'Git Tag Delete Error');
+                                    notify.error(i18n.forMoreDetails, i18n.gitTagDeleteError);
                                 } else {
                                     gridStore.remove(targetName);
                                     removeBtn.set('disabled', true);
                                     checkoutBtn.set('disabled', true);
 
-                                    notify.success('', 'Git Tag Delete Success');
+                                    notify.success('', i18n.gitTagDeleteSuccess);
                                     gitviewlog.success(GIT_DIR, 'branch delete', data);
                                 }
                             }
@@ -5569,7 +5584,7 @@ define(['require',
                             grid = new DataGrid({
                                 store: new ObjectStore({ objectStore: gridStore }),
                                 structure: layout,
-                                noDataMessage: '<strong>No data to display</strong>',
+                                noDataMessage: i18n.noDataToDisplay,
                                 selectionMode: 'single',
                                 style: 'width:100%',
                                 onSelectionChanged: function () {
@@ -5625,7 +5640,7 @@ define(['require',
 
         git.exec(GIT_DIR, ['submodule', 'update'], function (err, stdout, stderr) {
             if (err) {
-                notify.error('', 'Git Submodule Error');
+                notify.error('', i18n.gitSubmoduleError);
                 gitviewlog.error(GIT_DIR, 'submodule', err);
             } else {
                 var data = stdout + stderr;
@@ -5633,13 +5648,13 @@ define(['require',
                 if (data) {
                     if (data.match(/(fatal|error): .*/)) {
                         gitviewlog.error(GIT_DIR, 'submodule', data);
-                        notify.error('For more details, refer to the Git view.', 'Git Submodule Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitSubmoduleError);
                     } else {
                         notify.success('', 'Git Submodule Success');
                         gitviewlog.success(GIT_DIR, 'submodule', data);
                     }
                 } else {
-                    notify.info('', 'Git Submodule Info');
+                    notify.info('', i18n.gitSubmoduleError);
                     gitviewlog.info(GIT_DIR, 'submodule', 'Already up-to-date.');
                 }
             }
@@ -5676,21 +5691,21 @@ define(['require',
                 var argStr = commandInput.get('value').trim();
                 var args = parse(argStr, true);
                 var path = gitRootPath || selectedPath;
-                var jobId = workbench.addJob('git ' + argStr + ': Processing...');
+                var jobId = workbench.addJob(string.substitute(i18n.gitProcessing, {arg: argStr}));
 
                 git.exec(path, args, function (err, stdout, stderr) {
                     var logTitle = 'command: git ' + argStr;
                     workbench.removeJob(jobId);
                     if (err) {
                         gitviewlog.error(path, logTitle, err);
-                        notify.error('For more details, refer to the Git view.', 'Git Command Error');
+                        notify.error(i18n.forMoreDetails, i18n.gitCommandError);
                     } else {
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             gitviewlog.error(path, logTitle, data);
-                            notify.error('For more details, refer to the Git view.', 'Git Command Error');
+                            notify.error(i18n.forMoreDetails, i18n.gitCommandError);
                         } else {
-                            notify.success('', 'Git Command Success');
+                            notify.success('', i18n.gitCommandSuccess);
                             gitviewlog.success(path, logTitle, data);
                             refresh(path, true);
                         }
@@ -5701,12 +5716,12 @@ define(['require',
                 buttons: [
                     {
                         id: 'GitRunCommandBtn',
-                        caption: 'Run',
+                        caption: i18n.run,
                         methodOnClick: 'runGitCommand',
                         disabledOnShow: true
                     },
                     {
-                        caption: 'Close',
+                        caption: i18n.close,
                         methodOnClick: 'hide'
                     }
                 ],
@@ -5719,7 +5734,7 @@ define(['require',
                     dialog.hide();
                 },
 
-                title: 'Run Git Command',
+                title: i18n.runGitCommand,
                 onHide: function (evt) {
                     dialog.destroyRecursive();
                     workbench.focusLastWidget();
