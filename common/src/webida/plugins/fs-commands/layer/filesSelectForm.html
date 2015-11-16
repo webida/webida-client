@@ -127,7 +127,7 @@
             <div data-dojo-type="dijit/layout/ContentPane"
                  data-dojo-props="region:'top'"
                  id="pvUploadFilesDropTopPane">
-                <label id="">
+                <label id="" data-message="uploadDropZoneDesc">
                     Select files and/or directories to upload by dropping them to the following zone. </label>
             </div>
 
@@ -137,14 +137,13 @@
                  id="pvUploadFilesDropCenterPane">
                 <div id="drop_zone">
                     <div id="drop_zone_text">
-                        Drop them here<br />
-                        or<br />
-                        <label class="drop-zone__button">Select files
+                        <label data-message="dropThemHere"> Drop them here</label><br />
+                        <label data-message="or">or</label><br />
+                        <label class="drop-zone__button" data-message="selectFiles">Select files</label>
                         <input id="pvFileInputBox"
                                class="drop-zone__file"
                                type="file"
                                multiple="" />
-                        </label>
                     </div>
                 </div>
             </div>
@@ -160,10 +159,10 @@
             <div data-dojo-type="dijit/layout/ContentPane"
                  data-dojo-props="gutters:false, liveSplitters:false, region:'left'"
                  id="pvUploadFilesInfoLeftPane">
-                <label> Selected files and directories: </label>
+                <label data-message="selectFilesAndDirs"> Selected files and directories: </label>
                 <div id="pvContentsSimpleInfoPane">
-                    <div id="pvContentsCnt"> -Files , Directories </div>
-                    <div id="pvContentsSize"> -Size </div>
+                    <div id="pvContentsCnt" data-message="filesDirs"> -Files , Directories </div>
+                    <div id="pvContentsSize" data-message="size"> -Size </div>
                 </div>
                 <div id="pvContentsWarningPane">
                 </div>
@@ -179,7 +178,8 @@
                            data-dojo-type="dijit/form/CheckBox"
                            checked />
                     <label id="pvSelectOrClearCheckBoxText"
-                           for="pvSelectOrClearCheckBox">Select/Clear All</label>
+                           for="pvSelectOrClearCheckBox"
+                           data-message="selectOrClearAll">Select/Clear All</label>
                 </div>
                 <!-- tree -->
                 <div id="pvListOfSelectedPane">
@@ -189,7 +189,7 @@
     </div>
 
     <div id="pvDirectoryInfoPane">
-        <label>Target directory:</label>
+        <label data-message="targetDir">Target directory:</label>
         <input id="pvTargetInputBox"
                type="text"
                data-dojo-type="dijit/form/TextBox"
@@ -197,7 +197,8 @@
                readonly />
         <button id="pvTargetBrowseBt"
                 data-dojo-type="dijit/form/Button"
-                type="button">Browse...</button>
+                type="button"
+                data-message="browse3Dot">Browse...</button>
     </div>
 
     <fieldset id="pvFieldset3"  style='display: none;'>
