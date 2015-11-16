@@ -14,35 +14,23 @@
  * limitations under the License.
  */
 
-define(['webida-lib/util/path',
-        'webida-lib/plugins/workspace/plugin',
-        'dojo/topic' ],
-function (pathUtil, wv, topic) {
+define([
+    'dojo/topic',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/path'
+], function (
+    topic,
+    wv,
+    pathUtil
+) {
     'use strict';
 
     var module = {};
     var bEnable = false;
 
     var item = {
-        'Deplo&y' : [ 'cmnd', 'plugins/deploy/deploy-commands', 'deploy' ]
+        'Deplo&y': [ 'cmnd', 'plugins/webida.ide.project.deploy/deploy-commands', 'openDialog' ]
     };
-
-    function isEnableContext(context) {
-        if (!context) {
-            return false;
-        }
-        if (context.paths.length !== 1) {
-            return false;
-        }
-        // Enable "Project > Deploy" workbench menu even when a file is selected
-        /*
-        if (context.paths[0] !== context.projectPath) {
-            return false;
-        }
-        */
-
-        return isProjectPath(context.projectPath);
-    }
 
     function isProjectPath(path) {
         var splitPath = path.split('/');
@@ -63,9 +51,26 @@ function (pathUtil, wv, topic) {
         return viable;
     }
 
+    function isEnableContext(context) {
+        if (!context) {
+            return false;
+        }
+        if (context.paths.length !== 1) {
+            return false;
+        }
+        // Enable "Project > Deploy" workbench menu even when a file is selected
+        /*
+        if (context.paths[0] !== context.projectPath) {
+            return false;
+        }
+        */
+
+        return isProjectPath(context.projectPath);
+    }
+
     module.onContextChanged = function (context) {
         bEnable = isEnableContext(context);
-        if (bEnable === true) {
+        if (bEnable) {
             topic.publish('toolbar.deploy.enable');
         } else {
             topic.publish('toolbar.deploy.disable');

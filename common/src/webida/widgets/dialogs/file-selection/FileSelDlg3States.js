@@ -32,9 +32,6 @@ define(['dijit/Dialog',
     'use strict';
 
     var serialNo = 0;
-    var webidaHost = decodeURIComponent(
-        document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-    );
 
 
     function getIconClass(isDir, selection, opened) {
@@ -435,7 +432,6 @@ define(['dijit/Dialog',
                     var idPostfix = '-3s-' + serialNo;
                     serialNo++;
 
-                    template = template.replace(/<%webida-host%>/g, webidaHost);
                     var markup = template.replace(/<%id-postfix%>/g, idPostfix);
 
                     var dialog = new ButtonedDialog({

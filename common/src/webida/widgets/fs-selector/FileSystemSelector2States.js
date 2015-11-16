@@ -30,9 +30,6 @@ function (dijit, registry, Tree, dndSource, ObjectStoreModel, aspect, declare,
     'use strict';
 
     var serialNo = 0;
-    var webidaHost = decodeURIComponent(
-        document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-    );
     var systemResources = ['.workspace', '.git', '.gitignore'];
 
     function isValidAbsPath(path) {
@@ -284,7 +281,6 @@ function (dijit, registry, Tree, dndSource, ObjectStoreModel, aspect, declare,
             checkOptions(ops);
             var idPostfix = '-2s-' + serialNo;
             serialNo++;
-            template = template.replace(/<%webida-host%>/g, webidaHost);
             var markup = template.replace(/<%id-postfix%>/g, idPostfix);
             dom.innerHTML = markup;
             initializeTree(ops, idPostfix);
