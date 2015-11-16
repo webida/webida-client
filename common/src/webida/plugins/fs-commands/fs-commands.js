@@ -19,63 +19,71 @@
  *
  */
 
-define(['require',
-        './plugin',                                 //fh        
-        'external/lodash/lodash.min',          // _
-        'webida-lib/app',                           // ide
-        'webida-lib/util/path',                           // pathUtil
-        'external/async/dist/async.min',                                // async
-        'webida-lib/util/arrays/BubblingArray',     // BubblingArray
-        'webida-lib/plugins/workspace/plugin',                 // wv
-        'webida-lib/plugins/workbench/plugin',      // workbench
-        'webida-lib/widgets/checkbox-tree/CheckBoxTree',
-        'text!./layer/searchFilesForm.html',        // sFilesForm
-        'text!./layer/filesSelectForm.html',        // fSelectForm
-        'text!./layer/goToFile.html',               // goToFileForm
-        'dojo',                                     // dojo
-        'dojo/dom',                                 // dom
-        'dojo/dom-class',                           // domClass
-        'dojo/aspect',                              // aspect
-        'dojo/topic',                               // topic
-        'dojo/Deferred',                            // Deferred
-        'dojo/store/Memory',                        // Memory
-        'dojo/store/Observable',                    // Observable
-        'dijit/tree/ObjectStoreModel',              // ObjectStoreModel
-        'dijit/Tree',                               // Tree
-        'dijit/registry',                           // reg
-        'dijit/Tooltip',                            // Tooltip
-        'webida-lib/util/notify',                   // notify
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
-        'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
-        ],
-function (require, fh, _,
-          ide,
-           pathUtil,
-          async,
-          BubblingArray,
-          wv,
-          workbench,
-          CheckBoxTree,
-          sFilesForm,
-          fSelectForm,
-          goToFileForm,
-          dojo,
-          dom,
-          domClass,
-          aspect,
-          topic,
-          Deferred,
-          Memory,
-          Observable,
-          ObjectStoreModel,
-          Tree,
-          reg,
-          Tooltip,
-          notify,
-          ButtonedDialog,
-          FileDialog
-         )
-{
+define([
+    'require',
+    './plugin',                                 //fh
+    'external/lodash/lodash.min',               // _
+    'webida-lib/app',                           // ide
+    'webida-lib/util/path',                     // pathUtil
+    'external/async/dist/async.min',            // async
+    'webida-lib/util/arrays/BubblingArray',     // BubblingArray
+    'webida-lib/plugins/workspace/plugin',      // wv
+    'webida-lib/plugins/workbench/plugin',      // workbench
+    'webida-lib/widgets/checkbox-tree/CheckBoxTree',
+    'text!./layer/searchFilesForm.html',        // sFilesForm
+    'text!./layer/filesSelectForm.html',        // fSelectForm
+    'text!./layer/goToFile.html',               // goToFileForm
+    'dojo',                                     // dojo
+    'dojo/dom',                                 // dom
+    'dojo/dom-class',                           // domClass
+    'dojo/aspect',                              // aspect
+    'dojo/i18n!./nls/resource',                 // i18n resource
+    'dojo/string',                              // string
+    'dojo/topic',                               // topic
+    'dojo/Deferred',                            // Deferred
+    'dojo/store/Memory',                        // Memory
+    'dojo/store/Observable',                    // Observable
+    'dijit/tree/ObjectStoreModel',              // ObjectStoreModel
+    'dijit/Tree',                               // Tree
+    'dijit/registry',                           // reg
+    'dijit/Tooltip',                            // Tooltip
+    'webida-lib/util/locale',                   // locale
+    'webida-lib/util/notify',                   // notify
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
+    'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
+], function (
+    require,
+    fh,
+    _,
+    ide,
+    pathUtil,
+    async,
+    BubblingArray,
+    wv,
+    workbench,
+    CheckBoxTree,
+    sFilesForm,
+    fSelectForm,
+    goToFileForm,
+    dojo,
+    dom,
+    domClass,
+    aspect,
+    i18n,
+    string,
+    topic,
+    Deferred,
+    Memory,
+    Observable,
+    ObjectStoreModel,
+    Tree,
+    reg,
+    Tooltip,
+    locale,
+    notify,
+    ButtonedDialog,
+    FileDialog
+) {
     'use strict';
 
     //console.log('hina: Loading fs-commands module');
@@ -184,12 +192,12 @@ function (require, fh, _,
 
         var handleFileInFilesDlg = new ButtonedDialog({
             buttons: [
-                { caption: 'Find', methodOnClick: 'onOkay' },
-                { caption: 'Cancel', methodOnClick: 'hide' }
+                { caption: i18n.find, methodOnClick: 'onOkay' },
+                { caption: i18n.cancel, methodOnClick: 'hide' }
             ],
             methodOnEnter: 'onOkay',
 
-            title: 'Find in Files',
+            title: i18n.findInFiles,
 
             refocus: false,
 
@@ -219,9 +227,9 @@ function (require, fh, _,
                 var inFilesAsRegEx = inFilesAsRegExBtElem.checked;
 
                 if (!pattern) {
-                    notify.warning('Enter the pattern to find.');
+                    notify.warning(i18n.enterPatternToFind);
                 } else if (!path) {
-                    notify.warning('Enter the directory to search.');
+                    notify.warning(i18n.enterDirToSearch);
                 } else {
                     // save current values
                     fiFData.patterns.put(pattern);
@@ -250,8 +258,8 @@ function (require, fh, _,
                         pattern = convertToNormalizedString(pattern);
                     }
 
-                    var jobId = workbench.addJob('Find in Files : ' +
-                                                 encloser + origPattern + encloser);
+                    var jobId = workbench.addJob(i18n.findInFiles + ' : ' +
+                            encloser + origPattern + encloser);
                     var options = {};
 
                     if (exFolders) {
@@ -272,29 +280,29 @@ function (require, fh, _,
                     options.wholeword = wholeword;
                     fsMount.searchFiles(pattern, path, options, function (err, results) {
                         if (err) {
-                            notify.error('Failed to search files.');
+                            notify.error(i18n.searchFilesFailure);
                             console.log('Failed to search files (' + err + ')');
                         } else {
-                            topic.publish('#REQUEST.log', '# Result of finding pattern ' +
-                                          encloser + origPattern + encloser +
-                                          ' in files within a directory ' + path);
+                            topic.publish('#REQUEST.log',
+                                    string.substitute(i18n.resultOfFindingPattern,
+                                            { pattern: encloser + origPattern + encloser, path: path }));
                             console.log('hina: result.length = ' + results.length);
                             if (results.length > 0) {
                                 results.forEach(function (file) {
                                     var fileName = file.filename;
 
-                                    // The following if paragarph is temporary.
+                                    // The following if paragraph is temporary.
                                     // TODO: remove the following when server is done.
                                     if (fileName.indexOf('/') !== 0) {
                                         fileName = '/' + fileName;
                                     }
                                     //console.log('hina: i = ' + i);
-                                    topic.publish('#REQUEST.log', '\nMatched File: ' + fileName);
+                                    topic.publish('#REQUEST.log', '\n' + i18n.matchedFile + ': ' + fileName);
 
                                     file.match.forEach(function (line) {
                                         //console.log('hina: j = ' + j);
                                         var lineNumber = line.line;
-                                        var text = '\t- at line ' + lineNumber + ': "' + line.text + '"';
+                                        var text = '\t- ' + i18n.atLine + ' ' + lineNumber + ': "' + line.text + '"';
                                         var filelocInfo = {
                                             type: 'fileloc',
                                             path: fileName,
@@ -325,7 +333,7 @@ function (require, fh, _,
                     mount : fsMount,
                     root: rootPath,
                     initialSelection: [curPath],
-                    title: 'Select a Directory',
+                    title: i18n.selectDirectory,
                     singular: true,
                     dirOnly: true
                 });
@@ -391,7 +399,7 @@ function (require, fh, _,
                 // setting element value
                 var defaults = {
                     searchAttr: 'name',
-                    missingMessage: 'A value is required',
+                    missingMessage: i18n.valueRequired,
                     ignoreCase: true,
                     autoComplete: false,
                     queryExpr: '*${0}*',
@@ -399,7 +407,7 @@ function (require, fh, _,
 
                 var required = {
                     required: true,
-                    missingMessage: 'A value is required'
+                    missingMessage: i18n.valueRequired
                 };
 
                 patternComboElem.set(defaults);
@@ -498,6 +506,8 @@ function (require, fh, _,
         handleFileInFilesDlg.set('doLayout', false);
         //handleFileInFilesDlg.set('content', sFilesForm);
         handleFileInFilesDlg.setContentArea(sFilesForm);
+
+        locale.convertMessage(i18n, 'data-message');
         handleFileInFilesDlg.show();
 
         patternComboElem.focusNode.select();
@@ -607,11 +617,11 @@ function (require, fh, _,
         var gotoFileDlg = new ButtonedDialog({
             buttons: [
                 {
-                    caption: 'Go',
+                    caption: i18n.go,
                     methodOnClick: 'goToFile'
                 },
                 {
-                    caption: 'Cancel',
+                    caption: i18n.cancel,
                     methodOnClick: 'hide'
                 }
             ],
@@ -627,14 +637,15 @@ function (require, fh, _,
                     this.hide();
                 } else {
                     if (text === '') {
-                        notify.error('No such file.');
+                        notify.error(i18n.noSuchFile);
                     } else {
-                        notify.error(text + ': No such file.');
+                        notify.error(
+                                string.substitute(i18n.noSuchFileAs, {filename: text}));
                     }
                 }
             },
 
-            title: 'Go to File',
+            title: i18n.goToFile,
             refocus: false,
             autofocus: false,
             inputStore : new Memory({
@@ -678,7 +689,7 @@ function (require, fh, _,
                         // create worker
                         loadingWorker = new Worker(require.toUrl('webida-lib/plugins/fs-commands/goToFileWorker.js'));
 
-                        // recive
+                        // receive
                         loadingWorker.onmessage = function (event) {
                             if (event && event.data) {
                                 var data = event.data;
@@ -776,11 +787,11 @@ function (require, fh, _,
                 // async controll, then(callback, errback, progback)
                 process.then(cbResolve, function () {
                     //console.log('deffer error...', err);
-                    $('#gotoFileLoadingLabel').text('Loading error...').css('color', 'red');
+                    $('#gotoFileLoadingLabel').text(i18n.loadingError).css('color', 'red');
                     $('#gotoFileLoadingSpinner').fadeOut();
                 }, function (progress) {
                     //console.log('deffer progress...', progress);
-                    $('#gotoFileLoadingLabel').text('Loading ' + progress);
+                    $('#gotoFileLoadingLabel').text(string.substitute(i18n.loadingProgress, {progress: progress}));
                 });
             },
 
@@ -815,7 +826,7 @@ function (require, fh, _,
                     mount : fsMount,
                     root: rootPath,
                     initialSelection: [gotoFileData.lastDir],
-                    title: 'Select a target directory',
+                    title: i18n.selectTargetDir,
                     singular: true,
                     dirOnly: true
                 });
@@ -850,7 +861,7 @@ function (require, fh, _,
                 target.setValue(gotoFileData.lastDir);
 
                 // input filed data set
-                var placeHolder = 'Enter a substring of the file path.';
+                var placeHolder = i18n.enterSubstringOfFilePath;
                 gotoFileInput.set({
                     placeHolder: placeHolder,
                     store: _self.inputStore,
@@ -891,7 +902,7 @@ function (require, fh, _,
 
         aspect.after(gotoFileDlg, 'onLoad', dojo.hitch(gotoFileDlg, gotoFileDlg.dataLoad));
         aspect.after(gotoFileDlg, '_endDrag', function () {
-            // currently opend tooltip clear
+            // currently opened tooltip clear
             var gotoFileInput = reg.byId('FsCommandFileToGoInput');
             var tooltipState = gotoFileInput.isTooltipShow;
             gotoFileInput.displayMessage('');
@@ -909,6 +920,7 @@ function (require, fh, _,
 
         //gotoFileDlg.set('content', goToFileForm);
         gotoFileDlg.setContentArea(goToFileForm);
+        locale.convertMessage(i18n, 'data-message');
         gotoFileDlg.show();
     }
 
