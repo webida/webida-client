@@ -33,7 +33,6 @@ define([
 ) {
     'use strict';
     var logger = new Logger();
-    var titlePane = null;
     var oldSelected = null;
 
     var GET_PROJECT_FAIL_TOASTR = 'Failed to get the project list.';
@@ -149,24 +148,20 @@ define([
     }
 
     function init() {
-        titlePane = reg.byId('workspace-TitlePane');
         var workspaceName = deploy.getWorkspaceName();
         if (!workspaceName) {
             return;
         }
         var root = deploy.getMount();
         //$('#workspace-list-title').append('<div>'+ workspaceName+'</div>');
-        //titlePane.set('title', workspaceName);
         var elem = $('#workspace-list-title');
         elem.text(workspaceName);
         root.list('/' + workspaceName, cbGetProject);
     }
 
-    var workspace = {
+    return {
         onStart: function () {
             init();
         }
     };
-
-    return workspace;
 });

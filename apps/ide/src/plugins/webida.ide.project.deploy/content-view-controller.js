@@ -72,40 +72,6 @@ define([
 
     var STR_DOT = '.';
     var STR_ARCHIVE_PATH = '/.project/deploy.zip';
-    var STR_API_CALL_FAIL = i18n.messageFailCallAPI;
-    var CONTENT_NO_DEPLOYED_APP_INFORMATION = i18n.noContent;
-    var CREATE_NEW_APP_ENTER_NAME_DOMAIN_TOASTR = i18n.validationNoNameOrDomain;
-    var EDIT_APP_SUCCESS_TOASTR = i18n.messageSuccessEdit;
-    var EDIT_APP_CANCEL_TOASTR = i18n.messageCancelEdit;
-    var EDIT_APP_FAIL_TOASTR = i18n.messageFailEdit;
-    var SELECTIVE_SETTING_TITLE_DIALOG = i18n.messageInformSelectFiles;
-    var SELECTIVE_SETTING_SUCCESS_TOASTR = i18n.messageSuccessSelectFiles;
-    var SELECTIVE_SETTING_CANCEL_TOASTR = i18n.messageCancelSelectFiles;
-    var SELECTIVE_SETTING_FAIL_TOASTR = i18n.messageFailSelectFiles;
-    var DELETE_APP_TITLE_DIALOG = i18n.titleDeleteAppDialog;
-    var DELETE_APP_MESSAGE_DIALOG = i18n.contentDeleteAppDialog;
-    var DELETE_APP_SUCCESS_TOASTR = i18n.messageSuccessDeleteApp;
-    var DELETE_APP_CANCEL_TOASTR = i18n.messageCancelDeleteApp;
-    var DEPLOY_APP_ING_PROGRESS = i18n.messageInformProgressDeploy;
-    var DEPLOY_APP_SUCCESS = i18n.messageSuccessDeploy;
-    var DEPLOY_APP_FAIL_TOASTR = i18n.messageFailDeploy;
-    var START_APP_SUCCESS_TOASTR = i18n.messageSuccessStartApp;
-    var STOP_APP_SUCCESS_TOASTR = i18n.messageSuccessStopApp;
-    var CHECK_AVAILABLE = i18n.messageAvailable;
-    var CHECK_NOT_AVAILABLE = i18n.messageNotAvailable;
-    var CHECK_NAME_NO_NAME_TOOLTIP = i18n.validationNoName;
-    var CHECK_NAME_CONTAIN_SPACE_TOOLTIP = i18n.validationNameContainSpaces;
-    var CHECK_NAME_ALREADY_EXIST_TOOLTIP = i18n.validationNameExist;
-    var CHECK_DOMAIN_GET_FAIL_TOOLTIP = i18n.messageFailCheckDomain;
-    var CHECK_NAME_NO_DOMAIN_TOOLTIP = i18n.validationNoDomain;
-    var SHOW_STATUS_ERROR = i18n.messageError;
-
-    String.prototype.format = function () {
-        var args = arguments;
-        return this.replace(/\{(\d+)\}/g, function ($0, $1) {
-            return args[$1] !== void 0 ? args[$1] : $0;
-        });
-    };
 
     function isDuplicateDeployName(parent, name) {
         var oldName = $(parent).find('.table-title-name');
@@ -126,23 +92,23 @@ define([
     function checkName(parent, nameBox) {
         var inputVal = nameBox.value;
         if (!inputVal) {
-            return CHECK_NAME_NO_NAME_TOOLTIP;
+            return i18n.validationNoName;
         }
 
         var blankPattern = /[\s]/g;
         if (blankPattern.test(inputVal) === true) {
-            return CHECK_NAME_CONTAIN_SPACE_TOOLTIP;
+            return i18n.validationNameContainSpaces;
         }
 
         if (nameBox.oldValue === inputVal) {
-            return CHECK_AVAILABLE;
+            return i18n.messageAvailable;
         }
 
         if (isDuplicateDeployName(parent, inputVal) === true) {
-            return CHECK_NAME_ALREADY_EXIST_TOOLTIP;
+            return i18n.validationNameExist;
         }
 
-        return CHECK_AVAILABLE;
+        return i18n.messageAvailable;
     }
 
     function checkDomain(parent, domainBox, cb) {
@@ -150,30 +116,30 @@ define([
         var ret = '';
 
         if (!domain) {
-            cb(CHECK_DOMAIN_GET_FAIL_TOOLTIP);
+            cb(i18n.messageFailCheckDomain);
             return;
         }
 
         if (!domainBox.value) {
-            cb(CHECK_NAME_NO_DOMAIN_TOOLTIP);
+            cb(i18n.validationNoDomain);
             return;
         }
 
         if (domainBox.value === domainBox.oldValue) {
-            cb(CHECK_AVAILABLE);
+            cb(i18n.messageAvailable);
             return;
         }
 
         webida.app.isValidDomain(domain, function (err, result) {
             if (err) {
                 logger.log('webida.app.isValidDomain : ' + err);
-                notify.error(STR_API_CALL_FAIL);
-                ret = STR_API_CALL_FAIL;
+                notify.error(i18n.messageFailCallAPI);
+                ret = i18n.messageFailCallAPI;
             } else {
                 if (result) {
-                    ret = CHECK_AVAILABLE;
+                    ret = i18n.messageAvailable;
                 } else {
-                    ret = CHECK_NOT_AVAILABLE;
+                    ret = i18n.messageNotAvailable;
                 }
             }
             cb(ret);
@@ -213,7 +179,7 @@ define([
             fsMount.exec(path, info, function (err, data) {
                 if (err) {
                     logger.log('fsMount.exec : ' + err);
-                    notify.error(STR_API_CALL_FAIL);
+                    notify.error(i18n.messageFailCallAPI);
                 } else {
                     if (cb) {
                         cb(zipFilePath, data);
@@ -225,14 +191,14 @@ define([
         fsMount.exists(zipFilePath, function (err, exist) {
             if (err) {
                 logger.log('fsMount.exists : ' + err);
-                notify.error(STR_API_CALL_FAIL);
+                notify.error(i18n.messageFailCallAPI);
                 return;
             } else {
                 if (exist) {
                     fsMount.delete(zipFilePath, false, function (err) {
                         if (err) {
                             logger.log('fsMount.delete : ' + err);
-                            notify.error(STR_API_CALL_FAIL);
+                            notify.error(i18n.messageFailCallAPI);
                         } else {
                             doArchive(path, info);
                         }
@@ -251,7 +217,7 @@ define([
         fsMount.writeFile(path, jsonText, function (err) {
             if (err) {
                 logger.log(path + '/.project/deploy.json' + ' save fail' + 'fsMount.writeFile : ' + err);
-                notify.error(STR_API_CALL_FAIL);
+                notify.error(i18n.messageFailCallAPI);
             }
             if (cb) {
                 cb(err);
@@ -266,7 +232,7 @@ define([
         fsMount.exists(path + '/.project', function (err, exist) {
             if (err) {
                 logger.log('fsMount.exists : ' + err);
-                notify.error(STR_API_CALL_FAIL);
+                notify.error(i18n.messageFailCallAPI);
                 if (cb) {
                     cb(err);
                 }
@@ -278,7 +244,7 @@ define([
                     fsMount.createDirectory(path + '/.project', function (err) {
                         if (err) {
                             logger.log('fsMount.createDirectory : ' + err);
-                            notify.error(STR_API_CALL_FAIL);
+                            notify.error(i18n.messageFailCallAPI);
                             cb(err);
                         } else {
                             _writeObjectFromFile(path + '/.project/deploy.json', selectiveObject, cb);
@@ -349,7 +315,7 @@ define([
         fsMount.exists(path + '/.project', function (err, exist) {
             if (err) {
                 logger.log('fsMount.exists : ' + err);
-                notify.error(STR_API_CALL_FAIL);
+                notify.error(i18n.messageFailCallAPI);
                 if (cb) {
                     cb(err);
                 }
@@ -452,16 +418,14 @@ define([
             $(icon).removeClass('table-action-start-block');
             icon = $(parent).find('.table-action-stop');
             $(icon).addClass('table-action-stop-block');
-        }
-        else if (status === 'stopped') {
+        } else if (status === 'stopped') {
             icon = $(parent).find('.table-action-stop');
             $(icon).removeClass('table-action-stop-block');
             icon = $(parent).find('.table-action-start');
             $(icon).addClass('table-action-start-block');
-        }
-        else {
+        } else {
             logger.log('error : unknown app status');
-            notify.error(SHOW_STATUS_ERROR);
+            notify.error(i18n.messageError);
         }
     }
 
@@ -511,23 +475,22 @@ define([
         };
 
         var checkStr = checkName(parent, icon[0]);
-        if (checkStr !== CHECK_AVAILABLE) {
+        if (checkStr !== i18n.messageAvailable) {
             notify.warning(checkStr);
             return;
         }
 
         checkDomain(parent, icon[1], function (result) {
-            if (result !== CHECK_AVAILABLE) {
+            if (result !== i18n.messageAvailable) {
                 notify.warning(result);
                 return;
             } else {
-
                 webida.app.createApp(
                     appinfo.domain, appinfo.apptype, appinfo.name, appinfo.desc, function (err, appID) {
 
                         if (err) {
                             logger.log('webida.app.createApp : ' + err);
-                            notify.error(STR_API_CALL_FAIL);
+                            notify.error(i18n.messageFailCallAPI);
                             alert(err);
                             var app = reg.byNode(parent);
                             createButton.set('disabled', false);
@@ -647,7 +610,7 @@ define([
 
         createButton.set('disabled', true);
 
-        notify.info(CREATE_NEW_APP_ENTER_NAME_DOMAIN_TOASTR);
+        notify.info(i18n.validationNoNameOrDomain);
     }
 
     function initCreateApp(pane) {
@@ -658,7 +621,7 @@ define([
         });
 
         noAppLabel = new ContentPane({
-            content: CONTENT_NO_DEPLOYED_APP_INFORMATION,
+            content: i18n.noContent,
             style: 'text-indent:0; text-align:center;'
         });
 
@@ -667,7 +630,7 @@ define([
 
     function initShowApp(pane) {
         showAppPane = pane;
-        showAppPane.set('content', CONTENT_NO_DEPLOYED_APP_INFORMATION);
+        showAppPane.set('content', i18n.noContent);
     }
 
     function checkSrcUrlAndUpdate(parent, appID, srcUrl, count) {
@@ -679,7 +642,7 @@ define([
         webida.app.getAppInfo(appID, function (err, appInfo) {
             if (err) {
                 logger.log('webida.app.getAppInfo : ' + err);
-                notify.error(STR_API_CALL_FAIL);
+                notify.error(i18n.messageFailCallAPI);
                 var app = reg.byNode(parent);
                 showAppPane.removeChild(app);
             } else {
@@ -689,7 +652,7 @@ define([
 
                             if (err) {
                                 logger.log('webida.app.setAppInfo : ' + err);
-                                notify.error(STR_API_CALL_FAIL);
+                                notify.error(i18n.messageFailCallAPI);
                                 var app = reg.byNode(parent);
                                 showAppPane.removeChild(app);
                             } else {
@@ -740,19 +703,19 @@ define([
         for (var i = 0; i < icon.length; i++) {
             icon[i].value = icon[i].oldValue ? icon[i].oldValue : '';
         }
-        notify.info(EDIT_APP_CANCEL_TOASTR);
+        notify.info(i18n.messageCancelEdit);
     }
 
     function changeInfoDone(parent) {
         var icon = $(parent).find('.table-content-table-inputbox');
         var checkStr = checkName(parent, icon[0]);
-        if (checkStr !== CHECK_AVAILABLE) {
+        if (checkStr !== i18n.messageAvailable) {
             notify.warning(checkStr);
             return;
         }
 
         checkDomain(parent, icon[1], function (result) {
-            if (result !== CHECK_AVAILABLE) {
+            if (result !== i18n.messageAvailable) {
                 notify.warning(result);
                 return;
             } else {
@@ -770,13 +733,13 @@ define([
                 webida.app.setAppInfo(appID, newDomain, type, name, desc, srcUrl, function (err) {
                     if (err) {
                         logger.log('webida.app.setAppInfo : ' + err);
-                        notify.error(STR_API_CALL_FAIL);
+                        notify.error(i18n.messageFailCallAPI);
                         changeInfoCancel(parent);
-                        notify.error(EDIT_APP_FAIL_TOASTR);
+                        notify.error(i18n.messageFailEdit);
                     } else {
                         changeInfoStop(parent);
                         changeInfoUpdate(parent);
-                        notify.success(EDIT_APP_SUCCESS_TOASTR);
+                        notify.success(i18n.messageSuccessEdit);
                     }
                 });
             }
@@ -856,7 +819,7 @@ define([
                 mount: deploy.getMount(),
                 root: getProjectRootPathFromFullPath(projectPath),
                 initialDeselection: excludeList,
-                title: SELECTIVE_SETTING_TITLE_DIALOG,
+                title: i18n.messageInformSelectFiles,
                 dirOnly: false
             });
             dlg.open(function (selected) {
@@ -864,13 +827,13 @@ define([
                     setExcludeList(appID, selected, function (err) {
                         if (err) {
                             logger.log('getExcludeList : ' + err);
-                            notify.error(SELECTIVE_SETTING_FAIL_TOASTR);
+                            notify.error(i18n.messageFailSelectFiles);
                         } else {
-                            notify.success(SELECTIVE_SETTING_SUCCESS_TOASTR);
+                            notify.success(i18n.messageSuccessSelectFiles);
                         }
                     });
                 } else {
-                    notify.info(SELECTIVE_SETTING_CANCEL_TOASTR);
+                    notify.info(i18n.messageCancelSelectFiles);
                 }
             });
         });
@@ -884,31 +847,31 @@ define([
             mount: deploy.getMount(),
             root: rootPath,
             initialDeselection: oldSettings,
-            title: SELECTIVE_SETTING_TITLE_DIALOG,
+            title: i18n.messageInformSelectFiles,
             dirOnly: false
         });
 
         dlg.open(function (selected) {
             if (selected) {
                 parent.selectiveSetting = selected;
-                notify.success(SELECTIVE_SETTING_SUCCESS_TOASTR);
+                notify.success(i18n.messageSuccessSelectFiles);
             } else {
-                notify.info(SELECTIVE_SETTING_CANCEL_TOASTR);
+                notify.info(i18n.messageCancelSelectFiles);
             }
         });
     }
 
     function deleteApp(parent) {
         PopupDialog.yesno({
-            title: DELETE_APP_TITLE_DIALOG,
-            message: DELETE_APP_MESSAGE_DIALOG,
+            title: i18n.titleDeleteAppDialog,
+            message: i18n.contentDeleteAppDialog,
             type: 'info'
         }).then(function () {
             var appID = getAppID(parent);
             webida.app.deleteApp(appID, function (err) {
                 if (err) {
                     logger.log('webida.app.deleteApp : ' + err);
-                    notify.error(STR_API_CALL_FAIL);
+                    notify.error(i18n.messageFailCallAPI);
                 } else {
                     showAppPane.removeChild(dijit.byNode(parent));
                     deleteSelectiveSettingInfo(appID, function (err) {
@@ -919,12 +882,12 @@ define([
                     if (showAppPane.getChildren().length === 0) {
                         showAppPane.addChild(noAppLabel);
                     }
-                    notify.success(DELETE_APP_SUCCESS_TOASTR);
+                    notify.success(i18n.messageSuccessDeleteApp);
                 }
 
             });
         }, function () {
-            notify.info(DELETE_APP_CANCEL_TOASTR);
+            notify.info(i18n.messageCancelDeleteApp);
             return;
         });
     }
@@ -954,7 +917,7 @@ define([
     }
 
     function _deployApp(parent, appID, path, cb) {
-        setProgressInfo(parent, true, DEPLOY_APP_ING_PROGRESS, null, true);
+        setProgressInfo(parent, true, i18n.messageInformProgressDeploy, null, true);
 
         var fsMount = deploy.getMount();
         var prjPath = getProjectRootPathFromFullPath(projectPath);
@@ -974,10 +937,10 @@ define([
                     webida.app.deployApp(appID, path, 'url', function (err) {
                         if (err) {
                             logger.log('webida.app.deployApp : ' + err);
-                            notify.error(STR_API_CALL_FAIL);
-                            setProgressInfo(parent, true, DEPLOY_APP_FAIL_TOASTR, 0, false);
+                            notify.error(i18n.messageFailCallAPI);
+                            setProgressInfo(parent, true, i18n.messageFailDeploy, 0, false);
                         } else {
-                            var msg = string.substitute(DEPLOY_APP_SUCCESS, {appId: appID});
+                            var msg = string.substitute(i18n.messageSuccessDeploy, {appId: appID});
                             notify.success(msg);
                             setProgressInfo(parent, true, msg, 100, false);
                         }
@@ -1004,7 +967,7 @@ define([
                     _deployApp(parent, appID, deployPath, cb);
                 } else {
                     logger.log('Failed to deploy with excludeList : cannot archive');
-                    notify.error(DEPLOY_APP_FAIL_TOASTR);
+                    notify.error(i18n.messageFailDeploy);
                 }
             });
         } else {
@@ -1033,10 +996,10 @@ define([
         webida.app.startApp(appID, function (err) {
             if (err) {
                 logger.log('webida.app.startApp : ' + err);
-                notify.error(STR_API_CALL_FAIL);
+                notify.error(i18n.messageFailCallAPI);
             } else {
                 changeInfoUpdate(parent);
-                notify.success(START_APP_SUCCESS_TOASTR);
+                notify.success(i18n.messageSuccessStartApp);
             }
         });
     }
@@ -1046,10 +1009,10 @@ define([
         webida.app.stopApp(appID, function (err) {
             if (err) {
                 logger.log('webida.app.stopApp : ' + err);
-                notify.error(STR_API_CALL_FAIL);
+                notify.error(i18n.messageFailCallAPI);
             } else {
                 changeInfoUpdate(parent);
-                notify.success(STOP_APP_SUCCESS_TOASTR);
+                notify.success(i18n.messageSuccessStopApp);
             }
         });
     }
@@ -1153,7 +1116,7 @@ define([
     function cbChangeProjectPath(err, appLists) {
         if (err) {
             logger.log('webida.app.getMyAppInfo : ' + err);
-            notify.error(STR_API_CALL_FAIL);
+            notify.error(i18n.messageFailCallAPI);
         } else {
             if (createButton) {
                 if (createButton.get('disabled') === true) {

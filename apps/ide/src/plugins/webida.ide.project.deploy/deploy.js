@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,9 +16,16 @@
 
 define([
     'dijit/Tooltip',
+    'webida-lib/util/logger/logger-client',
     'webida-lib/webida-0.3'
-], function (Tooltip, webida) {
+], function (
+    Tooltip,
+    Logger,
+    webida
+) {
     'use strict';
+
+    var logger = new Logger();
 
     var fsidWorkspaceProjectName = null;		//ex> 'fePfnAiSb/Deploy/deployApp/'
     var fsidName = null;						//ex> 'fePfnAiSb'
@@ -76,42 +83,40 @@ define([
         });
     }
 
-    var deploy = {
-        init : function (projectPath) {
+    return {
+        init: function (projectPath) {
             _init(projectPath, function (err) {
                 if (err) {
                     return;
                 } else {
                     Tooltip.defaultPosition = ['above'];
-                    console.log('Booting deploy done');
+                    logger.log('Booting deploy done');
                 }
             });
         },
-        getFsidWorkspaceProjectName : function () {
+        getFsidWorkspaceProjectName: function () {
             return fsidWorkspaceProjectName;
         },
-        getFsidName : function () {
+        getFsidName: function () {
             return fsidName;
         },
-        getWorkspaceName : function () {
+        getWorkspaceName: function () {
             return workspaceName;
         },
-        getProjectName : function () {
+        getProjectName: function () {
             return projectName;
         },
-        getWorkspaceProjectName : function () {
+        getWorkspaceProjectName: function () {
             return workspaceProjectName;
         },
-        getFsidWorkspaceName : function () {
+        getFsidWorkspaceName: function () {
             return fsidWorkspaceName;
         },
-        getMount : function () {
+        getMount: function () {
             return fsRoot;
         },
-        getUserName : function () {
+        getUserName: function () {
             return username;
         }
     };
-
-    return deploy;
 });
