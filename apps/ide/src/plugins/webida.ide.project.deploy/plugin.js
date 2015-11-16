@@ -16,12 +16,12 @@
 
 define([
     'dojo/topic',
-    'webida-lib/util/path',
-    'webida-lib/plugins/workspace/plugin'
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/path'
 ], function (
     topic,
-    pathUtil,
-    wv
+    wv,
+    pathUtil
 ) {
     'use strict';
 
@@ -29,7 +29,7 @@ define([
     var bEnable = false;
 
     var item = {
-        'Deplo&y' : [ 'cmnd', 'plugins/webida.ide.project.deploy/deploy-commands', 'openDialog' ]
+        'Deplo&y': [ 'cmnd', 'plugins/webida.ide.project.deploy/deploy-commands', 'openDialog' ]
     };
 
     function isProjectPath(path) {
