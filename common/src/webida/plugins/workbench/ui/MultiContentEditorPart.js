@@ -291,6 +291,20 @@ define([
         },
 
         /**
+         * @return {Array.<EditorPart>}
+         */
+        getEditorParts: function () {
+            var parts = [];
+            var contents = this.getContents();
+            contents.forEach(function (content) {
+                if (content instanceof EditorPart) {
+                    parts.push(content);
+                }
+            });
+            return parts;
+        },
+
+        /**
          * @private
          * @param {MultiContentLayoutPane} pane
          */
@@ -309,11 +323,11 @@ define([
         /**
          * @override
          */
-        save: function () {
-            var content = this.getActiveContent();
-            if (content instanceof EditorPart) {
-                return content.save();
-            }
+        save: function (callback) {
+            this.getEditorParts().forEach(function (part) {
+                part.save();
+            });
+            this._execFunc(callback, this);
         },
 
         /**
@@ -323,7 +337,7 @@ define([
          * @override
          */
         isDirty: function () {
-            var parts = this.getParts();
+            var parts = this.getEditorParts();
             for (var i = 0; i < parts.length; i++) {
                 if (parts[i].isDirty()) {
                     return true;

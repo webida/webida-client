@@ -64,7 +64,7 @@ define([
         },
 
         save: function (callback) {
-            logger.info('save()');
+            logger.info('save(' + typeof callback + ')');
             var that = this;
             if (this.getModelManager()) {
                 this.getModelManager().saveModel(function () {
