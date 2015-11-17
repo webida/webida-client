@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-define([], function () {
+define([
+    'dojo/i18n!../nls/resource'
+], function (
+    i18n
+) {
     'use strict';
 
     return {
@@ -30,14 +34,14 @@ define([], function () {
                     key: 'webida.editor.text-editor:invisibles',
                     type: 'checkbox',
                     opt: {
-                        name: 'Show whitespace characters'
+                        name: i18n.preferenceItemShowWhitespaceCharacters
                     }
                 },
                 {
                     key: 'webida.editor.text-editor:lineNumbers',
                     type: 'checkbox',
                     opt: {
-                        name: 'Show line numbers'
+                        name: i18n.preferenceItemShowLineNumbers
                     }
                 }
             ];

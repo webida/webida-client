@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-define([], function () {
+define([
+    'dojo/i18n!../nls/resource'
+], function (
+    i18n
+) {
     'use strict';
 
     return {
@@ -33,56 +37,56 @@ define([], function () {
             return [
                 {
                     type: 'group',
-                    title: 'Common'
+                    title: i18n.preferenceGroupCommon
                 },
                 {
                     key: 'webida.editor.text-editor:enableSnippet',
                     type: 'checkbox',
                     opt: {
-                        name: 'Use snippets'
+                        name: i18n.preferenceItemUseSnippets
                     }
                 },
                 {
                     key: 'webida.editor.text-editor:folding',
                     type: 'checkbox',
                     opt: {
-                        name: 'Use code folding'
+                        name: i18n.preferenceItemUseCodeFolding
                     }
                 },
                 {
                     type: 'group',
-                    title: 'Hint'
+                    title: i18n.preferenceGroupHint
                 },
                 {
                     key: 'webida.editor.text-editor:jshintrc',
                     type: 'checkbox',
                     opt: {
-                        name: 'Use .jshintrc file'
+                        name: i18n.preferenceItemUseJshintrcFile
                     }
                 },
                 {
                     key: 'webida.editor.text-editor:anywordHint',
                     type: 'checkbox',
                     opt: {
-                        name: 'Any word hint : propose hints by any word'
+                        name: i18n.preferenceItemAnywordHint
                     }
                 },
                 {
                     type: 'group',
-                    title: 'Automation'
+                    title: i18n.preferenceGroupAutomation
                 },
                 {
                     key: 'webida.editor.text-editor:autoCompletion',
                     type: 'checkbox',
                     opt: {
-                        name: 'Auto activation'
+                        name: i18n.preferenceItemAutoActivation
                     }
                 },
                 {
                     key: 'webida.editor.text-editor:autoCompletionDelay',
                     type: 'select',
                     opt: {
-                        name: 'Auto activation delay',
+                        name: i18n.preferenceItemAutoActivationDelay,
                         items: ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1', '1.5', '2'],
                         enabledOn: 'webida.editor.text-editor:autoCompletion'
                     }
@@ -91,7 +95,7 @@ define([], function () {
                     key: 'webida.editor.text-editor:autoClose',
                     type: 'checkbox',
                     opt: {
-                        name: 'Auto close'
+                        name: i18n.preferenceItemAutoClose
                     }
                 }
             ];

@@ -28,11 +28,13 @@
 // @formatter:off
 define([
     'dojo/Deferred',
+    'dojo/i18n!./nls/resource',
     'webida-lib/plugins/workbench/ui/PartContextMenu',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function (
     Deferred,
+    i18n,
     PartContextMenu,
     genetic, 
     Logger
@@ -136,6 +138,29 @@ define([
             }
 
             deferred.resolve(items);
+
+            menuItems.fileMenuItems['Cl&ose Others'].alternateLabel = i18n.contextMenuCloseOthers;
+            menuItems.fileMenuItems['C&lose All'].alternateLabel = i18n.contextMenuCloseAll;
+            menuItems.editMenuItems['&Undo'].alternateLabel = i18n.contextMenuUndo;
+            menuItems.editMenuItems['&Redo'].alternateLabel = i18n.contextMenuRedo;
+            menuItems.fileMenuItems['&Save'].alternateLabel = i18n.contextMenuSave;
+            menuItems.editMenuItems['&Delete'].alternateLabel = i18n.contextMenuDelete;
+            menuItems.editMenuItems['Select &All'].alternateLabel = i18n.contextMenuSelectAll;
+            menuItems.editMenuItems['Select L&ine'].alternateLabel = i18n.contextMenuSelectLine;
+            menuItems.editMenuItems['&Line']['&Indent'].alternateLabel = i18n.contextMenuLineIndent;
+            menuItems.editMenuItems['&Line']['&Dedent'].alternateLabel = i18n.contextMenuLineDedent;
+            menuItems.editMenuItems['&Line']['Move Line U&p'].alternateLabel = i18n.contextMenuLineMoveLineUp;
+            menuItems.editMenuItems['&Line']['Move Line Dow&n'].alternateLabel = i18n.contextMenuLineMoveLineDown;
+            menuItems.editMenuItems['&Line']['D&elete Lines'].alternateLabel = i18n.contextMenuLineDeleteLines;
+            menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'].alternateLabel =
+                i18n.contextMenuLineMoveCursorLineToMiddle;
+            menuItems.editMenuItems['&Line']['Move Cursor Line to Top'].alternateLabel =
+                i18n.contextMenuLineMoveCursorLineToTop;
+            menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'].alternateLabel =
+                i18n.contextMenuLineMoveCursorLineToBottom;
+            items['&Line'].alternateLabel = i18n.contextMenuLine;
+            menuItems.navMenuItems['G&o to Line'].alternateLabel = i18n.contextMenuGotoLine;
+            menuItems.navMenuItems['Go to &Matching Brace'].alternateLabel = i18n.contextMenuGotoMatchingBrace;
 
             return deferred;
         }
