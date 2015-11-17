@@ -94,20 +94,10 @@ define(['dojo/_base/declare',
 
             // check required fields
             if (!(params.buttons instanceof Array)) {
-                throw new Error('"buttons" (of Array type) is a required field in the parameter');
+                throw new Error('"buttons" (of the Array type) is a required field in the parameter');
             }
             if (typeof params.methodOnEnter !== 'string' && params.methodOnEnter !== null) {
                 throw new Error('"methodOnEnter" (a string or null) is a required field in the parameter');
-            }
-
-            // temporary, TODO: remove the following two if clauses
-            if (this.buttons !== undefined) {
-                alert('Property "buttons" already exists!');
-                throw new Error('unexpected');
-            }
-            if (this.methodOnEnter !== undefined) {
-                alert('Property "methodOnEnter" already exists!');
-                throw new Error('unexpected');
             }
 
             // check required properties in each button spec.
@@ -115,22 +105,19 @@ define(['dojo/_base/declare',
 
                 if (buttonSpec.id && typeof buttonSpec.id !== 'string') {
                     throw new Error('Element ' + i +
-                                    ' in the params.buttons array has an invlaid "id" property');
+                                    ' in the params.buttons array has an invalid "id" property');
                 }
                 if (typeof buttonSpec.caption !== 'string') {
                     throw new Error('Element ' + i +
-                                    ' in the params.buttons array has an invlaid "caption" property');
+                                    ' in the params.buttons array has an invalid "caption" property');
                 }
                 if (typeof (methodName = buttonSpec.methodOnClick) !== 'string') {
                     throw new Error('Element ' + i +
-                                    ' in the params.buttons array has an invlaid "methodOnClick" property');
+                                    ' in the params.buttons array has an invalid "methodOnClick" property');
                 }
             });
 
             this.dialogNum = dialogNum++;
-            this.buttons = params.buttons;
-            this.methodOnEnter = params.methodOnEnter;
-            this.dialogClass = params.dialogClass;
         },
 
         setContentArea: function (markup) {
@@ -213,14 +200,14 @@ define(['dojo/_base/declare',
         set: function (name) {
             if (name === 'content') {
                 throw new Error('Setting content using set method is blocked in ' +
-                                'ButtonedDialog class. Use setContentArea instead');
+                                'ButtonedDialog objects. Use setContentArea instead.');
             } else {
                 return Dialog.prototype.set.apply(this, arguments);
             }
         },
 
         setContent: function () {
-            throw new Error('Method setContent is blocked in ButtonedDialog class. ' +
+            throw new Error('Method setContent is blocked in ButtonedDialog objects. ' +
                             'Use setContentArea instead');
         }
     });
