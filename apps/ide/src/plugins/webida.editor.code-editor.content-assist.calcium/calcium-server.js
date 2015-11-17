@@ -22,70 +22,73 @@
 /* jshint unused:false */
 
 define([
-        'external/calcium/dist/calcium',
-        'webida-lib/util/logger/logger-client',
-        '../webida.editor.code-editor/content-assist/file-server'
-    ],
-    function (calcium, Logger, fileServer) {
-        'use strict';
+    'external/calcium/dist/calcium',
+    'webida-lib/util/logger/logger-client',
+    '../webida.editor.code-editor/content-assist/file-server'
+], function (
+    calcium,
+    Logger,
+    fileServer
+) {
+    'use strict';
 
-        var logger = new Logger();
-        logger.off();
+    var logger = new Logger();
+    logger.off();
 
-        logger.info('CREATING SEVER');
+    logger.info('CREATING SERVER');
 
-        return {
-            startServer: function (server) {
-                logger.info('START');
-            },
-            stopServer: function (server) {
-                logger.info('STOP');
-            },
-            addFile: function (server, path, text) {
-                logger.info('ADDFILE');
-            },
-            delFile: function (server, path) {
-                logger.info('DELFILE');
-            },
-            getFile: function (server, cb) {
-                logger.info('GETFILE');
-            },
-            request: function (server, body, callback) {
-                logger.info('REQUEST');
+    return {
+        startServer: function (server) {
+            logger.info('START');
+        },
+        stopServer: function (server) {
+            logger.info('STOP');
+        },
+        addFile: function (server, path, text) {
+            logger.info('ADDFILE');
+        },
+        delFile: function (server, path) {
+            logger.info('DELFILE');
+        },
+        getFile: function (server, cb) {
+            logger.info('GETFILE');
+        },
+        request: function (server, body, callback) {
+            logger.info('REQUEST');
 
-                var result = calcium.analyze(body.code, true);
-                switch (body.type) {
-                    case 'variableOccurrences':
-                        var refs = calcium.findVarRefsAt(result.AST, body.pos);
-                        callback(undefined, refs);
-                        break;
-                    case 'returnOccurrences':
-                        var rets = calcium.findEscapingStatements(result.AST, body.pos);
-                        callback(undefined, rets);
-                        break;
-                    case 'thisOccurrences':
-                        var thisExprs = calcium.findThisExpressions(result.AST, body.pos, true);
-                        callback(undefined, thisExprs);
-                        break;
-                    case 'showType':
-                        var typeData = calcium.getTypeData(result.AST, result.Ĉ, body.start, body.end);
-                        callback(undefined, typeData);
-                        break;
-                    case 'structuredFnTypes':
-                        var fns = calcium.getFnTypeStructuresAt(result.AST, result.Ĉ, body.pos);
-                        callback(undefined, fns);
-                        break;
-                    case 'definitionSites':
-                        var sites = calcium.getDefinitionSitesAt(result.AST, result.Ĉ, body.start, body.end);
-                        callback(undefined, sites);
-                        break;
-                    case 'completions':
-                        var completions = calcium.getCompletionAtPos(result, body.pos);
-                        callback(undefined, completions);
-                        break;
-                    default:
-                        throw new Error('Unknown request type');
-                }
+            var result = calcium.analyze(body.code, true);
+            switch (body.type) {
+                case 'variableOccurrences':
+                    var refs = calcium.findVarRefsAt(result.AST, body.pos);
+                    callback(undefined, refs);
+                    break;
+                case 'returnOccurrences':
+                    var rets = calcium.findEscapingStatements(result.AST, body.pos);
+                    callback(undefined, rets);
+                    break;
+                case 'thisOccurrences':
+                    var thisExprs = calcium.findThisExpressions(result.AST, body.pos, true);
+                    callback(undefined, thisExprs);
+                    break;
+                case 'showType':
+                    var typeData = calcium.getTypeData(result.AST, result.Ĉ, body.start, body.end);
+                    callback(undefined, typeData);
+                    break;
+                case 'structuredFnTypes':
+                    var fns = calcium.getFnTypeStructuresAt(result.AST, result.Ĉ, body.pos);
+                    callback(undefined, fns);
+                    break;
+                case 'definitionSites':
+                    var sites = calcium.getDefinitionSitesAt(result.AST, result.Ĉ, body.start, body.end);
+                    callback(undefined, sites);
+                    break;
+                case 'completions':
+                    var completions = calcium.getCompletionAtPos(result, body.pos);
+                    callback(undefined, completions);
+                    break;
+                default:
+                    throw new Error('Unknown request type');
             }
-        };
-    });
+        }
+    };
+});
