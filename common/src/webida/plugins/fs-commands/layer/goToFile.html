@@ -75,13 +75,13 @@
     <div class="go_to_file_border">
         <div id="gotoFileTopLabelPane">
             <div class="go_to_file_label_col1">
-                <label> Select a file to go :</label>
+                <label data-message="selectAFileToGo"> Select a file to go :</label>
             </div>
             <div id="gotoFileLoadingPane">
                 <div id="gotoFileLoadingSpinner"
                      class="go_to_file_label_col2 spinner"></div>
                 <div id="gotoFileLoadingLabel"
-                     class="go_to_file_label_col2">Loading...</div>
+                     class="go_to_file_label_col2" data-message="loading">Loading...</div>
             </div>
         </div>
 
@@ -91,7 +91,7 @@
         </select>
 
         <div id="gotoFileTargetPane">
-            <label>Target :</label>
+            <label data-message="target">Target :</label>
             <span>
                 <input id="gotoFileTargetInputBox"
                        type="text"
@@ -103,7 +103,7 @@
             <span>
                 <button id="gotoFileTargetBrowseBt"
                         data-dojo-type="dijit/form/Button"
-                        type="button">Browse...</button>
+                        type="button" data-message="browse3Dot">Browse...</button>
             </span>
         </div>
     </div>

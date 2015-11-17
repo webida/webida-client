@@ -23,18 +23,22 @@
 
 // @formatter:off
 define([
+    'dojo/i18n!./nls/resource',
+    'dojo/string',
+    'dojo/topic', // topic
     'webida-lib/plugins/workspace/plugin', // wv
     'webida-lib/plugins/editors/ExtensionManager', //ExtensionManager
     'external/lodash/lodash.min', //_
-    'dojo/topic', // topic
     'webida-lib/util/path', // pathUtil
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify', // notify
 ], function (
+    i18n,
+    string,
+    topic,
     wv,
     ExtensionManager,
     _,
-    topic,
     pathUtil,
     Logger,
     notify
@@ -376,8 +380,7 @@ define([
                         if (valType === 'array') {
                             if (target[key]) {
                                 notify.error(
-                                    'This plug-in has a duplicate or inconsistent key: ' +
-                                    key);
+                                        string.substitute(i18n.pluginHasInconsistentKey, {key: key}));
                                 throw new Error();
                             } else {
                                 target[key] = val;
@@ -388,8 +391,7 @@ define([
                                     accumulateItems(target[key], val);
                                 } else {
                                     notify.error(
-                                        'This plug-in has an inconsistent command hierarchy at ' +
-                                        key);
+                                            string.substitute(i18n.pluginHasInconsistentCommandHierarchy, {key: key}));
                                     throw new Error();
                                 }
                             } else {
@@ -398,20 +400,19 @@ define([
                         } else if (val === '---') {
                             if (target[key]) {
                                 notify.error(
-                                    'This plug-in has a duplicate or inconsistent key: ' +
-                                    key);
+                                        string.substitute(i18n.pluginHasInconsistentKey, {key: key}));
                                 throw new Error();
                             } else {
                                 target[key] = val;
                             }
                         } else {
-                            notify.error('Invalid specification of items at key ' + key +
-                                'in the plug-in');
+                            notify.error(
+                                    string.substitute(i18n.invalidSpecificationOfItems, {key: key}));
                             throw new Error();
                         }
                     } else {
-                        notify.error('Invalid specification of items at key ' + key +
-                            'in the plug-in');
+                        notify.error(
+                                string.substitute(i18n.invalidSpecificationOfItems, {key: key}));
                         throw new Error();
                     }
                 });
