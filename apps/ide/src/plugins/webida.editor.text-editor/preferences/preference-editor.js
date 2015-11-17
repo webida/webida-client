@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-define([], function () {
+define([
+    'dojo/i18n!../nls/resource'
+], function (
+    i18n
+) {
     'use strict';
 
     return {
@@ -34,45 +38,45 @@ define([], function () {
             return [
                 {
                     type: 'group',
-                    title: 'Common'
+                    title: i18n.preferenceGroupCommon
                 },
                 {
                     key: 'webida.editor.text-editor:trimTrailing',
                     type: 'checkbox',
                     opt: {
-                        name: 'Trim trailing white-space before saving'
+                        name: i18n.preferenceItemTrimTrailingWhiteSpaceBeforeSaving
                     }
                 },
                 {
                     key: 'webida.editor.text-editor:insertFinal',
                     type: 'checkbox',
                     opt: {
-                        name: 'Insert final new-line before saving'
+                        name: i18n.preferenceItemInsertFinalNewLineBeforeSaving
                     }
                 },
                 {
                     key: 'webida.editor.text-editor:retabIndentations',
                     type: 'checkbox',
                     opt: {
-                        name: 'Replace tabs in indentations before saving'
+                        name: i18n.preferenceItemReplaceTabsInIndentaionsBeforeSaving
                     }
                 },
                 {
                     key: 'webida.editor.text-editor:wordWrap',
                     type: 'checkbox',
                     opt: {
-                        name: 'Wrap lines'
+                        name: i18n.preferenceItemWrapLines
                     }
                 },
                 {
                     type: 'group',
-                    title: 'Indent'
+                    title: i18n.preferenceGroupIndent
                 },
                 {
                     key: 'webida.editor.text-editor:tabsize',
                     type: 'slider',
                     opt: {
-                        name: 'Tab size',
+                        name: i18n.preferenceItemTabSize,
                         min: 1,
                         max: 8,
                         step: 1,
@@ -83,7 +87,7 @@ define([], function () {
                     key: 'webida.editor.text-editor:indentunit',
                     type: 'slider',
                     opt: {
-                        name: 'Indent unit',
+                        name: i18n.preferenceItemIndentUnit,
                         min: 1,
                         max: 8,
                         step: 1,
@@ -94,14 +98,14 @@ define([], function () {
                     key: 'webida.editor.text-editor:indentWithTabs',
                     type: 'checkbox',
                     opt: {
-                        name: 'Use indents with tabs'
+                        name: i18n.preferenceItemUseIndentsWithTabs
                     }
                 },
                 {
                     key: 'webida.editor.text-editor:indentOnPaste',
                     type: 'checkbox',
                     opt: {
-                        name: 'Indent lines on paste'
+                        name: i18n.preferenceItemIndentLinesOnPaste
                     }
                 }
             ];

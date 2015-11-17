@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-define([], function () {
+define([
+    'dojo/i18n!../nls/resource'
+], function (
+    i18n
+) {
     'use strict';
 
     return {
@@ -29,7 +33,7 @@ define([], function () {
                     key: 'webida.editor.text-editor:keymap',
                     type: 'select',
                     opt: {
-                        name: 'Editor key map',
+                        name: i18n.preferenceItemEditorKeyMap,
                         items: ['default', 'vim']
                     }
                 }

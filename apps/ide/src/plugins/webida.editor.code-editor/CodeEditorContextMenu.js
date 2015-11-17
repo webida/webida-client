@@ -28,12 +28,14 @@
 // @formatter:off
 define([
     'dojo/Deferred',
+    'dojo/i18n!./nls/resource',
     'plugins/webida.editor.text-editor/TextEditorContextMenu',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './CodeEditorViewer'
 ], function (
     Deferred,
+    i18n,
     TextEditorContextMenu,
     genetic, 
     Logger,
@@ -109,9 +111,30 @@ define([
                 }
 
                 if (viewer.isThereMatchingBracket()) {
-                    items['Go to &Matching Brace'] = allItems.navMenuItems['Go to &Matching Brace'];
-                }
-
+                    items['Go to &Matching Brace'] = allItems.navMenuItems['Go to &Matching Brace'];                   
+                }                
+                
+                //i18n
+                
+                allItems.editMenuItems['&Source']['&Toggle Line Comments'].alternateLabel = 
+                    i18n.contextMenuSourceToggleLineComments;
+                allItems.editMenuItems['&Source']['Toggle Block Comment'].alternateLabel = 
+                    i18n.contextMenuSourceToggleBlockComment;
+                allItems.editMenuItems['&Source']['Comment Out Selection'].alternateLabel = 
+                    i18n.contextMenuSourceCommentOutSelection;
+                allItems.editMenuItems['&Source']['&Fold'].alternateLabel = 
+                    i18n.contextMenuFold;
+                allItems.editMenuItems['&Source']['&Beautify'].alternateLabel = 
+                    i18n.contextMenuBeautify;
+                allItems.editMenuItems['&Source']['B&eautify All'].alternateLabel = 
+                    i18n.contextMenuBeautifyAll;
+                sourceItems.alternateLabel  = i18n.contextMenuSource;
+                allItems.navMenuItems['&Go to Definition'].alternateLabel = i18n.contextMenuGotoDefinition;
+                allItems.navMenuItems['G&o to Line'].alternateLabel = i18n.contextMenuGotoLine;
+                allItems.navMenuItems['Go to &Matching Brace'].alternateLabel = i18n.contextMenuGotoMatchingBrace;
+                allItems.editMenuItems['&Source']['&Rename Variables'].alternateLabel = 
+                    i18n.contextMenuSourceRenameVariables;
+                
                 //TODO: widget._contentAssistDelegator -> viewer.getPlugin('tern-js')
                 
                 if (widget._contentAssistDelegator) {
