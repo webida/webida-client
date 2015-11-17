@@ -185,7 +185,7 @@ define(['dojo/_base/declare',
                                 }
                             }
                         } else {
-                            alert('The button widget ' + i + ' is not present for ' + buttonSpec.id);
+                            alert('The button widget ' + i + ' is not present with id ' + buttonSpec.id);
                         }
                     });
                 }
@@ -193,6 +193,30 @@ define(['dojo/_base/declare',
                 //console.log('hina temp: after onLoad');
                 setWidthsAndClickHandlers(self.buttons, 0);
             });
+            
+            if (typeof this.validateContent === 'function') { 
+                aspect.after(this, 'validateContent', function (result) { 
+                    self.buttons.forEach(function (buttonSpec, i) { 
+                        if (buttonSpec.reactToValidation) { 
+                            var widget = registry.byId(buttonSpec.id);
+                            if (widget) {
+                                if (buttonSpec.reactToValidation === '+') { 
+                                    widget.set('disabled', !result);
+                                } else if (buttonSpec.reactToValidation === '-') { 
+                                    widget.set('disabled', !!result);
+                                } else { 
+                                    console.warn('Invalid value "' + buttonSpec.reactToValidation + 
+                                                  '" of the reactToValidation member of the button spec ' + 
+                                                  i);
+                                } 
+                            } else {
+                                alert('The button widget ' + i + ' is not present with id ' + buttonSpec.id);
+                            }
+                        } 
+                    });
+                });
+                
+            }
 
             return ret;
         },
