@@ -333,7 +333,9 @@ define([
                         siblingList: siblingList,
                         openWithPart: tab.openWithPart
                     };
-                    topic.publish('editor/open', tab.dataSourceId, option);
+                    setTimeout(function (tab, option) {
+                        topic.publish('editor/open', tab.dataSourceId, option);
+                    }, 100, tab, option);
                 });
 
                 var viewContainers = editors.splitViewContainer.getViewContainers();

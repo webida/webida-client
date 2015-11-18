@@ -247,7 +247,7 @@ define([
     loadCSSList(cssFilePathList, function () {
     });
 
-    function selectNode(node) {
+    function selectNode(node, blockTopic) {
         singleLogger.info('selectNode(node)');
         singleLogger.trace();
         if (typeof node === 'string') {
@@ -261,7 +261,9 @@ define([
             tree.dndController.anchor = nodes[0];
             win.scrollIntoView(nodes[0].domNode, domGeom.position(nodes[0].domNode));
             tree.set('paths', [nodes[0].getTreePath()]);
-            topic.publish('workspace.node.selected', node.getPath());
+            if (blockTopic !== true) {
+                topic.publish('workspace.node.selected', node.getPath());
+            }
         }
     }
 
@@ -1242,7 +1244,7 @@ define([
                     if (result === true) {
                         var node = tree.model.store.get(path);
                         if (node) {
-                            selectNode(node);
+                            selectNode(node, true);
                         } else {
                             notify.error('No such file "' + path + '" in the workspace');
                         }

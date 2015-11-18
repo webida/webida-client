@@ -179,22 +179,6 @@ define([
         topic.publish('view.quit');
     };
 
-    editors.setCursor = function (file, pos) {
-        if (file.viewer) {
-            if (file.viewer.setCursor) {
-                file.viewer.setCursor(pos);
-            }
-        }
-    };
-
-    editors.getCursor = function (file) {
-        if (file.viewer) {
-            if (file.viewer.getCursor) {
-                return file.viewer.getCursor();
-            }
-        }
-    };
-
     function getViewContainer(view, file, option) {
         //cellCount=2, cellIndex=-1
         var viewContainer;
