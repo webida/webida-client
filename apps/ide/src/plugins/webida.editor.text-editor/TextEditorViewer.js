@@ -29,6 +29,7 @@
 
 // @formatter:off
 define([
+    'dojo/i18n!./nls/resource',
     'dojo/topic',
     'require',
     'webida-lib/util/genetic',
@@ -41,6 +42,7 @@ define([
     'webida-lib/plugins/workbench/ui/PartViewer',
     './TextChangeRequest'
 ], function (
+    i18n,
     topic,
     require,
     genetic,
@@ -1525,6 +1527,20 @@ define([
                 sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
 
                 items['&Source'] = sourceItems;
+
+                menuItems.editMenuItems['&Undo'].alternateLabel = i18n.editMenuUndo;
+                menuItems.editMenuItems['&Redo'].alternateLabel = i18n.editMenuRedo;
+                menuItems.editMenuItems['&Delete'].alternateLabel = i18n.editMenuDelete;
+                menuItems.editMenuItems['Select &All'].alternateLabel = i18n.editMenuSelectAll;
+                menuItems.editMenuItems['Select L&ine'].alternateLabel = i18n.editMenuSelectLine;
+                menuItems.editMenuItems['&Line']['&Indent'].alternateLabel = i18n.editMenuLineIndent;
+                menuItems.editMenuItems['&Line']['&Dedent'].alternateLabel = i18n.editMenuLineDedent;
+                menuItems.editMenuItems['&Line']['Move Line U&p'].alternateLabel = i18n.editMenuLineMoveLineUp;
+                menuItems.editMenuItems['&Line']['Move Line Dow&n'].alternateLabel = i18n.editMenuLineMoveLineDown;
+                menuItems.editMenuItems['&Line']['D&elete Lines'].alternateLabel = i18n.editMenuLineDeleteLines;
+                items['&Line'].alternateLabel = i18n.editMenuLine;
+                menuItems.editMenuItems['&Source']['&Fold'].alternateLabel = i18n.editMenuSourceFold;
+                items['&Source'].alternateLabel = i18n.editMenuSource;
             }
 
             deferred.resolve(items);

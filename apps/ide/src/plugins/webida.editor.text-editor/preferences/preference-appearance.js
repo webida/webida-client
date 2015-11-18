@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
-define(['../TextEditorViewer'], function (TextEditorViewer) {
+define([
+    'dojo/i18n!../nls/resource', 
+    '../TextEditorViewer', 
+], function (
+    i18n,
+    TextEditorViewer
+) {
     'use strict';
 
     return {
@@ -30,25 +36,25 @@ define(['../TextEditorViewer'], function (TextEditorViewer) {
             return [
                 {
                     type: 'group',
-                    title: 'Theme'
+                    title: i18n.preferenceGroupTheme
                 },
                 {
                     key: 'webida.editor.text-editor:cm-theme',
                     type: 'select',
                     opt: {
-                        name: 'Editor theme',
+                        name: i18n.preferenceItemEditorTheme,
                         items: TextEditorViewer.getAvailableThemes()
                     }
                 },
                 {
                     type: 'group',
-                    title: 'Font'
+                    title: i18n.preferenceGroupFont
                 },
                 {
                     key: 'webida.editor.text-editor:fontSize',
                     type: 'slider',
                     opt: {
-                        name: 'Editor font size',
+                        name: i18n.preferenceItemEditorFontSize,
                         min: 7,
                         max: 21,
                         step: 1,
@@ -59,7 +65,7 @@ define(['../TextEditorViewer'], function (TextEditorViewer) {
                     key: 'webida.editor.text-editor:font',
                     type: 'select',
                     opt: {
-                        name: 'Editor font',
+                        name: i18n.preferenceItemEditorFont,
                         items: [
                             { label: 'Nanum Gothic Coding', value: 'Nanum Gothic Coding'},
                             { label: 'Arial', value: 'Arial, Helvetica, sans-serif'},
@@ -84,13 +90,13 @@ define(['../TextEditorViewer'], function (TextEditorViewer) {
                 },
                 {
                     type: 'group',
-                    title: 'Editor Config'
+                    title: i18n.preferenceGroupEditorConfig
                 },
                 {
                     key: 'webida.editor.text-editor:editorconfig',
                     type: 'checkbox',
                     opt: {
-                        name: 'Use .editorconfig files'
+                        name: i18n.preferenceItemUseEditorconfigFiles
                     }
                 }
             ];

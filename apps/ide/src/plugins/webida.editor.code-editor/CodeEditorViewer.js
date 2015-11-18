@@ -28,6 +28,7 @@
 
 // @formatter:off
 define([
+    'dojo/i18n!./nls/resource',
 	'require',
 	'webida-lib/util/genetic',
 	'external/lodash/lodash.min',
@@ -42,6 +43,7 @@ define([
     './content-assist/ContentAssistDelegator',
     'dojo/topic'
 ], function (
+    i18n,
 	require,
 	genetic,
 	_,
@@ -1379,8 +1381,10 @@ define([
                     }
                     sourceItems['B&eautify All'] = menuItems.editMenuItems['&Source']['B&eautify All'];
                 }
-                // Rename
                 items['&Source'] = sourceItems;
+
+
+                // Rename
 
                 if (editor._contentAssistDelegator) {
                     editor._contentAssistDelegator.execCommand(
@@ -1396,7 +1400,30 @@ define([
                     );
                 } else {
                     deferred.resolve(items);
-                }                
+                }
+
+                //i18n
+                menuItems.editMenuItems['&Undo'].alternateLabel = i18n.editMenuUndo;
+                menuItems.editMenuItems['&Redo'].alternateLabel = i18n.editMenuRedo;
+                menuItems.editMenuItems['&Delete'].alternateLabel = i18n.editMenuDelete;
+                menuItems.editMenuItems['Select &All'].alternateLabel = i18n.editMenuSelectAll;
+                menuItems.editMenuItems['Select L&ine'].alternateLabel = i18n.editMenuSelectLine;
+                menuItems.editMenuItems['&Line']['&Indent'].alternateLabel = i18n.editMenuLineIndent;
+                menuItems.editMenuItems['&Line']['&Dedent'].alternateLabel = i18n.editMenuLineDedent;
+                menuItems.editMenuItems['&Line']['Move Line U&p'].alternateLabel = i18n.editMenuLineMoveLineUp;
+                menuItems.editMenuItems['&Line']['Move Line Dow&n'].alternateLabel = i18n.editMenuLineMoveLineDown;
+                menuItems.editMenuItems['&Line']['D&elete Lines'].alternateLabel = i18n.editMenuLineDeleteLines;
+                items['&Line'].alternateLabel = i18n.editMenuLine;
+                menuItems.editMenuItems['&Source']['&Toggle Line Comments'].alternateLabel = 
+                    i18n.editMenuSourceToggleLineComments;
+                menuItems.editMenuItems['&Source']['Toggle Block Comment'].alternateLabel = 
+                    i18n.editMenuSourceToggleBlockComment;
+                menuItems.editMenuItems['&Source']['&Fold'].alternateLabel = i18n.editMenuSourceFold;
+                menuItems.editMenuItems['&Source']['&Beautify'].alternateLabel = i18n.editMenuSourceBeautify;
+                menuItems.editMenuItems['&Source']['B&eautify All'].alternateLabel = i18n.editMenuSourceBeautifyAll;
+                items['&Source'].alternateLabel = i18n.editMenuSource;
+                menuItems.editMenuItems['&Source']['&Rename Variables'].alternateLabel = 
+                    i18n.editMenuSourceRenameVariables;
             } else {
             	deferred.resolve(items);
             }
