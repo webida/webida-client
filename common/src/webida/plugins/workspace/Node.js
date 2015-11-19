@@ -35,7 +35,9 @@ define(['require',
         'dojo/dom-style',
         'dojo/dom-class',
         'dojo/dom-geometry',
+        'dojo/i18n!./nls/resource',
         'dojo/on',
+        'dojo/string',
         'dojo/topic',
         'dojo/Deferred',
         'dojo/promise/all',
@@ -45,7 +47,7 @@ define(['require',
         'webida-lib/util/path',
         'webida-lib/util/notify',
 ], function (require, _, registry, ide, FSCache, dom, domAttr, domStyle, domClass,
-              domGeom, on, topic, Deferred, all, keys, workbench, ButtonedDialog,
+              domGeom, i18n, on, string, topic, Deferred, all, keys, workbench, ButtonedDialog,
               pathUtil, notify) {
     'use strict';
 
@@ -334,13 +336,22 @@ define(['require',
 
     function askPolicyToUser(targetPath, name, isFile, moving, cb) {
         var buttonSpec = [
-            { caption: 'Skip', methodOnClick: 'skip' },
-            { caption: 'Skip All', methodOnClick: 'skipAll' },
-            { caption: isFile ? 'Overwrite' : 'Merge', methodOnClick: 'overwrite' },
-            { caption: isFile ? 'Overwrite All' : 'Merge All', methodOnClick: 'overwriteAll' },
-            { caption: 'Rename', methodOnClick: 'rename' },
-            { caption: 'Rename All', methodOnClick: 'renameAll' },
-            { caption: 'Abort', methodOnClick: 'abort' }
+            { caption: i18n.askPolicyDialogSkip, methodOnClick: 'skip' },
+            { caption: i18n.askPolicyDialogSkipAll, methodOnClick: 'skipAll' },
+            { caption: isFile ?
+                i18n.askPolicyDialogOverwrite: i18n.askPolicyDialogMerge,
+                methodOnClick: 'overwrite' },
+            {
+                caption: isFile ?
+                    i18n.askPolicyDialogOverwriteAll: i18n.askPolicyDialogMergeAll,
+                methodOnClick: 'overwriteAll'
+            },
+            {
+                caption: i18n.askPolicyDialogRename,
+                methodOnClick: 'rename'
+            },
+            { caption: i18n.askPolicyDialogRenameAll, methodOnClick: 'renameAll' },
+            { caption: i18n.askPolicyDialogAbort, methodOnClick: 'abort' }
         ];
         var style = 'width: 700px';
 
@@ -350,7 +361,7 @@ define(['require',
         }
 
         var dialog = new ButtonedDialog({
-            title: (isFile ? 'File' : 'Directory') + ' Names Conflict',
+            title: (isFile ? i18n.askPolicyDialogTitleForFile : i18n.askPolicyDialogTitleForDir),
             buttons: buttonSpec,
             methodOnEnter: null,
             buttonsWidth: '80px',
@@ -377,8 +388,16 @@ define(['require',
                 cb(this._policy || 'abort', this._forAll);
             }
         });
-        var markup = '<span>The target directory "' + targetPath + '" already has a ' +
-            (isFile ? 'file' : 'subdirectory') + ' "' + name + '". </span>';
+
+        var markup = isFile ?
+            string.substitute(i18n.askPolicyDialogMarkUpForFile, {
+                targetPath: targetPath,
+                name: name
+            }) :
+            string.substitute(i18n.askPolicyDialogMarkUpForDir, {
+                targetPath: targetPath,
+                name: name
+            });
         dialog.setContentArea(markup);
         dialog.show();
     }
@@ -394,13 +413,13 @@ define(['require',
             var cap;
             if (completed) {
                 cap = action === 'copy' ? 'Copied' : 'Moved';
-                notify.success('', cap + ' successfully');
+                notify.success('', string.substitute(i18n.notifyDoneSuccessfully, {cap: cap}));
             } else {
                 cap = action === 'copy' ? 'Copy' : 'Move';
                 if (errMsg) {
-                    notify.error(errMsg, cap + ' was aborted by an error');
+                    notify.error(errMsg, string.substitute(i18n.notifyAbortedByAnErrorTitle, {cap: cap}));
                 } else {
-                    notify.info('', cap + ' was aborted');
+                    notify.info('', string.substitute(i18n.notifyAborted, {cap: cap}));
                 }
             }
         }
@@ -575,16 +594,19 @@ define(['require',
                                         handleEntryWithConflictPolicy(policy, forAll);
                                     });
                                 }
-                            } else {
-                                printResult(false, 'cannot overwrite a ' + existingType + ' "' +
-                                            existing.id + '" with a ' + entryType + ' of the same name');
+                            } else {                               
+                                printResult(false,  string.substitute(i18n.printResultCannotOveriteWithSameName, {
+                                    type1: existingType, 
+                                    id: existing.id,
+                                    type2: entryType
+                                }));
                             }
 
                         } else {
                             handleEntryWithConflictPolicy('none');
                         }
                     } else {
-                        printResult(false, 'cannot handle something that is neither a directory nor a file');
+                        printResult(false, i18n.printResultCannotHandleSomethingNeitherDirNorFile);
                     }
                 }
             }
@@ -599,7 +621,8 @@ define(['require',
         }
 
         if (!this.isInternal) {
-            notify.error('Cannot ' + action + ' to a non-directory "' + this.getPath() + '"');
+            notify.error(string.substitute(i18n.notifyCannotActionToNonDirectory, 
+                                           {action: action, path: this.getPath()}));
             return;
         }
 
@@ -616,8 +639,8 @@ define(['require',
             for (var i = 0; i < srcNodes.length; i++) {
                 var srcNode = srcNodes[i];
                 if (srcNode.isInternal && this.getPath().indexOf(srcNode.getPath()) === 0) {
-                    notify.error('Cannot ' + action + ' a directory "' + srcNode.getPath() +
-                                 '" to itself or to its descendant "' +  this.getPath() + '"');
+                    notify.error(string.substitute(i18n.notifyCannotActionDirectoryToItselfOrItsDescendant,
+                                                   {action: action, path1: srcNode.getPath(), path2: this.getPath()}));
                     return;
                 }
             }
@@ -1075,7 +1098,7 @@ define(['require',
 
                 uploadEntries(this, items, printResults.bind(null, true));
             } else {
-                notify.error('Cannot upload something that is neither a directory nor a file');
+                notify.error(i18n.notifyCannotUploadSomethingThatIsNeitherDirNorFile);
                 deferred.resolve(false);
             }
         } else { 
@@ -1127,23 +1150,25 @@ define(['require',
         }
 
         if (!newName) {
-            notify.warning('Enter a name.');
+            notify.warning(i18n.notifyEnterAName);
             return false;
         } else if (newName.indexOf('/') > -1) {
-            notify.warning('Slashes are not allowed in a file or directory name.');
+            notify.warning(i18n.notifySlashesAreNotAllowedInFileOrDirName);
             return false;
         } else if (/^(\.|\.\.)$/.test(newName)) {
-            notify.warning('"' + newName + '" is not allowed as a file or directory name.');
+            notify.warning(string.substitute(i18n.notifyNewNameIsNotAllowedAsFileOrDirName,
+                                           {newName: newName}));
         } else if (dirNode && dirNode.hasSubnode(newName)) {
-            notify.error('A file or directory with the name "' + newName + '" already exists.');
+            notify.error(string.substitute(i18n.notifyFileOrDirWithTheNameAlreadyExists, 
+                                           {newName: newName}));
             return false;
         } else if (getByteLength(newName) > 255) {
-            notify.error('A file or directory cannot have the name "' + newName +
-                         '" whose byte-length exceeds 255.');
+            notify.error(string.substitute(i18n.notifyFileOrDirCannotHaveTheNameExeeds255Bytes,
+                                           {newName: newName}));
             return false;
         } else if (!consistsOfValidChars(newName)) {
-            notify.warning('A file or directory cannot have the name "' + newName +
-                           '" which contains a disallowed character.');
+            notify.warning(string.substitute(i18n.notifyFileOrDirCannotHaveTheNameWithDisallowedCharacter,
+                                             {newName: newName}));
             return false;
         } else {
             return true;
@@ -1214,10 +1239,12 @@ define(['require',
             function doCreation(newName) {
                 function callback(err) {
                     if (err) {
-                        notify.error('Failed to create a file or directory (' + err + ')');
+                        notify.error(string.substitute(i18n.notifyFailedToCreateFileOrDir,
+                                                       {err: err}));
                     } else {
                         selectNewNode(newPath);
-                        notify.success('\'' + newName + '\' successfully created');
+                        notify.success(string.substitute(i18n.notifySuccessfullyCreated,
+                                                       {newName: newName}));
                     }
                 }
 
@@ -1231,17 +1258,20 @@ define(['require',
                 creationDialog.hide();
             }
 
-            markup = markup.replace('...', kind);
+            markup = markup.replace(
+                '...',
+                string.substitute(i18n.creationDialogInstructionLabel, {kind: kind})
+            );
             var inputTextBox, instructionLabel;
             if (!creationDialog) {
                 creationDialog = new ButtonedDialog({
                     buttons: [
                         {
-                            caption: 'Create',
+                            caption: i18n.creationDialogCreate,
                             methodOnClick: 'checkAndCreate'
                         },
                         {
-                            caption: 'Cancel',
+                            caption: i18n.creationDialogCancel,
                             methodOnClick: 'hide'
                         }
                     ],
@@ -1255,7 +1285,9 @@ define(['require',
                         }
                     },
 
-                    title: 'New ' + (kind === 'file' ? 'File' : 'Directory'),
+                    title: (kind === 'file' ?
+                            i18n.creationDialogTitleForFile :
+                            i18n.creationDialogTitleForDir),
 
                     refocus: false,
 
@@ -1373,11 +1405,12 @@ define(['require',
                     if (err) {
                         console.log('Failed to rename (' + err + ')');
                         notify.error('Failed to rename');
+                        notify.error(i18n.notifyFailedToRename);
                     } else {
                         if (reselect) {
                             selectNewNode(newPath);
                         }
-                        notify.success('Renamed successfully');
+                        notify.success(i18n.notifyRenamedSuccessfully);
                     }
                 });
             }

@@ -48,10 +48,12 @@ define([
     'dojo/dom-construct',
     'dojo/dom-geometry',
     'dojo/dom-style',
+    'dojo/i18n!./nls/resource',
     'dojo/on',
     'dojo/promise/all',
     'dojo/store/Memory',
     'dojo/store/Observable',
+    'dojo/string',
     'dojo/topic',
     'dojo/window',
     './Node',
@@ -89,10 +91,12 @@ define([
     domConstruct, 
     domGeom, 
     domStyle, 
+    i18n,
     on, 
     all,
     Memory, 
     Observable, 
+    string,
     topic, 
     win, 
     Node, 
@@ -902,15 +906,14 @@ define([
                                 srcPath = pathUtil.detachSlash(srcPath);
                                 var srcNode = tree.model.store.query({id: srcPath})[0];
                                 if (srcNode.getParentNode() === targetNode) {
-                                    notify.error('Cannot copy or move "' + 
-                                                 srcNode.getPath() + '" to its parent directory');
+                                    notify.error(string.substitute(i18n.notifyCannotCopyOrMoveToParentDirectory, 
+                                                                   {path: srcNode.getPath()}));
                                     quit = true;
                                 } else {
                                     srcNodes.push(srcNode);
                                 }
                             } else {
-                                notify.info('Source fsid is different from the current one, ' + 
-                                            'which is currently not supported');
+                                notify.info(i18n.notifySourceFsidIsDifferentFromTheCurrentOne);
                                 quit = true;
                             }
                         });
@@ -1102,12 +1105,12 @@ define([
             }, function (err) {
                 if (err) {
                     console.log('Failed to delete (' + err + ')');
-                    notify.error('Failed to delete');
+                    notify.error(i18n.notifyFailedToDelete);
                 } else {
                     if (parentNode) {
                         selectNode(parentNode);
                     }
-                    notify.success('All files have been deleted successfully');
+                    notify.success(i18n.notifyAllFilesHaveBeenDeletedSuccessfully);
                 }
             });
         }, function () {
@@ -1246,10 +1249,11 @@ define([
                         if (node) {
                             selectNode(node, true);
                         } else {
-                            notify.error('No such file "' + path + '" in the workspace');
+                            notify.error(string.substitute(i18n.notifyNoSuchFile, {path: path}));
                         }
                     } else {
-                        notify.error('Error while expanding to "' + path + '": ' + result);
+                        notify.error(string.substitute(i18n.notifyErrorWhileExpandingTo,
+                                                       {path: path, result: result}));
                     }
                 });
             }
@@ -1400,8 +1404,8 @@ define([
             isToggle: true,
             toggled: !syncingWithEditor,
             tooltip: {
-                normal: 'Stop Sync',
-                toggle: 'Sync with Editor'
+                normal: i18n.toolBarTootipStopSync,
+                toggle: i18n.toolBarTootipSyncWithEditor
             },
             onClick: function () {
                 syncingWithEditor = !syncingWithEditor;
@@ -1412,10 +1416,12 @@ define([
                             if (node) {
                                 selectNode(node);
                             } else {
-                                notify.error('No such file "' + editorsSelection + '" in the workspace');
+                                notify.error(string.substitute(i18n.notifyNoSuchFileInTheWorkspace,
+                                                               {selection: editorsSelection}));
                             }
                         } else {
-                            notify.error('Error while expanding to "' + editorsSelection + '": ' + result);
+                            notify.error(string.substitute(i18n.notifyErrorWhileExpandingToSelection,
+                                                           {selection: editorsSelection, result: result}));
                         }
                     });
                 }
@@ -1428,8 +1434,8 @@ define([
             iconHover: 'wvIconCollapseAll',
             isToggle: false,
             tooltip: {
-                normal: 'Collapse All',
-                toggle: 'Collapse All'
+                normal: i18n.toolBarTooltipCollapseAll,
+                toggle: i18n.toolBarTooltipCollapseAll
             },
             onClick: function () {
                 tree.collapseAll();
