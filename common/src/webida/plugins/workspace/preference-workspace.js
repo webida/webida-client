@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-define([], function () {
+define([
+    'dojo/i18n!./nls/resource'
+], function (
+    i18n
+) {
     'use strict';
     return {
         getDefault: function () {
@@ -27,20 +31,20 @@ define([], function () {
             return [
                 {
                     type: 'group',
-                    title: 'Filter'
+                    title: i18n.preferenceGroupFilter
                 },
                 {
                     key: 'workspace:filter:.*',
                     type: 'checkbox',
                     opt: {
-                        name: 'Filter .* resources'
+                        name: i18n.preferenceItemFilterResources
                     }
                 },
                 {
                     key: 'workspace:filter:.w.p',
                     type: 'checkbox',
                     opt: {
-                        name: 'Filter .project and .workspace directories'
+                        name: i18n.preferenceItemFilterProjectAndWorkspaceDirectories
                     }
                 }
             ];
