@@ -35,14 +35,14 @@ define([
 ) {
     'use strict';
     function ProjectPreferenceService(scopeName, projectName) {
-        PreferenceService.apply(this, scopeName);
+        PreferenceService.apply(this, [scopeName]);
         this.projectName = projectName;
     }
 
     genetic.inherits(ProjectPreferenceService, PreferenceService, {
         getValues: function (preferenceId, callback) {
             var self = this;
-            preferenceManager.initialized.then(function () {
+            preferenceManager.initialize().then(function () {
                 if (callback) {
                     callback(self._getRealPreferenceValues(preferenceManager.getStore(preferenceId, self.scope, {
                         projectName: self.projectName
