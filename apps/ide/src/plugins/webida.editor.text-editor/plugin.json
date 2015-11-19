@@ -19,7 +19,7 @@
         "webida.preference:pages" : [
             {
                 "module": "plugins/webida.editor.text-editor/preferences/preference-appearance",
-                "id": "texteditor",
+                "id": "editor",
                 "hierarchy": "",
                 "name": "Editor",
                 "page": "SimplePage",
@@ -30,7 +30,7 @@
             {
                 "module": "plugins/webida.editor.text-editor/preferences/preference-editor",
                 "id": "texteditor.lines",
-                "hierarchy": "texteditor",
+                "hierarchy": "editor",
                 "name": "Lines",
                 "page": "SimplePage",
                 "pageData": "getSchema",
@@ -40,7 +40,7 @@
             {
                 "module": "plugins/webida.editor.text-editor/preferences/preference-keys",
                 "id": "texteditor.key-map",
-                "hierarchy": "texteditor",
+                "hierarchy": "editor",
                 "name": "Key Map",
                 "page": "SimplePage",
                 "pageData": "getSchema",
@@ -50,7 +50,7 @@
             {
                 "module": "plugins/webida.editor.text-editor/preferences/preference-show",
                 "id": "texteditor.show-hide",
-                "hierarchy": "texteditor",
+                "hierarchy": "editor",
                 "name": "Show or Hide",
                 "page": "SimplePage",
                 "pageData": "getSchema",
