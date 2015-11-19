@@ -72,6 +72,7 @@ define([
     var lifecycleManager = LifecycleManager.getInstance();
     var dataSourceHandler = DataSourceHandler.getInstance();
 
+    //TODO This will be refactored in webida-client 1.7.0 Release
     function subscribeToTopics() {
 
         topic.subscribe('editors.closed', function (dataSourceId, view) {
@@ -80,8 +81,10 @@ define([
 
         topic.subscribe('fs.cache.file.invalidated', function (fsURL, path) {
             logger.info('fs.cache.file.invalidated arrived');
-            var file = editors.getFile(path);
-            if (file) {
+            var dataSource = dsRegistry.getDataSourceById(path);
+            var file;
+            if (dataSource) {
+                file = dataSource.getPersistence();
                 if (file === editors.currentFile) {
                     fsCache.refreshFileContents(path);
                 } else {
@@ -153,20 +156,16 @@ define([
     var fsCache = ide.getFSCache();
     var asked = [];
 
-    /** @module editors */
     var editors = {
         splitViewContainer: null,
         editorTabFocusController: new ViewFocusController({
             'Title': 'title',
             'Path': 'path'
         }),
-        editorExtensions: pm.getExtensions('webida.common.editors:editor'),
         files: {},
         currentFile: null,
         currentFiles: new BubblingArray(),
-        recentFiles: new BubblingArray(20), // keep history of 20 files
-        onloadPendingFilesCount: 0,
-        parts: new Map()
+        recentFiles: new BubblingArray(20) // keep history of 20 files
     };
 
     editors.getFileByViewId = function (viewId) {
@@ -249,77 +248,6 @@ define([
 
         //4. create Part
         tabPartContainer.createPart(PartClass, callback);
-    };
-
-    /**
-     * @deprecated since version 1.3.0
-     * This method will be remove from 1.4.0
-     * Temp Code
-     */
-    editors.openFile = lifecycleManager._openDataSource;
-
-    editors.execCommandForCurrentEditorViewer = function (commandKey) {
-        logger.info('execCommandForCurrentEditorViewer(' + commandKey + ')');
-
-        // Command means a method of EditorViewer which have no arguments
-        if (editors.currentFile && editors.currentFile.viewer) {
-            var viewer = editors.currentFile.viewer;
-            return viewer[commandKey]();
-        }
-    };
-
-    editors.getCurrentEditorPart = function () {
-        return this.currentEditorPart;
-    };
-
-    editors.getCurrentPart = function () {
-        logger.info('getCurrentPart()');
-        if (this.currentFile) {
-            return this.getPart(this.currentFile);
-        } else {
-            return null;
-        }
-    };
-
-    editors.getPart = function (file) {
-        var dataSource = dsRegistry.getDataSourceById(file.getPath());
-        var registry = workbench.getCurrentPage().getPartRegistry();
-        var parts = registry.getPartsByDataSource(dataSource);
-
-        if (parts && parts.length > 0) {
-            for (var i in parts) {
-                if (parts[i] instanceof EditorPart) {
-                    return parts[i];
-                }
-            }
-        } else {
-            return null;
-        }
-    };
-
-    //Compatibility
-    //TODO remove
-    editors.getFile = function (dataSourceId) {
-        logger.info('getFile(' + dataSourceId + ')');
-        var dataSource = dsRegistry.getDataSourceById(dataSourceId);
-        if (dataSource) {
-            return dataSource.getPersistence();
-        }
-    };
-
-    //TODO remove
-    editors.getDataSourceById = function (dsId) {
-        return dsRegistry.getDataSourceById(dsId);
-    };
-
-    //TODO remove
-    editors.getDataSource = function (persistence) {
-        return dsRegistry.getDataSourceById(persistence.getPersistenceId());
-    };
-
-    editors.getPartRegistry = function () {
-        var page = workbench.getCurrentPage();
-        return page.getPartRegistry();
     };
 
     subscribeToTopics();
