@@ -207,18 +207,27 @@ define([
         }
     };
 
-    var cursorAtAutoHintTypes = [
+    var cursorAtAutoHintTokens = [
         {
             mode: ['javascript'],
-            tokenTypes: ['variable', 'variable-2', 'property']
+            checkToken: function (token) {
+                return token.type === 'variable' ||
+                    token.type === 'variable-2' ||
+                    token.type === 'property' ||
+                    (token.type === 'keyword' && token.string === 'this');
+            }
         },
         {
             mode: ['html', 'xml'],
-            tokenTypes: ['tag', 'attribute', 'link']
+            checkToken: function (token) {
+                return _.contains(['tag', 'attribute', 'link'], token.type);
+            }
         },
         {
             mode: ['css'],
-            tokenTypes: ['tag', 'builtin', 'qualifier', 'property error', 'property']
+            checkToken: function (token) {
+                return _.contains(['tag', 'builtin', 'qualifier', 'property error', 'property'], token.type);
+            }
         }
     ];
 
@@ -363,8 +372,8 @@ define([
     function cursorAtAutoHint(cm, modeName, cursor, rightToken) {
         var token = cm.getTokenAt(cursor);
 
-        if (_.find(cursorAtAutoHintTypes, function (obj) {
-            return _.contains(obj.mode, modeName) && _.contains(obj.tokenTypes, token.type);
+        if (_.find(cursorAtAutoHintTokens, function (obj) {
+            return _.contains(obj.mode, modeName) && obj.checkToken(token);
         })) {
             return true;
         }
