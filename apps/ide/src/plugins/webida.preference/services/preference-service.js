@@ -133,8 +133,8 @@ define([
         return result && result[key];
     };
 
-    /* global self */
     PreferenceService.prototype.setValues = function (preferenceId, values, callback) {
+        var self = this;
         var store = preferenceManager.getStore(preferenceId, self.scope);
         if (values) {
             for (var key in values) {
@@ -158,6 +158,7 @@ define([
     };
 
     PreferenceService.prototype.setValue = function (preferenceId, key, value, callback) {
+        var self = this;
         var store = preferenceManager.getStore(preferenceId, self.scope);
         store.setValue(key, value);
         store.apply(function (invalid) {
