@@ -120,6 +120,9 @@ define([
                 instances[scopeName] = new PreferenceService(scopeName);
                 return instances[scopeName];
             case 'PROJECT':
+                if (!instances[scopeName]) {
+                    instances[scopeName] = {};
+                }
                 instances[scopeName][additionalInfo] = new ProjectPreferenceService(scopeName, additionalInfo);
                 return instances[scopeName][additionalInfo];
         }
