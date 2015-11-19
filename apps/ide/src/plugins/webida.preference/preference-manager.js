@@ -96,7 +96,9 @@ define([
         var self = this;
         this.SCOPE = SCOPE;
         this.preferences = [];
-        this.extensions = pluginManager.getExtensions(EXTENSION_NAME);
+        this.extensions = _.sortBy(pluginManager.getExtensions(EXTENSION_NAME), function (item) {
+            return (item.hierarchy ? (item.hierarchy + '/') : '') + item.id;
+        });
         this.extensionsByScope = {};
 
         function _getAllPreferenceFiles() {
