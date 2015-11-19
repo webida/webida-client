@@ -30,7 +30,7 @@
             {
                 "module": "plugins/webida.editor.code-editor/preferences/preference-main",
                 "id": "codeeditor",
-                "hierarchy": "texteditor",
+                "hierarchy": "editor",
                 "name": "Code Editor",
                 "getDefault": "getDefault",
                 "page": "SimplePage",
@@ -40,7 +40,7 @@
             {
                 "module": "plugins/webida.editor.code-editor/preferences/preference-contentassist",
                 "id": "content-assist",
-                "hierarchy": "texteditor/codeeditor",
+                "hierarchy": "editor/codeeditor",
                 "name": "Content Assists",
                 "getDefault": "getDefault",
                 "page": "SimplePage",
