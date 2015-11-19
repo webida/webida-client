@@ -848,7 +848,10 @@ define([
         },
 
         refresh: function (contents) {
-            logger.info('refresh(' + contents + ')');
+            //logger.info('refresh(' + contents.substr(0, 10) + ')');
+            if (contents.search(/\r\n/) !== -1) {
+                this.editor.setOption('lineSeparator', '\r\n');
+            }
             this.editor.setValue(contents);
             if (!this.contentsInitialized) {
                 this.editor.clearHistory();
