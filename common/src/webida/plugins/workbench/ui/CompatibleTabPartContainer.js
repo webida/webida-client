@@ -99,7 +99,6 @@ define([
         onSelect: function () {
             logger.info('onSelect()');
             TabPartContainer.prototype.onSelect.call(this);
-            topic.publish('partContainerSelected', this);
             if (this.getPart()) {
                 this.getPart().focus();
             }
