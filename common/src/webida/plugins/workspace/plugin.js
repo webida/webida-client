@@ -1240,6 +1240,9 @@ define([
 
     function initializeSyncEditorFocus() {
         topic.subscribe('part/editor/selected', function (oldPart, newPart) {
+            if (!newPart) {
+                return;
+            }
             var persistence = newPart.getDataSource().getPersistence();
             var path = persistence.getPersistenceId();
             if (syncingWithEditor) {
