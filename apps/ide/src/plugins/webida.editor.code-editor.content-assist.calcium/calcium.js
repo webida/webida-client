@@ -74,6 +74,7 @@ define([
             body: {
                 type: 'completions',
                 pos: cm.indexFromPos(cm.getCursor()),
+                filePath: cm.calciumAddon.filePath,
                 code: cm.getValue()
             }
         }, callbackWrapper);
@@ -152,6 +153,7 @@ define([
                 type: 'showType',
                 start: start,
                 end: end,
+                filePath: cm.calciumAddon.filePath,
                 code: cm.getValue()
             }
         }, doTooltip);
@@ -295,6 +297,7 @@ define([
             body: {
                 type: reqType,
                 pos: cursorIndexPos,
+                filePath: cm.calciumAddon.filePath,
                 code: cm.getValue()
             }
         }, c);
@@ -348,6 +351,7 @@ define([
             body: {
                 type: 'structuredFnTypes',
                 pos: start,
+                filePath: cm.calciumAddon.filePath,
                 code: cm.getValue()
             }
         },
@@ -414,6 +418,7 @@ define([
                 type: 'definitionSites',
                 start: start,
                 end: end,
+                filePath: cm.calciumAddon.filePath,
                 code: cm.getValue()
             }
         }, function (error, data) {
@@ -442,6 +447,7 @@ define([
                     body: {
                         type: 'variableOccurrences',
                         pos: cm.indexFromPos(cm.getCursor()),
+                        filePath: cm.calciumAddon.filePath,
                         code: cm.getValue()
                     }
                 },
@@ -455,10 +461,11 @@ define([
         logger.info(arguments);
     }
 
-    server.startServer = function (filepath, cm, option, c) {
+    server.startServer = function (filePath, cm, option, c) {
 
         server.mode = option.langMode + ':' + option.engineName;
         server.calciumAddon = cm.calciumAddon = {
+            filePath: filePath,
             rename: renameVariableViaDialog,
             withOccurrences: withOccurrences,
             jumpToDef: jumpToDef,
