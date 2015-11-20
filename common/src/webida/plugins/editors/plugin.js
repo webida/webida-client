@@ -105,9 +105,9 @@ define([
         });
 
         //Compatibility
-        topic.subscribe('current-part-changed', function (oldPart, newPart) {
+        topic.subscribe('part/editor/selected', function (oldPart, newPart) {
 
-            logger.info('current-part-changed arrived');
+            logger.info('part/editor/selected arrived');
 
             if (oldPart !== newPart) {
 
