@@ -228,9 +228,7 @@ define([
                 var oldPart = this.getCurrentEditorPart();
                 this.currentEditorPart = part;
                 this.setRecentEditorPart(part);
-                //For compatibility 1.3.0
-                //TODO : remove with editors.setCurrentFile
-                topic.publish('current-part-changed', oldPart, part);
+                topic.publish('part/editor/selected', oldPart, part);
             }
         },
 
