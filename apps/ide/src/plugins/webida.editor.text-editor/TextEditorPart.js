@@ -86,8 +86,7 @@ define([
     var logger = new Logger();
     //logger.off();
 
-    var preferenceIds = ['texteditor', 'texteditor.lines', 'texteditor.key-map', 
-                         'texteditor.show-hide', 'content-assist'];
+    var preferenceIds = ['editor', 'editor.lines', 'editor.key-map', 'editor.show-hide', 'content-assist'];
 
     //To support synchronizeWidgetModel
     //TODO : refactor
@@ -186,7 +185,7 @@ define([
             this.preferences = new EditorPreference(preferenceIds, viewer);
             this.preferences.setFields(this.getPreferences());
             //editorconfig
-            this.preferences.getField('texteditor', 'webida.editor.text-editor:editorconfig', function (value) {
+            this.preferences.getField('editor', 'webida.editor.text-editor:editorconfig', function (value) {
                 if (value === true) {
                     configloader.editorconfig(viewer, file);
                 }
