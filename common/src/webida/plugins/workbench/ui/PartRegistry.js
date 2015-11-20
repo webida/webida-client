@@ -119,10 +119,19 @@ define([
         /**
          * @param {DataSource} dataSource
          * @return {Array} Parts related to the specified dataSource.
-         * If not found returns undefined.
+         * If not found returns empty array.
+         * To prevent direct reference to parts array
+         * this method return clone of the array.
+         * For example, part.close() call unregisterPart()
+         * then it affects to original parts array's length.
          */
         getPartsByDataSource: function (dataSource) {
-            return this.getParts().get(dataSource) || [];
+            var partsClone = [];
+            var parts = this.getParts().get(dataSource) || [];
+            parts.forEach(function (part) {
+                partsClone.push(part);
+            });
+            return partsClone;
         },
 
         /**

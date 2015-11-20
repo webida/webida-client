@@ -85,10 +85,14 @@ define([
             logger.info('focus() //do nothing');
         },
 
-        close: function () {
-            logger.info('close()');
+        /**
+         * Closes EditorPart
+         * @param {boolean} isForced
+         */
+        close: function (isForced) {
+            logger.info('close(' + isForced + ')');
             var that = this;
-            if (this.isDirty()) {
+            if (!isForced && this.isDirty()) {
                 this._askSaveThen(function () {
                     Part.prototype.close.call(that);
                 });
