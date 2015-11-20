@@ -37,6 +37,25 @@ define([
 
     logger.info('CREATING SERVER');
 
+    // filePath -> {code, analysisResult}
+    var analysisCache = {};
+
+    function getAnalysisResult(filePath, code) {
+        var cached = analysisCache[filePath];
+        if (cached) {
+            if (cached.code !== code) {
+                cached.code = code;
+                cached.analysisResult = calcium.analyze(code, true);
+            }
+        } else {
+            cached = analysisCache[filePath] = {
+                code: code,
+                analysisResult: calcium.analyze(code, true)
+            };
+        }
+        return cached.analysisResult;
+    }
+
     return {
         startServer: function (server) {
             logger.info('START');
@@ -56,7 +75,7 @@ define([
         request: function (server, body, callback) {
             logger.info('REQUEST');
 
-            var result = calcium.analyze(body.code, true);
+            var result = getAnalysisResult(body.filePath, body.code);
             switch (body.type) {
                 case 'variableOccurrences':
                     var refs = calcium.findVarRefsAt(result.AST, body.pos);
