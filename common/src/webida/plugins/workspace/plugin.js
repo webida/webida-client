@@ -1239,8 +1239,8 @@ define([
     }
 
     function initializeSyncEditorFocus() {
-        topic.subscribe('partContainerSelected', function (container) {
-            var persistence = container.getDataSource().getPersistence();
+        topic.subscribe('part/editor/selected', function (oldPart, newPart) {
+            var persistence = newPart.getDataSource().getPersistence();
             var path = persistence.getPersistenceId();
             if (syncingWithEditor) {
                 expandAncestors(path).then(function (result) {
