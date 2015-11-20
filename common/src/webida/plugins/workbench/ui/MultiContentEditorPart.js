@@ -86,9 +86,10 @@ define([
 
         /**
          * @override
+         * @param {boolean} isForced
          */
-        close: function () {
-            logger.info('%cclose()', 'color:orange');
+        close: function (isForced) {
+            logger.info('%cclose(' + isForced + ')', 'color:orange');
             var mPart = this;
             var close = function () {
                 mPart.getParts().forEach(function (part) {
@@ -96,7 +97,7 @@ define([
                 });
                 Part.prototype.close.call(mPart);
             };
-            if (this.isDirty()) {
+            if (!isForced && this.isDirty()) {
                 this._askSaveThen(function () {
                     close();
                 });

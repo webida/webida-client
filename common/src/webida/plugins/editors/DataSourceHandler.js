@@ -265,7 +265,7 @@ define([
                      "Close the editor for the resource?"
             }).then(function () {
                 topic.publish("editor/close/data-source-id", dataSourceId, {
-                    force: true
+                    isForced: true
                 });
             }, function () {
             });
