@@ -186,8 +186,8 @@ define([
         preferenceExts = preferenceManager.getAllPreferenceTypes(scope);
         treeViewController.addSelectionChangedListener(_onChangeTreeSelection);
 
-        // append tree page to the area for tree
-        treeArea.appendChild(treeViewController.getPage(preferenceExts));
+        // append tree page to the area for tree except all `hidden` preferences
+        treeArea.appendChild(treeViewController.getPage(_.reject(preferenceExts, {hidden: true})));
         treeViewController.onPageAppended();
     }
 
