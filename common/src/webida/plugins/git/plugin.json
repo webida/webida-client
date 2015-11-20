@@ -107,7 +107,8 @@
                 "getDefault": "getDefault",
                 "page": "SimplePage",
                 "pageData": "getSchema",
-                "scope": []
+                "scope": ["WORKSPACE"],
+                "hidden": true
             }
         ],
         

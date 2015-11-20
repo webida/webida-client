@@ -106,12 +106,16 @@ If you need to add new preference page, follow below instructions.
             "page": "SimplePage",
             "pageData": "getSchema",
             "getDefault": "getDefault",
-            "scope": ["WORKSPACE"]
+            "scope": ["WORKSPACE"],
+            "hidden": false
         },
         ...
     ]
 
 ```
+
+The `hidden` field is optional. 
+For determining whether showing the preference item or not in preferences dialog, the `hidden` field will be used.
 
 This preference item  will be shown at the top of the tree. And its display name will be `Editor`.
 And It is scoped only `WORKSPACE`.

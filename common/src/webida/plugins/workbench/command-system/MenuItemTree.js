@@ -739,8 +739,7 @@ define([
         var self = this;
 
         promiseMap.get('preference/load').then(function () {
-            //var delta = prefStore.getValue('shortcutKeysDelta:' + pluginName);
-            var delta = preferences.getValues('shortcutKeysDelta:' + pluginName);
+            var delta = preferences.getValue('shortcut', pluginName);
             if (delta) {
                 try {
                     delta = JSON.parse(delta);
@@ -1098,11 +1097,8 @@ define([
         console.assert(!errMsg);
 
         if (!restoring) {
-            //var changed = {};
-            var delta = getShortcutDelta(menuItemTree._wholeItems);
-            //changed['shortcutKeysDelta:' + menuItemTree._pluginName] = JSON.stringify(delta);
-            //prefStore.updateValues(changed);
-            preferences.setValues('shortcutKeysDelta:' + menuItemTree._pluginName, JSON.stringify(delta));
+            preferences.setValue('shortcut', menuItemTree._pluginName,
+                JSON.stringify(getShortcutDelta(menuItemTree._wholeItems)));
         }
     }
 
