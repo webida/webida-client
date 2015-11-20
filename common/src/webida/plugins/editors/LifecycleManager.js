@@ -332,18 +332,15 @@ define([
             });
         },
 
-        _closeByDataSourceId: function (dataSourceId) {
-            logger.info('_closeByDataSourceId(' + dataSourceId + ')');
+        _closeByDataSourceId: function (dataSourceId, option) {
+            logger.info('_closeByDataSourceId(' + dataSourceId + ', ' + option + ')');
+            var isForced = (typeof option === 'object') ? option.isForced : false;
             var dsRegistry = workbench.getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             var partRegistry = this._getPartRegistry();
             var parts = partRegistry.getPartsByDataSource(dataSource);
-            var partsCopy = [];
             parts.forEach(function (part) {
-                partsCopy.push(part);
-            });
-            partsCopy.forEach(function (part) {
-                part.close();
+                part.close(isForced);
             });
         }
     });
