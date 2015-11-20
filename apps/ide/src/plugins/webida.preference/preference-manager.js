@@ -52,7 +52,6 @@ define([
     var logger = new Logger();
     var _preferenceManager;
     var fsCache = ide.getFSCache();
-    var valueChangeListener;
 
     var EXTENSION_NAME = 'webida.preference:pages';
     var PREF_FILE_NAME = 'preferences.json';
@@ -132,11 +131,16 @@ define([
         function _getAllExtensions() {
             return Promise.all(self.extensions.map(function (extension) {
                 return new Promise(function (resolve) {
-                    require([extension.module], function (module) {
-                        var defaultValues = module[extension.getDefault]();
-                        extension.defaultValues = defaultValues;
+                    if (extension.getDefault) {
+                        require([extension.module], function (module) {
+                            var defaultValues = module[extension.getDefault]();
+                            extension.defaultValues = defaultValues;
+                            resolve();
+                        });
+                    } else {
+                        extension.defaultValues = {};
                         resolve();
-                    });
+                    }
                 });
             }));
         }
@@ -211,13 +215,13 @@ define([
                 });
             });
 
-            topic.subscribe('fs.cache.file.set', function (fsURL, target) {
+            topic.subscribe('fs.cache.file.set', function (/*fsURL, target*/) {
                 logger.log('fs.cache.file.set', arguments);
                 //var store = getStoreByPath(target);
                 // reloadPreference(SCOPE[store.scope], store.storeInfo);
             });
 
-            topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
+            topic.subscribe('fs.cache.node.deleted', function (/*fsURL, targetDir, name, type*/) {
                 logger.log('fs.cache.node.deleted', arguments);
                 //if (name === PREFERENCE_FILE_NAME) {
                 //  var store = getStoreByPath(targetDir + name);
@@ -315,7 +319,14 @@ define([
                 _.forEach(storesByFile, function (store) {
                     flushToFile[store.id] = store.appliedValues;
                 });
-                fsCache.writeFile(filePath, JSON.stringify(flushToFile), callback);
+                fsCache.writeFile(filePath, JSON.stringify(flushToFile), function (err) {
+                    if (err) {
+                        logger.error('failed to flushPreference: ', err);
+                    }
+                    if (callback) {
+                        callback(err);
+                    }
+                });
             });
         },
 

@@ -96,6 +96,18 @@
                 },
                 "getViableItems" : "getBogusItems"
             }
+        ],
+        "webida.preference:pages" : [
+            {
+                "id": "shortcut",
+                "hierarchy": "",
+                "name": "Shortcut Key",
+                "page": "",
+                "pageData": "",
+                "getDefault": "",
+                "scope": ["WORKSPACE"],
+                "hidden": true
+            }
         ]
     }
 }
