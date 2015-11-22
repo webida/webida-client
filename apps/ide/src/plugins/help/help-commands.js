@@ -45,7 +45,7 @@ define(['require'], function (require) {
 
     function showAbout() {
         require(['text!./about.html',
-                'text!/package.json',
+                'text!./package.json',
                 'dojo/i18n!./nls/resource',
                 'webida-lib/plugins/workbench/plugin',
                 'webida-lib/util/locale',
@@ -65,27 +65,29 @@ define(['require'], function (require) {
             });
 
             var parseBuildTime = function (buildId) {
-                if (!buildid) {
+                if (!buildId) {
                     return 'Unknown';
                 }
-                var arr = buildid.split('_');
-                return arr[0] + arr[1].replace(/-/g , ':');
+                var arr = buildId.split('_');
+                return arr[0] + ' ' + arr[1].replace(/-/g , ':');
             };
 
             // TODO : fix package.json properties to buidInfo format
-            var data = text ? $.parseJSON(text) : { };
-            var buildInfo = {
-                number: data.buildnumber || 'Prebuild',
-                builtAt: parseBuildTime(data.buildid) ,
+            var data = text ? JSON.parse(text) : {};
+            var versionInfo = {
+                version : data.version || version,
+                buildNumber: data.buildnumber || 'Prebuild',
+                buildTime: parseBuildTime(data.buildid),
                 commitId: data.buildcommitid || 'Unknown'
             };
 
-            $('#version').text(localizer.formatMessage('messageVersion', buildInfo));
-            $('#buildInfo').html(
-                localizer.formatMessage('messageBuiltAt', buildInfo) +
-                '<br>' + localizer.formatMessage('messageBuildCommitId', buildInfo) );
-
             pane.setContentArea(aboutHtml);
+                        
+            $('#version').text(localizer.formatMessage('messageVersion', versionInfo));
+            $('#buildInfo').html(
+                localizer.formatMessage('messageBuiltAt', versionInfo) +
+                '<br>' + localizer.formatMessage('messageBuildCommitId', versionInfo));
+
             pane.show();
         });
     }

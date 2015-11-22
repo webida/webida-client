@@ -1,6 +1,6 @@
 define({
     aboutDialogTitle: 'About Webida IDE',
-    messageVersion: 'Version ({number})',
-    messageBuiltAt : 'Built at {builtAt}',
-    messageBuildCommitId: 'Commit ID {commitId}'
+    messageVersion: 'Version ${version} (${buildNumber})',
+    messageBuiltAt : 'Built at ${buildTime}',
+    messageBuildCommitId: 'Commit ID ${commitId}'
 });
