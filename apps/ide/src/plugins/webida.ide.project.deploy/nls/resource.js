@@ -35,7 +35,12 @@ define({
         labelSubDomain: 'Subdomain',
         labelStatus: 'Status',
         labelUrl: 'URL',
-        labelDescription: 'Desc.'
+        labelDescription: 'Desc.',
+        validationInvalidArgument: 'Error: Argument is invalid (ex>project=fsid/workspace/project)',
+        messageFailGetUserInfo: 'get userinfo fail',
+        'menuDeplo&y': 'Deploy',
+        messageFailGetProjects: 'Failed to get the project list.',
+        messageNoProject: 'No projects in workspace.'
     },
     'en-us': true
 });

@@ -27,7 +27,6 @@ define([
     'dojo/i18n!./nls/resource',
     'dojo/parser',
     'dojo/store/Memory',
-    'dojo/string',
     'dojox/layout/TableContainer',
     'popup-dialog',
     'webida-lib/util/locale',
@@ -50,10 +49,9 @@ define([
     i18n,
     parser,
     Memory,
-    string,
     TableContainer,
     PopupDialog,
-    locale,
+    Locale,
     Logger,
     notify,
     webida,
@@ -64,6 +62,8 @@ define([
     'use strict';
 
     var logger = new Logger();
+
+    var locale = new Locale(i18n);
 
     var showAppPane = null;
     var projectPath = null;
@@ -595,7 +595,7 @@ define([
         });
 
         showAppPane.addChild(markup, 0);
-        locale.convertMessage(i18n, 'data-message');
+        locale.convertMessage(showAppPane.domNode);
 
         var child = markup.domNode;
 
@@ -940,7 +940,7 @@ define([
                             notify.error(i18n.messageFailCallAPI);
                             setProgressInfo(parent, true, i18n.messageFailDeploy, 0, false);
                         } else {
-                            var msg = string.substitute(i18n.messageSuccessDeploy, {appId: appID});
+                            var msg = locale.formatMessage('messageSuccessDeploy', {appId: appID});
                             notify.success(msg);
                             setProgressInfo(parent, true, msg, 100, false);
                         }
@@ -1083,9 +1083,9 @@ define([
             content: appInfoMarkup
         });
         showAppPane.addChild(markup);
-        locale.convertMessage(i18n, 'data-message');
 
         var child = markup.domNode;
+        locale.convertMessage(child);
         var arrow = $(child).find('.table-title-arrow');
         arrow.bind('mouseup', function () {
             var contentBody = $(child).find('.table-content');
