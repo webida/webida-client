@@ -1,31 +1,39 @@
-<span class="asterisk">*</span> indicates required field
+<span class="asterisk">*</span> <span data-message="labelAsteriskExplain">indicates required field</span>
 <div class="run-configuration-detail">
-    <div class='rcw-content'>
-        <div class='rcw-table'>
-            <div class='rcw-table-row row-Path'>
-                <div class='rcw-content-table-label rcw-table-col'>Name <span class="asterisk">*</span></div>
-                <div class='rcw-content-table-value rcw-table-col'>
-                    <input style='width:303px' class='rcw-content-table-inputbox-edit'/>
+    <div class="rcw-content">
+        <div class="rcw-table">
+            <div class="rcw-table-row row-Path">
+                <div class="rcw-content-table-label rcw-table-col">
+                    <label for="run-configuration-java-Name" data-message="labelName">Name</label> <span class="asterisk">*</span>
+                </div>
+                <div class="rcw-content-table-value rcw-table-col">
+                    <input id="run-configuration-java-Name" style="width:303px" class="rcw-content-table-inputbox-edit"/>
                 </div>
             </div>
-            <div class='rcw-table-row'>
-                <div class='rcw-content-table-label rcw-table-col'>Project <span class="asterisk">*</span></div>
-                <div class='rcw-content-table-value rcw-table-col'>
-                    <select id="run-configuration-project"></select>
+            <div class="rcw-table-row">
+                <div class="rcw-content-table-label rcw-table-col">
+                    <label for="run-configuration-java-project" data-message="labelProject">Project</label>
+                    <span class="asterisk">*</span>
+                </div>
+                <div class="rcw-content-table-value rcw-table-col">
+                    <select id="run-configuration-java-project"></select>
                 </div>
             </div>
-            <div class='rcw-table-row'>
-                <div class='rcw-content-table-label rcw-table-col'>Path <span class="asterisk">*</span></div>
-                <div class='rcw-content-table-value rcw-table-col'>
-                    <input style='width:234px' class='rcw-content-table-inputbox-readonly' />
-                    <div class='rcw-action-path' title='Select a path'></div>
+            <div class="rcw-table-row">
+                <div class="rcw-content-table-label rcw-table-col">
+                    <label for="run-configuration-java-path" data-message="labelPath">Path</label>
+                    <span class="asterisk">*</span>
+                </div>
+                <div class="rcw-content-table-value rcw-table-col">
+                    <input id="run-configuration-java-path" style="width:234px" class="rcw-content-table-inputbox-readonly" />
+                    <div class="rcw-action-path" title="Select a path"></div>
                 </div>
             </div>
         </div>
 
-        <div class='rcw-action'>
-            <!--<div class='rcw-action-save' title='Save run configuration'></div>-->
-            <button data-dojo-type="dijit/form/Button" type="button" id="rcw-action-save">Apply</button>
+        <div class="rcw-action">
+            <!--<div class="rcw-action-save" title="Save run configuration"></div>-->
+            <button data-dojo-type="dijit/form/Button" type="button" id="rcw-action-save" data-message="labelApply">Apply</button>
         </div>
     </div>
 </div>

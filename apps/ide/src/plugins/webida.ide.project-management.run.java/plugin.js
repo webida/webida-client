@@ -15,27 +15,31 @@
  */
 
 define([
-    'webida-lib/app',
-    'text!./layout/java-run-configuration.html',
-    'dojo/topic',
-    'dojo/on',
+    'external/lodash/lodash.min',
     'dijit/form/Select',
-    'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
     'dijit/layout/ContentPane',
     'dijit/registry',
+    'dojo/i18n!./nls/resource',
+    'dojo/on',
+    'dojo/topic',
+    'webida-lib/app',
+    'webida-lib/util/locale',
     'webida-lib/util/notify',
-    'external/lodash/lodash.min'
+    'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
+    'text!./layout/java-run-configuration.html'
 ], function (
-    ide,
-    template,
-    topic,
-    on,
+    _,
     Select,
-    FileDialog,
     ContentPane,
     registry,
+    i18n,
+    on,
+    topic,
+    ide,
+    Locale,
     notify,
-    _
+    FileDialog,
+    template
 ) {
     'use strict';
 
@@ -51,6 +55,7 @@ define([
     var currentRunConf;
     var ui = {};
 
+    var locale = new Locale(i18n);
 
     function _checkInvalidField(runConf) {
         var runConfToCheck = runConf;
@@ -60,7 +65,7 @@ define([
             if (fullPath) {
                 var matchResult = PATTERN_MAIN_FILE.exec(fullPath);
                 if (matchResult === null) {
-                    return 'Invalid selected path';
+                    return i18n.validationInvalidPath;
                 } else {
                     path = matchResult[1].split('/').join('.') + matchResult[2];
                 }
@@ -75,10 +80,10 @@ define([
         }
 
         if (!runConfToCheck.name) {
-            return 'Enter a name.';
+            return i18n.validationNoName;
         }
         if (!runConfToCheck.path) {
-            return 'Select a path.';
+            return i18n.validationNoPath;
         }
 
         currentRunConf = _.extend(currentRunConf, runConfToCheck);
@@ -95,7 +100,7 @@ define([
         var dlg;
 
         if (!currentRunConf || !project || !pathInputBox) {
-            notify.error('Cannot find root path');
+            notify.error(i18n.messageFailFindRoot);
             return;
         }
 
@@ -110,7 +115,7 @@ define([
             mount: ide.getFSCache(),
             root: root,
             initialSelection: [initialPath],
-            title: 'Select the Main Java File to Run',
+            title: i18n.titleSelectMain,
             singular: true,
             dirOnly: false,
             showRoot: false
@@ -119,7 +124,7 @@ define([
             var pathSplit;
             if (selected) {
                 if (selected.length <= 0) {
-                    notify.warning('Select a java file.');
+                    notify.warning(i18n.validationNoJavaFile);
                     return;
                 }
                 pathSplit = selected[0].split(root);
@@ -136,7 +141,7 @@ define([
                         isDirty: true
                     });
                 } else {
-                    notify.warning('Select a java file.');
+                    notify.warning(i18n.validationNoJavaFile);
                 }
             }
         });
@@ -160,10 +165,10 @@ define([
                             label: project
                         };
                     });
-                    if (registry.byId('run-configuration-project')) {
-                        registry.byId('run-configuration-project').destroy();
+                    if (registry.byId('run-configuration-java-project')) {
+                        registry.byId('run-configuration-java-project').destroy();
                     }
-                    ui.select = new Select({ options: projects }, 'run-configuration-project');
+                    ui.select = new Select({ options: projects }, 'run-configuration-java-project');
                     ui.select.startup();
                     ui.select.set('value', runConf.project);
                 }
@@ -192,6 +197,7 @@ define([
                 })
             );
         }
+        locale.convertMessage(ui.content.domNode);
     }
 
 
@@ -199,7 +205,6 @@ define([
         run: function (runConf, callback) {
             var rootPath = ide.getPath() + '/' + runConf.project;
             var filePath = runConf.srcDir + '/' + runConf.path.replace(/\./g, '/') + '.java';
-            console.log('Run As...', runConf);
             FS.exec(rootPath, {cmd: 'javac', args: ['-d', runConf.outputDir, filePath]},
                 function (err, stdout, stderr) {
                     console.debug('###javac', runConf.path, stdout, stderr);
