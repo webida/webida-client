@@ -37,8 +37,8 @@ define([
         '&About': [ 'cmnd', 'plugins/help/help-commands', 'showAbout' ]
     };
     var localizer = new Locale(i18n);
-    localizer.convertMenuItem(item, '[menu] ');
     localizer.convertMenuItem(item['Help Contents'], '[menu] ');
+    localizer.convertMenuItem(item, '[menu] ');
 
     return {
         getViableItems : function () {

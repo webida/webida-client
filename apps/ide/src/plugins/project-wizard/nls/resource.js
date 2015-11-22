@@ -7,8 +7,8 @@ define({
 
         pwQuickStartProjectNameLabel : 'Name',
         pwQuickStartProjectTypeLabel : 'Type',
-        pwQuickStartProjectTypeService: 'Web',
-        pwQuickStartProjectTypeService: 'Service',
+        pwQuickStartProjectTypeWebLabel: 'Web',
+        pwQuickStartProjectTypeServiceLabel: 'Service',
         pwQuickStartOptCordovaLabel: 'Enable Cordova support',
         pwQuickStartGuideStart: 'Start tour',
 
