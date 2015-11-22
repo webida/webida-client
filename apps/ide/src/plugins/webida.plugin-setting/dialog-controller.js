@@ -22,21 +22,25 @@
  */
 
 define([
-    'dojo/dom',
-    'dijit/form/CheckBox',
-    'dojo/parser',
     'external/lodash/lodash.min',
+    'dijit/form/CheckBox',
+    'dojo/dom',
+    'dojo/i18n!./nls/resource',
+    'dojo/parser',
     'popup-dialog',
+    'webida-lib/util/locale',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog', // ButtonedDialog
     './plugin-settings'
 ], function (
-    dom,
-    CheckBox,
-    parser,
     _,
+    CheckBox,
+    dom,
+    i18n,
+    parser,
     PopupDialog,
+    Locale,
     Logger,
     notify,
     ButtonedDialog,
@@ -46,6 +50,8 @@ define([
     var logger = new Logger();
     logger.off();
 
+    var locale = new Locale(i18n);
+
     var ui = {
         dialog: undefined,
         checkboxes: []
@@ -54,29 +60,28 @@ define([
     var mod = {
         openDialog: function () {
             ui.dialog = new ButtonedDialog({
-                title: 'Plugin Configurator',
+                title: i18n.titleDialog,
                 refocus: false,
                 methodOnEnter: null,
                 buttons: [
-                    {id: 'pluginDialogOkButton', caption: 'Save', methodOnClick: 'ok'},
-                    {id: 'pluginDialogCancelButton', caption: 'Cancel', methodOnClick: 'cancel'}
+                    {id: 'pluginDialogOkButton', caption: i18n.labelSave, methodOnClick: 'ok'},
+                    {id: 'pluginDialogCancelButton', caption: i18n.labelCancel, methodOnClick: 'cancel'}
                 ],
                 style: 'width: 400px',
                 ok: function () {
                     var disabledPlugin = this.getAllDisabledPlugins();
                     pluginSettings.saveUserPluginSettings(disabledPlugin, function (err) {
                         if (err) {
-                            notify.error('Failed to save plugin configuration');
+                            notify.error(i18n.messageFailSave);
                             logger.error('Failed to save plugin configuration', err);
                         } else {
                             PopupDialog.yesno({
-                                title: 'Apply Settings',
-                                message: 'This modified settings will be applied after reloading. ' +
-                                    'Do you want to reload IDE?',
+                                title: i18n.titleConfirmReload,
+                                message: i18n.messageConfirmReload,
                                 type: 'info'
                             }).then(function () {
                                 ui.dialog.hide();
-                                notify.info('Starting to reload IDE now');
+                                notify.info(i18n.messageInformReload);
                                 window.location.reload();
                             }, function () {
                                 ui.dialog.hide();
@@ -111,6 +116,7 @@ define([
                         checkboxObj.attr('data-loc', plugin.loc);
                         ui.checkboxes.push(checkboxObj);
                     });
+                    locale.convertMessage(ui.dialog.domNode);
                 },
                 getAllDisabledPlugins: function () {
                     var disabledPlugins = _.filter(ui.checkboxes, function (checkbox) {

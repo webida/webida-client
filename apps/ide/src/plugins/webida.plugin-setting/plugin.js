@@ -22,22 +22,35 @@
  */
 
 define([
+    'dojo/i18n!./nls/resource',
+    'webida-lib/util/locale'
 ], function (
+    i18n,
+    Locale
 ) {
     'use strict';
+
+    var locale = new Locale(i18n);
+
+    var viableItems = {
+        'Plugin Setting': [
+            'cmnd',
+            'plugins/webida.plugin-setting/dialog-controller',
+            'openDialog'
+        ]
+    };
+
+    // for i18n
+    (function _convertMenuLocale() {
+        locale.convertMenuItem(viableItems, 'menu');
+    })();
 
     return {
         /**
          * Used by plugin manager for displaying menu items
          */
         getViableItems: function () {
-            return {
-                'Plugin Setting': [
-                    'cmnd',
-                    'plugins/webida.plugin-setting/dialog-controller',
-                    'openDialog'
-                ]
-            };
+            return viableItems;
         }
     };
 });
