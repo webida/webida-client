@@ -23,6 +23,7 @@
 /* jshint unused:false */
 
 define([
+    'dojo/i18n!./nls/resource',
     'dojo/topic',
     'external/eventEmitter/EventEmitter',
     'external/lodash/lodash.min',
@@ -35,6 +36,7 @@ define([
     'webida-lib/util/logger/logger-client',
     './preference-store'
 ], function (
+    i18n,
     topic,
     EventEmitter,
     _,
@@ -58,18 +60,21 @@ define([
     var SCOPE = Object.freeze({
         USER: {
             name: 'USER',
+            displayName: i18n.labelUserScope,
             priority: 1,
             root: '/',
             path: conf.meta.user.dir + '/' + PREF_FILE_NAME
         },
         WORKSPACE: {
             name: 'WORKSPACE',
+            displayName: i18n.labelWorkspaceScope,
             priority: 2,
             root: ide.getPath() + '/',
             path: conf.meta.workspace.dir + '/' + PREF_FILE_NAME
         },
         PROJECT: {
             name: 'PROJECT',
+            displayName: i18n.labelProjectScope,
             priority: 3,
             getScopeInfo: function (callback) {
                 return projectService.getAll(function (projects) {

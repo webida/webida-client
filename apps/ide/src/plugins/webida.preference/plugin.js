@@ -25,28 +25,30 @@
 /* jshint unused:false */
 
 define([
+    'dojo/i18n!./nls/resource',
     'dojo/topic',
     'external/lodash/lodash.min',
     'plugins/project-configurator/project-info-service',
     'webida-lib/plugins/workbench/ui/promiseMap',
     'webida-lib/plugins/workspace/plugin',
-    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/locale',
     'webida-lib/util/path',
     './preference-manager'
 ], function (
+    i18n,
     topic,
     _,
     projectInfo,
     promiseMap,
     workspace,
-    Logger,
+    Locale,
     pathUtil,
     manager
 ) {
     'use strict';
 
+    var locale = new Locale(i18n);
     var MODULE_PATH_VIEW_CTRL = 'plugins/webida.preference/view-controller';
-    var logger = new Logger();
     var module = {};
 
     var workbenchItems = {
@@ -54,10 +56,16 @@ define([
     };
 
     var workspaceItems = {
-        'Preferences': ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByContext']
+        Preferences: ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByContext']
     };
 
     var managerInitialized = promiseMap.get('preference/load');
+
+    // for i18n
+    (function _convertMenuLocale() {
+        locale.convertMenuItem(workbenchItems, 'menu');
+        locale.convertMenuItem(workspaceItems, 'menu');
+    })();
 
     function _getContextInfo(paths) {
         var info = {
