@@ -116,7 +116,12 @@ define([
         postfix = postfix || '';
         for (item in menuItems) {
             if (menuItems.hasOwnProperty(item)) {
-                menuItems[item].alternateLabel = this.resources[prefix + item + postfix];
+                Object.defineProperty(menuItems[item], 'alternateLabel', {
+                    value: this.resources[prefix + item + postfix],
+                    writable: true,
+                    configurable: true,
+                    enumerable: false
+                });
             }
         }
         return menuItems;
