@@ -7,14 +7,14 @@
                 <h1></h1>
                 <div class="preference-override-box hidden">
                     <input id="preference-override" type="checkbox" data-dojo-type="dijit/form/CheckBox" />
-                    <label for="preference-override">Override Preferences</label>
+                    <label for="preference-override" data-message="labelOverridePreference">Override Preferences</label>
                 </div>
             </div>
             <div class="preferenceview-sub-content" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center'">
             </div>
             <div class="preferenceview-sub-buttons" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'">
-                <button id="restore-preference" data-dojo-type="dijit/form/Button">Restore Default</button>
-                <button id="apply-preference" data-dojo-type="dijit/form/Button">Apply</button>
+                <button id="restore-preference" data-dojo-type="dijit/form/Button" data-message="labelRestoreDefault">Restore Default</button>
+                <button id="apply-preference" data-dojo-type="dijit/form/Button" data-message="labelApply">Apply</button>
             </div>
         </div>
     </div>

@@ -22,9 +22,6 @@
 
 define([
     'external/lodash/lodash.min',
-    'webida-lib/util/genetic',
-    './PreferencePage',
-    'dojo/aspect',
     'dijit/registry',
     'dijit/form/CheckBox',
     'dijit/form/ComboBox',
@@ -32,13 +29,15 @@ define([
     'dijit/form/HorizontalSlider',
     'dijit/form/HorizontalRule',
     'dijit/form/HorizontalRuleLabels',
+    'dojo/aspect',
+    'dojo/i18n!../nls/resource',
     'dojo/store/Memory',
+    'webida-lib/util/genetic',
+    'webida-lib/util/locale',
+    './PreferencePage',
     'xstyle/css!../style/simple-page-style.css'
 ], function (
     _,
-    genetic,
-    PreferencePage,
-    aspect,
     reg,
     CheckBox,
     ComboBox,
@@ -46,9 +45,16 @@ define([
     HorizontalSlider,
     HorizontalRule,
     HorizontalRuleLabels,
-    Memory
+    aspect,
+    i18n,
+    Memory,
+    genetic,
+    Locale,
+    PreferencePage
 ) {
     'use strict';
+
+    var locale = new Locale(i18n);
 
     function SimplePage(store, pageData) {
         PreferencePage.apply(this, arguments);
@@ -64,7 +70,7 @@ define([
                 switch (type) {
                     case 'checkbox':
                         if (!_.isBoolean(value)) {
-                            invalidMsg = 'The value of \'' + opt.name + '\' should be boolean';
+                            invalidMsg = locale.formatMessage('validationBooleanValue', opt);
                         }
                         break;
                     case 'select':
@@ -77,19 +83,18 @@ define([
                             }
                         }
                         if (!matched) {
-                            invalidMsg = 'The value of \'' + opt.name +
-                                '\' should be one of [' + opt.items.join(',') + ']';
+                            invalidMsg = locale.formatMessage('validationEnumValue',
+                                {name: opt.name, enumeration: opt.items.join(',')});
                         }
                         break;
                     case 'slider':
                         if (opt.min > value || opt.max < value) {
-                            invalidMsg = 'The value of \' + opt.name + \' should be a number between ' +
-                                opt.min + ' and ' + opt.max;
+                            invalidMsg = locale.formatMessage('validationTextValue', opt);
                         }
                         break;
                     case 'text':
                         if (!_.isString(value)) {
-                            invalidMsg = 'The value of \'' + opt.name + '\' should be string';
+                            invalidMsg = locale.formatMessage('validationTextValue', opt);
                         }
                         break;
                 }
@@ -278,7 +283,7 @@ define([
                         added.set('disabled', !newVal);
                     }, true);
                 } else {
-                    throw new Error('No check-box option declared yet with that name "' + opt.enabledOn + '"');
+                    throw new Error(locale.formatMessage('messageFailNoEnabledOn', opt));
                 }
             }
             return added;
