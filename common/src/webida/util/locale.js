@@ -89,7 +89,7 @@ define([
         try {
             formatted = (formatValues) ? string.substitute(message, formatValues) : message;
         } catch (e) {
-            logger.error(e);
+            logger.error('Failed to format message, \'' + message + '\', with ' + JSON.stringify(formatValues), e);
         }
         return formatted;
     };
