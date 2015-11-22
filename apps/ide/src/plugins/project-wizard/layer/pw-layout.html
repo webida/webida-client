@@ -25,7 +25,7 @@
         cursor: pointer;
         border: solid 1px #43494d;
     }
-    
+
     /* Scrollbar */
     .scrollbar {
         margin: 9px 0 0 0;
@@ -51,7 +51,7 @@
         width: 100%;
         height: 20px;
     }
-    
+
     /* Effects */
     .effects {
         height: 130px;
@@ -94,10 +94,10 @@
     <div id="pwQuickStart" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "Quick Start", selected: true'>
         <div id="pwQuickStartPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'">
             <div>
-                <label>Name: </label>
+                <label id="pwQuickStartProjectNameLabel" data-message="Name"></label>
                 <input id="pwQuickStartProjectName" placeHolder="" /><br />
                 <br />
-                <label>Type: </label>
+                <label id="pwQuickStartProjectTypeLabel" data-message="Type"></label>
                 <input type="radio" data-dojo-type="dijit/form/RadioButton" name="projectType" id="pwQuickStartProjectTypeWeb" checked value="Web"/> <label for="pwQuickStartProjectTypeWeb">Web</label>
                 <input type="radio" data-dojo-type="dijit/form/RadioButton" name="projectType" id="pwQuickStartProjectTypeService" value="Service" disabled/> <label for="pwQuickStartProjectTypeService">Service</label><br />
                 <br />
@@ -106,7 +106,7 @@
                     <legend><strong>Options</strong></legend>
                     <div>
                         <input id="pwQuickStartOptCordova" data-dojo-type='dijit/form/CheckBox' checked />
-                        <label id="pwQuickStartOptCordovaLabel" for="pwQuickStartOptCordova">Enable Cordova support</label>
+                        <label id="pwQuickStartOptCordovaLabel" for="pwQuickStartOptCordova" data-message=''></label>
                     </div>
                 </fieldset>
 
@@ -134,7 +134,7 @@
                             <span class="fa fa-chevron-right"></span>
                         </a>
                     </div>
-                    <button id="pwQuickStartGuideStart" class="pull-right" data-dojo-type="dijit/form/Button">Start tour</button>
+                    <button id="pwQuickStartGuideStart" class="pull-right" data-dojo-type="dijit/form/Button" data-message="">Start tour</button>
                 </div>
             </div>
         </div>
@@ -146,11 +146,11 @@
             <div id='labelTopPane' data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
                 <img src='plugins/project-wizard/images/wizard_title.png' alt='project wizard'>
             </div> <!-- Top pane closed -->
-            
+
             <!-- Left pane -->
             <div id="pw-category-pane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'">
                 <div id="pw-category-label-pane">
-                    <label id="pw-category-label">Category</label>
+                    <label id="pw-category-label" data-message="Category"></label>
                 </div>
                 <div id="pw-category-tree-pane">
                     <div id="pw-category-tree" class="pw-pane" data-dojo-type="dijit/layout/ContentPane"></div>
@@ -158,20 +158,20 @@
             </div>
             <div id="pw-template-pane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'left'">
                 <div id="pw-template-label-pane">
-                    <label id="pw-template-label">Templates</label>
+                    <label id="pw-template-label" data-message="Templates"></label>
                 </div>
                 <div id="pw-template-tree-pane">
                     <div id="pw-template-tree" class="pw-pane" data-dojo-type="dijit/layout/ContentPane"></div>
                 </div>
             </div>
             <!-- Left pane closed -->
-            
+
             <!-- Center pane -->
             <div id='pw-description-pane' data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="region:'center'">
                 <div id="pw-description-label-pane">
-                    <label id="pw-description-label">Description</label>
+                    <label id="pw-description-label" data-message="Description"></label>
                 </div>
-                
+
                 <div id="pw-description-imageAndDesc-pane">
                     <div id="pw-description-images-pane">
                         <div id="pw-previewFrame" class="frame effects">
@@ -185,27 +185,27 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div id="pw-descDescPane" class="pw-pane">
                     </div>
                 </div>
             </div> <!-- Center pane closed -->
-            
+
             <!-- Bottom pane -->
             <div id="pw-bottomPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'bottom'">
                 <div id="pw-projectNameAndLocationPane">
-                    <label id="pw-projectNameLb">Name: </label>
+                    <label id="pw-projectNameLb" data-message="Name">Name: </label>
                     <input id="pw-projectNameIp" placeHolder="" />
-                    <label id="pw-projectTargetLocationLb">Location: </label>
+                    <label id="pw-projectTargetLocationLb" data-message="Location"> </label>
                     <input id="pw-projectTargetLocationIp" placeHolder="" disabled />
                     <div id="pw-projectOptCordova">
                         <!-- TODO: Enable after template modification and org migration -->
                         <input id="pw-projectOptCordovaIp" type="checkbox" disabled />
-                        <label id="pw-projectOptCordovaLb" for="pw-projectOptCordova">Enable Cordova support</label>
+                        <label id="pw-projectOptCordovaLb" for="pw-projectOptCordova" data-message=""></label>
                     </div>
                 </div>
             </div> <!-- Bottom pane closed -->
-            
+
             <!-- preview popup -->
             <div id="preview-popup">
                 <div class="popup-overlay">
