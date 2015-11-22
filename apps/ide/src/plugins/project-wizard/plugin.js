@@ -24,17 +24,21 @@
  *   plugins/project-wizard/plugin.js
  */
 
-define(['webida-lib/app',            // ide
+define([
+        'dojo/i18n!./nls/resource',
+        'webida-lib/app',            // ide
         'webida-lib/webida-0.3',     // webida
-        'webida-lib/util/path',     // webida
+        'webida-lib/util/locale',   // webida util
+        'webida-lib/util/path',     // webida util
         'webida-lib/plugins/workbench/plugin',
         'plugins/webida.ide.project-management.run/run-configuration-manager',     //FIXME remove
         'webida-lib/plugins/workspace/plugin',
         'dojo/topic',
         './lib/util'
        ],
-function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, Util) {
+function (i18n, ide, webida, Locale, pathUtil, workbench, runConfigurationManager, wv, topic, Util) {
     'use strict';
+    var localizer = new Locale(i18n);
 
     // Commented because of Jshint error
      /*
@@ -54,7 +58,7 @@ function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, 
 
         return true;
     }
-    
+
     function isRunnablePath(path) {
         var projectPath = pathUtil.getProjectRootPath(path);
         return isRunnableProjectPath(projectPath);
@@ -86,6 +90,10 @@ function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, 
             if (Util.getProjectPath(wv.getSelectedPaths()) !== null) {
                 items = $.extend(itemsTest, itemsBuild);
             }
+
+            // items should be localized after building items object
+            localizer.convertMenuItem(items, '[menu] ');
+
             var contextPaths = [];
             var context = workbench.getContext();
             if (context && context.paths) {
@@ -108,6 +116,7 @@ function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, 
             var items = {
                 '&Project' : [ 'cmnd', 'plugins/project-wizard/pw-commands', 'newProject' ] // 'doIt' - old impl.
             };
+            localizer.convertMenuItem(items, '[menu] ');
             return items;
         },
 
@@ -115,6 +124,7 @@ function (ide, webida, pathUtil, workbench, runConfigurationManager, wv, topic, 
             var items = {
                 'Project': [ 'cmnd', 'plugins/project-wizard/pw-commands', 'newProject' ]
             };
+            localizer.convertMenuItem(items, '[menu] ');
             return items;
         }
     };

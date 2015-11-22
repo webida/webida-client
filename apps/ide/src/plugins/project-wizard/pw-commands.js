@@ -26,7 +26,9 @@
 
 define(['webida-lib/app',
         'webida-lib/webida-0.3',
+        'webida-lib/util/locale',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+        'dojo/i18n!./nls/resource',
         'dojo/topic',
         'dijit/registry',
         'dijit/Tooltip',
@@ -36,10 +38,11 @@ define(['webida-lib/app',
         './messages',
         './lib/util'
        ],
-function (ide, webida, ButtonedDialog, topic, reg, Tooltip, bootstrap, tplLayout, main, Messages, Util) {
+function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootstrap, tplLayout, main, Messages, Util) {
     'use strict';
 
     var win;
+    var localizer  = new Locale(i18n);
 
     /** Deprecated */
     function createProject() {
@@ -71,16 +74,16 @@ function (ide, webida, ButtonedDialog, topic, reg, Tooltip, bootstrap, tplLayout
         var dlg = new ButtonedDialog({
             buttons: [
                 { id: 'pwCreate',
-                  caption: 'Create',
+                  caption: i18n.buttonCreate,
                   methodOnClick: 'onCreate'
                 },
                 { id: 'pwCancel',
-                  caption: 'Cancel',
+                  caption: i18n.buttonCancel,
                   methodOnClick: 'hide'
                 }
             ],
             methodOnEnter: 'onCreate',
-            title: 'New Project',
+            title: i18n.titleNewProject,
             refocus: false,
 
             tour: null,
@@ -130,12 +133,12 @@ function (ide, webida, ButtonedDialog, topic, reg, Tooltip, bootstrap, tplLayout
                     Util.startTour([{
                         element: '#pwQuickStartGuideEmulate',
                         placement: 'top',
-                        title: 'Webida Quick Guide',
+                        title: i18n.titleQuickGuide,
                         content: Messages.GUIDE_EMULATE
                     }, {
                         element: '#pwQuickStartGuideDevice',
                         placement: 'right',
-                        title: 'Webida Quick Guide',
+                        title: i18n.titleQuickGuide,
                         content: Messages.GUIDE_CORDOVA
                     }]).then(function (tour) {
                         dlg.tour = tour;
@@ -163,6 +166,24 @@ function (ide, webida, ButtonedDialog, topic, reg, Tooltip, bootstrap, tplLayout
 
         dlg.set('doLayout', false);
         dlg.setContentArea(tplLayout);
+
+        // after setting template layout, now we can localize dialog
+
+        localizer.convertMessage('pwQuickStartProjectNameLabel');
+        localizer.convertMessage('pwQuickStartProjectNameType');
+        localizer.convertMessage('pwQuickStartProjectTypeWeb', 'value');
+        localizer.convertMessage('pwQuickStartProjectTypeService', 'value');
+        localizer.convertMessage('pwQuickStartOptCordovaLabel');
+        localizer.convertMessage('pwQuickStartGuideStart');
+
+        localizer.convertMessage('pw-category-label');
+        localizer.convertMessage('pw-template-label');
+        localizer.convertMessage('pw-description-label');
+        localizer.convertMessage('pw-projectNameLb');
+        localizer.convertMessage('pw-projectTargetLocationLb');
+        localizer.convertMessage('pw-projectOptCordovaLb');
+
+        // after setting template layout, now we can localize dialog
         dlg.show();
     } // newProject
 
