@@ -19,56 +19,60 @@
  * @module webida.ide.project-management.run.viewController
  */
 define([
-    'webida-lib/app',
-    'webida-lib/plugins/workbench/plugin',
-    'webida-lib/plugins/workspace/plugin',
-    'webida-lib/plugin-manager-0.1',
-    './run-configuration-manager',
-    './delegator',
-    'dojo/topic',
+    'dijit/Tree',
+    'dijit/form/Select',
+    'dijit/layout/ContentPane',
+    'dijit/registry',
+    'dijit/tree/ForestStoreModel',
+    'dojo/i18n!./nls/resource',
     'dojo/keys',
     'dojo/on',
     'dojo/store/Memory',
     'dojo/store/Observable',
-    'dijit/registry',
+    'dojo/topic',
+    'external/lodash/lodash.min',
+    'popup-dialog',
+    'webida-lib/app',
+    'webida-lib/plugin-manager-0.1',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/locale',
+    'webida-lib/util/notify',
     'webida-lib/util/path',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog', // ButtonedDialog
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
-    'dijit/layout/ContentPane',
-    'dijit/Tree',
-    'dijit/tree/ForestStoreModel',
-    'dijit/form/Select',
-    'popup-dialog',
-    'text!./layout/run-configuration.html',
+    './delegator',
+    './run-configuration-manager',
     'text!./layout/default-run-configuration.html',
-    'external/lodash/lodash.min',
-    'webida-lib/util/notify',
+    'text!./layout/run-configuration.html',
     'xstyle/css!./style/style.css'
 ], function (
-    ide,
-    workbench,
-    workspace,
-    pluginManager,
-    runConfManager,
-    delegator,
-    topic,
+    Tree,
+    Select,
+    ContentPane,
+    registry,
+    ForestStoreModel,
+    i18n,
     keys,
     on,
     Memory,
     Observable,
-    registry,
+    topic,
+    _,
+    PopupDialog,
+    ide,
+    pluginManager,
+    workbench,
+    workspace,
+    Locale,
+    notify,
     pathUtil,
     ButtonedDialog,
     FileDialog,
-    ContentPane,
-    Tree,
-    ForestStoreModel,
-    Select,
-    PopupDialog,
-    windowTemplate,
+    delegator,
+    runConfManager,
     contentTemplate,
-    _,
-    notify
+    windowTemplate
 ) {
     'use strict';
 
@@ -83,6 +87,8 @@ define([
     var EVENT_TYPE_SAVE = 'save';
     var EVENT_TYPE_STATE = 'state';
 
+    var locale = new Locale(i18n);
+
     var extensionPoints = {
         RUN_CONFIGURATION_TYPE: 'webida.ide.project-management.run:type',
         RUN_CONFIGURATION: 'webida.ide.project-management.run:configuration',
@@ -95,7 +101,7 @@ define([
             return !type.hidden;
         });
         // add default type
-        return [{id: '', name: 'General Web Application'}].concat(availableTypesInUI);
+        return [{id: '', name: i18n.labelGeneralWebApplication}].concat(availableTypesInUI);
     }
 
     current = {
@@ -159,7 +165,7 @@ define([
         var unsavedConfs = _.filter(runConfs, function (runConf) {
             return runConf._dirty;
         });
-        return _.isEmpty(unsavedConfs) ? '' : 'not been saved';
+        return _.isEmpty(unsavedConfs) ? '' : i18n.messageFailSaveConfiguration;
     }
 
     /**
@@ -241,19 +247,19 @@ define([
         var caption;
         switch (mode) {
             case runConfManager.MODE.RUN_MODE:
-                title = 'Run Configurations';
-                caption = 'Run';
+                title = i18n.titleRunConfiguration;
+                caption = i18n.labelRunConfiguration;
                 break;
             case runConfManager.MODE.DEBUG_MODE:
-                title = 'Debug Configurations';
-                caption = 'Debug';
+                title = i18n.titleDebugConfiguration;
+                caption = i18n.labelDebugConfiguration;
                 break;
         }
         _setSelection(defaultRun || _.first(_.toArray(runConfManager.getAll())));
         ui.dialog = new ButtonedDialog({
             buttons: [
                 {id: 'dialogRunButton', caption: caption, methodOnClick: 'runConf'},
-                {id: 'dialogOkButton', caption: 'Close', methodOnClick: 'okOnRunConf'}
+                {id: 'dialogOkButton', caption: i18n.labelClose, methodOnClick: 'okOnRunConf'}
             ],
             methodOnEnter: null,
             okOnRunConf: function () {
@@ -261,7 +267,8 @@ define([
                 if (unSaveMsg) {
                     PopupDialog.yesno({
                         title: title,
-                        message: title + 'has ' + unSaveMsg + '. Are you sure you want to close this dialog?',
+                        message: locale.formatMessage('messageConfirmCloseDialog',
+                            {title: title, unSaveMsg: unSaveMsg}),
                         type: 'info'
                     }).then(function () {
                         ui.dialog.hide();
@@ -289,7 +296,6 @@ define([
             title: title,
             style: 'width: 800px',
             onHide: function () {
-                console.debug('ui.dialog onHide', arguments);
                 topic.publish('webida.ide.project-management.run:configuration.hide');
                 runConfManager.flushRunConfigurations(function () {
                     windowOpened = false;
@@ -306,8 +312,8 @@ define([
                 function _deleteConfiguration() {
                     if (current.runConf) {
                         PopupDialog.yesno({
-                            title: 'Delete ' + title,
-                            message: 'Are you sure you want to delete this configuration?',
+                            title: locale.formatMessage('titleDeleteDialog', {title: title}),
+                            message: i18n.messageConfirmDeleteConfiguration,
                             type: 'info'
                         }).then(function () {
                             delegator.deleteConf(current.runConf.name, function (error) {
@@ -318,7 +324,7 @@ define([
                                 }
                             });
                         }, function () {
-                            notify.info('Deletion canceled');
+                            notify.info(i18n.messageCancelDelete);
                         });
                     }
                 }
@@ -348,7 +354,7 @@ define([
                         if (!_.isEmpty(dirty)) {
                             PopupDialog.yesno({
                                 title: title,
-                                message: 'You will may lose unsaved data. Are you sure to continue?',
+                                message: i18n.messageConfirmClose,
                                 type: 'info'
                             }).then(function () {
                                 _addContentArea(new ContentPane());
@@ -391,6 +397,7 @@ define([
         });
         ui.dialog.set('doLayout', true);
         ui.dialog.setContentArea(windowTemplate);
+        locale.convertMessage(ui.dialog.domNode);
         ui.dialog.show();
 
         windowOpened = true;
@@ -462,7 +469,7 @@ define([
         var runConf = currentRunConf;
         var project = ui.forms.select.get('value');
         if (!runConf || !project || !pathInputBox) {
-            notify.error('Cannot find root path');
+            notify.error(i18n.messageFailFindRoot);
             return;
         }
 
@@ -479,7 +486,7 @@ define([
             mount: ide.getFSCache(),
             root: root,
             initialSelection: [initialPath],
-            title: 'Select the Main File to Run',
+            title: i18n.titleSelectMain,
             singular: true,
             dirOnly: false,
             showRoot: false
@@ -487,7 +494,7 @@ define([
         dlg.open(function (fileSelected) {
             if (fileSelected) {
                 if (fileSelected.length <= 0) {
-                    notify.warning('Select a file.');
+                    notify.warning(i18n.validationNoSelectedFile);
                     return;
                 }
                 var pathSplit = fileSelected[0].split(root);
@@ -501,7 +508,7 @@ define([
                     var isValid = !_checkInvalidField();
                     topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {isValid: isValid, isDirty: true});
                 } else {
-                    notify.warning('Select a file.');
+                    notify.warning(i18n.validationNoSelectedFile);
                 }
             }
         });
@@ -519,17 +526,16 @@ define([
             };
 
         if (!runConfToCheck.name) {
-            return 'Enter a name.';
+            return i18n.validationNoName;
         }
         if (!runConfToCheck.path) {
-            return 'Select a path.';
+            return i18n.validationNoPath;
         }
         if (!PATTERN_QUERY_STRING.test(runConfToCheck.argument)) {
-            return 'Invalid query string';
+            return i18n.validationInvalidQueryString;
         }
 
         currentRunConf = _.extend(currentRunConf, runConfToCheck);
-
         return;
     }
 
@@ -581,7 +587,7 @@ define([
 
         ide.getWorkspaceInfo(function (err, workspaceInfo) {
             if (err) {
-                notify.error('failed to get project list');
+                notify.error(i18n.messageFailGetProjects);
             } else {
                 projects = workspaceInfo.projects.map(function (project) {
                     return {
@@ -594,6 +600,7 @@ define([
                 ui.forms.select.set('value', runConf.project);
             }
         });
+        locale.convertMessage(child);
     }
 
     module.newConf = function (content, runConf, callback) {
