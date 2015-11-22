@@ -23,19 +23,22 @@
 */
 
 define([
-    'dojo/string'
+    'dojo/string',
+    'webida-lib/util/logger/logger-client'
 ], function (
-    string
+    string,
+    Logger
 ) {
     'use strict';
 
     var DEFAULT_ATTR_NAME = 'data-message';
+    var logger = new Logger();
 
     function _setMessage(resources, attrName, domNode) {
         var messageAttr = attrName || DEFAULT_ATTR_NAME;
         $('[' + messageAttr + ']', domNode).each(function () {
             var key = $(this).attr(messageAttr);
-            $(this).text.call($(this), resources[key]);
+            $(this).text(resources[key]);
         });
     }
 
@@ -46,7 +49,7 @@ define([
     /**
      * Set messages to the DOM elements according to current locale option
      *
-     * @param {{Element|Jquery}} [domNode] - Top level DOM node element to set message
+     * @param {{Element|Jquery|string}} [domNode] - Object or id for Top level DOM node element object to set message
      * @param {string} [attrName=data-message] - attribute name of any element that has messageKey  of
      *      the resource object as its value. It's optional parameter. And default value is 'data-message'.
      *
@@ -77,12 +80,46 @@ define([
      * Get formatted message
      *
      * @param {string} messageKey - key name of the resource object
-     * @param {object} [formatValues] - variables for formatting. If it is not set, it will raw message.
+     * @param {object} [formatValues] - variables for formatting. If it is not set, it will return raw message.
      * @returns {string} - formatted message
      */
     LocaleUtil.prototype.formatMessage = function (messageKey, formatValues) {
         var message = this.resources[messageKey] || '';
-        return (formatValues) ? string.substitute(message, formatValues) : message;
+        var formatted = message;
+        try {
+            formatted = (formatValues) ? string.substitute(message, formatValues) : message;
+        } catch (e) {
+            logger.error(e);
+        }
+        return formatted;
+    };
+
+    /**
+     * Convert display name of menu items by using the property, `alternateLabel`
+     *
+     * @param {object} menuItems - menu item object to convert
+     * @param {string} [prefix] - messageKey prefix followed by the name of menu item
+     * @param {string} [postfix] - messageKey postfix follows the name of menu item
+     *
+     *  e.g. If you have the menu item like below, You can set `alternateLabel` by using convertMenuItem method.
+     *  <pre>
+     *   var resource = {..., 'menu&Menu1': 'Menu1', ...};
+     *   var menuItems = {
+     *      '&Menu1': ['cmnd', 'plugins/somePlugin/plugin', 'doMenu1']
+     *   };
+     *   locale.convertMenuItem(menuItems, 'menu');
+     *  </pre>
+     */
+    LocaleUtil.prototype.convertMenuItem = function (menuItems, prefix, postfix) {
+        var item;
+        prefix = prefix || '';
+        postfix = postfix || '';
+        for (item in menuItems) {
+            if (menuItems.hasOwnProperty(item)) {
+                menuItems[item].alternateLabel = this.resources[prefix + item + postfix];
+            }
+        }
+        return menuItems;
     };
 
     /**
