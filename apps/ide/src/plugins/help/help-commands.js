@@ -45,38 +45,48 @@ define(['require'], function (require) {
 
     function showAbout() {
         require(['text!./about.html',
-                 'text!/package.json',
-                 'webida-lib/plugins/workbench/plugin',
-                 'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'],
-                function (aboutHtml, text, workbench, ButtonedDialog) {
+                'text!./package.json',
+                'dojo/i18n!./nls/resource',
+                'webida-lib/plugins/workbench/plugin',
+                'webida-lib/util/locale',
+                'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'
+        ],
+        function (aboutHtml, text, i18n, workbench, Locale, ButtonedDialog) {
+            var localizer = new Locale(i18n);
             var pane = new ButtonedDialog({
                 buttons: [],
                 methodOnEnter: null,
-
-                title: 'About Webida IDE',
+                title: i18n.aboutDialogTitle,
                 refocus: false,
                 onHide: function () {
                     pane.destroyRecursive();
                     workbench.focusLastWidget();
                 }
-
             });
-            pane.setContentArea(aboutHtml);
 
-            var data = (text ? $.parseJSON(text) : '');
-            if (!!data && !!data.buildnumber) {
-                var buildId = data.buildid;
-                var underbarPos = buildId.indexOf('_');
-                var date = buildId.substring(0, underbarPos);
-                var time = buildId.substr(underbarPos + 1);
-                time = time.replace(/-/g, ':');
-                $('#version').text('Version: ' + version + ' (' + data.buildnumber + ')');
-                $('#buildInfo').html('Build created: ' + date + ' ' + time +
-                                     '<br>Commit-id: ' + data.buildcommitid);
-            } else {
-                $('#version').text('Version: ' + version + ' (Prebuild)');
-                $('#buildInfo').html('Build created: Unknown' + '<br>Commit-id: Unknown');
-            }
+            var parseBuildTime = function (buildId) {
+                if (!buildId) {
+                    return 'Unknown';
+                }
+                var arr = buildId.split('_');
+                return arr[0] + ' ' + arr[1].replace(/-/g , ':');
+            };
+
+            // TODO : fix package.json properties to buidInfo format
+            var data = text ? JSON.parse(text) : {};
+            var versionInfo = {
+                version : data.version || version,
+                buildNumber: data.buildnumber || 'Prebuild',
+                buildTime: parseBuildTime(data.buildid),
+                commitId: data.buildcommitid || 'Unknown'
+            };
+
+            pane.setContentArea(aboutHtml);
+                        
+            $('#version').text(localizer.formatMessage('messageVersion', versionInfo));
+            $('#buildInfo').html(
+                localizer.formatMessage('messageBuiltAt', versionInfo) +
+                '<br>' + localizer.formatMessage('messageBuildCommitId', versionInfo));
 
             pane.show();
         });
