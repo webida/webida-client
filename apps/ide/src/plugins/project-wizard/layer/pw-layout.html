@@ -94,19 +94,26 @@
     <div id="pwQuickStart" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='title: "Quick Start", selected: true'>
         <div id="pwQuickStartPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'bottom'">
             <div>
-                <label id="pwQuickStartProjectNameLabel" data-message="Name"></label>
+                <label id="pwQuickStartProjectNameLabel" for="pwQuickStartProjectName" data-message="pwQuickStartProjectNameLabel"></label>
                 <input id="pwQuickStartProjectName" placeHolder="" /><br />
                 <br />
-                <label id="pwQuickStartProjectTypeLabel" data-message="Type"></label>
-                <input type="radio" data-dojo-type="dijit/form/RadioButton" name="projectType" id="pwQuickStartProjectTypeWeb" checked value="Web"/> <label for="pwQuickStartProjectTypeWeb">Web</label>
-                <input type="radio" data-dojo-type="dijit/form/RadioButton" name="projectType" id="pwQuickStartProjectTypeService" value="Service" disabled/> <label for="pwQuickStartProjectTypeService">Service</label><br />
+                <label id="pwQuickStartProjectTypeLabel" data-message="pwQuickStartProjectTypeLabel"></label>
+                <input id="pwQuickStartProjectTypeWeb" type="radio" data-dojo-type="dijit/form/RadioButton" 
+                       name="projectType" checked value="Web" /> 
+                    <label id="pwQuickStartProjectTypeWebLabel" for="pwQuickStartProjectTypeWeb" 
+                        data-message="pwQuickStartProjectTypeWebLabel"></label>
+                <input id="pwQuickStartProjectTypeService" type="radio" data-dojo-type="dijit/form/RadioButton" 
+                       name="projectType" value="Service" disabled/> 
+                    <label id="pwQuickStartProjectTypeServiceLabel" for="pwQuickStartProjectTypeService"
+                        data-message="pwQuickStartProjectTypeServiceLabel"></label>
+                <br />
                 <br />
 
                 <fieldset class="group-border">
                     <legend><strong>Options</strong></legend>
                     <div>
                         <input id="pwQuickStartOptCordova" data-dojo-type='dijit/form/CheckBox' checked />
-                        <label id="pwQuickStartOptCordovaLabel" for="pwQuickStartOptCordova" data-message=''></label>
+                        <label id="pwQuickStartOptCordovaLabel" for="pwQuickStartOptCordova" data-message="pwQuickStartOptCordovaLabel" />
                     </div>
                 </fieldset>
 
@@ -134,7 +141,7 @@
                             <span class="fa fa-chevron-right"></span>
                         </a>
                     </div>
-                    <button id="pwQuickStartGuideStart" class="pull-right" data-dojo-type="dijit/form/Button" data-message="">Start tour</button>
+                    <button id="pwQuickStartGuideStart" class="pull-right" data-dojo-type="dijit/form/Button" data-message="pwQuickStartGuideStart">Start tour</button>
                 </div>
             </div>
         </div>
@@ -194,14 +201,14 @@
             <!-- Bottom pane -->
             <div id="pw-bottomPane" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'bottom'">
                 <div id="pw-projectNameAndLocationPane">
-                    <label id="pw-projectNameLb" data-message="Name">Name: </label>
+                    <label id="pw-projectNameLb" data-message="pw-projectNameLb"></label>
                     <input id="pw-projectNameIp" placeHolder="" />
-                    <label id="pw-projectTargetLocationLb" data-message="Location"> </label>
+                    <label id="pw-projectTargetLocationLb" data-message="pw-projectTargetLocationLb"></label>
                     <input id="pw-projectTargetLocationIp" placeHolder="" disabled />
                     <div id="pw-projectOptCordova">
                         <!-- TODO: Enable after template modification and org migration -->
                         <input id="pw-projectOptCordovaIp" type="checkbox" disabled />
-                        <label id="pw-projectOptCordovaLb" for="pw-projectOptCordova" data-message=""></label>
+                        <label id="pw-projectOptCordovaLb" for="pw-projectOptCordova" data-message="pw-projectOptCordovaLb"></label>
                     </div>
                 </div>
             </div> <!-- Bottom pane closed -->

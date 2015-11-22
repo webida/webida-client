@@ -171,8 +171,8 @@ function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootst
 
         localizer.convertMessage('pwQuickStartProjectNameLabel');
         localizer.convertMessage('pwQuickStartProjectNameType');
-        localizer.convertMessage('pwQuickStartProjectTypeWeb', 'value');
-        localizer.convertMessage('pwQuickStartProjectTypeService', 'value');
+        localizer.convertMessage('pwQuickStartProjectTypeWebLabel');
+        localizer.convertMessage('pwQuickStartProjectTypeServiceLabel');
         localizer.convertMessage('pwQuickStartOptCordovaLabel');
         localizer.convertMessage('pwQuickStartGuideStart');
 
@@ -183,7 +183,6 @@ function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootst
         localizer.convertMessage('pw-projectTargetLocationLb');
         localizer.convertMessage('pw-projectOptCordovaLb');
 
-        // after setting template layout, now we can localize dialog
         dlg.show();
     } // newProject
 
