@@ -1244,7 +1244,7 @@ define([
                 return;
             }
             var persistence = newPart.getDataSource().getPersistence();
-            var path = persistence.getPersistenceId();
+            var path = persistence.getPath();
             if (syncingWithEditor) {
                 expandAncestors(path).then(function (result) {
                     if (result === true) {
