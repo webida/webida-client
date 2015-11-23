@@ -25,11 +25,15 @@
 
 // @formatter:off
 define([
+    'dojo/i18n!../nls/resource',
+    'dojo/string',
     'dojo/topic',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'
 ], function (
+    i18n,
+    string,     
     topic,
     genetic, 
     Logger,
@@ -59,13 +63,13 @@ define([
             var dialog = new ButtonedDialog({
                 title: 'Unsaved Changes in the File',
                 buttons: [{
-                    caption: 'Save and ' + title,
+                    caption: string.substitute(i18n.unsavedChangedDialogSaveAnd, {title: title}),
                     methodOnClick: 'saveAndAction'
                 }, {
-                    caption: title + ' without Saving',
+                    caption: string.substitute(i18n.unsavedChangedDialogcloseWithoutSave, {title: title}),
                     methodOnClick: 'closeWithoutSave'
                 }, {
-                    caption: 'Cancel',
+                    caption: i18n.unsavedChangedDialogCancel,
                     methodOnClick: 'canceled'
                 }],
                 methodOnEnter: 'saveAnd' + title,
