@@ -45,7 +45,7 @@ define(['require'], function (require) {
 
     function showAbout() {
         require(['text!./about.html',
-                'text!./package.json',
+                'text!/package.json',
                 'dojo/i18n!./nls/resource',
                 'webida-lib/plugins/workbench/plugin',
                 'webida-lib/util/locale',
