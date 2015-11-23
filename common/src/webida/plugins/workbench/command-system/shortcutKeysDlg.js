@@ -32,6 +32,7 @@ define(['external/lodash/lodash.min',    // _
         'dojo/dom-style',                   // domStyle
         'dojo/dom-attr',                    // domAttr
         'dojo/dom-construct',               // domConstruct
+        'dojo/i18n!../nls/resource',    //i18n
         'dojo/parser',                      // parser
         'dojo/_base/declare',               // declare
         'dojo/_base/lang',                  // lang
@@ -63,6 +64,7 @@ function (_,
           domStyle,
           domAttr,
           domConstruct,
+          i18n,
           parser,
           declare,
           lang,
@@ -386,10 +388,10 @@ function (_,
             // create dialog
             infoDlg = new ButtonedDialog({
                 buttons: [ { id: 'shortcutsDlgCloseButton',
-                            caption: 'Close',
+                            caption: i18n.shortcutsDialogClose,
                             methodOnClick: 'hide' } ],
                 methodOnEnter: null,
-                title: 'Shortcuts',
+                title: i18n.shortcutsDialogTitle,
                 id: S_INFO_DLG_ID,
                 refocus: false,
                 autofocus: false,

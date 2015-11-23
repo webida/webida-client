@@ -1241,23 +1241,23 @@ define([
                 markup = markup.replace(/%MENU_HOLDER%/, menuItemTree._pluginName);
 
                 var dlg = new ButtonedDialog({
-                    title: 'Setting Shortcut Keys',
+                    title: i18n.shortcutKeysSettingDialogTitle,
                     refocus: false,
                     style: 'width: 400px',
 
                     buttons: [
                         {
-                            caption: 'Reset',
+                            caption: i18n.shortcutKeysSettingDialogReset,
                             id: 'wsks-reset-button',
                             methodOnClick: 'reset'
                         },
                         {
-                            caption: 'Save',
+                            caption: i18n.shortcutKeysSettingDialogSave,
                             id: 'wsks-save-button',
                             methodOnClick: 'save'
                         },
                         {
-                            caption: 'Cancel',
+                            caption: i18n.shortcutKeysSettingDialogCancel,
                             methodOnClick: 'hide'
                         }
                     ],
