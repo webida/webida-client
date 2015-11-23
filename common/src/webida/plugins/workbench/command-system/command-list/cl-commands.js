@@ -26,6 +26,7 @@
 
 define([
     'external/lodash/lodash.min',           // _
+    'dojo/i18n!./nls/resource',
     'dojo/store/Memory',          // Memory
     'dijit/registry',             // reg
     'webida-lib/plugin-manager-0.1',             // pm
@@ -34,13 +35,14 @@ define([
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'   // ButtonedDialog
 ],
 function (
-       _,
-        Memory,
-        reg,
-        pm,
-        markup,
-        notify,
-        ButtonedDialog
+    _,
+    i18n,
+    Memory,
+    reg,
+    pm,
+    markup,
+    notify,
+    ButtonedDialog
        )
 {
     'use strict';
@@ -76,7 +78,7 @@ function (
                 var val = cb.get('value');
                 val = (val && val.trim()) || '';
                 if (!val) {
-                    notify.error('Select a command');
+                    notify.error(i18n.notifySelectACommand);
                     return;
                 }
 
@@ -86,7 +88,7 @@ function (
                 var item = items && items[0];
 
                 if (!item) {
-                    notify.error('No such command');
+                    notify.error(i18n.notifyNoSuchCommand);                    
                     return;
                 }
 
@@ -161,7 +163,7 @@ function (
                                 addItemHierarchy(plugin, path + '/' + key, items[key], wholeItems[key]);
                             });
                         } else if (valType !== 'string') {
-                            notify.error('Invalid command specification from a plug-in');
+                            notify.error(i18n.notifyInvalidCommandSpecification);
                         }
 
                     }
