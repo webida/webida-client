@@ -26,7 +26,7 @@
 
 define([
     'external/lodash/lodash.min',           // _
-    'dojo/i18n!./nls/resource',
+    'dojo/i18n!../../nls/resource',
     'dojo/store/Memory',          // Memory
     'dijit/registry',             // reg
     'webida-lib/plugin-manager-0.1',             // pm
