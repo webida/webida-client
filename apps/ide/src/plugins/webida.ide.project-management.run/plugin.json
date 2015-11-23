@@ -35,7 +35,7 @@
                 "&Run" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+R" }, "desc" : "Run recent project" } } ],
                 "Run &with" : [ "enum", {
                        "toolbar": {
-                           "icons" : "./styles/images/icons/toolbar_runhistory.png",
+                           "icons" : "./styles/theme/webida-light/images/icons/toolbar_runhistory.png",
                            "tooltip" : "Run with",
                            "enabledOn":"toolbar.runas.enable",
                            "disabledOn":"toolbar.runas.disable"
@@ -45,7 +45,7 @@
                 "Debug" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+D" }, "desc" : "Debug recent project" } } ],
                 "Debug with" : [ "enum", {
                     "toolbar": {
-                        "icons" : "./styles/images/icons/toolbar_debug.png",
+                        "icons" : "./styles/theme/webida-light/images/icons/toolbar_debug.png",
                         "tooltip" : "Debug with",
                         "enabledOn":"toolbar.debugas.enable",
                         "disabledOn":"toolbar.debugas.disable"
