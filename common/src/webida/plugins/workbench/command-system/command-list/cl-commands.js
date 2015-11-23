@@ -63,12 +63,12 @@ function (
             buttons: [
                 {
                     id: 'cmdListDlgRunButton',
-                    caption: 'Run',
+                    caption: i18n.commandListDialogRun,
                     methodOnClick: 'runCommand'
                 },
                 {
                     id: 'cmdListDlgCancelButton',
-                    caption: 'Cancel',
+                    caption: i18n.commandListDialogCancel,
                     methodOnClick: 'hide'
                 }
             ],
@@ -102,7 +102,7 @@ function (
 
             id: CMD_LIST_DLG_ID,
             refocus: false,
-            title: 'Run Command from List',
+            title: i18n.commandListDialogTitle,
             style: 'width: 440px',
 
             // this dialog object destory in DOM

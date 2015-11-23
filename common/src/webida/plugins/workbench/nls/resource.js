@@ -1,5 +1,26 @@
 define({
     root: {
+        workspaceSelectionDialogTitle: 'Switch Workspace',
+        workspaceSelectionDialogOk: 'OK',
+        workspaceSelectionDialogCancel: 'Cancel',
+        
+        shortcutKeysSettingDialogTitle: 'Setting Shortcut Keys',
+        shortcutKeysSettingDialogReset: 'Reset',
+        shortcutKeysSettingDialogSave: 'Save',
+        shortcutKeysSettingDialogCancel: 'Cancel',
+        
+        shortcutsDialogTitle: 'Shortcuts',
+        shortcutsDialogClose: 'Close',
+        
+        unsavedChangedDialogTitle: 'Unsaved Changes in the File',
+        unsavedChangedDialogSaveAnd: 'Save and ${title}',
+        unsavedChangedDialogcloseWithoutSave: '${title} without Saving',
+        unsavedChangedDialogCancel: 'Cancel',
+        
+        commandListDialogTitle: 'Run Command from List',
+        commandListDialogRun: 'Run',
+        commandListDialogCancel:  'Cancel',
+        
         notifySelectACommand: 'Select a command',
         notifyNoSuchCommand: 'No such command',
         notifyInvalidCommandSpecification: 'Invalid command specification from a plug-in',

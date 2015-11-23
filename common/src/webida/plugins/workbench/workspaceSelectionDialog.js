@@ -26,12 +26,13 @@ define(['dojo/text!./workspaceSelectionDialog.html',
         'dijit/registry',
         'dojo/dom-construct',
         'dojo/data/ObjectStore',
+        'dojo/i18n!./nls/resource',
         'dojo/store/Memory',
         'dijit/Dialog',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog', // ButtonedDialog
         'dijit/form/Select',
         'webida-lib/app'],
-function (markup, registry, domConstruct, ObjectStore, Memory, Dialog,
+function (markup, registry, domConstruct, ObjectStore, i18n, Memory, Dialog,
            ButtonedDialog, Select, app) {
     'use strict';
     var dialog;
@@ -123,13 +124,13 @@ function (markup, registry, domConstruct, ObjectStore, Memory, Dialog,
             buttons: [
                 {
                     id: 'workspaceSelectionOkButton',
-                    caption: 'OK',
+                    caption: i18n.workspaceSelectionDialogOk,
                     methodOnClick: 'switchWorkspace',
                     disabledOnShow: true
                 },
                 {
                     id: 'workspaceSelectionCancelButton',
-                    caption: 'Cancel',
+                    caption: i18n.workspaceSelectionDialogCancel,
                     methodOnClick: 'hide'
                 }
             ],
@@ -146,7 +147,7 @@ function (markup, registry, domConstruct, ObjectStore, Memory, Dialog,
             },
 
             id: 'workspaceSelectionDialog',
-            title: 'Switch Workspace',
+            title: i18n.workspaceSelectionDialogTitle,
             onCancel: function () {
                 dialog.hide();
             },
