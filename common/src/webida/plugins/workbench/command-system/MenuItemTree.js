@@ -16,8 +16,10 @@
 
 define([
     'dojo/Deferred',
-    'dojo/when',
+    'dojo/i18n!./nls/resource',
     'dojo/promise/all',
+    'dojo/string',
+    'dojo/when',
     'external/lodash/lodash.min',
     'webida-lib/util/notify',
     'plugins/webida.preference/preference-service-factory',
@@ -27,8 +29,10 @@ define([
     'webida-lib/util/logger/logger-client'
 ], function (
     Deferred,
-    when,
+    i18n,    
     all,
+    string,
+    when,
     _,
     notify,
     PreferenceFactory,
@@ -804,10 +808,11 @@ define([
                     switch (viableSCItems.length) {
                     case 0:  // why not just bubble up?
                         if (!skipInvoc && self._options.warnUnviableItems) {
-                            notify.warning('None of the commands "' + getCmdsStr(shortcutItems) +
-                                           '" bound to the shortcut "' + keys +
-                                           '" is viable in the current context of ' +
-                                           pluginName + '.');
+                            notify.warning(string.substitute(i18n.notifyNoCommandsBoundToTheShortcutViable, {
+                                cmd: getCmdsStr(shortcutItems),
+                                keys: keys,
+                                plugin: pluginName
+                            }));
                         }
 
                         break;
@@ -818,9 +823,11 @@ define([
                         }
                         break;
                     default:
-                        notify.error('More than one commands "' + getCmdsStr(viableSCItems) +
-                                     '" are bound to the shortcut "' +  keys +
-                                     '" in the current context of ' + pluginName + '.');
+                        notify.error(string.substitute(i18n.notifyMoreThanOneCommandsAreBoundToTheTheShortcut, {
+                            cmd: getCmdsStr(viableSCItems),
+                            keys: keys,
+                            plugin: pluginName
+                        }));
                     }
                 });
                  /* jshint unused:true */
@@ -950,8 +957,10 @@ define([
         //console.log('hina temp: invoke with itemPath = ' + itemPath);
 
         var item = getSubitem(this._wholeItems, itemPath);
-        if (!item) {
-            notify.error('Error: no such item: ' + itemPath);
+        if (!item) {            
+            notify.error(string.substitute(i18n.notifyNoSuchItem, {
+                itemPath: itemPath
+            }));
             return;
         }
         if (_.isArray(item)) {
@@ -991,18 +1000,22 @@ define([
                                                 func.call(mod, arg1);
                                                 break;
                                             default:
-                                                notify.error('Invalid terminal item type: ' + item2[0]);
+                                                notify.error(string.substitute(i18n.notifyInvalidTerminalItemType, {
+                                                    itemType: item2[0]
+                                                }));
                                             }
                                         } else {
-                                            notify.error('No such function ' + item2[2] + ' in the module ' +
-                                                         item2[1]);
+                                            notify.error(string.substitute(i18n.notifyNoSuchFunctionInTheModule, {
+                                                func: item2[2],
+                                                module: item2[1]
+                                            }));
                                         }
                                     });
                                 } else if (item2[1] || item2[2]) {
-                                    notify.error('The viable item is not a valid terminal menu item');
+                                    notify.error(i18n.notifyTheViableItemIsNotAValidTerminalMenuItem);
                                 }
                             } else {
-                                notify.error('The viable item is not a valid terminal menu item');
+                                notify.error(i18n.notifyTheViableItemIsNotAValidTerminalMenuItem);
                             }
 
                             return;
@@ -1010,9 +1023,10 @@ define([
                     }
 
                     if (self._options.warnUnviableItems) {
-                        notify.warning('The command "' + itemPathToCmdName(itemPath) +
-                                       '" is not viable in the current context of ' +
-                                       self._pluginName + '.');
+                        notify.warning(string.substitute(i18n.notifyTheCommandIsNotViable, {
+                            cmd: itemPathToCmdName(itemPath),
+                            plugin: self._pluginName
+                        }));
                     }
                 }
 
@@ -1032,13 +1046,17 @@ define([
                     });
 
                 } else {
-                    notify.error('Module ' + contr.module + ' have to implement a function named ' +
-                          contr.getViableItems);
+                    notify.error(string.substitute(i18n.notifyModuleHaveToImplementAFunctionNamed, {
+                        module: contr.module,
+                        func: contr.getViableItems
+                    }));                   
                 }
             });
 
         } else {
-            notify.error('Internal Error: Non-terminal menu item invoked: ' + itemPath);
+            notify.error(string.substitute(i18n.notifyNonTerminalMenuItemInvoked, {
+                itemPath: itemPath
+            }));            
             return;
         }
     };
