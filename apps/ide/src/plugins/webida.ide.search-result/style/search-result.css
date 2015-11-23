@@ -20,6 +20,10 @@
     background-color: #fafaff;
     padding: 10px;
 }
+.search-result-tree-panel:empty {
+    background-color: #fafaff;
+    height: calc(100% - 64px);
+}
 .search-result-tree-panel:after {
     display: block;
     content: '';

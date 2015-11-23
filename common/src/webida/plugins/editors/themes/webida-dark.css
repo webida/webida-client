@@ -1,6 +1,7 @@
 
 .cm-s-webida-dark.CodeMirror {
     background: #101010;
+    border: 1px #2e3137 solid;
     color: #d4e2fa;
 }
 

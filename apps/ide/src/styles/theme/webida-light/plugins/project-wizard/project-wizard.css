@@ -1,0 +1,434 @@
+#platformTab {
+    width: 360px;
+    height: 260px; /* 380px */
+    padding: 10px;
+}
+#platformTab .tblPlatform {
+    margin: 6px;
+}
+#platformTab .tblPlatform td.sign .group-border {
+    margin-top: 6px;
+}
+#platformTab .FormTable table col.ItemLabel {
+    width: 120px;
+}
+.noGridHeader .dijitDialogTitleBar {
+    /* display: none; */
+    text-align: center;
+}
+.noGridHeader .dijitDialogCloseIcon {
+    display: none;
+}
+#txtBrowserRemote {
+    width: 90%;
+}
+#exportTab {
+    width: 95%;
+    height: 90%;
+}
+
+#exportTab * {
+    box-sizing: border-box;
+}
+
+#exportExportMW, #exportExportMA {
+    width: 95%;
+}
+.BuildHeader {
+    border-top: 1px solid #E5E5E5;
+    margin-bottom: 14px;
+    margin-top: 14px;
+    padding: 10px 0 0;
+    position: relative;
+    width: 100%;
+}
+.BuildHeader a {
+    color: #111111;
+}
+.BuildTable table col.ItemCheck {
+    width: 22px;
+}
+.BuildTable table col.ItemTitle {
+    width: 160px;
+}
+.BuildTable table col.ItemPlatform {
+    width: 160px;
+}
+.BuildTable table col.ItemBuild {
+    width: 320px;
+}
+.BuildTable table thead tr th {
+    background-color: #F0F0F0;
+    border-bottom: 1px solid #C2C2C2;
+    border-left: 1px solid #D5D5D5;
+    border-top: 1px solid #C2C2C2;
+    color: #666666;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+.BuildTable table thead tr th span {
+    border-left: 1px solid #FFFFFF;
+    border-top: 1px solid #FFFFFF;
+    display: block;
+    padding: 4px 7px 3px;
+}
+.BuildTable table thead tr th:first-child {
+    border-left: 0 none;
+}
+.BuildTable table thead tr th:first-child span {
+    border-left: 0 none;
+}
+.BuildTable table tbody tr td {
+    border-bottom: 1px solid #E5E5E5;
+    line-height: 18px;
+    margin: 0;
+    padding: 8px 0 6px;
+    text-align: left;
+}
+.BuildTable table tbody tr td a {
+    color: #111111;
+    line-height: 18px;
+}
+/*
+.BuildTable table tbody tr td * {
+    padding: 0 9px;
+}
+*/
+.BuildTable table tbody tr td {
+    border-bottom: 1px solid #E5E5E5;
+    line-height: 18px;
+    margin: 0;
+    padding: 8px 0 6px;
+    text-align: left;
+}
+
+.BuildTable .msg {
+    display: none;
+    margin-top: 8px;
+    padding: 8px;
+    position: relative;
+    font-size: 90%;
+    width: 280px;
+    max-height: 100px;
+    overflow-y: scroll;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: pre-wrap;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.msg.error {
+    color: #d9534f;
+}
+.msg.info {
+    color: #428bca;
+}
+
+.BuildTable div.pkg-download-pane {
+    text-align: center;
+}
+.BuildTable button.pkg-download {
+    width: 140px;
+}
+
+.build__platform {
+    padding: 0 9px;
+}
+.build__platform.large {
+    font-size: 180%;
+    margin-right: 6px;
+}
+.build__platform.large + span {
+    text-transform: uppercase;
+    font-size: 120%;
+    font-weight: bold;
+}
+.pkg-download.large {
+    font-weight: normal;
+    position: relative;
+    padding: 7px 8px;
+
+    background-color: #0c9db7;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    color: #fff;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.36);
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(255, 255, 255, 0.5) inset;
+    margin: 2px;
+}
+.pkg-download.profile {
+    margin: 1em 0 0.5em 0;
+    position: relative;
+    border-bottom: 1px solid #e5e5e5;
+    width: 48%;
+    font-weight: bold;
+}
+.pkg-download.large.to-device {
+    width: 32px;
+    background-color: #428bca;
+}
+#chk-dropdown {
+    width: 140px;
+}
+
+.g__dropdown-build {
+    background: none repeat scroll 0 0 #FFFFFF;
+    cursor: pointer;
+    margin: 0;
+    outline: medium none;
+    padding: 10px;
+    position: relative;
+    width: 120px;
+
+    border: 1px solid #ccc;
+    display: inline-block;
+}
+.g__dropdown-build:after {
+    /* border-color: rgba(0, 0, 0, 0) #9BC7DE; */
+    border-color: rgba(0, 0, 0, 0) gray;
+    border-style: solid;
+    border-width: 6px 0 6px 6px;
+    content: "";
+    height: 0;
+    margin-top: -6px;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    width: 0;
+
+    padding: 0;
+}
+.g__dropdown-build .dropdown {
+    background: none repeat scroll 0 0 #FFFFFF;
+    font-weight: normal;
+    left: 0;
+    list-style: none outside none;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+
+    border: 1px solid gray;
+    margin: 0;
+    padding: 0;
+    z-index: 9999;
+}
+.g__dropdown-build .dropdown li a {
+    display: block;
+    padding: 6px 6px;
+    text-decoration: none;
+}
+.g__dropdown-build .dropdown li:hover a {
+    background: none repeat scroll 0 0 #ccc;
+}
+.g__dropdown-build.active .dropdown {
+    opacity: 1;
+    pointer-events: auto;
+}
+.g__dropdown-build.active:after {
+    border-color: gray rgba(0, 0, 0, 0);
+    border-width: 6px 6px 0;
+    margin-top: -3px;
+}
+.no-opacity .g__dropdown-build .dropdown, .no-pointerevents .g__dropdown-build .dropdown {
+    display: none;
+    opacity: 1;
+    pointer-events: auto;
+}
+.no-opacity .g__dropdown-build.active .dropdown, .no-pointerevents .g__dropdown-build.active .dropdown {
+    display: block;
+}
+#signForm .FormTable table col.ItemLabel {
+    width: 120px;
+}
+/* It's copied from sly.css because class selectors like '.frame' can effect globally. */
+
+/* Frame */
+#pwTab .frame {
+    height: 250px;
+    line-height: 250px;
+    overflow: hidden;
+}
+#pwTab .frame ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-size: 50px;
+}
+#pwTab .frame ul li {
+    float: left;
+    width: 130px;
+    height: 130px;
+    margin: 0 20px 0 0;
+    padding: 0;
+    background-color: #aab6c2;
+    text-align: center;
+    cursor: pointer;
+    border: solid 1px #43494d;
+}
+
+/* Scrollbar */
+#pwTab .scrollbar {
+    margin: 9px 0 0 0;
+    height: 6px;
+    line-height: 0;
+}
+#pwTab .scrollbar .handle {
+    height: 100%;
+    background-color: #666e81;
+    cursor: pointer;
+    border-radius: 4px;
+}
+#pwTab .scrollbar .handle:hover {
+    height: 100%;
+    background-color: #484e5c;
+    cursor: pointer;
+    border-radius: 4px;
+}
+#pwTab .scrollbar .handle .mousearea {
+    position: absolute;
+    top: -9px;
+    left: 0;
+    width: 100%;
+    height: 20px;
+}
+
+/* Effects */
+#pwTab .effects {
+    height: 130px;
+    line-height: 130px;
+    -webkit-perspective: 800px;
+    -ms-perspective: 800px;
+    perspective: 800px;
+    -webkit-perspective-origin: 50% 50%;
+    -ms-perspective-origin: 50% 50%;
+    perspective-origin: 50% 50%;
+    overflow-y: hidden;
+}
+#pwTab .effects ul {
+    -webkit-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+#pwTab .effects ul li {
+    position: relative;
+    -webkit-transform: scale(1);
+    -ms-transform:  scale(1);
+    transform:  scale(1);
+    -webkit-transition: -webkit-transform 300ms ease-out;
+    transition: transform 300ms ease-out;
+}
+#pwTab .effects ul li.active {
+    z-index: 10;
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+}
+#pwTab .effects ul li.active ~ li {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+}
+#testTools .device-list {
+    margin-top: 20px;
+}
+#testTools .device-list li {
+    display: inline-block;
+    margin: 0 20px 0 0;
+    text-align: center;
+    vertical-align: top;
+}
+#testTools .device-list li .device-drop img {
+    margin-bottom: 8px;
+    opacity: 0.6;
+    height: 100px;
+}
+#testTools .device-list li.drag-hover .device-drop img {
+    opacity: 1;
+    transform: scale(1.1);
+    -moz-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+}
+#testTools .device-list li .device-desc-title {
+    font-weight: bold;
+}
+
+#testTab {
+    width: 95%;
+    height: 90%;
+}
+
+#testTab * {
+    box-sizing: border-box;
+}
+
+#testTab .frame {
+    float: left;
+}
+#testTab .frame iframe {
+    margin: 0 20px 20px 0;
+    border: 1px solid #999;
+}
+#testTab .frames-wrapper {
+    margin: 0 20px;
+}
+
+#testPreviewShare {
+    width: 50%;
+}
+#testPreviewPhone {
+    width: 35%;
+}
+#testPreviewRes {
+    width: 90%;
+}
+#testToolsCompApp {
+    width: 90%;
+}
+
+#testTab ol {
+    font-style: italic;
+    font-size: 14px;
+    margin: 10px;
+}
+#testTab ol li {
+}
+#testTab ol li p {
+    font-style: normal;
+    font-size: 12px;
+    padding: 4px;
+    border-left: 1px solid #999;
+
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+#testTab ol li p em {
+    display: block;
+}
+
+#testViewOnPhone {
+    text-align: center;
+}
+
+#testViewOnPhone img, #testToolsCompApp img {
+    vertical-align: middle;
+}
+#testToolsCompApp img {
+    margin-right: 16px;
+}
+
+.btn-group > .btn {
+    float: none;
+}
+
+.g__avatar-blue {
+    border: 6px solid #5cc0ff;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+}

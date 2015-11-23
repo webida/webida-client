@@ -18,11 +18,12 @@
 }
 
 #prefDlgContent .preferenceview-tree {
-    width: 200px;
+    width: 202px;
     height: 100%;
     padding: 0;
     background-color: #E8EDF2;
     border: 1px solid #9EA5AE;
+    box-sizing: border-box;
 }
 
 .webida-light #prefDlgContent .preferenceview-content {
