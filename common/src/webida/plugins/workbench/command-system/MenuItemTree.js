@@ -16,7 +16,7 @@
 
 define([
     'dojo/Deferred',
-    'dojo/i18n!./nls/resource',
+    'dojo/i18n!../nls/resource',
     'dojo/promise/all',
     'dojo/string',
     'dojo/when',
