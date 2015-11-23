@@ -6,7 +6,7 @@
         "bower_components"
     ],
     "dependencies": {
-        "codemirror": "webida/codemirror#f0fb78a6eedb9550c875714154847208a7a5edc1",
+        "codemirror": "webida/codemirror#f23a4a96fdc2b4102abe3018ae12d4b5e0e9a122",
         "dgrid": "0.3.11",
         "put-selector": "~0.3.6",
         "xstyle": "~0.3.1",
