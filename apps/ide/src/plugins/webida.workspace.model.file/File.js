@@ -49,7 +49,7 @@ define([
     function File(path) {
         logger.info('new File(' + path + ')');
 
-        Persistence.call(this, path);
+        Persistence.call(this);
 
         if (path.slice(-1) === '/') {
             throw new Error('Path should be end with file name');
