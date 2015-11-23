@@ -29,6 +29,7 @@
  * @memberOf module:webida.terminal
  */
 define([
+    'dojo/i18n!./nls/resource',
     'dojo/query',                           // query
     'dojo/topic',                           // topic
     'external/lodash/lodash.min',           // _
@@ -37,12 +38,14 @@ define([
     'external/URIjs/src/URI',               // URI
     'webida-lib/app',                       // ide
     'webida-lib/plugins/workbench/plugin',  // workbench
+    'webida-lib/util/locale',
     'webida-lib/util/logger/logger-client', // Logger
     'webida-lib/webida-0.3',                // webida
     'webida-lib/widgets/views/view',        // View
     'dojo/text!./layout/terminal.html',     // terminalHtml
     'xstyle/css!./style/terminal.css'
 ], function (
+    i18n,
     query,
     topic,
     _,
@@ -51,6 +54,7 @@ define([
     URI,
     ide,
     workbench,
+    Locale,
     Logger,
     webida,
     View,
@@ -61,6 +65,16 @@ define([
     Terminal = window.Terminal; // Required because term.js is not an AMD module
 
     var logger = new Logger('webida.terminal.plugin');
+    var locale = new Locale(i18n);
+
+    var viableItems = {
+        Terminal: ['cmnd', 'plugins/webida.terminal/plugin', 'showView']
+    };
+
+    // for i18n
+    (function _convertMenuLocale() {
+        locale.convertMenuItem(viableItems, 'menu');
+    })();
 
     var mod = {
         term: null,
@@ -169,7 +183,7 @@ define([
     mod.getView = function () {
         logger.log('getView');
         if (!mod._view) {
-            mod._view = new View(VIEW_ID, 'Terminal', {
+            mod._view = new View(VIEW_ID, i18n.titleView, {
                 resize: function (ev) {
                     resizeTerm(ev);
                 }
@@ -185,7 +199,7 @@ define([
     mod.onViewAppended = function () {
         logger.log('onViewAppended');
         var opt = {};
-        opt.title = 'Terminal';
+        opt.title = i18n.titleView;
         opt.key = 'T';
         workbench.registToViewFocusList(mod._view, opt);
         mod._view.setContent(terminalHtml);
@@ -224,9 +238,7 @@ define([
     };
 
     mod.getViableItems = function () {
-        return {
-            'Terminal': ['cmnd', 'plugins/webida.terminal/plugin', 'showView']
-        };
+        return viableItems;
     };
 
     return mod;

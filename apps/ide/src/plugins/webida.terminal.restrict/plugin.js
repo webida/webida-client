@@ -30,20 +30,24 @@
  */
 define([
     'external/lodash/lodash.min',  // _
+    'dojo/i18n!./nls/resource',
     'webida-lib/app',                   // ide
+    'webida-lib/util/locale',
     'webida-lib/webida-0.3',            // webida
     'webida-lib/widgets/views/view',    // View
     'dojo/text!./layout/terminal.html'
-],
-function (
+], function (
     _,
+    i18n,
     ide,
+    Locale,
     webida,
     View,
     terminalHtml
 ) {
     'use strict';
 
+    var locale = new Locale(i18n);
     var mod = {};
 
     /**
@@ -52,7 +56,7 @@ function (
      */
     mod.getView = function () {
         if (!mod._view) {
-            mod._view = new View('generalTerminalView', 'Terminal');
+            mod._view = new View('generalTerminalView', i18n.titleView);
         }
         return mod._view;
     };
@@ -63,6 +67,7 @@ function (
      */
     mod.onViewAppended = function () {
         mod._view.setContent(terminalHtml);
+        locale.convertMessage(mod._view.domNode);
     };
 
     return mod;

@@ -16,10 +16,12 @@
 
 define([
     'dijit/Tooltip',
+    'dojo/i18n!./nls/resource',
     'webida-lib/util/logger/logger-client',
     'webida-lib/webida-0.3'
 ], function (
     Tooltip,
+    i18n,
     Logger,
     webida
 ) {
@@ -49,7 +51,7 @@ define([
             splitStartIndex++;
         }
         if (splits.length - splitStartIndex < 3) {
-            alert('Error: Argument is invalid (ex>project=fsid/workspace/project)');
+            alert(i18n.validationInvalidArgument);
             return false;
         }
 
@@ -63,13 +65,13 @@ define([
 
         webida.auth.getMyInfo(function (err, myInfo) {
             if (err) {
-                alert('get userinfo fail');
+                alert(i18n.messageFailGetUserInfo);
                 if (cb) {
                     cb(err);
                 }
             } else {
                 if (!myInfo.uid) {
-                    alert('get userinfo fail');
+                    alert(i18n.messageFailGetUserInfo);
                     if (cb) {
                         cb('error');
                     }

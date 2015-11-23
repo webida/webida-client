@@ -22,10 +22,13 @@
 
 define([
     'dijit/registry',
+    'dojo/i18n!./nls/resource',
     'dojo/on',
+    'dojo/string',
     'external/lodash/lodash.min',
-    'webida-lib/util/notify',
+    'webida-lib/util/locale',
     'webida-lib/util/logger/logger-client',
+    'webida-lib/util/notify',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     './preference-manager',
     './preference-store',
@@ -34,10 +37,13 @@ define([
     'xstyle/css!./style/style.css'
 ], function (
     reg,
+    i18n,
     on,
+    string,
     _,
-    notify,
+    Locale,
     Logger,
+    notify,
     ButtonedDialog,
     preferenceManager,
     Store,
@@ -58,6 +64,8 @@ define([
     var scope;
     var scopeInfo;
     var invalidStores = [];
+
+    var locale = new Locale(i18n);
 
     var PAGE_CLASS = {
         DefaultPage: 'plugins/webida.preference/pages/PreferencePage',
@@ -177,6 +185,7 @@ define([
 
     function _initializeLayout() {
         preferenceDlg.setContentArea(template);
+        locale.convertMessage(preferenceDlg.domNode);
         treeArea = preferenceDlg.domNode.getElementsByClassName('preferenceview-tree')[0];
         subContentArea = preferenceDlg.domNode.getElementsByClassName('preferenceview-sub-content')[0];
         titleArea = preferenceDlg.domNode.getElementsByClassName('preferenceview-content-title')[0];
@@ -201,16 +210,16 @@ define([
                 buttons: [
                     {
                         id: 'save-all-preference',
-                        caption: 'Save',
+                        caption: i18n.labelSave,
                         methodOnClick: 'saveClose'
                     },
                     {
-                        caption: 'Cancel',
+                        caption: i18n.labelCancel,
                         methodOnClick: 'cancelClose'
                     }
                 ],
                 refocus: false,
-                title: _.capitalize(scope.name.toLowerCase()) + ' Preferences',
+                title: locale.formatMessage('titleDialog', {scopeName: scope.displayName}),
                 style: 'width: 650px',
                 methodOnEnter: null,
                 saveClose: function () {

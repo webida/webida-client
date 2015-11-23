@@ -15,22 +15,32 @@
  */
 
 define([
+    'dojo/i18n!./nls/resource',
     'dojo/topic',
     'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/locale',
     'webida-lib/util/path'
 ], function (
+    i18n,
     topic,
     wv,
+    Locale,
     pathUtil
 ) {
     'use strict';
 
     var module = {};
     var bEnable = false;
+    var locale = new Locale(i18n);
 
     var item = {
         'Deplo&y': [ 'cmnd', 'plugins/webida.ide.project.deploy/deploy-commands', 'openDialog' ]
     };
+
+    // for i18n
+    (function _convertMenuLocale() {
+        locale.convertMenuItem(item, 'menu');
+    })();
 
     function isProjectPath(path) {
         var splitPath = path.split('/');

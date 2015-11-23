@@ -17,6 +17,7 @@
 define([
     'dijit/registry', // reg
     'dijit/TitlePane',
+    'dojo/i18n!./nls/resource',
     'dojo/parser', // parser
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
@@ -25,6 +26,7 @@ define([
 ], function (
     reg,
     TitlePane,
+    i18n,
     parser,
     Logger,
     notify,
@@ -34,9 +36,6 @@ define([
     'use strict';
     var logger = new Logger();
     var oldSelected = null;
-
-    var GET_PROJECT_FAIL_TOASTR = 'Failed to get the project list.';
-    var NO_PROJECT_TOASTR = 'No projects in workspace.';
 
     function cbChangeProject(path) {
         contentViewController.changeProjectPath(path);
@@ -109,10 +108,10 @@ define([
     function cbGetProject(err, lists) {
         if (err) {
             logger.log('failed to get project list.');
-            notify.error(GET_PROJECT_FAIL_TOASTR);
+            notify.error(i18n.messageFailGetProjects);
         } else {
             if (!lists || lists.length <= 0) {
-                notify.info(NO_PROJECT_TOASTR);
+                notify.info(i18n.messageNoProject);
                 return;
             }
 

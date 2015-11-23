@@ -21,29 +21,35 @@
  *   plugins/webida.ide.project-management.run/run-configuration-manager.js
  */
 define([
-    'webida-lib/app',
-    'webida-lib/util/path',
-    'dojo/topic',
-    'webida-lib/plugins/workspace/plugin',
     'external/async/dist/async.min',
     'external/lodash/lodash.min',
+    'dojo/i18n!./nls/resource',
+    'dojo/topic',
+    'webida-lib/app',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/locale',
     'webida-lib/util/notify',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/path'
 ], function (
-    ide,
-    pathutil,
-    topic,
-    workspace,
     async,
     _,
+    i18n,
+    topic,
+    ide,
+    workspace,
+    Logger,
+    Locale,
     notify,
-    Logger
+    pathutil
 ) {
     'use strict';
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     logger.off();
+
+    var locale = new Locale(i18n);
 
     var PATH_WORKSPACE = ide.getPath();
     var WORKSPACE_INFO_DIR_NAME = '.workspace';
@@ -88,7 +94,7 @@ define([
                         if (err) {
                             next(err);
                         } else if (!exist) {
-                            next(PATH_RUN_CONFIG + ' is not exists');
+                            next(locale.formatMessage('messageNotExist', {target: PATH_RUN_CONFIG}));
                         } else {
                             next();
                         }

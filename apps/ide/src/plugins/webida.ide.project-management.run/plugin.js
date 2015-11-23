@@ -23,29 +23,34 @@
  * @module webida.ide.project-management.run
  */
 define([
-    './run-configuration-manager',
-    './delegator',
+    'dojo/i18n!./nls/resource',
+    'external/lodash/lodash.min',
     'webida-lib/app',
     'webida-lib/plugin-manager-0.1',
-    'webida-lib/plugins/workspace/plugin',
     'webida-lib/plugins/workbench/plugin',
-    'webida-lib/util/path',
-    'external/lodash/lodash.min',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/locale',
     'webida-lib/util/notify',
+    'webida-lib/util/path',
+    './delegator',
+    './run-configuration-manager'
 ], function (
-    runConfigurationManager,
-    delegator,
+    i18n,
+    _,
     ide,
     pluginManager,
-    workspace,
     workbench,
+    workspace,
+    Locale,
+    notify,
     pathUtil,
-    _,
-    notify
+    delegator,
+    runConfigurationManager
 ) {
     'use strict';
 
     var module = {};
+    var locale = new Locale(i18n);
 
     var extensionPoints = {
         RUN_CONFIGURATION_HOOK: 'webida.ide.project-management.run:hook'
@@ -101,8 +106,14 @@ define([
         ]
     };
 
-    var RUN_CONFIGURATIONS = 'Run Configurations...';
-    var DEBUG_CONFIGURATIONS = 'Debug Configurations...';
+    var RUN_CONFIGURATIONS = i18n.labelMoreRunConfigurations;
+    var DEBUG_CONFIGURATIONS = i18n.labelMoreDebugConfigurations;
+
+    // for i18n
+    (function _convertMenuLocale() {
+        locale.convertMenuItem(workbenchWholeItems, 'menu');
+        locale.convertMenuItem(workspaceWholeItems, 'menu');
+    })();
 
     function _parseProjectNameFromPath(path) {
         if (!path) {
@@ -165,7 +176,7 @@ define([
         }
 
         _.each(allRunConfigurations, function (run) {
-            var menuName = run.project + ' : ' + run.name + ((run.latestRun) ? ' [latest run]' : '');
+            var menuName = run.project + ' : ' + run.name + ((run.latestRun) ? i18n.labelLatestRun : '');
             contextMenuItems.push(menuName);
         });
         if (!_.isEmpty(allRunConfigurations)) {
@@ -221,14 +232,14 @@ define([
         var runConfigurations = runConfigurationManager.getByProjectName(projectName);
         _.each(runConfigurations, function (runConf) {
             if (runConf.latestRun) {
-                contextMenuItems.unshift(runConf.project + ' : ' + runConf.name + ' [latest run]');
+                contextMenuItems.unshift(runConf.project + ' : ' + runConf.name + i18n.labelLatestRun);
             } else {
                 contextMenuItems.push(runConf.project + ' : ' + runConf.name);
             }
         });
 
         if (_.isEmpty(contextMenuItems)) {
-            contextMenuItems.push('No project index');
+            contextMenuItems.push(i18n.labelNoProjectIndex);
             disableList.push(0);
         }
 
@@ -360,12 +371,12 @@ define([
         }
 
         if (!contextPaths) {
-            console.error('No valid context path');
+            console.error(i18n.validationNoContextPath);
             return;
         }
         var contextPath = contextPaths[0];
         if (contextPath === workspace.getRootPath()) {
-            notify.warning('Cannot run workspace directory');
+            notify.warning(i18n.validationPreventWorkspaceRun);
         }
 
         var projectName = parseProjectNameFromPath(contextPath);
@@ -512,7 +523,7 @@ define([
         switch (mode) {
             case runConfigurationManager.MODE.RUN_MODE:
                 if (!runConf) {
-                    notify.info('Cannot find a run configuration. Add a new one.');
+                    notify.info(i18n.messageNoRunConfiguration);
                     openRunConfigurationDialog(null, mode);
                 } else {
                     delegator.run(runConf);
@@ -520,7 +531,7 @@ define([
                 break;
             case runConfigurationManager.MODE.DEBUG_MODE:
                 if (!runConf) {
-                    notify.info('Cannot find a debug configuration. Add a new one.');
+                    notify.info(i18n.messageNoDebugConfiguration);
                     openRunConfigurationDialog(null, mode);
                 } else {
                     delegator.debug(runConf);

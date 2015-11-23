@@ -23,23 +23,29 @@
  * @module webida.ide.project-management.run.delegator
  */
 define([
-    'webida-lib/app',
-    'webida-lib/plugin-manager-0.1',
-    'webida-lib/util/path',
+    'external/lodash/lodash.min',
+    'dojo/i18n!./nls/resource',
     'dojo/topic',
-    './run-configuration-manager',
-    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/app',
+    'webida-lib/util/locale',
     'webida-lib/util/notify',
-    'external/lodash/lodash.min'
+    'webida-lib/plugin-manager-0.1',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/path',
+    './run-configuration-manager'
 ], function (
-    ide,
-    pluginManager,
-    pathUtil,
+    _,
+    i18n,
     topic,
-    runConfigurationManager,
-    workspace,
+    ide,
+    Locale,
     notify,
-    _
+    pluginManager,
+    workspace,
+    Logger,
+    pathUtil,
+    runConfigurationManager
 ) {
     'use strict';
 
@@ -47,6 +53,10 @@ define([
     var module = {};
     var fsMount = ide.getFSCache();
     var liveReloadHandleList = [];
+    var logger = new Logger();
+    logger.off();
+
+    var locale = new Locale(i18n);
 
     var extensionPoints = {
         RUN_CONFIGURATION_TYPE: 'webida.ide.project-management.run:type',
@@ -129,7 +139,7 @@ define([
         var openName = pathUtil.attachSlash(projectPath) + runObject.name;
         var runningWin = window.open('', openName, runObject.openArgument);
         if (!runningWin) {
-            callback('Window can\'t be opened.<br />It might be interrupted by pop-up blocking, please check it.');
+            callback(i18n.messageFailOpenWindow);
             return;
         }
 
@@ -186,7 +196,8 @@ define([
             var runners = _.where(runConfRunner, {type: type});
 
             _.each(_.keys(defaultDelegator), function (delegatorType) {
-                var module, delegatorMethodName;
+                var module;
+                var delegatorMethodName;
                 if (delegatorType === 'run' && !_.isEmpty(runners)) {
                     module = runners[0].module;
                     delegatorMethodName = runners[0].run;
@@ -207,11 +218,11 @@ define([
                             } else {
                                 if (args.length > 0) {
                                     var callback = args[args.length - 1];
-                                    callback(delegatorType + ' hasn\'t be implemented at run configurator type(' +
-                                    type + ')');
+                                    callback(locale.formatMessage('messageNotFoundImplementation',
+                                        {delegatorType: delegatorType, type: type}));
                                 }
-                                console.error(delegatorType + ' hasn\'t be implemented at run configurator type(' +
-                                type + ')');
+                                logger.error(locale.formatMessage('messageNotFoundImplementation',
+                                    {delegatorType: delegatorType, type: type}));
                             }
                         });
                     };
@@ -242,7 +253,7 @@ define([
     }
 
     function _makeConfigurationName(projectName) {
-        var defaultValue = projectName || 'New configuration';
+        var defaultValue = projectName || i18n.valueNewConfiguration;
         var result = defaultValue;
         var allRunConfs = runConfigurationManager.getAll();
         if (!_.isEmpty(allRunConfs)) {
@@ -266,9 +277,10 @@ define([
      * @memberOf webida.ide.project-management.run.delegator
      */
     module.run = function (runConf, callback) {
-        console.log('run', arguments);
+        logger.log('run', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).run)) {
-            var err = 'run function hasn\'t be implemented for the run configurator type(' + runConf.type + ')';
+            var err = locale.formatMessage('messageNotFoundImplementation',
+                {delegatorType: i18n.messageRunDelegator, type: runConf.type});
             notify.error(err);
             if (callback) {
                 callback(err);
@@ -279,8 +291,7 @@ define([
                     notify.error(err);
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
-                    notify.success('Run configuration \'' + runConf.project + ':' + runConf.name +
-                    '\' was successfully launched');
+                    notify.success(locale.formatMessage('messageSuccessRun', runConf));
                 }
                 if (callback) {
                     callback(err, runConf);
@@ -296,9 +307,10 @@ define([
      * @memberOf webida.ide.project-management.run.delegator
      */
     module.debug = function (runConf, callback) {
-        console.log('debug', arguments);
+        logger.log('debug', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).debug)) {
-            var err = 'debug function hasn\'t be implemented for the debug configurator type(' + runConf.type + ')';
+            var err = locale.formatMessage('messageNotFoundImplementation',
+                {delegatorType: i18n.messageDebugDelegator, type: runConf.type});
             notify.error(err);
             if (callback) {
                 callback(err);
@@ -309,8 +321,7 @@ define([
                     notify.error(err);
                 } else {
                     runConfigurationManager.setLatestRun(runConf.name);
-                    notify.success('Debug configuration \'' + runConf.project + ':' + runConf.name +
-                    '\' was successfully launched');
+                    notify.success(locale.formatMessage('messageSuccessDebug', runConf));
                 }
                 if (callback) {
                     callback(err, runConf);
@@ -336,9 +347,8 @@ define([
             project: projectName,
             _dirty: true
         };
-        console.log('newConf', arguments);
         if (!_.isFunction(Delegator.get(type).newConf)) {
-            console.warn('newConf function hasn\'t be implemented for the run configurator type(' + type + ')');
+            logger.warn('newConf function hasn\'t be implemented for the run configurator type(' + type + ')');
             runConfigurationManager.add(runConf);
             if (callback) {
                 callback(null, runConf);
@@ -365,10 +375,10 @@ define([
      * @memberOf webida.ide.project-management.run.delegator
      */
     module.loadConf = function (content, runConf, callback) {
-        console.log('loadConf', arguments);
+        logger.log('loadConf', arguments);
 
         if (!_.isFunction(Delegator.get(runConf.type).loadConf)) {
-            console.warn('loadConf function hasn\'t be implemented for the run configurator type(' +
+            logger.warn('loadConf function hasn\'t be implemented for the run configurator type(' +
             runConf.type + ')');
             if (callback) {
                 callback(null, runConf);
@@ -421,10 +431,10 @@ define([
      */
     function _validation(runConf, callback) {
         if (!runConf.name) {
-            return callback('You should fill the configuration name');
+            return callback(i18n.validationNoName);
         }
         if (!runConf.project) {
-            return callback('You should fill the target project');
+            return callback(i18n.validationNoProject);
         }
         _resolveDuplication(runConf);
         callback();
@@ -436,9 +446,9 @@ define([
      * @memberOf webida.ide.project-management.run.delegator
      */
     module.saveConf = function (runConf, callback) {
-        console.log('saveConf', arguments);
+        logger.log('saveConf', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).saveConf)) {
-            console.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
+            logger.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
             runConfigurationManager.save(runConf);
             if (callback) {
                 callback(null, runConf);
@@ -455,8 +465,7 @@ define([
                                 if (!errMsg) {
                                     runConfigurationManager.save(runConf);
                                     viewController.reload();
-                                    notify.success('Run configuration \'' + runConf.project + ':' + runConf.name +
-                                    '\' was successfully saved');
+                                    notify.success(locale.formatMessage('messageSuccessSave', runConf));
                                 }
                                 callback(errMsg, runConf);
                             });
@@ -481,9 +490,9 @@ define([
      */
     module.deleteConf = function (runConfName, callback) {
         var runConf = runConfigurationManager.getByName(runConfName);
-        console.log('deleteConf', arguments);
+        logger.log('deleteConf', arguments);
         if (!_.isFunction(Delegator.get(runConf.type).deleteConf)) {
-            console.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
+            logger.warn('saveConf action hasn\'t be implemented for the run configurator type(' + runConf.type + ')');
             runConfigurationManager.delete(runConfName);
             if (callback) {
                 callback(null, runConfName);
@@ -494,8 +503,7 @@ define([
                     notify.error(err);
                 } else {
                     runConfigurationManager.delete(runConfName);
-                    notify.success('Run configuration \'' + runConf.project + ':' + runConf.name +
-                    '\' was successfully removed');
+                    notify.success(locale.formatMessage('messageSuccessRemove', runConf));
                 }
                 if (callback) {
                     callback(err, runConfName);
