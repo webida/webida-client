@@ -364,6 +364,9 @@ define([
     }
 
     function showArgHints(fnTypes, cm, argPos) {
+        if (fnTypes.length === 0) {
+            return;
+        }
         var tip = elt('span', null);
         for (var i = 0; i < fnTypes.length; i++) {
             var typeInfo = fnTypes[i];
