@@ -3,7 +3,7 @@
     "apptype": "html",
     "name": "webida-client",
     "desc": "Webida client application that provides development environment",
-    "version": "1.5.0",
+    "version": "1.6.0-rc1",
     "repository": {
         "type": "git",
         "url": "git://github.com/webida/webida-client.git"
