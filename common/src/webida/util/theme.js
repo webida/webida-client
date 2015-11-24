@@ -27,6 +27,7 @@ define([
     _,
     config
 ) {
+    'use strict';
     var theme = config.theme;
 
     return {
