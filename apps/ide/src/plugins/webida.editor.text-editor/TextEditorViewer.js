@@ -1359,7 +1359,7 @@ define([
         gotoLine: function () {
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
-                self.focus();
+                editor.focus();
                 editor.execCommand('gotoLine');
             });
         },
