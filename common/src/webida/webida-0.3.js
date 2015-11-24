@@ -1144,7 +1144,7 @@ var ENV_TYPE;
         var url = mod.conf.fsApiBaseUrl + '/archive/' + this.fsid + argument;
 
         function restApi() {
-            location.href = url + '&access_token=' + token.data;
+            window.open(url + '&access_token=' + token.data);
         }
 
         ensureAuthorize(restApi);
