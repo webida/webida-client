@@ -24,55 +24,57 @@
  *   toolbar.js
  */
 
-define(['webida-lib/plugin-manager-0.1', // pm
-        'external/lodash/lodash.min',    // _
-        './MenuItemTree',               // MenuItemTree
-        'dojo',                          // dojo
-        'dojo/on',                       // on
-        'dojo/dom-style',                // domStyle
-        'dojo/dom-class',                // domClass
-        'dojo/dom-attr',                 // domAttr
-        'dojo/html',                     // html
-        'dojo/query',                    // query
-        'dojo/aspect',                   // aspect
-        'dojo/topic',                    // topic
-        'dojo/Deferred',                 // Deferred
-        'dojo/_base/lang',               // lang
-        'dijit/Toolbar',                 // Toolbar
-        'dijit/form/Button',             // Button
-        'dijit/form/DropDownButton',     // DropDownButton
-        'dijit/form/ComboButton',        // ComboButton
-        'dijit/Menu',                    // Menu
-        'dijit/DropDownMenu',            // DropDownMenu
-        'dijit/MenuItem',                // MenuItem
-        'dijit/MenuSeparator',           // MenuSeparator
-        'dijit/ToolbarSeparator',           // ToolbarSeparator
-       ],
-function (pm,
-          _,
-           MenuItemTree, 
-          dojo,
-          on,
-          domStyle,
-          domClass,
-          domAttr,
-          html,
-          query,
-          aspect,
-          topic,
-          Deferred,
-          lang,
-          Toolbar,
-          Button,
-          DropDownButton,
-          ComboButton,
-          Menu,
-          DropDownMenu,
-          MenuItem,
-          MenuSeparator, 
-          ToolbarSeparator
-         )
-{
+define([
+    'external/lodash/lodash.min',    // _
+    'dojo',                          // dojo
+    'dojo/on',                       // on
+    'dojo/dom-style',                // domStyle
+    'dojo/dom-class',                // domClass
+    'dojo/dom-attr',                 // domAttr
+    'dojo/html',                     // html
+    'dojo/query',                    // query
+    'dojo/aspect',                   // aspect
+    'dojo/topic',                    // topic
+    'dojo/Deferred',                 // Deferred
+    'dojo/_base/lang',               // lang
+    'dijit/Toolbar',                 // Toolbar
+    'dijit/form/Button',             // Button
+    'dijit/form/DropDownButton',     // DropDownButton
+    'dijit/form/ComboButton',        // ComboButton
+    'dijit/Menu',                    // Menu
+    'dijit/DropDownMenu',            // DropDownMenu
+    'dijit/MenuItem',                // MenuItem
+    'dijit/MenuSeparator',           // MenuSeparator
+    'dijit/ToolbarSeparator',        // ToolbarSeparator
+    'webida-lib/plugin-manager-0.1', // pm
+    'webida-lib/util/theme',         // theme
+    './MenuItemTree'                 // MenuItemTree
+], function (
+    _,
+    dojo,
+    on,
+    domStyle,
+    domClass,
+    domAttr,
+    html,
+    query,
+    aspect,
+    topic,
+    Deferred,
+    lang,
+    Toolbar,
+    Button,
+    DropDownButton,
+    ComboButton,
+    Menu,
+    DropDownMenu,
+    MenuItem,
+    MenuSeparator,
+    ToolbarSeparator,
+    pm,
+    theme,
+    MenuItemTree
+) {
     'use strict';
     //console.log('mira: toolbar module loaded...');
 
@@ -101,7 +103,7 @@ function (pm,
             var modifiedIconClass = menuitem.replace(/&/g, '').replace(/\//g, '__').replace(/ /g, '_') + '_wticons';
             img = '<style type="text/css">' +
                       '.' + modifiedIconClass + ' {' +
-                          'background-image: url("' + iconNormal + '");' +
+                          'background-image: url("' + theme.apply(iconNormal) + '");' +
                       '}' +
                     '</style>';
             imgClass = modifiedIconClass;
