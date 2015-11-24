@@ -32,7 +32,8 @@ define([
                 'webida.editor.text-editor:indentunit': 4,
                 'webida.editor.text-editor:indentWithTabs': false,
                 'webida.editor.text-editor:indentOnPaste': true,
-                'webida.editor.text-editor:highlightselection': true
+                'webida.editor.text-editor:highlightselection': true,
+                'webida.editor.text-editor:activeline': true
             };
         },
         getSchema: function () {
