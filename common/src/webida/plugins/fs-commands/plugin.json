@@ -16,7 +16,7 @@
                         "&File" : [ "cmnd",
                                    {
                                        "toolbar": {
-                                           "icons" : "./styles/images/icons/toolbar_file.png",
+                                           "icons" : "./styles/theme/webida-light/images/icons/toolbar_file.png",
                                            "tooltip" : "New File",
                                            "enabledOn":"toolbar.newfile.enable",
                                            "disabledOn":"toolbar.newfile.disable"
@@ -40,7 +40,7 @@
                                         {
                                             "shortcut" : { "keys" : { "default" : "Shift+Alt+F" }, "desc": "Find a keyword in a directory" },
                                             "toolbar": {
-                                                "icons" : "./styles/images/icons/toolbar_findfiles.png",
+                                                "icons" : "./styles/theme/webida-light/images/icons/toolbar_findfiles.png",
                                                 "tooltip" : "Find in Files",
                                                 "enabledOn":"toolbar.findinfiles.enable",
                                                 "disabledOn":"toolbar.findinfiles.disable"
@@ -57,7 +57,7 @@
                                     {
                                         "shortcut" : { "keys" : { "default" : "Alt+G" }, "desc" : "Find and open a file in a directory" },
                                         "toolbar": {
-                                            "icons" : "./styles/images/icons/toolbar_gotofile.png",
+                                            "icons" : "./styles/theme/webida-light/images/icons/toolbar_gotofile.png",
                                             "tooltip" : "Go to File",
                                             "enabledOn":"toolbar.gotofile.enable",
                                             "disabledOn":"toolbar.gotofile.disable"
