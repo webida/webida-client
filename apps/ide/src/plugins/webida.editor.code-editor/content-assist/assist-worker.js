@@ -59,8 +59,8 @@ function initServers(caExtensionInfos) {
         return;
     }
 
-    require.config({
-        baseUrl: '..',
+    var config = {
+        baseUrl: './../',
         paths: {
             'webida-lib': '../../../../../common/src/webida',
             text: 'lib/text',
@@ -68,47 +68,65 @@ function initServers(caExtensionInfos) {
             plugins: '..',
             'external': '../../../../../bower_components'
         }
-    }); 
-    
-    require(['plugins/webida.editor.code-editor/content-assist/file-server'],
+    };
+
+    require(config, ['plugins/webida.editor.code-editor/content-assist/file-server'],
     function (fileServer) {
-        //'use strict'; 
 
         function getRemoteFile(filepath, c) {
-            //'use strict';
-
             send({type: 'getRemoteFile', filepath: filepath}, function (data) {
                 c(data.error, data.text);
             });
         }
 
-        fileServer.init(getRemoteFile);
+        function allThen(jobs, success) {
+            if (!jobs || jobs.length === 0) {
+                return success();
+            }
+            jobs.forEach(function (job) {
+                job.asyncJob(function () {
+                    job.completed = true;
 
-        var serversTemp = {}; 
-                
-        var promisesForEngines = [];
-        
-        caExtensionInfos.forEach(function (caExtensionInfo) {
-            promisesForEngines.push(new Promise(function (resolve, reject) {
-                if (caExtensionInfo.engineModulePath) {
-                    require([caExtensionInfo.engineModulePath], function (engineModule) {
-                        serversTemp[caExtensionInfo.langMode + ':' + caExtensionInfo.engineName] = engineModule;
-                        resolve('Engine module [' + caExtensionInfo.engineName + '] is loaded.');
-                    });
-                } else {
-                    resolve('No engine module case.');                    
-                }
-            }));
-        });
-        
-        if (caExtensionInfos.length === 0) {
-            servers = serversTemp;
-        } else {
-            Promise.all(promisesForEngines).then(function (values) {
-                servers = serversTemp;                
+                    var allCompleted = true;
+                    for (var i = 0; i < jobs.length; i++) {
+                        if (!jobs[i].completed) {
+                            allCompleted = false;
+                            break;
+                        }
+                    }
+                    if (allCompleted) {
+                        return success();
+                    }
+                });
             });
         }
-        
+
+        fileServer.init(getRemoteFile);
+
+        var serversTemp = {};
+
+        var promisesForEngines = caExtensionInfos.map(function (caExtensionInfo) {
+            return {
+                asyncJob: function (resolve) {
+                    if (caExtensionInfo.engineModulePath) {
+                        require(config, [caExtensionInfo.engineModulePath], function (engineModule) {
+                            serversTemp[caExtensionInfo.langMode + ':' + caExtensionInfo.engineName] = engineModule;
+                            consoleLike.log('Engine module [' + caExtensionInfo.engineName + '] is loaded.');
+                            resolve();
+                        });
+                    } else {
+                        consoleLike.log('No engine module case.');
+                        resolve();
+                    }
+                },
+                completed: false
+            };
+        });
+
+        allThen(promisesForEngines, function () {
+            servers = serversTemp;
+        });
+
         consoleLike.log('servers set in CA worker');
     });
 }
