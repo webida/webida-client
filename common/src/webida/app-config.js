@@ -57,6 +57,10 @@ define([
                 dir: '.project',
                 file: 'project.json'
             }
+        },
+        theme: {
+            name: 'webida-light',
+            basePath: serverConf.systemApps[APP_ID].baseUrl + '/apps/ide/src/styles/theme/webida-light'
         }
     };
 });

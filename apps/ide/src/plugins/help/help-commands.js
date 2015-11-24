@@ -44,14 +44,23 @@ define(['require'], function (require) {
     }
 
     function showAbout() {
-        require(['text!./about.html',
-                'text!/package.json',
-                'dojo/i18n!./nls/resource',
-                'webida-lib/plugins/workbench/plugin',
-                'webida-lib/util/locale',
-                'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'
-        ],
-        function (aboutHtml, text, i18n, workbench, Locale, ButtonedDialog) {
+        require([
+            'text!./about.html',
+            'text!/package.json',
+            'dojo/i18n!./nls/resource',
+            'webida-lib/plugins/workbench/plugin',
+            'webida-lib/util/locale',
+            'webida-lib/util/theme',
+            'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'
+        ], function (
+            aboutHtml,
+            text,
+            i18n,
+            workbench,
+            Locale,
+            theme,
+            ButtonedDialog
+        ) {
             var localizer = new Locale(i18n);
             var pane = new ButtonedDialog({
                 buttons: [],
@@ -81,7 +90,8 @@ define(['require'], function (require) {
                 commitId: data.buildcommitid || 'Unknown'
             };
 
-            pane.setContentArea(aboutHtml);
+
+            pane.setContentArea(theme.apply(aboutHtml));
 
             $('#version').text(localizer.formatMessage('messageVersion', versionInfo));
             $('#buildInfo').html(
