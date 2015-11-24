@@ -95,10 +95,14 @@ define([
                 return;
             }
             cm.off('cursorActivity', clear);
+            cm.off('blur', clear);
+            cm.off('scroll', clear);
             fadeOut(tip);
         }
         setTimeout(clear, 1700);
         cm.on('cursorActivity', clear);
+        cm.on('blur', clear);
+        cm.on('scroll', clear);
     }
 
     function makeTooltip(x, y, content) {
@@ -485,6 +489,9 @@ define([
         cm.on('cursorActivity', highlightOccurrences('variableOccurrences', cm));
         cm.on('cursorActivity', highlightOccurrences('returnOccurrences', cm));
         cm.on('cursorActivity', highlightOccurrences('thisOccurrences', cm));
+        cm.on('blur', function () {
+           closeArgHints(cm);
+        });
         cm.on('cursorActivity', function () {
             updateArgHints(cm);
         });
