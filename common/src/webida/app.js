@@ -216,13 +216,14 @@ define(['webida-lib/util/browserInfo',
         majorVer = (majorVer && parseInt(majorVer, 10)) || -1;
 
         if ((/chrome/i.test(browser) && majorVer >= 31) ||
-            (/firefox/i.test(browser) && majorVer >= 31)) {
+            (/firefox/i.test(browser) && majorVer >= 31) ||
+            (/ie/i.test(browser) && majorVer >= 10)) {
             proceed();
         } else {
             require(['popup-dialog'], function (PopupDialog) {
                 PopupDialog.confirm({
                     title: 'Confirm',
-                    message: 'Currently, Webida App only supports lastest versions of Chrome and Firefox ' +
+                    message: 'Currently, Webida App only supports lastest versions of Chrome, Firefox and IE ' +
                              '(you are using ' + browser + ' ' + brVer + '). ' +
                              'Do you want to proceed anyway?'
                 }).then(proceed);
