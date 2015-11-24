@@ -6,7 +6,7 @@
         "bower_components"
     ],
     "dependencies": {
-        "codemirror": "webida/codemirror#f23a4a96fdc2b4102abe3018ae12d4b5e0e9a122",
+        "codemirror": "webida/codemirror#b1738f33d1920d7d3e3423dc96c1878097d01d24",
         "dgrid": "0.3.11",
         "put-selector": "~0.3.6",
         "xstyle": "~0.3.1",
@@ -23,7 +23,7 @@
         "socket.io-client": "git://github.com/automattic/socket.io-client#~1.3.5",
         "eventEmitter": "~4.2.11",
         "bootstrap-treeview": "~1.2.0",
-        "calcium": "git://github.com/webida/calcium#cc21bef268fe22483e8ab79fe302f6c1945493c4",
+        "calcium": "git://github.com/webida/calcium#415ebc22cc6a09457bb9e7445f149061787920fe",
         "smalot-bootstrap-datetimepicker": "~2.3.4",
         "es6-shim": "~0.33.9",
         "term.js": "git://github.com/chjj/term.js.git#~v0.0.7"
