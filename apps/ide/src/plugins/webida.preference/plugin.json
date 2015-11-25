@@ -23,7 +23,7 @@
                         "keys" : { "default" : "Alt + P" }, "desc" : "Workspace Preferences"
                     },
                     "toolbar": {
-                        "icons" : "./styles/theme/webida-light/images/icons/toolbar_preference.png",
+                        "icons" : "<%= themePath %>/images/icons/toolbar_preference.png",
                         "tooltip" : "Preferences",
                         "enabledOn": "toolbar.preferences.enable",
                         "disabledOn": "toolbar.preferences.disable"
