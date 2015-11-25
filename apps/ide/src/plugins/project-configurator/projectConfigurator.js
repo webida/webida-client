@@ -386,8 +386,7 @@ define([
         }
     });
 
-    function makeProjectProjectObject(name, description, created,
-                                      type, path) {
+    function makeProjectProjectObject(name, description, created, type, path) {
         var obj = {
             name: name,
             description: description,
@@ -399,8 +398,7 @@ define([
         return obj;
     }
 
-    function makeProjectRunObject(name, path, fragment, argument, openArgument,
-                                  liveReload) {
+    function makeProjectRunObject(name, path, fragment, argument, openArgument, liveReload) {
         var obj = {
             name: name,
             path: path,
@@ -605,7 +603,7 @@ define([
         var projectRootPath = projectConfigurator.getOwnerProjectRootPath(filePath);
         var projectFileName = projectConfigurator.getProjectFileName();
         if (projectRootPath === undefined || projectRootPath === null ||
-            projectFileName === undefined || projectFileName === null) {
+                projectFileName === undefined || projectFileName === null) {
             c([]);
         } else {
             var projectConfPath = pathUtil.combine(projectRootPath, projectFileName);
