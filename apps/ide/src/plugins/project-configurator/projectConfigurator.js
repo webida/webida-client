@@ -20,18 +20,29 @@
  * Src:
  *   plugins/project-configurator/projectConfigurator.js
  */
-define(['webida-lib/app',
-        'webida-lib/util/path',
-        'dojo/topic',
-        'external/lodash/lodash.min',
-        'webida-lib/util/notify',
-], function (ide, pathutil, topic, _, notify) {
+define([
+    'external/lodash/lodash.min',
+    'dojo/topic',
+    'webida-lib/app',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/notify',
+    'webida-lib/util/path'
+], function (
+    _,
+    topic,
+    ide,
+    Logger,
+    notify,
+    pathUtil
+) {
     'use strict';
 
     var projectConfigurator = {};
     var fsMount = ide.getFSCache(); // ide.getMount();
     var projectPropertyList = [];
     var noProjectList = [];
+
+    var logger = new Logger();
 
     projectConfigurator.DEBUG_MODE = 'debug';
     projectConfigurator.RUN_MODE = 'run';
@@ -54,7 +65,7 @@ define(['webida-lib/app',
             });
         }));
     }
-    
+
     function readProjectRunConfigurations() {
         return new Promise(function (resolve, reject) {
             fsMount.list(ide.getPath(), function (err, projectList) {
@@ -68,7 +79,6 @@ define(['webida-lib/app',
         });
     }
 
-
     var projectConfigurationLoadPromise = readProjectRunConfigurations()
         .then(getConfigurationObjectByProject)
         .then(function () {
@@ -79,8 +89,6 @@ define(['webida-lib/app',
             }
         });
 
-
-    //readProjectRunConfigurations();
 
     function deleteProjectPropertyByName(projectName) {
         if (!projectName) {
@@ -99,6 +107,18 @@ define(['webida-lib/app',
             }
         }
         topic.publish('projectConfig.changed', projectName);
+    }
+
+    function addProjectPropertyByName(obj) {
+        if (!obj) {
+            return;
+        }
+
+        projectPropertyList.push(obj);
+
+        if (noProjectList.length === 0 && projectPropertyList.length === 1) {
+            topic.publish('toolbar.runas.enable');
+        }
     }
 
     function replaceProjectProperty(obj) {
@@ -126,18 +146,6 @@ define(['webida-lib/app',
         }
 
         return false;
-    }
-
-    function addProjectPropertyByName(obj) {
-        if (!obj) {
-            return;
-        }
-
-        projectPropertyList.push(obj);
-
-        if (noProjectList.length === 0 && projectPropertyList.length === 1) {
-            topic.publish('toolbar.runas.enable');
-        }
     }
 
     function getProjectPropertyByName(projectName) {
@@ -179,17 +187,32 @@ define(['webida-lib/app',
                 if (exist) {
                     fsMount.readFile(projectPath + '.project/project.json', function (err, content) {
                         if (err) {
-                            console.log(err);
+                            logger.log(err);
                             cb(null);
                         } else {
                             if (content !== '') {
-                                obj = JSON.parse(content);
+                                try {
+                                    obj = JSON.parse(content);
+                                } catch (e) {
+                                    logger.warn(projectPath + '.project/project.json' +
+                                        ' is not valid JSON file. It will be fixed.', e);
+                                }
                                 var splitProjectPath = projectPath.split('/');
                                 var projectName = splitProjectPath[2];
-                                if (obj.name !== projectName) {
+                                if (!obj) {
+                                    // If the project.json file was corrupted,
+                                    // rewrite this file with the known information.
+                                    obj = {
+                                        name: projectName,
+                                        created: new Date().toGMTString(),
+                                        lastmodified: new Date().toGMTString(),
+                                        description: '',
+                                        type: ''
+                                    };
+                                    projectConfigurator.saveProjectProperty(projectPath, obj, null);
+                                } else if (obj.name !== projectName) {
                                     obj.name = projectName;
-                                    var date = new Date();
-                                    obj.created = date.toGMTString();
+                                    obj.lastmodified = new Date().toGMTString();
                                     projectConfigurator.saveProjectProperty(projectPath, obj, null);
                                 }
                             }
@@ -231,7 +254,7 @@ define(['webida-lib/app',
                             replaceProjectProperty(obj);
                         }
                         topic.publish('projectConfig.changed', splitTargetDir[2]);
-                        //console.log('replace project property : ' + obj);
+                        //logger.log('replace project property : ' + obj);
                     });
                 }
             }
@@ -265,8 +288,8 @@ define(['webida-lib/app',
         }
 
         var noProjectObj = {
-            'name': name,
-            'isProject' : false
+            name: name,
+            isProject: false
         };
 
         noProjectList.push(noProjectObj);
@@ -290,19 +313,19 @@ define(['webida-lib/app',
                 deleteNoProjectByName(projectName);
             } else {
                 addNoProjectByName(projectName);
-                console.log('newProjectAdded fail ');
+                logger.log('newProjectAdded fail ');
             }
             topic.publish('projectConfig.changed', projectName);
         });
     }
 
     topic.subscribe('projectWizard.created', function (targetDir, projectName) {
-        //console.log(projectName);
+        //logger.log(projectName);
         newProjectAdded(targetDir + '/' + projectName + '/', projectName);
     });
 
     topic.subscribe('fs.cache.node.added', function (fsURL, targetDir, name, type, created) {
-        //console.log('node added' +  ':' + fsURL + ':' + targetDir + ':' + name + ':' + type + ':' + created);
+        //logger.log('node added' +  ':' + fsURL + ':' + targetDir + ':' + name + ':' + type + ':' + created);
         if (created === false) {
             return;
         }
@@ -323,7 +346,7 @@ define(['webida-lib/app',
         }
 
         //project.json file added
-        if (name === 'project.json'  && type === 'file' && splitTargetDir[2][0] !== '.') {
+        if (name === 'project.json' && type === 'file' && splitTargetDir[2][0] !== '.') {
             if (splitTargetDir.length === 5 && idePath === '/' + splitTargetDir[1] + '/' &&
                 splitTargetDir[3] === '.project') {
                 var projectNameSplit = targetDir.split('.project');
@@ -331,8 +354,6 @@ define(['webida-lib/app',
             }
         }
     });
-
-
 
     topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
         var splitTargetDir = targetDir.split('/');
@@ -365,28 +386,26 @@ define(['webida-lib/app',
         }
     });
 
-    function makeProjectProjectObject(name, description, created,
-        type, path) {
+    function makeProjectProjectObject(name, description, created, type, path) {
         var obj = {
-            'name': name,
-            'description': description,
-            'created': created,
-            'type': type,
-            'path': path,
-            'isProject' : true
+            name: name,
+            description: description,
+            created: created,
+            type: type,
+            path: path,
+            isProject: true
         };
         return obj;
     }
 
-    function makeProjectRunObject(name, path, fragment, argument, openArgument,
-        liveReload) {
+    function makeProjectRunObject(name, path, fragment, argument, openArgument, liveReload) {
         var obj = {
-            'name': name,
-            'path': path,
-            'fragment': fragment,
-            'argument': argument,
-            'openArgument': openArgument,
-            'liveReload': liveReload
+            name: name,
+            path: path,
+            fragment: fragment,
+            argument: argument,
+            openArgument: openArgument,
+            liveReload: liveReload
         };
         return obj;
     }
@@ -407,7 +426,7 @@ define(['webida-lib/app',
             var subpath = childFilePath.substring(workspacePath.length + 1);
             var names = subpath.split('/');
             if (names.length > 0) {
-                return pathutil.combine(workspacePath, names[0]);
+                return pathUtil.combine(workspacePath, names[0]);
             }
         }
 
@@ -514,7 +533,7 @@ define(['webida-lib/app',
             }
             fsMount.writeFile(path + '.project/project.json', jsonText, function (err) {
                 if (err) {
-                    console.log(path + 'Failed to save .project/project.json');
+                    logger.log(path + 'Failed to save .project/project.json');
                     if (cb) {
                         cb(err);
                     }
@@ -573,8 +592,7 @@ define(['webida-lib/app',
         runAsList.sort(function (a, b) {
             if (a.name > b.name) {
                 return 1;
-            }
-            else {
+            } else {
                 return -1;
             }
         });
@@ -585,16 +603,16 @@ define(['webida-lib/app',
         var projectRootPath = projectConfigurator.getOwnerProjectRootPath(filePath);
         var projectFileName = projectConfigurator.getProjectFileName();
         if (projectRootPath === undefined || projectRootPath === null ||
-           projectFileName === undefined || projectFileName === null) {
+                projectFileName === undefined || projectFileName === null) {
             c([]);
         } else {
-            var projectConfPath = pathutil.combine(projectRootPath, projectFileName);
+            var projectConfPath = pathUtil.combine(projectRootPath, projectFileName);
             projectConfigurator.getConfigurationObject(projectConfPath, function (projectObj) {
                 var htmlPaths = [];
                 if (projectObj && projectObj.run && projectObj.run.list && projectObj.run.list.length > 0) {
                     for (var i = 0; i < projectObj.run.list.length; i++) {
                         var runObj = projectObj.run.list[i];
-                        if (pathutil.endsWith(runObj.path, '.html', true)) {
+                        if (pathUtil.endsWith(runObj.path, '.html', true)) {
                             var htmlPath = runObj.path;
                             if (/^\//.test(htmlPath)) {
                                 htmlPath = htmlPath.substr(1);
