@@ -50,7 +50,7 @@ define(['require'], function (require) {
             'dojo/i18n!./nls/resource',
             'webida-lib/plugins/workbench/plugin',
             'webida-lib/util/locale',
-            'webida-lib/util/theme',
+            'webida-lib/theme',
             'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'
         ], function (
             aboutHtml,

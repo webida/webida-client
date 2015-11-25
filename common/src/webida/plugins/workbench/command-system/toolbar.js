@@ -47,7 +47,7 @@ define([
     'dijit/MenuSeparator',           // MenuSeparator
     'dijit/ToolbarSeparator',        // ToolbarSeparator
     'webida-lib/plugin-manager-0.1', // pm
-    'webida-lib/util/theme',         // theme
+    'webida-lib/theme',         // theme
     './MenuItemTree'                 // MenuItemTree
 ], function (
     _,
