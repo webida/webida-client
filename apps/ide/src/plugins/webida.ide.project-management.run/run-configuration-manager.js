@@ -23,6 +23,7 @@
 define([
     'external/async/dist/async.min',
     'external/lodash/lodash.min',
+    'external/URIjs/src/URI',
     'dojo/i18n!./nls/resource',
     'dojo/topic',
     'webida-lib/app',
@@ -34,6 +35,7 @@ define([
 ], function (
     async,
     _,
+    URI,
     i18n,
     topic,
     ide,
@@ -250,17 +252,29 @@ define([
             }
         });
 
-        topic.subscribe('fs.cache.file.set', function (fsURL, target /*, type, maybeModified*/ ) {
-            logger.log('fs.cache.file.set', arguments);
-            var targetPathInfo = _getPathInfo(target);
+        function _applyChangesOnFile(filePath) {
+            var targetPathInfo = _getPathInfo(filePath);
             if (targetPathInfo.type === 'runConfig') {
-                require(['plugins/webida.ide.project-management.run/view-controller'], function (
-                    viewController) {
+                require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
                     if (!viewController.getWindowOpened()) {
                         loadRunConfigurations();
                     }
                 });
             }
+        }
+
+        // apply changes on run config file at current IDE
+        topic.subscribe('fs.cache.file.set', function (fsURL, target) {
+            logger.log('fs.cache.file.set', arguments);
+            _applyChangesOnFile(target);
+        });
+
+        // apply changes on run config file at another IDE
+        topic.subscribe('sys.fs.file.written', function (data) {
+            logger.log('sys.fs.file.written', data);
+            var uri = new URI(data.url);
+            uri.segment(0, '');	                    // drop the fsid
+            _applyChangesOnFile(uri.path(true));    // get decoded path
         });
 
         topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
