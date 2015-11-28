@@ -134,7 +134,7 @@ define([
             }
 
             if (runObject.liveReload === true) {
-                var handle = topic.subscribe('fs.cache.file.set', function (fsURL, target, reason, maybeModified) {
+                var handle = topic.subscribe('fs/cache/file/set', function (fsURL, target, reason, maybeModified) {
                     if (runningWin.closed) {
                         releaseLiveReloadHandle(handle);
                     } else {

@@ -142,23 +142,23 @@
                 "module": "webida-lib/plugins/git/git-icon"
             }
         ],
-        "workspace.node.deleted": {
+        "workspace/node/deleted": {
             "handler": "detectGitRepoDeletion",
             "module": "webida-lib/plugins/git/git-icon"
         },
-        "fs.cache.node.added": {
+        "fs/cache/node/added": {
             "handler": "handleNodeAddEventInGitRepo",
             "module": "webida-lib/plugins/git/git-icon"
         },
-        "fs.cache.node.deleted": {
+        "fs/cache/node/deleted": {
             "handler": "handleNodeDelEventInGitRepo",
             "module": "webida-lib/plugins/git/git-icon"
         },
-        "fs.cache.node.changes": {
+        "fs/cache/node/changes": {
             "handler": "handleNodeChangesEventInGitRepo",
             "module": "webida-lib/plugins/git/git-icon"
         },
-        "fs.cache.file.set": {
+        "fs/cache/file/set": {
             "handler": "handleFileSetEventInGitRepo",
             "module": "webida-lib/plugins/git/git-icon"
         }

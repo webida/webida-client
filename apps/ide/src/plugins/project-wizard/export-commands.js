@@ -77,8 +77,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
         this.dropdown = null;
 
         var self = this;
-        topic.subscribe(Build.Topics.TASK_START, function (data) {
-            console.log(Build.Topics.TASK_START, data);
+        topic.subscribe('project/build/start', function (data) {
             var profileName = data.profileName;
             monitor[profileName].taskIds.push(data.taskId);
             monitor[profileName].lastTaskId = data.taskId;
@@ -87,8 +86,8 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                 monitor[profileName].progressButton.setProgress(0.1);
             }
         });
-        topic.subscribe(Build.Topics.PROGRESS, function (data) {
-            //console.log(Build.Topics.PROGRESS, data);
+        topic.subscribe('project/build/progress', function (data) {
+            //console.log('project/build/progress', data);
             var profileName = data.profileName;
             switch (data.state) {
             case 2 : // 'beforePlatformAdd'
@@ -102,8 +101,8 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                 break;
             }
         });
-        topic.subscribe(Build.Topics.TASK_END, function (data) {
-            console.log(Build.Topics.TASK_END, data);
+        topic.subscribe('project/build/end', function (data) {
+            console.log('project/build/end', data);
             var profileName = data.profileName;
             monitor[profileName].taskIds.splice(monitor[profileName].taskIds.indexOf(profileName), 1);
             if (monitor[profileName].progressButton) {
@@ -116,13 +115,13 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                 });
             }
         });
-        topic.subscribe(Build.Topics.CLEANED, function (data) {
+        topic.subscribe('project/build/cleaned', function (data) {
             var profileName = data.profileName;
             if (monitor[profileName].progressButton) {
                 monitor[profileName].progressButton.setProgress(1);
             }
         });
-        topic.subscribe(Build.Topics.DONE, function (data) {
+        topic.subscribe('project/build/done', function (data) {
             var profileName = data.profileName;
             if (monitor[profileName].progressButton) {
                 monitor[profileName].progressButton.stop();
@@ -421,7 +420,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                         topic.publish('#REQUEST.log', '\t' + message);
                     }
                     if (done) {
-                        topic.publish(Build.Topics.TASK_END, {
+                        topic.publish('project/build/end', {
                             profileName: pfName,
                             taskId: result.status.taskId,
                             pkg: apkPath
@@ -429,7 +428,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                     }
                 }
                 else {
-                    topic.publish(Build.Topics.TASK_START, {
+                    topic.publish('project/build/start', {
                         profileName: pfName,
                         taskId: result
                     });
@@ -455,7 +454,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                     topic.publish('#REQUEST.log', '\t' + result);
                     var end = new Date().getTime();
                     BuildMenu.printElapsedTime(end - start);
-                    topic.publish(Build.Topics.CLEANED, {
+                    topic.publish('project/build/cleaned', {
                         profileName: pfName
                     });
                 }

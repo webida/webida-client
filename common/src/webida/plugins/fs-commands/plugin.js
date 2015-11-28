@@ -467,13 +467,13 @@ define([
                 // Workspace view tree to be, say, stabilized.
                 var paths = wv.getSelectedPaths();
                 if (paths.length === 1 && pathUtil.isDirPath(paths[0])) {
-                    topic.publish('toolbar.newfile.enable');
-                    topic.publish('toolbar.findinfiles.enable');
-                    topic.publish('toolbar.gotofile.enable');
+                    topic.publish('toolbar/enable/newfile');
+                    topic.publish('toolbar/enable/findinfiles');
+                    topic.publish('toolbar/enable/gotofile');
                 } else {
-                    topic.publish('toolbar.newfile.disable');
-                    topic.publish('toolbar.findinfiles.disable');
-                    topic.publish('toolbar.gotofile.disable');
+                    topic.publish('toolbar/disable/newfile');
+                    topic.publish('toolbar/disable/findinfiles');
+                    topic.publish('toolbar/disable/gotofile');
                 }
             }, 1);
         }

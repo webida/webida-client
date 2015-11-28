@@ -1305,7 +1305,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 return false;
             }
 
-            topic.subscribe('sys.fs.file.written', function (data) {
+            topic.subscribe('remote/persistence/written', function (data) {
                 if (isIgnoredNotification(data, ['url'])) {
                     return;
                 }
@@ -1317,7 +1317,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                     if (existing === null) {
                         root.putByAbsPath(urlParsed.path, 'file-written');
                         topic.publish('#REQUEST.log',
-                                      'Handled a notification [sys.fs.file.written] for "' +
+                                      'Handled a notification [remote/persistence/written] for "' +
                                       urlParsed.path + '" (as a file creation)');
                         topic.publish('#REQUEST.log', '');
                     }
@@ -1325,16 +1325,16 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                     // file written
                     existing.invalidateFileContents();
                     topic.publish('#REQUEST.log',
-                                  'Handled a notification [sys.fs.file.written] for "' +
+                                  'Handled a notification [remote/persistence/written] for "' +
                                   urlParsed.path + '" (as a file cache invalidation)');
                     topic.publish('#REQUEST.log', '');
                 } else {
-                    console.error('sys.fs.file.written arrived for a non-file "' +
+                    console.error('remote/persistence/written arrived for a non-file "' +
                                  urlParsed.path + '"');
                 }
 
             });
-            topic.subscribe('sys.fs.file.deleted', function (data) {
+            topic.subscribe('remote/persistence/deleted', function (data) {
                 if (isIgnoredNotification(data, ['url'])) {
                     return;
                 }
@@ -1343,22 +1343,22 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 var existing = root.getByAbsPath(urlParsed.path);
                 if (!existing) {
                     if (existing === null) {
-                        console.error('sys.fs.file.deleted arrived for an absent file "' +
+                        console.error('remote/persistence/deleted arrived for an absent file "' +
                                      urlParsed.path + '"');
                     }
                 } else if (existing.getType() === TYPE_FILE) {
                     existing.detach();
                     topic.publish('#REQUEST.log',
-                                  'Handled a notification [sys.fs.file.deleted] for "' +
+                                  'Handled a notification [remote/persistence/deleted] for "' +
                                   urlParsed.path + '"');
                     topic.publish('#REQUEST.log', '');
                 } else {
-                    console.error('sys.fs.file.deleted arrived for a non-file "' +
+                    console.error('remote/persistence/deleted arrived for a non-file "' +
                                  urlParsed.path + '"');
                 }
 
             });
-            topic.subscribe('sys.fs.dir.created', function (data) {
+            topic.subscribe('remote/directory/created', function (data) {
                 if (isIgnoredNotification(data, ['url'])) {
                     return;
                 }
@@ -1369,19 +1369,19 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                     if (existing === null) {
                         root.putByAbsPath(pathUtil.attachSlash(urlParsed.path), 'dir-created');
                         topic.publish('#REQUEST.log',
-                                      'Handled a notification [sys.fs.dir.created] for "' +
+                                      'Handled a notification [remote/directory/created] for "' +
                                       urlParsed.path + '"');
                         topic.publish('#REQUEST.log', '');
                     }
                 } else if (existing.getType() === TYPE_DIRECTORY) {
-                    console.error('sys.fs.dir.created arrived for an existing directory "' +
+                    console.error('remote/directory/created arrived for an existing directory "' +
                                  urlParsed.path + '"');
                 } else {
-                    console.error('sys.fs.dir.created arrived for a non-directory "' +
+                    console.error('remote/directory/created arrived for a non-directory "' +
                                  urlParsed.path + '"');
                 }
             });
-            topic.subscribe('sys.fs.dir.deleted', function (data) {
+            topic.subscribe('remote/directory/deleted', function (data) {
                 if (isIgnoredNotification(data, ['url'])) {
                     return;
                 }
@@ -1390,21 +1390,21 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 var existing = root.getByAbsPath(urlParsed.path);
                 if (!existing) {
                     if (existing === null) {
-                        console.error('sys.fs.dir.deleted arrived for an absent directory "' +
+                        console.error('remote/directory/deleted arrived for an absent directory "' +
                                      urlParsed.path + '"');
                     }
                 } else if (existing.getType() === TYPE_DIRECTORY) {
                     existing.detach();
                     topic.publish('#REQUEST.log',
-                                  'Handled a notification [sys.fs.dir.deleted] for "' +
+                                  'Handled a notification [remote/directory/deleted] for "' +
                                   urlParsed.path + '"');
                     topic.publish('#REQUEST.log', '');
                 } else {
-                    console.error('sys.fs.dir.deleted arrived for a non-directory "' +
+                    console.error('remote/directory/deleted arrived for a non-directory "' +
                                  urlParsed.path + '"');
                 }
             });
-            topic.subscribe('sys.fs.node.intractableChanges', function (data) {
+            topic.subscribe('remote/node/intractable', function (data) {
                 if (isIgnoredNotification(data, ['url'])) {
                     return;
                 }
@@ -1419,7 +1419,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 } else if (existing.getType() === TYPE_DIRECTORY) {
                     fsCache.refresh(urlParsed.path, { level: -1 }, function () {
                         topic.publish('#REQUEST.log',
-                                      'Handled a notification [sys.fs.node.intractableChanges] for "' +
+                                      'Handled a notification [remote/node/intractable] for "' +
                                       urlParsed.path + '"');
                         topic.publish('#REQUEST.log', '');
 
@@ -1431,7 +1431,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
 
             });
-            topic.subscribe('sys.fs.node.moved', function (data) {
+            topic.subscribe('remote/node/moved', function (data) {
                 if (isIgnoredNotification(data, ['srcURL', 'dstURL'])) {
                     return;
                 }
@@ -1442,24 +1442,24 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                     mount.isDirectory(dstURLParsed.path, function (err, isDir) {
                         if (err) {
                             console.log('Cannot figure out whether the destination "' + dstURLParsed.path +
-                                        '" of a notification sys.fs.node.moved is a directory or not: ' + err);
+                                        '" of a notification remote/node/moved is a directory or not: ' + err);
                             console.log('The notification is ignored.');
                         } else {
                             var existing = root.getByAbsPath(dstURLParsed.path);
                             if (existing) {
                                 if ((existing.getType() === TYPE_DIRECTORY) === isDir) {
                                     if (isDir) {
-                                        console.error('sys.fs.node.moved arraived for an existing "' +
+                                        console.error('remote/node/moved arraived for an existing "' +
                                                       dstURLParsed.path + '" as its destination');
                                     } else {
                                         existing.invalidateFileContents();
                                         topic.publish('#REQUEST.log',
-                                                      'Handled a notification [sys.fs.node.moved] ' +
+                                                      'Handled a notification [remote/node/moved] ' +
                                                       'for its overwritten target file "' + dstURLParsed.path + '"');
                                         topic.publish('#REQUEST.log', '');
                                     }
                                 } else {
-                                    console.error('The type of the destination of a notification sys.fs.node.moved ' +
+                                    console.error('The type of the destination of a notification remote/node/moved ' +
                                         'does not match that of the corresponding node in the fs-cache for "' +
                                         dstURLParsed.path + '"');
                                 }
@@ -1470,7 +1470,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                                                         pathUtil.detachSlash)(dstURLParsed.path),
                                                       'moved');
                                     topic.publish('#REQUEST.log',
-                                                  'Handled a notification [sys.fs.node.moved] for its target "' +
+                                                  'Handled a notification [remote/node/moved] for its target "' +
                                                   dstURLParsed.path + '"');
                                     topic.publish('#REQUEST.log', '');
                                 }
@@ -1484,13 +1484,13 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                     var existing = root.getByAbsPath(srcURLParsed.path);
                     if (!existing) {
                         if (existing === null) {
-                            console.error('sys.fs.node.moved arrived for an absent "' +
+                            console.error('remote/node/moved arrived for an absent "' +
                                           srcURLParsed.path + '" as its source');
                         }
                     } else {
                         existing.detach(withinCache(data.dstURL) ? dstURLParsed.path : undefined);
                         topic.publish('#REQUEST.log',
-                                      'Handled a notification [sys.fs.node.moved] for its source "' +
+                                      'Handled a notification [remote/node/moved] for its source "' +
                                       srcURLParsed.path + '"');
                         topic.publish('#REQUEST.log', '');
                     }
@@ -1499,7 +1499,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 // TODO: need to publish fs.cache.node.moved?
                 // But the topic does not support the case when the source is out of the current file system.
             });
-            topic.subscribe('sys.fs.node.copied', function (data) {
+            topic.subscribe('remote/node/copied', function (data) {
                 if (isIgnoredNotification(data, ['dstURL'])) {
                     return;
                 }
@@ -1510,7 +1510,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                     mount.isDirectory(dstURLParsed.path, function (err, isDir) {
                         if (err) {
                             console.log('Cannot figure out whether the destination "' + dstURLParsed.path +
-                                        '" of a notification sys.fs.node.copied is a directory or not: ' + err);
+                                        '" of a notification remote/node/copied is a directory or not: ' + err);
                             console.log('The notification is ignored.');
                         } else {
                             existing = root.getByAbsPath(dstURLParsed.path);
@@ -1519,18 +1519,18 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                                     if (isDir) {
                                         fsCache.refresh(dstURLParsed.path, { level: -1 });
                                         topic.publish('#REQUEST.log',
-                                                      'Handled a notification [sys.fs.node.copied] ' +
+                                                      'Handled a notification [remote/node/copied] ' +
                                                       'for its merged target directory "' + dstURLParsed.path + '"');
                                         topic.publish('#REQUEST.log', '');
                                     } else {
                                         existing.invalidateFileContents();
                                         topic.publish('#REQUEST.log',
-                                                      'Handled a notification [sys.fs.node.copied] ' +
+                                                      'Handled a notification [remote/node/copied] ' +
                                                       'for its overwritten target file "' + dstURLParsed.path + '"');
                                         topic.publish('#REQUEST.log', '');
                                     }
                                 } else {
-                                    console.error('The type of the destination of a notification sys.fs.node.copied ' +
+                                    console.error('The type of the destination of a notification remote/node/copied ' +
                                         'does not match that of the corresponding node in the fs-cache for "' +
                                         dstURLParsed.path + '"');
                                 }
@@ -1541,7 +1541,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                                                         pathUtil.detachSlash)(dstURLParsed.path),
                                                       'copied');
                                     topic.publish('#REQUEST.log',
-                                                  'Handled a notification [sys.fs.node.copied] ' +
+                                                  'Handled a notification [remote/node/copied] ' +
                                                   'for its target "' + dstURLParsed.path + '"');
                                     topic.publish('#REQUEST.log', '');
                                 }
@@ -2221,67 +2221,67 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
 
         function onNodeAdded(targetDir, name, type, maybeCreated, moved) {
             if (publishing) {
-                topic.publish(FSCACHE_NODE_ADDED, fsURL, targetDir, name, type, maybeCreated, moved);
+                topic.publish('fs/cache/node/added', fsURL, targetDir, name, type, maybeCreated, moved);
             }
         }
 
         function onNodeDeleted(targetDir, name, type, movedTo) {
             if (publishing) {
-                topic.publish(FSCACHE_NODE_DELETED, fsURL, targetDir, name, type, movedTo);
+                topic.publish('fs/cache/node/deleted', fsURL, targetDir, name, type, movedTo);
             }
         }
 
         function onNodeChanges(targetDir) {
             if (publishing) {
-                topic.publish(FSCACHE_NODE_CHANGES, fsURL, targetDir);
+                topic.publish('fs/cache/node/changes', fsURL, targetDir);
             }
         }
 
         function onFileInvalidated(target) {
             if (publishing) {
-                topic.publish(FSCACHE_FILE_INVALIDATED, fsURL, target);
+                topic.publish('fs/cache/file/invalidated', fsURL, target);
             }
         }
 
         function onFileWritten(target, maybeModified) {
             if (publishing) {
-                topic.publish(FSCACHE_FILE_SET, fsURL, target, 'written', maybeModified);
+                topic.publish('fs/cache/file/set', fsURL, target, 'written', maybeModified);
             }
         }
 
         function onFileFetched(target) {
             if (publishing) {
-                topic.publish(FSCACHE_FILE_SET, fsURL, target, 'fetched', false);
+                topic.publish('fs/cache/file/set', fsURL, target, 'fetched', false);
             }
         }
 
         function onFileRefreshed(target) {
             if (publishing) {
-                topic.publish(FSCACHE_FILE_SET, fsURL, target, 'refreshed', true);
+                topic.publish('fs/cache/file/set', fsURL, target, 'refreshed', true);
             }
         }
 
         function onMetadataInvalidated(target, key) {
             if (publishing) {
-                topic.publish(FSCACHE_METADATA_INVALIDATED, fsURL, target, key);
+                topic.publish('fs/cache/metadata/invalidated', fsURL, target, key);
             }
         }
 
         function onMetadataSet(target, key, maybeModified) {
             if (publishing) {
-                topic.publish(FSCACHE_METADATA_SET, fsURL, target, key, 'written', maybeModified);
+                topic.publish('fs/cache/metadata/set', fsURL, target, key, 'written', maybeModified);
             }
         }
 
         function onMetadataFetched(target, key) {
             if (publishing) {
-                topic.publish(FSCACHE_METADATA_SET, fsURL, target, key, 'fetched', false);
+                topic.publish('fs/cache/metadata/set', fsURL, target, key, 'fetched', false);
             }
         }
 
         function onMetadataRefreshed(target, key) {
             if (publishing) {
-                topic.publish(FSCACHE_METADATA_SET, fsURL, target, key, 'refreshed', true);
+                topic.publish('fs/cache/metadata/set', fsURL, target, key, 'refreshed', true);
             }
         }
 
@@ -2293,14 +2293,6 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
     //---------------------------
     // events that this module publishes
     //---------------------------
-
-    var FSCACHE_NODE_ADDED              = 'fs.cache.node.added';
-    var FSCACHE_NODE_DELETED            = 'fs.cache.node.deleted';
-    var FSCACHE_NODE_CHANGES            = 'fs.cache.node.changes';
-    var FSCACHE_FILE_SET                = 'fs.cache.file.set';
-    var FSCACHE_FILE_INVALIDATED        = 'fs.cache.file.invalidated';
-    var FSCACHE_METADATA_SET            = 'fs.cache.metadata.set';
-    var FSCACHE_METADATA_INVALIDATED    = 'fs.cache.metadata.invalidated';
 
     FSCache.NODE_TYPE_DIRECTORY = TYPE_DIRECTORY;
     FSCache.NODE_TYPE_FILE = TYPE_FILE;

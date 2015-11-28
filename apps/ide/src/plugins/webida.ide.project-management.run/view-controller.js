@@ -83,7 +83,6 @@ define([
 
     var PATTERN_QUERY_STRING = /^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/;
 
-    var EVENT_CHANGE = 'webida.ide.project-management.run:configuration.changed';
     var EVENT_TYPE_SAVE = 'save';
     var EVENT_TYPE_STATE = 'state';
 
@@ -296,7 +295,7 @@ define([
             title: title,
             style: 'width: 800px',
             onHide: function () {
-                topic.publish('webida.ide.project-management.run:configuration.hide');
+                topic.publish('project/run/config/hide');
                 runConfManager.flushRunConfigurations(function () {
                     windowOpened = false;
                     ui.contentArea.destroyRecursive();
@@ -391,7 +390,7 @@ define([
                     delegator.loadConf(ui.content, current.runConf);
                 }
 
-                topic.publish('webida.ide.project-management.run:configuration.show');
+                topic.publish('project/run/config/show');
                 module.refreshTree();
             }
         });
@@ -506,7 +505,7 @@ define([
                         nameInputBox.value = pathInputBox.value;
                     }
                     var isValid = !_checkInvalidField();
-                    topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {isValid: isValid, isDirty: true});
+                    topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {isValid: isValid, isDirty: true});
                 } else {
                     notify.warning(i18n.validationNoSelectedFile);
                 }
@@ -544,7 +543,7 @@ define([
         if (invalidMsg) {
             notify.error(invalidMsg);
         } else {
-            topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, currentRunConf);
+            topic.publish('project/run/config/changed', EVENT_TYPE_SAVE, currentRunConf);
         }
     }
 
@@ -579,7 +578,7 @@ define([
             })
         );
         on(ui.content, 'input, select:change', function () {
-            topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {
+            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {
                 isValid: !_checkInvalidField(),
                 isDirty: true
             });
@@ -607,7 +606,7 @@ define([
         currentRunConf = runConf;
         currentRunConf.__nameGen = true;
         _drawContentPane();
-        topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
             isValid: !_checkInvalidField(runConf),
             isDirty: true
         });
@@ -617,7 +616,7 @@ define([
     module.loadConf = function (content, runConf, callback) {
         currentRunConf = runConf;
         _drawContentPane();
-        topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
             isValid: !_checkInvalidField(runConf)
         });
         callback(null, runConf);
@@ -625,7 +624,7 @@ define([
 
     module.saveConf = function (runConf, callback) {
         delete currentRunConf.__nameGen;
-        topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
             isDirty: false
         });
         callback(null, runConf);

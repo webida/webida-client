@@ -87,7 +87,7 @@ define([
         }, 'editor-tab');
         vm.addToGroup(editors.splitViewContainer, 'editorView');
 
-        topic.subscribe('editor-panel-resize', function () {
+        topic.subscribe('layout/pane/resized', function () {
             var borderContainer = editors.splitViewContainer.widgetObject;
             var children = borderContainer.getChildren();
             var totalW = 5;
@@ -145,8 +145,8 @@ define([
          });
          */
 
-        topic.subscribe('view.focused', function (event) {
-            logger.info('view.focused');
+        topic.subscribe('view/focused', function (event) {
+            logger.info('view/focused');
             logger.trace();
             var view = event.view;
             //logger.info('view = ', view);
@@ -186,8 +186,8 @@ define([
         }
  
 
-        topic.subscribe('view.quit', function () {
-            logger.info('view.quit');
+        topic.subscribe('workbench/exit', function () {
+            logger.info('workbench/exit');
 
             var dirtyFileNames = _getDirtyFileNames();
             var action = function closeWindow() {

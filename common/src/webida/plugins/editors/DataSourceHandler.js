@@ -78,11 +78,11 @@ define([
          */
         _subscribe: function () {
             //on deleted
-            this.subscribed.push(topic.subscribe('workspace.nodes.deleting', this._onNodesDeleted.bind(this)));
-            this.subscribed.push(topic.subscribe('fs.cache.node.deleted', this._checkCase.bind(this)));
+            this.subscribed.push(topic.subscribe('workspace/nodes/deleting', this._onNodesDeleted.bind(this)));
+            this.subscribed.push(topic.subscribe('fs/cache/node/deleted', this._checkCase.bind(this)));
 
             //on content changed
-            this.subscribed.push(topic.subscribe('data-source/content-changed', this._onContentChange.bind(this)));
+            this.subscribed.push(topic.subscribe('resources/persistence/updated', this._onContentChange.bind(this)));
         },
 
         /**

@@ -145,7 +145,7 @@ function (require, topic, _, ide, codemirror, pathUtil) {
             server.ternAddon.addDoc(filepath, cm.getDoc());
 
             _.delay(function () {
-                topic.publish('#REQUEST.tellAppEntryHTMLs', filepath, function (htmlPaths) {
+                topic.publish('content-assist/get/app-entry-htmls', filepath, function (htmlPaths) {
                     var maybeBaseUrlsObj = {};
                     _.each(htmlPaths, function (htmlpath) {
                         server.addFile(htmlpath);

@@ -104,15 +104,15 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
                 _self._viewSelectedHandler(event);
             });
 
-            topic.subscribe('view.removed', function (event) {
+            topic.subscribe('view/removed', function (event) {
                 _self._viewRemovedHandler(event);
             });
 
-            topic.subscribe('view.focused', function (event) {
+            topic.subscribe('view/focused', function (event) {
                 _self._viewFocusedHandler(event);
             });
 
-            topic.subscribe('view.added-before', function (event) {
+            topic.subscribe('view/before-added', function (event) {
                 var vc = event.viewContainer;
                 if (vc && (vc.getParent()  === _self)) {
                     if (_self.get('smartVisible')) {
@@ -121,7 +121,7 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
                 }
             });
 
-            topic.subscribe('view.removed', function (event) {
+            topic.subscribe('view/removed', function (event) {
                 var vc = event.viewContainer;
                 if (vc && (vc.getParent()  === _self)) {
                     if  ((event.count === 0) && _self.get('smartVisible')) {
@@ -131,7 +131,7 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
             });
             
             aspect.after(bc, '_layoutChildren', function () {
-                topic.publish('editor-container-layout-changed');
+                topic.publish('part/container/resized');
             });
 
             bc.resize();
@@ -205,7 +205,7 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
                     destViewContainer : targetViewContainer
                 };
 
-                topic.publish('view.moved-before', viewMoveEvent);
+                topic.publish('view/before-moved', viewMoveEvent);
 
                 if (targetViewContainer === vc) {
                     targetViewContainer.moveView(view, nextSibling);
@@ -222,7 +222,7 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
                     }
                 }
 
-                topic.publish('view.moved', viewMoveEvent);
+                topic.publish('view/moved', viewMoveEvent);
             }
         },
 
@@ -529,7 +529,7 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
                 destViewContainer : targetViewContainer
             };
 
-            topic.publish('view.moved-before', viewMoveEvent);
+            topic.publish('view/before-moved', viewMoveEvent);
 
             for (i = 0; i < showedList.length; i++) {
                 viewContainer = showedList[i];
@@ -595,7 +595,7 @@ function (_, TabContainer, ContentPane, Tooltip, BorderContainer,
                 _self.widgetObject.addChild(viewContainer.getTopContainer());
             }
 
-            topic.publish('view.moved', viewMoveEvent);
+            topic.publish('view/moved', viewMoveEvent);
         },
     };
 

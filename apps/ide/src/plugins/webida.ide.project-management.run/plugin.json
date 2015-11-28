@@ -37,8 +37,8 @@
                        "toolbar": {
                            "icons" : "./styles/theme/webida-light/images/icons/toolbar_runhistory.png",
                            "tooltip" : "Run with",
-                           "enabledOn":"toolbar.runas.enable",
-                           "disabledOn":"toolbar.runas.disable"
+                           "enabledOn":"toolbar/enable/runas",
+                           "disabledOn":"toolbar/disable/runas"
                        }
                     }
                 ],
@@ -68,11 +68,11 @@
     },
 
     "subscriptions": {
-        "#REQUEST.tellAppEntryHTMLs": {
+        "content-assist/get/app-entry-htmls": {
             "module": "plugins/webida.ide.project-management.run/run-configuration-manager",
             "handler": "getProjectRootHtml"
         },
-        "webida.ide.project-management.run:configuration.changed": {
+        "project/run/config/changed": {
             "module": "plugins/webida.ide.project-management.run/plugin",
             "handler": "runObjectChanged"
         }

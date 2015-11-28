@@ -645,7 +645,7 @@ function (webida, ide,
                     }));
                 }));
 
-                topic.publish('webida.ide.project-management.run:configuration.changed', 'save', pConf.run.list[0]);
+                topic.publish('project/run/config/changed', 'save', pConf.run.list[0]);
             }
 
             function copy() {

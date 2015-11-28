@@ -39,7 +39,7 @@ function (BorderContainer, ContentPane, topic) {
             var event = {
                 view : view
             };
-            topic.publish('view.registered', event);
+            topic.publish('view/registered', event);
         },
 
         removeView : function (view) {
@@ -49,7 +49,7 @@ function (BorderContainer, ContentPane, topic) {
                 var event = {
                     view : view
                 };
-                topic.publish('view.unregistered', event);
+                topic.publish('view/unregistered', event);
             }
         },
 
