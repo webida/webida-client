@@ -1,6 +1,8 @@
 # webida-client
 
-This is a web-based IDE that is made up of plugins on Open Development Platform.
+A plug-in based web application platform
+![image](https://cloud.githubusercontent.com/assets/7447396/11450399/15612d02-95e2-11e5-8887-6035671f740e.png)
+
 
 ## Installation Guide
 
