@@ -111,7 +111,7 @@ define([
                 this.emit(PartRegistry.PART_UNREGISTERED, part);
                 if (this.getEditorParts().length === 0) {
                     this.setCurrentEditorPart(null);
-                    topic.publish('editor/not-exists');
+                    topic.publish('part/editor/not-exists');
                 }
             }
         },

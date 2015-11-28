@@ -137,7 +137,6 @@ define([
 
     var preferences = PreferenceFactory.get('WORKSPACE');
 
-    var EVT_NODE_ALL_DESELECTED = 'workspace.node.alldeselected';
     var MIME_TYPE_WEBIDA_RESOURCE_PATH = 'text/x-webida-resource-path';
 
     var extensionPoints = {
@@ -266,7 +265,7 @@ define([
             win.scrollIntoView(nodes[0].domNode, domGeom.position(nodes[0].domNode));
             tree.set('paths', [nodes[0].getTreePath()]);
             if (blockTopic !== true) {
-                topic.publish('workspace.node.selected', node.getPath());
+                topic.publish('workspace/node/selected', node.getPath());
             }
         }
     }
@@ -444,7 +443,7 @@ define([
                             var currentNode = treeNode.item;
                             if (selectedNodes.indexOf(currentNode) === -1) {
                                 this.set('paths', [treeNode.getTreePath()]);
-                                topic.publish('workspace.node.selected', currentNode.getPath());
+                                topic.publish('workspace/node/selected', currentNode.getPath());
                             }
                             this.set('lastFocusedChild', treeNode);
                         }
@@ -467,7 +466,7 @@ define([
 
             var nodes = tree.selectedNodes;
             if (!nodes || nodes.length < 1) {
-                topic.publish(EVT_NODE_ALL_DESELECTED);
+                topic.publish(workspace/node/selected/none);
             }
         });
 
@@ -681,7 +680,7 @@ define([
                     }
                 }
                 original.apply(this, arguments);
-                topic.publish('workspace.node.selected', node.item.getPath());
+                topic.publish('workspace/node/selected', node.item.getPath());
             };
         });
 
@@ -741,7 +740,7 @@ define([
                         var children = self.model.store.getChildren(item);
                         for (var i = 0; i < children.length; i++) {
                             var child = children[i];
-                            topic.publish('workspace.node.shown', child.getPath());
+                            topic.publish('workspace/node/shown', child.getPath());
 
                             if (child.isInternal) {
                                 child.fetchChildren();
@@ -1091,7 +1090,7 @@ define([
                     return n.getPath();
                 });
                 toDelete.deleted = [];
-                topic.publish('workspace.nodes.deleting', toDelete);
+                topic.publish('workspace/nodes/deleting', toDelete);
             }
             var parentNode = nodes[0].getParentNode();
             async.each(nodes, function (node, callback) {
@@ -1263,7 +1262,7 @@ define([
             editorsSelection = path;
         });
 
-        topic.subscribe('editors.closed', function (path) {
+        topic.subscribe('part/container/removed', function (path) {
             if (editorsSelection === path) {
                 editorsSelection = null;
             }
@@ -1273,7 +1272,7 @@ define([
         // 1) The file has been opened already (Part exists in the registry)
         // 2) If the file is opened, the part should be hidden.
         // TODO : Can workspace view plugin know PartRegistry and EditorPart?
-        topic.subscribe('workspace.node.selected', function (path) {
+        topic.subscribe('workspace/node/selected', function (path) {
             if (syncingWithEditor && !pathUtil.isDirPath(path) && getSelectedNodes().length === 1) {
                 var partRegistry = _getPartRegistry();
                 var dsRegistry = workbench.getDataSourceRegistry();
@@ -1447,7 +1446,7 @@ define([
     }
 
     function initializeFocus() {
-        topic.subscribe('workspace.node.selected', function () {
+        topic.subscribe('workspace/node/selected', function () {
             var nodes = getSelectedNodes();
             if (nodes && nodes.length > 0) {
                 var paths = [];
@@ -1598,7 +1597,7 @@ define([
             //preferences.addFieldChangeListener('workspace:filter:.*', applyPreferences);
             //preferences.addFieldChangeListener('workspace:filter:.w.p', applyPreferences);
         //});
-        topic.subscribe('workspace.node.shown', filter);
+        topic.subscribe('workspace/node/shown', filter);
     }
 
     function createNodeInteractively(path, kind) {
@@ -1721,8 +1720,6 @@ define([
 
             _loadCss(require.toUrl('webida-lib/plugins/workspace/style/wv.css'));
 
-            //topic.subscribe('projectConfig.loadCompleted', function () {
-
             initializeTree();
             initializeFocus();
             initializeToolbar();
@@ -1742,13 +1739,13 @@ define([
                 }
             });
 
-            topic.subscribe('projectConfig.changed', function () {
+            topic.subscribe('project/config/changed', function () {
                 tree.refreshItemClasses();
             });
-            topic.subscribe('projectConfig.loadCompleted', function () {
+            topic.subscribe('project/config/load-completed', function () {
                 tree.refreshItemClasses();
             });
-            topic.subscribe('workspace.node.overlayicon.state.changed', function (path, stateSet, state) {
+            topic.subscribe('workspace/node/status/changed', function (path, stateSet, state) {
                 setNodeOverlayIconInfo(path, stateSet, state);
             });
             //});

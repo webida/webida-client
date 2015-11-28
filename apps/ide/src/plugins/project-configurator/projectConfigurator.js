@@ -82,10 +82,10 @@ define([
     var projectConfigurationLoadPromise = readProjectRunConfigurations()
         .then(getConfigurationObjectByProject)
         .then(function () {
-            topic.publish('projectConfig.loadCompleted');
+            topic.publish('project/config/load-completed');
             // FIXME this module has no relation with runAs
             if (projectPropertyList.length === 0 && noProjectList.length === 0) {
-                topic.publish('toolbar.runas.disable');
+                topic.publish('toolbar/disable/runas');
             }
         });
 
@@ -101,12 +101,12 @@ define([
             if (temp.name === projectName) {
                 projectPropertyList.splice(i, 1);
                 if (projectPropertyList.length === 0 && noProjectList.length === 0) {
-                    topic.publish('toolbar.runas.disable');
+                    topic.publish('toolbar/disable/runas');
                 }
                 return;
             }
         }
-        topic.publish('projectConfig.changed', projectName);
+        topic.publish('project/config/changed', projectName);
     }
 
     function addProjectPropertyByName(obj) {
@@ -117,7 +117,7 @@ define([
         projectPropertyList.push(obj);
 
         if (noProjectList.length === 0 && projectPropertyList.length === 1) {
-            topic.publish('toolbar.runas.enable');
+            topic.publish('toolbar/enable/runas');
         }
     }
 
@@ -237,7 +237,7 @@ define([
         return splitPath.slice(0, 3).join('/') + '/';
     }
 
-    topic.subscribe('fs.cache.file.set', function (fsURL, target, type, maybeModified) {
+    topic.subscribe('fs/cache/file/set', function (fsURL, target, type, maybeModified) {
         var splitTarget = target.split('/');
         var idePath = ide.getPath() + '/';
         if (splitTarget.length !== 5 || !maybeModified) {
@@ -253,7 +253,7 @@ define([
                         if (obj) {
                             replaceProjectProperty(obj);
                         }
-                        topic.publish('projectConfig.changed', splitTargetDir[2]);
+                        topic.publish('project/config/changed', splitTargetDir[2]);
                         //logger.log('replace project property : ' + obj);
                     });
                 }
@@ -275,7 +275,7 @@ define([
             if (noProjectList[i].name === name) {
                 noProjectList.splice(i, 1);
                 if (projectPropertyList.length === 0 && noProjectList.length === 0) {
-                    topic.publish('toolbar.runas.disable');
+                    topic.publish('toolbar/disable/runas');
                 }
                 return;
             }
@@ -295,7 +295,7 @@ define([
         noProjectList.push(noProjectObj);
 
         if (noProjectList.length === 1 && projectPropertyList.length === 0) {
-            topic.publish('toolbar.runas.enable');
+            topic.publish('toolbar/enable/runas');
         }
     }
 
@@ -315,16 +315,16 @@ define([
                 addNoProjectByName(projectName);
                 logger.log('newProjectAdded fail ');
             }
-            topic.publish('projectConfig.changed', projectName);
+            topic.publish('project/config/changed', projectName);
         });
     }
 
-    topic.subscribe('projectWizard.created', function (targetDir, projectName) {
+    topic.subscribe('project/wizard/created', function (targetDir, projectName) {
         //logger.log(projectName);
         newProjectAdded(targetDir + '/' + projectName + '/', projectName);
     });
 
-    topic.subscribe('fs.cache.node.added', function (fsURL, targetDir, name, type, created) {
+    topic.subscribe('fs/cache/node/added', function (fsURL, targetDir, name, type, created) {
         //logger.log('node added' +  ':' + fsURL + ':' + targetDir + ':' + name + ':' + type + ':' + created);
         if (created === false) {
             return;
@@ -355,7 +355,7 @@ define([
         }
     });
 
-    topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
+    topic.subscribe('fs/cache/node/deleted', function (fsURL, targetDir, name, type) {
         var splitTargetDir = targetDir.split('/');
 
         //project folder delete

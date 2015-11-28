@@ -57,13 +57,6 @@ define([
         this.name = name;
     }
 
-    ViewContainerEvent.QUIT = 'view.quit';
-    ViewContainerEvent.ADDED = 'view.added';
-    ViewContainerEvent.ADDED_BEFORE = 'view.added-before';
-    ViewContainerEvent.REMOVED = 'view.removed';
-    ViewContainerEvent.FOCUSED = 'view.focused';
-    ViewContainerEvent.MAXIMIZE = 'view.maximize';
-
     var ViewTabContainer = declare(TabContainer, {
         //override
         _onKeyDown: function (e) {
@@ -214,12 +207,12 @@ define([
                 var target = BrowserUtil.getTarget(ev);
                 if (target.classList.contains('tabLabel') &&  // WTC-3071
                     ev.currentTarget === _self.tabContainer.domNode) {
-                    var event = new ViewContainerEvent(ViewContainerEvent.MAXIMIZE);
+                    var event = new ViewContainerEvent('view/maximize');
                     event.location = _self.getParent().get('region'); // splitviewcontainer
                     var parent = target.parentNode;
                     while (parent && parent.parentNode) {
                         if (parent === _self.tabContainer.domNode.firstElementChild) {
-                            topic.publish(ViewContainerEvent.MAXIMIZE, event);
+                            topic.publish('view/maximize', event);
                             break;
                         }
                         parent = parent.parentNode;
@@ -312,11 +305,11 @@ define([
         addAt : function (view, index) {
             var _self = this;
 
-            var event = new ViewContainerEvent(ViewContainerEvent.ADDED_BEFORE);
+            var event = new ViewContainerEvent('view/before-added');
             event.view = view;
             event.viewContainer = _self;
 
-            topic.publish(ViewContainerEvent.ADDED_BEFORE, event);
+            topic.publish('view/before-added', event);
 
             if (index === -1) {
                 _self.tabContainer.addChild(view.contentPane);
@@ -358,12 +351,12 @@ define([
             view.contentPane.controlButton.domNode[viewContainer.KEY_VIEW_ID] = view.getId();
             view.setParent(_self);
 
-            event = new ViewContainerEvent(ViewContainerEvent.ADDED);
+            event = new ViewContainerEvent('view/added');
             event.view = view;
             event.viewContainer = _self;
             event.count = _self.tabContainer.getChildren().length;
 
-            topic.publish(ViewContainerEvent.ADDED, event);
+            topic.publish('view/added', event);
 
             var cbClose = dojo.connect(view.contentPane, 'onClose', function (tabContainer, contentPane) {
                 _self._contentPaneClose(contentPane, true);
@@ -611,14 +604,14 @@ define([
                 var part = view.partContainer.getPart();
                 topic.publish('editor/close/part', part);
             } else {
-                event = new ViewContainerEvent('view.close');
+                event = new ViewContainerEvent('view/close');
                 event.view = self._getViewByContentPane(pane);
                 event.viewContainer = self;
                 event.closable = true;
                 event.noClose = function () {
                     event.closable = false;
                 };
-                topic.publish('view.close', event, lang.hitch(this, function () {
+                topic.publish('view/close', event, lang.hitch(this, function () {
                     if (event.closable) {
                         this._remove(event.view, true);
                     }
@@ -628,7 +621,7 @@ define([
 
         _contentPaneQuit : function (pane) {
             var _self = this;
-            var event = new ViewContainerEvent(ViewContainerEvent.QUIT);
+            var event = new ViewContainerEvent('workbench/exit');
             event.view = _self._getViewByContentPane(pane);
             event.viewContainer = _self;
             event.closable = true;
@@ -636,16 +629,16 @@ define([
                 event.closable = false;
             };
 
-            topic.publish(ViewContainerEvent.QUIT, event);
+            topic.publish('workbench/exit', event);
         },
 
         _viewFocused : function (view) {
             var _self = this;
-            var event = new ViewContainerEvent(ViewContainerEvent.FOCUSED);
+            var event = new ViewContainerEvent('view/focused');
             if (view) {
                 event.view = view;
                 event.viewContainer = _self;
-                topic.publish(ViewContainerEvent.FOCUSED, event);
+                topic.publish('view/focused', event);
             }
         },
 
@@ -663,11 +656,11 @@ define([
                 });
             }
 
-            var event = new ViewContainerEvent(ViewContainerEvent.REMOVED);
+            var event = new ViewContainerEvent('view/removed');
             event.view = _self._getViewByContentPane(pane);
             event.viewContainer = _self;
             event.count = _self.tabContainer.getChildren().length;
-            topic.publish(ViewContainerEvent.REMOVED, event);
+            topic.publish('view/removed', event);
 
             for (var i = 0; i < _self.viewList.length; i++) {
                 if (_self.viewList[i] === view) {

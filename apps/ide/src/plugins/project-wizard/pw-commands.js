@@ -200,7 +200,7 @@ function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootst
             if (fsid === ide.getFsid() && targetDir && projName) {
                 var fsCache = ide.getFSCache();
                 fsCache.refresh(targetDir + '/', { level: 2 }, function () {
-                    topic.publish('projectWizard.created', targetDir, projName);
+                    topic.publish('project/wizard/created', targetDir, projName);
 
                     // get node and select, not focus just select
                     require(['webida-lib/plugins/workspace/plugin'], function (wv) {

@@ -89,7 +89,7 @@ define([
     }
 
     function setGitOverlayIconState(nodePath, newState) {
-        topic.publish('workspace.node.overlayicon.state.changed', nodePath, GIT_OVERLAY_ICON_STATE_MAP_KEY, newState); 
+        topic.publish('workspace/node/status/changed', nodePath, GIT_OVERLAY_ICON_STATE_MAP_KEY, newState); 
     }
 
     function unsetIconInfoWithin(path, repoPath) {

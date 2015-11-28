@@ -296,8 +296,8 @@ define([
                 });
             });
 
-            topic.subscribe('workspace.node.selected', _displayGitView);
-            topic.subscribe('workspace.node.selected', _seletedGitinfo);
+            topic.subscribe('workspace/node/selected', _displayGitView);
+            topic.subscribe('workspace/node/selected', _seletedGitinfo);
         });
     }
 

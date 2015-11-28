@@ -292,7 +292,7 @@ define([
                 delete this.deferredActions;
             }           
             
-            topic.subscribe('editor-panel-resize-finished', function () {
+            topic.subscribe('layout/pane/resized-finished', function () {
                 self.__checkSizeChange();
             });
 

@@ -43,7 +43,6 @@ define([
 ) {
     'use strict';
 
-    var EVENT_CHANGE = 'webida.ide.project-management.run:configuration.changed';
     var EVENT_TYPE_SAVE = 'save';
     var EVENT_TYPE_STATE = 'state';
 
@@ -136,7 +135,7 @@ define([
                         nameInputBox.value = pathInputBox.value;
                     }
                     var isValid = !_checkInvalidField();
-                    topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, {
+                    topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {
                         isValid: isValid,
                         isDirty: true
                     });
@@ -178,7 +177,7 @@ define([
             ui.pathButton = $(child).find('.rcw-action-path').get(0);
 
             on(ui.content, 'input, select:change', function () {
-                topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, currentRunConf, 
+                topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, 
                               {isValid: !_checkInvalidField(), isDirty: true});
             });
 
@@ -186,7 +185,7 @@ define([
                 on(ui.saveButton, 'click', function () {
                     var invalidMsg = _checkInvalidField();
                     if (!invalidMsg) {
-                        topic.publish(EVENT_CHANGE, EVENT_TYPE_SAVE, currentRunConf);
+                        topic.publish('project/run/config/changed', EVENT_TYPE_SAVE, currentRunConf);
                     } else {
                         notify.error(invalidMsg);
                     }
@@ -226,7 +225,7 @@ define([
             currentRunConf.__nameGen = true;
             ui.content = content;
             _setTemplate();
-            topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
                 isValid: !_checkInvalidField(runConf),
                 isDirty: true
             });
@@ -236,7 +235,7 @@ define([
             currentRunConf = runConf;
             ui.content = content;
             _setTemplate();
-            topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
                 isValid: !_checkInvalidField(runConf)
             });
             callback(null, runConf);
@@ -245,7 +244,7 @@ define([
             // validation
             var invalidMsg = _checkInvalidField();
             if (!invalidMsg) {
-                topic.publish(EVENT_CHANGE, EVENT_TYPE_STATE, runConf, {
+                topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
                     isDirty: false
                 });
                 callback(null, runConf);

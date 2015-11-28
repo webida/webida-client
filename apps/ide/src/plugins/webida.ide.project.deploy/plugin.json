@@ -14,8 +14,8 @@
                         "toolbar": {
                             "icons" : "./styles/theme/webida-light/images/icons/toolbar_deployhistory.png",
                             "tooltip" : "Deploy",
-                            "enabledOn":"toolbar.deploy.enable",
-                            "disabledOn":"toolbar.deploy.disable"
+                            "enabledOn":"toolbar/enable/deploy",
+                            "disabledOn":"toolbar/disable/deploy"
                         },
                         "procedural" : true
                     }]
@@ -37,7 +37,7 @@
         }
     },
     "subscriptions": {
-        "workbench.context.changed": {
+        "workbench/context/changed": {
             "handler": "onContextChanged"
         }
     }

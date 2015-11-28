@@ -16,7 +16,7 @@
 
 /**
  * project information API service
- * Once project's configuration is changed, 'projectConfig.changed' topic will be published with its name of project.
+ * Once project's configuration is changed, 'project/config/changed' topic will be published with its name of project.
  *
  * @since: 15. 8. 18
  * @author: Koong Kyungmi (kyungmi.k@samsung.com)

@@ -75,12 +75,12 @@ define([
     //TODO This will be refactored in webida-client 1.7.0 Release
     function subscribeToTopics() {
 
-        topic.subscribe('editors.closed', function (dataSourceId, view) {
+        topic.subscribe('part/container/removed', function (dataSourceId, view) {
             editors.editorTabFocusController.unregisterView(view);
         });
 
-        topic.subscribe('fs.cache.file.invalidated', function (fsURL, path) {
-            logger.info('fs.cache.file.invalidated arrived');
+        topic.subscribe('fs/cache/file/invalidated', function (fsURL, path) {
+            logger.info('fs/cache/file/invalidated arrived');
             var dataSource = dsRegistry.getDataSourceById(path);
             var file;
             if (dataSource) {
@@ -93,13 +93,13 @@ define([
             }
         });
 
-        topic.subscribe('fs.cache.file.set', function (fsUrl, target, reason) {
+        topic.subscribe('fs/cache/file/set', function (fsUrl, target, reason) {
             if (reason === 'refreshed') {
-                topic.publish('data-source/content-changed', target);
+                topic.publish('resources/persistence/updated', target);
             }
         });
 
-        topic.subscribe('editor/not-exists', function () {
+        topic.subscribe('part/editor/not-exists', function () {
             topic.publish('editor/clean/all');
             topic.publish('editor/clean/current');
         });
@@ -175,7 +175,7 @@ define([
     };
 
     editors.quit = function () {
-        topic.publish('view.quit');
+        topic.publish('workbench/exit');
     };
 
     function getViewContainer(view, file, option) {

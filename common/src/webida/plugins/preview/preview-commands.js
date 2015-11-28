@@ -152,8 +152,8 @@ define([
         }
     }
 
-    topic.subscribe('workspace.node.selected', respondToSelection);
-    topic.subscribe('fs.cache.file.set', updatePreview);
+    topic.subscribe('workspace/node/selected', respondToSelection);
+    topic.subscribe('fs/cache/file/set', updatePreview);
 
     function showPreview() {
         displayPreview(ws.getSelectedPath());

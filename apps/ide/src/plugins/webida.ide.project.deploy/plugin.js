@@ -81,9 +81,9 @@ define([
     module.onContextChanged = function (context) {
         bEnable = isEnableContext(context);
         if (bEnable) {
-            topic.publish('toolbar.deploy.enable');
+            topic.publish('toolbar/enable/deploy');
         } else {
-            topic.publish('toolbar.deploy.disable');
+            topic.publish('toolbar/disable/deploy');
         }
     };
 

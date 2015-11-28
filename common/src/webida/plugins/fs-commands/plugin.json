@@ -18,8 +18,8 @@
                                        "toolbar": {
                                            "icons" : "./styles/theme/webida-light/images/icons/toolbar_file.png",
                                            "tooltip" : "New File",
-                                           "enabledOn":"toolbar.newfile.enable",
-                                           "disabledOn":"toolbar.newfile.disable"
+                                           "enabledOn":"toolbar/enable/newfile",
+                                           "disabledOn":"toolbar/disable/newfile"
                                        },
                                        "procedural" : true
                                    }],
@@ -42,8 +42,8 @@
                                             "toolbar": {
                                                 "icons" : "./styles/theme/webida-light/images/icons/toolbar_findfiles.png",
                                                 "tooltip" : "Find in Files",
-                                                "enabledOn":"toolbar.findinfiles.enable",
-                                                "disabledOn":"toolbar.findinfiles.disable"
+                                                "enabledOn":"toolbar/enable/findinfiles",
+                                                "disabledOn":"toolbar/disable/findinfiles"
                                             },
                                             "procedural" : true
                                         }]
@@ -59,8 +59,8 @@
                                         "toolbar": {
                                             "icons" : "./styles/theme/webida-light/images/icons/toolbar_gotofile.png",
                                             "tooltip" : "Go to File",
-                                            "enabledOn":"toolbar.gotofile.enable",
-                                            "disabledOn":"toolbar.gotofile.disable"
+                                            "enabledOn":"toolbar/enable/gotofile",
+                                            "disabledOn":"toolbar/disable/gotofile"
                                         },
                                         "procedural" : true
                                     }]
@@ -127,7 +127,7 @@
         ]
     }, 
     "subscriptions" : { 
-        "workspace.node.selected" : { 
+        "workspace/node/selected" : { 
             "handler": "onNodeSelected"
         } 
     }

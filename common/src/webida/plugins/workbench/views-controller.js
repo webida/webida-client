@@ -57,10 +57,10 @@ define([
      dom, DropDownButton, DropDownMenu, MenuItem) {
     'use strict';
 
-    topic.subscribe('view.unregistered', function (event) {
+    topic.subscribe('view/unregistered', function (event) {
         viewsController.focusController.unregisterView(event.view);
     });
-    topic.subscribe('view.maximize', function (event) {
+    topic.subscribe('view/maximize', function (event) {
         viewsController.toggleFullScreen(event.location);
     });
 
@@ -556,27 +556,27 @@ define([
             var bottomSplitter = _self._getSplitter('bottom');
 
             aspect.before(leftSplitter, '_handleOnChange', function () {
-                topic.publish('editor-panel-resize');
+                topic.publish('layout/pane/resized');
             });
 
             aspect.before(leftSplitter, '_startDrag', function () {
-                topic.publish('editor-panel-resize');
+                topic.publish('layout/pane/resized');
             });            
 
             aspect.before(rightSplitter, '_handleOnChange', function () {
-                topic.publish('editor-panel-resize');
+                topic.publish('layout/pane/resized');
             });
 
             aspect.before(rightSplitter, '_startDrag', function () {
-                topic.publish('editor-panel-resize');
+                topic.publish('layout/pane/resized');
             });           
 
             aspect.before(bottomSplitter, '_handleOnChange', function () {
-                topic.publish('editor-panel-resize');
+                topic.publish('layout/pane/resized');
             });
 
             aspect.before(bottomSplitter, '_startDrag', function () {
-                topic.publish('editor-panel-resize');
+                topic.publish('layout/pane/resized');
             });         
 
             var vcList;

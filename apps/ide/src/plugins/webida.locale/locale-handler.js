@@ -70,7 +70,7 @@ define([
         });
     }
 
-    topic.subscribe('fs.cache.file.set',
+    topic.subscribe('fs/cache/file/set',
                     function (fsURL, target, reason, isModified) {
         if (isLocaleChanged && isModified) {
             isLocaleChanged = false;

@@ -264,12 +264,11 @@ define([
     };
 
     /**
-     * Implementation for subscriptions of "webida.ide.project-management.run:configuration.changed"
+     * Implementation for subscriptions of "project/run/config/changed"
      * @method runObjectChanged
      * @memberOf module:webida.ide.project-management.run
      */
     module.runObjectChanged = function (action) {
-        console.log('webida.ide.project-management.run:configuration.changed', arguments);
         if (action === 'save' && arguments[1]) {
             var runConf = arguments[1];
             delegator.saveConf(runConf, function (err) {

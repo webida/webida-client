@@ -35,13 +35,12 @@ function (topic, workbench, View, vm, ViewToolbar, wv, pathUtil) {
         //this.cbClose = onViewClose || this.onViewClose;
 
         var self = this;
-        self.addHandle(topic.subscribe('view.added', function (event) {
-            //console.log('view.added', event.view.getId());
+        self.addHandle(topic.subscribe('view/added', function (event) {
             if (event.view.getId() === self.getId()) {
                 self.onViewAppended();
             }
         }));
-        self.addHandle(topic.subscribe('view.close', function (event, onClose) {
+        self.addHandle(topic.subscribe('view/close', function (event, onClose) {
             if (event.view.getId() === self.getId()) {
                 self.onViewClose();
                 onClose();
@@ -76,8 +75,8 @@ function (topic, workbench, View, vm, ViewToolbar, wv, pathUtil) {
         var vt = new ViewToolbar($('#' + this.id + ' .toolbar-panel')[0], this.getView().contentPane);
         vt.setContent(tplToolbar);
 
-        this.addHandle(topic.subscribe('workspace.node.selected', function (selectedPath) {
-            console.log('workspace.node.selected', selectedPath || null);
+        this.addHandle(topic.subscribe('workspace/node/selected', function (selectedPath) {
+            console.log('workspace/node/selected', selectedPath || null);
             var selectedProjectPath = pathUtil.getProjectRootPath(selectedPath);
             if (!selectedProjectPath) {
                 return;
