@@ -39,14 +39,6 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
         this.monitor = monitor;
     };
 
-    Build.Topics = {
-        TASK_START: 'build.task.start',
-        TASK_END: 'build.task.end',
-        PROGRESS: 'build.progress',
-        CLEANED: 'build.cleaned',
-        DONE: 'build.done'
-    };
-
     Build.TYPE = {
         'BUILD': 'build',
         'REBUILD': 'rebuild',
@@ -86,7 +78,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
 
         var handleBuild = function (result) {
             if (!result.status) {
-                topic.publish(Build.Topics.TASK_START, {
+                topic.publish('project/build/start', {
                     profileName: pf.profileName,
                     taskId: result
                 });
@@ -101,7 +93,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
             switch (ret) {
             case BuildProfile.STATE_PROGRESS :
                 var taskId = BuildProfile.getTaskId(result);
-                topic.publish(Build.Topics.PROGRESS, {
+                topic.publish('project/build/progress', {
                     profileName: pf.profileName,
                     taskId: taskId,
                     state: state
@@ -138,7 +130,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
             }
             //console.log('handleBuild done?', done);
             if (done) {
-                topic.publish(Build.Topics.TASK_END, {
+                topic.publish('project/build/end', {
                     profileName: pf.profileName,
                     taskId: result.status.taskId,
                     pkg: apkPath
@@ -163,7 +155,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
                 break;
             }
             if (done) {
-                topic.publish(Build.Topics.CLEANED, {
+                topic.publish('project/build/cleaned', {
                     profileName: pf.profileName
                 });
             }
@@ -199,7 +191,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
                 }
                 //console.log('cb done?', cbSelf.done);
                 if (cbSelf.done) {
-                    topic.publish(Build.Topics.DONE, {
+                    topic.publish('project/build/done', {
                         profileName: pf.profileName
                     });
                     $progress.hide();

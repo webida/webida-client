@@ -308,7 +308,7 @@ define([
                 delete this.deferredActions;
             }
 
-            this.resizeTopicHandler = topic.subscribe('editor-container-layout-changed', function () {
+            this.resizeTopicHandler = topic.subscribe('part/container/resized', function () {
                 self.checkSizeChange();
             });
 

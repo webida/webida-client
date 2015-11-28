@@ -58,11 +58,6 @@ define([
     var RUN_CONFIG_FILE_NAME = 'workspace.json';
     var PATH_RUN_CONFIG = PATH_WORKSPACE + '/' + WORKSPACE_INFO_DIR_NAME + '/' + RUN_CONFIG_FILE_NAME;
 
-    //var topics = {
-    //    RUN_AS_DISABLED: 'toolbar.runas.disable',
-    //    RUN_AS_ENABLED: 'toolbar.runas.enable'
-    //};
-
     var MODE = {
         RUN_MODE: 'run',
         DEBUG_MODE: 'debug'
@@ -238,8 +233,7 @@ define([
     };
 
     function addListeners() {
-        topic.subscribe('sys.fs.node.moved', function (event) {
-            logger.log('sys.fs.node.moved', arguments);
+        topic.subscribe('remote/node/moved', function (event) {
             var src = event.srcURL;
             var dest = event.dstURL;
             var srcPathInfo = _getPathInfo(src);
@@ -264,21 +258,21 @@ define([
         }
 
         // apply changes on run config file at current IDE
-        topic.subscribe('fs.cache.file.set', function (fsURL, target) {
-            logger.log('fs.cache.file.set', arguments);
+        topic.subscribe('fs/cache/file/set', function (fsURL, target) {
+            logger.log('fs/cache/file/set', arguments);
             _applyChangesOnFile(target);
         });
 
         // apply changes on run config file at another IDE
-        topic.subscribe('sys.fs.file.written', function (data) {
-            logger.log('sys.fs.file.written', data);
+        topic.subscribe('remote/persistence/written', function (data) {
+            logger.log('remote/persistence/written', data);
             var uri = new URI(data.url);
             uri.segment(0, '');	                    // drop the fsid
             _applyChangesOnFile(uri.path(true));    // get decoded path
         });
 
-        topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
-            logger.log('fs.cache.node.deleted', arguments);
+        topic.subscribe('fs/cache/node/deleted', function (fsURL, targetDir, name, type) {
+            logger.log('fs/cache/node/deleted', arguments);
             if (type !== 'dir') {
                 return;
             }

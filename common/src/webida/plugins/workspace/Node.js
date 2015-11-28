@@ -1487,7 +1487,7 @@ define(['require',
     };
 
     Node.subscribeToFSEvents = function () {
-        topic.subscribe('fs.cache.node.added', function (fsURL, targetDir, name, type, maybeCreated) {
+        topic.subscribe('fs/cache/node/added', function (fsURL, targetDir, name, type, maybeCreated) {
             var id = targetDir + name;
             var existingNode;
             if ((existingNode = store().get(id))) {
@@ -1497,7 +1497,7 @@ define(['require',
 
                 var path = existingNode.getPath();
                 existingNode.deleteRecursively();
-                topic.publish('workspace.node.deleted', path);
+                topic.publish('workspace/node/deleted', path);
             }
 
             var dirId = pathToId(targetDir);
@@ -1512,7 +1512,7 @@ define(['require',
 
         });
 
-        topic.subscribe('fs.cache.node.deleted', function (fsURL, targetDir, name, type) {
+        topic.subscribe('fs/cache/node/deleted', function (fsURL, targetDir, name, type) {
             var id = targetDir + name;
             var existingNode;
             if ((existingNode = store().get(id))) {
@@ -1524,7 +1524,7 @@ define(['require',
 
                 var path = existingNode.getPath();
                 existingNode.deleteRecursively();
-                topic.publish('workspace.node.deleted', path);
+                topic.publish('workspace/node/deleted', path);
             } else {
                 var dirId = pathToId(targetDir);
                 var dirNode = store().get(dirId);

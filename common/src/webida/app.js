@@ -49,11 +49,11 @@ define(['webida-lib/util/browserInfo',
     var wellOpened = false;
 
     // loading screen
-    topic.subscribe('#REQUEST.showApp', function () {
+    topic.subscribe('workbench/load', function () {
         logger.log('showApp request');
         setTimeout(function () {
             logger.log('Hiding loading screen');
-            topic.publish('app.showing');
+            topic.publish('workbench/loading/started');
             loadingScreen.hideLoadingScreen();
         }, 200);
     });
@@ -407,7 +407,7 @@ define(['webida-lib/util/browserInfo',
 
                             switch (data.eventType) {
                             case 'file.written':
-                                topic.publish('sys.fs.file.written', {
+                                topic.publish('remote/persistence/written', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -415,7 +415,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'file.deleted':
-                                topic.publish('sys.fs.file.deleted', {
+                                topic.publish('remote/persistence/deleted', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -423,7 +423,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'dir.created':
-                                topic.publish('sys.fs.dir.created', {
+                                topic.publish('remote/directory/created', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -431,7 +431,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'dir.deleted':
-                                topic.publish('sys.fs.dir.deleted', {
+                                topic.publish('remote/directory/deleted', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -439,7 +439,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'filedir.exec':
-                                topic.publish('sys.fs.node.intractableChanges', {
+                                topic.publish('remote/node/intractable', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -447,7 +447,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'filedir.moved':
-                                topic.publish('sys.fs.node.moved', {
+                                topic.publish('remote/node/moved', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     // The following two uses of getWFSURL should be removed
@@ -459,7 +459,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'filedir.copied':
-                                topic.publish('sys.fs.node.copied', {
+                                topic.publish('remote/node/copied', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     // The following two uses of getWFSURL should be removed
@@ -471,21 +471,21 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'acl.changed':
-                                topic.publish('sys.acl.changed', {
+                                topic.publish('remote/acl/changed', {
                                     sid: data.sessionID,
                                     trigger: data.trigger,
                                     policy: data.policy
                                 });
                                 break;
                             case 'fs.lock':
-                                topic.publish('sys.fs.file.locked', {
+                                topic.publish('remote/persistence/locked', {
                                     uid: data.opUid,
                                     path: data.path,
                                     sid: data.sessionID
                                 });
                                 break;
                             case 'fs.unlock':
-                                topic.publish('sys.fs.file.unlocked', {
+                                topic.publish('remote/persistence/unlocked', {
                                     uid: data.opUid,
                                     path: data.path,
                                     sid: data.sessionID

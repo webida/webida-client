@@ -115,7 +115,7 @@ define([
         menubar.init(menuItemTree);
         toolbar.init(menuItemTree, predefinedToolbarItems);
 
-        topic.subscribe('app.showing', function () {
+        topic.subscribe('workbench/loading/started', function () {
             menuItemTree.getViableItems(function () {
                 singleLogger.log('(Y) loading modules contributing to the top-level menu done');
                 singleLogger.log('%c*** Loading Time = ' + singleLogger.getDuration() + 
@@ -130,7 +130,7 @@ define([
     var regionsInitialized = 0;
     function checkIfInitDone() {
         if (regionsToInitialize === regionsInitialized) {
-            topic.publish('#REQUEST.showApp');
+            topic.publish('workbench/load');
         }
     }
 
@@ -228,7 +228,7 @@ define([
     singleLogger.log('(g) in initialization of workbench module');
 
     if (regionsToInitialize === 0) {
-        topic.publish('#REQUEST.showApp');
+        topic.publish('workbench/load');
     }
 
     $(document.body).focus();
@@ -617,7 +617,7 @@ define([
             }
 
             updateStatusbar();
-            topic.publish('workbench.context.changed', context);
+            topic.publish('workbench/context/changed', context);
         },
 
         focusLastWidget: focusLastWidget,

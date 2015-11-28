@@ -211,8 +211,8 @@ define([
         }
 
         function _addListeners() {
-            topic.subscribe('projectConfig.changed', function (projectName) {
-                logger.log('projectConfig.changed', projectName);
+            topic.subscribe('project/config/changed', function (projectName) {
+                logger.log('project/config/changed', projectName);
                 _makeStoresForEachFile({
                     filePath: _getFilePath(SCOPE.PROJECT, {projectName: projectName}),
                     scopeName: 'PROJECT',
@@ -220,14 +220,14 @@ define([
                 });
             });
 
-            topic.subscribe('fs.cache.file.set', function (/*fsURL, target*/) {
-                logger.log('fs.cache.file.set', arguments);
+            topic.subscribe('fs/cache/file/set', function (/*fsURL, target*/) {
+                logger.log('fs/cache/file/set', arguments);
                 //var store = getStoreByPath(target);
                 // reloadPreference(SCOPE[store.scope], store.storeInfo);
             });
 
-            topic.subscribe('fs.cache.node.deleted', function (/*fsURL, targetDir, name, type*/) {
-                logger.log('fs.cache.node.deleted', arguments);
+            topic.subscribe('fs/cache/node/deleted', function (/*fsURL, targetDir, name, type*/) {
+                logger.log('fs/cache/node/deleted', arguments);
                 //if (name === PREFERENCE_FILE_NAME) {
                 //  var store = getStoreByPath(targetDir + name);
                 //  flushPreferences(SCOPE[store.scope], store.scopeInfo, function (err) {});
