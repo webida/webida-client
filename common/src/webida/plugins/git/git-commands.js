@@ -3340,16 +3340,16 @@ define(['require',
                         if (err) {
                             gitviewlog.error(path, 'reset to commit', err);
                             notify.error(i18n.forMoreDetails,
-                                         string.substitute(i18n.gitResetCommitError, {id: ommittedID}));
+                                         string.substitute(i18n.gitResetCommitError, {id: omittedID}));
                         } else {
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 gitviewlog.error(path, 'reset to commit', err);
                                 notify.error(i18n.forMoreDetails,
-                                             string.substitute(i18n.gitResetCommitError, {id: ommittedID}));
+                                             string.substitute(i18n.gitResetCommitError, {id: omittedID}));
                             } else  {
                                 gitviewlog.success(path, 'reset to commit', 'Successfully Reset to ' + id);
-                                notify.success('', string.substitute(i18n.gitResetCommitSuccess, {id: ommittedID}));
+                                notify.success('', string.substitute(i18n.gitResetCommitSuccess, {id: omittedID}));
 
                                 refresh(gitRootPath, resetType !== '--soft');
                             }
