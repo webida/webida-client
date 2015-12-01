@@ -1,0 +1,63 @@
+/*set*/
+//@import url("theme-set.less");
+
+/*theme*/
+@theme: webida-light;
+
+@import url("../theme-@{theme}/less/@{theme}-theme-set.less");
+@import url("variables.less");
+
+
+.@{theme} {
+
+  /*base*/
+  @import url("theme-base.less");
+  @import url("theme-loading.less");
+
+  /*icons*/
+  @import url("../less/commonIcons.less");/*sprite containing common icons to be used by all themes*/
+  @import url("../less/editorIcons.less"); /*sprite for editor icons to be used by all themes*/
+
+
+  /*form*/
+  @import url("../less/Form-Common.less");
+  @import url("../less/Button.less");
+  @import url("../less/Checkbox.less");
+  @import url("../less/RadioButton.less");
+  @import url("../less/Select.less");
+  @import url("../less/Slider.less");
+  @import url("../less/NumberSpinner.less");
+
+  /*comp*/
+  @import url("../less/Common.less");
+  @import url("../less/Dialog.less");
+  @import url("../less/Calendar.less");
+  @import url("../less/Menu.less");
+  @import url("../less/ColorPalette.less");
+  @import url("../less/InlineEditBox.less");
+  @import url("../less/ProgressBar.less");
+  @import url("../less/TimePicker.less");
+  @import url("../less/Tree.less");
+  @import url("../less/Toolbar.less");
+  @import url("../less/Editor.less");
+  @import url("../less/TitlePane.less");
+  @import url("../less/ToggleSplitter.less");
+  @import url("../less/CheckedMultiSelect.less");
+  @import url("../less/ResizeHandle.less");
+  @import url("../less/FloatingPane.less");
+  @import url("../less/EnhancedGrid.less");
+  @import url("../less/ExpandoPane.less");
+
+  /*layout*/
+  @import url("../less/AccordionContainer.less");
+  @import url("../less/ContentPane.less");
+  @import url("../less/BorderContainer.less");
+  @import url("../less/TabContainer.less");
+
+  /*plugin*/
+  @import url("../theme-@{theme}/plugins/webida-calc.less");
+  @import url("../theme-@{theme}/plugins/webida-project-wizard.less");
+
+}
+
+
