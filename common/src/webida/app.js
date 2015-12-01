@@ -399,23 +399,38 @@ define(['webida-lib/util/browserInfo',
                     var callbacks = {
                         usermsg: null,
                         topicsysnotify: function (_, data) {
-
                             // TODO: move the following getWFSURL to the webida-x.js.
                             function getWFSURL(fsServer, fsid, path) {
                                 return 'wfs://' + fsServer + '/' + fsid + path;
                             }
 
                             switch (data.eventType) {
-                            case 'file.written':
-                                topic.publish('remote/persistence/written', {
+                            case 'file.created':
+                                topic.publish('remote/persistence/created', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                   data.fsId, data.path)
+                                        data.fsId, data.path)
+                                });
+                                break;
+                            case 'file.updated':
+                                topic.publish('remote/persistence/updated', {
+                                    uid: data.opUid,
+                                    sid: data.sessionID,
+                                    url: getWFSURL(new URI(webida.conf.fsServer).host(),
+                                        data.fsId, data.path)
                                 });
                                 break;
                             case 'file.deleted':
                                 topic.publish('remote/persistence/deleted', {
+                                    uid: data.opUid,
+                                    sid: data.sessionID,
+                                    url: getWFSURL(new URI(webida.conf.fsServer).host(),
+                                        data.fsId, data.path)
+                                });
+                                break;
+                            case 'file.written':
+                                topic.publish('remote/persistence/written', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
