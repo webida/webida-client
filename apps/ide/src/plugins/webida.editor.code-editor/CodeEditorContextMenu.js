@@ -82,14 +82,19 @@ define([
                 // Source
                 var sourceItems = {};
                 // Toggle Comments
-                if (CodeEditorViewer.isLineCommentable(widget)) {
-                    sourceItems['&Toggle Line Comments'] = allItems.editMenuItems['&Source']['&Toggle Line Comments'];
-                }
-                if (CodeEditorViewer.isBlockCommentable(widget)) {
-                    sourceItems['Toggle Block Comment'] = allItems.editMenuItems['&Source']['Toggle Block Comment'];
-                }
-                if (CodeEditorViewer.selectionCommentable(widget)) {
-                    sourceItems['Comment Out Selection'] = allItems.editMenuItems['&Source']['Comment Out Selection'];
+                if (widget._contentAssistDelegator) {
+                    if (widget._contentAssistDelegator.execCommand('isLineCommentable', widget)) {
+                        sourceItems['&Toggle Line Comments'] = 
+                            allItems.editMenuItems['&Source']['&Toggle Line Comments'];
+                    }
+                    if (widget._contentAssistDelegator.execCommand('isBlockCommentable', widget)) {
+                        sourceItems['Toggle Block Comment'] = 
+                            allItems.editMenuItems['&Source']['Toggle Block Comment'];
+                    }
+                    if (widget._contentAssistDelegator.execCommand('isSelectionCommentable', widget)) {
+                        sourceItems['Comment Out Selection'] = 
+                            allItems.editMenuItems['&Source']['Comment Out Selection'];
+                    }
                 }
                 // Code Folding
                 sourceItems['&Fold'] = allItems.editMenuItems['&Source']['&Fold'];
