@@ -407,7 +407,7 @@ define(['webida-lib/util/browserInfo',
 
                             switch (data.eventType) {
                             case 'file.written':
-                                topic.publish('remote/persistence/written', {
+                                topic.publish('sys.fs.file.written', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -415,7 +415,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'file.deleted':
-                                topic.publish('remote/persistence/deleted', {
+                                topic.publish('sys.fs.file.deleted', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -423,7 +423,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'dir.created':
-                                topic.publish('remote/directory/created', {
+                                topic.publish('sys.fs.dir.created', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -431,7 +431,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'dir.deleted':
-                                topic.publish('remote/directory/deleted', {
+                                topic.publish('sys.fs.dir.deleted', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -439,7 +439,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'filedir.exec':
-                                topic.publish('remote/node/intractable', {
+                                topic.publish('sys.fs.node.intractableChanges', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     url: getWFSURL(new URI(webida.conf.fsServer).host(),
@@ -447,7 +447,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'filedir.moved':
-                                topic.publish('remote/node/moved', {
+                                topic.publish('sys.fs.node.moved', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     // The following two uses of getWFSURL should be removed
@@ -459,7 +459,7 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'filedir.copied':
-                                topic.publish('remote/node/copied', {
+                                topic.publish('sys.fs.node.copied', {
                                     uid: data.opUid,
                                     sid: data.sessionID,
                                     // The following two uses of getWFSURL should be removed
@@ -471,21 +471,21 @@ define(['webida-lib/util/browserInfo',
                                 });
                                 break;
                             case 'acl.changed':
-                                topic.publish('remote/acl/changed', {
+                                topic.publish('sys.acl.changed', {
                                     sid: data.sessionID,
                                     trigger: data.trigger,
                                     policy: data.policy
                                 });
                                 break;
                             case 'fs.lock':
-                                topic.publish('remote/persistence/locked', {
+                                topic.publish('sys.fs.file.locked', {
                                     uid: data.opUid,
                                     path: data.path,
                                     sid: data.sessionID
                                 });
                                 break;
                             case 'fs.unlock':
-                                topic.publish('remote/persistence/unlocked', {
+                                topic.publish('sys.fs.file.unlocked', {
                                     uid: data.opUid,
                                     path: data.path,
                                     sid: data.sessionID
