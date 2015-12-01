@@ -233,7 +233,7 @@ define([
     };
 
     function addListeners() {
-        topic.subscribe('remote/node/moved', function (event) {
+        topic.subscribe('sys.fs.node.moved', function (event) {
             var src = event.srcURL;
             var dest = event.dstURL;
             var srcPathInfo = _getPathInfo(src);
@@ -264,8 +264,8 @@ define([
         });
 
         // apply changes on run config file at another IDE
-        topic.subscribe('remote/persistence/written', function (data) {
-            logger.log('remote/persistence/written', data);
+        topic.subscribe('sys.fs.file.written', function (data) {
+            logger.log('sys.fs.file.written', data);
             var uri = new URI(data.url);
             uri.segment(0, '');	                    // drop the fsid
             _applyChangesOnFile(uri.path(true));    // get decoded path
