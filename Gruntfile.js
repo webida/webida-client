@@ -28,17 +28,19 @@ module.exports = function (grunt) {
             files: {
                 expand: true,
                 cwd: './',
-                src: ['apps/dashboard/**/*.js',  // dashboard
-                      'apps/deploy/**/*.js',  //deploy
-                      'apps/desktop/**/*.js', // desktop
-                      'apps/ide/**/*.js',     // ide
-                      'apps/site/**/*.js',   //site
-                      'common/**/*.js',     // common
-                      '!**/lib/**', '!**/custom-lib/**', '!**/Gruntfile.js',  // ignore lib and Gruntfile
-                      '!**/*.min.js', '!**/*.back.js',    // ignore min/back.js files
-                      '!**/ProjectWizard-templates/**',
-                      '!apps/ide/obsolete-src/**',
-                      '!apps/ide/r.js']
+                src: [
+                    'apps/dashboard/**/*.js',  // dashboard
+                    'apps/deploy/**/*.js',  //deploy
+                    'apps/desktop/**/*.js', // desktop
+                    'apps/ide/**/*.js',     // ide
+                    'apps/site/**/*.js',   //site
+                    'common/**/*.js',     // common
+                    '!**/lib/**', '!**/custom-lib/**', '!**/Gruntfile.js',  // ignore lib and Gruntfile
+                    '!**/*.min.js', '!**/*.back.js',    // ignore min/back.js files
+                    '!**/ProjectWizard-templates/**',
+                    '!apps/ide/obsolete-src/**',
+                    '!apps/ide/r.js'
+                ]
             }
         },
         bower: {
@@ -92,7 +94,7 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: 'deploy/',
                         src: ['**/*.js', '!node_modules/*.js', '!node_modules/**/*.js', '!bower_components/**/*.js',
-                              '!**/lib/**/*.js', '!&&/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js'],
+                                '!**/lib/**/*.js', '!&&/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js'],
                         dest: 'deploy/'
                     }
                 ]
@@ -108,15 +110,16 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: 'deploy/',
                         src: ['**/*.js', '!node_modules/**/*.js', '!bower_components/**/*.js',
-                              '!node_modules/*.js', '!**/lib/**/*.js', '!**/lib/*.js'],
+                                '!node_modules/*.js', '!**/lib/**/*.js', '!**/lib/*.js'],
                         dest: 'deploy/'
                     }
                 ]
             }
         },
         clean: {
-            all: ['deploy'],
-            unnecessary: ['deploy/Gruntfile.js', 'deploy/node_modules']
+            all: ['deploy', grunt.config('theme.targetDir')],
+            unnecessary: ['deploy/Gruntfile.js', 'deploy/node_modules'],
+            style: ['apps/ide/src/styles/theme/dist']
         },
         fixSourceMaps: {
             files: {
@@ -125,13 +128,40 @@ module.exports = function (grunt) {
                 src: ['*.map', '**/*.map'],
                 dest: 'deploy'
             }
+        },
+        theme: {
+            rootPath: 'apps/ide/src/styles/theme',
+            targetDir: 'apps/ide/src/styles/dist',
+            dirPattern: ['theme-*', '!theme-set'],
+            getThemeName: function (dirName) {
+                var result = dirName.match(/^theme-(.+)$/);
+                return result ? result[1] : null;
+            }
+        },
+        watch: {
+            lessFiles: {
+                files: ['**/*.less'],
+                tasks: ['themeBuild:less'],
+                options: {
+                    cwd: 'apps/ide/src/styles/theme'
+                }
+            },
+            themeResources: {
+                files: ['theme-*/images/*', 'theme-*/plugins/*', '!theme-*/**/*.less'],
+                tasks: ['themeBuild:resource'],
+                options: {
+                    cwd: 'apps/ide/src/styles/theme'
+                }
+            }
         }
     });
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-bower-task');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerMultiTask('fixSourceMaps', 'Fixes uglified source maps', function () {
         this.files.forEach(function (f) {
@@ -156,9 +186,51 @@ module.exports = function (grunt) {
         });
     });
 
-    grunt.registerTask('default', ['clean:all', 'bower', 'copy:all'/*, 'copy:uncompressed',
-                            'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
-    grunt.registerTask('release', ['clean:all', 'bower', 'copy:all', 'clean:unnecessary', 'uglify:release']);
+    grunt.registerTask('themeBuild', 'Generate tasks and run for themes', function (scope) {
+        grunt.config.requires('theme');
+
+        var scopes = scope ? [scope] : ['less', 'resource']; // 'less', 'resource'
+        var themeRoot = grunt.config('theme.rootPath');
+        var targetDir = grunt.config('theme.targetDir');
+        var themeDirs = grunt.file.expand({
+            filter: 'isDirectory',
+            cwd: themeRoot
+        }, grunt.config('theme.dirPattern'));
+
+        var addedTasks = [];
+        themeDirs.forEach(function (themeDir) {
+            var themeName = grunt.config('theme.getThemeName')(themeDir);
+            if (scopes.indexOf('less') > -1) {
+                grunt.config('less.' + themeName, {
+                    options: {
+                        modifyVars: {theme: themeName}
+                    },
+                    files: [{
+                        src: themeRoot + '/theme-set/theme.less',
+                        dest: targetDir + '/' + themeName + '/css/theme.css'
+                    }]
+                });
+                addedTasks.push('less:' + themeName);
+            }
+            if (scopes.indexOf('resource') > -1) {
+                grunt.config('copy.' + themeDir, {
+                    files: [{
+                        expand: true,
+                        cwd: themeRoot + '/' + themeDir,
+                        src: ['images/**', 'plugins/**', '!**/*.less'],
+                        dest: targetDir + '/' + themeName + '/'
+                    }]
+                });
+                addedTasks.push('copy:' + themeDir);
+            }
+        });
+
+        grunt.task.run(addedTasks);
+    });
+
+    grunt.registerTask('default', ['clean:all', 'bower', 'themeBuild', 'copy:all'/*, 'copy:uncompressed',
+     'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
+    grunt.registerTask('release', ['clean:all', 'bower', 'themeBuild', 'copy:all', 'clean:unnecessary',
+        'uglify:release']);
     grunt.registerTask('convention', ['jshint']);
 };
-
