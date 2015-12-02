@@ -1,0 +1,233 @@
+#run-widget .rcw-title {
+    position:relative;
+    height:30px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background-color:#788899;
+}
+
+#run-widget .rcw-title-name {
+    position: absolute;
+    top:3px;
+    margin:5px;
+    color:#FFFFFF;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+#run-widget .rcw-title-arrow {
+    position: absolute;
+    margin:8px;
+    width:9px;
+    height:9px;
+    background-image:url("resource/runconfig_icon_title_arrow.png");
+    background-position:9px 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-title-arrow-hover {
+    background-position:9px 0;
+}
+
+#run-widget .rcw-title-arrow-unfold {
+    background-position:0px 0;
+}
+
+#run-widget .rcw-title-arrow-unfold-hover {
+    background-position:0px 0;
+}
+
+#run-widget .rcw-title-run {
+    position: absolute;
+    right:6px;
+    margin:5px;
+    width:20px;
+    height:20px;
+    background-image:url("resource/runconfig_icon_run.png");
+    background-position:0 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-title-delete {
+    position: absolute;
+    right:36px;
+    margin:5px;
+    width:20px;
+    height:20px;
+    background-image:url("resource/runconfig_icon_delete.png");
+    background-position:0 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-content {
+    height:230px;
+    background-color:#CDD8E3;
+    display:none;
+}
+#run-widget .rcw-content-table {
+    border-spacing:0px;
+    position:relative;
+}
+
+#run-widget .rcw-content-table-value {
+    border-bottom: #CDD8E3 1px solid;
+    background-color:#FFFFFF;
+    width:65%;
+}
+
+#run-widget .rcw-content-table-label {
+    border-collapse:collapse;
+    border-bottom: #CDD8E3 1px solid;
+    background-color:#98B1CA;
+    width:33%;
+    height:31px;
+    color:#FFFFFF;
+    text-indent:16px;
+    line-height:250%;
+    text-align:left;
+    vertical-align:top;
+    padding-right:10px;
+}
+
+#run-widget .rcw-content-table-inputbox {
+    border-width:0px;
+    color:#4F5B67;
+    text-indent:2px;
+    line-height:100%;
+    padding:1px;
+    margin:1px;
+}
+
+#run-widget .rcw-content-table-inputbox-edit {
+    border-width:1px;
+}
+
+#run-widget .rcw-content-table-inputbox-readonly {
+    border-width:0px;
+    color:#4F5B67;
+    text-indent:2px;
+    line-height:100%;
+    padding:1px;
+    margin:1px;
+}
+
+#run-widget .rcw-content-table-checkbox {
+    position:relative;
+}
+
+#run-widget .rcw-action {
+    position:relative;
+}
+
+#run-widget .rcw-action-modify {
+    position:absolute;
+    top:5px;
+    right:5px;
+    width:20px;
+    height:20px;
+    background-image:url('resource/runconfig_icon_modify.png');
+    background-position: 0 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-action-path {
+    position:absolute;
+    top:6px;
+    right:18px;
+    width:20px;
+    height:20px;
+    background-image:url('resource/runconfig_icon_path.png');
+    background-position: 0 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-action-save {
+    position:absolute;
+    top:5px;
+    right:5px;
+    width:20px;
+    height:20px;
+    background-image:url('resource/runconfig_icon_save.png');
+    background-position: 0 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-action-newsave {
+    position:absolute;
+    top:5px;
+    right:5px;
+    width:20px;
+    height:20px;
+    background-image:url('resource/runconfig_icon_save.png');
+    background-position: 0 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-action-cancel {
+    position:absolute;
+    top:5px;
+    right:32px;
+    width:20px;
+    height:20px;
+    background-image:url('resource/runconfig_icon_cancel.png');
+    background-position: 0 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-action-newcancel {
+    position:absolute;
+    top:5px;
+    right:32px;
+    width:20px;
+    height:20px;
+    background-image:url('resource/runconfig_icon_cancel.png');
+    background-position: 0 0;
+    cursor:pointer;
+}
+
+#run-widget .rcw-display-block {
+    display:block;
+}
+
+#run-widget .rcw-display-none {
+    display:none;
+}
+
+#run-widget .rcw-button-hover-24 {
+    background-position:48px 0;
+}
+
+#run-widget .rcw-button-push-24 {
+    background-position:24px 0;
+}
+
+#run-widget .rcw-button-hover-20 {
+    background-position:40px 0;
+}
+
+#run-widget .rcw-button-push-20 {
+    background-position:20px 0;
+}
+
+#run-widget .rcw-button-hover-16 {
+    background-position:32px 0;
+}
+
+#run-widget .rcw-button-push-16 {
+    background-position:16px 0;
+}
+
+#run-widget .rcw-table-row {
+    display: block;
+    height: 33px;
+    line-height: 33px;
+}
+
+#run-widget .rcw-table-col {
+    float: left;
+    height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}

@@ -5,7 +5,7 @@
     "augments": [],
     "extensions": {
         "webida.deploy.paas-template:views" :
-            {"name" : "webida", "logo" : "styles/webida-images/deploy_title_webida.png"}
+            {"name" : "webida", "logo" : "<%= themePath %>/images/deploy_title_webida.png"}
         ,
         "webida.deploy.workspace:changeproject" : {}
     }

@@ -16,7 +16,7 @@
                         "&File" : [ "cmnd",
                                    {
                                        "toolbar": {
-                                           "icons" : "./styles/theme/webida-light/images/icons/toolbar_file.png",
+                                           "icons" : "<%= themePath %>/images/icons/toolbar_file.png",
                                            "tooltip" : "New File",
                                            "enabledOn":"toolbar/enable/newfile",
                                            "disabledOn":"toolbar/disable/newfile"
@@ -40,7 +40,7 @@
                                         {
                                             "shortcut" : { "keys" : { "default" : "Shift+Alt+F" }, "desc": "Find a keyword in a directory" },
                                             "toolbar": {
-                                                "icons" : "./styles/theme/webida-light/images/icons/toolbar_findfiles.png",
+                                                "icons" : "<%= themePath %>/images/icons/toolbar_findfiles.png",
                                                 "tooltip" : "Find in Files",
                                                 "enabledOn":"toolbar/enable/findinfiles",
                                                 "disabledOn":"toolbar/disable/findinfiles"
@@ -57,7 +57,7 @@
                                     {
                                         "shortcut" : { "keys" : { "default" : "Alt+G" }, "desc" : "Find and open a file in a directory" },
                                         "toolbar": {
-                                            "icons" : "./styles/theme/webida-light/images/icons/toolbar_gotofile.png",
+                                            "icons" : "<%= themePath %>/images/icons/toolbar_gotofile.png",
                                             "tooltip" : "Go to File",
                                             "enabledOn":"toolbar/enable/gotofile",
                                             "disabledOn":"toolbar/disable/gotofile"

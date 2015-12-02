@@ -112,8 +112,8 @@ define([
         if (imgClass) {
             imgClass += ' webida-tool-bar-icon webida-tool-bar-icon-normal';
             img = img + '<img class="' + imgClass + '"' +
-                             'src="./styles/theme/webida-light/images/icons/transparent.png" draggable="false" />';
-            item.attr('label', img);
+                             'src="<%=themePath%>/images/icons/transparent.png" draggable="false" />';
+            item.attr('label', theme.apply(img));
 
             // icon changed setting
             on(item, 'mouseover', function () {

@@ -60,7 +60,7 @@ define([
         },
         theme: {
             name: 'webida-light',
-            basePath: serverConf.systemApps[APP_ID].baseUrl + '/apps/ide/src/styles/theme/webida-light'
+            basePath: serverConf.systemApps[APP_ID].baseUrl + '/apps/ide/src/styles/dist/webida-light'
         }
     };
 });

@@ -11,9 +11,9 @@
             "location" : "/&Add-on/",
             "wholeItems" : {
                 "Terminal" : [ "cmnd", { "shortcut" : { "keys" : "Alt+T", "desc" : "terminal" },
-                                         "toolbar": { "icons" : { "normal": "./styles/theme/webida-light/images/icons/title_icon_terminal_nml.png",
-                                                                  "hovered" : "./styles/theme/webida-light/images/icons/title_icon_terminal_hover.png",
-                                                                  "clicked" : "./styles/theme/webida-light/images/icons/title_icon_terminal_pushed.png" },
+                                         "toolbar": { "icons" : { "normal": "<%= themePath %>/images/icons/title_icon_terminal_nml.png",
+                                                                  "hovered" : "<%= themePath %>/images/icons/title_icon_terminal_hover.png",
+                                                                  "clicked" : "<%= themePath %>/images/icons/title_icon_terminal_pushed.png" },
                                                       "tooltip" : "Terminal"}
                                        } ]
             }
