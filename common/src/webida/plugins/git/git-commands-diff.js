@@ -250,7 +250,7 @@ define([
                                 this.selected =
                                     changed[GitPreferences.getKey(GitPreferences.LINES_OF_CONTEXT)] =
                                     contextSelect.get('value');
-                                preferences.updateValues(changed);
+                                preferences.setValues(GitPreferences.PREFIX, changed);
                                 dlg.hide();
                             }
                         });
