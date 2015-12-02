@@ -93,12 +93,6 @@ define([
             }
         });
 
-        topic.subscribe('fs/cache/file/set', function (fsUrl, target, reason) {
-            if (reason === 'refreshed') {
-                topic.publish('resources/persistence/updated', target);
-            }
-        });
-
         topic.subscribe('part/editor/not-exists', function () {
             topic.publish('editor/clean/all');
             topic.publish('editor/clean/current');
