@@ -82,7 +82,7 @@ define([
             this.subscribed.push(topic.subscribe('fs/cache/node/deleted', this._checkCase.bind(this)));
 
             //on content changed
-            this.subscribed.push(topic.subscribe('resources/persistence/updated', this._onContentChange.bind(this)));
+            this.subscribed.push(topic.subscribe('remote/persistence/updated', this._onContentChange.bind(this)));
         },
 
         /**
@@ -228,8 +228,11 @@ define([
         // ************* On Content Changed ************* //
 
         _onContentChange: function (dataSourceId) {
+            //TODO
+            //https://github.com/webida/webida-client/issues/670
+            //Changing dataSourceId as URI format
             var dsRegistry = workbench.getDataSourceRegistry();
-            var dataSource = dsRegistry.getDataSourceById(dataSourceId);
+            var dataSource = dsRegistry.getDataSourceById(dataSourceId.replace('wfs:/', ''));
             _askReload(dataSource);
         },
 
