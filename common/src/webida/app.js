@@ -14,24 +14,37 @@
  * limitations under the License.
  */
 
-define(['webida-lib/util/browserInfo',
-        'webida-lib/util/loading-screen',
-        'webida-lib/webida-0.3',
-        'webida-lib/msg',
-        'external/lodash/lodash.min',
-        'webida-lib/util/notify',
-        'webida-lib/plugin-manager-0.1',
-        'webida-lib/FSCache-0.1',
-        'external/URIjs/src/URI',
-        'webida-lib/widgets/dialogs/popup-dialog/PopupDialog',
-        'dojo/topic',
-        'dojo/_base/lang',
-        'webida-lib/util/logger/logger-client',
-        'dojo/domReady!',
-        'webida-lib/util/timedLogger',
-        'webida-lib/util/loading-screen'],
-       function (brInfo, loadingScreen, webida, msgAgent, _, notify, pm,
-                  FSCache, URI, PopupDialog, topic, lang, Logger) {
+define([
+    'dojo/topic',
+    'dojo/_base/lang',
+    'external/lodash/lodash.min',
+    'external/URIjs/src/URI',
+    'webida-lib/util/browserInfo',
+    'webida-lib/util/loading-screen',
+    'webida-lib/util/notify',
+    'webida-lib/webida-0.3',
+    'webida-lib/msg',
+    'webida-lib/plugin-manager-0.1',
+    'webida-lib/FSCache-0.1',
+    'webida-lib/widgets/dialogs/popup-dialog/PopupDialog',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/timedLogger',
+    'dojo/domReady!'
+], function (
+    topic,
+    lang,
+    _,
+    URI,
+    brInfo,
+    loadingScreen,
+    notify,
+    webida,
+    msgAgent,
+    pm,
+    FSCache,
+    PopupDialog,
+    Logger
+) {
     'use strict';
 
 	var singleLogger = new Logger.getSingleton();
@@ -40,19 +53,15 @@ define(['webida-lib/util/browserInfo',
 	//logger.off();
 
     var exports = {};
-
     var fsid = null;
     var path = null;
     var fsCache = null;
     var mount = null;
-
     var wellOpened = false;
 
     // loading screen
     topic.subscribe('workbench/load', function () {
-        logger.log('showApp request');
         setTimeout(function () {
-            logger.log('Hiding loading screen');
             topic.publish('workbench/loading/started');
             loadingScreen.hideLoadingScreen();
         }, 200);
@@ -399,103 +408,8 @@ define(['webida-lib/util/browserInfo',
                     var callbacks = {
                         usermsg: null,
                         topicsysnotify: function (_, data) {
-
-                            // TODO: move the following getWFSURL to the webida-x.js.
-                            function getWFSURL(fsServer, fsid, path) {
-                                return 'wfs://' + fsServer + '/' + fsid + path;
-                            }
-
-                            switch (data.eventType) {
-                            case 'file.written':
-                                topic.publish('sys.fs.file.written', {
-                                    uid: data.opUid,
-                                    sid: data.sessionID,
-                                    url: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                   data.fsId, data.path)
-                                });
-                                break;
-                            case 'file.deleted':
-                                topic.publish('sys.fs.file.deleted', {
-                                    uid: data.opUid,
-                                    sid: data.sessionID,
-                                    url: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                   data.fsId, data.path)
-                                });
-                                break;
-                            case 'dir.created':
-                                topic.publish('sys.fs.dir.created', {
-                                    uid: data.opUid,
-                                    sid: data.sessionID,
-                                    url: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                   data.fsId, data.path)
-                                });
-                                break;
-                            case 'dir.deleted':
-                                topic.publish('sys.fs.dir.deleted', {
-                                    uid: data.opUid,
-                                    sid: data.sessionID,
-                                    url: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                   data.fsId, data.path)
-                                });
-                                break;
-                            case 'filedir.exec':
-                                topic.publish('sys.fs.node.intractableChanges', {
-                                    uid: data.opUid,
-                                    sid: data.sessionID,
-                                    url: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                   data.fsId, data.path)
-                                });
-                                break;
-                            case 'filedir.moved':
-                                topic.publish('sys.fs.node.moved', {
-                                    uid: data.opUid,
-                                    sid: data.sessionID,
-                                    // The following two uses of getWFSURL should be removed
-                                    // because move can occur between two different fs servers.
-                                    srcURL: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                      data.fsId, data.srcPath),
-                                    dstURL: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                      data.fsId, data.destPath)
-                                });
-                                break;
-                            case 'filedir.copied':
-                                topic.publish('sys.fs.node.copied', {
-                                    uid: data.opUid,
-                                    sid: data.sessionID,
-                                    // The following two uses of getWFSURL should be removed
-                                    // because copy can occur between two different fs servers.
-                                    srcURL: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                      data.fsId, data.srcPath),
-                                    dstURL: getWFSURL(new URI(webida.conf.fsServer).host(),
-                                                      data.fsId, data.destPath)
-                                });
-                                break;
-                            case 'acl.changed':
-                                topic.publish('sys.acl.changed', {
-                                    sid: data.sessionID,
-                                    trigger: data.trigger,
-                                    policy: data.policy
-                                });
-                                break;
-                            case 'fs.lock':
-                                topic.publish('sys.fs.file.locked', {
-                                    uid: data.opUid,
-                                    path: data.path,
-                                    sid: data.sessionID
-                                });
-                                break;
-                            case 'fs.unlock':
-                                topic.publish('sys.fs.file.unlocked', {
-                                    uid: data.opUid,
-                                    path: data.path,
-                                    sid: data.sessionID
-                                });
-                                break;
-                            default:
-                                logger.warn('unknown eventType in system notification data: ' +
-                                             data.eventType);
-                            }
-
+                            //Might be contributed by any plugin
+                            topic.publish('webida/server/event/dispatched', data);
                         },
                         topicusernotify: null
                     };

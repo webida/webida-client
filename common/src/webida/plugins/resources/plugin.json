@@ -1,0 +1,12 @@
+{
+    "name": "webida.common.resources",
+    "description": "legacy plugin for webida server messages",
+    "version": "0.1.0",
+    "requirement": "",
+    "subscriptions" : {
+        "webida/server/event/dispatched": {
+            "handler": "onDispatched",
+            "module": "webida-lib/plugins/resources/legacy-event"
+        }
+    }
+}
