@@ -39,13 +39,13 @@ define([
     
     return {
         onDispatched: function (data) {
-
             logger.info('onDispatched(' + data + ')', data);
+
             /*
             {
                 eventType: "file.updated", 
-                opUid: 100238, 
-                fsId: "gkU8NuGPy-", 
+                opUid: 032312, 
+                fsId: "Ufd8zuGPy-", 
                 path: "/test/zzz/4332/test.txt", 
                 sessionID: "14490552128268252"
             }
@@ -117,5 +117,5 @@ define([
             }
 
         }
-    }
+    };
 });

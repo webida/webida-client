@@ -45,8 +45,6 @@ define([
     return {
         onDispatched: function (data) {
 
-            logger.info('onDispatched(' + data + ')');
-
             function getWFSURL(fsServer, fsid, path) {
                 return 'wfs://' + fsServer + '/' + fsid + path;
             }
@@ -152,5 +150,5 @@ define([
                              data.eventType);
             }
         }
-    }
+    };
 });
