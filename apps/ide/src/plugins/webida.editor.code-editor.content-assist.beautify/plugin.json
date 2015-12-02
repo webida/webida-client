@@ -1,0 +1,18 @@
+{
+    "name": "webida.editor.code-editor.content-assist.beautify",
+    "description": "Code Editor content assist plugin for beautify",
+    "version": "0.1.0",
+    "requirement": "webida.editor.code-editor",    
+    "extensions" : {        
+        "webida.editor.code-editor:contentassist" : [
+            { 
+                "controlModule" : "./BeautifyControl", 
+                "engineModule" : "",
+                "langMode" : "*",
+                "engineName" : "Beautify",
+                "hinterModes" : [],
+                "hinterNames" : []
+            }
+        ]
+    }
+}
