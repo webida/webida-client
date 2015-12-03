@@ -7,7 +7,7 @@
 /*Gutter*/
 /*footer*/
 .menubar-gradient {
-  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+  background-image: linear-gradient(to bottom, #363B42 1px, #414850 0px, #414850 26px, #3E454C 0px, #313437 30px);
 }
 .toolbar-gradient {
   background-image: linear-gradient(to bottom, #dee4e7 1px, #ced3d7 0px, #ced3d7 26px, #ced3d7 0px, #a7b1ba 30px);
@@ -1252,7 +1252,7 @@ Splitters and gutters:
   height: 100%;
   display: flex;
   box-sizing: border-box;
-  background: radial-gradient(#d0deec, #8ba4be);
+  background: radial-gradient(#d0deec, #8BA4BE);
   z-index: 1;
 }
 .webida-light .app-loading-elem.hide {
@@ -1718,7 +1718,7 @@ Splitters and gutters:
 }
 .webida-light .dijitTextBox,
 .webida-light .dijitInputInner {
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitValidationTextBoxError .dijitValidationContainer {
   background-color: #d46464;
@@ -1801,14 +1801,14 @@ Splitters and gutters:
   transition-duration: 0.1s;
 }
 .webida-light .dijitTextBoxFocused {
-  background-color: #ffffff;
+  background-color: #fff;
   background-image: -moz-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
   background-image: -webkit-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
   background-image: -o-linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
   background-image: linear-gradient(rgba(127, 127, 127, 0.2) 0%, rgba(127, 127, 127, 0) 2px);
 }
 .webida-light .dijitTextBoxFocused .dijitInputContainer {
-  background: #ffffff;
+  background: #fff;
 }
 .webida-light .dijitSelectErrorFocused,
 .webida-light .dijitSelectErrorFocused .dijitButtonContents,
@@ -2209,7 +2209,7 @@ Splitters and gutters:
   outline: 1px;
   height: 3px;
   border: 0;
-  background-image: linear-gradient(to bottom, #576577 0%, #9dadc1 100%);
+  background-image: linear-gradient(to bottom, #576577 0%, #9DADC1 100%);
 }
 .webida-light .dijitSliderFocused .dijitSliderBar {
   border-color: #759dc0;
@@ -2222,19 +2222,19 @@ Splitters and gutters:
   border-color: #d3d3d3;
 }
 .webida-light .dijitRuleLabelsContainer {
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitRuleLabelsContainerH {
   padding: 2px 0;
 }
 .webida-light .dijitSlider .dijitSliderProgressBarH,
 .webida-light .dijitSlider .dijitSliderLeftBumper {
-  background-image: linear-gradient(to bottom, #576577 0%, #9dadc1 100%);
+  background-image: linear-gradient(to bottom, #576577 0%, #9DADC1 100%);
 }
 .webida-light .dijitSlider .dijitSliderRemainingBarH,
 .webida-light .dijitSlider .dijitSliderRightBumper {
   border-color: #b5bcc7;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .webida-light .dijitSliderRightBumper {
   border-right: solid 1px #b5bcc7;
@@ -2249,7 +2249,7 @@ Splitters and gutters:
 }
 .webida-light .dijitSliderHover .dijitSliderRemainingBarH,
 .webida-light .dijitSliderHover .dijitSliderRightBumper {
-  background-color: #ffffff;
+  background-color: #fff;
   border-color: #759dc0;
 }
 .webida-light .dijitSliderFocused .dijitSliderProgressBarH,
@@ -2262,7 +2262,7 @@ Splitters and gutters:
 }
 .webida-light .dijitSliderFocused .dijitSliderRemainingBarH,
 .webida-light .dijitSliderFocused .dijitSliderRightBumper {
-  background-color: #ffffff;
+  background-color: #fff;
   border-color: #759dc0;
   -webkit-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.2);
@@ -2293,7 +2293,7 @@ Splitters and gutters:
 .webida-light .dijitSlider .dijitSliderRemainingBarV,
 .webida-light .dijitSlider .dijitSliderTopBumper {
   border-color: #b5bcc7;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .webida-light .dijitSliderBottomBumper {
   border-bottom: solid 1px #b5bcc7;
@@ -2308,7 +2308,7 @@ Splitters and gutters:
 }
 .webida-light .dijitSliderHover .dijitSliderRemainingBarV,
 .webida-light .dijitSliderHover .dijitSliderTopBumper {
-  background-color: #ffffff;
+  background-color: #fff;
   border-color: #759dc0;
 }
 .webida-light .dijitSliderFocused .dijitSliderProgressBarV,
@@ -2321,7 +2321,7 @@ Splitters and gutters:
 }
 .webida-light .dijitSliderFocused .dijitSliderRemainingBarV,
 .webida-light .dijitSliderFocused .dijitSliderTopBumper {
-  background-color: #ffffff;
+  background-color: #fff;
   border-color: #759dc0;
   -webkit-box-shadow: inset 1px 0px 1px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: inset 1px 0px 1px rgba(0, 0, 0, 0.2);
@@ -2423,7 +2423,7 @@ Splitters and gutters:
 .webida-light .dijitSliderHover .dijitSliderIncrementIconV {
   /* dijitSliderActive should be treated as dijitSliderHover since "clicking the slider" has no meaning */
   border: solid 1px #759dc0;
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .webida-light .dijitSliderDecrementIconH {
   background-position: -357px 50%;
@@ -2524,7 +2524,7 @@ Splitters and gutters:
   width: 15px;
 }
 .webida-light .dijitSpinner .dijitArrowButtonInner {
-  border: solid 1px #ffffff;
+  border: solid 1px #fff;
   border-bottom-width: 0;
   /* 2 top borders = 1 top+bottom border in ComboBox */
   background-image: url("../images/form/commonFormArrows.png");
@@ -2572,7 +2572,7 @@ Splitters and gutters:
   background-position: -69px;
 }
 .webida-light .dijitSpinnerFocused {
-  background-color: #ffffff;
+  background-color: #fff;
   background-image: none;
 }
 .webida-light .dijitSpinner .dijitDownArrowButtonActive,
@@ -2650,7 +2650,7 @@ Splitters and gutters:
   _background-image: none;
   padding: 1px;
   border: solid 1px #759dc0;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dojoDndItemAnchor,
 .webida-light .dojoDndItemSelected {
@@ -2664,7 +2664,7 @@ Splitters and gutters:
   _background-image: none;
   padding: 1px;
   border: solid 1px #759dc0;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dojoDndItemBefore,
 .webida-light .dojoDndItemAfter {
@@ -2673,7 +2673,7 @@ Splitters and gutters:
 .webida-light table.dojoDndAvatar {
   border: 1px solid #b5bcc7;
   border-collapse: collapse;
-  background-color: #ffffff;
+  background-color: #fff;
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
@@ -2804,11 +2804,11 @@ Splitters and gutters:
 }
 .webida-light .dijitTooltipContainer {
   /* the part with the text */
-  background-color: #ffffff;
-  background-image: -moz-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
-  background-image: -webkit-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
-  background-image: -o-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
-  background-image: linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #ffffff 10px);
+  background-color: #fff;
+  background-image: -moz-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #fff 10px);
+  background-image: -webkit-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #fff 10px);
+  background-image: -o-linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #fff 10px);
+  background-image: linear-gradient(bottom, rgba(207, 229, 250, 0.1) 0px, #fff 10px);
   background-position: bottom;
   border: 1px solid #759dc0;
   padding: 6px 8px;
@@ -2818,7 +2818,7 @@ Splitters and gutters:
   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   font-size: 1em;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitTooltipConnector {
   /* the arrow piece */
@@ -2880,7 +2880,7 @@ Splitters and gutters:
   height: 14px;
 }
 .webida-light .dijitDialogUnderlay {
-  background: #ffffff;
+  background: #fff;
 }
 .webida-light .popup-dialog .dijitDialogPaneContentArea,
 .webida-light .buttoned-dialog-text-only .dijitDialogPaneContentArea {
@@ -2921,7 +2921,7 @@ Splitters and gutters:
   vertical-align: middle;
 }
 .webida-light .dijitCalendarMonthLabel {
-  color: #000000;
+  color: #000;
   font-size: 1.091em;
   padding: 0 4px;
 }
@@ -2968,10 +2968,10 @@ Splitters and gutters:
   font-weight: bold;
   font-size: 0.909em;
   text-align: center;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitCalendarDateTemplate {
-  background-color: #ffffff;
+  background-color: #fff;
   border-bottom: 1px solid #d3d3d3;
   padding-top: 0;
   font-size: 0.909em;
@@ -2979,7 +2979,7 @@ Splitters and gutters:
   font-weight: bold;
   letter-spacing: .05em;
   text-align: center;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dj_ie6 .dijitCalendarDateTemplate {
   background-image: none;
@@ -2995,7 +2995,7 @@ Splitters and gutters:
   text-decoration: none;
   display: block;
   padding: 3px 5px 3px 4px;
-  border: solid 1px #ffffff;
+  border: solid 1px #fff;
   /* intentionally matches background-color, no visible border until hover/selection */
   background-color: rgba(171, 212, 251, 0);
   /* transparent causes black-flash animation problem on webkit */
@@ -3037,13 +3037,13 @@ Splitters and gutters:
 }
 .webida-light .dijitCalendarSelectedYear {
   font-size: 1.091em;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitCalendarHoveredDate .dijitCalendarDateLabel,
 .webida-light .dijitCalendarEnabledDate:hover .dijitCalendarDateLabel {
   background-color: #abd6ff;
   border: solid 1px #759dc0;
-  color: #000000;
+  color: #000;
   -webkit-transition-duration: 0.2s;
   -moz-transition-duration: 0.2s;
   transition-duration: 0.2s;
@@ -3052,8 +3052,8 @@ Splitters and gutters:
 .webida-light .dijitCalendarNextYear:hover,
 .webida-light .dijitCalendarPreviousYearHover,
 .webida-light .dijitCalendarPreviousYear:hover {
-  color: #000000;
-  border: solid 1px #ffffff;
+  color: #000;
+  border: solid 1px #fff;
   padding: 0 5px 0 5px;
   /* reduced by 1 to make room for border */
   background-color: #e5f2fe;
@@ -3069,7 +3069,7 @@ Splitters and gutters:
 .webida-light .dijitCalendarActiveDate .dijitCalendarDateLabel,
 .webida-light .dijitCalendarEnabledDate:active .dijitCalendarDateLabel {
   background-color: #7dbdfa;
-  border: solid 1px #ffffff;
+  border: solid 1px #fff;
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
   transition-duration: 0.1s;
@@ -3078,7 +3078,7 @@ Splitters and gutters:
   background-image: none;
 }
 .webida-light .dijitCalendarSelectedDate .dijitCalendarDateLabel {
-  color: #000000;
+  color: #000;
   background-color: #abd6ff;
   border-color: #759dc0;
 }
@@ -3105,18 +3105,18 @@ Splitters and gutters:
 .webida-light .dijitCalendar .dijitDropDownButtonHover .dijitButtonNode,
 .webida-light .dijitCalendar .dijitDropDownButton:hover .dijitButtonNode {
   background-color: #e5f2fe;
-  border: solid 1px #ffffff;
+  border: solid 1px #fff;
 }
 .webida-light .dijitCalendarMonthMenu {
   border-color: #759dc0;
-  background-color: #ffffff;
+  background-color: #fff;
   text-align: center;
   background-image: none;
 }
 .webida-light .dijitCalendarMonthMenu .dijitCalendarMonthLabel {
-  border-top: solid 1px #ffffff;
+  border-top: solid 1px #fff;
   /* intentionally invisible until hover */
-  border-bottom: solid 1px #ffffff;
+  border-bottom: solid 1px #fff;
   padding: 2px 0;
 }
 .webida-light .dijitCalendarMonthMenu .dijitCalendarMonthLabelHover,
@@ -3137,7 +3137,7 @@ Splitters and gutters:
   border: 0;
   margin: 0;
   padding: 0;
-  background-image: linear-gradient(to bottom, #363b42 1px, #414850 0px, #414850 26px, #3e454c 0px, #313437 30px);
+  background-image: linear-gradient(to bottom, #363B42 1px, #414850 0px, #414850 26px, #3E454C 0px, #313437 30px);
 }
 .webida-light .dijitMenu {
   background-color: #4e555f;
@@ -3184,7 +3184,7 @@ Splitters and gutters:
 .webida-light .dijitComboBoxMenu .dijitMenuItem {
   padding: 2px;
   border-style: solid;
-  border-color: #ffffff;
+  border-color: #fff;
 }
 .webida-light .dijitMenu .dijitMenuItemHover td,
 .webida-light .dijitMenu .dijitMenuItemSelected td,
@@ -3288,7 +3288,7 @@ Splitters and gutters:
 }
 .webida-light .dijitMenu .dijitMenuItemSelected td,
 .webida-light .dijitComboBoxMenu .dijitMenuItemSelected {
-  color: #000000;
+  color: #000;
   border-color: #759dc0;
   background-color: #abd6ff;
 }
@@ -3310,7 +3310,7 @@ Splitters and gutters:
 }
 .webida-light .dijitColorPalette {
   border: 1px solid #b5bcc7;
-  background: #ffffff;
+  background: #fff;
   -moz-border-radius: 0;
   border-radius: 0;
 }
@@ -3321,11 +3321,11 @@ Splitters and gutters:
   border: 1px solid #d3d3d3;
 }
 .webida-light .dijitColorPalette .dijitPaletteCell:hover .dijitPaletteImg {
-  border: 1px solid #000000;
+  border: 1px solid #000;
 }
 .webida-light .dijitColorPalette .dijitPaletteCell:active .dijitPaletteImg,
 .webida-light .dijitColorPalette .dijitPaletteTable .dijitPaletteCellSelected .dijitPaletteImg {
-  border: 2px solid #000000;
+  border: 2px solid #000;
 }
 .webida-light .dijitInlineEditBoxDisplayMode {
   border: 1px solid transparent;
@@ -3342,7 +3342,7 @@ Splitters and gutters:
 }
 .webida-light .dijitProgressBarEmpty {
   /* outer container and background of the bar that's not finished yet*/
-  background-color: #ffffff;
+  background-color: #fff;
   border-color: #759dc0;
 }
 .webida-light .dijitProgressBarTile {
@@ -3371,7 +3371,7 @@ Splitters and gutters:
 }
 .webida-light .dijitProgressBarLabel {
   /* Set to a color that contrasts with both the "Empty" and "Full" parts. */
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitProgressBarIndeterminate .dijitProgressBarTile {
   /* use an animated gif for the progress bar in 'indeterminate' mode;
@@ -3420,7 +3420,7 @@ Splitters and gutters:
 .webida-light .dijitTimePickerMarkerSelected,
 .webida-light .dijitTimePickerTickSelected {
   background-color: #7dbdfa;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitTimePickerMarkerSelected,
 .webida-light .dijitTimePickerTickSelected {
@@ -3711,7 +3711,7 @@ Splitters and gutters:
   border-style: solid;
   background-image: none;
   border-color: #759dc0;
-  background-color: #ffffff;
+  background-color: #fff;
   padding: 1px;
 }
 .webida-light .dijitToolbarSeparator {
@@ -3732,13 +3732,13 @@ Splitters and gutters:
   padding: 3px 3px 1px 10px;
 }
 .webida-light .dijitEditorIFrame {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .webida-light .dijitEditor {
   border: 1px solid #b5bcc7;
 }
 .webida-light .dijitEditor .dijitEditorIFrameContainer {
-  background-color: #ffffff;
+  background-color: #fff;
   background-repeat: repeat-x;
 }
 .webida-light .dijitEditorHover .dijitEditorIFrameContainer,
@@ -3747,7 +3747,7 @@ Splitters and gutters:
 }
 .webida-light .dijitEditorFocused .dijitEditorIFrameContainer,
 .webida-light .dijitEditorFocused .dijitEditorIFrameContainer .dijitEditorIFrame {
-  background-color: #ffffff;
+  background-color: #fff;
 }
 .webida-light .dijitEditorHover .dijitEditorIFrameContainer,
 .webida-light .dijitEditorFocused .dijitEditorIFrameContainer {
@@ -3787,7 +3787,7 @@ Splitters and gutters:
 .webida-light .dijitTitlePaneTitleOpen,
 .webida-light .dijitTitlePaneTitleFixedOpen {
   background-color: #cfe5fa;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitTitlePaneTitleHover {
   background-color: #abd6ff;
@@ -3824,7 +3824,7 @@ Splitters and gutters:
   background-position: -14px 0;
 }
 .webida-light .dijitTitlePaneContentOuter {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #b5bcc7;
   border-top: none;
 }
@@ -3970,7 +3970,7 @@ Splitters and gutters:
   padding: 2px;
 }
 .webida-light .tundra .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
-  background: #ffffff url("../../../../dijit/themes/tundra/images/validationInputBg.png") repeat-x top left;
+  background: #fff url("../../../../dijit/themes/tundra/images/validationInputBg.png") repeat-x top left;
   border: 1px solid #b3b3b3;
   line-height: normal;
 }
@@ -3978,7 +3978,7 @@ Splitters and gutters:
   border-color: #406b9b;
 }
 .webida-light .soria .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
-  background: #ffffff url("../../../dijit/themes/soria/images/validationInputBg.png") repeat-x top left;
+  background: #fff url("../../../dijit/themes/soria/images/validationInputBg.png") repeat-x top left;
   border: 1px solid #8ba0bd;
   line-height: normal;
 }
@@ -3986,7 +3986,7 @@ Splitters and gutters:
   border-color: #406b9b;
 }
 .webida-light .nihilo .dojoxCheckedMultiSelect .dojoxCheckedMultiSelectWrapper {
-  background: #ffffff url("../../../dijit/themes/nihilo/images/validationInputBg.png") repeat-x top left;
+  background: #fff url("../../../dijit/themes/nihilo/images/validationInputBg.png") repeat-x top left;
   border: 1px solid #d3d3d3;
   line-height: normal;
 }
@@ -4177,7 +4177,7 @@ Splitters and gutters:
   white-space: nowrap;
 }
 .webida-light .soria .dojoxFloatingPaneTitle {
-  background: #ffffff url("../../../dijit/themes/soria/images/titleBar.png") repeat-x top left;
+  background: #fff url("../../../dijit/themes/soria/images/titleBar.png") repeat-x top left;
   border: 1px solid #b1badf;
   font-size: 0.9em;
   font-weight: bold;
@@ -4371,7 +4371,7 @@ Splitters and gutters:
 .webida-light .dojoxGridHeader .dojoxGridCell {
   border: 1px solid;
   border-color: transparent #7e8897 transparent transparent;
-  background: url("../images/grid_dx_gradient.gif") #e8e1cf top repeat-x;
+  background: url("../images/grid_dx_gradient.gif") #E8E1CF top repeat-x;
   padding-bottom: 2px;
 }
 .webida-light .dojoxGrid .dojoxGridCell {
@@ -4437,7 +4437,7 @@ Splitters and gutters:
   border: 1px solid;
   border-color: #F6F4EB #ACA899 #ACA899 #F6F4EB;
   border-top: none;
-  background: url("../images/grid_dx_gradient.gif") #e8e1cf top repeat-x;
+  background: url("../images/grid_dx_gradient.gif") #E8E1CF top repeat-x;
 }
 .webida-light .dojoxGridRowbarInner {
   border-top: 1px solid #F6F4EB;
@@ -4583,7 +4583,7 @@ Splitters and gutters:
 .webida-light .dojoxGridDndAvatarItem td {
   border: 1px solid;
   border-color: #F6F4EB #ACA899 #ACA899 #F6F4EB;
-  background: url("../images/grid_dx_gradient.gif") #e8e1cf top repeat-x;
+  background: url("../images/grid_dx_gradient.gif") #E8E1CF top repeat-x;
   padding: 0pt;
   margin: 0pt;
 }
@@ -5248,7 +5248,7 @@ Splitters and gutters:
   display: block;
   position: absolute;
   color: #000;
-  background: #dfeaf1 url("../images/sprite_icons.png") no-repeat 100px 0;
+  background: #DFEAF1 url("../images/sprite_icons.png") no-repeat 100px 0;
   text-decoration: none;
   outline: none;
   right: 0;
@@ -5462,7 +5462,7 @@ Splitters and gutters:
   background-image: url("../images/treeExpandImages8bit.png");
 }
 .webida-light .dj_ie6 .dojoxGridSummaryRow .dojoxGridCell {
-  border-color: #ffffff;
+  border-color: #fff;
 }
 .webida-light .dj_ie6 .dojoxGridRowOver .dojoxGridCell {
   border-color: #ABD6FF;
@@ -5528,7 +5528,7 @@ Splitters and gutters:
   border-top: 1px solid #7e8897;
 }
 .webida-light .dojoxGridRowTable tr {
-  background: url("../images/row_back.png") #ffffff repeat-x;
+  background: url("../images/row_back.png") #fff repeat-x;
 }
 .webida-light .dojoxGridRowOdd .dojoxGridRowTable tr {
   background-color: #f7fcff;
@@ -5551,12 +5551,12 @@ Splitters and gutters:
   border: 1px dashed darkblue !important;
 }
 .webida-light .dojoxGridRowOver .dojoxGridCell {
-  background: url("../images/row_back.png") #abd6ff repeat-x;
+  background: url("../images/row_back.png") #ABD6FF repeat-x;
   border-top: 1px solid #769DC0;
   border-bottom: 1px solid #769DC0;
 }
 .webida-light .dojoxGridRowActive .dojoxGridCell {
-  background: url("../images/td_button_down.png") #7dbefa repeat-x;
+  background: url("../images/td_button_down.png") #7DBEFA repeat-x;
 }
 .webida-light .dojoxGridDoubleAffordance .dojoxGridRowOver .dojoxGridCellOver {
   border: solid 1px #769dc0;
@@ -5647,7 +5647,7 @@ Splitters and gutters:
 }
 .webida-light td.dojoxGridRowSelected {
   border-collapse: separate;
-  background: url("../images/row_back.png") #cee6fa repeat-x;
+  background: url("../images/row_back.png") #CEE6FA repeat-x;
 }
 .webida-light .dojoxGridRowOver td.dojoxGridRowSelected {
   border-top: 1px solid #769DC0;
@@ -5657,17 +5657,17 @@ Splitters and gutters:
   background-image: url("../images/td_button_down.png");
 }
 .webida-light .dojoxGridPaginator {
-  background: url("../images/header_shadow.png") repeat-x scroll center bottom #e5edf4;
+  background: url("../images/header_shadow.png") repeat-x scroll center bottom #E5EDF4;
 }
 .webida-light .dojoxGridFBarInfoTD {
-  background: url("../images/header_shadow.png") #f2f9ff repeat-x bottom;
-  background: -moz-linear-gradient(top, #f2f9ff, #eaf5ff);
-  background: -webkit-gradient(linear, left top, left bottom, from(#f2f9ff), to(#eaf5ff));
+  background: url("../images/header_shadow.png") #F2F9FF repeat-x bottom;
+  background: -moz-linear-gradient(top, #F2F9FF, #EAF5FF);
+  background: -webkit-gradient(linear, left top, left bottom, from(#F2F9FF), to(#EAF5FF));
 }
 .webida-light .dojoxGridFBarHover .dojoxGridFBarInfoTD {
-  background: url("../images/header_shadow.png") #f2f9ff repeat-x bottom;
-  background: -moz-linear-gradient(top, #ecf6ff 2px, #f2f9ff, #eaf5ff 6px);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, #ecf6ff), color-stop(0.6, #f2f9ff), color-stop(0.8, #eaf5ff));
+  background: url("../images/header_shadow.png") #F2F9FF repeat-x bottom;
+  background: -moz-linear-gradient(top, #ECF6FF 2px, #F2F9FF, #EAF5FF 6px);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.1, #ECF6FF), color-stop(0.6, #F2F9FF), color-stop(0.8, #EAF5FF));
 }
 .webida-light .dojoxGridFBarClearFilterBtn {
   color: #5B83B6;
@@ -5831,7 +5831,7 @@ Splitters and gutters:
   padding: 3px;
   padding-top: 6px;
   padding-bottom: 5px;
-  background: #f0f4fc url("../../../dijit/themes/soria/images/tabContainerSprite.gif") repeat-x scroll 0pt -50px;
+  background: #F0F4FC url("../../../dijit/themes/soria/images/tabContainerSprite.gif") repeat-x scroll 0pt -50px;
   border-left: 1px solid #B1BADF;
   border-right: 1px solid #B1BADF;
 }
@@ -6029,7 +6029,7 @@ Splitters and gutters:
   /* this extends the blue trim styling of the title bar to wrapping around the node.
      * done by setting margin
      */
-  background-color: #ffffff;
+  background-color: #fff;
   border: 1px solid #759dc0;
   margin: 0 2px 2px;
 }
@@ -6045,7 +6045,7 @@ Splitters and gutters:
   transition-duration: 0.2s;
 }
 .webida-light .dijitAccordionInnerContainerHover .dijitAccordionTitle {
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitAccordionInnerContainerActive {
   border: 1px solid #759dc0;
@@ -6062,14 +6062,14 @@ Splitters and gutters:
   background-image: -o-linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
   background-image: linear-gradient(rgba(190, 190, 190, 0.98) 0px, rgba(255, 255, 255, 0.65) 3px, rgba(255, 255, 255, 0) 100%);
   _background-image: none;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitAccordionInnerContainerSelected {
   border-color: #759dc0;
   background-color: #cfe5fa;
 }
 .webida-light .dijitAccordionInnerContainerSelected .dijitAccordionTitle {
-  color: #000000;
+  color: #000;
   background-image: url("../images/standardGradient.png");
   background-repeat: repeat-x;
   background-image: -moz-linear-gradient(rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 100%);
@@ -6088,6 +6088,9 @@ Splitters and gutters:
 .webida-light .dijitTabContainerRight-dijitContentPane,
 .webida-light .dijitAccordionContainer-dijitContentPane {
   background-color: transparent;
+}
+.webida-light .dijitTabContainerBottom-dijitContentPane {
+  padding: 0;
 }
 .webida-light .dijitTabContainerTop-dijitContentPane {
   width: 100%;
@@ -6227,12 +6230,12 @@ Splitters and gutters:
   -webkit-transition-duration: 0.25s;
   -moz-transition-duration: 0.25s;
   transition-duration: 0.25s;
-  color: #000000;
+  color: #000;
 }
 .webida-light .dijitTabActive {
   border-color: #759dc0;
   background-color: #7dbdfa;
-  color: #000000;
+  color: #000;
   -webkit-transition-duration: 0.1s;
   -moz-transition-duration: 0.1s;
   transition-duration: 0.1s;
@@ -6480,20 +6483,18 @@ Splitters and gutters:
   transition-duration: 0.1s;
 }
 .webida-light .dijitTabContainerTabListNested .dijitTabChecked {
-  padding: 3px;
   background-color: #d4dbe2;
 }
-.webida-light .dijitTabContainerTabListNested .dijitTab:first-child {
-  padding: 3px;
-  background-color: #424750;
+.webida-light .dijitTabContainerTabListNested .dijitTab {
+  padding: 3px 10px;
+  background-color: #636870;
+  color: rgba(255, 255, 255, 0.3);
+  border: 0;
+  margin-right: 3px;
 }
-.webida-light .dijitTabContainerTabListNested .dijitTab:first-child.dijitTabChecked {
-  padding: 3px;
-  background-color: #d4dbe2;
-}
-.webida-light .dijitTabContainerTabListNested .dijitTab:last-child {
-  padding: 3px;
-  background-color: #1a1b1c;
+.webida-light .dijitTabContainerTabListNested .dijitTab.dijitTabChecked {
+  background-color: #FFFFFF;
+  color: #3a3e47;
 }
 .webida-light .dijitTabContainerTabListNested .dijitTabChecked .tabLabel {
   text-decoration: none;
@@ -6597,8 +6598,8 @@ Splitters and gutters:
 }
 @font-face {
   font-family: 'fa';
-  src: url('../../fonts/fontawesome-webfont.eot?v=4.1.0');
-  src: url('../../fonts/fontawesome-webfont.eot?#iefix&v=4.1.0') format('embedded-opentype'), url('../../fonts/fontawesome-webfont.woff?v=4.1.0') format('woff'), url('../../fonts/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular') format('svg');
+  src: url('../images/fonts/fontawesome-webfont.eot?v=4.1.0');
+  src: url('../images/fonts/fontawesome-webfont.eot?#iefix&v=4.1.0') format('embedded-opentype'), url('../images/fonts/fontawesome-webfont.woff?v=4.1.0') format('woff'), url('../images/fonts/fontawesome-webfont.svg?v=4.1.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -6675,11 +6676,8 @@ Splitters and gutters:
   background-color: #96e2ff;
   background-image: none;
 }
-.webida-light .pwBody .dijitTreeRow {
-  padding: 1px 0 1px 0;
-}
 .webida-light .pwBody #pw-category-tree .dijitTreeExpando {
-  background-image: url("../../plugins/project-wizard/images/treeExpandImages.png");
+  background-image: url("project-wizard/resource/treeExpandImages.png");
   width: 16px;
   height: 16px;
   background-position: -35px 0;
@@ -7255,7 +7253,7 @@ Splitters and gutters:
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
   white-space: nowrap;
   background-color: #eeeeee;
-  background-image: linear-gradient(#ffffff, #eeeeee);
+  background-image: linear-gradient(#fff, #eee);
   background-repeat: repeat-x;
   border: 1px solid #dddddd;
   vertical-align: middle;
