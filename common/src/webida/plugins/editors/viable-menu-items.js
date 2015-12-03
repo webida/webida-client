@@ -87,10 +87,8 @@ define([
             if (viewer) {
                 items = viewer.getMenuItemsUnderEdit(items, menuItems, deferred);
             }
-        } else {
-            deferred.resolve(items);
         }
-        return deferred;
+        return deferred.resolve(items);
     }
 
     function getItemsUnderFind() {
