@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-define(['./lib/ternjs/lib/infer',
-        './lib/ternjs/lib/tern',
-        'acorn/util/walk',
+define(['external/tern/lib/infer',
+        'external/tern/lib/tern',
+        'acorn/dist/walk',
         'webida-lib/util/path'],
 function (infer, tern, walk, path) {
     'use strict';
@@ -47,7 +47,7 @@ function (infer, tern, walk, path) {
 
         if (baseurl && value.type === 'Literal') {
             var server = infer.cx().parent;
-            var options = server && server._requireJS.options;
+            var options = server && server.mod.requireJS.options;
 
             if (baseurl && baseurl[0] !== '/') {
                 baseurl = path.getDirPath(infer.cx().curOrigin) + baseurl;
@@ -67,7 +67,7 @@ function (infer, tern, walk, path) {
 
         if (paths) {
             var server = infer.cx().parent;
-            var options = server && server._requireJS.options;
+            var options = server && server.mod.requireJS.options;
             options.paths = options.paths || {};
 
             for (var pathIndex in paths) {
@@ -94,7 +94,7 @@ function (infer, tern, walk, path) {
 
         if (packages) {
             var server = infer.cx().parent;
-            var options = server && server._requireJS.options;
+            var options = server && server.mod.requireJS.options;
             options.paths = options.paths || {};
 
             for (var i = 0; i < packages.length; i++) {
