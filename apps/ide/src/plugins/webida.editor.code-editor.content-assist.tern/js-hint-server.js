@@ -17,15 +17,15 @@
 define(['require',
         'external/lodash/lodash.min',
         'webida-lib/util/path',
-        './lib/ternjs/lib/tern',
+        'external/tern/lib/tern',
         'plugins/webida.editor.code-editor/content-assist/file-server',
         'plugins/webida.editor.code-editor/content-assist/reference',
-        'text!./lib/ternjs/defs/browser.json',
-        'text!./lib/ternjs/defs/ecma5.json',
-        'text!./lib/ternjs/defs/jquery.json',
+        'text!external/tern/defs/browser.json',
+        'text!external/tern/defs/ecma5.json',
+        'text!external/tern/defs/jquery.json',
         'text!./tern-def-ecma5-keywords.json',
-        './lib/ternjs/plugin/doc_comment',
-        './lib/ternjs/plugin/requirejs',
+        'external/tern/plugin/doc_comment',
+        'external/tern/plugin/requirejs',
         './tern-plugin-dojojs'],
 function (require, _, pathUtil, tern, fileServer, reference, browserText,
            ecma5Text, jqueryText, ecma5KeywordsText/*, p1, p2, p3*/) {
@@ -85,8 +85,9 @@ function (require, _, pathUtil, tern, fileServer, reference, browserText,
 
         var ternGetFileCallback = function (filepath, c) {
             server.files[filepath] = true;
+            filepath = filepath.charAt(0) === '/' ? filepath : this.projectDir + filepath;
             fileServer.getFile(filepath, function (error, fileModel) {
-                c(error, fileModel);
+                c(error, fileModel.text);
             });
         };
 
