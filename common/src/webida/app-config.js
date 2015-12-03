@@ -15,11 +15,11 @@
  */
 
 define([
-    'webida-lib/webida-0.3',
-    'webida-lib/util/logger/logger-client'
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/webida-0.3'
 ], function (
-    webida,
-    Logger
+    Logger,
+    webida
 ) {
     'use strict';
     var logger = new Logger();

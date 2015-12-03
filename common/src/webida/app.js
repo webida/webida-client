@@ -15,35 +15,37 @@
  */
 
 define([
-    'dojo/topic',
-    'dojo/_base/lang',
     'external/lodash/lodash.min',
     'external/URIjs/src/URI',
-    'webida-lib/util/browserInfo',
-    'webida-lib/util/loading-screen',
-    'webida-lib/util/notify',
-    'webida-lib/webida-0.3',
+    'dojo/_base/lang',
+    'dojo/topic',
+    'webida-lib/app-config',
+    'webida-lib/FSCache-0.1',
     'webida-lib/msg',
     'webida-lib/plugin-manager-0.1',
-    'webida-lib/FSCache-0.1',
-    'webida-lib/widgets/dialogs/popup-dialog/PopupDialog',
+    'webida-lib/util/browserInfo',
+    'webida-lib/util/loading-screen',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/util/timedLogger',
+    'webida-lib/util/notify',
+    'webida-lib/webida-0.3',
+    'webida-lib/widgets/dialogs/popup-dialog/PopupDialog',
+    'webida-lib/util/timedLogger',  // not used locally
     'dojo/domReady!'
 ], function (
-    topic,
-    lang,
     _,
     URI,
-    brInfo,
-    loadingScreen,
-    notify,
-    webida,
+    lang,
+    topic,
+    appConfig,
+    FSCache,
     msgAgent,
     pm,
-    FSCache,
-    PopupDialog,
-    Logger
+    brInfo,
+    loadingScreen,
+    Logger,
+    notify,
+    webida,
+    PopupDialog
 ) {
     'use strict';
 
@@ -196,7 +198,7 @@ define([
      * @callback open_workspace
      * @returns {undefined}
      */
-    function startup(clientID, redirectUrl, options) {
+    function startup(options) {
         singleLogger.log('%c*** Starting Open Development Platform ***', 'color:green');
         function proceed() {
             var currentURI = URI(window.location.href);
@@ -212,7 +214,7 @@ define([
                 });
             } else {
                 var appPathname = currentURI.segment(-1, '').pathname();
-                webida.auth.initAuth(clientID, redirectUrl, null, function () {
+                webida.auth.initAuth(appConfig.clientId, appConfig.redirectUrl, null, function () {
                     init(appPathname, workspaceInfo, options);
                 });
             }
