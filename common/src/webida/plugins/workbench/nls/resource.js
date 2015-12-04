@@ -1,5 +1,22 @@
 define({
     root: {
+        alertFailedToInitTopLevelMenu: 
+            'Failed to initialize the top-level menu: ${msg}',
+        alertInvalidShortcutKeyString: 
+            'Error: Invalid shortcut key string "${keys}" from plug-in ${plugin}',
+        alertKeyboardInputFocusIsOutOfWorkbench: 
+            'Keyboard input focus is out of workbench',
+        alertFailedToInitTheContextMenuOf: 
+            'Failed to initialize the context menu of ${plugin}: ${msg}',
+        alertNoFocusedElementToReceiveKeyboardInput: 
+            'No focused element to receive keyboard input',
+        alertModuleDoesNotHaveAFunctionToComputeViableMenuItems:
+            'Module "${module}" does not have a function named "${function}" to compute viable menu items',
+        alertInvalidViableMenuItemsFromAPlugin:
+            'Invalid viable menu items from a plugin ${plugin}: ${msg}',
+        alertErrorOccurredWhileBuildingEnabledMenuItems:
+            'Error occurred while building enabled menu items: ${msg}',
+        
         workspaceSelectionDialogTitle: 'Switch Workspace',
         workspaceSelectionDialogOk: 'OK',
         workspaceSelectionDialogCancel: 'Cancel',

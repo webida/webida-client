@@ -23,11 +23,15 @@
  * Src:
  */
 
-define(['require',
-        './command-system/top-level-menu'        // menubar
-       ],
-function (require, menubar)
-{
+define([
+    'dojo/i18n!./nls/resource',
+    'require',
+    './command-system/top-level-menu'        // menubar
+], function (
+    i18n,
+    require,
+    menubar
+) {
     'use strict';
 
     return {
@@ -35,7 +39,7 @@ function (require, menubar)
             if (document.activeElement) {
                 $(document.activeElement).trigger('bubble');
             } else {
-                alert('No focused element to receive keyboard input');
+                alert(i18n.alertNoFocusedElementToReceiveKeyboardInput);
             }
         },
 
