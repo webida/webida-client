@@ -155,10 +155,6 @@ define([
         });
     };
 
-    editors.quit = function () {
-        topic.publish('workbench/exit');
-    };
-
     /**
      * @private
      * @Override

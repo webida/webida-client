@@ -24,18 +24,20 @@
  */
 
 define([
-    'dojo/i18n!./nls/resource',
     'require',
-    './command-system/top-level-menu'        // menubar
+    'dojo/i18n!./nls/resource',
+    'dojo/topic',
+    './command-system/top-level-menu'
 ], function (
-    i18n,
     require,
+    i18n,
+    topic,
     menubar
 ) {
     'use strict';
 
     return {
-        showViableShortcutKeys : function () {
+        showViableShortcutKeys: function () {
             if (document.activeElement) {
                 $(document.activeElement).trigger('bubble');
             } else {
@@ -43,7 +45,7 @@ define([
             }
         },
 
-        showCmdList : function () {
+        showCmdList: function () {
             require(['./plugin',
                      './command-system/command-list/cl-commands'],
             function (workbench, clCmds) {
@@ -51,9 +53,12 @@ define([
             });
         },
 
-        focusTopMenubar : function () {
+        focusTopMenubar: function () {
             menubar.menubar.focus();
-        }
+        },
 
+        quit: function () {
+            topic.publish('workbench/exit');
+        }
     };
 });
