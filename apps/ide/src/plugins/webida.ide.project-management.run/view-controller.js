@@ -20,58 +20,42 @@
  */
 define([
     'dijit/Tree',
-    'dijit/form/Select',
     'dijit/layout/ContentPane',
     'dijit/registry',
-    'dijit/tree/ForestStoreModel',
     'dojo/i18n!./nls/resource',
     'dojo/keys',
     'dojo/on',
-    'dojo/store/Memory',
-    'dojo/store/Observable',
     'dojo/topic',
     'external/lodash/lodash.min',
     'popup-dialog',
-    'webida-lib/app',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/plugin',
-    'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/locale',
     'webida-lib/util/notify',
     'webida-lib/util/path',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog', // ButtonedDialog
-    'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
     './delegator',
     './run-configuration-manager',
-    'text!./layout/default-run-configuration.html',
     'text!./layout/run-configuration.html',
     'xstyle/css!./style/style.css'
 ], function (
     Tree,
-    Select,
     ContentPane,
     registry,
-    ForestStoreModel,
     i18n,
     keys,
     on,
-    Memory,
-    Observable,
     topic,
     _,
     PopupDialog,
-    ide,
     pluginManager,
     workbench,
-    workspace,
     Locale,
     notify,
     pathUtil,
     ButtonedDialog,
-    FileDialog,
     delegator,
     runConfManager,
-    contentTemplate,
     windowTemplate
 ) {
     'use strict';
@@ -80,11 +64,6 @@ define([
     var current;
     var ui;
     var windowOpened = false;
-
-    var PATTERN_QUERY_STRING = /^([\w-]+(=[\w\s%\/\-\(\)\[\],\.]*)?(&[\w-]+(=[\w\s\/%\-\(\)\[\],\.]*)?)*)?$/;
-
-    var EVENT_TYPE_SAVE = 'save';
-    var EVENT_TYPE_STATE = 'state';
 
     var locale = new Locale(i18n);
 
@@ -123,13 +102,6 @@ define([
             cancelButton: undefined,
             runButton: undefined,
             deleteButton: undefined
-        },
-        forms: {
-            select: undefined,
-            pathButton: undefined,
-            inputBoxes: [],
-            readonlyInputBoxes: [],
-            checkBoxes: []
         }
     };
 
@@ -435,203 +407,6 @@ define([
             ui.btns.runButton.setDisabled(!current.state.isValid);
         }
         runConf._dirty = current.state.isDirty;
-    };
-
-    /***************************************
-     * General web type
-     * TODO: Below block is needed to be seperated to other file
-     ***************************************/
-
-    var currentRunConf = {};
-
-    function _addButtonCssClass(container, button, size) {
-        container.own(
-            on(button, 'mouseover', function () {
-                $(button).addClass('rcw-button-hover-' + size);
-            }),
-            on(button, 'mouseout', function () {
-                $(button).removeClass('rcw-button-hover-' + size);
-                $(button).removeClass('rcw-button-push-' + size);
-            }),
-            on(button, 'mousedown', function () {
-                $(button).addClass('rcw-button-push-' + size);
-            }),
-            on(button, 'mouseup', function () {
-                $(button).removeClass('rcw-button-push-' + size);
-            })
-        );
-    }
-
-    function _pathButtonClicked() {
-        var pathInputBox = ui.forms.readonlyInputBoxes[0];
-        var nameInputBox = ui.forms.inputBoxes[0];
-        var runConf = currentRunConf;
-        var project = ui.forms.select.get('value');
-        if (!runConf || !project || !pathInputBox) {
-            notify.error(i18n.messageFailFindRoot);
-            return;
-        }
-
-        var root = workspace.getRootPath() + project + '/';
-        var initialPath;
-
-        if (pathInputBox.value) {
-            initialPath = root + pathInputBox.value;
-        } else {
-            initialPath = root;
-        }
-
-        var dlg = new FileDialog({
-            mount: ide.getFSCache(),
-            root: root,
-            initialSelection: [initialPath],
-            title: i18n.titleSelectMain,
-            singular: true,
-            dirOnly: false,
-            showRoot: false
-        });
-        dlg.open(function (fileSelected) {
-            if (fileSelected) {
-                if (fileSelected.length <= 0) {
-                    notify.warning(i18n.validationNoSelectedFile);
-                    return;
-                }
-                var pathSplit = fileSelected[0].split(root);
-                if (pathSplit.length > 0) {
-                    pathInputBox.value = pathSplit[1];
-
-                    if (nameInputBox && currentRunConf.__nameGen) {
-                        // It is only called when the current run configuration is new and never get any user inputs
-                        nameInputBox.value = pathInputBox.value;
-                    }
-                    var isValid = !_checkInvalidField();
-                    topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {isValid: isValid, isDirty: true});
-                } else {
-                    notify.warning(i18n.validationNoSelectedFile);
-                }
-            }
-        });
-    }
-
-    function _checkInvalidField(runConf) {
-        var runConfToCheck = runConf || {
-                name: ui.forms.inputBoxes[0].value,
-                path: ui.forms.readonlyInputBoxes[0].value,
-                argument: ui.forms.inputBoxes[1].value,
-                fragment: ui.forms.inputBoxes[2].value,
-                openArgument: ui.forms.inputBoxes[3].value,
-                liveReload: (ui.forms.checkBoxes[0].checked) ? true : false,
-                project: ui.forms.select.get('value')
-            };
-
-        if (!runConfToCheck.name) {
-            return i18n.validationNoName;
-        }
-        if (!runConfToCheck.path) {
-            return i18n.validationNoPath;
-        }
-        if (!PATTERN_QUERY_STRING.test(runConfToCheck.argument)) {
-            return i18n.validationInvalidQueryString;
-        }
-
-        currentRunConf = _.extend(currentRunConf, runConfToCheck);
-        return;
-    }
-
-    function _saveButtonClicked() {
-        var invalidMsg = _checkInvalidField();
-        if (invalidMsg) {
-            notify.error(invalidMsg);
-        } else {
-            topic.publish('project/run/config/changed', EVENT_TYPE_SAVE, currentRunConf);
-        }
-    }
-
-    function _drawContentPane() {
-        var runConf = currentRunConf;
-        var child;
-        var projects = [];
-        ui.content.setContent(contentTemplate);
-        child = ui.content.domNode;
-
-        ui.btns.pathButton = $(child).find('.rcw-action-path').get(0);
-        _addButtonCssClass(ui.content, ui.btns.pathButton, '20');
-
-        ui.forms.inputBoxes = $(child).find('.rcw-content-table-inputbox-edit');
-        ui.forms.inputBoxes[0].value = runConf.name ? runConf.name : '';
-        ui.forms.inputBoxes[1].value = runConf.argument ? runConf.argument : '';
-        ui.forms.inputBoxes[2].value = runConf.fragment ? runConf.fragment : '';
-        ui.forms.inputBoxes[3].value = runConf.openArgument ? runConf.openArgument : '';
-
-        ui.forms.readonlyInputBoxes = $(child).find('.rcw-content-table-inputbox-readonly');
-        ui.forms.readonlyInputBoxes[0].value = runConf.path;
-
-        ui.forms.checkBoxes = $(child).find('.rcw-content-table-checkbox');
-        ui.forms.checkBoxes[0].checked = (runConf.liveReload) ? true : false;
-
-        ui.btns.saveButton = registry.byId('rcw-action-save');
-        ui.content.own(
-            on(ui.btns.saveButton, 'click', _saveButtonClicked),
-            on(ui.btns.pathButton, 'click', _pathButtonClicked),
-            on(ui.forms.inputBoxes[0], 'change', function () {
-                currentRunConf.__nameGen = false;
-            })
-        );
-        on(ui.content, 'input, select:change', function () {
-            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {
-                isValid: !_checkInvalidField(),
-                isDirty: true
-            });
-        });
-
-        ide.getWorkspaceInfo(function (err, workspaceInfo) {
-            if (err) {
-                notify.error(i18n.messageFailGetProjects);
-            } else {
-                projects = workspaceInfo.projects.map(function (project) {
-                    return {
-                        value: project,
-                        label: project
-                    };
-                });
-                ui.forms.select = new Select({options: projects}, 'run-configuration-project');
-                ui.forms.select.startup();
-                ui.forms.select.set('value', runConf.project);
-            }
-        });
-        locale.convertMessage(child);
-    }
-
-    module.newConf = function (content, runConf, callback) {
-        currentRunConf = runConf;
-        currentRunConf.__nameGen = true;
-        _drawContentPane();
-        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-            isValid: !_checkInvalidField(runConf),
-            isDirty: true
-        });
-        callback(null, runConf);
-    };
-
-    module.loadConf = function (content, runConf, callback) {
-        currentRunConf = runConf;
-        _drawContentPane();
-        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-            isValid: !_checkInvalidField(runConf)
-        });
-        callback(null, runConf);
-    };
-
-    module.saveConf = function (runConf, callback) {
-        delete currentRunConf.__nameGen;
-        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-            isDirty: false
-        });
-        callback(null, runConf);
-    };
-
-    module.deleteConf = function (runConfName, callback) {
-        callback(null, runConfName);
     };
 
     return module;
