@@ -43,28 +43,31 @@ define([
     'dojo/topic',
     'dojo/dom',
     'dojo/dom-class',                         // domClass
+    'dojo/i18n!./nls/resource',
+    'dojo/string'
 ], function (
-	_,
-	genetic,
-	Logger, 
-	require,
-	pm,
-	jobManager,
-	viewsController,
-	MenuItemTree,
-	contextMenu,
-	menubar,
-	toolbar,
-	Page,
-	Workbench,
-	markup,
-	vm,
-	focus,
-	topic,
-	dom,
-	domClass
-         )
-{
+    _,
+    genetic,
+    Logger, 
+    require,
+    pm,
+    jobManager,
+    viewsController,
+    MenuItemTree,
+    contextMenu,
+    menubar,
+    toolbar,
+    Page,
+    Workbench,
+    markup,
+    vm,
+    focus,
+    topic,
+    dom,
+    domClass,
+    i18n,
+    string
+) {
     'use strict';
 
 	var singleLogger = new Logger.getSingleton();
@@ -107,8 +110,10 @@ define([
 
     singleLogger.log('(d) in initialization of workbench module');
 
-    if (menuItemTree instanceof Error) {
-        alert('Failed to initialize the top-level menu: ' + menuItemTree.message);
+    if (menuItemTree instanceof Error) {      
+        alert(string.substitute(i18n.alertFailedToInitTopLevelMenu, {
+            msg: menuItemTree.message
+        }));
     } else {
         menuItemTrees.workbench = menuItemTree;
 
@@ -265,9 +270,11 @@ define([
                                                 viable: shortcut.viable
                                             };
                                             shortcutsOfPlugin.push(item);
-                                        } else {
-                                            alert('Error: Invalid shortcut key string "' +
-                                                  shortcut.keys + '" from plug-in ' + plugin);
+                                        } else {                                            
+                                            alert(string.substitute(i18n.alertInvalidShortcutKeyString, {
+                                                keys: shortcut.keys, 
+                                                plugin: plugin
+                                            }));
                                             break;
                                         }
                                     }
@@ -308,7 +315,7 @@ define([
             //console.log('hina temp: evt.menuHolders = ' + evt.menuHolders);
             collectViableItems(_.uniq(evt.menuHolders || []), 0, {});
         } else {
-            alert('Keyboard input focus is out of workbench');
+            alert(i18n.alertKeyboardInputFocusIsOutOfWorkbench);
         }
     });
 
@@ -352,9 +359,11 @@ define([
                 var menuItemTree =
                     new MenuItemTree(predefinedHierarchy, menuExts, elem, pluginName,
                                      pm.getAppConfig('webida.common.workbench').menuSystem); // TODO: temporary
-                if (menuItemTree instanceof Error) {
-                    alert('Failed to initialize the context menu of ' +
-                          pluginName +  ': ' + menuItemTree.message);
+                if (menuItemTree instanceof Error) {                    
+                    alert(string.substitute(i18n.alertFailedToInitTheContextMenuOf, {
+                        plugin: pluginName, 
+                        msg: menuItemTree.message
+                    }));
                 } else {
                     elem.addEventListener('contextmenu', function (evt) {
                         contextMenu.rebuild(menuItemTree, evt);
