@@ -144,12 +144,6 @@ define([
         recentFiles: new BubblingArray(20) // keep history of 20 files
     };
 
-    editors.getFileByViewId = function (viewId) {
-        return _.findWhere(editors.files, {
-            viewId: viewId
-        });
-    };
-
     subscribeToTopics();
 
     return editors;
