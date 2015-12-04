@@ -123,7 +123,7 @@ define(['require',
 
     Node.prototype.addSubnode = function (newNode, maybeCreated) {
         store().put(newNode);
-        topic.publish('workspace.node.added', newNode.getPath(), maybeCreated);
+        topic.publish('workspace/node/added', newNode.getPath(), maybeCreated);
     };
 
     Node.prototype.getSubnodes = function () {
@@ -932,7 +932,7 @@ define(['require',
                                         // fetch subnodes of the subdirectory, and then
                                         // upload subentries to the subdirectory.
                                         var newDir = target.getPath() + finalName;
-                                        var handle = topic.subscribe('workspace.node.added', function (newNodePath) {
+                                        var handle = topic.subscribe('workspace/node/added', function (newNodePath) {
                                             newNodePath = pathUtil.detachSlash(newNodePath);
                                             if (newNodePath === newDir) {
                                                 handle.remove();
@@ -1629,7 +1629,7 @@ define(['require',
         nodeToSelect = nodeId;
     }
 
-    topic.subscribe('workspace.node.added', selectAfterWork);
+    topic.subscribe('workspace/node/added', selectAfterWork);
 
     return Node;
 });

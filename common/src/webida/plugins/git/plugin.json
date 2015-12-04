@@ -132,7 +132,7 @@
         }
     },
     "subscriptions" : {
-        "workspace.node.added": [
+        "workspace/node/added": [
             {
                 "handler": "detectGitRepo",
                 "module": "webida-lib/plugins/git/git-icon"
