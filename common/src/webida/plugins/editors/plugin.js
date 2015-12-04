@@ -32,22 +32,18 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/CompatibleTabPartContainer',
-    'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
-    './DataSourceHandler',
-    './LifecycleManager'
+    './DataSourceHandler'
 ], function (
     topic, 
-    _, 
+    _,
     ide, 
     BubblingArray,
     Logger, 
     workbench, 
     CompatibleTabPartContainer,
-    vm, 
     ViewFocusController,  
-    DataSourceHandler,
-    LifecycleManager
+    DataSourceHandler
 ) {
     'use strict';
 // @formatter:on
@@ -57,7 +53,6 @@ define([
     //logger.off();
 
     var dsRegistry = workbench.getDataSourceRegistry();
-    var lifecycleManager = LifecycleManager.getInstance();
     var dataSourceHandler = DataSourceHandler.getInstance();
 
     //TODO This will be refactored in webida-client 1.7.0 Release
@@ -153,52 +148,6 @@ define([
         return _.findWhere(editors.files, {
             viewId: viewId
         });
-    };
-
-    /**
-     * @private
-     * @Override
-     */
-    lifecycleManager._showExistingPart = function (PartClass, dataSource, options, callback) {
-        logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
-
-        var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
-        var part = registry.getRecentEditorPart(dataSource, PartClass);
-
-        //Compatibility start
-        var view = part.getContainer().getWidgetAdapter().getWidget();
-        if (view.getParent()) {
-            view.getParent().select(view);
-            part.focus();
-        }
-        //Compatibility end
-
-        if (typeof callback === 'function') {
-            callback(part);
-        }
-    };
-
-    /**
-     * @private
-     * @Override
-     */
-    lifecycleManager._createPart = function (PartClass, dataSource, options, callback) {
-        logger.info('%c_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)', 'color:green');
-
-        //Compatibility start
-        //editors.files[dataSource.getId()] = dataSource.getPersistence();
-        //Compatibility end
-
-        var page = workbench.getCurrentPage();
-        var layoutPane = page.getChildById('webida.layout_pane.center');
-
-        //3. create Tab & add to Pane
-        var tabPartContainer = new CompatibleTabPartContainer(dataSource);
-        layoutPane.addPartContainer(tabPartContainer, options, editors);
-
-        //4. create Part
-        tabPartContainer.createPart(PartClass, callback);
     };
 
     subscribeToTopics();

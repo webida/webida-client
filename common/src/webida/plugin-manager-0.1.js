@@ -389,16 +389,25 @@ function (webida, _, URI, all, request, topic, Logger) {
                                         if (typeof (handler = subscr.handler) === 'string') {
                                             var handlerSet = false;
                                             var modName = subscr.module || manifest.module;
+                                            var isBind = !!subscr.bind;
                                             var h =
                                                 topic.subscribe(topicId, function () {
                                                     var args = arguments;
                                                     require([modName], function (mod) {
                                                         if (typeof mod[handler] === 'function') {
-                                                            mod[handler].apply(null, args);
+                                                            if (isBind) {
+                                                                mod[handler].apply(mod, args);
+                                                            } else {
+                                                                mod[handler].apply(null, args);
+                                                            }
                                                             if (!handlerSet) {
                                                                 handlerSet = true;
                                                                 h.remove();	// immediately removed once called.
-                                                                topic.subscribe(topicId, mod[handler]);
+                                                                if (isBind) {
+                                                                    topic.subscribe(topicId, mod[handler].bind(mod));
+                                                                } else {
+                                                                    topic.subscribe(topicId, mod[handler]);
+                                                                }
                                                             }
                                                         } else {
                                                             if (!handlerSet) {

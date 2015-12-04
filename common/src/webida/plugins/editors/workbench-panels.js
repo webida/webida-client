@@ -29,7 +29,6 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/widgets/views/splitviewcontainer',
     'webida-lib/widgets/views/viewmanager',
-    './LifecycleManager',
     './plugin'
 ], function (
     domStyle,
@@ -43,7 +42,6 @@ define([
     Logger,
     SplitViewContainer,
     vm,
-    LifecycleManager,
     editors
 ) {
     'use strict';
@@ -54,8 +52,6 @@ define([
     //logger.off();
 
     var lastStatus;
-
-    //var lifecycleManager = LifecycleManager.getInstance();
 
     var paneElement = $('<div id="editor" tabindex="0" style="position:absolute; ' +
     'overflow:hidden; width:100%; height:100%; padding:0px; border:0"/>')[0];

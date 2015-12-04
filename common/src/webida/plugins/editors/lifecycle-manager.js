@@ -15,45 +15,27 @@
 */
 
 /**
- * Constructor
+ * LifecycleManager manages editor's life-cycle.
+ * the life-cycle consist of open, save, close.
  *
- * LifecycleManager is a Mediator for EditorParts
- * EditorParts do not know each other,
- * only know their Mediator LifecycleManager.
- *
- * @see
  * @since: 2015.07.19
- * @author: hw.shim
+ * @author: hw.shim@samsung.com
  */
-
-/* jshint unused:false */
 
 // @formatter:off
 define([
     'dojo/topic',
-    'external/eventEmitter/EventEmitter',
-    'external/lodash/lodash.min',
     'webida-lib/plugins/workbench/plugin', //TODO : refactor
-    'webida-lib/plugins/workbench/ui/DataSource',
     'webida-lib/plugins/workbench/ui/EditorPart',
-    'webida-lib/plugins/workbench/ui/LayoutPane',
     'webida-lib/plugins/workbench/ui/TabPartContainer',
-    'webida-lib/plugins/workbench/ui/Workbench',
-    'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     './ExtensionManager'
 ], function (
     topic,
-    EventEmitter,
-    _,
     workbench,
-    DataSource,
     EditorPart,
-    LayoutPane,
     TabPartContainer,
-    Workbench,
-    genetic, 
     Logger,
     notify,
     ExtensionManager
@@ -72,61 +54,7 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    var singleton = null;
-
-    function LifecycleManager() {
-        logger.info('new LifecycleManager()');
-
-        /** @type {Object} */
-        this.subscribed = [];
-
-        this.extensionManager = ExtensionManager.getInstance();
-
-        this._subscribe();
-    }
-
-    /**
-     * @return {LifecycleManager}
-     */
-    LifecycleManager.getInstance = function () {
-        if (singleton === null) {
-            singleton = new this();
-        }
-        return singleton;
-    };
-
-    genetic.inherits(LifecycleManager, EventEmitter, {
-
-        /**
-         * subscribe to topic
-         * @private
-         */
-        _subscribe: function () {
-            //open
-            this.subscribed.push(topic.subscribe('editor/open', this._openDataSource.bind(this)));
-
-            //save
-            this.subscribed.push(topic.subscribe('editor/save/all', this._saveAllParts.bind(this)));
-            this.subscribed.push(topic.subscribe('editor/save/current', this._saveCurrentPart.bind(this)));
-            this.subscribed.push(topic.subscribe('editor/save/data-source-id', this._saveByDataSourceId.bind(this)));
-
-            //close
-            this.subscribed.push(topic.subscribe('editor/close/part', this._closePart.bind(this)));
-            this.subscribed.push(topic.subscribe('editor/close/all', this._closeAllParts.bind(this)));
-            this.subscribed.push(topic.subscribe('editor/close/current', this._closeCurrentPart.bind(this)));
-            this.subscribed.push(topic.subscribe('editor/close/others', this._closeOtherParts.bind(this)));
-            this.subscribed.push(topic.subscribe('editor/close/data-source-id', this._closeByDataSourceId.bind(this)));
-        },
-
-        /**
-         * unsubscribe topics
-         * @private
-         */
-        _unsubscribe: function () {
-            this.subscribed.forEach(function (subscribed) {
-                subscribed.remove();
-            });
-        },
+    var lifecycleManager = {
 
         /**
          * @private
@@ -343,7 +271,9 @@ define([
                 part.close(isForced);
             });
         }
-    });
+    };
 
-    return LifecycleManager;
+    lifecycleManager.extensionManager = ExtensionManager.getInstance();
+
+    return lifecycleManager;
 });
