@@ -15,6 +15,7 @@ webida.ide.project-management.run
  ├── style
  │ ├── image
  │ └── style.css
+ ├── default-view-controller.js             - managing on General Web Application view
  ├── delegator.js                           - delegating for actions (CRUD and Run/Debug)
  ├── plugin.js
  ├── plugin.json

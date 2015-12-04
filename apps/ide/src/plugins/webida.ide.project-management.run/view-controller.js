@@ -20,66 +20,42 @@
  */
 define([
     'dijit/Tree',
-    'dijit/form/CheckBox',
-    'dijit/form/Form',
-    'dijit/form/Select',
-    'dijit/form/TextBox',
-    'dijit/form/ValidationTextBox',
     'dijit/layout/ContentPane',
     'dijit/registry',
-    'dijit/tree/ForestStoreModel',
     'dojo/i18n!./nls/resource',
     'dojo/keys',
     'dojo/on',
-    'dojo/store/Memory',
-    'dojo/store/Observable',
     'dojo/topic',
     'external/lodash/lodash.min',
     'popup-dialog',
-    'webida-lib/app',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/plugin',
-    'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/locale',
     'webida-lib/util/notify',
     'webida-lib/util/path',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog', // ButtonedDialog
-    'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
     './delegator',
     './run-configuration-manager',
-    'text!./layout/default-run-configuration.html',
     'text!./layout/run-configuration.html',
     'xstyle/css!./style/style.css'
 ], function (
     Tree,
-    CheckBox,
-    Form,
-    Select,
-    TextBox,
-    ValidationTextBox,
     ContentPane,
     registry,
-    ForestStoreModel,
     i18n,
     keys,
     on,
-    Memory,
-    Observable,
     topic,
     _,
     PopupDialog,
-    ide,
     pluginManager,
     workbench,
-    workspace,
     Locale,
     notify,
     pathUtil,
     ButtonedDialog,
-    FileDialog,
     delegator,
     runConfManager,
-    contentTemplate,
     windowTemplate
 ) {
     'use strict';
@@ -88,12 +64,6 @@ define([
     var current;
     var ui;
     var windowOpened = false;
-
-    var PATTERN_QUERY_STRING = '([\\w-]+(=[\\w\\s%\\/\\-\\(\\)\\[\\],\\.]*)?' +
-            '(&[\\w-]+(=[\\w\\s\\/%\\-\\(\\)\\[\\],\\.]*)?)*)?';
-
-    var EVENT_TYPE_SAVE = 'save';
-    var EVENT_TYPE_STATE = 'state';
 
     var locale = new Locale(i18n);
 
@@ -132,11 +102,6 @@ define([
             cancelButton: undefined,
             runButton: undefined,
             deleteButton: undefined
-        },
-        forms: {
-            select: undefined,
-            pathButton: undefined,
-            inputs: {}
         }
     };
 
@@ -442,225 +407,6 @@ define([
             ui.btns.runButton.setDisabled(!current.state.isValid);
         }
         runConf._dirty = current.state.isDirty;
-    };
-
-    /***************************************
-     * General web type
-     * TODO: Below block is needed to be seperated to other file
-     ***************************************/
-
-    var currentRunConf = {};
-
-    function _addButtonCssClass(container, button, size) {
-        container.own(
-            on(button, 'mouseover', function () {
-                $(button).addClass('rcw-button-hover-' + size);
-            }),
-            on(button, 'mouseout', function () {
-                $(button).removeClass('rcw-button-hover-' + size);
-                $(button).removeClass('rcw-button-push-' + size);
-            }),
-            on(button, 'mousedown', function () {
-                $(button).addClass('rcw-button-push-' + size);
-            }),
-            on(button, 'mouseup', function () {
-                $(button).removeClass('rcw-button-push-' + size);
-            })
-        );
-    }
-
-    function _pathButtonClicked() {
-        var pathInputBox = ui.forms.inputs.path;
-        var nameInputBox = ui.forms.inputs.name;
-        var runConf = currentRunConf;
-        var project = ui.forms.select.get('value');
-        if (!runConf || !project || !pathInputBox) {
-            notify.error(i18n.messageFailFindRoot);
-            return;
-        }
-
-        var root = workspace.getRootPath() + project + '/';
-        var initialPath;
-
-        if (pathInputBox.getValue()) {
-            initialPath = root + pathInputBox.getValue();
-        } else {
-            initialPath = root;
-        }
-
-        var dlg = new FileDialog({
-            mount: ide.getFSCache(),
-            root: root,
-            initialSelection: [initialPath],
-            title: i18n.titleSelectMain,
-            singular: true,
-            dirOnly: false,
-            showRoot: false
-        });
-        dlg.open(function (fileSelected) {
-            if (fileSelected) {
-                if (fileSelected.length <= 0) {
-                    notify.warning(i18n.validationNoSelectedFile);
-                    return;
-                }
-                var pathSplit = fileSelected[0].split(root);
-                if (pathSplit.length > 0) {
-                    pathInputBox.setValue(pathSplit[1]);
-
-                    if (nameInputBox && currentRunConf.__nameGen) {
-                        // It is only called when the current run configuration is new and never get any user inputs
-                        nameInputBox.setValue(pathInputBox.getValue());
-                    }
-                    var isValid = ui.form.validate();//!_checkInvalidField();
-                    topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {
-                        isValid: isValid, isDirty: true
-                    });
-                } else {
-                    notify.warning(i18n.validationNoSelectedFile);
-                }
-            }
-        });
-    }
-
-    function _applyFormData() {
-        currentRunConf = _.extend(currentRunConf, {
-            name: ui.forms.inputs.name.getValue(),
-            path: ui.forms.inputs.path.getValue(),
-            argument: ui.forms.inputs.queryString.getValue(),
-            fragment: ui.forms.inputs.hash.getValue(),
-            openArgument: ui.forms.inputs.windowFeature.getValue(),
-            liveReload: ui.forms.inputs.liveReload.getValue(),
-            project: ui.forms.select.getValue()
-        });
-    }
-
-    function _validationExpGen(constraints) {
-        if (constraints.type === 'queryString') {
-            return PATTERN_QUERY_STRING;
-        }
-        return '.*';
-    }
-
-    function _saveButtonClicked() {
-        if (ui.form.validate()) {
-            _applyFormData();
-            topic.publish('project/run/config/changed', EVENT_TYPE_SAVE, currentRunConf);
-        } else {
-            notify.error(i18n.validationInvalidForm);
-        }
-    }
-
-    function _drawContentPane() {
-        var runConf = currentRunConf;
-        var child;
-        var projects = [];
-        ui.content.setContent(contentTemplate);
-        child = ui.content.domNode;
-
-        // caching and setting initial values to ui components
-        ui.form = new Form({}, 'run-configuration-detail-form');
-        ui.btns.pathButton = $(child).find('.rcw-action-path').get(0);
-        _addButtonCssClass(ui.content, ui.btns.pathButton, '20');
-
-        ui.forms.inputs.name = new ValidationTextBox({
-            required: true,
-            missingMessage: i18n.validationNoName,
-            value: runConf.name ? runConf.name : ''
-        }, 'run-configuration-detail-name');
-
-        ui.forms.inputs.path = new ValidationTextBox({
-            required: true,
-            missingMessage: i18n.validationNoPath,
-            value: runConf.path,
-            readonly: true
-        }, 'run-configuration-detail-path');
-
-        ui.forms.inputs.queryString = new ValidationTextBox({
-            constraints: {type: 'queryString'},
-            regExpGen: _validationExpGen,
-            invalidMessage: i18n.validationInvalidQueryString,
-            value: runConf.argument ? runConf.argument : ''
-        }, 'run-configuration-detail-query');
-
-        ui.forms.inputs.hash = new TextBox({
-            value: runConf.fragment ? runConf.fragment : ''
-        }, 'run-configuration-detail-hash');
-
-        ui.forms.inputs.windowFeature = new TextBox({
-            value: runConf.openArgument ? runConf.openArgument : ''
-        }, 'run-configuration-detail-window-features');
-
-        ui.forms.inputs.liveReload = new CheckBox({
-            value: !!runConf.liveReload
-        });
-
-        ui.btns.saveButton = registry.byId('rcw-action-save');
-        ui.content.own(
-            on(ui.btns.saveButton, 'click', _saveButtonClicked),
-            on(ui.btns.pathButton, 'click', _pathButtonClicked),
-            on(ui.forms.inputs.name, 'change', function () {
-                currentRunConf.__nameGen = false;
-            })
-        );
-        on(ui.content, 'input, select:change', function () {
-            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {
-                isValid: ui.form.validate(),
-                isDirty: true
-            });
-        });
-
-        ide.getWorkspaceInfo(function (err, workspaceInfo) {
-            if (err) {
-                notify.error(i18n.messageFailGetProjects);
-            } else {
-                projects = workspaceInfo.projects.map(function (project) {
-                    return {
-                        value: project,
-                        label: project
-                    };
-                });
-                ui.forms.select = new Select({
-                    options: projects,
-                    required: true,
-                    missingMessage: i18n.validationNoProject
-                }, 'run-configuration-project');
-                ui.forms.select.startup();
-                ui.forms.select.set('value', runConf.project);
-            }
-        });
-        locale.convertMessage(child);
-    }
-
-    module.newConf = function (content, runConf, callback) {
-        currentRunConf = runConf;
-        currentRunConf.__nameGen = true;
-        _drawContentPane();
-        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-            isValid: ui.form.validate(),
-            isDirty: true
-        });
-        callback(null, runConf);
-    };
-
-    module.loadConf = function (content, runConf, callback) {
-        currentRunConf = runConf;
-        _drawContentPane();
-        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-            isValid: ui.form.validate()
-        });
-        callback(null, runConf);
-    };
-
-    module.saveConf = function (runConf, callback) {
-        delete currentRunConf.__nameGen;
-        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-            isDirty: false
-        });
-        callback(null, runConf);
-    };
-
-    module.deleteConf = function (runConfName, callback) {
-        callback(null, runConfName);
     };
 
     return module;
