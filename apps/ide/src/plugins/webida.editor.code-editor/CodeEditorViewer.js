@@ -38,7 +38,7 @@ define([
     'webida-lib/plugins/workbench/ui/PartViewer',
 	'webida-lib/util/loadCSSList',
 	'webida-lib/util/logger/logger-client',
-	'plugins/webida.editor.text-editor/TextEditorViewer',    
+	'plugins/webida.editor.text-editor/TextEditorViewer',
 	'./snippet',
     './content-assist/ContentAssistDelegator',
     'dojo/topic'
@@ -75,11 +75,11 @@ define([
     var _localHinterSchemes = {};
     var _globalHinterSchemes = [];
 
-    var hintersMap = {        
+    var hintersMap = {
         'coffee': {
             name: 'coffeescript',
             requires: ['external/codemirror/addon/hint/javascript-hint']
-        },        
+        },
         'xml': {
             name: 'xml',
             requires: ['external/codemirror/addon/hint/xml-hint']
@@ -229,8 +229,8 @@ define([
                 return _.contains(['tag', 'builtin', 'qualifier', 'property error', 'property'], token.type);
             }
         }
-    ];  
-    
+    ];
+
     function foldCode(cm, start, end) {
         var myWidget = $('<span class="CodeMirror-foldmarker">').text('\u2194')[0];
         codemirror.on(myWidget, 'mousedown', function () { myRange.clear(); });
@@ -243,7 +243,7 @@ define([
     codemirror.commands.foldselection = function (cm) {
         foldCode(cm, cm.getCursor('start'), cm.getCursor('end'));
     };
-    
+
     codemirror.commands.gotoLine = function (cm) {
         if (cm.getOption('keyMap') === 'default') {
             var dialog = 'Go to line: <input type="text" style="width: 10em"/> <span style="color: #888"></span>';
@@ -324,12 +324,6 @@ define([
         return false;
     }
 
-    function onBeforeShowHints(cm) {
-        if (cm._contentAssistDelegator) {
-            cm._contentAssistDelegator.execCommand('closeArgHints', cm);
-        }
-    }
-
     codemirror.commands.autocomplete = function (cm, options) {
         if (options === undefined) {
             // call by explicit key (ctrl+space)
@@ -343,7 +337,6 @@ define([
         options.path = cm.__instance.file.path;
         options.async = true;
         options.useWorker = cm.__instance.settings.useWorker;
-        options.beforeShowHints = onBeforeShowHints;
 
         var modeAt = cm.getModeAt(cm.getCursor());
         var modeName = modeAt && modeAt.name;
@@ -388,13 +381,13 @@ define([
             resultAll.hintContinue = resultAll.hintContinue || resultThis.hintContinue;
         }
     }
-    
+
     function setHinterSchemes() {
         var extInfos = ContentAssistDelegator.getCaExtensionInfos();
-        
+
         loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
             require(['external/codemirror/addon/hint/show-hint'], function () {
-                _.each(extInfos, function (extInfo) {                   
+                _.each(extInfos, function (extInfo) {
                     if (extInfo.hinterModes) {
                         _.each(extInfo.hinterModes, function (hinterMode) {
                             if (extInfo.hinterNames) {
@@ -405,7 +398,7 @@ define([
                                         _localHinterSchemes[hinterMode] = [{name: hinterName}];
                                     }
                                 });
-                            }                           
+                            }
                         });
                     } else {
                         if (extInfo.hinterNames) {
@@ -416,9 +409,9 @@ define([
                     }
                 });
             });
-        });        
+        });
     }
-    
+
     setHinterSchemes();
 
     function hint(cm, callback, options) {
@@ -480,14 +473,14 @@ define([
         });
 
         return localResult;
-    }    
-    
+    }
+
     function startContentAssist(editor, cm, c) {
         var options = {};
         options.useWorker = settings.useWorker;
-        options.autoHint = settings.autoHint;        
-        
-        return new ContentAssistDelegator(editor, cm, options, c);        
+        options.autoHint = settings.autoHint;
+
+        return new ContentAssistDelegator(editor, cm, options, c);
     }
 
     function setChangeForAutoHintDebounced() {
@@ -568,7 +561,7 @@ define([
             };
 			this.prepareCreate();
         },
-        
+
         /**
 		 * @override
 		 */
@@ -577,21 +570,21 @@ define([
             var self = this;
             // @formatter:off
             loadCSSList([
-                require.toUrl('plugins/webida.editor.text-editor/css/webida.css'), 
-                require.toUrl('external/codemirror/lib/codemirror.css'), 
+                require.toUrl('plugins/webida.editor.text-editor/css/webida.css'),
+                require.toUrl('external/codemirror/lib/codemirror.css'),
                 require.toUrl('external/codemirror/addon/dialog/dialog.css')
             ], function() {
                 logger.info('*require*');
                 require([
-                    'external/codemirror/addon/dialog/dialog', 
-                    'external/codemirror/addon/search/searchcursor', 
-                    'plugins/webida.editor.text-editor/search-addon', 
-                    'external/codemirror/addon/edit/closebrackets', 
-                    'external/codemirror/addon/edit/closetag', 
+                    'external/codemirror/addon/dialog/dialog',
+                    'external/codemirror/addon/search/searchcursor',
+                    'plugins/webida.editor.text-editor/search-addon',
+                    'external/codemirror/addon/edit/closebrackets',
+                    'external/codemirror/addon/edit/closetag',
                     'external/codemirror/addon/edit/matchbrackets'
                 ], function() {
                     logger.info('%cLoad CSS complete', 'color:orange');
-                    self.createEditorWidget(self.getParentNode());                    
+                    self.createEditorWidget(self.getParentNode());
                 });
             });
             // @formatter:on
@@ -661,8 +654,8 @@ define([
                         'external/codemirror/addon/tern/tern'
                     ], function () {
                         that.addDeferredAction(function () {
-                            if (mode === 'js' || 
-                                mode === 'html' || 
+                            if (mode === 'js' ||
+                                mode === 'html' ||
                                 mode === 'htmlmixed' ||
                                 mode === 'css') {
                                 _.defer(function () {
@@ -673,7 +666,7 @@ define([
                             } else {
                                 resolve('no ca started');
                             }
-                            that.editor.on('change', onChangeForAutoHint);                            
+                            that.editor.on('change', onChangeForAutoHint);
                         });
                     });
                 });
@@ -882,7 +875,7 @@ define([
 	            });
 	        }
 	    },
-        
+
 	    setGlobalHinters : function (hinterNames) {
 	        _globalHinterSchemes = [];
 	        if (hinterNames) {
@@ -992,17 +985,17 @@ define([
                 self.focus();
                 if (editor._contentAssistDelegator) {
                     editor._contentAssistDelegator.execCommand('beautifyCode', editor);
-                }                
+                }
             });
         },
 
         beautifyAllCode: function () {
-            this.addDeferredAction(function (self) {                
+            this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
                 if (editor._contentAssistDelegator) {
                     editor._contentAssistDelegator.execCommand('beautifyAllCode', editor);
-                }               
+                }
             });
         },
 
@@ -1070,11 +1063,11 @@ define([
                 // Toggle Comments
                 if (editor._contentAssistDelegator) {
                     if (editor._contentAssistDelegator.execCommand('isLineCommentable', editor) ) {
-                        sourceItems['&Toggle Line Comments'] = 
+                        sourceItems['&Toggle Line Comments'] =
                             menuItems.editMenuItems['&Source']['&Toggle Line Comments'];
                     }
                     if (editor._contentAssistDelegator.execCommand('isBlockCommentable', editor) ) {
-                        sourceItems['Toggle Block Comment'] = 
+                        sourceItems['Toggle Block Comment'] =
                             menuItems.editMenuItems['&Source']['Toggle Block Comment'];
                     }
                 }
@@ -1094,11 +1087,11 @@ define([
 
                 if (editor._contentAssistDelegator) {
                     editor._contentAssistDelegator.execCommand(
-                        'request', editor, 
+                        'request', editor,
                         {type: 'rename', newName: 'merong', fullDocs: true},
                         function (error/*, data*/) {
                             if (!error) {
-                                sourceItems['&Rename Variables'] = 
+                                sourceItems['&Rename Variables'] =
                                     menuItems.editMenuItems['&Source']['&Rename Variables'];
                             }
                             deferred.resolve(items);
@@ -1120,15 +1113,15 @@ define([
                 menuItems.editMenuItems['&Line']['Move Line Dow&n'].alternateLabel = i18n.editMenuLineMoveLineDown;
                 menuItems.editMenuItems['&Line']['D&elete Lines'].alternateLabel = i18n.editMenuLineDeleteLines;
                 items['&Line'].alternateLabel = i18n.editMenuLine;
-                menuItems.editMenuItems['&Source']['&Toggle Line Comments'].alternateLabel = 
+                menuItems.editMenuItems['&Source']['&Toggle Line Comments'].alternateLabel =
                     i18n.editMenuSourceToggleLineComments;
-                menuItems.editMenuItems['&Source']['Toggle Block Comment'].alternateLabel = 
+                menuItems.editMenuItems['&Source']['Toggle Block Comment'].alternateLabel =
                     i18n.editMenuSourceToggleBlockComment;
                 menuItems.editMenuItems['&Source']['&Fold'].alternateLabel = i18n.editMenuSourceFold;
                 menuItems.editMenuItems['&Source']['&Beautify'].alternateLabel = i18n.editMenuSourceBeautify;
                 menuItems.editMenuItems['&Source']['B&eautify All'].alternateLabel = i18n.editMenuSourceBeautifyAll;
                 items['&Source'].alternateLabel = i18n.editMenuSource;
-                menuItems.editMenuItems['&Source']['&Rename Variables'].alternateLabel = 
+                menuItems.editMenuItems['&Source']['&Rename Variables'].alternateLabel =
                     i18n.editMenuSourceRenameVariables;
             } else {
             	deferred.resolve(items);
@@ -1198,7 +1191,7 @@ define([
     };
     CodeEditorViewer.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
-    }; 
+    };
 
     return CodeEditorViewer;
 });

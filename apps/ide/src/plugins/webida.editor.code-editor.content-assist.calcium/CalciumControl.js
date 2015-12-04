@@ -43,9 +43,10 @@ define([
 
     var logger = new Logger();
     logger.off();
-    
+
     function jshint(cm, callback) {
         if (cm._contentAssistDelegator) {
+            cm._contentAssistDelegator.execCommand('closeArgHints', cm);
             cm._contentAssistDelegator.execCommand('getHint', cm, callback);
         }
     }
@@ -55,7 +56,7 @@ define([
     }
 
     setCodemirrorCommandsAndHelpers();
-        
+
     // Assist server commands
     var serverCommands = [
         'start',
@@ -70,6 +71,7 @@ define([
     var caCommands = [
         'variableOccurrences',
         'rename',
+        'closeArgHints',
         'returnOccurrences',
         'selectVariables',
         'thisOccurrences',
