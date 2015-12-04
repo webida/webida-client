@@ -190,9 +190,8 @@ define([
             var workbench = require('webida-lib/plugins/workbench/plugin');
             var widget = container.getWidgetAdapter().getWidget();
             var viewContainer = widget.getParent();
-            var ds = container.getDataSource();
             workbench.unregistFromViewFocusList(widget);
-            topic.publish('part/container/removed', ds.getId(), widget);
+            topic.publish('compatible/part/container/removed', container, widget);
             viewContainer._remove(widget, true);
 
             //Call super class

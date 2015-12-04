@@ -27,10 +27,12 @@
 
 // @formatter:off
 define([
+    'dojo/topic',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './LayoutTree'
 ], function (
+    topic,
     genetic, 
     Logger,
     LayoutTree
@@ -75,6 +77,7 @@ define([
             if (containers.indexOf(container) < 0) {
                 containers.push(container);
                 container.setParent(this);
+                topic.publish('part/container/added', container);
             }
         },
 
@@ -87,6 +90,7 @@ define([
             if (index >= 0) {
                 containers.splice(index, 1);
                 container.setParent(null);
+                topic.publish('part/container/removed', container);
             }
         },
 

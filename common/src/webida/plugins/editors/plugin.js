@@ -26,38 +26,16 @@
 // @formatter:off
 define([
     'dojo/topic',
-    'external/lodash/lodash.min',
-    'webida-lib/app',
     'webida-lib/util/arrays/BubblingArray',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugin-manager-0.1',
-    'webida-lib/plugins/workbench/plugin',
-    'webida-lib/plugins/workbench/ui/CompatibleTabPartContainer',
-    'webida-lib/plugins/workbench/ui/EditorPart',
-    'webida-lib/plugins/workbench/ui/LayoutPane',
-    'webida-lib/plugins/workbench/ui/PartContainer',
-    'webida-lib/plugins/workbench/ui/Workbench',
-    'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
-    './DataSourceHandler',
-    './LifecycleManager'
+    './DataSourceHandler'
 ], function (
     topic, 
-    _, 
-    ide, 
     BubblingArray,
     Logger, 
-    pm, 
-    workbench, 
-    CompatibleTabPartContainer,
-    EditorPart,
-    LayoutPane,
-    PartContainer,
-    Workbench,
-    vm, 
     ViewFocusController,  
-    DataSourceHandler,
-    LifecycleManager
+    DataSourceHandler
 ) {
     'use strict';
 // @formatter:on
@@ -66,90 +44,13 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    logger.log('loaded modules required by editors. initializing editors plugin');
-
-    var dsRegistry = workbench.getDataSourceRegistry();
-    var lifecycleManager = LifecycleManager.getInstance();
+    //TODO : refactor to plugin.json subscriptions
     var dataSourceHandler = DataSourceHandler.getInstance();
-
-    //TODO This will be refactored in webida-client 1.7.0 Release
-    function subscribeToTopics() {
-
-        topic.subscribe('part/container/removed', function (dataSourceId, view) {
-            editors.editorTabFocusController.unregisterView(view);
-        });
-
-        topic.subscribe('fs/cache/file/invalidated', function (fsURL, path) {
-            logger.info('fs/cache/file/invalidated arrived');
-            var dataSource = dsRegistry.getDataSourceById(path);
-            var file;
-            if (dataSource) {
-                file = dataSource.getPersistence();
-                if (file === editors.currentFile) {
-                    fsCache.refreshFileContents(path);
-                } else {
-                    file.toRefresh = true;
-                }
-            }
-        });
-
-        topic.subscribe('part/editor/not-exists', function () {
-            topic.publish('editor/clean/all');
-            topic.publish('editor/clean/current');
-        });
-
-        //Compatibility
-        topic.subscribe('part/editor/selected', function (oldPart, newPart) {
-
-            logger.info('part/editor/selected arrived');
-
-            if (oldPart !== newPart) {
-
-                if (oldPart) {
-                    var oldContainer = oldPart.getContainer();
-                    if (oldContainer) {
-                        var oldView = oldContainer.getWidgetAdapter().getWidget();
-                        workbench.unregistFromViewFocusList(oldView);
-                    }
-                }
-
-                if (newPart) {
-                    var newContainer = newPart.getContainer();
-                    var newView = newContainer.getWidgetAdapter().getWidget();
-                    workbench.registToViewFocusList(newView, {
-                        title: 'Editor',
-                        key: 'E'
-                    });
-
-                    //------------ TODO refactor ---------------
-
-                    var file = newPart.getDataSource().getPersistence();
-
-                    editors.currentFile = file;
-
-                    if (file) {
-                        editors.currentFiles.put(file);
-                        editors.recentFiles.put(file.path);
-
-                        if (file.toRefresh) {
-                            file.toRefresh = false;
-                            fsCache.refreshFileContents(file.path);
-                        }
-                    }
-                } else {
-                    editors.currentFile = null;
-                }
-            }
-        });
-    }
-
 
     topic.publish('editor/clean/current');
     topic.publish('editor/clean/all');
 
-    var fsCache = ide.getFSCache();
-    var asked = [];
-
+    //TODO : Refactor files, currentFile, currentFiles, recentFiles
     var editors = {
         splitViewContainer: null,
         editorTabFocusController: new ViewFocusController({
@@ -161,92 +62,6 @@ define([
         currentFiles: new BubblingArray(),
         recentFiles: new BubblingArray(20) // keep history of 20 files
     };
-
-    editors.getFileByViewId = function (viewId) {
-        return _.findWhere(editors.files, {
-            viewId: viewId
-        });
-    };
-
-    editors.quit = function () {
-        topic.publish('workbench/exit');
-    };
-
-    function getViewContainer(view, file, option) {
-        //cellCount=2, cellIndex=-1
-        var viewContainer;
-        var cellCount = editors.splitViewContainer.get('splitCount');
-        var cellIndex;
-        if ((option.cellIndex >= 0) && (option.cellIndex < cellCount)) {
-            cellIndex = option.cellIndex;
-        } else {
-            cellIndex = -1;
-        }
-        var opt = {};
-        opt.fields = {
-            title: view.getTitle(),
-            path: file.path
-        };
-        editors.editorTabFocusController.registerView(view, opt);
-        if (cellIndex === -1) {
-            viewContainer = editors.splitViewContainer.getFocusedViewContainer();
-        } else {
-            viewContainer = editors.splitViewContainer.getViewContainer(cellIndex);
-        }
-        return viewContainer;
-    }
-
-    /**
-     * @private
-     * @Override
-     */
-    lifecycleManager._showExistingPart = function (PartClass, dataSource, options, callback) {
-        logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
-
-        var page = workbench.getCurrentPage();
-        var registry = page.getPartRegistry();
-        var part = registry.getRecentEditorPart(dataSource, PartClass);
-
-        //Compatibility start
-        var persistence = dataSource.getPersistence();
-        var view = part.getContainer().getWidgetAdapter().getWidget();
-        var viewContainer = getViewContainer(view, persistence, options);
-        if (view.getParent()) {
-            view.getParent().select(view);
-            part.focus();
-        }
-        //Compatibility end
-
-        if (typeof callback === 'function') {
-            callback(part);
-        }
-    };
-
-    /**
-     * @private
-     * @Override
-     */
-    lifecycleManager._createPart = function (PartClass, dataSource, options, callback) {
-        logger.info('%c_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)', 'color:green');
-
-        //Compatibility start
-        //editors.files[dataSource.getId()] = dataSource.getPersistence();
-        //Compatibility end
-
-        var page = workbench.getCurrentPage();
-        var layoutPane = page.getChildById('webida.layout_pane.center');
-
-        //3. create Tab & add to Pane
-        var tabPartContainer = new CompatibleTabPartContainer(dataSource);
-        layoutPane.addPartContainer(tabPartContainer, options, editors);
-
-        //4. create Part
-        tabPartContainer.createPart(PartClass, callback);
-    };
-
-    subscribeToTopics();
-
-    logger.log('initialized editors plugin\'s module');
 
     return editors;
 

@@ -166,8 +166,7 @@
                 "delim0" : "---",
                 "U&ndo" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+Z" }, "desc": "Undo" } } ],
                 "&Redo" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+Y" }, "desc": "Redo" } } ],
-                "&Save" : [ "cmnd", { "icon" : "<%= themePath %>/images/icons/title_icon_save_nml.png",
-                                     "shortcut" : { "keys" : { "default" : "Ctrl+S" }, "desc" : "Save" } } ],
+                "&Save" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+S" }, "desc": "Save" } } ],
                 "delim2" : "---",
                 "&Delete" : [ "cmnd" ],
                 "Select &All" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+A" }, "desc": "Select all" } } ],
@@ -216,5 +215,79 @@
             },
             "getViableItems" : "getContextMenuItems"
         }
+    },
+    "subscriptions" : {
+        "editor/open": {
+            "handler": "_openDataSource",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "editor/save/all": {
+            "handler": "_saveAllParts",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "editor/save/current": {
+            "handler": "_saveCurrentPart",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "editor/save/data-source-id": {
+            "handler": "_saveByDataSourceId",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "editor/close/part": {
+            "handler": "_closePart",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "editor/close/all": {
+            "handler": "_closeAllParts",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "editor/close/current": {
+            "handler": "_closeCurrentPart",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "editor/close/others": {
+            "handler": "_closeOtherParts",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "editor/close/data-source-id": {
+            "handler": "_closeByDataSourceId",
+            "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
+            "bind" : true
+        },
+        "compatible/part/container/removed": {
+            "handler": "_onEditorRemoved",
+            "module": "webida-lib/plugins/editors/part-container-handler",
+            "bind" : true
+        },
+        "part/editor/not-exists": {
+            "handler": "_onNoEditor",
+            "module": "webida-lib/plugins/editors/part-container-handler",
+            "bind" : true
+        },
+        "part/editor/selected": [
+            {
+                "handler": "_onEditorSelected",
+                "module": "webida-lib/plugins/editors/part-container-handler",
+                "bind" : true
+            },
+            {
+                "handler": "_onEditorSelected",
+                "module": "webida-lib/plugins/editors/fs-cache-handler",
+                "bind" : true
+            }
+        ],
+        "fs/cache/file/invalidated": {
+            "handler": "_onInvalidated",
+            "module": "webida-lib/plugins/editors/fs-cache-handler",
+            "bind" : true
+        }
     }
- }
+}
