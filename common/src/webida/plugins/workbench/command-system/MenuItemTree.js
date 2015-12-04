@@ -878,9 +878,11 @@ define([
                             itemRoot = emptyItems;
                         }
 
-                    } else {
-                        alert('Module "' + contr.module + '" does not have a function named "' +
-                              contr.getViableItems + '" to compute viable menu items');
+                    } else {                        
+                        alert(string.substitute(i18n.alertModuleDoesNotHaveAFunctionToComputeViableMenuItems, {
+                            module: contr.module, 
+                            function: contr.getViableItems
+                        }));
                         itemRoot = emptyItems;
                     }
 
@@ -892,9 +894,10 @@ define([
                         itemRoot = itemRoot || emptyItems;
                         var errMsg = checkViableItems(itemRoot, contr.wholeItems);
                         if (errMsg) {
-                            alert('Invalid viable menu items from a plugin ' +
-                                  contr.__plugin__.manifest.name + ': ' +
-                                  contr.location + errMsg.substr(1));
+                            alert(string.substitute(i18n.alertInvalidViableMenuItemsFromAPlugin, {
+                                plugin: contr.__plugin__.manifest.name, 
+                                msg: contr.location + errMsg.substr(1)
+                            }));
                             itemRoot = emptyItems;
                         }
                         deferred.resolve({location: contr.location,
@@ -939,7 +942,9 @@ define([
                 var enabledItems = {};
                 var errMsg = accumulateContributions(enabledItems, contributors, false);
                 if (errMsg) {
-                    alert('Error occurred while building enabled menu items: ' + errMsg);
+                    alert(string.substitute(i18n.alertErrorOccurredWhileBuildingEnabledMenuItems, {
+                        msg: errMsg
+                    }));
                     cb(emptyItems);
                 } else {
                     //console.debug(enabledItems);
