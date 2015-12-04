@@ -159,7 +159,7 @@ define([
          * @private
          */
         _showExistingPart: function (PartClass, dataSource, options, callback) {
-            logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
+            logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', ' + callback + ')');
         },
 
         /**

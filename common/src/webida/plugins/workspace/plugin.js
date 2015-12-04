@@ -466,7 +466,7 @@ define([
 
             var nodes = tree.selectedNodes;
             if (!nodes || nodes.length < 1) {
-                topic.publish(workspace/node/selected/none);
+                topic.publish('workspace/node/selected/none');
             }
         });
 
