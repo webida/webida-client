@@ -30,13 +30,8 @@ define([
     'webida-lib/app',
     'webida-lib/util/arrays/BubblingArray',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugin-manager-0.1',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workbench/ui/CompatibleTabPartContainer',
-    'webida-lib/plugins/workbench/ui/EditorPart',
-    'webida-lib/plugins/workbench/ui/LayoutPane',
-    'webida-lib/plugins/workbench/ui/PartContainer',
-    'webida-lib/plugins/workbench/ui/Workbench',
     'webida-lib/widgets/views/viewmanager',
     'webida-lib/widgets/views/viewFocusController',
     './DataSourceHandler',
@@ -47,13 +42,8 @@ define([
     ide, 
     BubblingArray,
     Logger, 
-    pm, 
     workbench, 
     CompatibleTabPartContainer,
-    EditorPart,
-    LayoutPane,
-    PartContainer,
-    Workbench,
     vm, 
     ViewFocusController,  
     DataSourceHandler,
@@ -65,8 +55,6 @@ define([
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
-
-    logger.log('loaded modules required by editors. initializing editors plugin');
 
     var dsRegistry = workbench.getDataSourceRegistry();
     var lifecycleManager = LifecycleManager.getInstance();
@@ -148,7 +136,6 @@ define([
     topic.publish('editor/clean/all');
 
     var fsCache = ide.getFSCache();
-    var asked = [];
 
     var editors = {
         splitViewContainer: null,
@@ -172,30 +159,6 @@ define([
         topic.publish('workbench/exit');
     };
 
-    function getViewContainer(view, file, option) {
-        //cellCount=2, cellIndex=-1
-        var viewContainer;
-        var cellCount = editors.splitViewContainer.get('splitCount');
-        var cellIndex;
-        if ((option.cellIndex >= 0) && (option.cellIndex < cellCount)) {
-            cellIndex = option.cellIndex;
-        } else {
-            cellIndex = -1;
-        }
-        var opt = {};
-        opt.fields = {
-            title: view.getTitle(),
-            path: file.path
-        };
-        editors.editorTabFocusController.registerView(view, opt);
-        if (cellIndex === -1) {
-            viewContainer = editors.splitViewContainer.getFocusedViewContainer();
-        } else {
-            viewContainer = editors.splitViewContainer.getViewContainer(cellIndex);
-        }
-        return viewContainer;
-    }
-
     /**
      * @private
      * @Override
@@ -208,9 +171,7 @@ define([
         var part = registry.getRecentEditorPart(dataSource, PartClass);
 
         //Compatibility start
-        var persistence = dataSource.getPersistence();
         var view = part.getContainer().getWidgetAdapter().getWidget();
-        var viewContainer = getViewContainer(view, persistence, options);
         if (view.getParent()) {
             view.getParent().select(view);
             part.focus();
@@ -245,8 +206,6 @@ define([
     };
 
     subscribeToTopics();
-
-    logger.log('initialized editors plugin\'s module');
 
     return editors;
 
