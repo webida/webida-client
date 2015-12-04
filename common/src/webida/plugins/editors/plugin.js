@@ -26,22 +26,14 @@
 // @formatter:off
 define([
     'dojo/topic',
-    'external/lodash/lodash.min',
-    'webida-lib/app',
     'webida-lib/util/arrays/BubblingArray',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/plugins/workbench/plugin',
-    'webida-lib/plugins/workbench/ui/CompatibleTabPartContainer',
     'webida-lib/widgets/views/viewFocusController',
     './DataSourceHandler'
 ], function (
     topic, 
-    _,
-    ide, 
     BubblingArray,
     Logger, 
-    workbench, 
-    CompatibleTabPartContainer,
     ViewFocusController,  
     DataSourceHandler
 ) {
@@ -52,86 +44,13 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    var dsRegistry = workbench.getDataSourceRegistry();
+    //TODO : refactor to plugin.json subscriptions
     var dataSourceHandler = DataSourceHandler.getInstance();
-
-    //TODO This will be refactored in webida-client 1.7.0 Release
-    function subscribeToTopics() {
-
-        topic.subscribe('part/container/removed', function (dataSourceId, view) {
-            editors.editorTabFocusController.unregisterView(view);
-        });
-
-        topic.subscribe('fs/cache/file/invalidated', function (fsURL, path) {
-            logger.info('fs/cache/file/invalidated arrived');
-            var dataSource = dsRegistry.getDataSourceById(path);
-            var file;
-            if (dataSource) {
-                file = dataSource.getPersistence();
-                if (file === editors.currentFile) {
-                    fsCache.refreshFileContents(path);
-                } else {
-                    file.toRefresh = true;
-                }
-            }
-        });
-
-        topic.subscribe('part/editor/not-exists', function () {
-            topic.publish('editor/clean/all');
-            topic.publish('editor/clean/current');
-        });
-
-        //Compatibility
-        topic.subscribe('part/editor/selected', function (oldPart, newPart) {
-
-            logger.info('part/editor/selected arrived');
-
-            if (oldPart !== newPart) {
-
-                if (oldPart) {
-                    var oldContainer = oldPart.getContainer();
-                    if (oldContainer) {
-                        var oldView = oldContainer.getWidgetAdapter().getWidget();
-                        workbench.unregistFromViewFocusList(oldView);
-                    }
-                }
-
-                if (newPart) {
-                    var newContainer = newPart.getContainer();
-                    var newView = newContainer.getWidgetAdapter().getWidget();
-                    workbench.registToViewFocusList(newView, {
-                        title: 'Editor',
-                        key: 'E'
-                    });
-
-                    //------------ TODO refactor ---------------
-
-                    var file = newPart.getDataSource().getPersistence();
-
-                    editors.currentFile = file;
-
-                    if (file) {
-                        editors.currentFiles.put(file);
-                        editors.recentFiles.put(file.path);
-
-                        if (file.toRefresh) {
-                            file.toRefresh = false;
-                            fsCache.refreshFileContents(file.path);
-                        }
-                    }
-                } else {
-                    editors.currentFile = null;
-                }
-            }
-        });
-    }
-
 
     topic.publish('editor/clean/current');
     topic.publish('editor/clean/all');
 
-    var fsCache = ide.getFSCache();
-
+    //TODO : Refactor files, currentFile, currentFiles, recentFiles
     var editors = {
         splitViewContainer: null,
         editorTabFocusController: new ViewFocusController({
@@ -143,8 +62,6 @@ define([
         currentFiles: new BubblingArray(),
         recentFiles: new BubblingArray(20) // keep history of 20 files
     };
-
-    subscribeToTopics();
 
     return editors;
 

@@ -1262,9 +1262,12 @@ define([
             editorsSelection = path;
         });
 
-        topic.subscribe('part/container/removed', function (path) {
-            if (editorsSelection === path) {
-                editorsSelection = null;
+        topic.subscribe('part/container/removed', function (container) {
+            var dataSource = container.getDataSource();
+            if (dataSource && dataSource.getPersistence()) {
+                if (editorsSelection === dataSource.getPersistence().getPath()) {
+                    editorsSelection = null;
+                }
             }
         });
 

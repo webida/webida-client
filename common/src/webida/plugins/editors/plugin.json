@@ -261,6 +261,33 @@
             "handler": "_closeByDataSourceId",
             "module": "webida-lib/plugins/editors/compatible-lifecyle-manager",
             "bind" : true
+        },
+        "compatible/part/container/removed": {
+            "handler": "_onEditorRemoved",
+            "module": "webida-lib/plugins/editors/part-container-handler",
+            "bind" : true
+        },
+        "part/editor/not-exists": {
+            "handler": "_onNoEditor",
+            "module": "webida-lib/plugins/editors/part-container-handler",
+            "bind" : true
+        },
+        "part/editor/selected": [
+            {
+                "handler": "_onEditorSelected",
+                "module": "webida-lib/plugins/editors/part-container-handler",
+                "bind" : true
+            },
+            {
+                "handler": "_onEditorSelected",
+                "module": "webida-lib/plugins/editors/fs-cache-handler",
+                "bind" : true
+            }
+        ],
+        "fs/cache/file/invalidated": {
+            "handler": "_onInvalidated",
+            "module": "webida-lib/plugins/editors/fs-cache-handler",
+            "bind" : true
         }
     }
 }
