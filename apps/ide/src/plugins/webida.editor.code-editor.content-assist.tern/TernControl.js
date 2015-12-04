@@ -29,7 +29,7 @@
 define([
     'external/codemirror/lib/codemirror',
     'require',
-    'webida-lib/util/genetic',    
+    'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'plugins/webida.editor.code-editor/content-assist/IContentAssist'
 ], function (
@@ -43,31 +43,32 @@ define([
 // @formatter:on
 
     var logger = new Logger();
-    logger.off();     
-    
+    logger.off();
+
     function jshint(cm, callback) {
         if (cm._contentAssistDelegator) {
+            cm._contentAssistDelegator.execCommand('closeArgHints', cm);
             cm._contentAssistDelegator.execCommand('getHint', cm, callback);
         }
     }
-        
+
     function setCodemirrorCommandsAndHelpers() {
         codemirror.registerHelper('hint', 'javascript', jshint);
     }
 
     setCodemirrorCommandsAndHelpers();
-    
+
     /* Assist server commands
-     * Refer js-jints.js    
+     * Refer js-jints.js
     */
-    
+
     var serverCommands = [
-        'start', 
+        'start',
         'stop',
         'addFile',
         'delFile',
         'request',
-        'getFile'        
+        'getFile'
     ];
 
     /* Content assist commands
@@ -86,15 +87,15 @@ define([
 
     function TernControl(viewer, cm, options, c) {
         logger.info('new TernControl()');
-     
+
         var that = this;
-        require(['./tern-server-starter'], function (starter) {            
+        require(['./tern-server-starter'], function (starter) {
             options.engineName = TernControl.ENGINE_NAME;
             options.langMode = TernControl.TARGET_MODE;
-            starter.startServer(viewer.file.path, cm, options, function (server) {               
+            starter.startServer(viewer.file.path, cm, options, function (server) {
                 that.ternAddon = server.ternAddon;
                 that.server = server;
-                viewer.assister = server;                
+                viewer.assister = server;
                 if (c) {
                     c();
                 }
@@ -105,13 +106,13 @@ define([
     function isCaCommand(command) {
         return caCommands.indexOf(command) >= 0;
     }
-    
+
     function isServerCommand(command) {
         return serverCommands.indexOf(command) >= 0;
-    }  
+    }
 
     genetic.inherits(TernControl, IContentAssist, {
-        
+
 
         /**
          * Returns whether the command is supported
@@ -124,7 +125,7 @@ define([
             if (this.ternAddon) {
                 return isCaCommand(command) || isServerCommand(command);
             } else {
-                return false; 
+                return false;
             }
         },
 
@@ -141,15 +142,15 @@ define([
             var slice = Array.prototype.slice;
             var args = slice.apply(arguments);
             args.splice(0, 1);
-            if (isCaCommand(command)) {                
-                return this.ternAddon[command].apply(this.ternAddon, args);                               
+            if (isCaCommand(command)) {
+                return this.ternAddon[command].apply(this.ternAddon, args);
             } else if (isServerCommand(command)) {
                 return this.server[command].apply(this.server, args);
             } else {
                 console.error('Command[' + command + '] is not supported.');
             }
         }
-    }); 
+    });
 
     return TernControl;
 });
