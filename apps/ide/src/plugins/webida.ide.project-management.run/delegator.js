@@ -16,7 +16,7 @@
 
 /**
  * webida - Delegator for the actions on the run configurations
- *
+ * // TODO 'mandator' is more clear name for this module.
  * Src:
  *   plugins/webida.ide.project-management.run/delegator.js
  *
@@ -71,12 +71,12 @@ define([
         'newConf': undefined,
         'loadConf': undefined,
         'saveConf': function _saveConf(runConfName, callback) {
-            require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+            require(['plugins/webida.ide.project-management.run/default-view-controller'], function (viewController) {
                 viewController.saveConf(runConfName, callback);
             });
         },
         'deleteConf': function _deleteConf(runConfName, callback) {
-            require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+            require(['plugins/webida.ide.project-management.run/default-view-controller'], function (viewController) {
                 viewController.deleteConf(runConfName, callback);
             });
         },
@@ -108,7 +108,7 @@ define([
     defaultDelegator.newConf = function (content, newRunConf, callback) {
         // draw ui
         newRunConf.path = '';   // initialize path value
-        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+        require(['plugins/webida.ide.project-management.run/default-view-controller'], function (viewController) {
             viewController.newConf(content, newRunConf, callback);
         });
     };
@@ -123,7 +123,7 @@ define([
      */
     defaultDelegator.loadConf = function (content, newRunConf, callback) {
         // draw ui
-        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+        require(['plugins/webida.ide.project-management.run/default-view-controller'], function (viewController) {
             viewController.loadConf(content, newRunConf, callback);
         });
     };
