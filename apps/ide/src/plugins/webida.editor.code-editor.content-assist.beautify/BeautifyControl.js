@@ -111,67 +111,36 @@ define([
     }
     
     function  beautifyAllCode(editor) {
-        var ANCHOR_STR = '_line_of_original_cursor_';
         getBeautifier(editor, function (beautifier, options) {
             if (beautifier) {
-                var cursor = editor.getCursor();
-                var mode = editor.getModeAt(cursor);
-
-                editor.operation(function () {
-                    if (mode.blockCommentStart) {
-                        var anchorComment = mode.blockCommentStart +
-                            ANCHOR_STR + mode.blockCommentEnd;
-                        editor.replaceRange(anchorComment + '\n', {
-                            line: cursor.line,
-                            ch: 0
-                        }, {
-                            line: cursor.line,
-                            ch: 0
-                        }, '+beautifyAll');
+                var doc = editor.getDoc();
+                var cursor = editor.getCursor();                
+                var contentsBeforeCursor = doc.getValue().slice(0, doc.indexFromPos(cursor));
+                var originalNonWhiteSpaceMatchResult = contentsBeforeCursor.match(/\S/g);
+                var originalNonWhiteSpaceCount = originalNonWhiteSpaceMatchResult ? 
+                    contentsBeforeCursor.match(/\S/g).length: 0;
+                var startPos = {
+                    line: editor.firstLine(),
+                    ch: 0
+                };
+                var lastLine = editor.lastLine();
+                var endPos = {
+                    line: lastLine,
+                    ch: editor.getLine(lastLine).length
+                };
+                editor.replaceRange(beautifier(editor.getValue(), options), startPos, endPos);
+                var beautifiedContents = doc.getValue();
+                var movedIndex = 0;
+                for (var nonWhiteSpaceCount = 0; 
+                     movedIndex < beautifiedContents.length &&
+                     nonWhiteSpaceCount < originalNonWhiteSpaceCount; 
+                     movedIndex++) {
+                    var matchResult = beautifiedContents.charAt(movedIndex).match(/\S/g);
+                    if (matchResult) {
+                        nonWhiteSpaceCount++;                        
                     }
-
-                    var startPos = {
-                        line: editor.firstLine(),
-                        ch: 0
-                    };
-                    var lastLine, endPos = {
-                        line: (lastLine = editor.lastLine()),
-                        ch: editor.getLine(lastLine).length
-                    };
-                    editor.replaceRange(beautifier(editor.getValue(),
-                                                   options), startPos, endPos,
-                                        '+beautifyAll');
-
-                    if (mode.blockCommentStart) {
-                        var i, j = -1;
-                        for (i = 0; i < editor.lineCount(); i++) {
-                            var line = editor.getLine(i);
-                            if ((j = line.indexOf(ANCHOR_STR)) >= 0) {
-                                break;
-                            }
-                        }
-                        if (j >= 0) {
-                            var token = editor.getTokenAt({
-                                line: i,
-                                ch: j
-                            }, true);
-                            if (token.string.indexOf(mode.blockCommentEnd) >
-                                0) {
-                                editor.setCursor({
-                                    line: i,
-                                    ch: 0
-                                });
-                                editor.replaceRange('', {
-                                    line: i,
-                                    ch: 0
-                                }, {
-                                    line: i + 1,
-                                    ch: 0
-                                }, '+beautifyAll');
-                            }
-                        }
-                    }
-                });
+                }
+                editor.setCursor(doc.posFromIndex(movedIndex));
             }
         });
     }
