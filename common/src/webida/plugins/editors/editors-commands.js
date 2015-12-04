@@ -14,23 +14,19 @@
 * limitations under the License.
 */
 
-/* jshint unused:false */
-
 // @formatter:off
 define([
     './plugin', 
     'webida-lib/plugins/workbench/plugin', 
     'webida-lib/widgets/views/viewmanager', 
     'webida-lib/util/logger/logger-client', 
-    'dojo/topic', 
-    'external/lodash/lodash.min'
+    'dojo/topic' 
 ], function (
     editors,
     workbench,
     vm,
     Logger,
-    topic,
-    _
+    topic
 ) {
     'use strict';
 // @formatter:on
@@ -256,17 +252,8 @@ define([
             var i = viewContainers.indexOf(vc);
             console.assert(i >= 0);
             var targetView = (i < viewContainers.length - 1 ? viewContainers[i + 1] : viewContainers[0]);
-            var views = vc.getViewList();
-            if (views.length === 1) {
-                spContainer.moveView(targetView, view);
-                view.select(true);
-            } else {
-                var j = views.indexOf(view);
-                var nextSelectedView = (j > 0 ? views[j - 1] : views[1]);
-                var nextSelectedFile = editors.getFileByViewId(nextSelectedView.getId());
-                spContainer.moveView(targetView, view);
-                view.select(true);
-            }
+            spContainer.moveView(targetView, view);
+            view.select(true);
         }
     }
 
