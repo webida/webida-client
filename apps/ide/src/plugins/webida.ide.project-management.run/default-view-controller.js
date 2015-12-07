@@ -28,6 +28,8 @@ define([
     'dijit/registry',
     'dojo/i18n!./nls/resource',
     'dojo/on',
+    'dojo/store/Memory',
+    'dojo/store/Observable',
     'dojo/topic',
     'webida-lib/app',
     'webida-lib/plugins/workspace/plugin',
@@ -45,6 +47,8 @@ define([
     registry,
     i18n,
     on,
+    Memory,
+    Observable,
     topic,
     ide,
     workspace,
@@ -162,26 +166,26 @@ define([
         });
     }
 
-    function _validationExpGen(constraints) {
-        if (constraints.type === 'queryString') {
-            return PATTERN_QUERY_STRING;
+    function _validate() {
+        if (ui.form.validate()) {
+            _applyFormData();
+            return true;
+        } else {
+            return false;
         }
-        return '.*';
     }
 
     function _saveButtonClicked() {
-        if (ui.form.validate()) {
-            _applyFormData();
+        if (_validate()) {
             topic.publish('project/run/config/changed', EVENT_TYPE_SAVE, currentRunConf);
         } else {
             notify.error(i18n.validationInvalidForm);
         }
     }
 
-    function _drawContentPane() {
+    function _drawContentPane(callback) {
         var runConf = currentRunConf;
         var child;
-        var projects = [];
         ui.content.setContent(contentTemplate);
         child = ui.content.domNode;
 
@@ -204,8 +208,7 @@ define([
         }, 'run-configuration-detail-path');
 
         ui.forms.inputs.queryString = new ValidationTextBox({
-            constraints: {type: 'queryString'},
-            regExpGen: _validationExpGen,
+            regExp: PATTERN_QUERY_STRING,
             invalidMessage: i18n.validationInvalidQueryString,
             value: runConf.argument ? runConf.argument : ''
         }, 'run-configuration-detail-query');
@@ -232,30 +235,32 @@ define([
         );
         on(ui.content, 'input, select:change', function () {
             topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {
-                isValid: ui.form.validate(),
+                isValid: _validate(),
                 isDirty: true
             });
         });
 
+        var projectStore = new Observable(new Memory({data: [], idProperty: 'value'}));
         ide.getWorkspaceInfo(function (err, workspaceInfo) {
             if (err) {
                 notify.error(i18n.messageFailGetProjects);
             } else {
-                projects = workspaceInfo.projects.map(function (project) {
-                    return {
-                        value: project,
-                        label: project
-                    };
+                workspaceInfo.projects.forEach(function (project) {
+                    projectStore.put({value: project, label: project});
                 });
-                ui.forms.select = new Select({
-                    options: projects,
-                    required: true,
-                    missingMessage: i18n.validationNoProject
-                }, 'run-configuration-project');
-                ui.forms.select.startup();
-                ui.forms.select.set('value', runConf.project);
+                ui.forms.select.setValue(runConf.project);
             }
+            callback();
         });
+
+        ui.forms.select = new Select({
+            store: projectStore,
+            labelAttr: 'label',
+            required: true,
+            missingMessage: i18n.validationNoProject
+        }, 'run-configuration-project');
+        ui.forms.select.startup();
+
         locale.convertMessage(child);
     }
 
@@ -263,10 +268,11 @@ define([
         ui.content = content;
         currentRunConf = runConf;
         currentRunConf.__nameGen = true;
-        _drawContentPane();
-        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-            isValid: ui.form.validate(),
-            isDirty: true
+        _drawContentPane(function () {
+            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
+                isValid: _validate(),
+                isDirty: true
+            });
         });
         callback(null, runConf);
     };
@@ -274,9 +280,10 @@ define([
     module.loadConf = function (content, runConf, callback) {
         ui.content = content;
         currentRunConf = runConf;
-        _drawContentPane();
-        topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-            isValid: ui.form.validate()
+        _drawContentPane(function () {
+            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
+                isValid: _validate()
+            });
         });
         callback(null, runConf);
     };
