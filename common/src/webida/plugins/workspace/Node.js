@@ -1118,8 +1118,16 @@ define(['require',
     }
 
     Node.compare = function nodeCompare(a, b) {
+        var loweredA;
+        var loweredB;
         if (a.isInternal === b.isInternal) {
-            if (a.name < b.name) {
+            loweredA = a.name.toLowerCase();
+            loweredB = b.name.toLowerCase();
+            if (loweredA < loweredB) {
+                return -1;
+            } else if (loweredA > loweredB) {
+                return 1;
+            } else if (a.name < b.name) {
                 return -1;
             } else if (a.name > b.name) {
                 return 1;
