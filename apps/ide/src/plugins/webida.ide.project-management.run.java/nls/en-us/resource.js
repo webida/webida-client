@@ -5,6 +5,7 @@ define({
     labelPath: 'Path',
     labelProject: 'Project',
     messageFailFindRoot: 'Cannot find root path',
+    messageFailGetProjects: 'failed to get project list',
     titleSelectMain: 'Select the Main Java File to Run',
     validationInvalidForm: 'Form contains invalid data. Please correct first.',
     validationInvalidPath: 'Invalid selected path',
