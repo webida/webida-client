@@ -1,16 +1,18 @@
 define({
     root: {
-        validationInvalidPath: 'Invalid selected path',
-        validationNoName: 'Enter a name.',
-        validationNoPath: 'Select a path.',
-        messageFailFindRoot: 'Cannot find root path',
-        titleSelectMain: 'Select the Main Java File to Run',
-        validationNoJavaFile: 'Select a java file.',
+        labelApply: 'Apply',
         labelAsteriskExplain: 'indicates required field',
         labelName: 'Name',
-        labelProject: 'Project',
         labelPath: 'Path',
-        labelApply: 'Apply'
+        labelProject: 'Project',
+        messageFailFindRoot: 'Cannot find root path',
+        titleSelectMain: 'Select the Main Java File to Run',
+        validationInvalidForm: 'Form contains invalid data. Please correct first.',
+        validationInvalidPath: 'Invalid selected path',
+        validationNoJavaFile: 'Select a java file.',
+        validationNoName: 'Enter a name.',
+        validationNoPath: 'Select a path.',
+        validationNoProject: 'You should fill the target project'
     },
     'en-us': true
 });
