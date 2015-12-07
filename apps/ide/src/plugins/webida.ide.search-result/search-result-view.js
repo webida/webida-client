@@ -26,8 +26,10 @@ define([
     'dijit/form/ComboBox',
     'dijit/registry',
     'dijit/tree/ObjectStoreModel',
-    'dojo/i18n!./nls/resource',
     'dojo/html',
+    'dojo/i18n!./nls/resource',
+    'dojo/keys',
+    'dojo/on',
     'dojo/store/Memory',
     'dojo/store/Observable',
     'dojo/topic',
@@ -44,8 +46,10 @@ define([
     comboBox,
     registry,
     ObjectStoreModel,
-    i18n,
     html,
+    i18n,
+    keys,
+    on,
     Memory,
     Observable,
     topic,
@@ -129,11 +133,10 @@ define([
             controller.handleSelection(
                 scopeSelect.getValue(),
                 function (err, data) {
-                if (!err) {
-                    path = data;
-                }
-            });
-
+                    if (!err) {
+                        path = data;
+                    }
+                });
             return path;
         }
 
@@ -319,8 +322,7 @@ define([
             }, $('.search-result-tree').get(0)).startup();
         }
 
-        dojo.connect(findButton, 'onClick', function () {
-
+        function _startSearch() {
             _removeTreePanel();
             pressFindButton = true;
             var jobId = workbench.addJob(i18n.searching);
@@ -328,6 +330,24 @@ define([
                 _setTree(err, data);
                 workbench.removeJob(jobId);
             });
+        }
+
+        on(findInput, 'keydown', function (e) {
+
+            switch (e.keyCode) {
+            case keys.ENTER:
+                e.preventDefault();
+                _startSearch();
+                break;
+
+            default:
+                break;
+            }
+        });
+
+        dojo.connect(findButton, 'onClick', function () {
+
+            _startSearch();
         });
 
         dojo.connect(replaceButton, 'onClick', function () {
