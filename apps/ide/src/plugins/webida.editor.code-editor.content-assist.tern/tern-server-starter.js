@@ -25,15 +25,6 @@ function (require, topic, _, ide, codemirror, pathUtil) {
 
     var ternServerStarter = {};
 
-    function moveToPosition(data) {
-        require(['plugins/webida.editor.text-editor/TextEditorPart'], function (TextEditorPart) {
-            TextEditorPart.moveTo(TextEditorPart.pushCursorLocation(data.file, {
-                row: data.start.line,
-                col: data.start.ch
-            }, true));
-        });
-    }
-
     function hasActiveCompletion(cm) {
         return (cm.state.completionActive && cm.state.completionActive.widget);
     }
@@ -75,7 +66,7 @@ function (require, topic, _, ide, codemirror, pathUtil) {
     WorkerServer.prototype.getFile = function (filepath, c) {
         this.assist.send({mode: this.mode, type: 'getFile', filepath: filepath}, c);
     };
-    
+
     function Server(serverId) {
         this.serverId = serverId;
         this.server = null;
@@ -119,12 +110,19 @@ function (require, topic, _, ide, codemirror, pathUtil) {
             server = new WorkerServer(filepath, options.langMode, options.engineName);
         } else {
             server = new Server(filepath);
-        } 
+        }
 
         server.start(function () {
             server.ternAddon = new codemirror.TernServer({
                 server: server,
-                moveToPosition: moveToPosition,
+                moveToPosition: function (data) {
+                    require(['plugins/webida.editor.text-editor/TextEditorPart'], function (TextEditorPart) {
+                        TextEditorPart.moveTo(TextEditorPart.pushCursorLocation(data.file, {
+                            row: data.start.line,
+                            col: data.start.ch
+                        }, true));
+                    });
+                },
                 onShowArgHints: onShowArgHints
             });
 
