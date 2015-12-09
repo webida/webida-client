@@ -1337,6 +1337,8 @@ define(['require',
         var extLength = self.name.lastIndexOf('.');
         if (extLength > 0 && extLength < (self.name.length - 1)) {
             $input[0].setSelectionRange(0, extLength);
+        } else if (extLength === -1) {
+            $input[0].setSelectionRange(0, self.name.length);
         }
 
         $input.on('focusout', function () {
