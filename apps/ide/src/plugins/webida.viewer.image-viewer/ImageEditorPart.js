@@ -37,8 +37,9 @@ define([
     'webida-lib/plugins/workbench/ui/Part',
     'webida-lib/plugins/workbench/ui/EditorPart',
     'webida-lib/plugins/workbench/ui/PartContainer',
-    'dojo/topic',
     'webida-lib/util/logger/logger-client',
+    'webida-lib/util/notify',
+    './ImageEditorContextMenu',
     'dojo/domReady!'
 ], function (
     app,
@@ -47,8 +48,9 @@ define([
     Part,
     EditorPart,
     PartContainer,
-    topic,
-    Logger
+    Logger,
+    notify,
+    ImageEditorContextMenu
 ) {
     'use strict';
 // @formatter:on
@@ -97,7 +99,7 @@ define([
             var fileName = arr[1];
             fs.addAlias(dir, 10, function (err, alias) {
                 if (err) {
-                    toastr.error('Failed to add an alias for the path of the file (' + err + ')');
+                    notify.error('Failed to add an alias for the path of the file (' + err + ')');
                 } else {
                     var isFull = true;
                     var img = new Image();
@@ -127,6 +129,11 @@ define([
             logger.info('createViewer(' + parentNode.tagName + ', callback)');
             this.setParentElement(parentNode);
             this.renderImage();
+        },
+        
+        getContextMenuItems: function (menuItems) {
+            var contextMenu = new ImageEditorContextMenu(menuItems, this);
+            return contextMenu.getPromiseForAvailableItems();
         }
     });
 
