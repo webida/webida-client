@@ -52,8 +52,8 @@ function (infer, tern, walk, path) {
             if (baseurl && baseurl[0] !== '/') {
                 baseurl = path.getDirPath(infer.cx().curOrigin) + baseurl;
             }
-            if (options.baseUrl !== baseurl) {
-                options.baseUrl = baseurl;
+            if (options.baseURL !== baseurl) {
+                options.baseURL = baseurl;
                 return true;
             }
         }
