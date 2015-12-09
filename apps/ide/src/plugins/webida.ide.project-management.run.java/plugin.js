@@ -16,84 +16,93 @@
 
 define([
     'external/lodash/lodash.min',
+    'dijit/form/Form',
     'dijit/form/Select',
+    'dijit/form/TextBox',
+    'dijit/form/ValidationTextBox',
     'dijit/layout/ContentPane',
     'dijit/registry',
     'dojo/i18n!./nls/resource',
     'dojo/on',
+    'dojo/store/Memory',
+    'dojo/store/Observable',
     'dojo/topic',
     'webida-lib/app',
     'webida-lib/util/locale',
+    'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States', // FileDialog
     'text!./layout/java-run-configuration.html'
 ], function (
     _,
+    Form,
     Select,
+    TextBox,
+    ValidationTextBox,
     ContentPane,
     registry,
     i18n,
     on,
+    Memory,
+    Observable,
     topic,
     ide,
     Locale,
+    Logger,
     notify,
     FileDialog,
     template
 ) {
     'use strict';
 
+    var logger = new Logger();
+    logger.off();
+
     var EVENT_TYPE_SAVE = 'save';
     var EVENT_TYPE_STATE = 'state';
 
-    var PATTERN_MAIN_FILE = /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
+    // original regexp: /^((?:[^\\/:\*\?"<>\|]*\/)*)([^\\/:\*\?"<>\|]*)\.java$/i;
+    var PATTERN_MAIN_FILE = '((?:[^\\\/:\\*\\?"<>\\|]*\\/)*)([^\\\/:\\*\\?"<>\\|]*)\\.(j|J)(a|A)(v|V)(a|A)';
+    var REGEXP_MAIN_FILE = new RegExp('^' + PATTERN_MAIN_FILE + '$');
 
     var FS = ide.getMount();
     var SRC_DIR = 'src';
     var TARGET_DIR = 'target';
     var currentRunConf;
-    var ui = {};
+    var ui = {
+        forms: {
+            inputs: {}
+        }
+    };
 
     var locale = new Locale(i18n);
 
-    function _checkInvalidField(runConf) {
-        var runConfToCheck = runConf;
-        if (!runConf) {
-            var fullPath = ui.readonlyInputBoxes[0].value;
-            var path;
-            if (fullPath) {
-                var matchResult = PATTERN_MAIN_FILE.exec(fullPath);
-                if (matchResult === null) {
-                    return i18n.validationInvalidPath;
-                } else {
-                    path = matchResult[1].split('/').join('.') + matchResult[2];
-                }
-            }
-            runConfToCheck = {
-                name: ui.inputBoxNodes[0].value,
-                project: ui.select.get('value'),
-                path: path,
-                outputDir : TARGET_DIR,
-                srcDir: SRC_DIR
-            };
-        }
+    function _applyFormData() {
+        var matchResult = REGEXP_MAIN_FILE.exec(ui.forms.inputs.path.getValue());
+        var path = (matchResult) ? matchResult[1].split('/').join('.') + matchResult[2] : '';
 
-        if (!runConfToCheck.name) {
-            return i18n.validationNoName;
-        }
-        if (!runConfToCheck.path) {
-            return i18n.validationNoPath;
-        }
+        currentRunConf = _.extend(currentRunConf, {
+            name: ui.forms.inputs.name.getValue(),
+            path: path,
+            project: ui.forms.select.getValue(),
+            outputDir: TARGET_DIR,
+            srcDir: SRC_DIR
+        });
+    }
 
-        currentRunConf = _.extend(currentRunConf, runConfToCheck);
-
-        return;
+    function _validate() {
+        if (ui.form.validate()) {
+            _applyFormData();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function _pathButtonClicked() {
-        var pathInputBox = ui.readonlyInputBoxes[0];
-        var nameInputBox = ui.inputBoxNodes[0];
-        var project = ui.select.get('value');
+        var pathInputBox = ui.forms.inputs.path;
+        var nameInputBox = ui.forms.inputs.name;
+        var project = ui.forms.select.getValue();
         var initialPath;
         var root;
         var dlg;
@@ -104,8 +113,8 @@ define([
         }
 
         root = ide.getPath() + '/' + project + '/' + SRC_DIR + '/';
-        if (pathInputBox.value) {
-            initialPath = root + pathInputBox.value;
+        if (pathInputBox.getValue()) {
+            initialPath = root + pathInputBox.getValue();
         } else {
             initialPath = root;
         }
@@ -128,15 +137,14 @@ define([
                 }
                 pathSplit = selected[0].split(root);
                 if (pathSplit.length > 0) {
-                    pathInputBox.value = pathSplit[1];
+                    pathInputBox.setValue(pathSplit[1]);
 
                     if (nameInputBox && currentRunConf.__nameGen) {
                         // It is only called when the current run configuration is new and never get any user inputs
-                        nameInputBox.value = pathInputBox.value;
+                        nameInputBox.setValue(pathInputBox.getValue());
                     }
-                    var isValid = !_checkInvalidField();
                     topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, {
-                        isValid: isValid,
+                        isValid: _validate(),
                         isDirty: true
                     });
                 } else {
@@ -146,52 +154,68 @@ define([
         });
     }
 
-    function _setTemplate() {
+    function _setTemplate(callback) {
         var runConf = currentRunConf;
         ui.content.setContent(template);
         if (runConf) {
             var child = ui.content.domNode;
-            ui.inputBoxNodes = $(child).find('.rcw-content-table-inputbox-edit');
-            ui.inputBoxNodes[0].value = runConf.name ? runConf.name : '';
-            ui.readonlyInputBoxes = $(child).find('.rcw-content-table-inputbox-readonly');
-            ui.readonlyInputBoxes[0].value = runConf.path ? (runConf.path.split('.').join('/') + '.java') : '';
 
+            ui.form = new Form({}, 'run-configuration-java-form');
+
+            ui.forms.inputs.name = new ValidationTextBox({
+                required: true,
+                missingMessage: i18n.validationNoName,
+                value: runConf.name ? runConf.name : ''
+            }, 'run-configuration-java-name');
+
+            ui.forms.inputs.path = new ValidationTextBox({
+                required: true,
+                regExp: PATTERN_MAIN_FILE,
+                missingMessage: i18n.validationNoPath,
+                invalidMessage: i18n.validationInvalidPath,
+                value: runConf.path ? (runConf.path.split('.').join('/') + '.java') : '',
+                readonly: true
+            }, 'run-configuration-java-path');
+
+            var projectStore = new Observable(new Memory({data: [], idProperty: 'value'}));
             ide.getWorkspaceInfo(function (err, workspaceInfo) {
-                if (!err) {
-                    var projects = workspaceInfo.projects.map(function (project) {
-                        return {
-                            value: project,
-                            label: project
-                        };
+                if (err) {
+                    notify.error(i18n.messageFailGetProjects);
+                } else {
+                    workspaceInfo.projects.forEach(function (project) {
+                        projectStore.put({value: project, label: project});
                     });
-                    if (registry.byId('run-configuration-java-project')) {
-                        registry.byId('run-configuration-java-project').destroy();
-                    }
-                    ui.select = new Select({ options: projects }, 'run-configuration-java-project');
-                    ui.select.startup();
-                    ui.select.set('value', runConf.project);
+                    ui.forms.select.setValue(runConf.project);
                 }
+                callback();
             });
+
+            ui.forms.select = new Select({
+                store: projectStore,
+                labelAttr: 'label',
+                required: true,
+                missingMessage: i18n.validationNoProject
+            }, 'run-configuration-java-project');
+            ui.forms.select.startup();
 
             ui.saveButton = registry.byId('rcw-action-save');
             ui.pathButton = $(child).find('.rcw-action-path').get(0);
 
             on(ui.content, 'input, select:change', function () {
-                topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf, 
-                              {isValid: !_checkInvalidField(), isDirty: true});
+                topic.publish('project/run/config/changed', EVENT_TYPE_STATE, currentRunConf,
+                        {isValid: _validate(), isDirty: true});
             });
 
             ui.content.own(
                 on(ui.saveButton, 'click', function () {
-                    var invalidMsg = _checkInvalidField();
-                    if (!invalidMsg) {
+                    if (_validate()) {
                         topic.publish('project/run/config/changed', EVENT_TYPE_SAVE, currentRunConf);
                     } else {
-                        notify.error(invalidMsg);
+                        notify.error(i18n.validationInvalidForm);
                     }
                 }),
                 on(ui.pathButton, 'click', _pathButtonClicked),
-                on(ui.inputBoxNodes[0], 'change', function () {
+                on(ui.forms.inputs.name, 'change', function () {
                     currentRunConf.__nameGen = false;
                 })
             );
@@ -206,13 +230,13 @@ define([
             var filePath = runConf.srcDir + '/' + runConf.path.replace(/\./g, '/') + '.java';
             FS.exec(rootPath, {cmd: 'javac', args: ['-d', runConf.outputDir, filePath]},
                 function (err, stdout, stderr) {
-                    console.debug('###javac', runConf.path, stdout, stderr);
+                    logger.info('###javac', runConf.path, stdout, stderr);
                     topic.publish('#REQUEST.log', stdout);
                     topic.publish('#REQUEST.log', stderr);
                     if (!err && !stderr) {
                         FS.exec(rootPath, {cmd: 'java', args: ['-cp', runConf.outputDir, runConf.path]},
                             function (err, stdout, stderr) {
-                                console.debug('###java', runConf.path, stdout, stderr);
+                                logger.info('###java', runConf.path, stdout, stderr);
                                 topic.publish('#REQUEST.log', stdout);
                                 topic.publish('#REQUEST.log', stderr);
                                 callback(null, runConf);
@@ -224,34 +248,30 @@ define([
             currentRunConf = runConf;
             currentRunConf.__nameGen = true;
             ui.content = content;
-            _setTemplate();
-            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-                isValid: !_checkInvalidField(runConf),
-                isDirty: true
+            _setTemplate(function () {
+                topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
+                    isValid: _validate(),
+                    isDirty: true
+                });
             });
             callback(null, runConf);
         },
         loadConf: function (content, runConf, callback) {
             currentRunConf = runConf;
             ui.content = content;
-            _setTemplate();
-            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-                isValid: !_checkInvalidField(runConf)
+            _setTemplate(function () {
+                topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
+                    isValid: _validate()
+                });
             });
             callback(null, runConf);
         },
         saveConf: function (runConf, callback) {
-            // validation
-            var invalidMsg = _checkInvalidField();
-            if (!invalidMsg) {
-                topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
-                    isDirty: false
-                });
-                callback(null, runConf);
-            } else {
-                callback(invalidMsg);
-            }
-            
+            delete currentRunConf.__nameGen;
+            topic.publish('project/run/config/changed', EVENT_TYPE_STATE, runConf, {
+                isDirty: false
+            });
+            callback(null, runConf);
         },
         deleteConf: function (runConfName, callback) {
             callback(null, currentRunConf);
