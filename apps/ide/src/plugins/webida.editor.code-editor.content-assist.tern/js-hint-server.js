@@ -45,6 +45,22 @@ function (require, _, pathUtil, tern, fileServer, reference, browserText,
         };
     }
 
+    function getRelPath(base, path) {
+        if (path.indexOf(base) === 0) {
+            return path.slice(base.length);
+        } else {
+            throw new Error('Cannot get relative path');
+        }
+    }
+
+    function getAbsPath(base, path) {
+        if (path.indexOf(base) !== 0) {
+            return base + path;
+        } else {
+            throw new Error('Cannot get absolute path');
+        }
+    }
+
     var jshint = {};
 
     jshint.localServers = {};
@@ -84,10 +100,10 @@ function (require, _, pathUtil, tern, fileServer, reference, browserText,
         this.localServers[serverId] = server;
 
         var ternGetFileCallback = function (filepath, c) {
-            server.files[filepath] = true;
-            filepath = filepath.charAt(0) === '/' ? filepath : this.projectDir + filepath;
-            fileServer.getFile(filepath, function (error, fileModel) {
-                c(error, fileModel.text);
+            var absPath = getAbsPath(server.tern.projectDir, filepath);
+            server.files[absPath] = true;
+            fileServer.getFile(absPath, function (error, fileModel) {
+                c(error, fileModel);
             });
         };
 
@@ -139,7 +155,7 @@ function (require, _, pathUtil, tern, fileServer, reference, browserText,
 
         fileServer.getFile(filepath, function (/*error, file*/) {
             if (pathUtil.isJavaScript(filepath)) {
-                server.tern.addFile(filepath);
+                server.tern.addFile(getRelPath(server.tern.projectDir, filepath));
             }
         });
     };
@@ -230,6 +246,11 @@ function (require, _, pathUtil, tern, fileServer, reference, browserText,
                 }
             }
 
+            // Since tern uses relative paths,
+            if (body.query.file) {
+                body.query.file = getRelPath(server.tern.projectDir, body.query.file);
+            }
+
             server.tern.request(body, function (error, data) {
                 if (subfile && data) {
                     if (data.start) {
@@ -244,6 +265,21 @@ function (require, _, pathUtil, tern, fileServer, reference, browserText,
                         }
                         data.end.line += subfile.subfileStartPosition.line;
                     }
+                }
+
+                // convert path in responses
+                if (body.query.type === 'rename' && !error) {
+                    data.files = data.files.map(function (file) {
+                        return getAbsPath(server.tern.projectDir, file);
+                    });
+
+                    data.changes.forEach(function (change) {
+                        change.file = getAbsPath(server.tern.projectDir, change.file);
+                    });
+                }
+
+                if (body.query.type === 'definition' && data && data.file) {
+                    data.file = getAbsPath(server.tern.projectDir, data.file);
                 }
 
                 c(error, data);
