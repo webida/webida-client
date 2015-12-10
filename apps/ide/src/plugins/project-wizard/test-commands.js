@@ -24,7 +24,6 @@
  *   plugins/project-wizard/test-commands.js
  */
 
-var time;
 define(['webida-lib/webida-0.3',
         'webida-lib/widgets/views/view',
         'webida-lib/widgets/views/viewmanager',

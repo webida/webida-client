@@ -24,7 +24,6 @@
  *   plugins/project-wizard/export-commands.js
  */
 
-var time;
 define(['webida-lib/app',
         'webida-lib/webida-0.3',
         'webida-lib/util/path',
