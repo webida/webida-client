@@ -26,12 +26,16 @@
  */
 
 define([
+    'external/lodash/lodash.min',
+    'plugins/webida.preference/preference-service-factory',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    'plugins/webida.preference/preference-service-factory'
-], function (genetic,
-             Logger,
-             PreferenceFactory) {
+    'webida-lib/util/logger/logger-client'
+], function (
+    _,
+    PreferenceFactory,
+    genetic,
+    Logger
+) {
     'use strict';
 
     var logger = new Logger();
@@ -39,59 +43,77 @@ define([
 
     var preferences = PreferenceFactory.get('WORKSPACE');
 
-    function EditorPreference(preferenceIds, viewer) {
-        var that = this;
-        logger.info('new EditorPreference(' + preferenceIds + ', ' + viewer + ')');
-        this.configs = null;
-        this.preferenceIds = preferenceIds;
-        this.viewer = viewer;
-        this.listener = function (values) {
-            for (var key in values) {
-                if (values.hasOwnProperty(key)) {
-                    that.setField(key, values[key]);
-                }
-            }
-        };
+    function EditorPreference(watchConfigs) {
+        this._watchConfigs = watchConfigs;
+        this._watchers = {};
+        this._initialize();
     }
 
     genetic.inherits(EditorPreference, Object, {
-        setFields: function (configs) {
-            logger.info('setFields(' + configs + ')');
+        /**
+         * Initialize EditorePreference with setting initial values and register preference watchers
+         * @private
+         */
+        _initialize: function () {
             var that = this;
-            this.configs = configs;
-            /* jshint loopfunc:true */
-            for (var i = 0; i < that.preferenceIds.length; i++) {
-                preferences.getValues(that.preferenceIds[i], function (values) {
-                    for (var key in values) {
-                        if (values.hasOwnProperty(key)) {
-                            that.setField(key, values[key]);
-                        }
-                    }
+            _.forEach(this._watchConfigs, function (configs, preferenceId) {
+                var watcher = function (values) {
+                    that.setFields(preferenceId, values);
+                };
+                preferences.getValues(preferenceId, watcher);   // set initial values
+                that._watchers[preferenceId] = watcher;
+                preferences.addFieldChangeListener(preferenceId, watcher);
+            });
+        },
+
+        /**
+         * Unregister all preference watchers on destroy
+         */
+        destroy: function () {
+            _.forEach(this._watchers, function (watcher, preferenceId) {
+                preferences.removeFieldChangeListener(preferenceId, watcher);
+            });
+        },
+
+        /**
+         * Set all preference values using setters set in watchConfig file
+         *
+         * @param {string} preferenceId - preference Id to set values
+         * @param {object} values - values to be set
+         */
+        setFields: function (preferenceId, values) {
+            var that = this;
+            if (that._watchConfigs[preferenceId]) {
+                _.forEach(values, function (value, key) {
+                    that.setField(preferenceId, key, value);
                 });
-                preferences.addFieldChangeListener(that.preferenceIds[i], that.listener);
-            }
-            /* jshint loopfunc:true */
-        },
-        unsetFields: function () {
-            logger.info('unsetFields()');
-            var that = this;
-            for (var i = 0; i < that.preferenceIds.length; i++) {
-                preferences.addFieldChangeListener(that.preferenceIds[i], that.listener);
             }
         },
-        setField: function (key, value) {
-            //logger.info('setField('+key+', '+value+')');
-            var config = this.configs[key];
-            if (config) {
-                var setter = config[0];
-                /*if (value === undefined && config.length > 1) {
-                    value = config[1];
-                }*/
-                this.viewer[setter](value);
+        /**
+         * Set a preference value using setter set in watchConfig file
+         *
+         * @param {string} preferenceId - preference id to set a value
+         * @param {string} key - preference key to set a value
+         * @param {object} value - value to be set
+         */
+        setField: function (preferenceId, key, value) {
+            var setter = this._watchConfigs[preferenceId][key];
+            if (setter && setter.length === 2 && setter[0] && setter[1]) {
+                setter[0][setter[1]](value);
             }
         },
-        getField: function (id, key, callback) {
-            return preferences.getValue(id, key, function (value) {
+
+        /**
+         * Get values by preference Id
+         *
+         * @param {string} preferenceId - preference id to get the value
+         * @callback [callback] - callback function that will be called with the preference value.
+         * @returns {object} If preferences plugin has been loaded completely at this method called,
+         *      It will return the preference value. But preference plugin has not been loaded,
+         *      this value will be undefined. We Recommend to use the callback.
+         */
+        getFields: function (preferenceId, callback) {
+            return preferences.getValues(preferenceId, function (value) {
                 if (callback) {
                     callback(value);
                 }

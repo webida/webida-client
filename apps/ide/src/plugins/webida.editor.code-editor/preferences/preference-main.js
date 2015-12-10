@@ -16,15 +16,12 @@
 
 /* jshint unused:false */
 
-define(['../CodeEditorViewer'], function (CodeEditorViewer) {
+define([], function () {
     'use strict';
 
     return {
         getDefault: function () {
             return {};
-        },
-        editor: function () {
-            //TODO : fill something needed
         }
     };
 });

@@ -45,30 +45,6 @@ define([
                     }
                 }
             ];
-        },
-        editor: function (fieldCreator) {
-            fieldCreator.addField('webida.editor.text-editor:invisibles', 'checkbox', {
-                title: 'Show or Hide',
-                name: 'Show whitespace characters',
-                'default': false
-            });
-            /*
-            // FIXME : function does not work
-            fieldCreator.addField('webida.editor.text-editor:activeline', 'checkbox', {
-                title: '<br>Highlight',
-                name: 'Enable show highlight active line',
-                'default': true
-            });
-            fieldCreator.addField('webida.editor.text-editor:highlightselection', 'checkbox', {
-                name: 'Enable show highlight selection',
-                'default': true
-            });
-            */
-            fieldCreator.addField('webida.editor.text-editor:lineNumbers', 'checkbox', {
-                //title: '<br>Line number',
-                name: 'Show line numbers',
-                'default': true
-            });
         }
     };
 });
