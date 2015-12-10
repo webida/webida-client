@@ -19,7 +19,7 @@ define(['webida-lib/app',
 function (ide, _) {
     'use strict';
 
-    function loadEditorConfig(instance, file) {
+    function loadEditorConfig(file, callback) {
         function translate(pat) {
             // Reference  https://github.com/editorconfig/editorconfig-core-py/blob/master/editorconfig/fnmatch.py
             function escapeRegExp(str) {
@@ -169,15 +169,6 @@ function (ide, _) {
             return config;
         }
 
-        function applyEditorConfig(config) {
-            // apply config to instance
-            instance.setIndentWithTabs(config.indentWithTabs);
-            instance.setIndentUnit(config.indentUnit);
-            instance.setTabSize(config.tabSize);
-            instance.setTrimTrailingWhitespaces(config.trimTrailingWhitespaces);
-            instance.setInsertFinalNewLine(config.insertFinalNewLine);
-        }
-
         var bind, path;
         // editorconfig enabled
         bind = ide.getFSCache();    // ide.getMount();
@@ -188,7 +179,7 @@ function (ide, _) {
         (function rec(i, done) {
             if (i >= 0) {
                 var arr = path.slice(0, i);
-                var configpath = arr.join('/') + '/.editorconfig';
+                var configpath = '/' + arr.join('/') + '/.editorconfig';    // needed absolute path
                 var rpath = path.slice(i).join('/');
                 bind.readFile(configpath, function (error, data) {
                     if (error || data === undefined) {
@@ -197,13 +188,13 @@ function (ide, _) {
                         var config = parseEditorConfig(data, rpath);
                         if (!config.root) {
                             rec(i - 1, function () {
-                                applyEditorConfig(config);
+                                callback(config);
                                 if (done) {
                                     done();
                                 }
                             });
                         } else {
-                            applyEditorConfig(config);
+                            callback(config);
                             if (done) {
                                 done();
                             }

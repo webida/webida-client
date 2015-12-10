@@ -15,8 +15,8 @@
  */
 
 define([
-    'dojo/i18n!../nls/resource', 
-    '../TextEditorViewer', 
+    'dojo/i18n!../nls/resource',
+    '../TextEditorViewer'
 ], function (
     i18n,
     TextEditorViewer
@@ -100,52 +100,6 @@ define([
                     }
                 }
             ];
-        },
-        editor: function (fieldCreator) {
-            fieldCreator.addField('webida.editor.text-editor:cm-theme', 'select', {
-                title: 'Theme',
-                name: 'Editor theme',
-                items: TextEditorViewer.getAvailableThemes(),
-                'default': 'webida-dark'
-            });
-            fieldCreator.addField('webida.editor.text-editor:fontSize', 'slider', {
-                title: '<br>Font',
-                name: 'Editor font size',
-                min: 7,
-                max: 21,
-                step: 1,
-                labels: ['7', '9', '11', '13', '15', '17', '19', '21'],
-                'default': 13
-            });
-            fieldCreator.addField('webida.editor.text-editor:font', 'select', {
-                name: 'Editor font',
-                items: [
-                    { label: 'Nanum Gothic Coding', value: 'Nanum Gothic Coding'},
-                    { label: 'Arial', value: 'Arial, Helvetica, sans-serif'},
-                    { label: 'Arial Black', value: 'Arial Black, Gadget, sans-serif'},
-                    { label: 'Comic Sans MS', value: 'Comic Sans MS, cursive'},
-                    { label: 'Courier New', value: 'Courier New, monospace'},
-                    { label: 'Georgia', value: 'Georgia, serif'},
-                    { label: 'Impact', value: 'Impact, Charcoal, sans-serif'},
-                    { label: 'Lucida Console (Monaco)', value: 'Lucida Console, Monaco, monospace'},
-                    { label: 'Lucida Sans Unicode (Lucida Grande)',
-                      value: 'Lucida Sans Unicode, Lucida Grande, sans-serif'},
-                    { label: 'Palatino Linotype (Book Antiqua)',
-                      value: 'Palatino Linotype, Book Antiqua, Palatino, serif'},
-                    { label: 'Tahoma (Geneva)', value: 'Tahoma, Geneva, sans-serif'},
-                    { label: 'Times New Roman', value: 'Times New Roman, Times, serif'},
-                    { label: 'Trebuchet MS', value: 'Trebuchet MS, sans-serif'},
-                    { label: 'Verdana', value: 'Verdana, Geneva, sans-serif'},
-                    { label: 'MS Serif (New York)', value: 'MS Serif, New York, serif'},
-                    { label: 'Consolas', value: 'Consolas'}
-                ],
-                'default': 'Nanum Gothic Coding'
-            });
-            fieldCreator.addField('webida.editor.text-editor:editorconfig', 'checkbox', {
-                title: '<br>Editor Config',
-                name: 'Use .editorconfig files',
-                'default': 'false'
-            });
         }
     };
 });

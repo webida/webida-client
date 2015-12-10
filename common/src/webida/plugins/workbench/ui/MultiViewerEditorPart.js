@@ -82,7 +82,7 @@ define([
             logger.info('destroy()');
             //unset preferences
             if (this.preferences) {
-                this.preferences.unsetFields();
+                this.preferences.destroy();
             }
             //unsubscribe topic
             if (this.fileOpenedHandle) {

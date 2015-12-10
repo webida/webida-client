@@ -111,50 +111,6 @@ define([
                     }
                 }
             ];
-        },
-        editor: function (fieldCreator) {
-            fieldCreator.addField('webida.editor.text-editor:trimTrailing', 'checkbox', {
-                name: 'Trim trailing white-space before saving',
-                'default': false
-            });
-            fieldCreator.addField('webida.editor.text-editor:insertFinal', 'checkbox', {
-                name: 'Insert final new-line before saving',
-                'default': false
-            });
-            fieldCreator.addField('webida.editor.text-editor:retabIndentations', 'checkbox', {
-                name: 'Replace tabs in indentations before saving',
-                'default': false
-            });
-            fieldCreator.addField('webida.editor.text-editor:wordWrap', 'checkbox', {
-                name: 'Wrap lines',
-                'default': false
-            });
-
-            fieldCreator.addField('webida.editor.text-editor:tabsize', 'slider', {
-                title: '<br>Indent',
-                name: 'Tab size',
-                min: 1,
-                max: 8,
-                step: 1,
-                labels: ['1', '2', '3', '4', '5', '6', '7', '8'],
-                'default': 4
-            });
-            fieldCreator.addField('webida.editor.text-editor:indentunit', 'slider', {
-                name: 'Indent unit',
-                min: 1,
-                max: 8,
-                step: 1,
-                labels: ['1', '2', '3', '4', '5', '6', '7', '8'],
-                'default': 4
-            });
-            fieldCreator.addField('webida.editor.text-editor:indentWithTabs', 'checkbox', {
-                name: 'Use indents with tabs',
-                'default': false
-            });
-            fieldCreator.addField('webida.editor.text-editor:indentOnPaste', 'checkbox', {
-                name: 'Indent lines on paste',
-                'default': true
-            });
         }
     };
 });

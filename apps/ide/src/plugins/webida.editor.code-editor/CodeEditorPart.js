@@ -33,14 +33,14 @@ define([
     'webida-lib/plugins/workbench/ui/EditorPart',
     'plugins/webida.editor.text-editor/TextEditorPart',
     'webida-lib/plugins/editors/EditorPreference',
-    './preferences/preference-config',
+    './preferences/preference-watch-config',
     './CodeEditorContextMenu',
     './CodeEditorViewer',
     './configloader',
     'dojo/topic',
     'webida-lib/util/logger/logger-client',
     'dojo/domReady!'
-], function(
+], function (
     genetic,
     _,
     EditorPart,
@@ -65,38 +65,26 @@ define([
         TextEditorPart.apply(this, arguments);
     }
 
-
     genetic.inherits(CodeEditorPart, TextEditorPart, {
-
         /**
          * Initialize CodeEditorPart
          * @override
          */
-        initialize: function() {
+        initialize: function () {
             logger.info('initialize()');
             TextEditorPart.prototype.initialize.call(this);
         },
 
         initializePreferences: function () {
-            var viewer = this.getViewer();
-            var file = this.file;
             logger.info('initializePreferences()');
             TextEditorPart.prototype.initializePreferences.call(this);
-            //viewer.addDeferredAction(function (viewer) {
-            //   viewer.editor.setOption('overviewRuler', false);
-            //});
-            this.preferences.getField('codeeditor', 'webida.editor.text-editor:jshintrc', function (value) {
-                if (value !== false) {
-                    configloader.jshintrc(viewer, file);
-                }
-            });
         },
 
         /**
          * Initialize viewer
          * @override
          */
-        initializeViewer: function() {
+        initializeViewer: function () {
             logger.info('initializeViewer()');
             TextEditorPart.prototype.initializeViewer.call(this);
             var viewer = this.getViewer();
@@ -118,11 +106,11 @@ define([
          * @returns preferenceConfig for CodeEditor
          * @override
          */
-        getPreferences: function () {
-            return preferenceConfig;
+        getPreferencesConfig: function () {
+            return preferenceConfig.getConfig(this);
         },
 
-        setMode: function(mode) {
+        setMode: function (mode) {
             var viewer = this.getViewer();
             if (!viewer) {
                 return;
@@ -150,6 +138,23 @@ define([
 
         getContextMenuClass: function () {
             return CodeEditorContextMenu;
+        },
+
+        /**
+         * Set linter from jshintrc file
+         *
+         * @see preference-watch-config, EditorPreference
+         * @param {boolean} value - whether use .editorconfig or not
+         */
+        setJshint: function (value) {
+            if (value) {
+                var viewer = this.getViewer();
+                configloader.jshintrc(this.file, function (option) {
+                    viewer.setLinter('js', option);
+                });
+            } else {
+                this.getViewer().setLinter('js', false);
+            }
         }
     });
 
