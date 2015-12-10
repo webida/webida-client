@@ -29,7 +29,6 @@ define([
     'webida-lib/util/notify',
     'webida-lib/webida-0.3',
     'webida-lib/widgets/dialogs/popup-dialog/PopupDialog',
-    'webida-lib/util/timedLogger',  // not used locally
     'dojo/domReady!'
 ], function (
     _,

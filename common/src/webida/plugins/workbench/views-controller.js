@@ -23,7 +23,6 @@
  * Src:
  */
 
-/* global timedLogger: true */
 /* global on: true */
 
 define([
@@ -880,8 +879,6 @@ define([
         },
 
         toggleFullScreen : function (location) {
-            var t = timedLogger.log('hina temp: exiting toggleFullScreen');
-
             var _self = this;
             var menubarClosed;
             if (this.getMenubarState() === 'hide') {
@@ -960,7 +957,6 @@ define([
                 this._topContainer.resize();
             }
             _self.isFullScreen = !_self.isFullScreen;
-            timedLogger.log('hina temp: exiting toggleFullScreen', t);
         },
 
         _getSplitter : function (location) {

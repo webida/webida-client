@@ -29,7 +29,6 @@ define(['require',
 function (require, ide, ButtonedDialog, workbench, notify, _, moment,
            wv, Deferred, reg, fPropertiesForm) {
     'use strict';
-    /* global timedLogger:true */
 
     var fsMount = ide.getFSCache();
 
@@ -522,7 +521,6 @@ function (require, ide, ButtonedDialog, workbench, notify, _, moment,
         }
 
         function _closeLoadingMessage() {
-            time = timedLogger.log('file properties whole stat complate time', time);
             $('.loading').fadeOut(1000);
             $('.opa').css('opacity', 1);
         }
@@ -683,9 +681,7 @@ function (require, ide, ButtonedDialog, workbench, notify, _, moment,
             _openFilePropertiesDialog(resolve, type);
             _progress(false, type);
 
-            var time = timedLogger.getLoggerTime();
             _asyncGetStat(firstPath).then(function (complete) {
-                    time = timedLogger.log('file properties first stat complate time', time);
                     resolve = _.clone(complete, true);
                     //var firstStat = _.clone(complete, true);
 
