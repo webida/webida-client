@@ -708,29 +708,24 @@ define([
         tree.onOpen = function (item) {
             var self = this;
             function expandNode() {
-                //console.log('hina temp: onOpen on node ' + item.id);
 
                 if (!item.isInternal) {
                     return;
                 }
 
-                //var t = timedLogger.log('expanding directory "' + item.id +
-                // '"');
+                //logger.info('expanding directory "' + item.id + '"');
                 item.fetchChildren(function (/*alreadyFetched*/) {
                     //console.log('hina temp: callback of fetchChildren ');
                     /*
                      switch (alreadyFetched) {
                      case 0:
-                     timedLogger.log('newly fetched the children of directory "'
-                     + item.id + '"', t);
+                     logger.info('newly fetched the children of directory "' + item.id + '"');
                      break;
                      case 1:
-                     timedLogger.log('already fetched the children of directory
-                     "' + item.id + '"', t);
+                     logger.info('already fetched the children of directory "' + item.id + '"');
                      break;
                      case 2:
-                     timedLogger.log('already fetched the children of directory
-                     (case 2) "' + item.id + '"', t);
+                     logger.info('already fetched the children of directory (case 2) "' + item.id + '"');
                      break;
                      default:
                      console.assert(false, 'unreachable');

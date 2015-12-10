@@ -19,11 +19,8 @@
  *
  */
 
-/* global timedLogger:true */
-
-var t;
 define([
-    (t = timedLogger.getLoggerTime(), 'require'),
+    'require',
     'dojo/i18n!./nls/resource',
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/widgets/views/view',              // View

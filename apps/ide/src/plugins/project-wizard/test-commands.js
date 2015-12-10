@@ -24,10 +24,8 @@
  *   plugins/project-wizard/test-commands.js
  */
 
-/* global timedLogger: true */
-
 var time;
-define([(time = timedLogger.getLoggerTime(), 'webida-lib/webida-0.3'),
+define(['webida-lib/webida-0.3',
         'webida-lib/widgets/views/view',
         'webida-lib/widgets/views/viewmanager',
         'webida-lib/util/path',
@@ -49,8 +47,6 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
     bootstrap, bootstrapMultiselect, tplLayout, tplToolbar, frames,
     Messages, ViewCommand, Clipboard, Util) {
     'use strict';
-
-    time = timedLogger.log('loaded modules required by test. initializing test plugin\'s module', time);
 
     var VIEW_ID = 'VIEW_TEST';
 

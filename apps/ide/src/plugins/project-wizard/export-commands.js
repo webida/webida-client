@@ -24,10 +24,8 @@
  *   plugins/project-wizard/export-commands.js
  */
 
-/* global timedLogger:true */
-
 var time;
-define([(time = timedLogger.getLoggerTime(), 'webida-lib/app'),
+define(['webida-lib/app',
         'webida-lib/webida-0.3',
         'webida-lib/util/path',
         'webida-lib/widgets/views/view',
@@ -57,8 +55,6 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
     bootstrap, bootstrapMultiselect, tplLayout, tplToolbar,
     Constants, Messages, ViewCommand, Build, BuildMenu, BuildProfile, DropDown, Util) {
     'use strict';
-
-    time = timedLogger.log('loaded modules required by export. initializing export plugin\'s module', time);
 
     var VIEW_ID = 'VIEW_EXPORT';
 

@@ -22,7 +22,6 @@
  *
  */
 
-/* global timedLogger: true */
 /* global File: true */
 
 define(['require',
@@ -252,10 +251,8 @@ define(['require',
         }
 
         var path = this.getPath();
-        var t = timedLogger.log('wv: refreshing the hierarchy of expanded nodes under ' + path);
         setToRefresh(this);
         refreshExpandedHierarchy(this, function () {
-            timedLogger.log('wv: refreshed the hierarchy of expanded nodes under ' + path, t);
             fsCache.invalidateFileContents(path);
             fsCache.invalidateMetadata(path);
         });
