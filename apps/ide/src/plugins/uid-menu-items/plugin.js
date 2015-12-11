@@ -14,39 +14,42 @@
 * limitations under the License.
 */
 
-// @formatter:off
+/**
+ * handlers for dropdown menu at the top-right side
+ *
+ * @see plugins/uid-menu-items/plugin.json
+ */
 define([
     'dojo/i18n!./nls/resource',
+    'webida-lib/app-config',
     'webida-lib/util/notify',
-    'webida-lib/webida-0.3',
+    'webida-lib/webida-0.3'
 ], function (
     i18n,
+    appConfig,
     notify,
     webida
 ) {
     'use strict';
-// @formatter:on
-
-    /* global webidaHost: true */
-    function openDashboard() {
-        location.href = '//' + webidaHost + '/pages/main.html';
-        //'/apps/dashboard/';
-        // webidaHost is defined in dojoConfig.js
-    }
-
-    function signOut() {
-        webida.auth.logout(function (e) {
-            if (e) {
-                notify.error(i18n.errorSignOut);
-            } else {
-                window.location.replace('//' + webidaHost);
-                // webidaHost is defined in dojoConfig.js
-            }
-        });
-    }
 
     return {
-        openDashboard: openDashboard,
-        signOut: signOut
+        /**
+         * Move to dashboard page
+         */
+        openDashboard: function () {
+            location.href = appConfig.dashboardBaseUrl + '/pages/main.html';
+        },
+        /**
+         * Logout and move to main page
+         */
+        signOut: function () {
+            webida.auth.logout(function (e) {
+                if (e) {
+                    notify.error(i18n.errorSignOut);
+                } else {
+                    window.location.replace(appConfig.dashboardBaseUrl);
+                }
+            });
+        }
     };
 });

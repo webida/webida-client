@@ -200,7 +200,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
             };
         };
 
-        require(['//ntf.' + webidaHost + '/socket.io/socket.io.js'], function (sio) {
+        require([webida.conf.ntfServer + '/socket.io/socket.io.js'], function (sio) {
             // NOTE: Name should be 'sio'?
             window.sio = sio;
 

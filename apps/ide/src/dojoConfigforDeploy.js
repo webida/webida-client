@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @FIXME This file is out of date
+ * To use, below lines should be updated. Or It's better to remove this.
+ */
+
 /* exported dojoConfig */
 var webidaHost = decodeURIComponent(
     document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
