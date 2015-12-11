@@ -19,8 +19,8 @@
  * that include what method called with the modified values when preferences are changed.
  *
  * @see EditorPreference, CodeEditorPart
- * @since: 2015.06.23
- * @author: hw.shim
+ * @since: 2015.12.10
+ * @author: Koong Kyungmi (kyungmi.k@samsung.com)
  */
 
 define([], function () {
