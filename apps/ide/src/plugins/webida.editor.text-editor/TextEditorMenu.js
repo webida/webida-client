@@ -42,10 +42,10 @@ define([
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
-    //logger.off();
+    logger.off();
 
     function TextEditorMenu(allItems, part) {
-        logger.info('new TextEditorMenu(allItems, part)');
+        logger.info('new TextEditorMenu(' + allItems + ', ' + part + ')');
         EditorPartMenu.apply(this, arguments);
     }
 
