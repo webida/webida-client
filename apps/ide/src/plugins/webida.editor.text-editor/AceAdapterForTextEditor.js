@@ -763,7 +763,7 @@ define([
 
                 // Source
                 if (_.values(sourceItems).length > 0) {
-                    items['So&urce'] = sourceItems;
+                    items['&Source'] = sourceItems;
                 }
 
                 // Go to                

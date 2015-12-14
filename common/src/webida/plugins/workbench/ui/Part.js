@@ -32,6 +32,7 @@ define([
     'webida-lib/util/EventProxy',
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
+    './PartMenu',
     './PartModel',
     './PartViewer'
 ], function (
@@ -39,6 +40,7 @@ define([
     EventProxy,
     genetic,
     Logger,
+    PartMenu,
     PartModel,
     PartViewer
 ) {
@@ -364,11 +366,38 @@ define([
 
         /**
          * Each Part should override
+         * This will be deprecated with new menu system.
          * @param {Object} allItems
          * @return {Thenable}
          */
         getContextMenuItems: function (allItems) {
             return null;
+        },
+
+        /**
+         * Each Part should override
+         * This will be refactored or deprecated with new menu system.
+         * @param {String} section 'File', 'Edit', 'Find', 'Navigate', 'View' ...
+         * @param {Object} allItems
+         * @return {(Thenable|Object)}
+         */
+        getMenuItems: function (section, allItems) {
+            logger.info('getMenuItems(' + section + ', allItems)');
+            var MenuClass = this._getMenuClass();
+            if (MenuClass) {
+                var menu = new MenuClass(allItems, this);
+                return menu.getAvailableItems(section);                
+            } else {
+                return {};
+            }
+        },
+
+        /**
+         * Returns PartMenu that consists of menu-items for this Part
+         * @return {PartMenu}
+         */
+        _getMenuClass: function () {
+            return PartMenu;
         },
 
         /**
