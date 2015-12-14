@@ -388,7 +388,7 @@ define([
                 var menu = new MenuClass(allItems, this);
                 return menu.getAvailableItems(section);                
             } else {
-                return {};
+                return null;
             }
         },
 

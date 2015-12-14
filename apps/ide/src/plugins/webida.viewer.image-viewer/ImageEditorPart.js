@@ -133,7 +133,7 @@ define([
         
         getContextMenuItems: function (menuItems) {
             var contextMenu = new ImageEditorContextMenu(menuItems, this);
-            return contextMenu.getPromiseForAvailableItems();
+            return contextMenu.getAvailableItems();
         }
     });
 
