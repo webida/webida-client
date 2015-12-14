@@ -259,16 +259,6 @@ define([
             return new DocumentCommand(this.getModel(), request);
         },
 
-        getContextMenuClass: function () {
-            return TextEditorContextMenu;
-        },
-
-        getContextMenuItems: function (allItems) {
-            logger.info('getContextMenuItems(' + allItems + ')');
-            var contextMenu = new (this.getContextMenuClass())(allItems, this);
-            return contextMenu.getPromiseForAvailableItems();
-        },
-
         /**
          * Returns PartMenu that consists of menu-items for this Part
          * @see Part
@@ -277,6 +267,20 @@ define([
          */
         _getMenuClass: function () {
             return TextEditorMenu;
+        },
+
+        /**
+         * Returns PartContextMenu that consists of menu-items for this Part
+         * @return {TextEditorContextMenu}
+         */
+        _getContextMenuClass: function () {
+            return TextEditorContextMenu;
+        },
+
+        getContextMenuItems: function (allItems) {
+            logger.info('getContextMenuItems(' + allItems + ')');
+            var contextMenu = new (this._getContextMenuClass())(allItems, this);
+            return contextMenu.getPromiseForAvailableItems();
         },
 
         save: function (callback) {
@@ -297,13 +301,6 @@ define([
             if (typeof text === 'undefined') {
                 return;
             }
-
-            //logger.info('viewer.trimTrailingWhitespaces = ',
-            // viewer.trimTrailingWhitespaces);
-            //logger.info('viewer.insertFinalNewLine = ',
-            // viewer.insertFinalNewLine);
-            //logger.info('viewer.retabIndentations = ',
-            // viewer.retabIndentations);
 
             if (viewer.trimTrailingWhitespaces && text.match(/( |\t)+$/m)) {
                 text = text.replace(/( |\t)+$/mg, '');

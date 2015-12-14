@@ -138,7 +138,22 @@ define([
             }
         },
 
-        getContextMenuClass: function () {
+        /**
+         * Returns PartMenu that consists of menu-items for this Part
+         * @see Part
+         * @override
+         * @return {PartMenu}
+         */
+        _getMenuClass: function () {
+            return CodeEditorMenu;
+        },
+
+        /**
+         * Returns PartContextMenu that consists of menu-items for this Part
+         * @override
+         * @return {CodeEditorContextMenu}
+         */
+        _getContextMenuClass: function () {
             return CodeEditorContextMenu;
         },
 
@@ -156,16 +171,6 @@ define([
             } else {
                 this.getViewer().setLinter('js', false);
             }
-        },
-
-        /**
-         * Returns PartMenu that consists of menu-items for this Part
-         * @see Part
-         * @override
-         * @return {PartMenu}
-         */
-        _getMenuClass: function () {
-            return CodeEditorMenu;
         }
     });
 
