@@ -46,7 +46,7 @@ define([
     './configloader',
     './Document',
     './DocumentCommand',
-    './preferences/preference-config',
+    './preferences/preference-watch-config',
     './TextEditorContextMenu',
     './TextEditorViewer',
     'dojo/domReady!'
@@ -80,13 +80,8 @@ define([
      * @typedef {Object} Document
      */
 
-    //TODO : this.viewer -> this.getViewer()
-    //See File.prototype.isModified = function () {
-
     var logger = new Logger();
     //logger.off();
-
-    var preferenceIds = ['editor', 'editor.lines', 'editor.key-map', 'editor.show-hide', 'content-assist'];
 
     //To support synchronizeWidgetModel
     //TODO : refactor
@@ -108,7 +103,6 @@ define([
         this.preferences = null;
         this.foldingStatus = null;
         this.on(Part.CONTENTS_READY, function (part) {
-            console.log('Part.CONTENTS_READY!!');
             var viewer = part.getViewer();
             var ds = part.getDataSource();
             var recentViewer = recentViewers.get(ds);
@@ -179,17 +173,8 @@ define([
 
         initializePreferences: function () {
             logger.info('initializePreferences()');
-            var viewer = this.getViewer();
-            var file = this.file;
             //preferences
-            this.preferences = new EditorPreference(preferenceIds, viewer);
-            this.preferences.setFields(this.getPreferences());
-            //editorconfig
-            this.preferences.getField('editor', 'webida.editor.text-editor:editorconfig', function (value) {
-                if (value === true) {
-                    configloader.editorconfig(viewer, file);
-                }
-            });
+            this.preferences = new EditorPreference(this.getPreferencesConfig());
         },
 
         /**
@@ -198,8 +183,8 @@ define([
          *
          * @returns preferenceConfig for TextEditor
          */
-        getPreferences: function () {
-            return preferenceConfig;
+        getPreferencesConfig: function () {
+            return preferenceConfig.getConfig(this);
         },
 
         /**
@@ -256,7 +241,7 @@ define([
             this.setViewer(null);
             //unset preferences
             if (this.preferences) {
-                this.preferences.unsetFields();
+                this.preferences.destroy();
             }
         },
 
@@ -338,6 +323,38 @@ define([
                 //TODO Refactor : use execCommand();
                 viewer.setCursor(cursor);
                 viewer.scrollToScrollInfo(scrollInfo);
+            }
+        },
+
+        /**
+         * Set view options from .editorconfig file
+         *
+         * @see preference-watch-config, EditorPreference
+         * @param {boolean} value - whether use .editorconfig or not
+         */
+        setEditorConfig: function (value) {
+            var viewer = this.getViewer();
+            function _applyEditorConfig(config) {
+                // apply config to instance
+                viewer.setIndentWithTabs(config.indentWithTabs);
+                viewer.setIndentUnit(config.indentUnit);
+                viewer.setTabSize(config.tabSize);
+                viewer.setTrimTrailingWhitespaces(config.trimTrailingWhitespaces);
+                viewer.setInsertFinalNewLine(config.insertFinalNewLine);
+            }
+            if (value) {
+                configloader.editorconfig(this.file, function (configs) {
+                    _applyEditorConfig(configs);
+                });
+            } else {
+                var values = this.preferences.getFields('editor.lines');
+                _applyEditorConfig({
+                    indentWithTabs: values['webida.editor.text-editor:indentWithTabs'],
+                    indentUnit: values['webida.editor.text-editor:indentunit'],
+                    tabSize: values['webida.editor.text-editor:tabsize'],
+                    trimTrailingWhitespaces: values['webida.editor.text-editor:trimTrailing'],
+                    insertFinalNewLine: values['webida.editor.text-editor:insertFinal']
+                });
             }
         }
     });

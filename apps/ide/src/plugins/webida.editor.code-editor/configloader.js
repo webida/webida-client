@@ -19,7 +19,7 @@ define(['webida-lib/app',
 function (ide, _) {
     'use strict';
 
-    function loadJsHintRc(instance, file) {
+    function loadJsHintRc(file, callback) {
         var bind = ide.getFSCache();    // ide.getMount();
         var path = (file.path).split('/');
         path = _.filter(path, function (name) {
@@ -40,13 +40,13 @@ function (ide, _) {
                             // workaround for inconsistent behavior of fscache readFile()
                             // when file exists in fscache, readFile() works in synchrously, not like webida fs.
                             setTimeout(function () {
-                                instance.setLinter('js', option);
+                                callback(option);
                             }, 0);
                         }
                     }
                 });
             } else {
-                instance.setLinter('js', true);
+                callback(true);
                 return false;
             }
         })(path.length - 1);

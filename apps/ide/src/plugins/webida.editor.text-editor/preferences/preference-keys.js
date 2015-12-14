@@ -38,13 +38,6 @@ define([
                     }
                 }
             ];
-        },
-        editor: function (fieldCreator) {
-            fieldCreator.addField('webida.editor.text-editor:keymap', 'select', {
-                name: 'Editor key map',
-                items: ['default', 'vim'],
-                'default': 'default'
-            });
         }
     };
 });
