@@ -15,38 +15,41 @@
  */
 
 /* export dojoConfig */
-var webidaLocale = decodeURIComponent(
-    document.cookie.replace(/(?:(?:^|.*;\s*)webida\.locale\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-);
-var dojoConfig = {
-    async: true,
-    baseUrl: '../../../bower_components',
-    parseOnLoad: false,
-    packages: [
-        { name: 'xstyle', location: './xstyle' },
-        { name: 'put-selector', location: './put-selector' },
-        { name: 'jquery', location: './jquery/dist', main: 'jquery.min' },
-        { name: 'showdown', location: './showdown/dist', main: 'showdown.min' },
-        { name: 'dojo', location: './dojo' },
-        { name: 'dijit', location: './dijit' },
-        { name: 'dojox', location: './dojox' }
-    ],
-    locale: ((webidaLocale === 'default') || (webidaLocale === '')) ?
-        (location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us') : webidaLocale,
-    extraLocale: ['zh-cn', 'zh-tw'],
-    paths: {
-        'webida-lib': '../common/src/webida',
-        lib: '../apps/ide/src/lib',
-        plugins: '../apps/ide/src/plugins',
-        external: '.'
-    },
-    aliases: [
-        ['text', 'dojo/text'],
-        ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
-        // TODO should use these below aliases for versioned resources
-        ['webida', 'webida-lib/webida-0.3'],
-        ['FSCache', 'webida-lib/FSCache-0.1'],
-        ['plugin-manager', 'webida-lib/plugin-manager-0.1'],
-        ['msg', 'webida-lib/msg.js']
-    ]
-};
+(function (global) {
+    'use strict';
+    var webidaLocale = decodeURIComponent(
+        document.cookie.replace(/(?:(?:^|.*;\s*)webida\.locale\s*\=\s*([^;]*).*$)|^.*$/, '$1')
+    );
+    global.dojoConfig = {
+        async: true,
+        baseUrl: '../../../bower_components',
+        parseOnLoad: false,
+        packages: [
+            {name: 'xstyle', location: './xstyle'},
+            {name: 'put-selector', location: './put-selector'},
+            {name: 'jquery', location: './jquery/dist', main: 'jquery.min'},
+            {name: 'showdown', location: './showdown/dist', main: 'showdown.min'},
+            {name: 'dojo', location: './dojo'},
+            {name: 'dijit', location: './dijit'},
+            {name: 'dojox', location: './dojox'}
+        ],
+        locale: ((webidaLocale === 'default') || (webidaLocale === '')) ?
+            (location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us') : webidaLocale,
+        extraLocale: ['zh-cn', 'zh-tw'],
+        paths: {
+            'webida-lib': '../common/src/webida',
+            lib: '../apps/ide/src/lib',
+            plugins: '../apps/ide/src/plugins',
+            external: '.'
+        },
+        aliases: [
+            ['text', 'dojo/text'],
+            ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
+            // TODO should use these below aliases for versioned resources
+            ['webida', 'webida-lib/webida-0.3'],
+            ['FSCache', 'webida-lib/FSCache-0.1'],
+            ['plugin-manager', 'webida-lib/plugin-manager-0.1'],
+            ['msg', 'webida-lib/msg.js']
+        ]
+    };
+})(window);

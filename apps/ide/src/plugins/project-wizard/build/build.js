@@ -14,23 +14,34 @@
  * limitations under the License.
  */
 
-define(['webida-lib/app',
-        'webida-lib/webida-0.3',
-        'webida-lib/util/path',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/topic',
-        'dijit/registry',
-        './buildProfile',
-        '../constants',
-        '../launcher',
-        '../messages',
-        '../lib/util'
-       ],
-function (ide, webida, pathUtil, ButtonedDialog, dojo, topic, reg,
-    BuildProfile, Constants, Launcher, Messages, Util) {
+define([
+    'dijit/registry',
+    'dojo',
+    'dojo/topic',
+    'webida-lib/app',
+    'webida-lib/util/path',
+    'webida-lib/webida-0.3',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    './buildProfile',
+    '../constants',
+    '../launcher',
+    '../messages',
+    '../lib/util'
+], function (
+    reg,
+    dojo,
+    topic,
+    ide,
+    pathUtil,
+    webida,
+    ButtonedDialog,
+    BuildProfile,
+    Constants,
+    Launcher,
+    Messages,
+    Util
+) {
     'use strict';
-    /* global webidaHost: true */
 
     // constructor
     var Build = function (projectPath, element, monitor) {
