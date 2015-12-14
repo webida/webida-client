@@ -27,6 +27,7 @@ define([
         clientId: 'IDE_CLIENT_ID',
         redirectUrl: serverConf.systemApps[APP_ID].baseUrl + '/auth.html',
         baseUrl: serverConf.systemApps[APP_ID].baseUrl,
+        dashboardBaseUrl: serverConf.systemApps['app-dashboard'].baseUrl,
         meta: {
             user: {
                 dir: '.userInfo',
@@ -43,7 +44,7 @@ define([
         },
         theme: {
             name: 'webida-light',
-            basePath: serverConf.systemApps[APP_ID].baseUrl + '/apps/ide/src/styles/dist/webida-light'
+            basePath: './styles/dist/webida-light'
         }
     };
 });

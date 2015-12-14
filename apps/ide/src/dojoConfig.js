@@ -14,42 +14,42 @@
  * limitations under the License.
  */
 
-/* exported webidaHost, connHostUrl, dojoConfig */
-var webidaHost = decodeURIComponent(
-    document.cookie.replace(/(?:(?:^|.*;\s*)webida\.host\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-);
-// TODO sholud find a neat way
-var connHostUrl = decodeURIComponent(
-    document.cookie.replace(/(?:(?:^|.*;\s*)webida\.connHostUrl\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-);
-
-var webidaLocale = decodeURIComponent(
-    document.cookie.replace(/(?:(?:^|.*;\s*)webida\.locale\s*\=\s*([^;]*).*$)|^.*$/, '$1')
-);
-
-var dojoConfig = {
-    async: true,
-    baseUrl: '.',
-    parseOnLoad: false,
-    packages: [
-        { name: 'xstyle', location: '../../../bower_components/xstyle' },
-        { name: 'put-selector', location: '../../../bower_components/put-selector' },
-        { name: 'jquery', location: '../../../bower_components/jquery/dist', main: 'jquery.min' },
-        { name: 'showdown', location: '../../../bower_components/showdown/dist', main: 'showdown.min' }
-    ],
-    locale: ((webidaLocale === 'default') || (webidaLocale === '')) ?
-        (location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us') : webidaLocale,
-    extraLocale: ['zh-cn', 'zh-tw'],
-    paths: {
-        'webida-lib': '../../../common/src/webida',
-        'lib' : 'lib',
-        'plugins' : 'plugins',
-        'external': '../../../bower_components'
-    },
-    aliases: [
-        ['text', 'dojo/text'],
-        ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
-        // TODO: remove this.
-        ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']
-    ]
-};
+/* export dojoConfig */
+(function (global) {
+    'use strict';
+    var webidaLocale = decodeURIComponent(
+        document.cookie.replace(/(?:(?:^|.*;\s*)webida\.locale\s*\=\s*([^;]*).*$)|^.*$/, '$1')
+    );
+    global.dojoConfig = {
+        async: true,
+        baseUrl: '../../../bower_components',
+        parseOnLoad: false,
+        packages: [
+            {name: 'xstyle', location: './xstyle'},
+            {name: 'put-selector', location: './put-selector'},
+            {name: 'jquery', location: './jquery/dist', main: 'jquery.min'},
+            {name: 'showdown', location: './showdown/dist', main: 'showdown.min'},
+            {name: 'dojo', location: './dojo'},
+            {name: 'dijit', location: './dijit'},
+            {name: 'dojox', location: './dojox'}
+        ],
+        locale: ((webidaLocale === 'default') || (webidaLocale === '')) ?
+            (location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us') : webidaLocale,
+        extraLocale: ['zh-cn', 'zh-tw'],
+        paths: {
+            'webida-lib': '../common/src/webida',
+            lib: '../apps/ide/src/lib',
+            plugins: '../apps/ide/src/plugins',
+            external: '.'
+        },
+        aliases: [
+            ['text', 'dojo/text'],
+            ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
+            // TODO should use these below aliases for versioned resources
+            ['webida', 'webida-lib/webida-0.3'],
+            ['FSCache', 'webida-lib/FSCache-0.1'],
+            ['plugin-manager', 'webida-lib/plugin-manager-0.1'],
+            ['msg', 'webida-lib/msg.js']
+        ]
+    };
+})(window);
