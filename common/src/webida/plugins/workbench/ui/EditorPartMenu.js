@@ -44,10 +44,10 @@ define([
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
-    //logger.off();
+    logger.off();
 
     function EditorPartMenu(allItems, part) {
-        logger.info('new EditorPartMenu(allItems, part)');
+        logger.info('new EditorPartMenu(' + allItems + ', ' + part + ')');
         PartMenu.apply(this, arguments);
     }
 
@@ -55,7 +55,7 @@ define([
     genetic.inherits(EditorPartMenu, PartMenu, {
 
         _getAvailableFileItems: function () {
-            logger.info('_getAvailableFileItems(deferred)');
+            logger.info('_getAvailableFileItems()');
             var items = PartMenu.prototype._getAvailableFileItems.call(this);
             var menuItems = this.getAllItems();
             var part = this.getPart();
@@ -106,7 +106,6 @@ define([
             var part = this.getPart();
             var registry = this.getPartRegistry();
             var parts = registry.getEditorParts();
-            var viewer = part.getViewer();
 
             // Navigate Editors
             var naviEditorsItems = {};

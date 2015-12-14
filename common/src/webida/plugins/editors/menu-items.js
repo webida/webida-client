@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+/*jslint maxlen: 150 */
+
 define([
     'dojo/i18n!./nls/resource'
-], function(
+], function (
     i18n
 ) {
     'use strict';
