@@ -103,7 +103,6 @@ define([
             logger.info('_getAvailableNavigateItems()');
             var items = {};
             var menuItems = this.getAllItems();
-            var part = this.getPart();
             var registry = this.getPartRegistry();
             var parts = registry.getEditorParts();
 
