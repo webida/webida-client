@@ -16,6 +16,15 @@
 
 'use strict';
 module.exports = function (grunt) {
+    var SOURCES = [
+        'apps/ide/*.js', 'apps/ide/**/*.js',                    // ide
+        'common/*.js', 'common/**/*.js',                        // common
+        '!**/lib/**', '!**/custom-lib/**', '!**/Gruntfile.js',  // ignore lib and Gruntfile
+        '!**/*.min.js', '!**/*.back.js',                        // ignore min/back.js files
+        '!**/ProjectWizard-templates/**',                       // ignore project templates files
+        '!**/obsolete*/**',                                     // ignore all obsolete files
+        '!apps/ide/r.js'
+    ];
     grunt.initConfig({
         // for jshint check based on .jshintrc
         // package.json doesn't have jshint-stylish and grunt-contrib-jshint plugins.
@@ -28,19 +37,7 @@ module.exports = function (grunt) {
             files: {
                 expand: true,
                 cwd: './',
-                src: [
-                    'apps/dashboard/**/*.js',  // dashboard
-                    'apps/deploy/**/*.js',  //deploy
-                    'apps/desktop/**/*.js', // desktop
-                    'apps/ide/**/*.js',     // ide
-                    'apps/site/**/*.js',   //site
-                    'common/**/*.js',     // common
-                    '!**/lib/**', '!**/custom-lib/**', '!**/Gruntfile.js',  // ignore lib and Gruntfile
-                    '!**/*.min.js', '!**/*.back.js',    // ignore min/back.js files
-                    '!**/ProjectWizard-templates/**',
-                    '!apps/ide/obsolete-src/**',
-                    '!apps/ide/r.js'
-                ]
+                src: SOURCES
             }
         },
         bower: {
@@ -52,88 +49,101 @@ module.exports = function (grunt) {
             }
         },
         copy: {
+            // Copy all built files to the directory(deploy) for distribution.
             all: {
-                files: [
-                    {
-                        expand: true,
-                        cwd: './',
-                        src: ['**'],
-                        dest: 'deploy/'
-                    }
-                ]
+                files: [{
+                    expand: true,
+                    src: ['**', '!scripts/**', '!node_modules/**', '!deploy/**', '!Gruntfile.js'],
+                    dest: 'deploy/'
+                }]
             },
+            // Rename original js files to *.uncompressed.js for source map of uglification phase
             uncompressed: {
-                files: [
-                    {
-                        expand: true,
-                        cwd: './',
-                        src: ['**/*.js', '**/lib/**', '!node_modules/**', '!deploy/**'],
-                        dest: 'deploy/',
-                        rename: function (dest, src) {
-                            return dest + src.substring(0, src.lastIndexOf('.js')) + '.uncompressed.js';
-                        }
+                files: [{
+                    expand: true,
+                    src: SOURCES,
+                    dest: 'deploy/',
+                    rename: function (dest, src) {
+                        return dest + src.substring(0, src.lastIndexOf('.js')) + '.uncompressed.js';
                     }
-                ]
+                }]
+            }
+        },
+        rename: {
+            // Move the result of dojo built to the proper location
+            dojoBuilt: {
+                files: {
+                    'deploy/bower_components/dojo': 'deploy/dojo-built/dojo',
+                    'deploy/bower_components/dijit': 'deploy/dojo-built/dijit',
+                    'deploy/bower_components/dojox': 'deploy/dojo-built/dojox'
+                }
             }
         },
         uglify: {
+            // Make source maps for debugging, no code obfuscation(mangle), and compressing without comments
+            // at the directory(deploy) for distribution
             debug: {
                 options: {
-                    mangle: true,
+                    mangle: false,
                     compress: true,
                     preserveComments: false,
-                    sourceMap: function (path) {
-                        return path + '.map';
-                    },
-                    sourceMappingURL: function (path) {
-                        return path.substring(path.lastIndexOf('/') + 1) + '.map';
-                    }
+                    sourceMap: true,
+                    sourceMapIncludeSources: false
                 },
                 files: [
                     {
                         expand: true,
                         cwd: 'deploy/',
-                        src: ['**/*.js', '!node_modules/*.js', '!node_modules/**/*.js', '!bower_components/**/*.js',
-                                '!**/lib/**/*.js', '!&&/lib/*.js', '!*.uncompressed.js', '!**/*.uncompressed.js',
-                                '!**/Gruntfile.js', '!apps/deploy/**/*.js', '!**/obsolete*/**/*.js',
-                                '!apps/ide/ProjectWizard-templates/**/*.js', '!**/spec/**/*.js', '!**/nls/**/resource.js'],
+                        src: SOURCES,
                         dest: 'deploy/'
                     }
                 ]
             },
+            // Compress dropping all console.* usages without all comments, do the code obfuscation(mangle) and
+            // make no source maps at the directory(deploy) for distribution
             release: {
                 options: {
                     mangle: true,
-                    compress: true,
-                    preserveCommnets: false
+                    compress: {
+                        drop_console: true
+                    },
+                    preserveComments: false,
+                    sourceMap: false
                 },
                 files: [
                     {
                         expand: true,
                         cwd: 'deploy/',
-                        src: ['**/*.js', '!node_modules/*.js', '!node_modules/**/*.js', '!bower_components/**/*.js',
-                                '!node_modules/*.js', '!**/lib/**/*.js', '!**/lib/*.js', '!**/Gruntfile.js',
-                                '!apps/deploy/**/*.js', '!**/obsolete*/**/*.js',
-                                '!apps/ide/ProjectWizard-templates/**/*.js', '!**/spec/**/*.js',
-                                '!**/nls/**/resource.js'],
+                        src: SOURCES,
                         dest: 'deploy/'
                     }
                 ]
             }
         },
         clean: {
+            // Clean all directories for pre-build and distribution
             all: ['deploy', '<%= themeConf.targetDir %>'],
-            unnecessary: ['deploy/Gruntfile.js', 'deploy/node_modules'],
-            style: ['apps/ide/src/styles/dist']
+            // Clean directory for pre-build style files
+            style: ['<%= themeConf.targetDir %>'],
+            // Clean distributed dojo sources for build
+            dojoSource: [
+                'deploy/bower_components/dojo',
+                'deploy/bower_components/dijit',
+                'deploy/bower_components/dojox'
+            ]
         },
+        // Configurations for fixing wrong sources property for all source map files built by Grunt
         fixSourceMaps: {
             files: {
                 expand: true,
                 cwd: 'deploy/',
-                src: ['*.map', '**/*.map'],
+                src: SOURCES.map(function (src) {
+                    return (src.endsWith('.js')) ? src + '.map' : src;
+                }),
                 dest: 'deploy'
             }
         },
+        // Configurations for theme build
         themeConf: {
             rootPath: 'apps/ide/src/styles/theme',
             targetDir: 'apps/ide/src/styles/dist',
@@ -161,6 +171,7 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        // Watching changes on less files and build them to the css files
         watch: {
             lessFiles: {
                 files: ['**/*.less'],
@@ -176,6 +187,14 @@ module.exports = function (grunt) {
                     cwd: 'apps/ide/src/styles/theme'
                 }
             }
+        },
+        // Dojo build including minimum modules for using
+        dojo: {
+            dist: { },
+            options: {
+                dojo: 'bower_components/dojo/dojo.js',  // Path to dojo.js file in dojo source
+                profile: 'dojo.profile.js'              // Profile for build
+            }
         }
     });
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -185,31 +204,32 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-dojo');
+    grunt.loadNpmTasks('grunt-contrib-rename');
 
-    grunt.registerMultiTask('fixSourceMaps', 'Fixes uglified source maps', function () {
-        this.files.forEach(function (f) {
-            var src = f.src.filter(function (filepath) {
-                if (!grunt.file.exists(filepath)) {
-                    grunt.log.warn('Source file "' + filepath + '" not found.');
+    grunt.registerMultiTask('fixSourceMaps', 'Fix sources property in the source map files(*.js.map) with the proper' +
+            ' uncompressed javascript file', function () {
+        this.files.forEach(function (file) {
+            var sourceMapFiles = file.src.filter(function (filePath) {
+                if (!grunt.file.exists(filePath)) {
+                    grunt.log.warn('Source file "' + filePath + '" not found.');
                     return false;
                 } else {
                     return true;
                 }
             });
-            var json = grunt.file.readJSON(src);
-            var length = json.sources.length;
-            var i;
-            for (i = 0; i < length; i++) {
-                json.sources[i] = json.sources[i].substring(json.sources[i].lastIndexOf('/') + 1);
-                json.sources[i] = json.sources[i].substring(0, json.sources[i].lastIndexOf('.js')) + '.uncompressed.js';
-            }
-            json.file = json.file.substring(json.file.lastIndexOf('/') + 1);
-            grunt.file.write(f.dest, JSON.stringify(json));
-            grunt.log.writeln('Source map in ' + src + ' fixed');
+            var sourceMapJson = grunt.file.readJSON(sourceMapFiles);
+            sourceMapJson.sources = sourceMapJson.sources.map(function (source) {
+                return source.substring(0, source.lastIndexOf('.js')) + '.uncompressed.js';
+            });
+            sourceMapJson.file = sourceMapJson.file.substring(sourceMapJson.file.lastIndexOf('/') + 1);
+            grunt.file.write(file.dest, JSON.stringify(sourceMapJson));
+            grunt.log.writeln('Source map in ' + sourceMapFiles + ' fixed');
         });
+        grunt.task.run('copy:uncompressed');
     });
 
-    grunt.registerTask('theme', 'Generate tasks and run for themes', function (scope) {
+    grunt.registerTask('theme', 'Generate tasks for theme build and run them', function (scope) {
         grunt.config.requires('themeConf');
 
         var scopes = scope ? [scope] : ['less', 'resource']; // 'less', 'resource'
@@ -237,9 +257,9 @@ module.exports = function (grunt) {
         grunt.task.run(addedTasks);
     });
 
-    grunt.registerTask('default', ['clean:all', 'bower', 'theme', 'copy:all'/*, 'copy:uncompressed',
-     'clean:unnecessary', 'uglify:debug', 'fix_source_maps'*/]);
-    grunt.registerTask('release', ['clean:all', 'bower', 'theme', 'copy:all', 'clean:unnecessary',
-        'uglify:release']);
+    grunt.registerTask('dev', [/* mandatory */'bower', /* optional */'theme']);
+    grunt.registerTask('distDojo', ['dojo', 'clean:dojoSource', 'rename:dojoBuilt']);
+    grunt.registerTask('default', ['clean:all', 'dev', 'copy:all', 'distDojo'/*, 'uglify:debug', 'fixSourceMaps'*/]);
+    grunt.registerTask('release', ['clean:all', 'dev', 'copy:all', 'distDojo', 'uglify:release']);
     grunt.registerTask('convention', ['jshint']);
 };

@@ -17,6 +17,8 @@ And send deploy request to the webida-server using deploy API with the access_to
 
 ```
 $ cd webida-client
+$ npm install
+$ cd deploy
 $ tar czpf - * | curl -k -X POST -F content=@- "http://webida.mine:5001/webida/api/app/deploy?appid=webida-client&access_token=$TOKEN"
 ```
 
