@@ -19,8 +19,8 @@
  * PartMenu
  *
  * @see
- * @since: 2015.07.15
- * @author: hw.shim
+ * @since: 2015.12.11
+ * @author: hw.shim@samsung.com
  */
 
 // @formatter:off
@@ -61,7 +61,7 @@ define([
             if (typeof this[method] === 'function') {
                 return this[method]();
             } else {
-                return {};
+                return null;
             }
         },
 

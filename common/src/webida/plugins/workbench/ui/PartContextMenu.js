@@ -20,7 +20,7 @@
  *
  * @see
  * @since: 2015.07.15
- * @author: hw.shim
+ * @author: hw.shim@samsung.com
  */
 
 // @formatter:off
@@ -57,8 +57,8 @@ define([
          * @return {Thenable}
          * @abstract
          */
-        getPromiseForAvailableItems: function () {
-            throw new Error('getPromiseForAvailableItems() should be implemented by ' + this.constructor.name);
+        getAvailableItems: function () {
+            throw new Error('getAvailableItems() should be implemented by ' + this.constructor.name);
         },
 
         /**

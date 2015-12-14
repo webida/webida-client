@@ -280,7 +280,7 @@ define([
         getContextMenuItems: function (allItems) {
             logger.info('getContextMenuItems(' + allItems + ')');
             var contextMenu = new (this._getContextMenuClass())(allItems, this);
-            return contextMenu.getPromiseForAvailableItems();
+            return contextMenu.getAvailableItems();
         },
 
         save: function (callback) {

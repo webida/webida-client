@@ -64,9 +64,9 @@ define([
          * Creates Available Menu Items then return Thenable
          * @return {Thenable}
          */
-        getPromiseForAvailableItems: function () {
+        getAvailableItems: function () {
 
-            var superDeferred = TextEditorContextMenu.prototype.getPromiseForAvailableItems.call(this);
+            var superDeferred = TextEditorContextMenu.prototype.getAvailableItems.call(this);
 
             var deferred = new Deferred();
             var allItems = this.getAllItems();

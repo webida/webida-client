@@ -58,7 +58,7 @@ define([
          * Creates Available Menu Items then return Thenable
          * @return {Thenable}
          */
-        getPromiseForAvailableItems: function () {
+        getAvailableItems: function () {
 
             var items = {};
             var menuItems = this.getAllItems();
