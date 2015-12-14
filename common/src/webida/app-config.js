@@ -44,7 +44,7 @@ define([
         },
         theme: {
             name: 'webida-light',
-            basePath: serverConf.systemApps[APP_ID].baseUrl + '/apps/ide/src/styles/dist/webida-light'
+            basePath: './styles/dist/webida-light'
         }
     };
 });
