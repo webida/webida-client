@@ -1,4 +1,0 @@
-[submodule "Codemirror"]
-	path = src/webida/custom-lib/codemirror
-	url = git@github.com:webida/CodeMirror.git
-	branch = fork

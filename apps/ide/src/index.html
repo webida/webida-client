@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="lib/test/ladda.min.css" type="text/css" class="source"/>
-        <link rel="stylesheet" href="lib/test/bootstrap/bootstrap.custom.css" type="text/css" class="source"/>
-        <link rel="stylesheet" href="lib/tour/tour.css" type="text/css" class="source"/>
-        <link rel="stylesheet" href="styles/common/dojo.css" type="text/css" class="source"/>
-        <link rel="stylesheet" href="styles/common/dijit.css" type="text/css" class="source"/>
-        <link rel="stylesheet" href="styles/common/toastr.min.css" type="text/css" class="source"/>
+<head>
+    <title>IDE</title>
 
-        <title>IDE</title>
-        <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
-        <script src="./dojoConfig.js" class="source"></script>
-        <script src="../../../bower_components/dojo/dojo.js"></script>
-        <script src="./lib/modernizr/modernizr-3.2.0-custom.min.js"></script>
-        <script>
+    <link rel="stylesheet" href="lib/test/ladda.min.css" type="text/css" class="source"/>
+    <link rel="stylesheet" href="lib/test/bootstrap/bootstrap.custom.css" type="text/css" class="source"/>
+    <link rel="stylesheet" href="lib/tour/tour.css" type="text/css" class="source"/>
+    <link rel="stylesheet" href="styles/common/dojo.css" type="text/css" class="source"/>
+    <link rel="stylesheet" href="styles/common/dijit.css" type="text/css" class="source"/>
+    <link rel="stylesheet" href="styles/common/toastr.min.css" type="text/css" class="source"/>
+
+    <script src="../../../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="./dojoConfig.js" class="source"></script>
+    <script src="../../../bower_components/dojo/dojo.js"></script>
+    <script src="./lib/modernizr/modernizr-3.2.0-custom.min.js"></script>
+    <script>
+        require([
+            'webida-lib/app',
+            'webida-lib/theme',
+            'webida-lib/util/load-polyfills'
+        ], function (
+            ide,
+            theme,
+            loader
+        ) {
             'use strict';
-
-            require([
-                'webida-lib/app',
-                'webida-lib/theme',
-                'webida-lib/util/load-polyfills'
-            ], function (
-                ide,
-                theme,
-                loader
-            ) {
-                theme.loadTheme();
-                loader.load(ide.startup);
-            });
-        </script>
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-            ga('create', 'UA-68503782-1', 'auto');
-            ga('send', 'pageview');
-        </script>
-    </head>
-    <body class="webida-light" id="ide-body">
-    </body>
+            theme.loadTheme();
+            loader.load(ide.startup);
+        });
+    </script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-68503782-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+</head>
+<body class="webida-light" id="ide-body">
+</body>
 </html>

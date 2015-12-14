@@ -1,4 +1,6 @@
 .project
+.idea
 node_modules
 bower_components
 /deploy
+npm-debug.log

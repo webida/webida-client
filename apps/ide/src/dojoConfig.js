@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/* export dojoConfig */
 (function (global) {
     'use strict';
     var webidaLocale = decodeURIComponent(
