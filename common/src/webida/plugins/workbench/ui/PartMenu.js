@@ -16,10 +16,10 @@
 
 /**
  * Constructor
- * PartContextMenu
+ * PartMenu
  *
  * @see
- * @since: 2015.07.15
+ * @since: 2015.12.11
  * @author: hw.shim@samsung.com
  */
 
@@ -28,37 +28,58 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function (
-    genetic, 
+    genetic,
     Logger
 ) {
     'use strict';
 // @formatter:on
 
     /**
-     * @typedef {Object} Thenable
+     * @typedef {Object} DataSource
      */
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function PartContextMenu(allItems, part) {
-        logger.info('new PartContextMenu(allItems, part)');
+    function PartMenu(allItems, part) {
+        logger.info('new PartMenu(allItems, part)');
 
         this.setAllItems(allItems);
         this.setPart(part);
     }
 
 
-    genetic.inherits(PartContextMenu, Object, {
+    genetic.inherits(PartMenu, Object, {
 
         /**
          * Creates Available Menu Items then return Thenable
-         * @return {Thenable}
-         * @abstract
+         * @return {(Thenable|Object)}
          */
-        getAvailableItems: function () {
-            throw new Error('getAvailableItems() should be implemented by ' + this.constructor.name);
+        getAvailableItems: function (section) {
+            var method = '_getAvailable' + section + 'Items';
+            if (typeof this[method] === 'function') {
+                return this[method]();
+            } else {
+                return null;
+            }
+        },
+
+        _getAvailableFileItems: function () {
+            logger.info('_getAvailableFileItems()');
+            var items = {};
+            var menuItems = this.getAllItems();
+            var part = this.getPart();
+            var registry = this.getPartRegistry();
+            var editorParts = registry.getEditorParts();
+            if (part) {
+                items['&Close'] = menuItems.fileMenuItems['&Close'];
+                if (editorParts.length > 1) {
+                    items['Cl&ose Others'] = menuItems.fileMenuItems['Cl&ose Others'];
+                }
+                items['C&lose All'] = menuItems.fileMenuItems['C&lose All'];
+            }
+            return items;
         },
 
         /**
@@ -100,5 +121,5 @@ define([
         }
     });
 
-    return PartContextMenu;
+    return PartMenu;
 });

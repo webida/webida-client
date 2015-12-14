@@ -35,6 +35,7 @@ define([
     'webida-lib/plugins/editors/EditorPreference',
     './preferences/preference-watch-config',
     './CodeEditorContextMenu',
+    './CodeEditorMenu',
     './CodeEditorViewer',
     './configloader',
     'dojo/topic',
@@ -48,6 +49,7 @@ define([
     EditorPreference,
     preferenceConfig,
     CodeEditorContextMenu,
+    CodeEditorMenu,
     CodeEditorViewer,
     configloader,
     topic,
@@ -136,13 +138,27 @@ define([
             }
         },
 
-        getContextMenuClass: function () {
+        /**
+         * Returns PartMenu that consists of menu-items for this Part
+         * @see Part
+         * @override
+         * @return {PartMenu}
+         */
+        _getMenuClass: function () {
+            return CodeEditorMenu;
+        },
+
+        /**
+         * Returns PartContextMenu that consists of menu-items for this Part
+         * @override
+         * @return {CodeEditorContextMenu}
+         */
+        _getContextMenuClass: function () {
             return CodeEditorContextMenu;
         },
 
         /**
          * Set linter from jshintrc file
-         *
          * @see preference-watch-config, EditorPreference
          * @param {boolean} value - whether use .editorconfig or not
          */

@@ -1,34 +1,5 @@
 define({
     root: {
-        contextMenuSourceToggleLineComments: '&Toggle Line Comments',
-        contextMenuSourceToggleBlockComment: 'Toggle Block Comment',
-        contextMenuSourceCommentOutSelection: 'Comment out selection',
-        contextMenuSourceRenameVariables: '&Rename Variables',
-        contextMenuFold: '&Fold',
-        contextMenuBeautify: '&Beautify',
-        contextMenuBeautifyAll: 'B&eautify All',
-        contextMenuSource: 'So&urce',
-        contextMenuGotoDefinition: '&Go to Definition',
-        contextMenuGotoLine: 'G&o to Line',
-        contextMenuGotoMatchingBrace: 'Go to &Matching Brace',
-        editMenuUndo: '&Undo',
-        editMenuRedo: '&Redo',
-        editMenuDelete: '&Delete',
-        editMenuSelectAll: 'Select &All',
-        editMenuSelectLine: 'Select L&ine',
-        editMenuLineIndent: '&Indent',
-        editMenuLineDedent: '&Dedent',
-        editMenuLineMoveLineUp: 'Move Line U&p',
-        editMenuLineMoveLineDown: 'Move Line Dow&n',
-        editMenuLineDeleteLines: 'D&elete Lines',
-        editMenuLine: '&Line',
-        editMenuSourceToggleLineComments: '&Toggle Line Comments',
-        editMenuSourceToggleBlockComment: 'Toggle Block Comment',
-        editMenuSourceFold: '&Fold',
-        editMenuSourceBeautify: '&Beautify',
-        editMenuSourceBeautifyAll: 'B&eautify All',
-        editMenuSource: '&Source',
-        editMenuSourceRenameVariables: '&Rename Variables',
         preferenceGroupCommon: 'Common',
         preferenceItemUseSnippets: 'Use snippets',
         preferenceItemUseCodeFolding: 'Use code folding',
@@ -39,7 +10,7 @@ define({
         preferenceItemAutoActivation: 'Auto activation',
         preferenceItemAutoActivationDelay: 'Auto activation delay',
         preferenceItemAutoClose: 'Auto close'
+
     },
     'en-us': true
 });
-

@@ -44,10 +44,10 @@ define([
 
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
-    //logger.off();
+    logger.off();
 
     function ImageEditorContextMenu(menuItems, part) {
-        logger.info('new ImageEditorContextMenu(menuItems, part)');
+        logger.info('new ImageEditorContextMenu(' + menuItems + ', ' + part + ')');
         PartContextMenu.apply(this, arguments);
     }
 
@@ -58,19 +58,18 @@ define([
          * Creates Available Menu Items then return Thenable
          * @return {Thenable}
          */
-        getPromiseForAvailableItems: function () {
+        getAvailableItems: function () {
 
             var items = {};
             var menuItems = this.getAllItems();
             var deferred = new Deferred();
-            var part = this.getPart();
             var registry = this.getPartRegistry();
             var editorParts = registry.getEditorParts();
             
             if (editorParts.length > 1) {
-                items['Close O&thers'] = menuItems['fileMenuItems']['Cl&ose Others'];
+                items['Close O&thers'] = menuItems.fileMenuItems['Cl&ose Others'];
             }
-            items['&Close All'] = menuItems['fileMenuItems']['C&lose All'];
+            items['&Close All'] = menuItems.fileMenuItems['C&lose All'];
 
             deferred.resolve(items);
 

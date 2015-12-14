@@ -1634,7 +1634,7 @@ define([
                 }
                 // Rename
                 if (_.values(sourceItems).length > 0) {
-                    items['So&urce'] = sourceItems;
+                    items['&Source'] = sourceItems;
                 }
 
                 // Go to
