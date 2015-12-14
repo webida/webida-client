@@ -48,6 +48,7 @@ define([
     './DocumentCommand',
     './preferences/preference-watch-config',
     './TextEditorContextMenu',
+    './TextEditorMenu',
     './TextEditorViewer',
     'dojo/domReady!'
 ], function (
@@ -70,6 +71,7 @@ define([
     DocumentCommand,
     preferenceConfig,
     TextEditorContextMenu,
+    TextEditorMenu,
     TextEditorViewer
 ) {
     'use strict';
@@ -265,6 +267,16 @@ define([
             logger.info('getContextMenuItems(' + allItems + ')');
             var contextMenu = new (this.getContextMenuClass())(allItems, this);
             return contextMenu.getPromiseForAvailableItems();
+        },
+
+        /**
+         * Returns PartMenu that consists of menu-items for this Part
+         * @see Part
+         * @override
+         * @return {PartMenu}
+         */
+        _getMenuClass: function () {
+            return TextEditorMenu;
         },
 
         save: function (callback) {

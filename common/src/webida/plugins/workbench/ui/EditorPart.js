@@ -29,11 +29,13 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     './editorDialog',
+    './EditorPartMenu',
     './Part'
 ], function (
     genetic,
     Logger,
     editorDialog,
+    EditorPartMenu,
     Part
 ) {
     'use strict';
@@ -132,6 +134,16 @@ define([
         onModelChange: function (modelEvent) {
             logger.info('onModelChange(' + modelEvent + ')');
             this.getViewer().render(modelEvent.getDelta());
+        },
+
+        /**
+         * Returns PartMenu that consists of menu-items for this Part
+         * @see Part
+         * @override
+         * @return {PartMenu}
+         */
+        _getMenuClass: function () {
+            return EditorPartMenu;
         },
 
         toString: function () {
