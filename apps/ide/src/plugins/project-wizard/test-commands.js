@@ -15,18 +15,15 @@
  */
 
 /**
- * @fileoverview webida - project wizard
- *
- * @version: 0.1.0
- * @since: 2013.10.01
- *
- * Src:
- *   plugins/project-wizard/test-commands.js
+ * @file Manage actions and UI for test commands
+ * @since 1.0.0
+ * @author cimfalab@gmail.com
+ * @extends module:ProjectWizard/ViewCommands
  */
-
 define(['webida-lib/webida-0.3',
         'webida-lib/widgets/views/view',
         'webida-lib/widgets/views/viewmanager',
+        'webida-lib/util/logger/logger-client',
         'webida-lib/util/path',
         'dojo',
         'dojo/Deferred',
@@ -42,10 +39,13 @@ define(['webida-lib/webida-0.3',
         './lib/clipboard',
         './lib/util'
        ],
-function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
+function (webida, View, vm, Logger, pathUtil, dojo, Deferred, topic, wv,
     bootstrap, bootstrapMultiselect, tplLayout, tplToolbar, frames,
     Messages, ViewCommand, Clipboard, Util) {
     'use strict';
+
+    var logger = new Logger();
+    logger.off();
 
     var VIEW_ID = 'VIEW_TEST';
 
@@ -65,7 +65,7 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
 
     TestViewCommand.prototype.doTest = function () {
         var curDir = wv.getSelectedPath();
-        console.log('doTest', curDir || null);
+        logger.log('doTest', curDir || null);
 
         _super.setHandler();
         _super.createView('Test', 'Test Center', tplLayout);
@@ -78,6 +78,7 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
                 return;
             }
             _self.refreshView();
+            // FIXME use directly `reg.byId('testTab').selectChild()` method
             Util.selectTab('testTab', 'testPreview');
         });
 
@@ -93,13 +94,13 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
     };
 
     TestViewCommand.prototype.init = function () {
-        console.log('init');
+        logger.log('init');
         var self = this;
 
         this.setProjectPath(pathUtil.getProjectRootPath(wv.getSelectedPath()));
         var projectPath = this.getProjectPath();
         if (!projectPath) {
-            console.log(Messages.NO_PROJECT);
+            logger.log(Messages.NO_PROJECT);
             return;
         }
 
@@ -138,6 +139,7 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
         });
 
         $('#testToolsCompAppPreview').click(function (e) {
+            // FIXME use directly `reg.byId('testTab').selectChild()` method
             Util.selectTab('testTab', 'testPreview');
             // Stopping the click event from propagating to the document.
             // Bootstrap sets an event listener on the document that closes dropdowns.
@@ -152,7 +154,7 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
     };
 
     TestViewCommand.prototype.refreshView = function () {
-        console.log('refreshView');
+        logger.log('refreshView');
         var self = this;
         this.refresh().then(
             function () {
@@ -163,13 +165,13 @@ function (webida, View, vm, pathUtil, dojo, Deferred, topic, wv,
     };
 
     TestViewCommand.prototype.refresh = function () {
-        console.log('refresh');
+        logger.log('refresh');
         var self = this;
         var deferred = new Deferred();
         this.setProjectPath(pathUtil.getProjectRootPath(wv.getSelectedPath()));
         var projectPath = this.getProjectPath();
         if (!projectPath) {
-            console.log(Messages.NO_PROJECT);
+            logger.log(Messages.NO_PROJECT);
             return deferred.reject(new Error(Messages.NO_PROJECT));
         }
 

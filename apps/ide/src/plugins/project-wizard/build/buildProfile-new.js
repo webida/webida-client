@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file Manage build profile creating dialog and related data
+ * @since 1.0.0
+ * @author cimfalab@gmail.com
+ *
+ * @module ProjectWizard/ProfileCreatingDialog
+ * @extends module:ProjectWizard/Dialog
+ */
+
 define(['webida-lib/app',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
         'dojo',
@@ -67,7 +76,6 @@ function (ide, ButtonedDialog, dojo, Deferred, reg,
         var data = null;
 
         function doCreation(newName) {
-            console.log('doCreation', newName);
             var cloneChecked = reg.byId('newBuildProfileCloneChk').checked;
             var cloneProfileName = reg.byId('newBuildProfileCloneCombo').get('value');
             var profile = null;
@@ -76,6 +84,7 @@ function (ide, ButtonedDialog, dojo, Deferred, reg,
                     _super.setError(Messages.NO_PROFILE);
                     return;
                 }
+                // FIXME Just use extends method directly.
                 profile = Util.clone(BuildProfile.getBuildProfile(self.buildStore.data, cloneProfileName));
             } else {
                 profile = BuildProfile.getDefaultProfile(self.projectInfo.name);

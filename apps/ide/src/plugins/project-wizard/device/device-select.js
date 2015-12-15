@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file Manage device selecting dialog and related data
+ * @since 1.0.0
+ * @author cimfalab@gmail.com
+ *
+ * @extends module:ProjectWizard/Dialog
+ */
+
 define(['webida-lib/webida-0.3',
         'webida-lib/app',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',

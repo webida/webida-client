@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+/**
+ * @file Manage build profile key creating dialog and related data
+ * @since 1.0.0
+ * @author cimfalab@gmail.com
+ *
+ * @module ProjectWizard/ProfileKeyCreatingDialog
+ * @extends module:ProjectWizard/Dialog
+ */
+
+
 define(['webida-lib/app',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
         'dojo',
@@ -54,7 +64,6 @@ function (ide, ButtonedDialog, dojo, Deferred, reg,
         var data = null;
 
         function doCreation(newName) {
-            console.log('doCreation', newName);
             data = {};
             data.name = newName;
             data.signing = BuildProfile.getDefaultSigning(newName);

@@ -15,13 +15,9 @@
  */
 
 /**
- * @Capture
- *
- * @version: 1.0.0
- * @since: 2014.04.18
- *
- * Src:
- *   plugins/project-wizard/capture.js
+ * @file Capture screenshot
+ * @since 1.0.0
+ * @author cimfalab@gmail.com
  */
 
 define(['dojo/Deferred',

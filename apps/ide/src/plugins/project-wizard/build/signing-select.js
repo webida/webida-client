@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file Manage build singing selecting dialog and related data
+ * @since 1.0.0
+ * @author cimfalab@gmail.com
+ *
+ * @module ProjectWizard/SigningSelectionDialog
+ * @extends module:ProjectWizard/Dialog
+ */
+
 define(['webida-lib/webida-0.3',
         'webida-lib/app',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
@@ -92,12 +101,10 @@ function (webida, ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, reg,
                 cb.set('placeholder', Messages.SELECT_ALIAS);
                 webida.fs.getMyFS(function (err, fs) {
                     if (err) {
-                        console.log(err);
                         _super.setError(err);
                     } else {
                         fs.getKeystoreList(function (err, data) {
                             if (err) {
-                                console.log(err);
                                 _super.setError(err);
                             } else {
                                 self.store = new Memory({
@@ -105,7 +112,6 @@ function (webida, ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, reg,
                                     idProperty: BuildProfile.SIGNING.ALIAS
                                 });
 
-                                console.log('store', self.store);
                                 cb.set('store', self.store);
                             }
                         });
@@ -113,7 +119,6 @@ function (webida, ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, reg,
                 });
 
                 dojo.connect(cb, 'onChange', function (evt) {
-                    console.log('onChange', evt);
                     dlg._resetForm();
                     var alias = evt;
                     if (alias) {
@@ -142,20 +147,18 @@ function (webida, ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, reg,
                 dojo.connect(reg.byId('editSigningDelete'), 'onClick', function () {
                     var alias = _super.checkCombo(COMBO_ID, Messages.NO_SIGNING);
                     if (alias) {
+                        // FIXME just use directly `popupDialog.yesno()`
                         Util.openDialog('Delete', Messages.DELETE.format(alias), function () {
                             // Remove keystore file from user file system
                             webida.fs.getMyFS(function (err, fs) {
                                 if (err) {
-                                    console.log(err);
                                     _super.setError(err);
                                 } else {
                                     var signing = self._getSigning(alias);
-                                    console.log('delete', signing);
                                     fs.removeKeystoreFile(signing[BuildProfile.SIGNING.ALIAS],
                                                           signing[BuildProfile.SIGNING.KEYSTORE_FILE],
                                                           function (err) {
                                         if (err) {
-                                            console.log(err);
                                             _super.setError(err);
                                         } else {
                                             //console.log(result); // _id, alias, filename, fsid, keypwd, uid
