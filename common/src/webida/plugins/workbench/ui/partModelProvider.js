@@ -51,12 +51,12 @@ define([
 
     var partModelProvider = {
 
-        /** @type {Map.<DataSource, {Map.<Function, PartModel>}>} */
+        /** @type {Map.<DataSource, Map.<Function, PartModel>>} */
         modelRegistry: new Map(),
 
         /**
          * @private
-         * @return {Map.<DataSource, {Map.<Function, PartModel>}>}
+         * @return {Map.<DataSource, Map.<Function, PartModel>>}
          */
         _getModelRegistry: function () {
             return this.modelRegistry;

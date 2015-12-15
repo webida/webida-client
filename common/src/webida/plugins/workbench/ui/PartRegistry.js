@@ -62,10 +62,10 @@ define([
     function PartRegistry() {
         logger.info('new PartRegistry()');
 
-        /** @type {Map.<DataSource, {Array.<Part>}>} */
+        /** @type {Map.<DataSource, Array.<Part>>} */
         this.parts = new Map();
 
-        /** @type {Map.<DataSource, {Map.<Function, EditorPart>}>} */
+        /** @type {Map.<DataSource, Map.<Function, EditorPart>>} */
         this.recentEditorParts = new Map();
 
         /** @type {Array.<String>} */
@@ -250,7 +250,7 @@ define([
         },
 
         /**
-         * @return {Map.<DataSource, {Array.<Part>}>} PartMap
+         * @return {Map.<DataSource, Array.<Part>>} PartMap
          */
         getParts: function () {
             return this.parts;
