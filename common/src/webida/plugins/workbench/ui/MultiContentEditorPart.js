@@ -61,13 +61,13 @@ define([
 
         EditorPart.apply(this, arguments);
 
-        /** @type {Map.<Object, {(Part|Viewer|HTMLElement)}>} */
+        /** @type {Map.<Object, (Part|HTMLElement)>} */
         this.contents = new Map();
 
-        /** @type {Map.<Object, {(Part|Viewer|HTMLElement)}>} */
+        /** @type {Map.<Object, (Part|HTMLElement)>} */
         this.tabToContentMap = new Map();
 
-        /** @type {(Part|Viewer|HTMLElement)} */
+        /** @type (Part|HTMLElement) */
         this.activeContent = null;
     }
 
@@ -234,7 +234,7 @@ define([
         },
 
         /**
-         * @return {(Part|HTMLElement)}
+         * @return (Part|HTMLElement)
          */
         getActiveContent: function () {
             return this.activeContent;
@@ -242,7 +242,7 @@ define([
 
         /**
          * @param {Object} id
-         * @return {(Part|HTMLElement)}
+         * @return (Part|HTMLElement)
          */
         getContentById: function (id) {
             return this.getContents().get(id);
@@ -257,21 +257,21 @@ define([
 
         /**
          * @param {Object} tab
-         * @return {(Part|HTMLElement)}
+         * @return (Part|HTMLElement)
          */
         getContentByTab: function (tab) {
             return this.getTabToContentMap().get(tab);
         },
 
         /**
-         * @return {Map.<Object, {(Part|HTMLElement)}>}
+         * @return {Map.<Object, (Part|HTMLElement)>}
          */
         getTabToContentMap: function () {
             return this.tabToContentMap;
         },
 
         /**
-         * @return {Map.<Object, {(Part|HTMLElement)}>}
+         * @return {Map.<Object, (Part|HTMLElement)>}
          */
         getContents: function () {
             return this.contents;
