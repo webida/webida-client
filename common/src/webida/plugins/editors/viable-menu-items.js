@@ -36,7 +36,7 @@ define([
     }
 
     /**
-     * @param {String} section 'File', 'Edit', 'Find', 'Navigate', 'View' ...
+     * @param {string} section 'File', 'Edit', 'Find', 'Navigate', 'View' ...
      * @return {(Thenable|Object)}
      */
     function _getMenuItems(section) {

@@ -60,7 +60,7 @@ define([
         /**
          * From given data, build new contents for the model.
          * @abstract
-         * @param {String} data Source data to build new contents of the model.
+         * @param {string} data Source data to build new contents of the model.
          */
         createContents: function (data) {
             throw new Error('createContents(data) should be implemented by ' + this.constructor.name);

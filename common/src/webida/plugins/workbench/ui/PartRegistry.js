@@ -202,7 +202,7 @@ define([
 
         /**
          * Remember recently opened DataSource's Id
-         * @param {String} dataSourceId
+         * @param {string} dataSourceId
          */
         setRecentDataSourceId: function (dataSourceId) {
             logger.info('setRecentDataSourceId(' + dataSourceId + ')');
