@@ -57,7 +57,7 @@ define([
     var lifecycleManager = {
 
         /**
-         * @private
+         * @protected
          * @return {ExtensionManager}
          */
         _getExtensionManager: function () {
@@ -100,7 +100,7 @@ define([
         /**
          * Decide whether create new Part or show existing Part.
          *
-         * @private
+         * @protected
          */
         _showPart: function (dataSource, options, callback) {
             logger.info('_showPart(' + dataSource + ', ' + options + ', callback)');
@@ -139,7 +139,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _createPart: function (PartClass, dataSource, options, callback) {
             logger.info('_createPart(PartClass, ' + dataSource + ', ' + options + ', callback)');
@@ -156,14 +156,14 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _showExistingPart: function (PartClass, dataSource, options, callback) {
             logger.info('_showExistingPart(PartClass, ' + dataSource + ', ' + options + ', ' + callback + ')');
         },
 
         /**
-         * @private
+         * @protected
          */
         _getPartRegistry: function () {
             var page = workbench.getCurrentPage();
@@ -174,10 +174,10 @@ define([
 
         /**
          * Saves specified dataSource.
-         *
          * @param {Object} dataSourceId
          * @param {Object} options
          * @param {_saveByDataSourceIdCallback} callback
+         * @protected
          */
         /**
          * @callback _saveByDataSourceIdCallback
@@ -198,9 +198,9 @@ define([
 
         /**
          * Saves current editor part's dataSource.
-         *
          * @param {Object} options
          * @param {_saveCurrentPartCallback} callback
+         * @protected
          */
         /**
          * @callback _saveCurrentPartCallback
@@ -215,6 +215,7 @@ define([
 
         /**
          * Saves all parts
+         * @protected
          */
         _saveAllParts: function () {
             logger.info('_saveAllParts()');
@@ -227,12 +228,17 @@ define([
 
         // ************* Close ************* //
 
+        /**
+         * @param {Part} part
+         * @protected
+         */
         _closePart: function (part) {
             part.close();
         },
 
         /**
          * Closes current active EditorPart
+         * @protected
          */
         _closeCurrentPart: function () {
             logger.info('_closeCurrentPart()');
@@ -241,6 +247,9 @@ define([
             part.close();
         },
 
+        /**
+         * @protected
+         */
         _closeOtherParts: function () {
             var registry = this._getPartRegistry();
             var currentPart = registry.getCurrentEditorPart();
@@ -252,6 +261,9 @@ define([
             });
         },
 
+        /**
+         * @protected
+         */
         _closeAllParts: function () {
             logger.info('_closeAllParts()');
             var page = workbench.getCurrentPage();
@@ -260,6 +272,11 @@ define([
             });
         },
 
+        /**
+         * @param {string} dataSourceId
+         * @param {Object} option
+         * @protected
+         */
         _closeByDataSourceId: function (dataSourceId, option) {
             logger.info('_closeByDataSourceId(' + dataSourceId + ', ' + option + ')');
             var isForced = (typeof option === 'object') ? option.isForced : false;

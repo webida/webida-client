@@ -15,12 +15,14 @@
 */
 
 /**
- * Constructor
- * MultiContentEditorPart
+ * @file
+ * This class embeds multi contents inside of it.
+ * An Html element or a Part could be embeded.
+ * User can switch between multi contents with inside-tabs.
  *
- * @see
+ * @see EditorPart
  * @since: 2015.09.15
- * @author: hw.shim
+ * @author: hw.shim@samsung.com
  */
 
 // @formatter:off
@@ -46,16 +48,18 @@ define([
     'use strict';
 // @formatter:on
 
-    /**
-     * @typedef {Object} DataSource
-     */
-
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
     var _paneId = 0;
 
+    /**
+     * Creates a new MultiContentEditorPart.
+     * @constructor
+     * @extends EditorPart
+     * @param {PartContainer} container
+     */
     function MultiContentEditorPart(container) {
         logger.info('new MultiContentEditorPart(' + container + ')');
 
@@ -151,7 +155,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _addContent: function (id, title, index, callback, exec) {
             var content;
@@ -306,7 +310,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          * @param {MultiContentLayoutPane} pane
          */
         _setLayoutPane: function (pane) {
@@ -314,7 +318,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          * @return {MultiContentLayoutPane}
          */
         _getLayoutPane: function () {

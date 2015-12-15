@@ -92,7 +92,7 @@ define([
 
         /**
          * @return {string} Mime Type
-         * @private
+         * @protected
          */
         _getMimeType: function (resourceExt) {
             return this.mimeType[resourceExt];
@@ -145,7 +145,7 @@ define([
          *
          * @param {Persistence} persistence
          * @return {string} Part's Class Path
-         * @private
+         * @protected
          */
         _getPathForName: function (persistence) {
             logger.info('_getPathForName(' + persistence + ')');
@@ -168,7 +168,7 @@ define([
          *
          * @param {Persistence} persistence
          * @return {string} Part's Class Path
-         * @private
+         * @protected
          */
         _getPathForType: function (persistence) {
             logger.info('_getPathForType(' + persistence + ')');

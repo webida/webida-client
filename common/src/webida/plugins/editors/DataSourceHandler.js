@@ -74,7 +74,7 @@ define([
 
         /**
          * subscribe to topic
-         * @private
+         * @protected
          */
         _subscribe: function () {
             //on deleted
@@ -87,7 +87,7 @@ define([
 
         /**
          * unsubscribe topics
-         * @private
+         * @protected
          */
         _unsubscribe: function () {
             this.subscribed.forEach(function (subscribed) {
@@ -96,7 +96,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _isMultiDelete: function (path) {
             var result = false;
@@ -111,7 +111,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _checkCase: function (fsUrl, dir, name, type, movedPath) {
             logger.info('_checkCase(' + this._getArgs(arguments) + ')');
@@ -138,7 +138,7 @@ define([
         // ************* On Moved ************* //
 
         /**
-         * @private
+         * @protected
          */
         _onNodeMoved: function (sourcePath, targetPath) {
             logger.info('_onNodeMoved(' + sourcePath + ', ' + targetPath + ')');
@@ -150,7 +150,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _onDirMoved: function (sourceDir, targetDir) {
             logger.info('_onDirMoved(' + sourceDir + ', ' + targetDir + ')');
@@ -170,7 +170,7 @@ define([
         // ************* On Deleted ************* //
 
         /**
-         * @private
+         * @protected
          */
         _onDirDeleted: function (dirPath) {
             logger.info('_onDirDeleted(' + dirPath + ')');
@@ -195,7 +195,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          * TODO : Support Close All (or Remain All)
          * But, This feature is required indeed? :(
          */
@@ -205,7 +205,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _onNodeDeleted: function (dataSourceId) {
             logger.info('_onNodeDeleted(' + dataSourceId + ')');
@@ -237,7 +237,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _getPartRegistry: function () {
             var page = workbench.getCurrentPage();
@@ -245,7 +245,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _getArgs: function (args) {
             var res = [];

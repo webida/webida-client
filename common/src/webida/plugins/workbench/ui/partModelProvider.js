@@ -55,7 +55,7 @@ define([
         modelRegistry: new Map(),
 
         /**
-         * @private
+         * @protected
          * @return {Map.<DataSource, Map.<Function, PartModel>>}
          */
         _getModelRegistry: function () {
@@ -63,7 +63,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          * @return {Map.<Function, PartModel>}
          */
         _getModelsByDataSource: function (dataSource) {
