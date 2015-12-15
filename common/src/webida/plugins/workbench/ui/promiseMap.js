@@ -45,7 +45,7 @@ define([
         promises: {},
 
         /**
-         * @param {String} id
+         * @param {string} id
          * @param {Promise} promise
          */
         set: function (id, promise) {
