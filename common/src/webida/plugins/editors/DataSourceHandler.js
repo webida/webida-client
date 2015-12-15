@@ -25,15 +25,15 @@
 
 // @formatter:off
 define([
+    'require',
     'dojo/topic',
     'external/eventEmitter/EventEmitter',
-    'webida-lib/plugins/workbench/plugin', //TODO : refactor
     'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client'
 ], function (
+    require,
     topic,
     EventEmitter,
-    workbench,
     genetic, 
     Logger
 ) {
@@ -142,7 +142,7 @@ define([
          */
         _onNodeMoved: function (sourcePath, targetPath) {
             logger.info('_onNodeMoved(' + sourcePath + ', ' + targetPath + ')');
-            var dsRegistry = workbench.getDataSourceRegistry();
+            var dsRegistry = _getWorkbench().getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(sourcePath);
             if (dataSource) {
                 dataSource.setId(targetPath);
@@ -210,7 +210,7 @@ define([
         _onNodeDeleted: function (dataSourceId) {
             logger.info('_onNodeDeleted(' + dataSourceId + ')');
             var registry = this._getPartRegistry();
-            var dsRegistry = workbench.getDataSourceRegistry();
+            var dsRegistry = _getWorkbench().getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId);
             var parts = registry.getPartsByDataSource(dataSource);
             if (dataSource) {
@@ -231,7 +231,7 @@ define([
             //TODO
             //https://github.com/webida/webida-client/issues/670
             //Changing dataSourceId as URI format
-            var dsRegistry = workbench.getDataSourceRegistry();
+            var dsRegistry = _getWorkbench().getDataSourceRegistry();
             var dataSource = dsRegistry.getDataSourceById(dataSourceId.replace('wfs:/', ''));
             _askReload(dataSource);
         },
@@ -240,7 +240,7 @@ define([
          * @protected
          */
         _getPartRegistry: function () {
-            var page = workbench.getCurrentPage();
+            var page = _getWorkbench().getCurrentPage();
             return page.getPartRegistry();
         },
 
@@ -289,7 +289,7 @@ define([
                       "Reload the editor(s) for the resource?",
                 type: "warning"
             }).then(function () {
-                var page = workbench.getCurrentPage();
+                var page = _getWorkbench().getCurrentPage();
                 var registry = page.getPartRegistry();
                 var parts = registry.getPartsByDataSource(dataSource);
                 parts.forEach(function (part) {
@@ -300,6 +300,11 @@ define([
             // @formatter:on
             /* jshint quotmark:single */
         });
+    }
+
+    function _getWorkbench() {
+        //To prevent cyclic dependency
+        return require('webida-lib/plugins/workbench/plugin');
     }
 
     return DataSourceHandler;
