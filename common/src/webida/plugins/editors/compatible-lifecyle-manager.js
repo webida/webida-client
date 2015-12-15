@@ -49,7 +49,7 @@ define([
 
         /**
          * For legacy view system compatibility
-         * @private
+         * @protected
          * @Override
          */
         _showExistingPart : function (PartClass, dataSource, options, callback) {
@@ -74,7 +74,7 @@ define([
 
         /**
          * For legacy view system compatibility
-         * @private
+         * @protected
          * @Override
          */
         _createPart : function (PartClass, dataSource, options, callback) {

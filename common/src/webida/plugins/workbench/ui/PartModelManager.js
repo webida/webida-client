@@ -89,7 +89,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          */
         _execFunc: function (callback, param) {
             if (typeof callback === 'function') {

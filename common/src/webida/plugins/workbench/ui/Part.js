@@ -18,12 +18,12 @@
 /*jshint bitwise:false*/
 
 /**
- * Interface
- * An ancestor of all workbench UI parts
+ * @file
+ * An ancestor of all workbench UI parts.
  *
- * @see View, Editor
+ * @see ViewPart, EditorPart
  * @since: 2015.06.09
- * @author: hw.shim
+ * @author: hw.shim@samsung.com
  */
 
 // @formatter:off
@@ -51,6 +51,7 @@ define([
      * @typedef {Object} ChangeRequest
      * @typedef {Object} CommandStack
      * @typedef {Object} DataSource
+     * @typedef {Object} HtmlElement
      * @typedef {Object} ModelManager
      * @typedef {Object} PartModel
      * @typedef {Object} PartModelCommand
@@ -65,6 +66,12 @@ define([
 
     var _partId = 0;
 
+    /**
+     * Creates a new Part.
+     * @constructor
+     * @extends EventEmitter
+     * @param {PartContainer} container
+     */
     function Part(container) {
         logger.info('new Part(' + container + ')');
         this._partId = ++_partId;
@@ -296,15 +303,27 @@ define([
             return this.getContainer().getDataSource();
         },
 
+        /**
+         * Sets PartContainer for this part
+         * @param {PartContainer} container
+         */
         setContainer: function (container) {
             this.container = container;
         },
 
+        /**
+         * Retrives PartContainer for this part
+         * @return {PartContainer}
+         */
         getContainer: function () {
             return this.container;
         },
 
-        setFlag: function (/*int*/flag, /*boolean*/value) {
+        /**
+         * @param {number} flag
+         * @param {boolean} value
+         */
+        setFlag: function (flag, value) {
             if (!flag) {
                 throw new Error('Invalid flag name');
             }
@@ -315,14 +334,23 @@ define([
             }
         },
 
-        getFlag: function (/*int*/flag) {
+        /**
+         * @return {number}
+         */
+        getFlag: function (flag) {
             return (this.flags & flag) !== 0;
         },
 
-        setParentElement: function (/*HtmlElement*/parent) {
+        /**
+         * @param {HtmlElement} parent
+         */
+        setParentElement: function (parent) {
             this.parent = parent;
         },
 
+        /**
+         * @return {HtmlElement}
+         */
         getParentElement: function () {
             return this.parent;
         },
@@ -404,13 +432,14 @@ define([
          * Let this part to take focus within the workbench.
          * Parts must assign focus to one of the widget contained
          * in the part's parent composite.
+         * @abstract
          */
         focus: function () {
             throw new Error('focus() should be implemented by ' + this.constructor.name);
         },
 
         /**
-         * @private
+         * @protected
          */
         _execFunc: function (callback, param) {
             if (typeof callback === 'function') {
