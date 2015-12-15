@@ -405,7 +405,7 @@ define([
         /**
          * Each Part should override
          * This will be refactored or deprecated with new menu system.
-         * @param {String} section 'File', 'Edit', 'Find', 'Navigate', 'View' ...
+         * @param {string} section 'File', 'Edit', 'Find', 'Navigate', 'View' ...
          * @param {Object} allItems
          * @return {(Thenable|Object)}
          */
