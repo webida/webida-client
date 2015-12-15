@@ -56,7 +56,7 @@ define([
         /**
          * For legacy view system compatibility
          * TODO : Refactor file.toRefresh, currentFile, currentFiles, recentFiles
-         * @private
+         * @protected
          */
         _onInvalidated: function (fsURL, path) {
             logger.info('fs/cache/file/invalidated arrived');
@@ -76,7 +76,7 @@ define([
         /**
          * For legacy view system compatibility
          * TODO : Refactor currentFile, currentFiles, recentFiles
-         * @private
+         * @protected
          */
         _onEditorSelected: function (oldPart, newPart) {
 

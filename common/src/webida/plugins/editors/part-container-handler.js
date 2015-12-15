@@ -51,7 +51,7 @@ define([
 
         /**
          * For legacy view system compatibility
-         * @private
+         * @protected
          */
         _onEditorRemoved: function (container, view) {
             editors.editorTabFocusController.unregisterView(view);
@@ -59,7 +59,7 @@ define([
 
         /**
          * For legacy view system compatibility
-         * @private
+         * @protected
          */
         _onNoEditor: function () {
             topic.publish('editor/clean/all');
@@ -68,7 +68,7 @@ define([
 
         /**
          * For legacy view system compatibility
-         * @private
+         * @protected
          */
         _onEditorSelected: function (oldPart, newPart) {
 

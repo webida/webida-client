@@ -52,7 +52,7 @@ define([
     genetic.inherits(EditorPreference, Object, {
         /**
          * Initialize EditorePreference with setting initial values and register preference watchers
-         * @private
+         * @protected
          */
         _initialize: function () {
             var that = this;

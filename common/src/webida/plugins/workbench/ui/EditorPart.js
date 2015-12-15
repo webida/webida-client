@@ -15,13 +15,15 @@
 */
 
 /**
- * Interface
+ * @file
  * An ancestor of all workbench editorParts.
- * This is an abstract constructor function.
+ * This is an abstract constructor function (class).
+ * This class can check dirty state, save model to a persistence.
+ * This acts as a controller for mvc architecture for the editor.
  *
- * @see Part, EditorPart
+ * @see Part, ViewPart
  * @since: 2015.06.09
- * @author: hw.shim
+ * @author: hw.shim@samsung.com
  */
 
 // @formatter:off
@@ -45,8 +47,13 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
 
-    function EditorPart() {
-        Part.apply(this, arguments);
+    /**
+     * Creates a new EditorPart.
+     * @constructor
+     * @extends Part
+     */
+    function EditorPart(container) {
+        Part.call(this, container);
         this.file = null;
         this.modelManager = null;
     }
@@ -65,6 +72,14 @@ define([
             return manager ? manager.canSaveModel() : false;
         },
 
+        /**
+         * Saves the contents of this part.
+         * @param {EditorPart~saveCallback} callback
+         */
+        /**
+         * @callback EditorPart~saveCallback
+         * @param {Part} part
+         */
         save: function (callback) {
             logger.info('save(' + typeof callback + ')');
             var that = this;
@@ -75,14 +90,27 @@ define([
             }
         },
 
+        /**
+         * Saves the contents of this part to another object.
+         * @abstract
+         */
         saveAs: function () {
             throw new Error('saveAs() should be implemented by ' + this.constructor.name);
         },
 
+        /**
+         * Returns whether the "Save As" operation is
+         * supported by this part.
+         * @abstract
+         */
         canSaveAs: function () {
             throw new Error('canSaveAs() should be implemented by ' + this.constructor.name);
         },
 
+        /**
+         * Let this part to take focus within the workbench.
+         * Basically does noting.
+         */
         focus: function () {
             logger.info('focus() //do nothing');
         },
@@ -140,12 +168,17 @@ define([
          * Returns PartMenu that consists of menu-items for this Part
          * @see Part
          * @override
+         * @protected
          * @return {PartMenu}
          */
         _getMenuClass: function () {
             return EditorPartMenu;
         },
 
+        /**
+         * @override
+         * @return {string}
+         */
         toString: function () {
             var res = '<' + this.constructor.name + '>#' + this._partId;
             if (this.file) {
@@ -155,7 +188,7 @@ define([
         },
 
         /**
-         * @private
+         * @protected
          * TODO : refactor
          */
         _askSaveThen: function (callback) {
