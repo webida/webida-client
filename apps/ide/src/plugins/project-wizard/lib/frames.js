@@ -73,7 +73,6 @@ function () {
             $(settings.target).html(doc);
 
             var base = url.substring(0, url.lastIndexOf('/') + 1); // Should end with '/'
-            console.log('base', base);
             var html = '<base href="' + base + '">' + data;
             $.each(settings.frames, function (index) {
                 $('#frame-' + index)[0].contentDocument.write(html);

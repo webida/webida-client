@@ -14,23 +14,49 @@
  * limitations under the License.
  */
 
-define(['dojo/topic',
-        'webida-lib/plugins/workbench/plugin',
-        'webida-lib/widgets/views/view',
-        'webida-lib/widgets/views/viewmanager',
-        'webida-lib/widgets/views/viewToolbar',
-        'webida-lib/plugins/workspace/plugin',
-        'webida-lib/util/path'
-       ],
-function (topic, workbench, View, vm, ViewToolbar, wv, pathUtil) {
+/**
+ * @file Actions and UI manager for view and super class for other command modules
+ * @since 1.0.0
+ * @author cimfalab@gmail.com
+ *
+ * @module ProjectWizard/ViewCommands
+ */
+define([
+    'dojo/topic',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/path',
+    'webida-lib/widgets/views/view',
+    'webida-lib/widgets/views/viewmanager',
+    'webida-lib/widgets/views/viewToolbar'
+], function (
+    topic,
+    workbench,
+    Logger,
+    pathUtil,
+    View,
+    vm,
+    ViewToolbar
+) {
     'use strict';
 
+    var logger = new Logger();
+    logger.off();
+
+    /**
+     * View command
+     * @param {string} id - id attr for finding element
+     * @constructor
+     */
     function ViewCommand(id) {
         this.id = id;
         this.handles = [];
         this.projectPath = null;
     }
 
+    /**
+     * Set topic handlers for adding or removing this view
+     */
     ViewCommand.prototype.setHandler = function () {
         //this.cbClose = onViewClose || this.onViewClose;
 
@@ -48,35 +74,64 @@ function (topic, workbench, View, vm, ViewToolbar, wv, pathUtil) {
         }));
     };
 
+    /**
+     * Get id of this view
+     *
+     * @return {*} - view id
+     */
     ViewCommand.prototype.getId = function () {
         return this.id;
     };
 
+    /**
+     * Get project path
+     *
+     * @return {string} - project path
+     */
     ViewCommand.prototype.getProjectPath = function () {
         return this.projectPath;
     };
 
+    /**
+     * Set project path
+     *
+     * @param projectPath
+     */
     ViewCommand.prototype.setProjectPath = function (projectPath) {
         this.projectPath = projectPath;
     };
 
+    /**
+     * Add topic handlers
+     *
+     * @param {object} - handler object that has the `remove()` method for destructing
+     */
     ViewCommand.prototype.addHandle = function (handle) {
         this.handles.push(handle);
     };
 
+    /**
+     * A listener that will be called when this view is closed.
+     * Remove all handlers before closing.
+     */
     ViewCommand.prototype.onViewClose = function () {
-        //console.log('ViewCommand', 'onViewClose');
-        $.each(this.handles, function (index, handle) {
-            handle.remove();
+        this.handles.forEach(function (handler) {
+            handler.remove();
         });
     };
 
+    /**
+     * Initialize this view and manipulate its toolbar
+     *
+     * @param {string} tplToolbar - tool bar template to manipulate
+     * @callback cb
+     */
     ViewCommand.prototype.initView = function (tplToolbar, cb) {
         var vt = new ViewToolbar($('#' + this.id + ' .toolbar-panel')[0], this.getView().contentPane);
         vt.setContent(tplToolbar);
 
         this.addHandle(topic.subscribe('workspace/node/selected', function (selectedPath) {
-            console.log('workspace/node/selected', selectedPath || null);
+            logger.log('workspace/node/selected', selectedPath || null);
             var selectedProjectPath = pathUtil.getProjectRootPath(selectedPath);
             if (!selectedProjectPath) {
                 return;
@@ -85,11 +140,17 @@ function (topic, workbench, View, vm, ViewToolbar, wv, pathUtil) {
         }));
     };
 
+    /**
+     * Create this view with some options
+     *
+     * @param {string} title - view title
+     * @param {string} tooltip - tooltip message for this view title
+     * @param {string} template - view template
+     */
     ViewCommand.prototype.createView = function (title, tooltip, template) {
         this.view = vm.getView(this.getId());
         if (!this.view) {
             this.view = new View(this.getId(), title);
-            //view.setContent('<div id="TestTab" style="width: 100%; height: 100%;">');
             this.view.setContent(template);
             this.view.set('tooltip', tooltip);
             this.view.set('closable', true);
@@ -98,6 +159,11 @@ function (topic, workbench, View, vm, ViewToolbar, wv, pathUtil) {
         }
     };
 
+    /**
+     * Get this view
+     *
+     * @return {object} - this view object
+     */
     ViewCommand.prototype.getView = function () {
         return this.view;
     };

@@ -15,39 +15,59 @@
  */
 
 /**
- * @fileoverview webida - project wizard
+ * @file Action trigger for build
+ * @since 1.0.0 (2014.04.25)
+ * @author cimfalab@gmail.com
  *
- * @version: 1.0.0
- * @since: 2014.04.25
- *
- * Src:
- *   plugins/project-wizard/build/build-menu.js
+ * @see module:ProjectWizard/BuildRunner
+ * @see module:ProjectWizard/BuildProfile
+ * @module ProjectWizard/BuildMenu
  */
 
-define(['webida-lib/app',
-        'webida-lib/webida-0.3',
-        'webida-lib/util/path',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/dom',
-        'dojo/topic',
-        'dijit/registry',
-        './build',
-        './buildProfile',
-        '../messages',
-        '../lib/util'
-       ],
-function (ide, webida, pathUtil, dojo, Deferred, dom, topic, reg,
-    Build, BuildProfile, Messages, Util) {
+define([
+    'dojo/topic',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/path',
+    './build',
+    './buildProfile',
+    '../messages',
+    '../lib/util'
+], function (
+    topic,
+    Logger,
+    pathUtil,
+    Build,
+    BuildProfile,
+    Messages,
+    Util
+) {
     'use strict';
-
+    var logger = new Logger();
+    logger.off();
+    /**
+     * Build Menu
+     * @param {module:ProjectWizard/ProjectConfigurator.projectInfo} projectInfo - project information
+     * @param {string} projectPath - path to project
+     * @constructor
+     */
     function BuildMenu(projectInfo, projectPath) {
         this.projectInfo = projectInfo;
         this.projectPath = projectPath;
     }
 
+    /**
+     * Prepare information and request to run build
+     *
+     * @param {module:ProjectWizard/BuildRunner.buildRunType} buildType - build run type
+     * @param {module:ProjectWizard/BuildProfile} buildProfile - build profile
+     * @param {Object} signing
+     * @param {(HTMLElement|jQuery)} element - This element surrounded with the TR Element that has the information of
+     *      this build
+     * @callback resultCallback
+     * @param {Object} monitor - object for progress bar
+     */
     BuildMenu.prototype.requestBuild = function (buildType, buildProfile, signing, element, resultCallback, monitor) {
-        //console.log('requestBuild'); // 'this' is ViewCommand?
+        //logger.log('requestBuild'); // 'this' is ViewCommand?
         if (!this.projectInfo) {
             throw new Error('No projectInfo');
         }
@@ -62,7 +82,7 @@ function (ide, webida, pathUtil, dojo, Deferred, dom, topic, reg,
         var profileInfo = {
             workspaceName: workspaceName,
             projectName: projectName,
-            profileId : profileId,
+            profileId: profileId,
             profileName: buildProfile.name,
             platform: platform,
             buildType: buildProfile.type,
@@ -72,16 +92,16 @@ function (ide, webida, pathUtil, dojo, Deferred, dom, topic, reg,
 
         var p = buildProfile[platform];
         var platformInfo = {
-            'packageName': p.packageName,
-            'minSdkVersion': p.minSdkVersion,
-            'targetSdkVersion': p.targetSdkVersion,
-            'versionCode': p.versionCode,
-            'versionName': p.versionName
+            packageName: p.packageName,
+            minSdkVersion: p.minSdkVersion,
+            targetSdkVersion: p.targetSdkVersion,
+            versionCode: p.versionCode,
+            versionName: p.versionName
         };
 
         if (signing) {
             var alias = signing[BuildProfile.SIGNING.ALIAS];
-            console.log('signing with ' + alias);
+            logger.log('signing with ' + alias);
             profileInfo.signing = {
                 alias: alias
             };
@@ -90,6 +110,15 @@ function (ide, webida, pathUtil, dojo, Deferred, dom, topic, reg,
         builder.build(buildType, profileInfo, platformInfo, resultCallback);
     };
 
+    /**
+     * Open a dialog for selecting profile
+     * @see module:ProjectWizard/ProfileSelectionDialog
+     * @param {module:ProjectConfigurator.projectInfo} projectInfo - project information
+     * @param {Memory} buildStore - store for build information that includes name
+     *      and {@link module:ProjectWizard/BuildProfile}
+     * @param {Object} options - filter, message
+     * @callback cb
+     */
     BuildMenu.prototype.selectProfile = function (projectInfo, buildStore, options, cb) {
         require(['plugins/project-wizard/build/buildProfile-select'], function (SelectBuildProfile) {
             var delegate = new SelectBuildProfile(projectInfo, buildStore, options);
@@ -97,6 +126,12 @@ function (ide, webida, pathUtil, dojo, Deferred, dom, topic, reg,
         });
     };
 
+    /**
+     * Open a dialog for selecting singing method
+     * @see module:ProjectWizard/SigningSelectionDialog
+     * @param {module:ProjectConfigurator.projectInfo} projectInfo - project information
+     * @callback cb
+     */
     BuildMenu.prototype.selectSigning = function (projectInfo, cb) {
         require(['plugins/project-wizard/build/signing-select'], function (SelectBuildProfile) {
             var delegate = new SelectBuildProfile(projectInfo);
@@ -104,6 +139,10 @@ function (ide, webida, pathUtil, dojo, Deferred, dom, topic, reg,
         });
     };
 
+    /**
+     * Print elasped time to the log view
+     * @param {number} elapsedTime
+     */
     BuildMenu.printElapsedTime = function (elapsedTime) {
         topic.publish('#REQUEST.log',
             '<br />' + Messages.SUCCESS + '<br />' +

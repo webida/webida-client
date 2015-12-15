@@ -5,75 +5,58 @@
     "auther": "Hyun-Goo Kang",
     "requirement": "webida.common.workspace",
     "extensions": {
-
-        "webida.common.workbench:menu" : [
+        "webida.common.workbench:menu": [
             {
-                "location" : "/&Project/",
-                "wholeItems" : {
-                    "&Test" : [ "cmnd", {
-                              }],
-                    "delim3" : "---",
-                    "&Build" : [ "cmnd", {
-                                   "procedural": true
-                               }],
-                    "Build Configurations" : [ "cmnd", {
-                                                 "procedural": true
-                                             }],
-                    "Rebuild" : [ "cmnd", {
-                                    "procedural": true
-                                }],
-                    "Clean" : [ "cmnd", {
-                                  "procedural": true
-                              }],
-                    "delim4" : "---",
-                    "Generate Signed Package" : [ "cmnd", {
-                                                    "procedural": true
-                                                }],
-                    "delim5" : "---",
-                    "&Export" : [ "cmnd", {
-                                }]
+                "location": "/&Project/",
+                "wholeItems": {
+                    "&Test": ["cmnd", {}],
+                    "delim3": "---",
+                    "&Build": ["cmnd", {"procedural": true}],
+                    "Build Configurations": ["cmnd", {"procedural": true}],
+                    "Rebuild": ["cmnd", {"procedural": true}],
+                    "Clean": ["cmnd", {"procedural": true}],
+                    "delim4": "---",
+                    "Generate Signed Package": ["cmnd", {"procedural": true}],
+                    "delim5": "---",
+                    "&Export": ["cmnd", {}]
                 }
             },
             {
-                "location" : "/&File/&New/",
-                "wholeItems" : {
-                    "&Project" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+N" },
-                                                           "desc" : "Create a project" },
-                                            "procedural" : true
-                                           }]
+                "location": "/&File/&New/",
+                "wholeItems": {
+                    "&Project": ["cmnd", {
+                        "shortcut": {"keys": {"default": "Alt+N" }, "desc": "Create a project"},
+                        "procedural": true
+                    }]
                 },
-                "getViableItems" : "getViableItemsForWorkbenchAtFile"
+                "getViableItems": "getViableItemsForWorkbenchAtFile"
             }
         ],
 
-        "webida.common.workspace:menu" : [
+        "webida.common.workspace:menu": [
             {
-                "location" : "/New/",
-                "wholeItems" : {
-                    "Project" : [ "cmnd", { "shortcut" : { "keys" : { "default" : "Alt+N" },
-                                                          "desc" : "Create a project" },
-                                            "procedural" : true
-                                          }]
+                "location": "/New/",
+                "wholeItems": {
+                    "Project": ["cmnd", {
+                        "shortcut": {"keys": {"default": "Alt+N" }, "desc": "Create a project" },
+                        "procedural": true
+                    }]
                 },
-                "getViableItems" : "getViableItemsForWorkspaceView"
+                "getViableItems": "getViableItemsForWorkspaceView"
             }
         ],
 
-        "webida.ide.project-management.run:type" : [
-            {
-                "id" : "org.webida.run.mobile",
-                "name" : "Run As Mobile Application",
-                "hidden" : true
-            }
-        ],
-        "webida.ide.project-management.run:runner" : [
-            {
-                "type" : "org.webida.run.mobile",
-                "module" : "plugins/project-wizard/run-commands",
-                "id" : "org.webida.run.mobile.device.delegate",
-                "name" : "Run with Device",
-                "run" : "run"
-            }
-        ]
+        "webida.ide.project-management.run:type": [{
+            "id": "org.webida.run.mobile",
+            "name": "Run As Mobile Application",
+            "hidden": true
+        }],
+        "webida.ide.project-management.run:runner": [{
+            "type": "org.webida.run.mobile",
+            "module": "plugins/project-wizard/run-commands",
+            "id": "org.webida.run.mobile.device.delegate",
+            "name": "Run with Device",
+            "run": "run"
+        }]
     }
 }

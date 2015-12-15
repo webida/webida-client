@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file Manage build profile selecting dialog and related data
+ * @since 1.0.0
+ * @author cimfalab@gmail.com
+ *
+ * @module ProjectWizard/ProfileSelectionDialog
+ * @extends module:ProjectWizard/Dialog
+ */
+
 define(['webida-lib/app',
         'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
         'dojo',
