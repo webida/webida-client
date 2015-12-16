@@ -125,10 +125,12 @@ function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootst
             },
 
             onLoad: function () {
+                /*jshint nonew: false */
                 new Tooltip({
                     connectId: ['pwQuickStartOptCordova', 'pwQuickStartOptCordovaLabel'],
                     label: Messages.PW_OPTIONS_CORDOVA, position: ['below']
                 });
+                /*jshint nonew: true */
                 $('#pwQuickStartGuideStart').click(function () {
                     Util.startTour([{
                         element: '#pwQuickStartGuideEmulate',
