@@ -650,18 +650,21 @@ define([
                 var pConfText = JSON.stringify(pConf);
                 var pcPath = Util.concatWFSPath([destSelect, projectName, '.project']).replace(destFS, '');
 
-                mountDest.createDirectory(pcPath,
-                                          cbError(PW_MSG.FS_CREATE_DIRECTORY_FAILED + ': ' + pcPath, function () {
-                    mountDest.writeFile(pcPath + '/project.json', pConfText,
-                                        cbError(PW_MSG.FS_WRITE_FILE_FAILED + ': ' +
-                                                pcPath + '/project.json', function () {
-                        notify.success(PW_MSG.PROJECT_CREATE_SUCCESS.format(name), PW_MSG.SUCCESS);
-
-                        window.postMessage('project_created:' + [destFS, destSelect, projectName].join(','), '*');
-                        //onCloseProject();
-                    }));
-                }));
-
+                mountDest.createDirectory(
+                    pcPath,
+                    cbError(PW_MSG.FS_CREATE_DIRECTORY_FAILED + ': ' + pcPath, function () {
+                        // FIXME To create project.json file, use {@link ProjectConfigurator.createProjectProperty}.
+                        mountDest.writeFile(
+                            pcPath + '/project.json', pConfText,
+                            cbError(PW_MSG.FS_WRITE_FILE_FAILED + ': ' + pcPath + '/project.json', function () {
+                                notify.success(PW_MSG.PROJECT_CREATE_SUCCESS.format(name), PW_MSG.SUCCESS);
+                                window.postMessage('project_created:' + [destFS, destSelect, projectName].join(','),
+                                        '*');
+                                //onCloseProject();
+                            }
+                        ));
+                    })
+                );
                 topic.publish('project/run/config/changed', 'save', pConf.run.list[0]);
             }
 

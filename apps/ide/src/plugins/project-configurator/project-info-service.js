@@ -18,15 +18,16 @@
  * project information API service
  * Once project's configuration is changed, 'project/config/changed' topic will be published with its name of project.
  *
- * @since: 15. 8. 18
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
- * @module webida.project-configurator:service
+ * @since 1.4.0 (2015.08.18)
+ * @author kyungmi.k@samsung.com
+ * @module ProjectConfigurator/service
+ * @see module:ProjectConfigurator
  */
 
 define([
     './projectConfigurator'
 ], function (
-    pc
+    projectConfigurator
 ) {
     'use strict';
 
@@ -36,14 +37,24 @@ define([
      * callback that handles the projectInfo
      *
      * @callback projectInfoCallback
-     * @param {object} projectInfo
+     * @param {module:ProjectConfigurator.projectInfo} projectInfo
+     * @memberof module:ProjectConfigurator/service
      */
 
     /**
      * callback that handles the projectInfo list
      *
      * @callback projectInfoListCallback
-     * @param {Array} projectInfoList
+     * @param {Array.<module:ProjectConfigurator.projectInfo>} projectInfoList
+     * @memberof module:ProjectConfigurator/service
+     */
+
+    /**
+     * callback with error
+     *
+     * @callback errorCallback
+     * @param {(Error|Object)} error
+     * @memberof module:ProjectConfigurator/service
      */
 
     /**
@@ -54,7 +65,7 @@ define([
      * @param {projectInfoCallback} [callback] - callback that handles the projectInfo
      * @return
      */
-    module.getByPath = pc.getConfigurationObjectByPath;
+    module.getByPath = projectConfigurator.getConfigurationObjectByPath;
 
     /**
      * Get project information by project name
@@ -63,7 +74,7 @@ define([
      * @param {projectInfoCallback} [callback] - callback that handles the projectInfo
      * @return
      */
-    module.getByName = pc.getConfigurationObjectByProjectName;
+    module.getByName = projectConfigurator.getConfigurationObjectByProjectName;
 
     /**
      * Get all project information in current workspace
@@ -71,7 +82,16 @@ define([
      * @param {projectInfoListCallback} [callback] - callback that handles the projectInfo
      * @return
      */
-    module.getAll = pc.getProjectPropertyList;
+    module.getAll = projectConfigurator.getProjectPropertyList;
+
+    /**
+     * Set project information to the project information file
+     *
+     * @param {string} projectName - project name
+     * @param {module:ProjectConfigurator.projectInfo} projectInfo - project information to save
+     * @param {errorCallback} [callback] - callback that is called when setting is finished
+     */
+    module.set = projectConfigurator.saveProjectProperty;
 
     return module;
 });
