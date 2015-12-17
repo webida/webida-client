@@ -17,28 +17,31 @@
 /**
  * @file Manage build profile creating dialog and related data
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @module ProjectWizard/ProfileCreatingDialog
  * @extends module:ProjectWizard/Dialog
  */
 
-define(['webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/buildprofile-new.html',
-        './buildProfile',
-        '../dialog',
-        '../messages',
-        '../lib/util'
-       ],
-function (ide, ButtonedDialog, dojo, Deferred, reg,
-    tplLayout, BuildProfile, Dialog, Messages, Util) {
+define([
+    'dijit/registry',
+    'dojo/Deferred',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/buildprofile-new.html',
+    './buildProfile',
+    '../dialog',
+    '../messages'
+], function (
+    reg,
+    Deferred,
+    ButtonedDialog,
+    tplLayout,
+    BuildProfile,
+    Dialog,
+    Messages
+) {
     'use strict';
 
-    // constructor
     var NewBuildProfile = function (projectInfo, buildStore) {
         this.projectInfo = projectInfo;
         this.buildStore = buildStore;
@@ -84,8 +87,7 @@ function (ide, ButtonedDialog, dojo, Deferred, reg,
                     _super.setError(Messages.NO_PROFILE);
                     return;
                 }
-                // FIXME Just use extends method directly.
-                profile = Util.clone(BuildProfile.getBuildProfile(self.buildStore.data, cloneProfileName));
+                profile = $.extend(true, {}, BuildProfile.getBuildProfile(self.buildStore.data, cloneProfileName));
             } else {
                 profile = BuildProfile.getDefaultProfile(self.projectInfo.name);
             }

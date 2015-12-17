@@ -17,29 +17,35 @@
 /**
  * @file Manage build profile selecting dialog and related data
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @module ProjectWizard/ProfileSelectionDialog
  * @extends module:ProjectWizard/Dialog
  */
 
-define(['webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/data/ObjectStore',
-        'dojox/grid/EnhancedGrid',
-        'dojox/grid/enhanced/plugins/IndirectSelection',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/buildprofile-select.html',
-        './build',
-        './buildProfile',
-       ],
-function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, EnhancedGrid,
-           IndirectSelection, reg, tplLayout, Build, BuildProfile) {
+define([
+    'dojo',
+    'dojo/Deferred',
+    'dojo/data/ObjectStore',
+    'dojox/grid/EnhancedGrid',
+    'dojox/grid/enhanced/plugins/IndirectSelection',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/buildprofile-select.html',
+    './build',
+    './buildProfile'
+], function (
+    dojo,
+    Deferred,
+    ObjectStore,
+    EnhancedGrid,
+    IndirectSelection,
+    ButtonedDialog,
+    tplLayout,
+    Build,
+    BuildProfile
+) {
     'use strict';
 
-    // constructor
     var SelectBuildProfile = function (projectInfo, buildStore, options) {
         this.projectInfo = projectInfo;
         this.buildStore = buildStore;

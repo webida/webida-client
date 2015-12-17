@@ -17,28 +17,32 @@
 /**
  * @file Manage build profile key creating dialog and related data
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @module ProjectWizard/ProfileKeyCreatingDialog
  * @extends module:ProjectWizard/Dialog
  */
 
 
-define(['webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/buildprofile-key-new.html',
-        './buildProfile',
-        '../dialog',
-        '../messages',
-       ],
-function (ide, ButtonedDialog, dojo, Deferred, reg,
-    tplLayout, BuildProfile, Dialog, Messages) {
+define([
+    'dijit/registry',
+    'dojo/Deferred',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/buildprofile-key-new.html',
+    './buildProfile',
+    '../dialog',
+    '../messages'
+], function (
+    reg,
+    Deferred,
+    ButtonedDialog,
+    tplLayout,
+    BuildProfile,
+    Dialog,
+    Messages
+) {
     'use strict';
 
-    // constructor
     var NewKey = function (projectInfo, profile) {
         this.projectInfo = projectInfo;
         this.profile = profile;

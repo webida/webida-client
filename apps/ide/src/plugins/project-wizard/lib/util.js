@@ -18,35 +18,35 @@
  * @file Utils for project wizard
  * // FIXME It is better to be refactored and renamed to more specific name. This module is playing too much roles.
  * @since 1.0.0 (2014.04.18)
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  */
 
 define([
-    'webida-lib/app',
-    'webida-lib/util/path',
-    'webida-lib/plugins/workbench/plugin',
-    'webida-lib/util/notify',
     'external/lodash/lodash.min',
-    'dojo/Deferred',
     'dijit/registry',
+    'dojo/Deferred',
     'plugins/project-configurator/projectConfigurator',
     'plugins/webida.ide.project-management.run/run-configuration-manager',
+    'popup-dialog',
+    'webida-lib/app',
+    'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workspace/plugin',
-    'webida-lib/util/logger/logger-client',
-    'popup-dialog'
+    'webida-lib/util/notify',
+    'webida-lib/util/path',
+    'webida-lib/util/logger/logger-client'
 ], function (
-    ide,
-    pathUtil,
-    workbench,
-    notify,
     _,
-    Deferred,
     reg,
+    Deferred,
     projectConfigurator,
     runConfiguration,
-    wv,
-    Logger,
-    PopupDialog
+    PopupDialog,
+    ide,
+    workbench,
+    workspace,
+    notify,
+    pathUtil,
+    Logger
 ) {
     'use strict';
 
@@ -605,12 +605,12 @@ define([
      * @callback cb
      */
     Util.expandWorkspaceTreeTo = function (path, select, cb) {
-        wv.expandAncestors(path).then(function (result) {
+        workspace.expandAncestors(path).then(function (result) {
             if (result === true) {
-                if (wv.exists(path)) {
+                if (workspace.exists(path)) {
                     logger.log('exists', path);
                     if (select) {
-                        wv.selectNode(path);
+                        workspace.selectNode(path);
                     }
                     cb();
                 } else {

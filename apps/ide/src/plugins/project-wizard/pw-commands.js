@@ -17,25 +17,39 @@
 /**
  * @file Manage actions and UI for project wizard commands
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  * @extends module:ProjectWizard/ViewCommands
  */
 
-define(['webida-lib/app',
-        'webida-lib/webida-0.3',
-        'webida-lib/util/locale',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo/i18n!./nls/resource',
-        'dojo/topic',
-        'dijit/registry',
-        'dijit/Tooltip',
-        'lib/test/bootstrap/bootstrap.custom',
-        'text!./layer/pw-layout.html',
-        './main',
-        './messages',
-        './lib/util'
-       ],
-function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootstrap, tplLayout, main, Messages, Util) {
+define([
+    'dijit/registry',
+    'dijit/Tooltip',
+    'dojo/i18n!./nls/resource',
+    'dojo/topic',
+    'lib/test/bootstrap/bootstrap.custom',
+    'webida-lib/app',
+    'webida-lib/webida-0.3',
+    'webida-lib/util/locale',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!./layer/pw-layout.html',
+    './main',
+    './messages',
+    './lib/util'
+], function (
+    reg,
+    Tooltip,
+    i18n,
+    topic,
+    bootstrap,
+    ide,
+    webida,
+    Locale,
+    ButtonedDialog,
+    tplLayout,
+    main,
+    Messages,
+    Util
+) {
     'use strict';
 
     var win;

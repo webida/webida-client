@@ -17,7 +17,7 @@
 /**
  * @file Manager for build profiles (iOS is not supported)
  * @since 1.0.0 (2014.04.25)
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @module ProjectWizard/BuildProfile
  */

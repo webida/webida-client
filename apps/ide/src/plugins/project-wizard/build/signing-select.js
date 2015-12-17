@@ -17,32 +17,39 @@
 /**
  * @file Manage build singing selecting dialog and related data
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @module ProjectWizard/SigningSelectionDialog
  * @extends module:ProjectWizard/Dialog
  */
 
-define(['webida-lib/webida-0.3',
-        'webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/data/ObjectStore',
-        'dojo/store/Memory',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/export-signing-select.html',
-        './build',
-        './buildProfile',
-        '../dialog',
-        '../messages',
-        '../lib/util'
-       ],
-function (webida, ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, reg,
-    tplLayout, Build, BuildProfile, Dialog, Messages, Util) {
+define([
+    'dijit/registry',
+    'dojo',
+    'dojo/Deferred',
+    'dojo/store/Memory',
+    'webida-lib/webida-0.3',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/export-signing-select.html',
+    './buildProfile',
+    '../dialog',
+    '../messages',
+    '../lib/util'
+], function (
+    reg,
+    dojo,
+    Deferred,
+    Memory,
+    webida,
+    ButtonedDialog,
+    tplLayout,
+    BuildProfile,
+    Dialog,
+    Messages,
+    Util
+) {
     'use strict';
 
-    // constructor
     var SelectSigning = function (projectInfo) {
         this.projectInfo = projectInfo;
         this.store = null;
