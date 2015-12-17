@@ -15,22 +15,20 @@
  */
 
 /**
- * @Capture
- *
- * @version: 1.0.0
- * @since: 2014.04.18
- *
- * Src:
- *   plugins/project-wizard/capture.js
+ * @file Capture screenshot
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
  */
 
-define(['dojo/Deferred',
-        'lib/test/html2canvas.wrapper'
-       ],
-function (Deferred, html2canvas) {
+define([
+    'dojo/Deferred',
+    'lib/test/html2canvas.wrapper'
+], function (
+    Deferred,
+    html2canvas
+) {
     'use strict';
 
-    // constructor
     var Capture = function () {
     };
 

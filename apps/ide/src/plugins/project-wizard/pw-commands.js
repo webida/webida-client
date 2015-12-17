@@ -15,36 +15,47 @@
  */
 
 /**
- * @fileoverview webida - project wizard
- *
- * @version: 0.1.0
- * @since: 2013.10.01
- *
- * Src:
- *   plugins/project-wizard/plugin.js
+ * @file Manage actions and UI for project wizard commands
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
+ * @extends module:ProjectWizard/ViewCommands
  */
 
-define(['webida-lib/app',
-        'webida-lib/webida-0.3',
-        'webida-lib/util/locale',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo/i18n!./nls/resource',
-        'dojo/topic',
-        'dijit/registry',
-        'dijit/Tooltip',
-        'lib/test/bootstrap/bootstrap.custom',
-        'text!./layer/pw-layout.html',
-        './main',
-        './messages',
-        './lib/util'
-       ],
-function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootstrap, tplLayout, main, Messages, Util) {
+define([
+    'dijit/registry',
+    'dijit/Tooltip',
+    'dojo/i18n!./nls/resource',
+    'dojo/topic',
+    'lib/test/bootstrap/bootstrap.custom',
+    'webida-lib/app',
+    'webida-lib/webida-0.3',
+    'webida-lib/util/locale',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!./layer/pw-layout.html',
+    './main',
+    './messages',
+    './lib/util'
+], function (
+    reg,
+    Tooltip,
+    i18n,
+    topic,
+    bootstrap,
+    ide,
+    webida,
+    Locale,
+    ButtonedDialog,
+    tplLayout,
+    main,
+    Messages,
+    Util
+) {
     'use strict';
 
     var win;
     var localizer  = new Locale(i18n);
 
-    /** Deprecated */
+    /* Deprecated */
     function createProject() {
         var dstFS = ide.getFsid();
         var targetPath = ide.getPath();
@@ -128,7 +139,12 @@ function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootst
             },
 
             onLoad: function () {
-                Util.addTooltip(['pwQuickStartOptCordova', 'pwQuickStartOptCordovaLabel'], Messages.PW_OPTIONS_CORDOVA);
+                /*jshint nonew: false */
+                new Tooltip({
+                    connectId: ['pwQuickStartOptCordova', 'pwQuickStartOptCordovaLabel'],
+                    label: Messages.PW_OPTIONS_CORDOVA, position: ['below']
+                });
+                /*jshint nonew: true */
                 $('#pwQuickStartGuideStart').click(function () {
                     Util.startTour([{
                         element: '#pwQuickStartGuideEmulate',
@@ -147,7 +163,6 @@ function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootst
                 var tabs = reg.byId('pwTab');
                 tabs.watch('selectedChildWidget', function (name, oval, nval) {
                     if (nval.id === 'pwProjectWizard') {
-                        console.log('initPreviewImage by tab selection');
                         main.initPreviewImage();
                     } else if (nval.id === 'pwQuickStart') {
                         $('#pwQuickStartProjectName').focus();
@@ -196,7 +211,6 @@ function (ide, webida, Locale, ButtonedDialog, i18n, topic, reg, Tooltip, bootst
             var targetDir = arr[1];
             var projName = arr[2];
 
-            console.log('mira', MSGTYPE_PROJ_CREATION, fsid, targetDir, projName);
             if (fsid === ide.getFsid() && targetDir && projName) {
                 var fsCache = ide.getFSCache();
                 fsCache.refresh(targetDir + '/', { level: 2 }, function () {

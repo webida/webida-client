@@ -12,7 +12,9 @@
     The jQuery Plugin for adding configurations to responsive design test pages
     by @johnpolacek
 
-    Framer is built upon fine work done by others like <a href="http://mattkersley.com/responsive/">Matt Kersley</a>, <a href="http://www.benjaminkeen.com/open-source-projects/smaller-projects/responsive-design-bookmarklet/">Benjamin Keen</a> and <a href="https://gist.github.com/1685127">lensco</a>.
+    Framer is built upon fine work done by others like <a href="http://mattkersley.com/responsive/">Matt Kersley</a>,
+    <a href="http://www.benjaminkeen.com/open-source-projects/smaller-projects/responsive-design-bookmarklet/">Benjamin
+    Keen</a> and <a href="https://gist.github.com/1685127">lensco</a>.
 
     See it in action on Responsivator!
     http://dfcb.github.com/Responsivator
@@ -73,7 +75,6 @@ function () {
             $(settings.target).html(doc);
 
             var base = url.substring(0, url.lastIndexOf('/') + 1); // Should end with '/'
-            console.log('base', base);
             var html = '<base href="' + base + '">' + data;
             $.each(settings.frames, function (index) {
                 $('#frame-' + index)[0].contentDocument.write(html);

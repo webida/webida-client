@@ -14,27 +14,52 @@
  * limitations under the License.
  */
 
-define(['webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/data/ObjectStore',
-        'dojo/store/Memory',
-        'dojo/store/Observable',
-        'dojox/grid/EnhancedGrid',
-        'dojox/grid/enhanced/plugins/IndirectSelection',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/buildprofile-edit.html',
-        './buildProfile',
-        '../dialog',
-        '../messages',
-        '../lib/util'
-       ],
-function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, EnhancedGrid, IndirectSelection, reg,
-    tplLayout, BuildProfile, Dialog, Messages, Util) {
-    'use strict';
+/**
+ * @file Manage build profile editing dialog and related data
+ * @since 1.0.0 (2014.04.25)
+ * @author kh5325.kim@samsung.com
+ *
+ * @module ProjectWizard/ProfileEditingDialog
+ * @extends module:ProjectWizard/Dialog
+ */
 
-    // constructor
+define([
+    'dijit/registry',
+    'dojo',
+    'dojo/Deferred',
+    'dojo/data/ObjectStore',
+    'dojo/store/Memory',
+    'dojo/store/Observable',
+    'dojox/grid/EnhancedGrid',
+    'dojox/grid/enhanced/plugins/IndirectSelection',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/buildprofile-edit.html',
+    './buildProfile',
+    '../dialog',
+    '../messages',
+    '../lib/util'
+], function (
+    reg,
+    dojo,
+    Deferred,
+    ObjectStore,
+    Memory,
+    Observable,
+    EnhancedGrid,
+    IndirectSelection,
+    Logger,
+    ButtonedDialog,
+    tplLayout,
+    BuildProfile,
+    Dialog,
+    Messages,
+    Util
+) {
+    'use strict';
+    var logger = new Logger();
+    logger.off();
+
     var EditBuildProfile = function (projectInfo, buildStore) {
         this.projectInfo = projectInfo;
         this.buildStore = buildStore;
@@ -55,12 +80,12 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
 
     EditBuildProfile.prototype._save = function (cb) {
         this.projectInfo.build = this.buildStore.data;
-        console.log('_save', this.buildStore.data);
+        logger.log('_save', this.buildStore.data);
         Util.saveProjectBuild(this.projectInfo, cb);
     };
 
     EditBuildProfile.prototype.doEdit = function (selected) {
-        //console.log('doEdit', selected);
+        //logger.log('doEdit', selected);
         var self = this;
 
         var deferred = new Deferred();
@@ -119,7 +144,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                 */
                 //dijit.byId(COMBO_ID).set('readOnly', true);
                 dojo.connect(reg.byId(COMBO_ID), 'onChange', function (evt) {
-                    console.log('onChange', evt);
+                    logger.log('onChange', evt);
                     dlg._resetForm();
                     dlg._resetSigningForm();
                     var profileName = evt;
@@ -130,7 +155,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                         if (cb) {
                             var cbStore = cb.get('store');
                             var profile = self._getBuildProfile(profileName);
-                            //console.log('cbStore > add', profile[BuildProfile.SIGNING_PROPERTY]);
+                            //logger.log('cbStore > add', profile[BuildProfile.SIGNING_PROPERTY]);
                             $.each(profile[BuildProfile.SIGNING_PROPERTY], function (index, obj) {
                                 cbStore.add({ name: obj.name });
                             });
@@ -153,7 +178,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                                     self.buildStore.add(data.profile);
                                     self._save(function (err) {
                                         if (err) {
-                                            console.log(err);
+                                            logger.log(err);
                                         } else {
                                             _super.setComboValue(COMBO_ID, data.name);
                                         }
@@ -166,11 +191,12 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                 dojo.connect(reg.byId('editBuildProfileDelete'), 'onClick', function () {
                     var profileName = _super.checkCombo(COMBO_ID, Messages.NO_PROFILE);
                     if (profileName) {
+                        // FIXME just use directly `popupDialog.yesno()`
                         Util.openDialog('Delete', Messages.DELETE.format(profileName), function () {
                             self.buildStore.remove(profileName);
                             self._save(function (err) {
                                 if (err) {
-                                    console.log(err);
+                                    logger.log(err);
                                 } else {
                                     _super.setComboValue(COMBO_ID, null);
                                 }
@@ -193,7 +219,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                     }
                 });
                 dojo.connect(reg.byId('editInfoSignKey'), 'onChange', function (evt) {
-                    console.log('onChange', this.item);
+                    logger.log('onChange', this.item);
                     if (this.item && this.item.value === '__new_') {
                         require(['plugins/project-wizard/build/buildProfile-key-new'], function (NewKey) {
                             var profileName = _super.checkCombo(COMBO_ID, Messages.NO_PROFILE);
@@ -210,7 +236,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                                         profile.addSigning(data.signing);
                                         self._save(function (err) {
                                             if (err) {
-                                                console.log(err);
+                                                logger.log(err);
                                             } else {
                                                 cbStore.add({ name: data.name });
                                                 _super.setValue('editInfoSignKey', data.name);
@@ -235,7 +261,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                     this._getSigningForm(profileName);
                     self._save(function (err) {
                         if (err) {
-                            console.log(err);
+                            logger.log(err);
                             _super.setMessage('Failed to apply change(s): ' + err);
                         }
                     });
@@ -243,8 +269,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
             },
 
             _setPropValue: function (profile, prop, val) {
-                var arr = prop.split('.');
-                Util.setNestedObject(profile, arr, val);
+                Util.setNestedObject(profile, prop, val);
             },
 
             _getForm: function (profileName) {
@@ -264,7 +289,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
             },
             _setForm: function (profileName) {
                 var profile = self._getBuildProfile(profileName);
-                //console.log('_setForm', profile);
+                //logger.log('_setForm', profile);
                 if (profile) {
                     $.each(this.FORM, function (name, obj) {
                         var val = _super.getPropValue(profile, obj.prop);
@@ -301,7 +326,7 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                     return;
                 }
                 var signing = profile.getSigning(key);
-                //console.log('_getSigningForm', key, signing);
+                //logger.log('_getSigningForm', key, signing);
                 $.each(this.SIGNING_FORM, function (name, obj) {
                     var val = (obj.type === 'radio') ? _super.getRadioValue(name) : _super.getValue(name);
                     var prop = obj.prop;
@@ -334,6 +359,8 @@ function (ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory, Observable, 
                     }
                 });
                 if (typeof soft === 'undefined') {
+                    // FIXME I think it is better to initialize new store only including this '__new_' item
+                    // than reset store.
                     Util.resetCombo('editInfoSignKey', function (store) {
                         store.add({
                             name: Messages.ADD_KEY,

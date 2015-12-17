@@ -13,9 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-define(['webida-lib/webida-0.3'],
-function (webida) {
+/**
+ * @file Manage constants
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
+ */
+define([
+    'webida-lib/webida-0.3'
+], function (
+    webida
+) {
     'use strict';
 
     // constructor
@@ -67,6 +74,7 @@ function (webida) {
         return proxyUrl + '/' + reqUrl;
     };
 
+   // FIXME It's better to move to ./lib/Util.js
     Constants.getFileDownloadUrl = function (fsid, path) {
         var url = webida.conf.fsServer + '/' + Constants.API_FS_FILE + '/' + fsid + path +
             '?access_token=' + webida.auth.getToken();

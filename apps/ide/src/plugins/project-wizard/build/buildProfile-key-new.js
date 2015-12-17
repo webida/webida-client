@@ -14,21 +14,35 @@
  * limitations under the License.
  */
 
-define(['webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/buildprofile-key-new.html',
-        './buildProfile',
-        '../dialog',
-        '../messages',
-       ],
-function (ide, ButtonedDialog, dojo, Deferred, reg,
-    tplLayout, BuildProfile, Dialog, Messages) {
+/**
+ * @file Manage build profile key creating dialog and related data
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
+ *
+ * @module ProjectWizard/ProfileKeyCreatingDialog
+ * @extends module:ProjectWizard/Dialog
+ */
+
+
+define([
+    'dijit/registry',
+    'dojo/Deferred',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/buildprofile-key-new.html',
+    './buildProfile',
+    '../dialog',
+    '../messages'
+], function (
+    reg,
+    Deferred,
+    ButtonedDialog,
+    tplLayout,
+    BuildProfile,
+    Dialog,
+    Messages
+) {
     'use strict';
 
-    // constructor
     var NewKey = function (projectInfo, profile) {
         this.projectInfo = projectInfo;
         this.profile = profile;
@@ -54,7 +68,6 @@ function (ide, ButtonedDialog, dojo, Deferred, reg,
         var data = null;
 
         function doCreation(newName) {
-            console.log('doCreation', newName);
             data = {};
             data.name = newName;
             data.signing = BuildProfile.getDefaultSigning(newName);

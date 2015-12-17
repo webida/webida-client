@@ -14,24 +14,39 @@
  * limitations under the License.
  */
 
-define(['webida-lib/webida-0.3',
-        'webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/data/ObjectStore',
-        'dojo/store/Memory',
-        'dojox/grid/EnhancedGrid',
-        'dojox/grid/enhanced/plugins/IndirectSelection',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/device-select.html',
-        './gcm',
-       ],
-function (webida, ide, ButtonedDialog, dojo, Deferred, ObjectStore, Memory,
-           EnhancedGrid, IndirectSelection, reg, tplLayout, GCM) {
+/**
+ * @file Manage device selecting dialog and related data
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
+ *
+ * @extends module:ProjectWizard/Dialog
+ */
+
+define([
+    'dojo',
+    'dojo/Deferred',
+    'dojo/data/ObjectStore',
+    'dojo/store/Memory',
+    'dojox/grid/EnhancedGrid',
+    'dojox/grid/enhanced/plugins/IndirectSelection',
+    'webida-lib/webida-0.3',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/device-select.html',
+    './gcm'
+], function (
+    dojo,
+    Deferred,
+    ObjectStore,
+    Memory,
+    EnhancedGrid,
+    IndirectSelection,
+    webida,
+    ButtonedDialog,
+    tplLayout,
+    GCM
+) {
     'use strict';
 
-    // constructor
     var SelectDevice = function () {
         this.store = null;
     };

@@ -15,10 +15,10 @@
  */
 
 /**
- * webida - project configurator
- *
- * Src:
- *   plugins/project-configurator/projectConfigurator.js
+ * @file Manager for the configurations of projects
+ * @since 1.0.0
+ * @author yt.byeon@samsung.com
+ * @module ProjectConfigurator
  */
 define([
     'external/lodash/lodash.min',
@@ -36,6 +36,11 @@ define([
     pathUtil
 ) {
     'use strict';
+
+    /**
+     * @typedef {Object} projectInfo
+     * @memberof module:ProjectConfigurator
+     */
 
     var projectConfigurator = {};
     var fsMount = ide.getFSCache(); // ide.getMount();
@@ -565,6 +570,12 @@ define([
         return getProjectPropertyByPath(path);
     };
 
+    /**
+     * Get project configuration by its project name
+     * @param {string} name - project name
+     * @callback callback
+     * @returns {projectInfo}
+     */
     projectConfigurator.getConfigurationObjectByProjectName = function (name, callback) {
         projectConfigurationLoadPromise.then(function () {
             var obj = getProjectPropertyByName(name);

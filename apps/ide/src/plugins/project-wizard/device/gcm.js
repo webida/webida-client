@@ -15,13 +15,9 @@
  */
 
 /**
- * @GCM
- *
- * @version: 1.0.0
- * @since: 2014.04.25
- *
- * Src:
- *   plugins/project-wizard/gcm.js
+ * @file Manage constants for GCM
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
  */
 
 define([],

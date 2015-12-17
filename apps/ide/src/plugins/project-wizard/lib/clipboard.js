@@ -15,18 +15,22 @@
  */
 
 /**
- * @Clipboard - wrapper for ZeroClipboard
- *
- * @version: 1.0.0
- * @since: 2014.04.18
- *
- * Src:
- *   plugins/project-wizard/clipboard.js
+ * @file Wrapper for ZeroClipboard
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
  */
 
-define(['lib/ZeroClipboard/ZeroClipboard'], function (ZeroClipboard) {
+define([
+    'lib/ZeroClipboard/ZeroClipboard',
+    'webida-lib/util/logger/logger-client'
+], function (
+    ZeroClipboard,
+    Logger
+) {
     'use strict';
-
+    var logger = new Logger();
+    logger.off();
+    
     var PATH = 'lib/ZeroClipboard/ZeroClipboard.swf';
 
     ZeroClipboard.config({
@@ -70,16 +74,16 @@ define(['lib/ZeroClipboard/ZeroClipboard'], function (ZeroClipboard) {
         var client = new ZeroClipboard($target);
         client.on('ready', function () {
             client.on('copy', function (event) {
-                //console.log('copy', event.clipboardData);
+                //logger.log('copy', event.clipboardData);
                 // copy source text
                 event.clipboardData.setData('text/plain', $source.val());
             });
             client.on('aftercopy', function (event) {
-                console.log('aftercopy', event.data['text/plain']);
+                logger.log('aftercopy', event.data['text/plain']);
             });
             //client.on('complete', function () { });
             client.on('error', function (event) {
-                console.log('error', event);
+                logger.log('error', event);
                 Clipboard.destroy();
             });
         });

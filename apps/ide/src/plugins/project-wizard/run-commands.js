@@ -15,40 +15,59 @@
  */
 
 /**
- * @fileoverview webida - project wizard
- *
- * @version: 1.0.0
- * @since: 2014.04.25
- *
- * Src:
- *   plugins/project-wizard/run-commands.js
+ * @file Manage actions and UI for project run commands
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
+ * @extends module:ProjectWizard/ViewCommands
  */
-
-define(['webida-lib/app',
-        'webida-lib/webida-0.3',
-        'webida-lib/util/path',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/dom',
-        'dojo/data/ObjectStore',
-        'dojo/store/Memory',
-        'dojox/grid/EnhancedGrid',
-        'dojox/grid/enhanced/plugins/IndirectSelection',
-        'dijit/registry',
-        'webida-lib/plugins/workspace/plugin',
-        'text!./layer/debug-layout.html',
-        './export-commands',
-        './constants',
-        './launcher',
-        './view-commands',
-        './lib/util'
-       ],
-function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
-           ObjectStore, Memory, EnhancedGrid, IndirectSelection, reg,
-           wv, tplLayout, exportViewCommand, Constants, Launcher, ViewCommand, Util) {
+define([
+    'dijit/registry',
+    'dojo',
+    'dojo/Deferred',
+    'dojo/dom',
+    'dojo/data/ObjectStore',
+    'dojo/store/Memory',
+    'dojox/grid/EnhancedGrid',
+    'dojox/grid/enhanced/plugins/IndirectSelection',
+    'webida-lib/app',
+    'webida-lib/webida-0.3',
+    'webida-lib/util/path',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/logger/logger-client',
+    'text!./layer/debug-layout.html',
+    './export-commands',
+    './constants',
+    './launcher',
+    './view-commands',
+    './lib/util'
+], function (
+    reg,
+    dojo,
+    Deferred,
+    dom,
+    ObjectStore,
+    Memory,
+    EnhancedGrid,
+    IndirectSelection,
+    ide,
+    webida,
+    pathUtil,
+    ButtonedDialog,
+    wv,
+    Logger,
+    tplLayout,
+    exportViewCommand,
+    Constants,
+    Launcher,
+    ViewCommand,
+    Util
+) {
     'use strict';
 
+    var logger = new Logger();
+    logger.off();
+    
     function RunCommand() {
         this.projectPath = null;
         this.launcher = new Launcher();
@@ -142,7 +161,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
     };
 
     RunCommand.prototype.runDevice = function (projectInfo, device) {
-        console.log('runDevice', (device !== undefined));
+        logger.log('runDevice', (device !== undefined));
         var runOptions = {};
         runOptions[Launcher.RUN_OPTION.DEVICE] = device;
         var saveOptions = {};
@@ -151,7 +170,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
     };
 
     RunCommand.prototype.runRipple = function (projectInfo, profile) {
-        console.log('runRipple', profile);
+        logger.log('runRipple', profile);
         this.projectPath = this._getProjectPath(projectInfo);
         var self = this;
         var _run = function (profile) {
@@ -174,7 +193,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
     };
 
     RunCommand.prototype.debugWith = function (type, device) {
-        console.log('debugWith', (device !== undefined));
+        logger.log('debugWith', (device !== undefined));
         var self = this;
         this.projectPath = this._getProjectPath();
 
@@ -415,7 +434,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                         var script = wndChild.document.createElement('script');
                         //var scriptSrc = Util.getProxyUrl(WEINRE_TARGET_URL);
                         var scriptSrc = Constants.getDebugTargetUrl(projectInfo.uuid);
-                        console.log('script', scriptSrc);
+                        logger.log('script', scriptSrc);
                         script.setAttribute('src', scriptSrc);
                         //wndChild.WeinreServerURL = WEINRE_TARGET_HOST;
                         wndChild.document.getElementsByTagName('body')[0].appendChild(script);
@@ -540,7 +559,7 @@ function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
                     }
                     Util.saveProjectRun(projectName, runConfs, function (err) {
                         if (err) {
-                            console.log(err);
+                            logger.log(err);
                         }
                     });
                 }

@@ -15,13 +15,9 @@
  */
 
 /**
- * @Clipboard - wrapper for ZeroClipboard
- *
- * @version: 1.0.0
- * @since: 2014.04.18
- *
- * Src:
- *   plugins/project-wizard/dropdown.js
+ * @file Dropdown
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
  */
 
 define([], function () {

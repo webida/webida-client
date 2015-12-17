@@ -15,68 +15,47 @@
  */
 
 /**
- * @fileoverview webida - project wizard
- *
- * @version: 0.1.0
- * @since: 2013.10.01
- *
- * Src:
- *   plugins/project-wizard/plugin.js
+ * @file Main module for the project wizard
+ * @since 0.1.0 (2013.10.01)
+ * @author kh5325.kim@samsung.com
  */
 
 define([
-        'dojo/i18n!./nls/resource',
-        'webida-lib/app',            // ide
-        'webida-lib/webida-0.3',     // webida
-        'webida-lib/util/locale',   // webida util
-        'webida-lib/util/path',     // webida util
-        'webida-lib/plugins/workbench/plugin',
-        'plugins/webida.ide.project-management.run/run-configuration-manager',     //FIXME remove
-        'webida-lib/plugins/workspace/plugin',
-        'dojo/topic',
-        './lib/util'
-       ],
-function (i18n, ide, webida, Locale, pathUtil, workbench, runConfigurationManager, wv, topic, Util) {
+    'dojo/i18n!./nls/resource',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/locale',
+    'webida-lib/webida-0.3',
+    './lib/util'
+], function (
+    i18n,
+    workbench,
+    workspace,
+    Locale,
+    webida,
+    Util
+) {
     'use strict';
     var localizer = new Locale(i18n);
 
-    // Commented because of Jshint error
-     /*
-    function isRunnableProjectPath(projectLevelPath) {
-        if (!projectLevelPath || !pathUtil.isDirPath(projectLevelPath)) {
-            return false;
-        }
-
-        var projectName = pathUtil.getName(projectLevelPath);
-        if (!projectName || projectName[0] === '.') {
-            return false;
-        }
-        // no project.json
-        if (!runConfigurationManager.getByProjectName(projectName)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    function isRunnablePath(path) {
-        var projectPath = pathUtil.getProjectRootPath(path);
-        return isRunnableProjectPath(projectPath);
-    }
-    */
-
     return {
+        /**
+         * Get all viable menu items as the sub-item of the 'Project' menu tree to inform the Menu System
+         *
+         * @see ./plugin.json
+         * @return {Object} - menu items to attach as the sub-item of the 'Project' menu
+         */
         getViableItems : function () {
             var itemsTest = {
-                '&Test' : [ 'cmnd', 'plugins/project-wizard/test-commands', 'doTest' ]
+                '&Test': [ 'cmnd', 'plugins/project-wizard/test-commands', 'doTest' ]
             };
             var itemsBuild = {
-                '&Build' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'build' ],
-                'Build Configurations' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'editProfile' ],
-                'Rebuild' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'rebuild' ],
-                'Clean' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'buildClean' ],
-                'Generate Signed Package' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'buildSigned' ],
-                '&Export' : [ 'cmnd', 'plugins/project-wizard/export-commands', 'doExport' ]
+                '&Build': [ 'cmnd', 'plugins/project-wizard/export-commands', 'build' ],
+                'Build Configurations': [ 'cmnd', 'plugins/project-wizard/export-commands', 'editProfile' ],
+                Rebuild: [ 'cmnd', 'plugins/project-wizard/export-commands', 'rebuild' ],
+                Clean: [ 'cmnd', 'plugins/project-wizard/export-commands', 'buildClean' ],
+                'Generate Signed Package': [ 'cmnd', 'plugins/project-wizard/export-commands', 'buildSigned' ],
+                '&Export': [ 'cmnd', 'plugins/project-wizard/export-commands', 'doExport' ]
             };
             // FIXME:: Refactoring to use extension point
 //            var itemsContext = {
@@ -87,19 +66,20 @@ function (i18n, ide, webida, Locale, pathUtil, workbench, runConfigurationManage
 
             var items = {};
             // to enable for the files in project directory
-            if (Util.getProjectPath(wv.getSelectedPaths()) !== null) {
+            //FIXME just use `pathUtil.getProjectRootPath(workspace.getSelectedPaths()[0])`
+            if (Util.getProjectPath(workspace.getSelectedPaths()) !== null) {
                 items = $.extend(itemsTest, itemsBuild);
             }
 
             // items should be localized after building items object
             localizer.convertMenuItem(items, '[menu] ');
 
-            var contextPaths = [];
+            /*var contextPaths = [];
             var context = workbench.getContext();
             if (context && context.paths) {
                 contextPaths = context.paths;
                 // Commented because of Jshint error
-                /*
+
                 if (contextPaths.length === 1) {
                     var isRunnable = isRunnablePath(contextPaths[0]);
                     if (isRunnable === true) {
@@ -107,22 +87,34 @@ function (i18n, ide, webida, Locale, pathUtil, workbench, runConfigurationManage
 //                        items = $.extend(items, itemsContext);
                     }
                }
-               */
-            }
+
+            }*/
             return items;
         },
 
+        /**
+         * Get all viable menu items as the sub-item of the 'File' menu tree to inform the Menu System
+         *
+         * @see ./plugin.json
+         * @return {Object} - menu items to attach as the sub-item of the 'File' menu
+         */
         getViableItemsForWorkbenchAtFile : function () {
             var items = {
-                '&Project' : [ 'cmnd', 'plugins/project-wizard/pw-commands', 'newProject' ] // 'doIt' - old impl.
+                '&Project': [ 'cmnd', 'plugins/project-wizard/pw-commands', 'newProject' ]
             };
             localizer.convertMenuItem(items, '[menu] ');
             return items;
         },
 
+        /**
+         * Get all viable menu items as the context menu of the 'Workspace' view to inform the Menu System
+         *
+         * @see ./plugin.json
+         * @return {Object} - menu items to attach as the context menu of the 'Workspace' view
+         */
         getViableItemsForWorkspaceView : function () {
             var items = {
-                'Project': [ 'cmnd', 'plugins/project-wizard/pw-commands', 'newProject' ]
+                Project: [ 'cmnd', 'plugins/project-wizard/pw-commands', 'newProject' ]
             };
             localizer.convertMenuItem(items, '[menu] ');
             return items;

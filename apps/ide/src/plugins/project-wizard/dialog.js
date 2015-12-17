@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,9 +14,26 @@
  * limitations under the License.
  */
 
-define(['dojo', 'dijit/registry'],
-function (dojo, reg) {
+/**
+ * @file Provide dialog wrapper and utilities
+ *      FIXME It's better to extend dijit's `Dialog` or `ButtonedDialog` than to use `reg.getById()`
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
+ * @module ProjectWizard/Dialog
+ */
+define([
+    'dijit/registry',
+    'dojo',
+    'webida-lib/util/logger/logger-client'
+], function (
+    reg,
+    dojo,
+    Logger
+) {
     'use strict';
+
+    var logger = new Logger();
+    logger.off();
 
     function Dialog() {
         this.id = null;
@@ -35,7 +52,7 @@ function (dojo, reg) {
         $('.dialogMessage-inner').css('color', '#000000');
         //$('.dialogMessage-inner').html(message);
         if (this.id === null) {
-            console.error('Null id - ' + message);
+            logger.error('Null id - ' + message);
         } else {
             var dlg = dojo.byId(this.id);
             var nodes = dojo.query('.dialogMessage-inner', dlg);
@@ -50,7 +67,7 @@ function (dojo, reg) {
         if (e) {
             e.set('value', val);
         } else {
-            console.warn('Element not defined: ' + id);
+            logger.warn('Element not defined: ' + id);
         }
     };
 
@@ -103,7 +120,7 @@ function (dojo, reg) {
         if (e) {
             return e.get('value');
         } else {
-            console.warn('Element not defined: ' + id);
+            logger.warn('Element not defined: ' + id);
             return null;
         }
     };

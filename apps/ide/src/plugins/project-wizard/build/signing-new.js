@@ -14,20 +14,36 @@
  * limitations under the License.
  */
 
-define(['webida-lib/webida-0.3',
-        'webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/export-signing-new.html',
-        './buildProfile',
-        '../dialog',
-        '../messages',
-        '../lib/util'
-       ],
-function (webida, ide, ButtonedDialog, dojo, Deferred, reg,
-    tplLayout, BuildProfile, Dialog, Messages, Util) {
+/**
+ * @file Manage build singing creating dialog and related data
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
+ *
+ * @module ProjectWizard/SigningCreatingDialog
+ * @extends module:ProjectWizard/Dialog
+ */
+
+define([
+    'dijit/registry',
+    'dojo/Deferred',
+    'webida-lib/util/path',
+    'webida-lib/webida-0.3',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/export-signing-new.html',
+    './buildProfile',
+    '../dialog',
+    '../messages'
+], function (
+    reg,
+    Deferred,
+    pathUtil,
+    webida,
+    ButtonedDialog,
+    tplLayout,
+    BuildProfile,
+    Dialog,
+    Messages
+) {
     'use strict';
 
     // constructor
@@ -64,8 +80,7 @@ function (webida, ide, ButtonedDialog, dojo, Deferred, reg,
             return false;
         }
         result = $.grep(this.store.data, function (e) {
-            console.log(e[BuildProfile.SIGNING.KEYSTORE_FILE], reg.byId('keystoreFile').get('value'));
-            return e[BuildProfile.SIGNING.KEYSTORE_FILE] === Util.getFileName(reg.byId('keystoreFile').get('value'));
+            return e[BuildProfile.SIGNING.KEYSTORE_FILE] === pathUtil.getName(reg.byId('keystoreFile').get('value'));
         });
         if (result[0]) {
             _super.setError(Messages.DUPLICATE_FILE);
@@ -79,7 +94,6 @@ function (webida, ide, ButtonedDialog, dojo, Deferred, reg,
         var data = null;
 
         function doCreation(newName) {
-            console.log('doCreation', newName);
             var alias = newName;
             var keyPassword = reg.byId('keyPassword').get('value');
             var keystorePassword = reg.byId('keystorePassword').get('value');
@@ -87,7 +101,6 @@ function (webida, ide, ButtonedDialog, dojo, Deferred, reg,
             // Registration of new keystore file into user file system
             webida.fs.getMyFS(function (err, fs) {
                 if (err) {
-                    console.log(err);
                     _super.setError(err);
                 } else {
                     var input = document.getElementById('keystoreFile');
@@ -101,7 +114,6 @@ function (webida, ide, ButtonedDialog, dojo, Deferred, reg,
                     //console.log('registerKeystoreFile', keyInfo);
                     fs.registerKeystoreFile(filename, keyInfo, file, function (err, result) {
                         if (err) {
-                            console.log(err);
                             _super.setError(err);
                         } else {
                             //console.log(data); // _id, alias, filename, fsid, keypwd, uid

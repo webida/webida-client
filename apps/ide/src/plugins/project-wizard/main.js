@@ -15,47 +15,64 @@
  */
 
 /**
- * @fileoverview webida - project templete engine
- *
- * @version: 0.1.0
- * @since: 2013.09.30
- *
- * Src:
- *   plugins/project-wizard/main.js
+ * @file Project template engine
+ * @since 0.1.0 (2013.09.30)
+ * @author kh5325.kim@samsung.com
  */
-define(['webida-lib/webida-0.3',
-        'webida-lib/app',
-        'webida-lib/util/notify',
-        'external/lodash/lodash.min',
-        'showdown',
-        'lib/image-slide/sly.wrapper',
-        'dojo/aspect',
-        'dojo/Deferred',
-        'dojo/dom',
-        'dojo/on',
-        'dojo/ready',
-        'dojo/store/Memory',
-        'dojo/store/Observable',
-        'dijit/Dialog',
-        'dijit/layout/TabContainer',
-        'dijit/layout/ContentPane',
-        'dijit/registry',
-        'dijit/Tree',
-        'dijit/tree/ObjectStoreModel',
-        './constants',
-        './build/buildProfile',
-        './lib/util',
-        'dojo/topic'
-       ],
-function (webida, ide,
-          notify, _, showdown, sly,
-          aspect, Deferred, dom, on, ready, Memory, Observable,
-          Dialog, TabContainer, ContentPane, reg, Tree, ObjectStoreModel,
-          Constants, BuildProfile, Util, topic
-         )
-{
+define([
+    'external/lodash/lodash.min',
+    'dijit/Dialog',
+    'dijit/layout/TabContainer',
+    'dijit/layout/ContentPane',
+    'dijit/registry',
+    'dijit/Tree',
+    'dijit/tree/ObjectStoreModel',
+    'dojo/aspect',
+    'dojo/Deferred',
+    'dojo/on',
+    'dojo/ready',
+    'dojo/store/Memory',
+    'dojo/store/Observable',
+    'dojo/topic',
+    'lib/image-slide/sly.wrapper',
+    'showdown',
+    'webida-lib/webida-0.3',
+    'webida-lib/app',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/notify',
+    './build/buildProfile',
+    './constants',
+    './lib/util'
+], function (
+    _,
+    Dialog,
+    TabContainer,
+    ContentPane,
+    reg,
+    Tree,
+    ObjectStoreModel,
+    aspect,
+    Deferred,
+    on,
+    ready,
+    Memory,
+    Observable,
+    topic,
+    sly,
+    showdown,
+    webida,
+    ide,
+    Logger,
+    notify,
+    BuildProfile,
+    Constants,
+    Util
+) {
     'use strict';
 
+    var logger = new Logger();
+    logger.off();
+    
     var PW_MSG = {
         ERROR : 'Error',
         FAIL : 'Fail',
@@ -168,7 +185,7 @@ function (webida, ide,
      * @param {String} type - project type
      * @param {String} path - project start path
      *
-     * @returns {object} run configuration object
+     * @return {object} run configuration object
      */
     function createProjectConf(name, template, options) {
         var conf = {};
@@ -230,14 +247,14 @@ function (webida, ide,
                 clickBar: 1
             };
             $frame.sly(options);
-            console.log('initPreviewImage', $frame.width());
+            logger.log('initPreviewImage', $frame.width());
         }
     }
 
     function initFileSystem() {
         // TODO: template source path, need to integrate with auth (currently using FS of userid "template")
         function initSrcFS() {
-            //console.log('srcFS', srcFS);
+            //logger.log('srcFS', srcFS);
             mountSrc = _mount(srcFS);
             initDestFS();
         }
@@ -306,7 +323,7 @@ function (webida, ide,
                                         }
                                         templateList[pID].push(node);
                                     } catch (e) {
-                                        console.error('JSON parse error: ' + e.message);
+                                        logger.error('JSON parse error: ' + e.message);
                                     }
                                 }
                                 visitDeferred.resolve();
@@ -314,7 +331,7 @@ function (webida, ide,
                         } else {
                             // sub category added
                             var id = pID + fileStat.name;
-                            console.log('categoryStore.add', id);
+                            logger.log('categoryStore.add', id);
                             categoryStore.add({
                                 id: id,
                                 name: fileStat.name,
@@ -323,7 +340,7 @@ function (webida, ide,
                             });
                             mountSrc.list(fileStatPath, function (err, files) {
                                 if (err) {
-                                    console.log('Failed to list template directory: ', fileStatPath);
+                                    logger.log('Failed to list template directory: ', fileStatPath);
                                 } else {
                                     var cnt = 0;
                                     var checksum = files.length;
@@ -341,7 +358,7 @@ function (webida, ide,
                         }
                     });
                 } else {
-                    console.warn('Template directory conformance: ' + fileStat.name);
+                    logger.warn('Template directory conformance: ' + fileStat.name);
                     visitDeferred.resolve();
                 }
 
@@ -380,9 +397,9 @@ function (webida, ide,
                     });
                     mountSrc.list(type.src, function (err, files) {
                         if (err) {
-                            console.error('Failed to list template directory: ', type.src);
+                            logger.error('Failed to list template directory: ', type.src);
                         } else {
-                            //console.log(category, files, categoryStore.data);
+                            //logger.log(category, files, categoryStore.data);
                             createSubCategoryAndTemplateModel(type.src, files, category).then(
                                 function () {
                                     if (typeLen <= ++cnt) {
@@ -438,7 +455,7 @@ function (webida, ide,
 
         if (treeItem && treeItem.template) {
             var template = treeItem.template;
-            console.log('resetAllDescriptions', template.path);
+            logger.log('resetAllDescriptions', template.path);
             var imgsPath = [];
             /* jshint camelcase: false */
             if (template.screen_shot) {
@@ -471,11 +488,11 @@ function (webida, ide,
                     template.description.length)
                     .toLowerCase();
                 var path = Util.concatWFSPath([template.path, template.description]);
-                console.log('Reading...', path);
+                logger.log('Reading...', path);
                 mountSrc.readFile(path, function (err, content) {
                     if (err) {
                         notify.error(PW_MSG.FS_READ_FILE_FAILED, PW_MSG.ERROR);
-                        console.error(PW_MSG.FS_READ_FILE_FAILED, path);
+                        logger.error(PW_MSG.FS_READ_FILE_FAILED, path);
                     } else {
                         var desc;
                         if (ext === '.html') {
@@ -516,7 +533,7 @@ function (webida, ide,
 
             // auto set first category
             tree.watch('selectedItem', function () {
-                console.log('categoryTree', tree.selectedItem);
+                logger.log('categoryTree', tree.selectedItem);
                 resetTemplateTreeModel(tree.selectedItem);
                 var childNodes = templateStore.getChildren({
                     id: 'root'
@@ -526,7 +543,7 @@ function (webida, ide,
                         ['root', childNodes[0].id]
                     ]);
                 } else {
-                    console.log('Empty templateStore');
+                    logger.log('Empty templateStore');
                 }
             });
 
@@ -558,7 +575,7 @@ function (webida, ide,
             treePane.addChild(templateTree);
 
             templateTree.watch('selectedItem', function () {
-                console.log('templateTree', templateTree.selectedItem);
+                logger.log('templateTree', templateTree.selectedItem);
                 resetAllDescriptions(templateTree.selectedItem);
             });
 
@@ -567,7 +584,7 @@ function (webida, ide,
             return templateTree;
         }
 
-        console.log('Reading...', TYPES_FILE);
+        logger.log('Reading...', TYPES_FILE);
         mountSrc.readFile(TYPES_FILE, cbError(PW_MSG.FS_READ_FILE_FAILED + ': ' + 'types.json', function (content) {
             try {
                 var types = JSON.parse(content);
@@ -577,7 +594,7 @@ function (webida, ide,
                     createTemplateTree();
                 });
             } catch (e) {
-                console.log('JSON.parse error: ' + e.message);
+                logger.log('JSON.parse error: ' + e.message);
                 notify.error(PW_MSG.FS_JSON_PARSE_FAILED, PW_MSG.ERROR);
                 return;
             }
@@ -617,7 +634,7 @@ function (webida, ide,
     function cbError(msg, cb) {
         return function (err, content) {
             if (err) {
-                console.log(msg, err);
+                logger.log(msg, err);
                 notify.error(msg, PW_MSG.ERROR);
             } else {
                 cb(content);
@@ -682,7 +699,7 @@ function (webida, ide,
 
             function generateWidgetConfig() {
                 var file = 'config.xml';
-                console.log('Generating \'' + file + '\'...');
+                logger.log('Generating \'' + file + '\'...');
                 // srcFSPath = /workspaces/internal/default/basic
                 // destFSCopyPath = wfs://gkAn6LI4c//test/q1
                 var srcFile = '/' + getInternalTemplatePath() + '/' + file;
@@ -691,7 +708,7 @@ function (webida, ide,
 
             function copyRes(destFSCopyPath) {
                 var srcPath = '/' + getInternalTemplatePath() + '/res';
-                console.log('Resource copy', srcPath);
+                logger.log('Resource copy', srcPath);
                 mountSrc.copy(srcPath, destFSCopyPath + '/res', true,
                               cbError(PW_MSG.FS_COPY_FILE_FAILED + ': ' +
                                       srcPath + ' to ' + destFSCopyPath, function () {
@@ -751,17 +768,17 @@ function (webida, ide,
         function isValidFSInfo() {
             mountDest.exists(destFSPath, function (err, exists) {
                 if (err)  {
-                    console.log(err.reason);
+                    logger.log(err.reason);
                     notify.error(PW_MSG.FS_EXISTS_FAILED, PW_MSG.ERROR);
                 } else if (exists) {
                     notify.error(PW_MSG.PROJECT_EXISTS, PW_MSG.ERROR);
                 } else {
                     mountSrc.exists(srcFSPrjPath, function (err, exists) {
                         if (err) {
-                            console.log(err.reason);
+                            logger.log(err.reason);
                             notify.error(PW_MSG.FS_EXISTS_FAILED, PW_MSG.ERROR);
                         } else if (!exists) {
-                            console.log('bad template: no project directory in ' + srcFSPrjPath, PW_MSG.ERROR);
+                            logger.log('bad template: no project directory in ' + srcFSPrjPath, PW_MSG.ERROR);
                             notify.error(PW_MSG.TEMPLATE_NOT_EXISTS, PW_MSG.ERROR);
                         } else {
                             createProject();
@@ -772,13 +789,13 @@ function (webida, ide,
         }
 
         var item = selectedTemplate ? selectedTemplate : getSelectedTemplate();
-        console.log('onCreateProject', options);
+        logger.log('onCreateProject', options);
         var projectName = prjName;
         var destSelect = targetPath;
 
         var srcFSPath = '/' + (item && item.template && item.template.path ? item.template.path : '');
         var srcFSPrjPath = srcFSPath + '/project';
-        //console.log('destFSPath', destSelect, projectName);
+        //logger.log('destFSPath', destSelect, projectName);
         var destFSPath = Util.concatWFSPath([destSelect, projectName]);
         var destFSCopyPath = Util.concatWFSPath(['wfs://', destFS, destSelect, projectName]);
 
@@ -790,7 +807,7 @@ function (webida, ide,
     }
 
     function onCloseProject() {
-        console.log('onCloseProject');
+        logger.log('onCloseProject');
         function closeProjectWizard() {
             categoryStore.removeAll();
             templateStore.removeAll();
@@ -871,7 +888,7 @@ function (webida, ide,
     }
 
     function init(path) {
-        console.log('init', path);
+        logger.log('init', path);
         targetPath = path;
 
         addEventListener();

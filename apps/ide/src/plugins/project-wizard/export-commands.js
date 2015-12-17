@@ -15,46 +15,61 @@
  */
 
 /**
- * @fileoverview webida - project wizard
- *
- * @version: 1.0.0
- * @since: 2014.04.25
- *
- * Src:
- *   plugins/project-wizard/export-commands.js
+ * @file Manage actions and UI for export commands
+ * @since 1.0.0
+ * @author kh5325.kim@samsung.com
+ * @extends module:ProjectWizard/ViewCommands
  */
 
-define(['webida-lib/app',
-        'webida-lib/webida-0.3',
-        'webida-lib/util/path',
-        'webida-lib/widgets/views/view',
-        'webida-lib/widgets/views/viewmanager',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/store/Memory',
-        'dojo/topic',
-        'dijit/registry',
-        'webida-lib/plugins/workspace/plugin',
-        'webida-lib/util/path',
-        'lib/test/bootstrap/bootstrap.custom',
-        'lib/test/bootstrap/bootstrap-multiselect',
-        'text!./layer/export-layout.html',
-        'text!./layer/export-toolbar.html',
-        './constants',
-        './messages',
-        './view-commands',
-        './build/build',
-        './build/build-menu',
-        './build/buildProfile',
-        './lib/dropdown',
-        './lib/util'
-       ],
-function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
-    wv, pathutil,
-    bootstrap, bootstrapMultiselect, tplLayout, tplToolbar,
-    Constants, Messages, ViewCommand, Build, BuildMenu, BuildProfile, DropDown, Util) {
+define([
+    'dijit/registry',
+    'dojo/Deferred',
+    'dojo/store/Memory',
+    'dojo/topic',
+    'lib/test/bootstrap/bootstrap.custom',
+    'lib/test/bootstrap/bootstrap-multiselect',
+    'webida-lib/app',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/path',
+    'webida-lib/widgets/views/viewmanager',
+    'webida-lib/plugins/workspace/plugin',
+    'text!./layer/export-layout.html',
+    'text!./layer/export-toolbar.html',
+    './constants',
+    './messages',
+    './view-commands',
+    './build/build',
+    './build/build-menu',
+    './build/buildProfile',
+    './lib/dropdown',
+    './lib/util'
+], function (
+    reg,
+    Deferred,
+    Memory,
+    topic,
+    bootstrap,
+    bootstrapMultiselect,
+    ide,
+    Logger,
+    pathUtil,
+    vm,
+    wv,
+    tplLayout,
+    tplToolbar,
+    Constants,
+    Messages,
+    ViewCommand,
+    Build,
+    BuildMenu,
+    BuildProfile,
+    DropDown,
+    Util
+) {
     'use strict';
-
+    var logger = new Logger();
+    logger.off();
+    
     var VIEW_ID = 'VIEW_EXPORT';
 
     var fsMount = ide.getFSCache();
@@ -82,7 +97,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
             }
         });
         topic.subscribe('project/build/progress', function (data) {
-            //console.log('project/build/progress', data);
+            //logger.log('project/build/progress', data);
             var profileName = data.profileName;
             switch (data.state) {
             case 2 : // 'beforePlatformAdd'
@@ -97,7 +112,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
             }
         });
         topic.subscribe('project/build/end', function (data) {
-            console.log('project/build/end', data);
+            logger.log('project/build/end', data);
             var profileName = data.profileName;
             monitor[profileName].taskIds.splice(monitor[profileName].taskIds.indexOf(profileName), 1);
             if (monitor[profileName].progressButton) {
@@ -132,7 +147,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
 
     ExportViewCommand.prototype.doExport = function () {
         var curDir = wv.getSelectedPath();
-        console.log('doExport', curDir || null);
+        logger.log('doExport', curDir || null);
 
         _super.setHandler();
         _super.createView('Export', 'Export Center', tplLayout);
@@ -145,6 +160,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                 return;
             }
             _self.refreshView();
+            // FIXME use directly `reg.byId('exportTab').selectChild()` method.
             Util.selectTab('exportTab', 'exportExport');
         });
 
@@ -215,7 +231,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
             if (nval.id === 'exportInstall') {
                 // get a list of built packages
                 var path = pathUtil.detachSlash(self.getProjectPath()) + '/' + Constants.OUTPUT_DIR;
-                console.log('exportInstall', path);
+                logger.log('exportInstall', path);
                 var $downloadPane = $('#exportInstallDownload');
                 $downloadPane.empty();
                 $.each(BuildProfile.SUPPORTED_PLATFORMS, function (index, platform) {
@@ -268,7 +284,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
     };
 
     ExportViewCommand.prototype.refreshView = function () {
-        console.log('refreshView');
+        logger.log('refreshView');
         var self = this;
         this.refresh().then(
             function (data) {
@@ -279,13 +295,13 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
     };
 
     ExportViewCommand.prototype.refresh = function () {
-        console.log('refresh');
+        logger.log('refresh');
         var self = this;
         var deferred = new Deferred();
-        this.setProjectPath(pathutil.getProjectRootPath(wv.getSelectedPath()));
+        this.setProjectPath(pathUtil.getProjectRootPath(wv.getSelectedPath()));
         var projectPath = this.getProjectPath();
         if (!projectPath) {
-            console.log(Messages.NO_PROJECT);
+            logger.log(Messages.NO_PROJECT);
             return deferred.reject(new Error(Messages.NO_PROJECT));
         }
 
@@ -299,7 +315,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                         return BuildProfile.newProfile(e);
                     });
                 } else {
-                    console.log(Messages.NO_BUILD_INFO);
+                    logger.log(Messages.NO_BUILD_INFO);
                 }
                 mBuildStore = new Memory({
                     data: data,
@@ -381,7 +397,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
                 pfName = profileName;
             },
             function (err, result, builder) {
-                console.log('buildWithConsole', result);
+                logger.log('buildWithConsole', result);
                 var done = false;
                 if (err) {
                     self._error(err);
@@ -460,7 +476,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
     ExportViewCommand.prototype.buildWithConsole = function (buildType, profile, signing, beforeBuild, afterBuild) {
         var self = this;
         var fn = function (profile) {
-            console.log('buildWithConsole', profile);
+            logger.log('buildWithConsole', profile);
             vm.getView('Output').select();
             if (profile) {
                 var profileName = profile;
@@ -486,7 +502,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
     ExportViewCommand.prototype.buildSigned = function () {
         var self = this;
         this.selectSigning(function (profile, signing) {
-            console.log('buildSigned', profile, signing);
+            logger.log('buildSigned', profile, signing);
             vm.getView('Output').select();
             if (signing) {
                 // rebuild with signing
@@ -499,7 +515,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
         var self = this;
         var options = {
             filter: function (grid, data) { // to disable 'debug' profile
-                //console.log('grid filter', data);
+                //logger.log('grid filter', data);
                 if (data) {
                     $.each(data, function (index, profile) {
                         if (profile && profile.type === BuildProfile.TYPE.DEBUG) {
@@ -512,7 +528,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
         };
 
         this.selectProfile(function (profile) {
-            console.log('selectSigning', profile);
+            logger.log('selectSigning', profile);
             if (profile) {
                 self.buildMenu.selectSigning(self.projectInfo, function (signing) {
                     cb(profile, signing);
@@ -619,7 +635,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
             var selected = $mBuildProfiles.val();
             $mBuildProfiles.empty();
             var names = BuildProfile.getBuildProfileNames(build);
-            //console.log('names', names);
+            //logger.log('names', names);
             $.each(names, function (index, value) {
                 var $option = $('<option value=\'' + value + '\'>' + value + '</option>');
                 $mBuildProfiles.append($option);
@@ -643,7 +659,7 @@ function (ide, webida, pathUtil, View, vm, dojo, Deferred, Memory, topic, reg,
         var projectPath = this.getProjectPath();
         var exportName = pathUtil.getName(projectPath) + '.zip';
         exportName = encodeURI(exportName); // match decodeURI at Node constructor for server
-        console.log('downloadProject', pathUtil.detachSlash(projectPath));
+        logger.log('downloadProject', pathUtil.detachSlash(projectPath));
         fsMount.exportZip([pathUtil.detachSlash(projectPath)], exportName);
     };
 

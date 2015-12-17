@@ -15,23 +15,27 @@
  */
 
 /**
- * @Launcher
- *
- * @version: 1.0.0
- * @since: 2014.04.18
- *
- * Src:
- *   plugins/project-wizard/launcher.js
+ * @file Run on various kind of platform (no more maintenance)
+ * @since 1.0.0 (2014.04.18)
+ * @author kh5325.kim@samsung.com
  */
 
-define(['webida-lib/webida-0.3',
-        'webida-lib/util/path',
-        './constants',
-        './lib/util'
-       ],
-function (webida, pathUtil, Constants, Util) {
+define([
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/path',
+    'webida-lib/webida-0.3',
+    './constants',
+    './lib/util'
+], function (
+    Logger,
+    pathUtil,
+    webida,
+    Constants,
+    Util
+) {
     'use strict';
-
+    var logger = new Logger();
+    logger.off();
     // TODO: temporary my account
     var gcmAPIKey = 'AIzaSyB_8WqaGg_SESmPzB37kr32vXetEDQHQ-Y';
 
@@ -40,25 +44,25 @@ function (webida, pathUtil, Constants, Util) {
     };
 
     Launcher.ACTION = {
-        'RUN': 'run',
-        'DEBUG': 'debug',
-        'DOWNLOAD': 'download'
+        RUN: 'run',
+        DEBUG: 'debug',
+        DOWNLOAD: 'download'
     };
     Launcher.RUN_OPTION = {
-        'CORDOVA': 'cordova', /* true | false */
-        'WEINRE': 'weinre', /* WEINRE target script url */
-        'DEVICE': 'device' /* device regid */
+        CORDOVA: 'cordova', /* true | false */
+        WEINRE: 'weinre', /* WEINRE target script url */
+        DEVICE: 'device' /* device regid */
     };
 
     // https://sim.webida.mine/emulate/100001/test/mobilesample/pf1/?access_token=
     // 1a2b3c4d5e6f7g&enableripple=cordova-3.0.0-iPhone5
     Launcher.prototype.runToRipple = function (projectPath, profileName) {
-        console.log('runToRipple', profileName);
+        logger.log('runToRipple', profileName);
         webida.auth.getMyInfo(function (err, data) {
             if (err) {
-                console.error(err);
+                logger.error(err);
             } else {
-                console.log(data);
+                logger.log(data);
                 var uid = data.uid;
                 var workspace = Util.getWorkspaceName(projectPath);
                 var project = pathUtil.getName(projectPath);
@@ -77,7 +81,7 @@ function (webida, pathUtil, Constants, Util) {
                 alert('Open with emulator with alias url: ' + (url + '/' + node.name));
             },
             function (err) {
-                console.error(err);
+                logger.error(err);
             }
         );
     };
@@ -88,14 +92,14 @@ function (webida, pathUtil, Constants, Util) {
             var workspace = Util.getWorkspaceName(projectPath);
             var project = pathUtil.getName(projectPath);
             var message = {
-                'action': Launcher.ACTION.RUN,
-                'workspace': workspace,
-                'project': project
+                action: Launcher.ACTION.RUN,
+                workspace: workspace,
+                project: project
             };
             if (options) {
                 $.extend(message, options);
             }
-            console.log('runToDevice');
+            logger.log('runToDevice');
             self.sendGCM(regid, message, cb);
         };
 
@@ -113,7 +117,7 @@ function (webida, pathUtil, Constants, Util) {
     Launcher.prototype.downloadToDevice = function (workspace, project, pkg) {
         var self = this;
         this.selectDevice(function (regid) {
-            console.log('downloadToDevice');
+            logger.log('downloadToDevice');
             self.sendGCM(regid, {
                 'action': Launcher.ACTION.DOWNLOAD,
                 'workspace': workspace,
@@ -125,14 +129,14 @@ function (webida, pathUtil, Constants, Util) {
 
     Launcher.prototype.sendGCM = function (regid, data, cb) {
         if (!regid) {
-            console.error('No regid');
+            logger.error('No regid');
             return;
         }
 
         var gcmUrl = Constants.GCM_URL;
         // TODO: domain
         var url = Constants.getProxyUrl(gcmUrl);
-        console.log('sendGCM');
+        logger.log('sendGCM');
         var paramsObj = {
             'registration_ids': [regid],
             'data': data

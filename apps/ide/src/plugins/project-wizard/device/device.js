@@ -15,24 +15,30 @@
  */
 
 /**
- * @Launcher
- *
- * @version: 1.0.0
- * @since: 2014.04.18
- *
- * Src:
- *   plugins/project-wizard/launcher.js
+ * @file Create device list UI
+ * @since 1.0.0 (2014.04.18)
+ * @author kh5325.kim@samsung.com
+ * @see module:ProjectWizard/RunCommands
+ * @see module:ProjectWizard/Launcher
+ * @module ProjectWizard/Device
  */
 
-define(['webida-lib/webida-0.3',
-        'webida-lib/plugins/workspace/plugin',
-        'webida-lib/util/path',
-        '../launcher',
-        '../run-commands',
-       ],
-function (webida, wv, pathUtil, Launcher, runCommand) {
+define([
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/path',
+    '../launcher',
+    '../run-commands'
+], function (
+    wv,
+    pathUtil,
+    Launcher,
+    runCommand
+) {
     'use strict';
 
+    /**
+     * @constant {Array}
+     */
     var DEVICES = [
         /* // TODO: Enable when sim server is separated
         {
@@ -50,10 +56,16 @@ function (webida, wv, pathUtil, Launcher, runCommand) {
         }
     ];
 
-    // constructor
+    /**
+     * Management on devices
+     * @constructor
+     */
     var Device = function () {
     };
 
+    /**
+     * Initialize device list UI
+     */
     Device.prototype.init = function () {
         // Build device list.
         $.each(DEVICES, function () {
@@ -87,6 +99,12 @@ function (webida, wv, pathUtil, Launcher, runCommand) {
             });
     };
 
+    /**
+     * Get debice by id
+     * @private
+     * @param {string} id
+     * @return {Object}
+     */
     function getDeviceById(id) {
         var result = $.grep(DEVICES, function (e) {
             return e.id === id;
@@ -102,8 +120,11 @@ function (webida, wv, pathUtil, Launcher, runCommand) {
     };
      */
 
+    /**
+     * Run on device
+     * @param {Object} device
+     */
     Device.prototype.drop = function (device) {
-        console.log('drop', device);
         if (!device) {
             return;
         }

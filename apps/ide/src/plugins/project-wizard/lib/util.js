@@ -15,39 +15,49 @@
  */
 
 /**
- * @Util
- *
- * @version: 1.0.0
- * @since: 2014.04.18
- *
- * Src:
- *   plugins/project-wizard/util.js
+ * @file Utils for project wizard
+ * // FIXME It is better to be refactored and renamed to more specific name. This module is playing too much roles.
+ * @since 1.0.0 (2014.04.18)
+ * @author kh5325.kim@samsung.com
  */
 
-define(['webida-lib/app',
-        'webida-lib/webida-0.3',
-        'webida-lib/util/path',
-        'webida-lib/plugins/workbench/plugin',
-        'webida-lib/util/notify',
-        'external/lodash/lodash.min',
-        'dojo/Deferred',
-        'dijit/registry',
-        'plugins/project-configurator/projectConfigurator',
-        'plugins/webida.ide.project-management.run/run-configuration-manager',
-        'webida-lib/plugins/workspace/plugin',
-        'popup-dialog'
-       ],
-function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
-          projectConfigurator, runConfiguration, wv, PopupDialog) {
+define([
+    'external/lodash/lodash.min',
+    'dijit/registry',
+    'dojo/Deferred',
+    'plugins/project-configurator/projectConfigurator',
+    'plugins/webida.ide.project-management.run/run-configuration-manager',
+    'popup-dialog',
+    'webida-lib/app',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/notify',
+    'webida-lib/util/path',
+    'webida-lib/util/logger/logger-client'
+], function (
+    _,
+    reg,
+    Deferred,
+    projectConfigurator,
+    runConfiguration,
+    PopupDialog,
+    ide,
+    workbench,
+    workspace,
+    notify,
+    pathUtil,
+    Logger
+) {
     'use strict';
 
-    // constructor
-    var Util = function () {
-    };
+    var logger = new Logger();
+    logger.off();
 
-    /* SHOULD move to webida-base.js (if exist) and use also in preview and project-configurator etc. */
+    function Util() {}
+
+    // FIXME This method used in one place. It's better to move to there.
+    // It has too much code to just call `ide.getFSCache().addAlias()`.
     Util.getAliasPath = function (oriPath, expireTime) {
-        console.log('getAliasPath', oriPath);
         var deferred = new Deferred();
         if (!oriPath) {
             return deferred.reject();
@@ -67,12 +77,19 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         return deferred.promise;
     };
 
+    /**
+     * Find the index.html first met.
+     *
+     * @param {string} path - project path
+     * @callback cb
+     * // FIXME In error case, the callback function never be called.
+     */
     Util.findIndexFile = function (path, cb) {
         Util.findFile(path, 'index.html').then(function (files) {
             var indexFile;
             if (files.length > 1) {
                 // TODO: Show selection dialog?
-                console.log('findFile', 'Detected two or more \'index.html\' files.');
+                logger.log('findFile', 'Detected two or more \'index.html\' files.');
             } else {
                 indexFile = files[0];
                 cb(indexFile);
@@ -80,6 +97,13 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         });
     };
 
+    /**
+     * Get the real url for index.html file
+     *
+     * @param {string} path - project path
+     * @callback cb
+     * // FIXME In error case, the callback function never be called.
+     */
     Util.getAliasPathForIndexFile = function (path, cb) {
         Util.findIndexFile(path, function (indexFile) {
             var parentPath = indexFile.substring(0, indexFile.lastIndexOf('/'));
@@ -90,13 +114,20 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
                     cb(resolve.url + '/' + filePath);
                 },
                 function (err) {
-                    console.log(err);
+                    logger.log(err);
                 }
             );
         });
     };
 
-    Util.findFile = function (path, file) {
+    /**
+     * Find files recursively from base path with pattern
+     *
+     * @param {string} path - base path to find
+     * @param {string} pattern - file name pattern to filter
+     * @return {promise} - promise that will be finally resolved with the file list
+     */
+    Util.findFile = function (path, pattern) {
         var files = [];
         var deferred = new Deferred();
         if (!path) {
@@ -107,7 +138,7 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
             if (err) {
                 return deferred.reject(err);
             } else {
-                files = files.concat(Util._findFileInChildren(lists, path, file));
+                files = files.concat(Util._findFileInChildren(lists, path, pattern));
                 return deferred.resolve(files);
             }
         });
@@ -116,11 +147,17 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
     };
 
     /**
-     * @param {String} file - regex to find
+     * Find files recursively from path list with pattern
+     * //FIXME This method can be merged with `Util.findFile()`
+     *
+     * @param {string} children - file list as the base to start
+     * @param {string} path - base path
+     * @param {string} pattern - file name pattern to filter
+     * @return {Array} - file list matched
      */
-    Util._findFileInChildren = function (children, path, file) {
+    Util._findFileInChildren = function (children, path, pattern) {
         var files = [];
-        var regex = new RegExp(file);
+        var regex = new RegExp(pattern);
         $.each(children, function (index, child) {
             if (!child.isDirectory) {
                 if (regex.test(child.name)) {
@@ -129,19 +166,21 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
             } else if (child.isDirectory) {
                 // This method does not change the existing arrays, but returns a new
                 // array, containing the values of the joined arrays.
-                files = files.concat(Util._findFileInChildren(child.children, path + '/' + child.name, file));
+                files = files.concat(Util._findFileInChildren(child.children, path + '/' + child.name, pattern));
             }
         });
         return files;
     };
 
     /**
+     * Start to download
+     *
      * @param {String} uri - uri string for file content.
             Its format is "data:<mime_type>,<data>". E.g., data:image/png;base64,xxxx... or data:text/plain,Hello World
      * @param {String} name - file name to be downloaed
      */
     Util.downloadFile = function (uri, name) {
-        console.log('downloadFile', name);
+        logger.log('downloadFile', name);
         var isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
         var isSafari = navigator.userAgent.toLowerCase().indexOf('safari') > -1;
 
@@ -166,6 +205,13 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         window.open(uri);
     };
 
+    /**
+     * Load dependencies and start tour widget
+     * // FIXME this has too many dependencies. It's better to use pure dojo widgets.
+     * // FIXME And it's hardly related with DOM manipulation.
+     * @callback cb - It will be called after all dependencies are loaded.
+     * @private
+     */
     Util._doTour = function (cb) {
         require(['lib/tour/jquery.cookie', 'lib/tour/bootstrap-tooltip'], function () {
             require(['lib/tour/bootstrap-popover'], function () {
@@ -176,6 +222,12 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         });
     };
 
+    /**
+     * Add steps to the tour widget and start the widget
+     *
+     * @param steps
+     * @return {deferred.promise|{then, catch, finally}}
+     */
     Util.startTour = function (steps) {
         var deferred = new Deferred();
         Util._doTour(function (tour) {
@@ -189,6 +241,11 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         return deferred.promise;
     };
 
+    /**
+     * @deprecated
+     *  FIXME It seems hardly binded a specific DOM element. It's not good to be included here.
+     *  It's better to use `Util.startTour()` method as an alternative option.
+     */
     Util.showAssist = function (element, message, duration) {
         Util._doTour(function (tour) {
             var milliseconds = duration || 1500;
@@ -207,27 +264,37 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         });
     };
 
+    /**
+     * Concat all paths and normalize
+     *
+     * // FIXME It may be replaced with other utils. like `normalize()` functions in a kind of path utils.
+     * // FIXME its name 'WFS' is not matched with the real usage cases.
+     * @param {Array} WFSPathList - path list to cancat
+     * @return {string} - path string to be combined
+     */
     Util.concatWFSPath = function (WFSPathList) {
         if (WFSPathList.length === 0) {
-            return ('');
+            return '';
         }
-        var hd = WFSPathList.shift();
-            // to change to array.reduce in the future (JS 1.6 is all available)
-        var ret =
-            _.reduce(WFSPathList, function (path, str) {
-                var sep = '/';
-                if (path.charAt(path.length - 1) === '/') {
-                    sep = '';
-                }
-                // if (str.charAt(0) === '/') { }
-                if (str.length > 2 && str.charAt(0) === '.' && str.charAt(1) === '/') {
-                    str = str.slice(2);
-                }
-                return (path + sep + str);
-            }, hd);
-        return ret;
+        var basePath = WFSPathList.shift();
+        // TODO to change to array.reduce in the future (JS 1.6 is all available)
+        return _.reduce(WFSPathList, function (path, str) {
+            var sep = '/';
+            if (path.charAt(path.length - 1) === '/') {
+                sep = '';
+            }
+            if (str.length > 2 && str.charAt(0) === '.' && str.charAt(1) === '/') {
+                str = str.slice(2);
+            }
+            return (path + sep + str);
+        }, basePath);
     };
 
+    /**
+     * Open 'error' typed confirm dialog
+     * @deprecated
+     * // FIXME it is too much encapsulated. Just call `PopupDialog.yesno()`.
+     */
     Util.openDialog = function (title, msg, cbYes, cbNo) {
         var defaultCbNo = function () {
             workbench.focusLastWidget();
@@ -239,11 +306,19 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         }).then(cbYes, cbNo ? cbNo : defaultCbNo);
     };
 
+    /**
+     * @deprecated
+     * // FIXME It is too much wrapped too.
+     */
     Util.clone = function (obj) {
         var newObject = jQuery.extend(true, {}, obj);
         return newObject;
     };
 
+    /**
+     * @deprecated
+     * //FIXME It is too much wrapped.
+     */
     /** http://thunderguy.com/semicolon/2009/05/23/tooltips-on-disabled-buttons-with-dojo/ */
     /** Add a tooltip to any number of nodes passed directly or as IDs. */
     Util.addTooltip = function (/*node or string or array*/nodes, /*string*/text) {
@@ -256,6 +331,10 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         return tt;
     };
 
+    /**
+     * @deprecated
+     * //FIXME That seems to misuse id attribute. and nowhere using it.
+     */
     /** Add a tooltip to the parents of all form elements with the given
     name. The tooltips will show even if the element is disabled,
     provided the parent is not disabled. */
@@ -264,9 +343,16 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         var parents = dojo.map(nodes, function (node) {
             return node.parentNode;
         });
+        // FIXME just use `dijit.Tooltip`
         Util.addTooltip(parents, text);
     };
 
+    /**
+     * Get Workspace Name from projectPath
+     *
+     * @param {string} projectPath - path to project directory
+     * @return {string} - Workspace name
+     */
     Util.getWorkspaceName = function (projectPath) {
         if (!projectPath) {
             throw new Error('projectPath is null');
@@ -274,14 +360,23 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         return pathUtil.getName(pathUtil.getParentPath(projectPath));
     };
 
+    /**
+     * Create Ajax request
+     *
+     * // FIXME it is being used in one place(launcher.js). I think it's better to move this method to the file
+     * // or make it as a common lib. And `cb` function will never be called when there is an error.
+     * @param {string} method - HTTP method name
+     * @param {string} url - url
+     * @param cb
+     * @return {XMLHttpRequest}
+     */
     Util.createXHR = function (method, url, cb) {
         var xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
         xhr.onload = function () {
-            //console.log('onload', xhr.readyState, xhr.status);
             if (xhr.readyState === 4) {
                 if (xhr.status !== 200) {
-                    console.error('Error loading url: ' + xhr.status);
+                    logger.error('Error loading url: ' + xhr.status);
                     notify.error('Error loading url: ' + xhr.status);
                 }
                 if (cb) {
@@ -290,32 +385,50 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
             }
         };
         xhr.onerror = function (e) {
-            console.error('createXHR', e);
+            logger.error('createXHR', e);
             notify.error('Error: ' + e);
         };
-        //xhr.upload.onprogress = progressCallback;
         return xhr;
     };
 
-    Util.setNestedObject = function (base, names, val) {
+    /**
+     * Set nested property by period-separated string path
+     *
+     *  e.g. If the `path` parameter is 'name1.name2', this function's result is equals below:
+     *      baseObject['name1']['name2'] = val;
+     *
+     * @param {object} baseObject - base object
+     * @param {string} path - period-separated string path for searching property in the base object
+     * @param {object} val - value to set to target property
+     */
+    Util.setNestedObject = function (baseObject, path, val) {
+        var names = path.split('.');
         for (var i = 0; i < names.length; i++) {
-            // base = base[names[i]] = base[names[i]] || ((i === (names.length - 1)) ? val : {});
-            if (!base[names[i]]) {
-                base[names[i]] = {};
+            if (!baseObject[names[i]]) {
+                baseObject[names[i]] = {};
             }
             if (i === (names.length - 1)) {
-                base = base[names[i]] = val;
+                baseObject = baseObject[names[i]] = val;
             }
-            base = base[names[i]];
+            baseObject = baseObject[names[i]];
         }
     };
 
+    /**
+     * @deprecated
+     * Reset all item in the store of a widget specified by its id
+     * // FIXME It is better to initialize new store than reset store manually like this.
+     *
+     * @param {string} id - widget id
+     * @callback cb
+     */
     Util.resetCombo = function (id, cb) {
         var e = reg.byId(id);
         if (e) {
             var store = e.get('store');
             store.fetch({ query: { id: '*' },
                 onComplete: function (items) {
+                    // remove all items in the store
                     for (var i = 0; i < items.length; i++) {
                         var item = items[i];
                         store.remove(item.id);
@@ -325,16 +438,26 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
                 }
             });
         } else {
-            console.warn('Element not defined: ' + id);
+            logger.warn('Element not defined: ' + id);
         }
     };
 
+    /**
+     * @deprecated
+     * //FIXME It is too much wrapped. and too much specialized. There is only one usage place.
+     */
     Util.selectTab = function (mainId, subId) {
         var mainTab = dijit.byId(mainId);
         var subTab = dijit.byId(subId);
         mainTab.selectChild(subTab);
     };
 
+    /**
+     * @deprecated
+     * //FIXME It is too much wrapped. Just use `pathUtil.getProjectRootPath(paths[0])`
+     * @param paths
+     * @return {*}
+     */
     Util.getProjectPath = function (paths) {
         if (paths && paths.length === 1) {
             var path = paths[0];
@@ -343,44 +466,53 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         return null;
     };
 
+    /**
+     * Get run configuration by projectName
+     * @param {string} projectName
+     * @callback cb
+     */
     Util.getRunConfiguration = function (projectName, cb) {
         runConfiguration.getByProjectName(projectName, cb);
     };
 
+    /**
+     * Get project configuration by projectName
+     * @param {string} projectName
+     * @callback cb
+     */
     Util.getProjectConfiguration = function (projectName, cb) {
-        //console.log('getProjectConfiguration', projectName);
         projectConfigurator.getConfigurationObjectByProjectName(projectName, cb);
-        /*
-        if (!projectName) {
-            cb(null);
-            return;
-        }
-
-        var projectPath = concatWFSPath([ide.getPath(), projectName]);
-        var fsMount = ide.getFSCache();
-        fsMount.readFile(projectPath + '/.project/project.json', function (err, content) {
-            if (err) {
-                console.log(err);
-                cb(null);
-            } else {
-                var obj = null;
-                if (content !== '') {
-                    obj = JSON.parse(content);
-                }
-                cb(obj);
-            }
-        });
-        */
     };
 
+    /**
+     * Save project information
+     *
+     * @param projectInfo
+     * @param cb
+     */
     Util.saveProjectBuild = function (projectInfo, cb) {
         projectConfigurator.saveProjectProperty(projectInfo.name, projectInfo, cb);
     };
 
-    Util.saveProjectRun = function (projectName, projectInfo, cb) {
-        runConfiguration.set(projectName, projectInfo, cb);
+    /**
+     * Save project run configuration
+     *
+     * @param projectName
+     * @param runConf
+     * @param cb
+     */
+    Util.saveProjectRun = function (projectName, runConf, cb) {
+        runConfiguration.set(projectName, runConf, cb);
     };
 
+    /**
+     * Create new run configuration
+     * // FIXME It's better to move main.js file. Or It can be moved to each extensions of run configuration.
+     *
+     * @param {object} conf - base configuration
+     * @param template
+     * @return {{}}
+     */
     Util.createRunConfiguration = function (conf, template) {
         var run = {};
         var listItem = {};
@@ -390,7 +522,7 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         /* jshint camelcase: true */
         listItem.type = conf.type;
         listItem.project = conf.name;
-        if(conf.type === 'org.webida.run.java'){
+        if (conf.type === 'org.webida.run.java') {
             listItem.srcDir = template.srcDir;
             listItem.outputDir = template.outputDir;
         }
@@ -400,6 +532,16 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         return run;
     };
 
+    /**
+     * Add or update run configuration from provided parameters
+     *
+     * @param {string} projectName
+     * @param {object} run - run configuration object to add or update
+     * @param {string} name - run configuration name
+     * @param {string} path - run configuration path to start to run
+     * @param {boolean} selected - set this run object to be selected (@deprecated not working currently)
+     * @param {boolean} updateIfExist
+     */
     Util.addRunConfiguration = function (projectName, run, name, path, selected, updateIfExist) {
         var result = $.grep(run, function (e) {
             return e.name === name;
@@ -423,6 +565,11 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
         }
     };
 
+    /**
+     * Generate new uuid
+     *
+     * @return {string} - uuid
+     */
     Util.newuuid = function () {
         // http://www.ietf.org/rfc/rfc4122.txt
         var s = [];
@@ -431,23 +578,39 @@ function (ide, webida, pathUtil, workbench, notify, _, Deferred, reg,
             s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
         }
         s[14] = '4'; // bits 12-15 of the time_hi_and_version field to 0010
+        /*jshint bitwise: false*/
         s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        /*jshint bitwise: true*/
         s[8] = s[13] = s[18] = s[23] = '-';
         return s.join('');
     };
 
+    /**
+     * Get file name from full path
+     * @deprecated
+     * //FIXME use pathUtil's `getName()` method
+     * @param {string} path
+     * @return {string} - file name
+     */
     Util.getFileName = function (path) {
         var filename = path.replace(/^.*[\\\/]/, '');
         return filename;
     };
 
+    /**
+     * Expand all ancestors of the path and select the path in the workspace view
+     * // TODO Doesn't just calling selectNode() method expand workspace tree?
+     * @param {string} path - target path to select
+     * @param {boolean} select - whether select the path or not
+     * @callback cb
+     */
     Util.expandWorkspaceTreeTo = function (path, select, cb) {
-        wv.expandAncestors(path).then(function (result) {
+        workspace.expandAncestors(path).then(function (result) {
             if (result === true) {
-                if (wv.exists(path)) {
-                    console.log('exists', path);
+                if (workspace.exists(path)) {
+                    logger.log('exists', path);
                     if (select) {
-                        wv.selectNode(path);
+                        workspace.selectNode(path);
                     }
                     cb();
                 } else {
