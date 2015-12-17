@@ -597,7 +597,6 @@ define([
             logger.info('createEditorWidget(' + parentNode + ')');
             TextEditorViewer.prototype.createEditorWidget.call(this, parentNode);
 
-            this.__applyLinter();
             this.editor.on('mousedown', function(cm, e) {
                 if (settings.gotoLinkEnabled) {
                     require(['./content-assist/goto-link'], function(gotolink) {
@@ -625,7 +624,8 @@ define([
 
 	    setMode : function (mode) {
             var that = this;
-            var promiseForSetMode = new Promise(function (resolve, reject) {
+            var assistDelegator = null;            
+            that.promiseForSetMode = new Promise(function (resolve, reject) {
                 if (mode === undefined || that.mode === mode) {
                     resolve('no change');
                     return;
@@ -637,7 +637,7 @@ define([
                     if (that.editor) {
                         that.editor.setOption('mode', that.mappedMode);
                     }
-                    that.__applyLinter();
+
                     that.addDeferredAction(function () {
                         require(['./emmet'], function () {
                             // Nothing to do
@@ -657,9 +657,11 @@ define([
                             if (mode === 'js' ||
                                 mode === 'html' ||
                                 mode === 'htmlmixed' ||
-                                mode === 'css') {
+                                mode === 'css' ||
+                                mode === 'json'
+                               ) {
                                 _.defer(function () {
-                                    startContentAssist(that, that.editor, function () {
+                                    assistDelegator = startContentAssist(that, that.editor, function () {
                                         resolve('ca started');
                                     });
                                 });
@@ -671,8 +673,9 @@ define([
                     });
                 });
             });
-            promiseForSetMode.then(function (val) {
+            that.promiseForSetMode.then(function (val) {
                 that.emitLater(PartViewer.READY, that);
+                that._contentAssistDelegator = assistDelegator;
             });
 	    },
 
@@ -724,134 +727,35 @@ define([
 	        if (! this.linters) {
 	            this.linters = {};
 	        }
-	        var self = this;
-	        switch (type) {
-	        case 'js':
-	            this.linters.js = option;
-	            if (option) {
-	                loadCSSList([
-	                    require.toUrl('external/codemirror/addon/lint/lint.css'),
-	                ], function () {
-	                    require([
-	                        'external/codemirror/addon/lint/lint',
-	                        'external/codemirror/addon/lint/javascript-lint'
-	                    ], function () {
-	                        addAvailable('addon', 'lint');
-	                        addAvailable('addon', 'javascript-lint');
-	                        self.__applyLinter();
-	                    });
-	                });
-	            } else {
-	                this.__applyLinter();
-	            }
-	            break;
-	        case 'json':
-	            this.linters.json = option;
-	            if (option) {
-	                require(['./lib/lints/jsonlint'], function () {
-	                    loadCSSList([
-	                        require.toUrl('external/codemirror/addon/lint/lint.css')
-	                    ], function () {
-	                        require([
-	                            'external/codemirror/addon/lint/lint',
-	                            'external/codemirror/addon/lint/json-lint'
-	                        ], function () {
-	                            addAvailable('addon', 'lint');
-	                            addAvailable('addon', 'json-lint');
-	                            self.__applyLinter();
-	                        });
-	                    });
-	                });
-	            } else {
-	                this.__applyLinter();
-	            }
-	            break;
-	        case 'html':
-	            this.linters.html = option;
-	            if (option) {
-	                loadCSSList([
-	                    require.toUrl('external/codemirror/addon/lint/lint.css')
-	                ], function () {
-	                    require([
-	                        'external/codemirror/addon/lint/lint',
-	                    ], function () {
-	                        require(['./content-assist/html-lint'], function () {
-	                            addAvailable('addon', 'lint');
-	                            addAvailable('addon', 'html-lint');
-	                            self.__applyLinter();
-	                        });
-	                    });
-	                });
-	            }
-	            break;
-	        case 'css':
-	            this.linters.css = option;
-	            if (option) {
-	                require(['./lib/lints/csslint'], function () {
-	                    loadCSSList([
-	                        require.toUrl('external/codemirror/addon/lint/lint.css')
-	                    ], function () {
-	                        require([
-	                            'external/codemirror/addon/lint/lint',
-	                            'external/codemirror/addon/lint/css-lint'
-	                        ], function () {
-	                            addAvailable('addon', 'lint');
-	                            addAvailable('addon', 'css-lint');
-	                            self.__applyLinter();
-	                        });
-	                    });
-	                });
-	            } else {
-	                this.__applyLinter();
-	            }
-	            break;
-	        }
+            this.linters[type] = option;
+            
+	        var that = this;
+            that.promiseForSetMode.then(function(){
+                var editor = that.editor
+                if (editor._contentAssistDelegator) {                    
+                    editor._contentAssistDelegator.execCommandForAll(
+                        'setLinter',
+                        that,
+                        type,
+                        option);
+                }
+            });           
 	    },
 	    __applyLinter : function () {
 	        if (this.editor && this.linters && _.contains(['js', 'json', 'css', 'html'], this.mode)) {
 	            if (this.linters[this.mode]) {
 	                this._gutterOn('CodeMirror-lint-markers');
-	                switch (this.mode) {
-	                case 'js':
-	                    if (isAvailable('addon', 'lint') && isAvailable('addon', 'javascript-lint')) {
-	                        if ((typeof this.linters[this.mode]) === 'object') {
-	                            var jshintrc = this.linters.js;
-	                            this.editor.setOption('lint', {
-	                                async: true,
-	                                getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-	                                    CodeEditorViewer.jsHintWorker(editorValue, jshintrc, function (data) {
-	                                        updateLinting(editor, data.annotations);
-	                                    });
-	                                }
-	                            });
-	                        } else {
-	                            this.editor.setOption('lint', {
-	                                async: true,
-	                                getAnnotations: function (editorValue, updateLinting, passOptions, editor) {
-	                                    CodeEditorViewer.jsHintWorker(editorValue, false, function (data) {
-	                                        updateLinting(editor, data.annotations);
-	                                    });
-	                                }
-	                            });
-	                        }
-	                    }
-	                    break;
-	                case 'json':
-	                    if (isAvailable('addon', 'lint') && isAvailable('addon', 'json-lint')) {
-	                        this.editor.setOption('lint', true);
-	                    }
-	                    break;
-	                case 'html':
-	                    if (isAvailable('addon', 'lint') && isAvailable('addon', 'html-lint')) {
-	                        this.editor.setOption('lint', true);
-	                    }
-	                    break;
-	                case 'css':
-	                    if (isAvailable('addon', 'lint') && isAvailable('addon', 'css-lint')) {
-	                        this.editor.setOption('lint', true);
-	                    }
-	                    break;
-	                }
+                    
+                    var that = this;
+                    that.promiseForSetMode.then(function(){
+                        var editor = that.editor
+                        if (editor._contentAssistDelegator) {                    
+                            editor._contentAssistDelegator.execCommandForAll(
+                                'applyLinter',
+                                that.editor, 
+                                that.mode);
+                        }
+                    });
 	            } else {
 	                this.editor.setOption('lint', false);
 	                this._gutterOff('CodeMirror-lint-markers');
@@ -983,9 +887,11 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-                if (editor._contentAssistDelegator) {
-                    editor._contentAssistDelegator.execCommand('beautifyCode', editor);
-                }
+                self.promiseForSetMode.then(function(){
+                    if (editor._contentAssistDelegator) {                    
+                        editor._contentAssistDelegator.execCommand('beautifyCode', editor);
+                    }
+                });
             });
         },
 
@@ -993,9 +899,11 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-                if (editor._contentAssistDelegator) {
-                    editor._contentAssistDelegator.execCommand('beautifyAllCode', editor);
-                }
+                self.promiseForSetMode.then(function(){
+                    if (editor._contentAssistDelegator) {
+                        editor._contentAssistDelegator.execCommand('beautifyAllCode', editor);
+                    }
+                });
             });
         },
 
@@ -1044,26 +952,6 @@ define([
         ];
     };
 
-    CodeEditorViewer.jsHintWorker = (function () {
-        var listeners = {};
-        var worker = null;
-        return function (code, options, listener) {
-            if (worker === null) {
-                worker = new Worker(require.toUrl('./jshint-worker.js'));
-                worker.onmessage = function (event) {
-                    var data = event.data;
-                    listeners[data.reqId](data);
-                };
-            }
-            var reqId = _.uniqueId('jshint-worker-');
-            worker.postMessage({
-                reqId: reqId,
-                code: code,
-                options: options
-            });
-            listeners[reqId] = listener;
-        };
-    })();
     CodeEditorViewer.getAvailableModes = function () {
         return [
             'js', 'json', 'ts', 'html', 'css', 'less'
@@ -1080,6 +968,9 @@ define([
     CodeEditorViewer.getAvailableKeymaps = function () {
         return ['default', 'vim', 'emacs'];
     };
+
+    CodeEditorViewer.addAvailable= addAvailable;
+    CodeEditorViewer.isAvailable= isAvailable;
 
     return CodeEditorViewer;
 });
