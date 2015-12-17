@@ -25,7 +25,7 @@ define([
     'external/lodash/lodash.min',
     'dijit/registry',
     'dojo/Deferred',
-    'plugins/project-configurator/projectConfigurator',
+    'plugins/project-configurator/project-info-service',
     'plugins/webida.ide.project-management.run/run-configuration-manager',
     'popup-dialog',
     'webida-lib/app',
@@ -481,7 +481,7 @@ define([
      * @callback cb
      */
     Util.getProjectConfiguration = function (projectName, cb) {
-        projectConfigurator.getConfigurationObjectByProjectName(projectName, cb);
+        projectConfigurator.getByName(projectName, cb);
     };
 
     /**
@@ -491,7 +491,7 @@ define([
      * @param cb
      */
     Util.saveProjectBuild = function (projectInfo, cb) {
-        projectConfigurator.saveProjectProperty(projectInfo.name, projectInfo, cb);
+        projectConfigurator.set(projectInfo.name, projectInfo, cb);
     };
 
     /**

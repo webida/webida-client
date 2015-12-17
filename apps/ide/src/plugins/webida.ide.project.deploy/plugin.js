@@ -48,8 +48,8 @@ define([
         var viable;
         if (projectName && (projectName[0] !== '.')) {
             viable = true;
-            require(['plugins/project-configurator/projectConfigurator'], function (projectConfigurator) {
-                projectConfigurator.getConfigurationObjectByProjectName(projectName, function (obj) {
+            require(['plugins/project-configurator/project-info-service'], function (projectConfigurator) {
+                projectConfigurator.getByName(projectName, function (obj) {
                     if (!obj) {
                         viable = false; // not a project directory
                     }
