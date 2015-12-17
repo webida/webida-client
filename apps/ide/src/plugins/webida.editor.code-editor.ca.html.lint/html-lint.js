@@ -21,9 +21,9 @@
 
 define(['external/lodash/lodash.min',
         'external/codemirror/lib/codemirror',
-        '../lib/html-inspector/src/modules/validation',
-        './html-dom',
-        './html-io'],
+        './lib/html-inspector/src/modules/validation',
+        'plugins/webida.editor.code-editor/content-assist/html-dom',
+        'plugins/webida.editor.code-editor/content-assist/html-io'],
 function (_, CodeMirror, validation, htmldom, htmlio) {
     'use strict';
 

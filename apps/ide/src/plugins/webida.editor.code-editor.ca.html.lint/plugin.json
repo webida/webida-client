@@ -1,0 +1,18 @@
+{
+    "name": "webida.editor.code-editor.ca.html.lint",
+    "description": "Code Editor content assist plugin for html lint",
+    "version": "0.1.0",
+    "requirement": "webida.editor.code-editor",
+    "extensions" : {
+        "webida.editor.code-editor:contentassist" : [
+            { 
+                "controlModule" : "./HtmlLintControl",
+                "engineModule" : "",
+                "langMode" : "html",
+                "engineName" : "htmlLint",
+                "hinterModes" : [],
+                "hinterNames" : []
+            }
+        ]
+    }
+}
