@@ -16,10 +16,13 @@
 /**
  * @file Manage constants
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  */
-define(['webida-lib/webida-0.3'],
-function (webida) {
+define([
+    'webida-lib/webida-0.3'
+], function (
+    webida
+) {
     'use strict';
 
     // constructor

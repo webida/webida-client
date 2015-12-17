@@ -16,8 +16,9 @@
 
 /**
  * @file Provide dialog wrapper and utilities
+ *      FIXME It's better to extend dijit's `Dialog` or `ButtonedDialog` than to use `reg.getById()`
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  * @module ProjectWizard/Dialog
  */
 define([
@@ -33,7 +34,7 @@ define([
 
     var logger = new Logger();
     logger.off();
-    
+
     function Dialog() {
         this.id = null;
     }

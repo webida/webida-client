@@ -17,33 +17,52 @@
 /**
  * @file Manage actions and UI for project run commands
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  * @extends module:ProjectWizard/ViewCommands
  */
-define(['webida-lib/app',
-        'webida-lib/webida-0.3',
-        'webida-lib/util/path',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/dom',
-        'dojo/data/ObjectStore',
-        'dojo/store/Memory',
-        'dojox/grid/EnhancedGrid',
-        'dojox/grid/enhanced/plugins/IndirectSelection',
-        'dijit/registry',
-        'webida-lib/plugins/workspace/plugin',
-        'webida-lib/util/logger/logger-client',
-        'text!./layer/debug-layout.html',
-        './export-commands',
-        './constants',
-        './launcher',
-        './view-commands',
-        './lib/util'
-       ],
-function (ide, webida, pathUtil, ButtonedDialog, dojo, Deferred, dom,
-           ObjectStore, Memory, EnhancedGrid, IndirectSelection, reg,
-           wv, Logger, tplLayout, exportViewCommand, Constants, Launcher, ViewCommand, Util) {
+define([
+    'dijit/registry',
+    'dojo',
+    'dojo/Deferred',
+    'dojo/dom',
+    'dojo/data/ObjectStore',
+    'dojo/store/Memory',
+    'dojox/grid/EnhancedGrid',
+    'dojox/grid/enhanced/plugins/IndirectSelection',
+    'webida-lib/app',
+    'webida-lib/webida-0.3',
+    'webida-lib/util/path',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/logger/logger-client',
+    'text!./layer/debug-layout.html',
+    './export-commands',
+    './constants',
+    './launcher',
+    './view-commands',
+    './lib/util'
+], function (
+    reg,
+    dojo,
+    Deferred,
+    dom,
+    ObjectStore,
+    Memory,
+    EnhancedGrid,
+    IndirectSelection,
+    ide,
+    webida,
+    pathUtil,
+    ButtonedDialog,
+    wv,
+    Logger,
+    tplLayout,
+    exportViewCommand,
+    Constants,
+    Launcher,
+    ViewCommand,
+    Util
+) {
     'use strict';
 
     var logger = new Logger();

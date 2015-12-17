@@ -17,7 +17,7 @@
 /**
  * @file Manager for the configurations of projects
  * @since 1.0.0
- * @author yeongtaik@webida.org
+ * @author yt.byeon@samsung.com
  * @module ProjectConfigurator
  */
 define([

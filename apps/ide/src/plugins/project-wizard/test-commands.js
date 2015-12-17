@@ -17,31 +17,48 @@
 /**
  * @file Manage actions and UI for test commands
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  * @extends module:ProjectWizard/ViewCommands
  */
-define(['webida-lib/webida-0.3',
-        'webida-lib/widgets/views/view',
-        'webida-lib/widgets/views/viewmanager',
-        'webida-lib/util/logger/logger-client',
-        'webida-lib/util/path',
-        'dojo',
-        'dojo/Deferred',
-        'dojo/topic',
-        'webida-lib/plugins/workspace/plugin',
-        'lib/test/bootstrap/bootstrap.custom',
-        'lib/test/bootstrap/bootstrap-multiselect',
-        'text!./layer/test-layout.html',
-        'text!./layer/test-toolbar.html',
-        'text!./frames.json',
-        './messages',
-        './view-commands',
-        './lib/clipboard',
-        './lib/util'
-       ],
-function (webida, View, vm, Logger, pathUtil, dojo, Deferred, topic, wv,
-    bootstrap, bootstrapMultiselect, tplLayout, tplToolbar, frames,
-    Messages, ViewCommand, Clipboard, Util) {
+define([
+    'dojo',
+    'dojo/Deferred',
+    'dojo/topic',
+    'lib/test/bootstrap/bootstrap.custom',
+    'lib/test/bootstrap/bootstrap-multiselect',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/path',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/webida-0.3',
+    'webida-lib/widgets/views/view',
+    'webida-lib/widgets/views/viewmanager',
+    'text!./layer/test-layout.html',
+    'text!./layer/test-toolbar.html',
+    'text!./frames.json',
+    './messages',
+    './view-commands',
+    './lib/clipboard',
+    './lib/util'
+], function (
+    dojo,
+    Deferred,
+    topic,
+    bootstrap,
+    bootstrapMultiselect,
+    Logger,
+    pathUtil,
+    wv,
+    webida,
+    View,
+    vm,
+    tplLayout,
+    tplToolbar,
+    frames,
+    Messages,
+    ViewCommand,
+    Clipboard,
+    Util
+) {
     'use strict';
 
     var logger = new Logger();

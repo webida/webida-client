@@ -17,7 +17,7 @@
 /**
  * @file Build runner
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @see module:ProjectWizard/BuildMenu
  * @see module:ProjectWizard/BuildProfile

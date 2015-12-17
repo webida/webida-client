@@ -17,16 +17,14 @@
 /**
  * @file Manage build profile editing dialog and related data
  * @since 1.0.0 (2014.04.25)
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @module ProjectWizard/ProfileEditingDialog
  * @extends module:ProjectWizard/Dialog
  */
 
 define([
-    'webida-lib/app',
-    'webida-lib/util/logger/logger-client',
-    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'dijit/registry',
     'dojo',
     'dojo/Deferred',
     'dojo/data/ObjectStore',
@@ -34,16 +32,15 @@ define([
     'dojo/store/Observable',
     'dojox/grid/EnhancedGrid',
     'dojox/grid/enhanced/plugins/IndirectSelection',
-    'dijit/registry',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     'text!plugins/project-wizard/layer/buildprofile-edit.html',
     './buildProfile',
     '../dialog',
     '../messages',
     '../lib/util'
 ], function (
-    ide,
-    Logger,
-    ButtonedDialog,
+    reg,
     dojo,
     Deferred,
     ObjectStore,
@@ -51,7 +48,8 @@ define([
     Observable,
     EnhancedGrid,
     IndirectSelection,
-    reg,
+    Logger,
+    ButtonedDialog,
     tplLayout,
     BuildProfile,
     Dialog,
@@ -61,7 +59,7 @@ define([
     'use strict';
     var logger = new Logger();
     logger.off();
-    // constructor
+
     var EditBuildProfile = function (projectInfo, buildStore) {
         this.projectInfo = projectInfo;
         this.buildStore = buildStore;

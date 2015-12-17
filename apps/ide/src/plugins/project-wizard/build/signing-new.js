@@ -17,26 +17,33 @@
 /**
  * @file Manage build singing creating dialog and related data
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @module ProjectWizard/SigningCreatingDialog
  * @extends module:ProjectWizard/Dialog
  */
 
-define(['webida-lib/webida-0.3',
-        'webida-lib/app',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'webida-lib/util/path',
-        'dojo',
-        'dojo/Deferred',
-        'dijit/registry',
-        'text!plugins/project-wizard/layer/export-signing-new.html',
-        './buildProfile',
-        '../dialog',
-        '../messages'
-       ],
-function (webida, ide, ButtonedDialog, pathUtil, dojo, Deferred, reg,
-    tplLayout, BuildProfile, Dialog, Messages) {
+define([
+    'dijit/registry',
+    'dojo/Deferred',
+    'webida-lib/util/path',
+    'webida-lib/webida-0.3',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'text!plugins/project-wizard/layer/export-signing-new.html',
+    './buildProfile',
+    '../dialog',
+    '../messages'
+], function (
+    reg,
+    Deferred,
+    pathUtil,
+    webida,
+    ButtonedDialog,
+    tplLayout,
+    BuildProfile,
+    Dialog,
+    Messages
+) {
     'use strict';
 
     // constructor

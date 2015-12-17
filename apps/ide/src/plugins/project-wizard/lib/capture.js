@@ -17,16 +17,18 @@
 /**
  * @file Capture screenshot
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  */
 
-define(['dojo/Deferred',
-        'lib/test/html2canvas.wrapper'
-       ],
-function (Deferred, html2canvas) {
+define([
+    'dojo/Deferred',
+    'lib/test/html2canvas.wrapper'
+], function (
+    Deferred,
+    html2canvas
+) {
     'use strict';
 
-    // constructor
     var Capture = function () {
     };
 

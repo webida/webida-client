@@ -17,7 +17,7 @@
 /**
  * @file Manage constants for GCM
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  */
 
 define([],

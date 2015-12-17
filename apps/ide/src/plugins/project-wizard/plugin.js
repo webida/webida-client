@@ -17,7 +17,7 @@
 /**
  * @file Main module for the project wizard
  * @since 0.1.0 (2013.10.01)
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  */
 
 define([

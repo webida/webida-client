@@ -17,7 +17,7 @@
 /**
  * @file Manage actions and UI for export commands
  * @since 1.0.0
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  * @extends module:ProjectWizard/ViewCommands
  */
 

@@ -17,7 +17,7 @@
 /**
  * @file Action trigger for build
  * @since 1.0.0 (2014.04.25)
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  *
  * @see module:ProjectWizard/BuildRunner
  * @see module:ProjectWizard/BuildProfile

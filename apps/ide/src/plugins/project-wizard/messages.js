@@ -19,8 +19,7 @@
  * @since 1.0.0
  * @author hyunik.na@samsung.com
  */
-define([],
-function () {
+define([], function () {
     'use strict';
 
     // constructor

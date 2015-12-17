@@ -17,7 +17,7 @@
 /**
  * @file Run on various kind of platform (no more maintenance)
  * @since 1.0.0 (2014.04.18)
- * @author cimfalab@gmail.com
+ * @author kh5325.kim@samsung.com
  */
 
 define([
