@@ -17,8 +17,8 @@
 /**
  * This file handles the search result data.
  *
- * @since: 2015.09.03
- * @author : minsung-jin
+ * @since 1.4.1
+ * @author minsung.jin@samsung.com
  */
 define([
     './search-result-model',
@@ -26,7 +26,11 @@ define([
     model
 ) {
     'use strict';
-
+    /**
+     * search with the given metadata.
+     * @param {Object} metadata - search condition(keyword, replace with, scope, options)
+     * @param {viewCallback} callback - out-param(search results)
+     */
     function handleFind(metadata, callback) {
 
         model.makeFindData(metadata, function (err, title, store) {
@@ -40,10 +44,14 @@ define([
             }
         });
     }
-
+    /**
+     * replace the code with the given metadata.
+     * @param {Object} metadata - replacing condition(keyword, replace with, scope, options)
+     * @param {viewCallback} callback - out-param(the replacement result)
+     */
     function handleReplace(metadata, callback) {
 
-        model.sendReplaceData(metadata, function (err, title) {
+        model.makeReplaceData(metadata, function (err, title) {
             if (err) {
                 callback(err);
             } else {
@@ -51,10 +59,14 @@ define([
             }
         });
     }
-
+    /**
+     * set the search scope
+     * @param {string} scope - set the range of scope(selection, project, workspace)
+     * @param {ViewCallback} callback - out-param(a path of scope)
+     */
     function handleSelection(scope, callback) {
 
-        model.makeScopePath(scope, function (err, scope) {
+        model.getScopePath(scope, function (err, scope) {
             if (err) {
                 callback(err);
             } else {
@@ -62,7 +74,12 @@ define([
             }
         });
     }
-
+    /**
+     * select item replaced
+     * @param {object} item - item replaced or not
+     * @param {boolean} checked - item value
+     * @param {ViewCallback} callback - set a value in the view.
+     */
     function handleCheckbox(item, checked, callback) {
 
         model.updateReplacePaths(item, checked, function () {
@@ -77,3 +94,4 @@ define([
         handleCheckbox : handleCheckbox
     };
 });
+
