@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+/**
+ * View controller on the content area
+ * @since 1.6.0
+ * @author kyungmi.k@samsung.com
+ * @module Deploy/contentViewController
+ */
 define([
     'dijit/layout/ContentPane',
     'dijit/Dialog',
@@ -29,12 +35,12 @@ define([
     'dojo/store/Memory',
     'dojox/layout/TableContainer',
     'popup-dialog',
+    'webida-lib/app',
     'webida-lib/util/locale',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     'webida-lib/webida-0.3',
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg3States', // FileDialog
-    './deploy',
     'text!./layout/app-information.html'
 ], function (
     ContentPane,
@@ -51,12 +57,12 @@ define([
     Memory,
     TableContainer,
     PopupDialog,
+    ide,
     Locale,
     Logger,
     notify,
     webida,
     FileDialog,
-    deploy,
     appInfoMarkup
 ) {
     'use strict';
@@ -72,6 +78,9 @@ define([
 
     var STR_DOT = '.';
     var STR_ARCHIVE_PATH = '/.project/deploy.zip';
+
+    var context;
+    var fsMount = ide.getFSCache();
 
     function isDuplicateDeployName(parent, name) {
         var oldName = $(parent).find('.table-title-name');
@@ -162,7 +171,6 @@ define([
     }
 
     function archiveDeployFile(excludeList, cb) {
-        var fsMount = deploy.getMount();
         var path = getProjectRootPathFromFullPath(projectPath);
         var args = ['-r', STR_DOT + STR_ARCHIVE_PATH, STR_DOT, '-x'];
         var exclude = _removeProjectPath(excludeList);
@@ -211,7 +219,6 @@ define([
     }
 
     function _writeObjectFromFile(path, selectiveObject, cb) {
-        var fsMount = deploy.getMount();
         var jsonText = JSON.stringify(selectiveObject);
 
         fsMount.writeFile(path, jsonText, function (err) {
@@ -226,7 +233,6 @@ define([
     }
 
     function setProjectExcludeListToFile(selectiveObject, cb) {
-        var fsMount = deploy.getMount();
         var path = getProjectRootPathFromFullPath(projectPath);
 
         fsMount.exists(path + '/.project', function (err, exist) {
@@ -290,7 +296,6 @@ define([
     }
 
     function _readObjectFromFile(path, cb) {
-        var fsMount = deploy.getMount();
         var selectiveObject = null;
         fsMount.readFile(path, function (err, content) {
             if (err) {
@@ -310,7 +315,6 @@ define([
     }
 
     function getProjectExcludeListFromFile(cb) {
-        var fsMount = deploy.getMount();
         var path = getProjectRootPathFromFullPath(projectPath);
         fsMount.exists(path + '/.project', function (err, exist) {
             if (err) {
@@ -456,14 +460,11 @@ define([
     }
 
     function getDomain(parent) {
-        var username = deploy.getUserName();
         var icon = $(parent).find('.table-content-table-inputbox');
-        var ret = username + '-' + icon[1].value;
-        return ret;
+        return context.username + '-' + icon[1].value;
     }
 
     function saveNewApp(parent) {
-        var username = deploy.getUserName();
         var icon = $(parent).find('.table-content-table-inputbox');
 
         var appinfo = {
@@ -471,7 +472,7 @@ define([
             apptype: 'html',
             name: icon[0].value,
             desc: icon[2].value,
-            owner: username
+            owner: context.username
         };
 
         var checkStr = checkName(parent, icon[0]);
@@ -532,7 +533,6 @@ define([
     }
 
     function initNewAppEvent(parent) {
-        var username = deploy.getUserName();
 
         var icon = $(parent).find('.table-title-setting');
         $(icon).addClass('table-title-setting-disabled');
@@ -544,7 +544,7 @@ define([
         $(icon).addClass('table-title-changeinfo-disabled');
 
         icon = $(parent).find('.table-content-table-inputbox-label');
-        icon.text(username + '-');
+        icon.text(context.username + '-');
 
         var inputBoxs = $(parent).find('.table-content-table-inputbox');
         $(inputBoxs).addClass('table-content-table-inputbox-edit');
@@ -816,7 +816,7 @@ define([
                 logger.log('getExcludeList : ' + err);
             }
             var dlg = new FileDialog({
-                mount: deploy.getMount(),
+                mount: fsMount,
                 root: getProjectRootPathFromFullPath(projectPath),
                 initialDeselection: excludeList,
                 title: i18n.messageInformSelectFiles,
@@ -844,7 +844,7 @@ define([
         var rootPath = getProjectRootPathFromFullPath(projectPath);
 
         var dlg = new FileDialog({
-            mount: deploy.getMount(),
+            mount: fsMount,
             root: rootPath,
             initialDeselection: oldSettings,
             title: i18n.messageInformSelectFiles,
@@ -919,7 +919,6 @@ define([
     function _deployApp(parent, appID, path, cb) {
         setProgressInfo(parent, true, i18n.messageInformProgressDeploy, null, true);
 
-        var fsMount = deploy.getMount();
         var prjPath = getProjectRootPathFromFullPath(projectPath);
         fsMount.readFile(prjPath + '/.project/project.json', function (err, content) {
             if (err) {
@@ -963,7 +962,7 @@ define([
         if (excludeList && excludeList.length > 0) {
             archiveDeployFile(excludeList, function (path, data) {
                 if (data) {
-                    var deployPath = deploy.getFsidName() + path;
+                    var deployPath = context.fsidName + path;
                     _deployApp(parent, appID, deployPath, cb);
                 } else {
                     logger.log('Failed to deploy with excludeList : cannot archive');
@@ -1191,7 +1190,8 @@ define([
     }
 
     var module = {
-        onStart: function () {
+        onStart: function (deployContext) {
+            context = deployContext;
             var self = this;
             var container = reg.byId('pass-content-container');
             if (container) {

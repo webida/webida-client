@@ -12,15 +12,13 @@ And you can access any resources in your project deployed on web browser using t
 webida.ide.project.deploy
  ├── layout
  │ ├── app-creation-form.html               - sub layout
- │ ├── app-information.html                 - sub layout
- │ └── deploy-layout                        - main layout
+ │ └── app-information.html                 - sub layout
  ├── nls                                    - i18n related resources
  ├── style
  │ ├── images
  │ └── style.css
  ├── content-view-controller.js             - manage list view of app information
- ├── deploy.js                              - get/set basic information
- ├── deploy-commands.js                     - run menu
+ ├── deploy-commands.js                     - menu actions
  ├── plugin.js                              - main module
  ├── plugin.json
  ├── README.md

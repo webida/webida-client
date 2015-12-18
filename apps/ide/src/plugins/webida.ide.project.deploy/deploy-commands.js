@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
+/**
+ * Actions for deploy
+ * @since 1.6.0
+ * @author kyungmi.k@samsung.com
+ * @module Deploy/command
+ */
 define([
     'dijit/Dialog',
     'dojo/i18n!./nls/resource',
     'webida-lib/app',
     'webida-lib/plugins/workspace/plugin',
-    'webida-lib/util/locale',
+    'webida-lib/util/logger/logger-client',
+    'webida-lib/util/notify',
     'webida-lib/util/path',
+    'webida-lib/webida-0.3',
     './content-view-controller',
-    './deploy',
     './workspace-view-controller',
     'text!./layout/deploy-layout.html',
     'xstyle/css!./style/style.css'
@@ -31,35 +38,94 @@ define([
     i18n,
     ide,
     wv,
-    locale,
+    Logger,
+    notify,
     pathUtil,
+    webida,
     contentViewController,
-    deploy,
     workspaceViewController,
     layoutTemplate
 ) {
     'use strict';
+    /**
+     * @type {Logger}
+     */
+    var logger = new Logger();
+    logger.off();
 
+    /**
+     * This module object
+     * @type {Object}
+     */
     var module = {};
-    var ui = {};
 
-    module.openDialog = function () {
-        deploy.init(ide.getFsid() + pathUtil.detachSlash(wv.getSelectedPath()));
-        ui.dialog = new Dialog({
-            title: i18n.titleDialog,
-            style: 'width: 810px; height: 650px',
-            refocus: false,
-            onHide: function () {
-                ui.dialog.destroyRecursive();
-            },
-            onLoad: function () {
-                workspaceViewController.onStart();
-                contentViewController.onStart();
+    /**
+     * @callback deployContextCallback
+     * @param {(Error|string)} error
+     * @param {module:Deploy.context} [context]
+     */
+
+    /**
+     * Get context object for deployment
+     * @param projectPath
+     * @param {deployContextCallback} callback
+     * @private
+     */
+    function _getContext(projectPath, callback) {
+        var context = {};
+        projectPath = (projectPath.charAt(0) === '/') ? projectPath.substring(1) : projectPath;
+        var splits = projectPath.split('/');
+        if (splits.length < 3) {
+            logger.error(i18n.validationInvalidArgument);
+            return callback(i18n.validationInvalidArgument);
+        }
+
+        context.fsidName = splits[0];
+        context.workspaceName = splits[1];
+        context.projectName = splits[2];
+        context.workspaceProjectName = context.workspaceName + '/' + context.projectName;
+        context.workspacePath = context.fsidName + '/' + context.workspaceName;
+
+        webida.auth.getMyInfo(function (err, myInfo) {
+            if (err) {
+                logger.error(i18n.messageFailGetUserInfo);
+                callback(err);
+            } else {
+                if (!myInfo.uid) {
+                    logger.error(i18n.messageFailGetUserInfo);
+                    callback(i18n.messageFailGetUserInfo);
+                } else {
+                    context.username = myInfo.uid;
+                    callback(null, context);
+                }
             }
         });
-        ui.dialog.set('doLayout', true);
-        ui.dialog.setContent(layoutTemplate);
-        ui.dialog.show();
+    }
+
+    /**
+     * Open deploy dialog with the context
+     */
+    module.openDialog = function () {
+        _getContext(ide.getFsid() + pathUtil.detachSlash(wv.getSelectedPath()), function (err, context) {
+            if (err) {
+                return notify.error(i18n.messageFailGetContext);
+            }
+            var dialog = new Dialog({
+                title: i18n.titleDialog,
+                style: 'width: 810px; height: 650px',
+                refocus: false,
+                onHide: function () {
+                    dialog.destroyRecursive();
+                },
+                onLoad: function () {
+                    workspaceViewController.onStart(context);
+                    contentViewController.onStart(context);
+                }
+            });
+            dialog.set('doLayout', true);
+            dialog.setContent(layoutTemplate);
+            dialog.show();
+        });
     };
 
     return module;

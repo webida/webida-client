@@ -38,12 +38,12 @@ define([
     /**
      * @typedef {Object} projectInfo
      * @property {string} name
-     * @property {?string} created       - created date
-     * @property {?string} lastmodified  - last modified date string
-     * @property {?string} type
-     * @property {?string} path
+     * @property {string} [created]       - created date
+     * @property {string} [lastmodified]  - last modified date string
+     * @property {string} [type]
+     * @property {string} [path]
      * @property {boolean} isProject
-     * @property {?string} description
+     * @property {string} [description]
      * @memberof module:ProjectConfigurator
      */
 
