@@ -17,8 +17,8 @@
 /**
  * This file making the search result data.
  *
- * @since: 2015.09.03
- * @author : minsung-jin
+ * @since 1.4.1
+ * @author minsung.jin@samsung.com
  */
 define([
     'external/lodash/lodash.min',
@@ -130,7 +130,11 @@ define([
             }
         });
     }
-
+    /**
+     * make data for displaying the search result in the view.
+     * @param {Object} metadata
+     * @param {ViewCallback} callback - The callback that handles the response.
+     */
     function makeFindData(metadata, callback) {
 
         var convert = _convertData(metadata);
@@ -201,8 +205,12 @@ define([
             }
         });
     }
-
-    function sendReplaceData(metadata, callback) {
+    /**
+     * make data for displaying the replaced result.
+     * @param {Object} metadata
+     * @param {ViewCallback} callback - The callback that handles the response.
+     */
+    function makeReplaceData(metadata, callback) {
 
         var convert = _convertData(metadata);
 
@@ -243,7 +251,12 @@ define([
             }
         });
     }
-
+    /**
+     * update the node changed
+     * @param {Object} item - tree node of view
+     * @param {Boolean} checked - check the replaced result
+     * @param {ViewCallback} callback - The callback that handles the response.
+     */
     function updateReplacePaths(item, checked, callback) {
 
         if (item.type === 'file') {
@@ -265,8 +278,12 @@ define([
         }
         callback();
     }
-
-    function makeScopePath(scope, callback) {
+    /**
+     * pass the path of the scope to workspace
+     * @param {string} scope - scope of search
+     * @param {ViewCallback} callback - The callback that handles the response.
+     */
+    function getScopePath(scope, callback) {
 
         var selected, path;
         switch (scope) {
@@ -310,8 +327,9 @@ define([
 
     return {
         makeFindData : makeFindData,
-        sendReplaceData : sendReplaceData,
+        makeReplaceData : makeReplaceData,
         updateReplacePaths : updateReplacePaths,
-        makeScopePath : makeScopePath
+        getScopePath : getScopePath
     };
 });
+

@@ -17,50 +17,61 @@
 /**
  * This file manages the search result data.
  *
- * @since: 2015.09.03
- * @author : minsung-jin
+ * @since 1.4.1
+ * @author minsung.jin@samsung.com
  */
 define([
 ], function (
 ) {
     'use strict';
 
+    /**
+     * constructor of search-result data
+     */
     function Data() {
     }
 
     var searchResultData = new Data();
+    /**
+     * update the search results using the given data
+     * @param {Object} data- value of search-result
+     */
+    function update(data) {
 
-    function update(source) {
-
-        if (source.scope) {
-            searchResultData.scope = source.scope;
+        if (data.scope) {
+            searchResultData.scope = data.scope;
         }
 
-        if (source.title) {
-            searchResultData.title = source.title;
+        if (data.title) {
+            searchResultData.title = data.title;
         }
 
-        if (source.node) {
-            searchResultData.treeNode = source.node;
+        if (data.node) {
+            searchResultData.treeNode = data.node;
         }
 
-        if (source.store) {
-            searchResultData.treeStore = source.store;
+        if (data.store) {
+            searchResultData.treeStore = data.store;
         }
 
-        if (source.replacePaths) {
-            searchResultData.replacePaths = source.replacePaths;
+        if (data.replacePaths) {
+            searchResultData.replacePaths = data.replacePaths;
         }
 
-        if (source.error) {
-            searchResultData.error = source.error;
+        if (data.error) {
+            searchResultData.error = data.error;
         }
     }
-
+    /**
+     * Get data for search-result
+     * @return {Object}
+     */
     function get() {
         return searchResultData;
     }
-
+    /**
+     * Clear data for search-result
+     */
     function reset() {
         searchResultData = {};
     }
@@ -71,3 +82,4 @@ define([
         reset : reset
     };
 });
+
