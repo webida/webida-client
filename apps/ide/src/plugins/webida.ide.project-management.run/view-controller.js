@@ -15,8 +15,10 @@
  */
 
 /**
- * View controller for run configuration dialog
- * @module webida.ide.project-management.run.viewController
+ * @file View controller for run configuration dialog
+ * @since 1.1.0
+ * @author kyungmi.k@samsung.com
+ * @module RunConfiguration/viewController
  */
 define([
     'dijit/Tree',
@@ -143,7 +145,7 @@ define([
      * Refresh run configuration list tree
      *
      * @method refreshTree
-     * @memberOf module:webida.ide.project-management.run.viewController
+     * @memberOf module:RunConfiguration/viewController
      */
     module.refreshTree = function () {
         ui.tree = $('#run-configuration-list-tree').empty();
@@ -211,7 +213,7 @@ define([
      *
      * @param {Object} defaultRun - selected run configuration by default
      * @param {string} mode - run mode e.g. 'run' | 'debug'
-     * @memberOf module:webida.ide.project-management.run.viewController
+     * @memberOf module:RunConfiguration/viewController
      */
     module.openWindow = function (defaultRun, mode) {
         var title;
@@ -378,7 +380,7 @@ define([
      * Get the status of dialog window
      *
      * @returns {boolean} If it is true, it means dialog is opened. Otherwise, the dialog is closed.
-     * @memberOf module:webida.ide.project-management.run.viewController
+     * @memberOf module:RunConfiguration/viewController
      */
     module.getWindowOpened = function () {
         return windowOpened;
@@ -387,7 +389,7 @@ define([
     /**
      * Reload current selected run configuration at the UI
      *
-     * @memberOf module:webida.ide.project-management.run.viewController
+     * @memberOf module:RunConfiguration/viewController
      */
     module.reload = function () {
         _addContentArea(new ContentPane());
@@ -399,7 +401,7 @@ define([
      *
      * @param {Object} runConf - target run configuration
      * @param {Object} state - state for UI e.g. {isValid: true, isDirty: true}
-     * @memberOf module:webida.ide.project-management.run.viewController
+     * @memberOf module:RunConfiguration/viewController
      */
     module.changeCurrentState = function (runConf, state) {
         current.state = _.extend(current.state, state);

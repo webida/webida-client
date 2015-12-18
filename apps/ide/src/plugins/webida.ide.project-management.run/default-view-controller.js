@@ -15,8 +15,9 @@
  */
 
 /**
- * View controller for run configuration dialog
- * @module webida.ide.project-management.run.viewController
+ * View controller of "General Web Application" type for sub-view of the run configuration dialog
+ * @since 1.1.0
+ * @author kyungmi.k@samsung.com
  */
 define([
     'external/lodash/lodash.min',
@@ -76,10 +77,6 @@ define([
     var EVENT_TYPE_STATE = 'state';
 
     var locale = new Locale(i18n);
-
-    /***************************************
-     * General web type
-     ***************************************/
 
     var currentRunConf = {};
 

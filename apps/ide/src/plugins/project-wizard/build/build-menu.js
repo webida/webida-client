@@ -42,11 +42,18 @@ define([
     Util
 ) {
     'use strict';
+
+    /**
+     * @typedef {Object} "dojo/store/Memory"
+     * @see {@link https://dojotoolkit.org/reference-guide/1.10/dojo/store/Memory.html|Memory}
+     */
+
     var logger = new Logger();
     logger.off();
+
     /**
      * Build Menu
-     * @param {module:ProjectWizard/ProjectConfigurator.projectInfo} projectInfo - project information
+     * @param {module:ProjectConfigurator.projectInfo} projectInfo - project information
      * @param {string} projectPath - path to project
      * @constructor
      */
@@ -114,7 +121,7 @@ define([
      * Open a dialog for selecting profile
      * @see module:ProjectWizard/ProfileSelectionDialog
      * @param {module:ProjectConfigurator.projectInfo} projectInfo - project information
-     * @param {Memory} buildStore - store for build information that includes name
+     * @param {"dojo/store/Memory"} buildStore - store for build information that includes name
      *      and {@link module:ProjectWizard/BuildProfile}
      * @param {Object} options - filter, message
      * @callback cb

@@ -2,18 +2,5 @@
     "name": "webida.ide.project-configurator",
     "description": "Project configurator, user can project setting",
     "version": "0.1.0",
-    "requirement": "webida.common.workspace",
-
-    "extensionPoints" : {
-        "webida.ide.project-configurator:run-configuration-type" : [
-            { "name": "id", "type": "string" },
-            { "name": "name", "type": "string" }
-        ],
-        "webida.ide.project-configurator:run-configuration" : [
-            { "name": "id", "type": "string" },
-            { "name": "name", "type": "string" },
-            { "name": "type", "type": "string" },
-            { "name": "handler", "type": "function" }
-        ]
-    }
+    "requirement": "webida.common.workspace"
 }
