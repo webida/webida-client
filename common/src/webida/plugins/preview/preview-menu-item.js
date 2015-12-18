@@ -40,6 +40,9 @@ define(['./preview-pref-values',					// options
                 return (ext && _.isArray(ext) && ext.length > 1) ? ext[1] : '';
             }
 
+            if (!path) {
+                return false;
+            }
             var name = pathUtil.dividePath(path)[1];
             if (path && name && !pathUtil.isDirPath(path)) {
                 var ext = getFileExt(name).toLowerCase();
@@ -57,7 +60,7 @@ define(['./preview-pref-values',					// options
                 'Preview': ['cmnd', 'webida-lib/plugins/preview/preview-commands', 'showPreview']
             };
         } else {
-            return null;
+            return {};
         }
     }
 
