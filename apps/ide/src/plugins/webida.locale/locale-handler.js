@@ -18,8 +18,8 @@
 * This file is for managing the changes of Locale in Preference.
 *
 * @see support locale-sensitive languages.
-* @since: 2015.10.20
-* @author: minsung.jin
+* @since 1.5.0
+* @author minsung.jin@samsung.com
 */
 
 define([
@@ -43,14 +43,14 @@ define([
 
     var isLocaleChanged;
 
-    function _reloadWindow() {
-        window.location.reload();
-    }
-
     function _setCookie(value) {
         cookie(COOKIE_ID, value, { expires: Infinity});
     }
-
+    /**
+     * Add a listener for a changed locale.
+     * @method
+     * @listens module:webida.preference~event:fieldChanged
+     */
     function addLocaleChangeListener() {
         var preferenceService = PreferenceServiceFactory.get('WORKSPACE');
 
@@ -69,7 +69,10 @@ define([
             }
         });
     }
-
+    /**
+     * Keeps an eye out for file system
+     * @listens module:fs~event:set
+     */
     topic.subscribe('fs/cache/file/set',
                     function (fsURL, target, reason, isModified) {
         if (isLocaleChanged && isModified) {
@@ -89,7 +92,7 @@ define([
                 refocus: false,
                 methodOnEnter: null,
                 reload: function () {
-                    _reloadWindow();
+                    window.location.reload();
                 },
                 cancelClose: function () {
                     localeDialog.hide();
@@ -109,3 +112,4 @@ define([
         addLocaleChangeListener : addLocaleChangeListener
     };
 });
+
