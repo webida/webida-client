@@ -12,9 +12,11 @@ webida.ide.project-management.run
  ├── layout
  │ ├── default-run-configuration.html       - sub layout
  │ └── run-configuration.html               - main layout
+ ├── nls
+ ├── resource
  ├── style
- │ ├── image
  │ └── style.css
+ ├── default-delegator.js                   - delegator for actions of General Web Application
  ├── default-view-controller.js             - managing on General Web Application view
  ├── delegator.js                           - delegating for actions (CRUD and Run/Debug)
  ├── plugin.js
@@ -28,11 +30,15 @@ webida.ide.project-management.run
 
 ### webida.ide.project-management.run:type (Mandatory)
 
+It's for categorizing the types of run configurations and determining what method is called when actions on these configurations are occurred.
+
 - id(string): run type
 - name(string): name of this type to display (label)
 - hidden(boolean): hiding this type on run configuration UI
 
-### webida.ide.project-management.run:configuration (Mandatory)
+### webida.ide.project-management.run:configuration (Optional)
+
+It's for the actions of sub-view of the Run Configurations dialog.
 
 - type(string): run type
 - newConf(function(content, newRunConf, callback))
@@ -205,3 +211,13 @@ define([
     };
 });
 ```
+
+## Plan To Do
+
+- The default run configuration(General Web Application) is included in this plugin. It is needed to separate from this.
+    - The `default-view-controller.js`, `layout/default-run-configuration.html` and codes processing on default case in `delegator.js` may be the targets.
+    - And making new extension for this "General Web Application", removing codes that processed on the default case in `delegator.js` file. 
+- The management way of run configuration objects needed to be as an Array, not a Map. It is hard to manipulate the current Map.
+- And the way to attach sub-view of the dialog managed by this plugin's SHOULD be follow the preferences plugin.
+    - And also visual and functional range of the sub-view is needed to be reduced(e.g. 'Apply' button).
+- There is a need to make a kind of service module for other plugins.
