@@ -17,8 +17,8 @@
 /**
  * This file shows up the search result list.
  *
- * @since: 2015.09.03
- * @author : minsung-jin
+ * @since 1.4.1
+ * @author minsung.jin@samsung.com
  */
 define([
     'dijit/form/Button',
@@ -63,7 +63,9 @@ define([
     'use strict';
 
     var SearchResultView;
-
+    /**
+     * Get restricted search-result view
+     */
     function getView() {
 
         if (!SearchResultView) {
@@ -74,7 +76,9 @@ define([
 
         return SearchResultView;
     }
-
+    /**
+     * Called when view is appended
+     */
     function onViewAppended() {
 
         var view = SearchResultView;
@@ -384,3 +388,4 @@ define([
         onViewAppended : onViewAppended,
     };
 });
+
