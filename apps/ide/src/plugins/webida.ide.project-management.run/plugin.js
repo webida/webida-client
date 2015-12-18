@@ -20,7 +20,7 @@
  * Src:
  *   plugins/webida.ide.project-management.run/plugin.js
  *
- * @module webida.ide.project-management.run
+ * @module RunConfiguration
  */
 define([
     'dojo/i18n!./nls/resource',
@@ -30,6 +30,7 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/locale',
+    'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     'webida-lib/util/path',
     './delegator',
@@ -42,6 +43,7 @@ define([
     workbench,
     workspace,
     Locale,
+    Logger,
     notify,
     pathUtil,
     delegator,
@@ -49,67 +51,113 @@ define([
 ) {
     'use strict';
 
+    /**
+     * @type {Logger}
+     */
+    var logger = new Logger();
+    logger.off();
+
+    /**
+     * module object
+     * @type {Object}
+     */
     var module = {};
+
+    /**
+     * @type {Locale}
+     */
     var locale = new Locale(i18n);
 
+    /**
+     * @constant {object}
+     */
     var extensionPoints = {
         RUN_CONFIGURATION_HOOK: 'webida.ide.project-management.run:hook'
     };
+    /**
+     * Extension objects for run configuration hook
+     * @type {Array.<Object>}
+     */
     var extensions = pluginManager.getExtensions(extensionPoints.RUN_CONFIGURATION_HOOK);
 
+    /**
+     * Context menu items for run
+     * @type {Array}
+     */
     var contextRunMenuItems = [];
+
+    /**
+     * Context menu items for debug
+     * @type {Array}
+     */
     var contextDebugMenuItems = [];
 
+    /**
+     * Workbench whole menu items
+     * @type {Object}
+     */
     var workbenchWholeItems = {
         '&Run': [
             'cmnd',
             'plugins/webida.ide.project-management.run/plugin',
-            'workbenchRunBinded'
+            'workbenchRunBound'
         ],
         'Run &with': [
             'enum',
             'plugins/webida.ide.project-management.run/plugin',
-            'workbenchRunListBinded'
+            'workbenchRunListBound'
         ],
-        'Debug': [
+        Debug: [
             'cmnd',
             'plugins/webida.ide.project-management.run/plugin',
-            'workbenchDebugBinded'
+            'workbenchDebugBound'
         ],
         'Debug with': [
             'enum',
             'plugins/webida.ide.project-management.run/plugin',
-            'workbenchDebugListBinded'
+            'workbenchDebugListBound'
         ]
     };
 
+    /**
+     * Workspace whole context menu items
+     * @type {Object}
+     */
     var workspaceWholeItems = {
         '&Run': [
             'cmnd',
             'plugins/webida.ide.project-management.run/plugin',
-            'workspaceRunBinded'
+            'workspaceRunBound'
         ],
         'Run &with': [
             'enum',
             'plugins/webida.ide.project-management.run/plugin',
-            'workspaceRunListBinded'
+            'workspaceRunListBound'
         ],
-        'Debug': [
+        Debug: [
             'cmnd',
             'plugins/webida.ide.project-management.run/plugin',
-            'workspaceDebugBinded'
+            'workspaceDebugBound'
         ],
         'Debug with': [
             'enum',
             'plugins/webida.ide.project-management.run/plugin',
-            'workspaceDebugListBinded'
+            'workspaceDebugListBound'
         ]
     };
 
+    /**
+     * @constant {string}
+     */
     var RUN_CONFIGURATIONS = i18n.labelMoreRunConfigurations;
+    /**
+     * @constant {string}
+     */
     var DEBUG_CONFIGURATIONS = i18n.labelMoreDebugConfigurations;
 
-    // for i18n
+    /**
+     * Convert and apply locale to menu
+     */
     (function _convertMenuLocale() {
         locale.convertMenuItem(workbenchWholeItems, 'menu');
         locale.convertMenuItem(workspaceWholeItems, 'menu');
@@ -123,10 +171,259 @@ define([
         return (splitPath.length < 3) ? '' : splitPath[2];
     }
 
+    function _isRunnableProjectPath(projectLevelPath) {
+        if (!projectLevelPath || !pathUtil.isDirPath(projectLevelPath)) {
+            return false;
+        }
+
+        var projectName = pathUtil.getName(projectLevelPath);
+        return projectName && projectName.charAt(0) !== '.';
+    }
+
+    function _isRunnablePath(path) {
+        var projectPath = pathUtil.getProjectRootPath(path);
+        return _isRunnableProjectPath(projectPath);
+    }
+
     /**
-     * Implementation of webida.common.workbench:menu
-     * @method getViableItemsForWorkbench
-     * @memberOf module:webida.ide.project-management.run
+     * Open the configuration dialog
+     * @memberOf module:RunConfiguration
+     * @private
+     */
+    function _openRunConfigurationDialog(defaultRun, mode) {
+        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+            viewController.openWindow(defaultRun, mode);
+        });
+    }
+
+    /**
+     * Refresh for configuration list
+     * @method refreshRunConfigurationTree
+     */
+    function _refreshRunConfigurationTree() {
+        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+            viewController.refreshTree();
+        });
+    }
+
+    /**
+     * Apply changed states on current run configuration object
+     * @param runConf
+     * @param state
+     * @private
+     */
+    function _changeCurrentState(runConf, state) {
+        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
+            viewController.changeCurrentState(runConf, state);
+        });
+    }
+
+    /**
+     *
+     * @param projectName
+     * @param mode
+     * @param callback
+     * @private
+     */
+    function _beforeLaunchHook(projectName, mode, callback) {
+        ide.getProjectInfo(projectName, function (err, projectInfo) {
+            var ext;
+            if (err) {
+                logger.log(err);
+                callback(err);
+            } else {
+                ext = _.find(extensions, function (ext) {
+                    return ext.type === projectInfo.type;
+                });
+                if (ext) {
+                    require([ext.module], function (mod) {
+                        if (mod[ext.beforeLaunch]) {
+                            mod[ext.beforeLaunch].call(mod, projectInfo, mode, callback);
+                        }
+                    });
+                } else {
+                    callback();
+                }
+            }
+        });
+    }
+
+    /**
+     *
+     * @param index
+     * @param mode
+     * @returns {*}
+     * @private
+     */
+    function _getContextItem(index, mode) {
+        switch (mode) {
+            case runConfigurationManager.MODE.RUN_MODE:
+                if (!contextRunMenuItems || contextRunMenuItems.length <= index) {
+                    return null;
+                } else {
+                    return contextRunMenuItems[index];
+                }
+                break;
+            case runConfigurationManager.MODE.DEBUG_MODE:
+                if (!contextDebugMenuItems || contextDebugMenuItems.length <= index) {
+                    return null;
+                } else {
+                    return contextDebugMenuItems[index];
+                }
+                break;
+            default:
+                break;
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param index
+     * @param mode
+     * @returns {*}
+     * @private
+     */
+    function _runListBound(index, mode) {
+        var runStirngSplit;
+        var runConfName;
+        var runConfNameSplit;
+        var name;
+        var runConf;
+        var runString;
+        if (index === -1) {
+            return _workbenchRunBound(mode);
+        }
+        runString = _getContextItem(index, mode);
+        if (!runString) {
+            return null;
+        }
+
+        if (runString.trim() === RUN_CONFIGURATIONS ||
+            runString.trim() === DEBUG_CONFIGURATIONS) {
+            _openRunConfigurationDialog(null, mode);
+        } else {
+            runStirngSplit = runString.split(' : ');
+            runConfName = runStirngSplit[1];
+            runConfNameSplit = runConfName.split(' [');
+            name = runConfNameSplit[0];
+            runConf = runConfigurationManager.getByName(name);
+            switch (mode) {
+                case runConfigurationManager.MODE.RUN_MODE:
+                    delegator.run(runConf);
+                    break;
+                case runConfigurationManager.MODE.DEBUG_MODE:
+                    delegator.debug(runConf);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    function _workbenchRunBound(mode) {
+        var context = workbench.getContext();
+        var contextPaths;
+
+        if (context && context.paths) {
+            contextPaths = context.paths;
+            if (contextPaths.length === 1) {
+                var bRunnable = _isRunnablePath(contextPaths[0]);
+                if (bRunnable !== true) {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
+
+        if (!contextPaths) {
+            logger.error(i18n.validationNoContextPath);
+            return;
+        }
+        var contextPath = contextPaths[0];
+        if (contextPath === workspace.getRootPath()) {
+            notify.warning(i18n.validationPreventWorkspaceRun);
+        }
+
+        var projectName = _parseProjectNameFromPath(contextPath);
+
+        _beforeLaunchHook(projectName, mode, function (err) {
+            if (err) {
+                notify.error(err);
+            } else {
+                var runConfigurations = runConfigurationManager.getByProjectName(projectName);
+                if (_.isEmpty(runConfigurations)) {
+                    _openRunConfigurationDialog(null, mode);
+                } else {
+                    var latestRuns = _.where(runConfigurations, {latestRun: true});
+                    _runBound(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
+                }
+            }
+        });
+    }
+
+    function _workspaceRunBound(mode) {
+        var selectedPaths = workspace.getSelectedPaths();
+        if (!selectedPaths || selectedPaths.length !== 1) {
+            return null;
+        }
+
+        var selectedPath = selectedPaths[0];
+        if (!selectedPath) {
+            return;
+        }
+        var nodeSplit = selectedPath.split('/');
+        var projectName = nodeSplit[2];
+
+        _beforeLaunchHook(projectName, mode, function (err) {
+            if (err) {
+                notify.error(err);
+            } else {
+                var runConfigurations = runConfigurationManager.getByProjectName(projectName);
+                if (_.isEmpty(runConfigurations)) {
+                    _openRunConfigurationDialog(null, mode);
+                } else {
+                    var latestRuns = _.where(runConfigurations, {latestRun: true});
+                    _runBound(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
+                }
+            }
+        });
+    }
+
+    /**
+     * Action for run menu
+     * @param {module:RunConfiguration/manager.runConfigurationInfo} runConf - run configuration object to run
+     * @param {module:RunConfiguration/manager.runMode} mode
+     * @private
+     */
+    function _runBound(runConf, mode) {
+        switch (mode) {
+            case runConfigurationManager.MODE.RUN_MODE:
+                if (!runConf) {
+                    notify.info(i18n.messageNoRunConfiguration);
+                    _openRunConfigurationDialog(null, mode);
+                } else {
+                    delegator.run(runConf);
+                }
+                break;
+            case runConfigurationManager.MODE.DEBUG_MODE:
+                if (!runConf) {
+                    notify.info(i18n.messageNoDebugConfiguration);
+                    _openRunConfigurationDialog(null, mode);
+                } else {
+                    delegator.debug(runConf);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Implementation of webida.common.workbench:menu extension
+     * @see {@link ./plugin.json|Plugin descriptor}
+     * @memberOf module:RunConfiguration
      */
     module.getViableItemsForWorkbench = function () {
         var contextMenuItems = [];
@@ -137,7 +434,7 @@ define([
         if (context && context.paths) {
             contextPaths = context.paths;
             if (contextPaths.length === 1) {
-                var bRunnable = isRunnablePath(contextPaths[0]);
+                var bRunnable = _isRunnablePath(contextPaths[0]);
 
                 /*jshint -W069 */
                 if (bRunnable === true) {
@@ -188,7 +485,7 @@ define([
         items['Run &with'] = workbenchWholeItems['Run &with'];
         items['Run &with'][3] = contextRunMenuItems;
 
-        contextDebugMenuItems =  _.clone(contextMenuItems);
+        contextDebugMenuItems = _.clone(contextMenuItems);
         contextDebugMenuItems.push(DEBUG_CONFIGURATIONS);
         items['Debug with'] = workbenchWholeItems['Debug with'];
         items['Debug with'][3] = contextDebugMenuItems;
@@ -197,9 +494,9 @@ define([
     };
 
     /**
-     * Implementation of webida.common.workspace:menu
-     * @method getViableItemsForWorkspaceView
-     * @memberOf module:webida.ide.project-management.run
+     * Implementation of webida.common.workspace:menu extension
+     * @see {@link ./plugin.json|Plugin descriptor}
+     * @memberOf module:RunConfiguration
      */
     module.getViableItemsForWorkspaceView = function () {
         var contextMenuItems = [];
@@ -216,7 +513,7 @@ define([
             return items;
         }
 
-        if (isRunnablePath(selectedPath) !== true) {
+        if (_isRunnablePath(selectedPath) !== true) {
             return items;
         }
 
@@ -266,324 +563,91 @@ define([
     /**
      * Implementation for subscriptions of "project/run/config/changed"
      * @method runObjectChanged
-     * @memberOf module:webida.ide.project-management.run
+     * @memberOf module:RunConfiguration
      */
     module.runObjectChanged = function (action) {
         if (action === 'save' && arguments[1]) {
             var runConf = arguments[1];
             delegator.saveConf(runConf, function (err) {
                 if (!err) {
-                    refreshRunConfigurationTree();
+                    _refreshRunConfigurationTree();
                 }
             });
         } else if (action === 'state' && arguments[1] && arguments[2]) {
-            changeCurrentState(arguments[1], arguments[2]);
+            _changeCurrentState(arguments[1], arguments[2]);
             if (arguments[2].isDirty !== undefined) {
-                refreshRunConfigurationTree();
+                _refreshRunConfigurationTree();
             }
         }
     };
 
     /**
-     * Open the configuration dialog
-     * @method openRunConfigurationDialog
-     * @memberOf module:webida.ide.project-management.run
+     * Handler for run menu item in workbench
+     * @memberof module:RunConfiguration
      */
-    function openRunConfigurationDialog(defaultRun, mode) {
-        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
-            viewController.openWindow(defaultRun, mode);
-        });
-    }
-
-    /**
-     * Refresh for configuration list
-     * @method refreshRunConfigurationTree
-     * @memberOf module:webida.ide.project-management.run
-     */
-    function refreshRunConfigurationTree() {
-        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
-            viewController.refreshTree();
-        });
-    }
-
-    function changeCurrentState(runConf, state) {
-        require(['plugins/webida.ide.project-management.run/view-controller'], function (viewController) {
-            viewController.changeCurrentState(runConf, state);
-        });
-    }
-
-    /**
-     * Run menu item handler in workbench
-     * @method workbenchRunBinded
-     * @memberOf module:webida.ide.project-management.run
-     */
-    module.workbenchRunBinded = function () {
-        _workbenchRunBinded(runConfigurationManager.MODE.RUN_MODE);
+    module.workbenchRunBound = function () {
+        _workbenchRunBound(runConfigurationManager.MODE.RUN_MODE);
     };
 
     /**
-     * Debug menu item handler in workbench
-     * @method workbenchDebugBinded
-     * @memberOf module:webida.ide.project-management.run
+     * Handler for debug menu item in workbench
+     * @memberof module:RunConfiguration
      */
-    module.workbenchDebugBinded = function () {
-        _workbenchRunBinded(runConfigurationManager.MODE.DEBUG_MODE);
-    };
-
-    function _beforeLaunchHook(projectName, mode, callback) {
-        ide.getProjectInfo(projectName, function (err, projectInfo) {
-            var ext;
-            if (err) {
-                console.log(err);
-                callback(err);
-            } else {
-                ext = _.find(extensions, function (ext) {
-                    return ext.type === projectInfo.type;
-                });
-                if (ext) {
-                    require([ext.module], function (mod) {
-                        if (mod[ext.beforeLaunch]) {
-                            mod[ext.beforeLaunch].call(mod, projectInfo, mode, callback);
-                        }
-                    });
-                } else {
-                    callback();
-                }
-            }
-        });
-    }
-
-    function _workbenchRunBinded(mode) {
-        var context = workbench.getContext();
-        var contextPaths;
-
-        if (context && context.paths) {
-            contextPaths = context.paths;
-            if (contextPaths.length === 1) {
-                var bRunnable = isRunnablePath(contextPaths[0]);
-                if (bRunnable !== true) {
-                    return;
-                }
-            } else {
-                return;
-            }
-        }
-
-        if (!contextPaths) {
-            console.error(i18n.validationNoContextPath);
-            return;
-        }
-        var contextPath = contextPaths[0];
-        if (contextPath === workspace.getRootPath()) {
-            notify.warning(i18n.validationPreventWorkspaceRun);
-        }
-
-        var projectName = parseProjectNameFromPath(contextPath);
-
-        _beforeLaunchHook(projectName, mode, function (err) {
-            if (err) {
-                notify.error(err);
-            } else {
-                var runConfigurations = runConfigurationManager.getByProjectName(projectName);
-                if (_.isEmpty(runConfigurations)) {
-                    openRunConfigurationDialog(null, mode);
-                } else {
-                    var latestRuns = _.where(runConfigurations, {latestRun: true});
-                    _runBound(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
-                }
-            }
-        });
-    }
-
-    /**
-     * Run with menu item handler in workbench
-     * @method workbenchRunListBinded
-     * @memberOf module:webida.ide.project-management.run
-     */
-    module.workbenchRunListBinded = function (index) {
-        _runListBinded(index, runConfigurationManager.MODE.RUN_MODE);
+    module.workbenchDebugBound = function () {
+        _workbenchRunBound(runConfigurationManager.MODE.DEBUG_MODE);
     };
 
     /**
-     * Debug with menu item handler in workbench
-     * @method workbenchDebugListBinded
-     * @memberOf module:webida.ide.project-management.run
+     * Handler for run menu list items in workbench
+     * @param {number} index - the index of the menu item
+     * @memberof module:RunConfiguration
      */
-    module.workbenchDebugListBinded = function (index) {
-        _runListBinded(index, runConfigurationManager.MODE.DEBUG_MODE);
-    };
-
-    function _getContextItem(index, mode) {
-        switch (mode) {
-            case runConfigurationManager.MODE.RUN_MODE:
-                if (!contextRunMenuItems || contextRunMenuItems.length <= index) {
-                    return null;
-                } else {
-                    return contextRunMenuItems[index];
-                }
-                break;
-            case runConfigurationManager.MODE.DEBUG_MODE:
-                if (!contextDebugMenuItems || contextDebugMenuItems.length <= index) {
-                    return null;
-                } else {
-                    return contextDebugMenuItems[index];
-                }
-                break;
-            default:
-                break;
-        }
-        return null;
-    }
-
-    function _runListBinded(index, mode) {
-        var runStirngSplit;
-        var runConfName;
-        var runConfNameSplit;
-        var name;
-        var runConf;
-        var runString;
-        if (index === -1) {
-            return _workbenchRunBinded(mode);
-        }
-        runString = _getContextItem(index, mode);
-        if (!runString) {
-            return null;
-        }
-
-        if (runString.trim() === RUN_CONFIGURATIONS ||
-            runString.trim() === DEBUG_CONFIGURATIONS) {
-            openRunConfigurationDialog(null, mode);
-        } else {
-            runStirngSplit = runString.split(' : ');
-            runConfName = runStirngSplit[1];
-            runConfNameSplit = runConfName.split(' [');
-            name = runConfNameSplit[0];
-            runConf = runConfigurationManager.getByName(name);
-            switch (mode) {
-                case runConfigurationManager.MODE.RUN_MODE:
-                    delegator.run(runConf);
-                    break;
-                case runConfigurationManager.MODE.DEBUG_MODE:
-                    delegator.debug(runConf);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Run menu item handler in workspace
-     * @method workspaceRunBinded
-     * @memberOf module:webida.ide.project-management.run
-     */
-    module.workspaceRunBinded = function () {
-        _workspaceRunBinded(runConfigurationManager.MODE.RUN_MODE);
+    module.workbenchRunListBound = function (index) {
+        _runListBound(index, runConfigurationManager.MODE.RUN_MODE);
     };
 
     /**
-     * Debug menu item handler in workspace
-     * @method workspaceDebugBinded
-     * @memberOf module:webida.ide.project-management.run
+     * Handler for debug menu list items in workbench
+     * @param {number} index - the index of the menu item
+     * @memberof module:RunConfiguration
      */
-    module.workspaceDebugBinded = function () {
-        _workspaceRunBinded(runConfigurationManager.MODE.DEBUG_MODE);
-    };
-
-    function _workspaceRunBinded(mode) {
-        var selectedPaths = workspace.getSelectedPaths();
-        if (!selectedPaths || selectedPaths.length !== 1) {
-            return null;
-        }
-
-        var selectedPath = selectedPaths[0];
-        if (!selectedPath) {
-            return;
-        }
-        var nodeSplit = selectedPath.split('/');
-        var projectName = nodeSplit[2];
-
-        _beforeLaunchHook(projectName, mode, function (err) {
-            if (err) {
-                notify.error(err);
-            } else {
-                var runConfigurations = runConfigurationManager.getByProjectName(projectName);
-                if (_.isEmpty(runConfigurations)) {
-                    openRunConfigurationDialog(null, mode);
-                } else {
-                    var latestRuns = _.where(runConfigurations, {latestRun: true});
-                    _runBound(_.isEmpty(latestRuns) ? runConfigurations[0] : latestRuns[0], mode);
-                }
-            }
-        });
-    }
-
-    function _runBound(runConf, mode) {
-        switch (mode) {
-            case runConfigurationManager.MODE.RUN_MODE:
-                if (!runConf) {
-                    notify.info(i18n.messageNoRunConfiguration);
-                    openRunConfigurationDialog(null, mode);
-                } else {
-                    delegator.run(runConf);
-                }
-                break;
-            case runConfigurationManager.MODE.DEBUG_MODE:
-                if (!runConf) {
-                    notify.info(i18n.messageNoDebugConfiguration);
-                    openRunConfigurationDialog(null, mode);
-                } else {
-                    delegator.debug(runConf);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**
-     * Run with menu item handler in workspace
-     * @method workspaceRunListBinded
-     * @memberOf module:webida.ide.project-management.run
-     */
-    module.workspaceRunListBinded = function (index) {
-        _runListBinded(index, runConfigurationManager.MODE.RUN_MODE);
+    module.workbenchDebugListBound = function (index) {
+        _runListBound(index, runConfigurationManager.MODE.DEBUG_MODE);
     };
 
     /**
-     * Debug with menu item handler in workspace
-     * @method workspaceDebugListBinded
-     * @memberOf module:webida.ide.project-management.run
+     * Handler for run context menu item in workspace view
+     * @memberof module:RunConfiguration
      */
-    module.workspaceDebugListBinded = function (index) {
-        _runListBinded(index, runConfigurationManager.MODE.DEBUG_MODE);
+    module.workspaceRunBound = function () {
+        _workspaceRunBound(runConfigurationManager.MODE.RUN_MODE);
     };
 
-    function isRunnableProjectPath(projectLevelPath) {
-        if (!projectLevelPath || !pathUtil.isDirPath(projectLevelPath)) {
-            return false;
-        }
+    /**
+     * Handler for debug context menu item in workspace view
+     * @memberof module:RunConfiguration
+     */
+    module.workspaceDebugBound = function () {
+        _workspaceRunBound(runConfigurationManager.MODE.DEBUG_MODE);
+    };
 
-        var projectName = pathUtil.getName(projectLevelPath);
-        return projectName && projectName.charAt(0) !== '.';
-    }
+    /**
+     * Handler for run context menu list items in workspace view
+     * @param {number} index - the index of the menu item
+     * @memberof module:RunConfiguration
+     */
+    module.workspaceRunListBound = function (index) {
+        _runListBound(index, runConfigurationManager.MODE.RUN_MODE);
+    };
 
-    function isRunnablePath(path) {
-        var projectPath = pathUtil.getProjectRootPath(path);
-        return isRunnableProjectPath(projectPath);
-    }
-
-    function parseProjectNameFromPath(path) {
-        if (!path) {
-            return '';
-        }
-        var splitPath = path.split('/');
-        if (!splitPath || splitPath.length < 3) {
-            return '';
-        }
-        return splitPath[2];
-    }
+    /**
+     * Handler for debug context menu list items in workspace view
+     * @param {number} index - the index of the menu item
+     * @memberof module:RunConfiguration
+     */
+    module.workspaceDebugListBound = function (index) {
+        _runListBound(index, runConfigurationManager.MODE.DEBUG_MODE);
+    };
 
     return module;
-
 });

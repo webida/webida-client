@@ -15,10 +15,10 @@
  */
 
 /**
- * webida - run configuration manager
- *
- * Src:
- *   plugins/webida.ide.project-management.run/run-configuration-manager.js
+ * @file Manager on all of the run configurations
+ * @since 1.1.0
+ * @author kyungmi.k@samsung.com
+ * @module RunConfiguration/manager
  */
 define([
     'external/async/dist/async.min',
@@ -47,6 +47,18 @@ define([
 ) {
     'use strict';
 
+    /**
+     * @typedef {Object} runConfigurationInfo
+     * @property {string} name
+     * @property {string} project
+     * @property {string} type
+     * @property {string} path
+     * @memberof module:RunConfiguration/manager
+     */
+
+    /**
+     * @type {Logger}
+     */
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     logger.off();
@@ -58,6 +70,13 @@ define([
     var RUN_CONFIG_FILE_NAME = 'workspace.json';
     var PATH_RUN_CONFIG = PATH_WORKSPACE + '/' + WORKSPACE_INFO_DIR_NAME + '/' + RUN_CONFIG_FILE_NAME;
 
+    /**
+     * Run mode (run or debug)
+     * @alias runMode
+     * @enum {string}
+     * @readonly
+     * @memberof module:RunConfiguration/manager
+     */
     var MODE = {
         RUN_MODE: 'run',
         DEBUG_MODE: 'debug'
