@@ -204,6 +204,25 @@ define([
                 }
             }
             logger.error('CaCommand[' + command + '] is not supported.');
+        },
+        /**
+         * Execute the command for every supporting controls
+         *
+         * @param {string} command
+         *
+         * @param {[args]} arguments
+         *
+         * @return {all}
+         */
+        execCommandForAll: function (command) {
+            var slice = Array.prototype.slice;
+            var args = slice.apply(arguments);
+            for (var i = 0; i < this.controls.length; i++) {
+                if (this.controls[i].canExecute(command)) {
+                    this.controls[i].execCommand.apply(this.controls[i], args);
+                }
+            }
+            logger.error('CaCommand[' + command + '] is not supported.');
         }
     });
 

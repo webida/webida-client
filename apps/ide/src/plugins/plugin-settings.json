@@ -2,6 +2,10 @@
     "plugins" : [
         "plugins/webida.editor.text-editor",
         "plugins/webida.editor.code-editor",
+        "plugins/webida.editor.code-editor.ca.css.lint",
+        "plugins/webida.editor.code-editor.ca.html.lint",
+        "plugins/webida.editor.code-editor.ca.js.lint",
+        "plugins/webida.editor.code-editor.ca.json.lint",
         "plugins/webida.editor.code-editor.content-assist.beautify",
         "plugins/webida.editor.code-editor.content-assist.comments",
         "plugins/webida.editor.code-editor.content-assist.css.css-smart",
