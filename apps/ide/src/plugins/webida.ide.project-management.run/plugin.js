@@ -64,7 +64,7 @@ define([
     var module = {};
 
     /**
-     * @type {Locale}
+     * @type {module:Locale}
      */
     var locale = new Locale(i18n);
 

@@ -13,42 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/**
+ * View controller on the workspace area that contains project list in the deploy dialog
+ * @since 1.6.0
+ * @author kyungmi.k@samsung.com
+ * @module Deploy/workspaceViewController
+ */
 define([
-    'dijit/registry', // reg
+    'dijit/registry',
     'dijit/TitlePane',
     'dojo/i18n!./nls/resource',
-    'dojo/parser', // parser
+    'dojo/parser',
+    'webida-lib/app',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
-    './content-view-controller',
-    './deploy'
+    './content-view-controller'
 ], function (
     reg,
     TitlePane,
     i18n,
     parser,
+    ide,
     Logger,
     notify,
-    contentViewController,
-    deploy
+    contentViewController
 ) {
     'use strict';
     var logger = new Logger();
     var oldSelected = null;
+    var context;
 
-    function cbChangeProject(path) {
+    function _onChangeProject(path) {
         contentViewController.changeProjectPath(path);
     }
 
-    function addProject(name, selected) {
+    function _addProject(name, selected) {
         var item = {
             path: null,
             elem: null
         };
 
-        //this.itemList.push(item);
-        var path = deploy.getFsidWorkspaceName() + '/' + name;
+        var path = context.workspacePath + '/' + name;
         item.path = path;
         item.elem = $('<div class="deploy-title-item" id=' + 'prjListItem' + path + '></div>');
         item.elem.attr('title', 'Project name : ' + name);
@@ -63,7 +68,6 @@ define([
             if (oldSelected === item.elem) {
                 return;
             }
-
             contentViewController.beforeChange(function (ret) {
                 if (!ret) {
                     item.elem.removeClass('deploy-title-item-pushed');
@@ -72,7 +76,7 @@ define([
                         oldSelected.removeClass('deploy-title-item-selected');
                     }
                     item.elem.removeClass('deploy-title-item-pushed');
-                    cbChangeProject(path);
+                    _onChangeProject(path);
                     item.elem.addClass('deploy-title-item-selected');
                     oldSelected = item.elem;
                 }
@@ -98,14 +102,14 @@ define([
             if (oldSelected) {
                 oldSelected.removeClass('deploy-title-item-selected');
             }
-            cbChangeProject(path);
+            _onChangeProject(path);
             item.elem.addClass('deploy-title-item-selected');
             oldSelected = item.elem;
         }
 
     }
 
-    function cbGetProject(err, lists) {
+    function _onGetProject(err, lists) {
         if (err) {
             logger.log('failed to get project list.');
             notify.error(i18n.messageFailGetProjects);
@@ -115,30 +119,25 @@ define([
                 return;
             }
 
-            var projectName = deploy.getProjectName();
-
             lists.sort(function (a, b) {
                 if (a.name > b.name) {
                     return 1;
                 }
-
                 if (a.name < b.name) {
                     return -1;
                 }
-
                 return 0;
             });
 
             var list;
-
             for (var i = 0; i < lists.length; i++) {
                 list = lists[i];
                 if (list.isDirectory === true) {
                     if (list.name[0] !== '.') {
-                        if (list.name === projectName) {
-                            addProject(list.name, true);
+                        if (list.name === context.projectName) {
+                            _addProject(list.name, true);
                         } else {
-                            addProject(list.name, false);
+                            _addProject(list.name, false);
                         }
                     }
                 }
@@ -146,21 +145,15 @@ define([
         }
     }
 
-    function init() {
-        var workspaceName = deploy.getWorkspaceName();
-        if (!workspaceName) {
-            return;
-        }
-        var root = deploy.getMount();
-        //$('#workspace-list-title').append('<div>'+ workspaceName+'</div>');
-        var elem = $('#workspace-list-title');
-        elem.text(workspaceName);
-        root.list('/' + workspaceName, cbGetProject);
-    }
-
     return {
-        onStart: function () {
-            init();
+        onStart: function (deployContext) {
+            context = deployContext;
+            var workspaceName = context.workspaceName;
+            if (!workspaceName) {
+                return;
+            }
+            $('#workspace-list-title').text(workspaceName);
+            ide.getFSCache().list('/' + workspaceName, _onGetProject);
         }
     };
 });

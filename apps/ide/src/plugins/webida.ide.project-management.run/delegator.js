@@ -58,7 +58,7 @@ define([
      */
     var delegators = {};
     /**
-     * @type {Locale}
+     * @type {module:Locale}
      */
     var locale = new Locale(i18n);
     /**
@@ -94,7 +94,7 @@ define([
      * @callback contentLoadCallback
      * @param {(Error|String)} error
      * @param {module:RunConfiguration/manager.runConfigurationInfo} runConf
-     * @param {?Object} content - dojo widget
+     * @param {Object} [content] - dojo widget
      * @memberOf module:RunConfiguration/delegator
      */
 
