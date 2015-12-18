@@ -20,6 +20,7 @@
  * @see support locale-sensitive languages.
  * @since: 2015.10.27
  * @author: minsung.jin
+ * @module Locale
 */
 
 define([
@@ -49,7 +50,7 @@ define([
     /**
      * Set messages to the DOM elements according to current locale option
      *
-     * @param {{Element|Jquery|string}} [domNode] - Object or id for Top level DOM node element object to set message
+     * @param {(Element|JQuery|string)} [domNode] - Object or id for Top level DOM node element object to set message
      * @param {string} [attrName=data-message] - attribute name of any element that has messageKey  of
      *      the resource object as its value. It's optional parameter. And default value is 'data-message'.
      *
@@ -68,6 +69,7 @@ define([
      *          var localeUtil = new LocaleUtil(resources);
      *          localeUtil.convertMessage(document.getElementById('container'), 'data-message');
      *      </pre>
+     * @memberof module:Locale
      */
     LocaleUtil.prototype.convertMessage = function (domNode, attrName) {
         if (typeof domNode === 'string') {
@@ -82,6 +84,7 @@ define([
      * @param {string} messageKey - key name of the resource object
      * @param {object} [formatValues] - variables for formatting. If it is not set, it will return raw message.
      * @returns {string} - formatted message
+     * @memberof module:Locale
      */
     LocaleUtil.prototype.formatMessage = function (messageKey, formatValues) {
         var message = this.resources[messageKey] || '';
@@ -109,6 +112,7 @@ define([
      *   };
      *   locale.convertMenuItem(menuItems, 'menu');
      *  </pre>
+     *  @memberof module:Locale
      */
     LocaleUtil.prototype.convertMenuItem = function (menuItems, prefix, postfix) {
         var item;
@@ -131,6 +135,7 @@ define([
      * Original method
      * @param resources
      * @param attrName
+     * @memberof module:Locale
      */
     LocaleUtil.convertMessage = function (resources, attrName, domNode) {
         _setMessage(resources, attrName, domNode);

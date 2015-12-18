@@ -136,7 +136,7 @@
     margin: 10px;
     width: 9px;
     height: 9px;
-    background-image: url("images/icons/deploy_title_arrow.png");
+    background-image: url("image/icons/deploy_title_arrow.png");
     background-position: 0 9px;
     cursor: pointer;
 }
@@ -162,7 +162,7 @@
     margin: 5px;
     width: 20px;
     height: 20px;
-    background-image: url("images/icons/deploy_icon_checkfiles.png");
+    background-image: url("image/icons/deploy_icon_checkfiles.png");
     background-position: 0 0;
     cursor: pointer;
 }
@@ -185,7 +185,7 @@
     margin: 5px;
     width: 20px;
     height: 20px;
-    background-image: url("images/icons/deploy_icon_checkfiles.png");
+    background-image: url("image/icons/deploy_icon_checkfiles.png");
     background-position: 0 0;
     display: none;
     cursor: pointer;
@@ -209,7 +209,7 @@
     margin: 5px;
     width: 20px;
     height: 20px;
-    background-image: url("images/icons/deploy_icon_trash.png");
+    background-image: url("image/icons/deploy_icon_trash.png");
     background-position: 0 0;
     cursor: pointer;
 }
@@ -232,7 +232,7 @@
     right: 0px;
     width: 20px;
     height: 20px;
-    background-image: url("images/icons/deploy_icon_changeinfo.png");
+    background-image: url("image/icons/deploy_icon_changeinfo.png");
     background-position: 0 0;
     cursor: pointer;
 }
@@ -255,7 +255,7 @@
     right: 0px;
     width: 20px;
     height: 20px;
-    background-image: url("images/icons/deploy_icon_cancel.png");
+    background-image: url("image/icons/deploy_icon_cancel.png");
     background-position: 0 0;
     display: none;
     cursor: pointer;
@@ -279,7 +279,7 @@
     right: 0px;
     width: 20px;
     height: 20px;
-    background-image: url("images/icons/deploy_icon_cancel.png");
+    background-image: url("image/icons/deploy_icon_cancel.png");
     background-position: 0 0;
     display: none;
     cursor: pointer;
@@ -408,7 +408,7 @@
     margin: 5px;
     width: 24px;
     height: 24px;
-    background-image: url("images/icons/deploy_icon_deploy.png");
+    background-image: url("image/icons/deploy_icon_deploy.png");
     background-position: 0 0;
     cursor: pointer;
 }
@@ -431,7 +431,7 @@
     margin: 5px;
     width: 24px;
     height: 24px;
-    background-image: url("images/icons/deploy_icon_start.png");
+    background-image: url("image/icons/deploy_icon_start.png");
     background-position: 0 0;
     display: none;
     cursor: pointer;
@@ -455,7 +455,7 @@
     margin: 5px;
     width: 24px;
     height: 24px;
-    background-image: url("images/icons/deploy_icon_stop.png");
+    background-image: url("image/icons/deploy_icon_stop.png");
     background-position: 0 0;
     display: none;
     cursor: pointer;
@@ -479,7 +479,7 @@
     margin: 5px;
     width: 24px;
     height: 24px;
-    background-image: url("images/icons/deploy_icon_save.png");
+    background-image: url("image/icons/deploy_icon_save.png");
     background-position: 0 0;
     display: none;
     cursor: pointer;
@@ -503,7 +503,7 @@
     margin: 5px;
     width: 24px;
     height: 24px;
-    background-image: url("images/icons/deploy_icon_save.png");
+    background-image: url("image/icons/deploy_icon_save.png");
     background-position: 0 0;
     display: none;
     cursor: pointer;

@@ -14,72 +14,95 @@
  * limitations under the License.
  */
 
+/**
+ * Main module of the deploy plugin
+ * @since 1.6.0
+ * @author kyungmi.k@samsung.com
+ * @module Deploy
+ */
 define([
     'dojo/i18n!./nls/resource',
     'dojo/topic',
+    'plugins/project-configurator/project-info-service',
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/locale',
     'webida-lib/util/path'
 ], function (
     i18n,
     topic,
+    projectConfigurator,
     wv,
     Locale,
     pathUtil
 ) {
     'use strict';
 
+    /**
+     * @typedef context
+     * @property {string} fsidName
+     * @property {string} workspaceName
+     * @property {string} projectName
+     * @property {string} workspaceProjectName
+     * @property {string} workspacePath
+     * @property {string} username
+     * @memberof module:Deploy
+     */
+
+    /**
+     * This module object
+     * @type {Object}
+     */
     var module = {};
+    /**
+     * @type {boolean}
+     */
     var bEnable = false;
+    /**
+     * @type {module:Locale}
+     */
     var locale = new Locale(i18n);
 
-    var item = {
-        'Deplo&y': [ 'cmnd', 'plugins/webida.ide.project.deploy/deploy-commands', 'openDialog' ]
-    };
+    /**
+     * @type {Object}
+     */
+    var item = {'Deplo&y': [ 'cmnd', 'plugins/webida.ide.project.deploy/deploy-commands', 'openDialog' ]};
 
-    // for i18n
+    /**
+     * Convert menu locale for i18n
+     */
     (function _convertMenuLocale() {
         locale.convertMenuItem(item, 'menu');
     })();
 
-    function isProjectPath(path) {
-        var splitPath = path.split('/');
-        var projectName = splitPath[2];
-        var viable;
-        if (projectName && (projectName[0] !== '.')) {
-            viable = true;
-            require(['plugins/project-configurator/project-info-service'], function (projectConfigurator) {
-                projectConfigurator.getByName(projectName, function (obj) {
-                    if (!obj) {
-                        viable = false; // not a project directory
-                    }
-                });
-            });
-        } else {
-            viable = false;
-        }
-        return viable;
+    /**
+     * Get whether it is a project path or not
+     * @param {string} path
+     * @returns {boolean}
+     * @private
+     */
+    function _isProjectPath(path) {
+        return !!projectConfigurator.getByPath(path);
     }
 
-    function isEnableContext(context) {
-        if (!context) {
+    /**
+     * Get whether deploy function is able to use or not by selected paths
+     * @param {Object} context
+     * @returns {boolean}
+     * @private
+     */
+    function _isEnableContext(context) {
+        if (!context || context.paths.length !== 1) {
             return false;
         }
-        if (context.paths.length !== 1) {
-            return false;
-        }
-        // Enable "Project > Deploy" workbench menu even when a file is selected
-        /*
-        if (context.paths[0] !== context.projectPath) {
-            return false;
-        }
-        */
-
-        return isProjectPath(context.projectPath);
+        return _isProjectPath(context.projectPath);
     }
 
+    /**
+     * Listen to the changes of context
+     * @param {Object} context
+     */
     module.onContextChanged = function (context) {
-        bEnable = isEnableContext(context);
+        bEnable = _isEnableContext(context);
         if (bEnable) {
             topic.publish('toolbar/enable/deploy');
         } else {
@@ -87,10 +110,18 @@ define([
         }
     };
 
+    /**
+     * Get viable menu items in workbench
+     * @returns {Object}
+     */
     module.getViableItemsForWorkbench = function () {
         return bEnable ? item : null;
     };
 
+    /**
+     * Get viable context menu items in workspace
+     * @returns {Object}
+     */
     module.getViableItemsForWorkspace = function () {
         var selectedPaths = wv.getSelectedPaths();
         if (!selectedPaths || selectedPaths.length !== 1) {
@@ -102,7 +133,7 @@ define([
             return null;
         }
 
-        var viable = isProjectPath(path);
+        var viable = _isProjectPath(path);
         return viable ? item : null;
     };
 

@@ -40,7 +40,8 @@ define({
         messageFailGetUserInfo: 'get userinfo fail',
         'menuDeplo&y': 'Deploy',
         messageFailGetProjects: 'Failed to get the project list.',
-        messageNoProject: 'No projects in workspace.'
+        messageNoProject: 'No projects in workspace.',
+        messageFailGetContext: 'Failed to get deploy context'
     },
     'en-us': true
 });

@@ -67,7 +67,7 @@ define([
      * @property {module:ProjectWizard/BuildProfile.buildType} buildType - RUN or DEBUG
      * @property {Array.<string>} plugins
      * @property {string} projectSrl - project uuid
-     * @property {?Object} signing - signing information
+     * @property {Object} [signing] - signing information
      */
 
     /**
