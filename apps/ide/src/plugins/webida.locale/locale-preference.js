@@ -18,8 +18,8 @@
 * Thie file is for adding a menu about Locale in Preference
 *
 * @see support local-sensitive languages
-* @since: 2015.10.20
-* @author: minsung.jin
+* @since 1.5.0
+* @author minsung.jin@samsung.com
 */
 
 define([
@@ -32,11 +32,19 @@ define([
     locale.addLocaleChangeListener();
 
     return {
+        /**
+         * Get default value of locale.
+         * @return {Object} - default value of locale.
+         */
         getDefault: function () {
             return {
                 'webida.locale:code': 'default'
             };
         },
+        /**
+         * Get schema of locale for preference.
+         * @return {Object} - schema of locale for preference.
+         */
         getSchema: function () {
             return [
                 {
@@ -53,6 +61,10 @@ define([
                 }
             ];
         },
+        /**
+         * Set field of locale for preference.
+         * @param {Object} fieldCreator - field of locale for preference.
+         */
         locale: function (fieldCreator) {
             fieldCreator.addField('webida.locale:code', 'select', {
                 name: 'Locale',
@@ -66,3 +78,4 @@ define([
         }
     };
 });
+
