@@ -20,7 +20,7 @@
  */
 
 define([
-    'dojo/i18n!./nls/resource',
+    'dojo/i18n!../nls/resource',
     'dojo/string',
     'webida-lib/app',
     'webida-lib/util/path',
