@@ -48,7 +48,9 @@
             ['webida', 'webida-lib/webida-0.3'],
             ['FSCache', 'webida-lib/FSCache-0.1'],
             ['plugin-manager', 'webida-lib/plugin-manager-0.1'],
-            ['msg', 'webida-lib/msg.js']
+            ['msg', 'webida-lib/msg.js'],
+            // diff_match_patch is used in codemirror
+            ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']
         ]
     };
 })(window);
