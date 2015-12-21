@@ -77,7 +77,7 @@ define([
     /**
      * Get whether it is a project path or not
      * @param {string} path
-     * @returns {boolean}
+     * @return {boolean}
      * @private
      */
     function _isProjectPath(path) {
@@ -87,7 +87,7 @@ define([
     /**
      * Get whether deploy function is able to use or not by selected paths
      * @param {Object} context
-     * @returns {boolean}
+     * @return {boolean}
      * @private
      */
     function _isEnableContext(context) {
@@ -112,7 +112,7 @@ define([
 
     /**
      * Get viable menu items in workbench
-     * @returns {Object}
+     * @return {Object}
      */
     module.getViableItemsForWorkbench = function () {
         return bEnable ? item : null;
@@ -120,7 +120,7 @@ define([
 
     /**
      * Get viable context menu items in workspace
-     * @returns {Object}
+     * @return {Object}
      */
     module.getViableItemsForWorkspace = function () {
         var selectedPaths = wv.getSelectedPaths();

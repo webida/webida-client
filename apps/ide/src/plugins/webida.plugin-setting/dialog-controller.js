@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,10 +15,9 @@
  */
 
 /**
- * This modules is a controller for view of plugin setting's dialog
- *
- * @since: 15. 10. 19
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @file This modules is a controller for view of plugin setting's dialog
+ * @since 1.5.0
+ * @author kyungmi.k@samsung.com
  */
 
 define([
@@ -26,7 +25,6 @@ define([
     'dijit/form/CheckBox',
     'dojo/dom',
     'dojo/i18n!./nls/resource',
-    'dojo/parser',
     'popup-dialog',
     'webida-lib/util/locale',
     'webida-lib/util/logger/logger-client',
@@ -38,7 +36,6 @@ define([
     CheckBox,
     dom,
     i18n,
-    parser,
     PopupDialog,
     Locale,
     Logger,
@@ -47,17 +44,34 @@ define([
     pluginSettings
 ) {
     'use strict';
+    /**
+     * @type {Logger}
+     */
     var logger = new Logger();
     logger.off();
 
+    /**
+     * @type {Locale}
+     */
     var locale = new Locale(i18n);
 
+    /**
+     * UI element cache
+     * @type {Object}
+     */
     var ui = {
         dialog: undefined,
         checkboxes: []
     };
 
+    /**
+     * module object
+     * @type {Object}
+     */
     var mod = {
+        /**
+         * Open dialog for setting plugins on/off
+         */
         openDialog: function () {
             ui.dialog = new ButtonedDialog({
                 title: i18n.titleDialog,

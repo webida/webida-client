@@ -379,7 +379,7 @@ define([
     /**
      * Get the status of dialog window
      *
-     * @returns {boolean} If it is true, it means dialog is opened. Otherwise, the dialog is closed.
+     * @return {boolean} If it is true, it means dialog is opened. Otherwise, the dialog is closed.
      * @memberOf module:RunConfiguration/viewController
      */
     module.getWindowOpened = function () {
