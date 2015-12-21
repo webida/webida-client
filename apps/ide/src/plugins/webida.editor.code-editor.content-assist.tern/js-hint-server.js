@@ -246,9 +246,15 @@ function (require, _, pathUtil, tern, fileServer, reference, browserText,
                 }
             }
 
-            // Since tern uses relative paths,
-            if (body.query.file) {
+            // Since tern uses relative paths, we need to convert the paths.
+            // A file name starting with '#' is created by tern addon and we should not convert such file name.
+            if (body.query.file && !/^#/.test(body.query.file)) {
                 body.query.file = getRelPath(server.tern.projectDir, body.query.file);
+            }
+            if (body.files) {
+                body.files.forEach(function (file) {
+                    file.name = getRelPath(server.tern.projectDir, file.name);
+                });
             }
 
             server.tern.request(body, function (error, data) {

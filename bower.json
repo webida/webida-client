@@ -24,7 +24,7 @@
     "eventEmitter": "~4.2.11",
     "bootstrap-treeview": "~1.2.0",
     "calcium": "git://github.com/webida/calcium#415ebc22cc6a09457bb9e7445f149061787920fe",
-    "tern": "git://github.com/webida/tern#74bae02d260c609c4b63d9d169c9b7e07aa9e705",
+    "tern": "git://github.com/webida/tern#ab9f92a23d9f8d09071c3549b33ff40dcfb27ed3",
     "smalot-bootstrap-datetimepicker": "~2.3.4",
     "es6-shim": "~0.33.9",
     "term.js": "git://github.com/chjj/term.js.git#~v0.0.7",
