@@ -252,7 +252,7 @@ define([
      *
      * @param index
      * @param mode
-     * @returns {*}
+     * @return {*}
      * @private
      */
     function _getContextItem(index, mode) {
@@ -281,7 +281,7 @@ define([
      *
      * @param index
      * @param mode
-     * @returns {*}
+     * @return {*}
      * @private
      */
     function _runListBound(index, mode) {

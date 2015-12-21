@@ -166,7 +166,7 @@ define([
      *      to prevent from unexpected error.
      * @param {string} type - run configuration type defined as an extension(webida.ide.project-management.run:type)
      *      in the plugin descriptor(plugin.json)
-     * @returns {module:RunConfiguration/delegator.Delegator}
+     * @return {module:RunConfiguration/delegator.Delegator}
      * @memberOf module:RunConfiguration/delegator.Delegator
      */
     Delegator.get = function (type) {
@@ -179,7 +179,7 @@ define([
     /**
      * Generate configuration name from project name
      * @param {string} projectName
-     * @returns {string}
+     * @return {string}
      * @private
      */
     function _makeConfigurationName(projectName) {
@@ -204,7 +204,7 @@ define([
      * Whether is there a duplicated name of run configuration or not
      * @param {string} name - changed name
      * @param {string} originalName - original name
-     * @returns {boolean}
+     * @return {boolean}
      * @private
      */
     function _isDuplicateRunName(name, originalName) {
