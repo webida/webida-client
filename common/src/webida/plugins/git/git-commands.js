@@ -4883,7 +4883,7 @@ define([
                             notify.error('', i18n.gitConfigureError);
                         } else {
                             gitviewlog.success(GIT_DIR, 'configure', 'Successfully changed git configure.');
-                            notify.success('', i18n.gitConfigureError);
+                            notify.success('', i18n.gitConfigureSuccess);
                         }
                     });
                 },
