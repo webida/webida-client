@@ -731,7 +731,7 @@ define([
             
 	        var that = this;
             that.promiseForSetMode.then(function(){
-                var editor = that.editor
+                var editor = that.editor;
                 if (editor._contentAssistDelegator) {                    
                     editor._contentAssistDelegator.execCommandForAll(
                         'setLinter',
@@ -748,7 +748,7 @@ define([
                     
                     var that = this;
                     that.promiseForSetMode.then(function(){
-                        var editor = that.editor
+                        var editor = that.editor;
                         if (editor._contentAssistDelegator) {                    
                             editor._contentAssistDelegator.execCommandForAll(
                                 'applyLinter',
@@ -857,9 +857,11 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-
-                // comment line
-                editor.execCommand('linecomment');
+                self.promiseForSetMode.then(function(){
+                    if (editor._contentAssistDelegator) {
+                        editor._contentAssistDelegator.execCommand('lineComment', editor);
+                    }
+                });
             });
         },
 
@@ -867,9 +869,11 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-
-                // comment block
-                editor.execCommand('blockcomment');
+                self.promiseForSetMode.then(function(){
+                    if (editor._contentAssistDelegator) {
+                        editor._contentAssistDelegator.execCommand('blockComment', editor);
+                    }
+                });
             });
         },
 
@@ -877,9 +881,11 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-
-                // comment out
-                editor.execCommand('commentOutSelection');
+                self.promiseForSetMode.then(function(){
+                    if (editor._contentAssistDelegator) {
+                        editor._contentAssistDelegator.execCommand('commentOutSelection', editor);
+                    }
+                });
             });
         },
 
