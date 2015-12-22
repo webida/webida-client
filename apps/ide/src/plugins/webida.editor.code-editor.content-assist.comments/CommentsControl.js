@@ -15,13 +15,11 @@
 */
 
 /**
- * Constructor function
- * CommentsControl  class
- * Comments content assist control module.
+ * @file Constructor function for comments assist control
  *
  * @constructor
- * @since: 2015.11.30
- * @author: h.m.kwon
+ * @since: 1.6.0
+ * @author: h.m.kwon@samsung.com
  *
  */
 
@@ -228,94 +226,90 @@ define([
             (comments = getEnclosingBlockComments(mode1, editor, from, to)) && comments.length === 0;
     }    
     
-    function setCodemirrorCommandsAndHelpers() {
-        codemirror.commands.linecomment = function (cm) {
-            if (cm.__instance) {
-                var from = cm.getCursor('from');
-                var to = cm.getCursor('to');
-                var mode1 = cm.getModeAt(from);
-                var mode2 = cm.getModeAt(to);
+    function lineComment(cm) {
+        if (cm.__instance) {
+            var from = cm.getCursor('from');
+            var to = cm.getCursor('to');
+            var mode1 = cm.getModeAt(from);
+            var mode2 = cm.getModeAt(to);
 
-                if (mode1.lineComment && mode1.lineComment === mode2.lineComment) {
-                    var doc = cm.getDoc();
-                    var commenting = false;
-                    var line;
-                    var commentStr = mode1.lineComment;
-                    doc.eachLine(from.line, to.line + 1, function (h) {
-                        var i, text = h.text;
-                        var commented =
-                            (i = text.indexOf(commentStr)) >= 0 &&
-                            !/\S/.test(text.substring(0, i));
-
-                        // if there is at least one uncommented line, then we are commenting.
-                        commenting = commenting || !commented;
-                    });
-                    if (commenting) {
-                        for (line = from.line; line <= to.line; line++) {
-                            doc.replaceRange(commentStr, {line: line, ch: 0});
-                        }
-                    } else {
-                        var len = commentStr.length;
-                        for (line = from.line; line <= to.line; line++) {
-                            var i, text = doc.getLine(line);
-                            i = text.indexOf(commentStr);
-                            doc.replaceRange('', {line: line, ch: i}, {line: line, ch: i + len});
-                        }
-                    }
-                    return;
-                }
-                return codemirror.Pass;
-            }
-        };
-        
-        codemirror.commands.blockcomment = function (cm) {
-            if (cm.__instance) {
+            if (mode1.lineComment && mode1.lineComment === mode2.lineComment) {
                 var doc = cm.getDoc();
-                var from = cm.getCursor('from');
-                var to = cm.getCursor('to');
-                var lastLine = doc.getLine(to.line);
+                var commenting = false;
+                var line;
+                var commentStr = mode1.lineComment;
+                doc.eachLine(from.line, to.line + 1, function (h) {
+                    var i, text = h.text;
+                    var commented =
+                        (i = text.indexOf(commentStr)) >= 0 &&
+                        !/\S/.test(text.substring(0, i));
 
-                var mode = cm.getModeAt(from);
-                var commenting = (cm.getTokenAt(to, true).type !== 'comment');
-                var bcStart = mode.blockCommentStart, bcEnd = mode.blockCommentEnd;
+                    // if there is at least one uncommented line, then we are commenting.
+                    commenting = commenting || !commented;
+                });
                 if (commenting) {
-                    doc.replaceRange('\n' + bcEnd, { line: to.line, ch: lastLine.length });
-                    doc.replaceRange(bcStart + '\n', { line: from.line, ch: 0 });
+                    for (line = from.line; line <= to.line; line++) {
+                        doc.replaceRange(commentStr, {line: line, ch: 0});
+                    }
                 } else {
-                    // uncommenting
-                    var comments =
-                        getEnclosingBlockComments(mode, cm, from, to, bcStart, bcEnd);
-                    if (comments.length === 1) {
-                        var comment = comments[0];
-                        doc.replaceRange('',
-                                         { line: comment[1].line, ch: comment[1].ch - bcEnd.length },
-                                         comment[1]);
-                        doc.replaceRange('',
-                                         comment[0],
-                                         { line: comment[0].line, ch: comment[0].ch + bcStart.length });
-                    } else {
-                        console.error('assertion fail: unreachable');
+                    var len = commentStr.length;
+                    for (line = from.line; line <= to.line; line++) {
+                        var i, text = doc.getLine(line);
+                        i = text.indexOf(commentStr);
+                        doc.replaceRange('', {line: line, ch: i}, {line: line, ch: i + len});
                     }
                 }
+                return;
             }
-        };
-        
-        codemirror.commands.commentOutSelection = function (cm) {
-            if (cm.__instance) {
-                var from = cm.getCursor('from');
-                var to = cm.getCursor('to');
-                var mode = cm.getModeAt(from);
-                var bcStart = mode.blockCommentStart, bcEnd = mode.blockCommentEnd;
-
-                var doc = cm.getDoc();
-                doc.replaceRange(bcEnd, to);
-                doc.replaceRange(bcStart, from);
-            }
-        };
+            return codemirror.Pass;
+        }
     }
-
-    setCodemirrorCommandsAndHelpers();
     
+    function blockComment(cm) {
+        if (cm.__instance) {
+            var doc = cm.getDoc();
+            var from = cm.getCursor('from');
+            var to = cm.getCursor('to');
+            var lastLine = doc.getLine(to.line);
+
+            var mode = cm.getModeAt(from);
+            var commenting = (cm.getTokenAt(to, true).type !== 'comment');
+            var bcStart = mode.blockCommentStart, bcEnd = mode.blockCommentEnd;
+            if (commenting) {
+                doc.replaceRange('\n' + bcEnd, { line: to.line, ch: lastLine.length });
+                doc.replaceRange(bcStart + '\n', { line: from.line, ch: 0 });
+            } else {
+                // uncommenting
+                var comments =
+                    getEnclosingBlockComments(mode, cm, from, to, bcStart, bcEnd);
+                if (comments.length === 1) {
+                    var comment = comments[0];
+                    doc.replaceRange('',
+                                     { line: comment[1].line, ch: comment[1].ch - bcEnd.length },
+                                     comment[1]);
+                    doc.replaceRange('',
+                                     comment[0],
+                                     { line: comment[0].line, ch: comment[0].ch + bcStart.length });
+                } else {
+                    console.error('assertion fail: unreachable');
+                }
+            }
+        }
+    }
+    
+    function commentOutSelection(cm) {
+        if (cm.__instance) {
+            var from = cm.getCursor('from');
+            var to = cm.getCursor('to');
+            var mode = cm.getModeAt(from);
+            var bcStart = mode.blockCommentStart, bcEnd = mode.blockCommentEnd;
+
+            var doc = cm.getDoc();
+            doc.replaceRange(bcEnd, to);
+            doc.replaceRange(bcStart, from);
+        }
+    }      
+ 
     function isCaCommand(command) {
         return caCommands.indexOf(command) >= 0;
     }
@@ -358,6 +352,15 @@ define([
                         break;
                     case 'isSelectionCommentable': 
                         func = isSelectionCommentable;
+                        break;
+                    case 'lineComment':
+                        func = lineComment;
+                        break;                    
+                    case 'blockComment': 
+                        func = blockComment;
+                        break;
+                    case 'commentOutSelection': 
+                        func = commentOutSelection;
                         break;
                 }
                 return func.apply(undefined, args);
