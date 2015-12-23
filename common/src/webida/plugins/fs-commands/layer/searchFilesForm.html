@@ -1,62 +1,80 @@
-<div id='sfDojoWindow' data-dojo-type='dijit/layout/ContentPane' style='width:500px; padding-top: 0'>
-    <style type='text/css'>
-        .find_in_files_border {
+<div id="sfDojoWindow">
+    <style type="text/css">
+        .desc {
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        .searchFilesFormFields {
             border: 1px #797979 solid;
             padding: 7px 10px;
-                        margin: 2px 0;
-                        border-radius: 5px;
+            margin: 2px 0 10px 0;
+            border-radius: 5px;
         }
 
-        .find_in_files_input {
-            width: 100%;
+        .searchFilesFormFields legend {
+            font-weight: bold;
         }
 
-        .desc {
-                margin-top: 5px;
-                margin-bottom: 15px;
+        .searchFilesForm label {
+            display: inline-block;
+            width: 145px;
         }
 
-        .group_label {
-                font-weight: bold;
-                color: #494949;
+        .searchFilesForm fieldset > div {
+            margin-bottom: 5px;
         }
 
-        .claro .buttons {
-                margin-right: 8px;
+        .searchFilesForm label.labelForTextField {
+            font-weight: bold;
         }
-
-        .claro .buttons > .dijitButtonNode {
-                padding: 4px 10px;
-        }
-
     </style>
-    <form>
+    <form class="searchFilesForm">
         <p class="desc" data-message="searchFilesDesc"> Fill in the following form to search files for a keyword. </p>
 
-        <label class="group_label" data-message="requiredFields"> Required fields </label>
-        <div class='find_in_files_border'>
-            <label data-message="keywordToFind"> Keyword to find </label> <input id="sfDojoCheckBoxRegEx" data-dojo-type='dijit/form/CheckBox' style="margin-left: 200px" tabindex="2"/>
-            <label data-message="asARegularExpression"> as a regular expression </label>
-            <select id='sfDojoComboBoxPatternToFind' data-dojo-type='dijit/form/ComboBox' class='find_in_files_input' tabindex="1"></select>
-            <br> <br>
-            <label data-message="baseDirToSearch"> Base directory to search </label> <br>
-            <select id='sfDojoComboBoxRecentFolders' data-dojo-type='dijit/form/ComboBox' style='width:407px' tabindex="3"></select>
-                        <button id='sfDojoFormBrowse' data-dojo-type='dijit/form/Button' type='button' style="margin-left: 4px" tabindex="4" data-message="browse"> Browse </button>
-        </div>
-        <br>
+        <fieldset class="searchFilesFormFields">
+            <legend>General</legend>
+            <div>
+                <label data-message="keywordToFind" for="sfDojoCheckBoxRegEx" class="labelForTextField">Keyword to find</label>
+                <select id="sfDojoComboBoxPatternToFind" tabindex="1"></select>
+            </div>
+            <div>
+                <input id="sfDojoCheckBoxRegEx" tabindex="2"/>
+                <label for="sfDojoComboBoxPatternToFind" data-message="asARegularExpression"> as a regular expression </label>
+            </div>
+            <div>
+                <input id="sfDojoCheckBoxIgnoreCase" tabindex="5" />
+                <label for="sfDojoCheckBoxIgnoreCase" data-message="ignoreCase"> Ignore case</label>
+            </div>
+            <div>
+                <input id="sfDojoCheckBoxWholeWords" tabindex="6" />
+                <label for="sfDojoCheckBoxWholeWords" data-message="wholeWordsOnly"> Whole words only</label>
+            </div>
+        </fieldset>
 
-        <label class="group_label" data-message="optionalFields"> Optional fields </label>
-        <div class='find_in_files_border'>
-            <input id="sfDojoCheckBoxIgnoreCase" data-dojo-type='dijit/form/CheckBox' tabindex="5" /><label style="margin-right: 20px" data-message="ignoreCase"> Ignore case</label>
-            <input id="sfDojoCheckBoxWholeWords" data-dojo-type='dijit/form/CheckBox' tabindex="6" /><label data-message="wholeWordsOnly"> Whole words only</label>
-            <br> <br>
-            <label data-message="excludedDirs"> Excluded directories </label> <input id="sfDojoCheckBoxExcludeRegEx" data-dojo-type='dijit/form/CheckBox' style="margin-left: 120px" tabindex="2"/>
-            <label data-message="asARegularExpression"> as a regular expression </label>
-            <select id='sfDojoComboBoxFoldersToExclude' data-dojo-type='dijit/form/ComboBox' class='find_in_files_input' tabindex="7"></select>
-            <br> <br>
-            <label data-message="searchedFiles"> Searched files </label> <input id="sfDojoCheckBoxFilesRegEx" data-dojo-type='dijit/form/CheckBox' style="margin-left: 152px" tabindex="2"/>
-            <label data-message="asARegularExpression"> as a regular expression </label>
-            <select id='sfDojoComboBoxFilesToInclude' data-dojo-type='dijit/form/ComboBox' class='find_in_files_input' tabindex="8"></select>
-        </div>
+        <fieldset class="searchFilesFormFields">
+            <legend>Scope</legend>
+            <div>
+                <label for="sfDojoComboBoxRecentFolders" data-message="baseDirToSearch" class="labelForTextField">Base directory to search </label>
+                <select id="sfDojoComboBoxRecentFolders" tabindex="3"></select>
+                <button id="sfDojoFormBrowse" type="button" style="margin-left: 4px" tabindex="4" data-message="browse"> Browse </button>
+            </div>
+            <div>
+                <label data-message="excludedDirs" class="labelForTextField">Excluded directories </label>
+                <select id="sfDojoComboBoxFoldersToExclude"  tabindex="7"></select>
+            </div>
+            <div>
+                <input id="sfDojoCheckBoxExcludeRegEx" tabindex="2"/>
+                <label data-message="asARegularExpression"> as a regular expression </label>
+            </div>
+            <div>
+                <label data-message="searchedFiles" class="labelForTextField"> Searched files </label>
+                <select id="sfDojoComboBoxFilesToInclude" tabindex="8"></select>
+            </div>
+            <div>
+                <input id="sfDojoCheckBoxFilesRegEx" tabindex="2"/>
+                <label data-message="asARegularExpression"> as a regular expression </label>
+            </div>
+        </fieldset>
     </form>
 </div>

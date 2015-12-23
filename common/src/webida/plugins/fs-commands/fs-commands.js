@@ -43,6 +43,9 @@ define([
     'dojo/Deferred',                            // Deferred
     'dojo/store/Memory',                        // Memory
     'dojo/store/Observable',                    // Observable
+    'dijit/form/Button',
+    'dijit/form/CheckBox',
+    'dijit/form/ComboBox',
     'dijit/tree/ObjectStoreModel',              // ObjectStoreModel
     'dijit/Tree',                               // Tree
     'dijit/registry',                           // reg
@@ -75,6 +78,9 @@ define([
     Deferred,
     Memory,
     Observable,
+    Button,
+    CheckBox,
+    ComboBox,
     ObjectStoreModel,
     Tree,
     reg,
@@ -196,7 +202,7 @@ define([
                 { caption: i18n.cancel, methodOnClick: 'hide' }
             ],
             methodOnEnter: 'onOkay',
-
+            style: 'width:500px;',
             title: i18n.findInFiles,
 
             refocus: false,
@@ -346,21 +352,29 @@ define([
             },
 
             initElements: function () {
+                var defaults = {
+                    searchAttr: 'name',
+                    missingMessage: i18n.valueRequired,
+                    ignoreCase: true,
+                    autoComplete: false,
+                    queryExpr: '*${0}*',
+                    style: 'width: 300px'
+                };
                 // pattern of keywords to find
-                patternComboElem = reg.byId('sfDojoComboBoxPatternToFind');
+                patternComboElem = new ComboBox(defaults, 'sfDojoComboBoxPatternToFind');
 
-                asRegExBtElem = reg.byId('sfDojoCheckBoxRegEx');
-                ignorCaseBtElem = reg.byId('sfDojoCheckBoxIgnoreCase');
-                wholewordBtElem = reg.byId('sfDojoCheckBoxWholeWords');
+                asRegExBtElem = new CheckBox({}, 'sfDojoCheckBoxRegEx');
+                ignorCaseBtElem = new CheckBox({}, 'sfDojoCheckBoxIgnoreCase');
+                wholewordBtElem = new CheckBox({}, 'sfDojoCheckBoxWholeWords');
 
                 // search target directory
-                folderComboElem = reg.byId('sfDojoComboBoxRecentFolders');
-
+                folderComboElem = new ComboBox(defaults, 'sfDojoComboBoxRecentFolders');
+                folderComboElem.set('style', 'width: 238px');
                 // additional find options
-                exFoldersComboElem = reg.byId('sfDojoComboBoxFoldersToExclude');
-                exFoldersAsRegExBtElem = reg.byId('sfDojoCheckBoxExcludeRegEx');
-                inFilesComboElem = reg.byId('sfDojoComboBoxFilesToInclude');
-                inFilesAsRegExBtElem = reg.byId('sfDojoCheckBoxFilesRegEx');
+                exFoldersComboElem = new ComboBox(defaults, 'sfDojoComboBoxFoldersToExclude');
+                exFoldersAsRegExBtElem = new CheckBox({}, 'sfDojoCheckBoxExcludeRegEx');
+                inFilesComboElem = new ComboBox(defaults, 'sfDojoComboBoxFilesToInclude');
+                inFilesAsRegExBtElem = new CheckBox({}, 'sfDojoCheckBoxFilesRegEx');
             }, // initElements close
 
             restoreElementValues: function () {
@@ -397,23 +411,12 @@ define([
 
             setElements: function () {
                 // setting element value
-                var defaults = {
-                    searchAttr: 'name',
-                    missingMessage: i18n.valueRequired,
-                    ignoreCase: true,
-                    autoComplete: false,
-                    queryExpr: '*${0}*',
-                };
-
                 var required = {
                     required: true,
                     missingMessage: i18n.valueRequired
                 };
 
-                patternComboElem.set(defaults);
                 patternComboElem.set(required);
-
-                folderComboElem.set(defaults);
                 folderComboElem.set(required);
 
                 // override displayMessage function
@@ -453,14 +456,12 @@ define([
                     }
                 };
 
-                exFoldersComboElem.set(defaults);
-                inFilesComboElem.set(defaults);
             }, // setElements close
 
             onLoad: function () {
                 // event bind, dojo element
-                var id = reg.byId('sfDojoFormBrowse');
-                dojo.connect(id, 'onClick', this.onBrowse);
+                var button = new Button({}, 'sfDojoFormBrowse');
+                dojo.connect(button, 'onClick', this.onBrowse);
 
                 // init elements
                 this.initElements();
@@ -503,8 +504,6 @@ define([
             tooltipHandle(folderComboElem, fTooltipState);
         });
 
-        handleFileInFilesDlg.set('doLayout', false);
-        //handleFileInFilesDlg.set('content', sFilesForm);
         handleFileInFilesDlg.setContentArea(sFilesForm);
 
         locale.convertMessage(i18n, 'data-message');
@@ -600,7 +599,7 @@ define([
     }
 
     var gotoFileData = {
-        lastDir : ide.getPath() + '/'
+        lastDir: ide.getPath() + '/'
     };
 
     function gotoFileInCurDir() {
@@ -630,7 +629,7 @@ define([
             goToFile: function () {
                 var gotoFileInput = reg.byId('FsCommandFileToGoInput');
                 var text = gotoFileInput.value;
-                var bExist = this.inputStore.query({ id: text }).length === 1 ? true : false;
+                var bExist = this.inputStore.query({ id: text }).length === 1;
 
                 if (bExist) {
                     topic.publish('editor/open', text);
