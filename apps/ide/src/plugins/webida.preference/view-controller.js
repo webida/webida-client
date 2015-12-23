@@ -15,9 +15,9 @@
  */
 
 /**
- *
- * @since: 15. 8. 24
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @file Controller for the preference dialog view
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
  */
 
 define([

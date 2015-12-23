@@ -15,9 +15,10 @@
  */
 
 /**
- * Preference pages in the preference dialog per extension declare
- * @since: 15. 9. 1
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @file Preference pages in the preference dialog per extension declare
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
+ * @module Preference/Page
  */
 
 define([], function () {
@@ -26,8 +27,8 @@ define([], function () {
     /**
      * Preference Page constructor
      *
-     * @param store
-     * @param pageData
+     * @param {module:Preference/Store} store
+     * @param {Object} pageData
      * @constructor
      */
     function PreferencePage(store, pageData) {
@@ -43,7 +44,7 @@ define([], function () {
     /**
      * Get sub page to be attached in the preference dialog
      *
-     * @returns {DOMElement}
+     * @return {HTMLElement}
      */
     PreferencePage.prototype.getPage = function () {
         return this.ui;

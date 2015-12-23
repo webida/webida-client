@@ -15,11 +15,11 @@
  */
 
 /**
- *
- * @since: 15. 8. 19
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @file The value stores by its preference key
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
+ * @module Preference/Store
  */
-
 define([
     'external/eventEmitter/EventEmitter',
     'external/lodash/lodash.min',
@@ -31,28 +31,91 @@ define([
 ) {
     'use strict';
 
-    function PreferenceStore(id, scope, scopeInfo, targetFile) {
-        this.id = id;
-        this.scope = scope;
-        this.scopeInfo = scopeInfo;
-        this.targetFile = targetFile;
+    /**
+     * @typedef {Object} status
+     * @property {boolean} [dirty] - Is there any changes on this store.
+     * @property {boolean} [valid] - validity of values
+     * @property {boolean} [override] - Whether override (or specify) the preference values of the higher level scope
+     *      or not
+     * @memberof module:Preference/Store
+     */
 
+    /**
+     * Preference store
+     * @param {string} id - preference id
+     * @param {Object} scope - scope object
+     * @param {Object} scopeInfo - additional scope object
+     * @param {string} targetFile - path to the target preference file
+     * @constructor
+     */
+    function PreferenceStore(id, scope, scopeInfo, targetFile) {
+        /**
+         * @member {string}
+         */
+        this.id = id;
+        /**
+         * @member {Object}
+         */
+        this.scope = scope;
+        /**
+         * @member {Object}
+         */
+        this.scopeInfo = scopeInfo;
+        /**
+         * @member {string}
+         */
+        this.targetFile = targetFile;
+        /**
+         * @member {module:Preference/Store.status}
+         */
         this.status = {
             dirty: false,
             valid: true,
             override: false
         };
+        /**
+         * Invalidate message from validator
+         * @member {string}
+         * @see module:Preference/Store#validator
+         */
         this.invalidMessage = '';
-
+        /**
+         * Default values for this store
+         * It has already set by configuration(plugin.json).
+         * When values of this store are reverted, this object will override the {@link currentValues}
+         * and {@link appliedValues} object.
+         * @member {Object}
+         */
         this.defaultValues = {};
+        /**
+         * Values that are applied to IDE and saved in the target file
+         * @member {Object}
+         */
         this.appliedValues = {};
+        /**
+         * The values in changing by a user
+         * Initially, this object is same with the {@link appliedValues}.
+         * @member {Object}
+         */
         this.currentValues = {};
-
+        /**
+         * Validator for this store values
+         * @param {string} [key] - preference key
+         * @param {Object} [value] - preference value
+         * @return {?string} - If there is an error, this return value will be a validation error message.
+         * @see module:Preference/Store#setValidator
+         */
         this.validator = function (/*key, value*/) {
             return;
         };
     }
 
+    /**
+     * Extract only changed values
+     * @param {Object} original - original object
+     * @param {Object} delta - changed object
+     * @return {Object}
+     */
     function getRealChangedValues(original, delta) {
         var changed = {};
         for (var key in delta) {
@@ -66,7 +129,11 @@ define([
     }
 
     genetic.inherits(PreferenceStore, EventEmitter, {
-
+        /**
+         * Initialize store's values by its default values and already applied values
+         * @param {Object} defaultValues
+         * @param {Object} appliedValues
+         */
         initialValues: function (defaultValues, appliedValues) {
             this.defaultValues = defaultValues;
             this.appliedValues = appliedValues;
@@ -79,7 +146,7 @@ define([
         /**
          * Set current preference value
          * @param {string} key - preference key
-         * @param value if it is null or undefined, the preference value of this key will be removed.
+         * @param {Object} value - if it is null or undefined, the preference value of this key will be removed.
          */
         setValue: function (key, value) {
             var dirty = this.status.dirty;
@@ -97,20 +164,37 @@ define([
             }
         },
 
+        /**
+         * Get current preference value by preference key
+         * @param {string} key - preference key
+         * @return {Object}
+         */
         getValue: function (key) {
             return (this.currentValues[key] !== undefined) ? this.currentValues[key] : this.defaultValues[key];
         },
 
+        /**
+         * Get All preference values of this store
+         * @todo It would be better to be renamed 'getValues'.
+         */
         getRealValues: function () {
             return _.extend({}, this.defaultValues, this.appliedValues);
         },
 
+        /**
+         * Replace default validator
+         * @param {Function} validator
+         */
         setValidator: function (validator) {
             if (validator) {
                 this.validator = validator;
             }
         },
 
+        /**
+         * Check dirtiness and validity and apply current values
+         * @param {errorCallback} callback
+         */
         apply: function (callback) {
             if (this.status.dirty && this.status.valid) {
                 this.appliedValues = _.clone(this.currentValues, true);
@@ -122,6 +206,10 @@ define([
             }
         },
 
+        /**
+         * Set current status
+         * @param {module:Preference/Store.status} status - sub-set of status to be updated
+         */
         setStatus: function (status) {
             // status ['dirty', 'valid', 'override']
             var changedStatus = getRealChangedValues(this.status, status);
@@ -134,6 +222,9 @@ define([
             }
         },
 
+        /**
+         * Revert changes on this store
+         */
         restore: function () {
             this.appliedValues = {};
             this.currentValues = {};
@@ -159,7 +250,15 @@ define([
 
     });
 
+    /**
+     * Event name for notifying changes on values of preference store
+     * @constant {string}
+     */
     PreferenceStore.VALUE_CHANGED = 'preferenceStoreValueChanged';
+    /**
+     * Event name for notifying changes on status of preference store
+     * @constant {string}
+     */
     PreferenceStore.STATUS_CHANGED = 'preferenceStoreStatusChanged';
 
     return PreferenceStore;

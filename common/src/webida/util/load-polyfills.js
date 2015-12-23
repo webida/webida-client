@@ -28,11 +28,9 @@ define([], function () {
     var POLYFILLS = {
         es6: {
             condition: (!Modernizr.promises ||
-                !Modernizr.es6Array ||
                 !Modernizr.es6math ||
                 !Modernizr.es6number ||
-                !Modernizr.es6object ||
-                !Modernizr.es6string),
+                !Modernizr.es6object),
             src: 'es6-shim/es6-shim.min.js'
         }
     };

@@ -15,9 +15,9 @@
  */
 
 /**
- *
- * @since: 15. 9. 1
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @file Controller for the tree view included in the preference dialog
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
  */
 
 define([

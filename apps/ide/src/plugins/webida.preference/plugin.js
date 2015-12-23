@@ -15,11 +15,10 @@
  */
 
 /**
- * webida.preference plugin main
- *
- * @since: 15. 8. 18
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
- * @module webida.preference
+ * @file webida.preference plugin main
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
+ * @module Preference
  */
 
 /* jshint unused:false */
@@ -29,7 +28,6 @@ define([
     'dojo/topic',
     'external/lodash/lodash.min',
     'plugins/project-configurator/project-info-service',
-    'webida-lib/plugins/workbench/ui/promiseMap',
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/locale',
     'webida-lib/util/path',
@@ -39,7 +37,6 @@ define([
     topic,
     _,
     projectInfo,
-    promiseMap,
     workspace,
     Locale,
     pathUtil,
@@ -58,8 +55,6 @@ define([
     var workspaceItems = {
         Preferences: ['cmnd', 'plugins/webida.preference/plugin', 'openDialogByContext']
     };
-
-    var managerInitialized = promiseMap.get('preference/load');
 
     // for i18n
     (function _convertMenuLocale() {
@@ -94,7 +89,7 @@ define([
 
     function _openDialog(scope, info) {
         require([MODULE_PATH_VIEW_CTRL], function (viewController) {
-            managerInitialized.then(function () {
+            manager.initialize().then(function () {
                 viewController.openDialog(scope, info);
             });
         });
