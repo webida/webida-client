@@ -164,23 +164,11 @@ define([
 
         // events
         preferenceDlg.own(
-            on($('#restore-preference').get(0), 'click', function () {
-                currentPage.store.restore();
-                currentPage.reload();
-            }),
-            on($('#apply-preference').get(0), 'click', function () {
-                currentPage.store.apply(function (invalidMessage) {
-                    if (invalidMessage) {
-                        notify.warning(invalidMessage);
-                    }
-                });
-            }),
             on(overrideCheckbox, 'change', function (checked) {
                 currentPage.store.setOverride(checked);
                 __dim(checked);
             })
         );
-
     }
 
     function _initializeLayout() {
@@ -255,6 +243,21 @@ define([
                 preferenceDlg.onHide();
                 module.isOpened = false;
             }
+
+            // add listener for Restore default and Apply button
+            preferenceDlg.own(
+                on($('#restore-preference').get(0), 'click', function () {
+                    currentPage.store.restore();
+                    currentPage.reload();
+                }),
+                on($('#apply-preference').get(0), 'click', function () {
+                    currentPage.store.apply(function (invalidMessage) {
+                        if (invalidMessage) {
+                            notify.warning(invalidMessage);
+                        }
+                    });
+                })
+            );
         }
     };
 
