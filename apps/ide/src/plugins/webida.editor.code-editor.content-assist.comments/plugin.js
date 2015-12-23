@@ -15,10 +15,9 @@
  */
 
 /**
- * This plug-in manages life-cycle of the comments content assist
- * 
- * @since: 2015.11.30
- * @author: h.m.kwon
+ * @file This plug-in manages life-cycle of the comments assist
+ * @since: 1.6.0
+ * @author: h.m.kwon@samsung.com
  */
 define([], function () {
     'use strict';
