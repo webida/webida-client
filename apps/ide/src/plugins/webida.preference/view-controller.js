@@ -238,27 +238,26 @@ define([
             try {
                 _initializeLayout();
                 _initializeTreeView();
+                // add listener for Restore default and Apply button
+                preferenceDlg.own(
+                    on($('#restore-preference').get(0), 'click', function () {
+                        currentPage.store.restore();
+                        currentPage.reload();
+                    }),
+                    on($('#apply-preference').get(0), 'click', function () {
+                        currentPage.store.apply(function (invalidMessage) {
+                            if (invalidMessage) {
+                                notify.warning(invalidMessage);
+                            }
+                        });
+                    })
+                );
                 preferenceDlg.show();
             } catch (e) {
                 logger.error(e);
                 preferenceDlg.onHide();
                 module.isOpened = false;
             }
-
-            // add listener for Restore default and Apply button
-            preferenceDlg.own(
-                on($('#restore-preference').get(0), 'click', function () {
-                    currentPage.store.restore();
-                    currentPage.reload();
-                }),
-                on($('#apply-preference').get(0), 'click', function () {
-                    currentPage.store.apply(function (invalidMessage) {
-                        if (invalidMessage) {
-                            notify.warning(invalidMessage);
-                        }
-                    });
-                })
-            );
         }
     };
 
