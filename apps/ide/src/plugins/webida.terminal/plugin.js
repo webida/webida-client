@@ -24,9 +24,10 @@
  */
 
 /**
- * Terminal plugin module
- * @module webida.terminal.plugin
- * @memberOf module:webida.terminal
+ * @file Terminal plugin module
+ * @module Terminal
+ * @since 1.3.0
+ * @author wy1.cho@samsung.com
  */
 define([
     'dojo/i18n!./nls/resource',
@@ -62,20 +63,35 @@ define([
 ) {
     'use strict';
 
+    /**
+     * @type {Terminal}
+     */
     Terminal = window.Terminal; // Required because term.js is not an AMD module
-
+    /**
+     * @type {Logger}
+     */
     var logger = new Logger('webida.terminal.plugin');
+    /**
+     * @type {module:Locale}
+     */
     var locale = new Locale(i18n);
-
+    /**
+     * @type {Object}
+     */
     var viableItems = {
         Terminal: ['cmnd', 'plugins/webida.terminal/plugin', 'showView']
     };
-
-    // for i18n
+    /**
+     * Convert menu items by current locale
+     */
     (function _convertMenuLocale() {
         locale.convertMenuItem(viableItems, 'menu');
     })();
 
+    /**
+     * This module object
+     * @type {Object}
+     */
     var mod = {
         term: null,
         socket: null,
@@ -86,10 +102,24 @@ define([
         height: 400
     };
 
+    /**
+     * @constant {string}
+     */
     var VIEW_ID = 'generalTerminalView';
+    /**
+     * @constant {number}
+     */
     var DEFAULT_COLS = 80;
+    /**
+     * @constant {number}
+     */
     var DEFAULT_ROWS = 24;
 
+    /**
+     * Create terminal with the socket.io connection
+     * @param socket
+     * @param opts
+     */
     function createTerm(socket, opts) {
         destroy();
         socket.emit('create', {
@@ -123,6 +153,9 @@ define([
         });
     }
 
+    /**
+     * Initialize the connection
+     */
     function init() {
         var TERMINAL_SERVICE_PATH = '/pty';
         var termUri = URI(webida.conf.fsServer).pathname(TERMINAL_SERVICE_PATH)
@@ -153,9 +186,17 @@ define([
         });
     }
 
+    /**
+     * Adjust terminal size
+     */
     function adjustTermSize() {
         resizeTerm({w: mod.width, h: mod.height});
     }
+
+    /**
+     * Resize terminal
+     * @param {Object} resizeEvent
+     */
     function resizeTerm(resizeEvent) {
         mod.width = resizeEvent.w;
         mod.height = resizeEvent.h;
@@ -169,6 +210,9 @@ define([
         mod.socket.emit('resize', col, row);
     }
 
+    /**
+     * Destroy terminal
+     */
     function destroy() {
         if (mod.term) {
             mod.term.destroy();
@@ -178,7 +222,7 @@ define([
 
     /**
      * Get terminal view
-     * @memberOf module:webida.terminal.plugin
+     * @memberof module:Terminal
      */
     mod.getView = function () {
         logger.log('getView');
@@ -193,8 +237,8 @@ define([
     };
 
     /**
-     * Called when view is appended
-     * @memberOf module: webida.terminal.plugin
+     * Called when view is appended and initialize terminal
+     * @memberof module:Terminal
      */
     mod.onViewAppended = function () {
         logger.log('onViewAppended');
@@ -216,7 +260,7 @@ define([
 
     /**
      * Show this view
-     * @memberOf module: webida.terminal.plugin
+     * @memberof module:Terminal
      */
     mod.showView = function () {
         var view = mod._view;
@@ -237,6 +281,10 @@ define([
         mod.terminalNode.focus();
     };
 
+    /**
+     * Get viable menu items for the menu system
+     * @return {Object}
+     */
     mod.getViableItems = function () {
         return viableItems;
     };
