@@ -1,3 +1,12 @@
+@font-face {
+     font-family: "Nanum Gothic Coding";
+     src: url('//fonts.gstatic.com/ea/nanumgothiccoding/v4/NanumGothicCoding-Regular.ttf') format('truetype');
+     font-weight: normal;
+     font-style: normal;
+ }
+ .body{
+    font-family: "Nanum Gothic Coding", Verdana,Arial,sans-serif;
+ }
 
 .cm-s-webida-light.CodeMirror {
     background: #ffffff; color: #000000;
