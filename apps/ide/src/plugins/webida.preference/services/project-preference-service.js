@@ -15,14 +15,12 @@
  */
 
 /**
- * Preference Service for getting and setting listeners against to a "PROJECT"-scoped preference store
- *
- * @since: 15. 9. 4
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
- * @module webida.preference.service.ProjectPreferenceService
+ * @file Preference Service for getting and setting listeners against to a "PROJECT"-scoped preference store
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
+ * @module Preference/ProjectService
+ * @extends module:Preference/Service
  */
-
-/* global self */
 
 define([
     'webida-lib/util/genetic',
@@ -54,6 +52,7 @@ define([
             }));
         },
         setValues: function (preferenceId, values, callback) {
+            var self = this;
             var store = preferenceManager.getStore(preferenceId, self.scope, {
                 projectName: self.projectName
             });
@@ -78,6 +77,7 @@ define([
             }
         },
         setValue: function (preferenceId, key, value, callback) {
+            var self = this;
             var store = preferenceManager.getStore(preferenceId, self.scope, {
                 projectName: self.projectName
             });

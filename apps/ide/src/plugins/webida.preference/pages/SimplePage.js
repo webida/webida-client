@@ -15,9 +15,11 @@
  */
 
 /**
- *
- * @since: 15. 9. 2
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @file Generator of Pages with the simple Form components by extension settings
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
+ * @module Preference/SimplePage
+ * @extends module:Preference/Page
  */
 
 define([

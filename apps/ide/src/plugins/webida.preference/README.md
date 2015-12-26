@@ -54,7 +54,7 @@ webida.preference
  │ ├── preference.html                      - main layout
  │ └── preference-tree.html                 - tree layout
  ├── pages                                  - PreferencePage implementations
- ├── services                               - PrefereceService implementations
+ ├── services                               - PreferenceService implementations
  ├── style
  │ ├── image
  │ ├── simple-page-style.css                - style declaration for SimplePage
@@ -220,6 +220,8 @@ getDefault: function () {
 
 For getting or setting and listening to changing on preference values, you can use preference service by `PreferenceServiceFactory` like below.
 
+![Preference service's way of working](./doc/preference-service.png)
+
 ```
 define([
     'plugins/webida.preference/preference-service-factory'
@@ -233,7 +235,7 @@ define([
     preferenceService.getValue('workspace.preference', 'workspace:filter:.*', function (value) {...});
     ...
 
-    var projectScopedPreferenceService = PrefereceServiceFactory.get('PROJECT', 'projectName');
+    var projectScopedPreferenceService = PreferenceServiceFactory.get('PROJECT', 'projectName');
     ...
     projectScopedPreferenceService.getValues('workspace.preference', function (values) {...});
     ...
@@ -244,7 +246,7 @@ define([
 
 - getValue(preferenceId, fieldKey, callback)
 - getValues(preferenceId, callback)
-- setValue(preferneceId, fieldKey, fieldValue, callback)
-- setValues(preferneceId, values, callback)
+- setValue(preferenceId, fieldKey, fieldValue, callback)
+- setValues(preferenceId, values, callback)
 - addFieldChangeListener(preferenceId, listener)
 - removeFieldChangeListener(preferenceId, listener)

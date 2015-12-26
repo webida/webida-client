@@ -15,11 +15,10 @@
  */
 
 /**
- * Preference Service for getting and setting listeners against to a specific preference store
- *
- * @since: 15. 9. 4
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
- * @module webida.preference.service.PreferenceService
+ * @file Preference Service for getting and setting listeners against to a specific preference store
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
+ * @module Preference/Service
  */
 
 define([
@@ -43,6 +42,12 @@ define([
         this.valueChangeListeners = {};
     }
 
+    /**
+     * Get cascaded (inherited and override) values of a preference store by its scope
+     * @param {module:Preference/Store} store
+     * @return {Object}
+     * @private
+     */
     PreferenceService.prototype._getRealPreferenceValues = function (store) {
         if (store) {
             var value = store.getRealValues();
@@ -57,9 +62,9 @@ define([
     };
 
     /**
-     *
-     * @param preferenceId
-     * @param listener
+     * Add a change listener for a preference id
+     * @param {string} preferenceId - preference id
+     * @param {Function} listener
      */
     PreferenceService.prototype.addFieldChangeListener = function (preferenceId, listener) {
         if (!this.valueChangeListeners[preferenceId]) {
@@ -71,9 +76,9 @@ define([
     };
 
     /**
-     *
-     * @param preferenceId
-     * @param listener
+     * Remove a change listener
+     * @param {string} preferenceId - preference id
+     * @param {Function} listener
      */
     PreferenceService.prototype.removeFieldChangeListener = function (preferenceId, listener) {
         if (this.valueChangeListeners[preferenceId]) {
@@ -84,6 +89,15 @@ define([
         }
     };
 
+    /**
+     * Call all change listeners that registered in this service.
+     * @todo It is better to register listeners to the preference manager using
+     * @todo    {@link module:Preference/Manager.PREFERENCE_VALUE_CHANGED} and call all listeners by itself.
+     * @todo {@link module:Preference/ServiceFactory} should only do the job that create
+     * @todo    {@link module:Preference/Service} object.
+     * @param {string} preferenceId - preference id
+     * @param {Object} values
+     */
     PreferenceService.prototype.callListeners = function (preferenceId, values) {
         if (this.valueChangeListeners[preferenceId]) {
             for (var i = 0; i < this.valueChangeListeners[preferenceId].length; i++) {
@@ -94,17 +108,15 @@ define([
 
     /**
      * This callback will be called after preference values set
-     *
      * @callback preferenceValueCallback
      * @param {object} preference value or values
      */
 
     /**
-     * Get all values by preference ID
-     *
-     * @param {string} preferenceId - preference ID
+     * Get all values by preference id
+     * @param {string} preferenceId - preference id
      * @param {preferenceValueCallback} callback
-     * @returns {object} - return preference values even if loading is not completed
+     * @return {object} - return preference values even if loading is not completed
      */
     PreferenceService.prototype.getValues = function (preferenceId, callback) {
         var self = this;
@@ -117,12 +129,11 @@ define([
     };
 
     /**
-     * Get value by preference ID and preference field key
-     *
-     * @param {string} preferenceId - preference ID
+     * Get value by preference id and preference field key
+     * @param {string} preferenceId - preference id
      * @param {string} key - field key
      * @param {preferenceValueCallback} callback
-     * @returns {object} - return preference values even if loading is not completed
+     * @return {object} - return preference values even if loading is not completed
      */
     PreferenceService.prototype.getValue = function (preferenceId, key, callback) {
         var result = this.getValues(preferenceId, function (values) {
@@ -133,6 +144,12 @@ define([
         return result && result[key];
     };
 
+    /**
+     * Set all values on specified preference
+     * @param {string} preferenceId - preference id
+     * @param {Object} values
+     * @param {errorCallback} [callback]
+     */
     PreferenceService.prototype.setValues = function (preferenceId, values, callback) {
         var self = this;
         var store = preferenceManager.getStore(preferenceId, self.scope);
@@ -157,6 +174,13 @@ define([
         }
     };
 
+    /**
+     * Set a value by its key
+     * @param preferenceId
+     * @param key - preference key
+     * @param value
+     * @param {errorCallback} [callback]
+     */
     PreferenceService.prototype.setValue = function (preferenceId, key, value, callback) {
         var self = this;
         var store = preferenceManager.getStore(preferenceId, self.scope);

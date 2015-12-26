@@ -15,11 +15,10 @@
  */
 
 /**
- * Factory class for getting instances of preference service
- *
- * @since: 15. 8. 19
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
- * @module webida.preference.PreferenceServiceFactory
+ * @file Factory class for getting instances of preference service
+ * @since 1.4.0
+ * @author kyungmi.k@samsung.com
+ * @module Preference/ServiceFactory
  */
 
 define([
@@ -86,9 +85,9 @@ define([
      * @param {string} scopeName - scope name, "USER", "WORKSPACE" or "PROJECT"
      * @param {string} additionalInfo - additional infos for scope
      *      e.g. If `scopeName` is "PROJECT", `additionalInfo` will be a project name.
-     * @returns {PreferenceService}
+     * @return {PreferenceService}
      *
-     * @memberOf webida.preference.PreferenceServiceFactory
+     * @memberOf Preference/ServiceFactory
      */
     PreferenceServiceFactory.findServiceInstance = function (scopeName, additionalInfo) {
         if (!additionalInfo && instances[scopeName]) {
@@ -104,9 +103,9 @@ define([
      * @param {string} scopeName - scope name, "USER", "WORKSPACE" or "PROJECT"
      * @param {string} additionalInfo - additional infos for scope
      *      e.g. If `scopeName` is "PROJECT", `additionalInfo` will be a project name.
-     * @returns {PreferenceService}
+     * @return {PreferenceService}
      *
-     * @memberOf webida.preference.PreferenceServiceFactory
+     * @memberOf Preference/ServiceFactory
      */
     PreferenceServiceFactory.get = function (scopeName, additionalInfo) {
         var instance = PreferenceServiceFactory.findServiceInstance(scopeName, additionalInfo);
