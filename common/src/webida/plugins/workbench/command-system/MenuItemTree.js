@@ -1234,11 +1234,14 @@ define([
         console.assert(item && item[0] === 'cmnd');
 
         var menuItemTree = this;
-        require(['dojo/dom', 'dojo/store/Memory', 'dijit/registry',
-                 'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-                 'text!./layer/shortcutKeysSettingDlg.html'],
-                function (dom, Memory, reg, ButtonedDialog, markupTmpl) {
-
+        require([
+            'dojo/dom',
+            'dojo/store/Memory',
+            'dijit/registry',
+            'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+            'text!./layer/shortcutKeysSettingDlg.html',
+            'xstyle/css!./style/style.css'
+        ], function (dom, Memory, reg, ButtonedDialog, markupTmpl) {
             //console.log('hina temp: loc = ' + loc);
             //console.log(markup);
             if (!reg.byId('wsks-radio-one')) {

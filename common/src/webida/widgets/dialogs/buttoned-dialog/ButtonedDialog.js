@@ -50,15 +50,15 @@ define(['dojo/_base/declare',
 
         function markupForComboButton(buttonSpec, i) {
             function markupForSubitems(subitemSpecs) {
-                var markup = '  <span data-dojo-type="dijit/DropDownMenu">\n';
+                var markup = '  <div data-dojo-type="dijit/DropDownMenu">\n';
 
                 subitemSpecs.forEach(function (subitemSpec, j) {
                     subitemSpec.id = (subitemSpec.id || ('buttoned-dialog-subitem-' + dialog + '-' + i + '-' + j));
-                    markup += ('   <span id="' + subitemSpec.id  +
-                               '" data-dojo-type="dijit/MenuItem"> ' + subitemSpec.caption + '</span>\n');
+                    markup += ('   <div id="' + subitemSpec.id +
+                               '" data-dojo-type="dijit/MenuItem"> ' + subitemSpec.caption + '</div>\n');
                 });
 
-                markup += '  </span>\n';
+                markup += '  </div>\n';
                 return markup;
             }
 
@@ -70,7 +70,7 @@ define(['dojo/_base/declare',
         }
 
         if (buttonSpecs.length) {
-            var markup = '<div class="dijitDialogPaneActionBar"> \n';
+            var markup = '<div> \n';
 
             buttonSpecs.forEach(function (buttonSpec, i) {
                 if (buttonSpec.subitems instanceof Array && buttonSpec.subitems.length) {

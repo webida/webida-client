@@ -24,71 +24,71 @@
  *   plugins/shortcutKey-info/plugin.js
  */
 
-define(['external/lodash/lodash.min',    // _
-        'webida-lib/plugin-manager-0.1',                   // pm
-        'dojo',                             // dojo
-        'dojo/on',                          // on
-        'dojo/aspect',                      // aspect
-        'dojo/dom-style',                   // domStyle
-        'dojo/dom-attr',                    // domAttr
-        'dojo/dom-construct',               // domConstruct
-        'dojo/i18n!../nls/resource',    //i18n
-        'dojo/parser',                      // parser
-        'dojo/_base/declare',               // declare
-        'dojo/_base/lang',                  // lang
-        'dojo/_base/window',                // win
-        'dijit/registry',                   // reg
-        'dijit/focus',                      // focusUtil
-        '../plugin',                 // workbench
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
-        'dijit/Dialog',                     // Dialog
-        'dijit/form/CheckBox',              // CheckBox
-        'dijit/layout/TabContainer',        // TabContainer
-        'dijit/layout/ContentPane',         // ContentPane
-        'dojox/grid/DataGrid',              // DataGrid
-        'external/dgrid/OnDemandGrid',               // OnDemandGrid
-        'external/dgrid/Selection',                  // Selection
-        'external/dgrid/Keyboard',                   // Keyboard
-        'external/dgrid/extensions/Pagination',      // Pagination
-        'dojo/fx/Toggler',                  // Toggler
-        'dojo/query',                       // query
-        'dojo/store/Memory',                // Memory
-        'dojo/data/ItemFileWriteStore',     // ItemFileWriteStore
-        'dojo/text!./layer/shortcutKeysListDlg.html' // dlgLayout
-       ],
-function (_,
-          pm,
-          dojo,
-          on,
-          aspect,
-          domStyle,
-          domAttr,
-          domConstruct,
-          i18n,
-          parser,
-          declare,
-          lang,
-          win,
-          reg,
-          focusUtil,
-           workbench,
-           ButtonedDialog,
-          Dialog,
-          CheckBox,
-          TabContainer,
-          ContentPane,
-          DataGrid,
-          OnDemandGrid,
-          Selection,
-          Keyboard,
-          Pagination,
-          Toggler,
-          query,
-          Memory,
-          ItemFileWriteStore,
-          dlgLayout
-         )
-{
+define([
+    'external/lodash/lodash.min',    // _
+    'webida-lib/plugin-manager-0.1',                   // pm
+    'dojo',                             // dojo
+    'dojo/on',                          // on
+    'dojo/aspect',                      // aspect
+    'dojo/dom-style',                   // domStyle
+    'dojo/dom-attr',                    // domAttr
+    'dojo/dom-construct',               // domConstruct
+    'dojo/i18n!../nls/resource',    //i18n
+    'dojo/parser',                      // parser
+    'dojo/_base/declare',               // declare
+    'dojo/_base/lang',                  // lang
+    'dojo/_base/window',                // win
+    'dijit/registry',                   // reg
+    'dijit/focus',                      // focusUtil
+    '../plugin',                 // workbench
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
+    'dijit/Dialog',                     // Dialog
+    'dijit/form/CheckBox',              // CheckBox
+    'dijit/layout/TabContainer',        // TabContainer
+    'dijit/layout/ContentPane',         // ContentPane
+    'dojox/grid/DataGrid',              // DataGrid
+    'external/dgrid/OnDemandGrid',               // OnDemandGrid
+    'external/dgrid/Selection',                  // Selection
+    'external/dgrid/Keyboard',                   // Keyboard
+    'external/dgrid/extensions/Pagination',      // Pagination
+    'dojo/fx/Toggler',                  // Toggler
+    'dojo/query',                       // query
+    'dojo/store/Memory',                // Memory
+    'dojo/data/ItemFileWriteStore',     // ItemFileWriteStore
+    'dojo/text!./layer/shortcutKeysListDlg.html' // dlgLayout
+], function (
+    _,
+    pm,
+    dojo,
+    on,
+    aspect,
+    domStyle,
+    domAttr,
+    domConstruct,
+    i18n,
+    parser,
+    declare,
+    lang,
+    win,
+    reg,
+    focusUtil,
+    workbench,
+    ButtonedDialog,
+    Dialog,
+    CheckBox,
+    TabContainer,
+    ContentPane,
+    DataGrid,
+    OnDemandGrid,
+    Selection,
+    Keyboard,
+    Pagination,
+    Toggler,
+    query,
+    Memory,
+    ItemFileWriteStore,
+    dlgLayout
+) {
     'use strict';
 
     //console.log('mira: Loading shortcutKey info module');

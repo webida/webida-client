@@ -1,0 +1,15 @@
+.shortcut-keys-dialog {
+    width: 400px;
+}
+.shortcut-keys-description {
+    margin: 10px 5px;
+}
+.shortcut-keys-component {
+    margin-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.shortcut-keys-sub-component {
+    padding-left: 27px;
+    padding-right: 27px;
+}
