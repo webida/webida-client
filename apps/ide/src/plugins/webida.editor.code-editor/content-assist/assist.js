@@ -31,7 +31,7 @@ define([
 
     function getRemoteFile(path, c) {
         //ide.getMount().readFile(path, function (error, content) {
-        ide.getFSCache().readFile(path, function (error, content) {
+        ide.getFSCache().readFile(path, {mayNotExist: true}, function (error, content) {
             if (content === undefined) {
                 content = null;
             }
