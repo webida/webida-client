@@ -34,16 +34,14 @@ define([
     'require',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './IContentAssist'
+    'webida-lib/util/logger/logger-client'
 ], function (
     codemirror,
     URI,
     require,
     pluginManager,
     genetic,
-    Logger,
-    IContentAssist
+    Logger
 ) {
     'use strict';
     // @formatter:on
@@ -108,10 +106,7 @@ define([
             Promise.all(promisesForConstructors).then(function (values) {
                 resolve('CA constructors loading is completed');
             });
-
-
         });
-
     }
 
     loadCaControlsConstructors();
@@ -123,7 +118,9 @@ define([
         var promises = [promiseForExtensionsInfo];
 
         this.controls = [];
+       
         cm._contentAssistDelegator = that;
+        this.viewer = cm.__instance;
 
         promises.push(new Promise(function (resolve, reject) {
             caControlConstructors.forEach(function (CaControlConstructor) {
@@ -167,9 +164,8 @@ define([
 
     setCodemirrorCommandsAndHelpers();
 
-    genetic.inherits(ContentAssistDelegator, IContentAssist, {
-
-
+    genetic.inherits(ContentAssistDelegator, Object, {
+        
         /**
          * Returns whether the command is supported
          *
@@ -179,7 +175,9 @@ define([
          */
         canExecute: function (command) {
             for (var i = 0; i < this.controls.length; i++) {
-                if (this.controls[i].canExecute(command)) {
+                var controlTargetMode = this.controls[i].constructor.TARGET_MODE;
+                if ((controlTargetMode === '*' || controlTargetMode === this.viewer.mode) && 
+                    this.controls[i].canExecute(command)) {
                     return true;
                 }
             }
@@ -199,7 +197,9 @@ define([
             var slice = Array.prototype.slice;
             var args = slice.apply(arguments);
             for (var i = 0; i < this.controls.length; i++) {
-                if (this.controls[i].canExecute(command)) {
+                var controlTargetMode = this.controls[i].constructor.TARGET_MODE;
+                if ((controlTargetMode === '*' || controlTargetMode === this.viewer.mode) && 
+                    this.controls[i].canExecute(command)) {
                     return this.controls[i].execCommand.apply(this.controls[i], args);
                 }
             }
@@ -218,7 +218,9 @@ define([
             var slice = Array.prototype.slice;
             var args = slice.apply(arguments);
             for (var i = 0; i < this.controls.length; i++) {
-                if (this.controls[i].canExecute(command)) {
+                var controlTargetMode = this.controls[i].constructor.TARGET_MODE;
+                if ((controlTargetMode === '*' || controlTargetMode === this.viewer.mode) && 
+                    this.controls[i].canExecute(command)) {
                     this.controls[i].execCommand.apply(this.controls[i], args);
                 }
             }

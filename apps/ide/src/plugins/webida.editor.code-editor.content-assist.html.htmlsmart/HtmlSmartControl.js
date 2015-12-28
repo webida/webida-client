@@ -58,7 +58,6 @@ define([
         logger.info('new HtmlSmartControl()'); 
 
         this.server = server;
-        viewer.assister = server;
         server.setModes(HtmlSmartControl.TARGET_MODE, HtmlSmartControl.ENGINE_NAME);
         var optionsCopied = _.clone(options);
         optionsCopied.async = true;

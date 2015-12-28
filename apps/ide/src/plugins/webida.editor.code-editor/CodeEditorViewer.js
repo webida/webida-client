@@ -487,11 +487,16 @@ define([
         onChangeForAutoHintDebounced = _.debounce(function (cm, changeObj, lastCursor) {
             // TODO - limch - minimize addFile() call to WebWorker
             var editor = cm.__instance;
-            if (editor.assister && editor.assister.addFile) {
+            
+            if (editor._contentAssistDelegator) {
                 var options = {};
                 options.async = true;
                 options.useWorker = settings.useWorker;
-                editor.assister.addFile(editor.file.path, cm.getDoc().getValue(), options);
+                editor._contentAssistDelegator.execCommand(
+                    'addFile',
+                    editor.file.path,
+                    cm.getDoc().getValue(),
+                    options);
             }
 
             if (changeObj.origin === '+input' && settings.autoHint) {
