@@ -93,7 +93,6 @@ define([
             calcium.startServer(viewer.file.path, cm, options, function (server) {
                 that.calciumAddon = server.calciumAddon;
                 that.server = server;
-                viewer.assister = server;
                 if (c) {
                     c();
                 }

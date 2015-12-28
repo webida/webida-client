@@ -58,11 +58,8 @@ define([
         logger.info('new CssSmartControl()');
         
         this.server = server;
-        viewer.assister = server;
         server.setModes(CssSmartControl.TARGET_MODE, CssSmartControl.ENGINE_NAME);
-        //var optionsCopied = _.clone(options);
-        //optionsCopied.async = true;
-        //server.addFile(viewer.file.path, viewer.editor.getDoc().getValue(), optionsCopied);
+
         if (c) {
             c();
         }     

@@ -95,7 +95,6 @@ define([
             starter.startServer(viewer.file.path, cm, options, function (server) {
                 that.ternAddon = server.ternAddon;
                 that.server = server;
-                viewer.assister = server;
                 if (c) {
                     c();
                 }
