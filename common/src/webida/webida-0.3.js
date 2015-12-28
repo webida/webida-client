@@ -1063,6 +1063,15 @@ var ENV_TYPE;
     */
 
     /**
+     * Options for reading file
+     * @typedef {object} read_file_option
+     * @property {module:webida.responseType} [responseType=""]
+     * @property {boolean} [mayNotExist=false] - If it is true and there is no such file to read, the status code of
+     *      response will be "204 No Content", not "404 Not Found".
+     * @memberof module:webida
+     */
+
+    /**
     * @class FileSystem
     * @classdesc This class represents a Webida FileSystem.
     * @property {module:webida.fs_url} fsUrl - Url for the Webida FileSystem. eg. wfs://host/fsid
@@ -1652,32 +1661,40 @@ var ENV_TYPE;
     };
 
     /**
-    * Read a file contents.
-    *
-    * @method readFile
-    * @param {module:webida.path} target - Read file path
-    * @param {module:webida.responseType} [responseType=""] -
-    *        Response type to be used for XMLHttpRequest call.
-    *        If not specified, the default is empty string that means response is assumed text.
-    *        'text', 'arraybuffer', 'blob', etc are supported by most browsers.
-    *        See https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest#Properties
-    * @param {module:webida.request_callback_with_file_data} callback -
-    *        (error:callback_error, [content:string]) → undefined
-    *        <br>If function finished successfully then error is undefined.
-    *        And contents is file contents.
-    * @memberOf module:webida.FSService.FileSystem
-    */
-    FileSystem.prototype.readFile = function (path, responseType, callback) {
+     * Read a file contents.
+     *
+     * @method readFile
+     * @param {module:webida.path} path - Read file path
+     * @param {(module:webida.responseType|module:webida.read_file_option)} [readOption] -
+     *        Response type to be used for XMLHttpRequest call.
+     *        If not specified, the default is empty string that means response is assumed text.
+     *        'text', 'arraybuffer', 'blob', etc are supported by most browsers.
+     *        See https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest#Properties
+     *        If this parameter is an object, the responseType property can be the one of this object's properties.
+     * @param {module:webida.request_callback_with_file_data} callback -
+     *        (error:callback_error, [content:string]) → undefined
+     *        <br>If function finished successfully then error is undefined.
+     *        And contents is file contents.
+     * @memberOf module:webida.FSService.FileSystem
+     */
+    FileSystem.prototype.readFile = function (path, readOption, callback) {
         var self = this;
+        var responseType = '';
+        var data;
         if (!callback) {
-            callback = responseType;
-            responseType = '';
+            callback = readOption;
+        } else if (typeof readOption === 'string') {
+            responseType = readOption;
+        } else if (typeof readOption === 'object') {
+            responseType = readOption.responseType || '';
+            if (readOption.mayNotExist) {
+                data = {mayNotExist: true};
+            }
         }
         function restApi() {
-            path = encodeURI(path);
-
             ajaxCall({
-                url: mod.conf.fsApiBaseUrl + '/file/' + self.fsid + '/' + path,
+                url: mod.conf.fsApiBaseUrl + '/file/' + self.fsid + '/' + encodeURI(path),
+                data: data,
                 callbackWithRawData: function (data) {
                     callback(null, data);
                 },
@@ -4191,6 +4208,10 @@ var ENV_TYPE;
                 var status = xhr.status;
                 // Only 2XX and 304 are successful status code. In this case, retData.result should be 'failed'
                 var successful = status >= 200 && status < 300 || status === 304;
+                // If data.mayNotExist is true, the server respond with 204 status code in case of 404 not found.
+                if (data && data.mayNotExist && status === 204) {
+                    opts.callback('File not found');
+                }
                 // if opts.success exists and request succeeded, call it with whole response text.
                 if (successful && opts.callbackWithRawData) {
                     if (opts.responseType === '' || opts.responseType === 'text') {
@@ -4202,7 +4223,7 @@ var ENV_TYPE;
                 }
 
                 if (status === 0) {
-                    opts.callback('server unreachable');
+                    opts.callback('Server unreachable');
                     return;
                 }
 
