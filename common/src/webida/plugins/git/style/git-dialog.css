@@ -1,0 +1,24 @@
+.git-dialog-form {
+    width: 450px;
+}
+.git-dialog-form fieldset {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+.git-dialog-form fieldset legend, .git-dialog-em {
+    font-weight: bold;
+}
+.git-dialog-component {
+    margin-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.git-dialog-label {
+    width:135px;
+    display:inline-block;
+}
+.git-dialog-value {
+    display:inline-block;
+}

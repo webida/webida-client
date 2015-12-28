@@ -1692,7 +1692,12 @@ define([
     }
 
     function _pull(gitRootPath) {
-        require(['text!./layer/pull.html'], function (pullView) {
+        require([
+            'text!./layer/pull.html',
+            'xstyle/css!./style/git-dialog.css'
+        ], function (
+            pullView
+        ) {
             var GIT_DIR = gitRootPath;
             var pullDialog = new ButtonedDialog({
                 buttons: [
@@ -2221,7 +2226,12 @@ define([
     }
 
     function _fetch(gitRootPath) {
-        require(['text!./layer/fetch.html'], function (fetchView) {
+        require([
+            'text!./layer/fetch.html',
+            'xstyle/css!./style/git-dialog.css'
+        ], function (
+            fetchView
+        ) {
             var GIT_DIR = gitRootPath;
             var fetchDialog = new ButtonedDialog({
                 buttons: [
@@ -2278,8 +2288,8 @@ define([
             var fetchRefspec = registry.byId('GitFetchRefspecChk');
             var pruneChk = registry.byId('GitFetchPruneChk');
             var notTagChk = registry.byId('GitFetchNoTagChk');
-            var sourceRefSelect = registry.byId('GitFetchSourceRefSelect');
-            var destinationRefSelect = registry.byId('GitFetchDestinationRefSelect');
+            var sourceRefSelect = new ComboBox({disabled: true}, 'GitFetchSourceRefSelect');
+            var destinationRefSelect = new ComboBox({disabled: true}, 'GitFetchDestinationRefSelect');
 
             var rebaseFlag = false;
 

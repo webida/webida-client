@@ -1,61 +1,50 @@
-<div style="padding: 7px">
-<div style="width:450px;padding-bottom: 5px;">
-    <div style="width: 100px; display:inline-block;">
-        <strong>Current branch:</strong>
+<form class="git-dialog-form">
+    <div class="git-dialog-component">
+        <div class="git-dialog-label git-dialog-em">Current branch:</div>
+        <div class="git-dialog-value" id="GitFetchBranchInfo"></div>
     </div>
-    <div style="display:inline-block;" id="GitFetchBranchInfo"></div>
-</div>
-<div style="padding-bottom:5px;">
-    <div style="width: 100px; display:inline-block;">
-        <strong>Target remote:</strong>
+    <div class="git-dialog-component">
+        <div class="git-dialog-label git-dialog-em">Target remote:</div>
+        <span>
+            <input id="GitFetchAllChk" data-dojo-type="dijit/form/RadioButton" data-dojo-props="checked: true"/>
+            <label for="GitFetchAllChk">All remote</label>
+        </span>
+        <span>
+            <input id="GitFetchRefspecChk" data-dojo-type="dijit/form/RadioButton"/>
+            <label for="GitFetchRefspecChk">Specified refs</label>
+        </span>
     </div>
-    <div style="width:160px;display:inline-block;">
-        <input id="GitFetchAllChk" data-dojo-type="dijit/form/RadioButton" data-dojo-props="checked: true"/>
-        <label for="GitFetchAllChk">All remote</label>
+    <div class="git-dialog-component">
+        <label for="GitFetchRemoteRepoSelect" class="git-dialog-label git-dialog-em">Remote repository:</label>
+        <select id="GitFetchRemoteRepoSelect" class="git-dialog-value" data-dojo-type="dijit/form/Select"></select>
     </div>
-    <div style="display:inline-block;">
-        <input id="GitFetchRefspecChk" data-dojo-type="dijit/form/RadioButton"/>
-        <label for="GitFetchRefspecChk">Specified refs</label>
-    </div>
-</div>
-<div style="padding-bottom: 5px;">
-    <div style="width:135px;display:inline-block;">
-        <label for="GitFetchRemoteRepoSelect">Remote repository:</label>
-    </div>
-    <select id="GitFetchRemoteRepoSelect" style="width:330px" data-dojo-type="dijit/form/Select" data-dojo-props="disabled:true"></select>
-</div>
-<div style="padding-bottom: 5px;">
-    <fieldset style="padding: 5px; border: 1px solid gray">
-        <legend>
-            <strong>Refspec</strong>
-        </legend>
-        <div style="padding-bottom: 5px;">
-            <div style="width:135px;display:inline-block;">
-                <label for="GitFetchSourceRefSelect">Source ref:</label>
-            </div>
-            <select id="GitFetchSourceRefSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox" data-dojo-props="disabled:true"></select>
+    <fieldset>
+        <legend>Refspec</legend>
+        <!-- There may occur a freeze issue
+            when text is near any dijit/form/ComboBox using 3 buttons in ButtonedDialog
+            with Chrome 47+ Windows7 (32,64 bit) -->
+        <div class="git-dialog-label">
+            <label for="GitFetchSourceRefSelect">Source ref:</label>
         </div>
-        <div style="width:135px;display:inline-block;">
+        <div class="git-dialog-value">
+            <select id="GitFetchSourceRefSelect"></select>
+        </div>
+        <div class="git-dialog-label">
             <label for="GitFetchDestinationRefSelect">Destination ref:</label>
         </div>
-        <select id="GitFetchDestinationRefSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox" data-dojo-props="disabled:true"></select>
-    </fieldset>
-</div>
-<div>
-    <fieldset style="padding: 5px; border: 1px solid gray">
-        <legend>
-            <strong>Options</strong>
-        </legend>
-        <div>
-            <div style="width:49%;display:inline-block;">
-                <input id="GitFetchPruneChk" data-dojo-type="dijit/form/CheckBox"/>
-                <label for="GitFetchPruneChk">Prune</label>
-            </div>
-            <div style="width:49%;display:inline-block;">
-                <input id="GitFetchNoTagChk" data-dojo-type="dijit/form/CheckBox"/>
-                <label for="GitFetchNoTagChk">No tags</label>
-            </div>
+        <div class="git-dialog-value">
+            <select id="GitFetchDestinationRefSelect"></select>
         </div>
     </fieldset>
-</div>
-</div>
+    <fieldset>
+        <legend>Options</legend>
+        <div class="git-dialog-component">
+            <input id="GitFetchPruneChk" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitFetchPruneChk">Prune</label>
+        </div>
+        <div class="git-dialog-component">
+            <input id="GitFetchNoTagChk" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitFetchNoTagChk">No tags</label>
+        </div>
+    </fieldset>
+</form>

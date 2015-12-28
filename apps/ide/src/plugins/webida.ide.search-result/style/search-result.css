@@ -3,18 +3,15 @@
     height: 100%;
     position: relative;
 }
-
-.search-result-contents {
+.search-result-toolbar-panel {
     background-color: #cfd4da;
     border: 1px #fff solid;
-}
-
-.search-result-toolbar-panel {
-    width: 100%;
-    height: auto;
     color: #494949;
     padding: 4px 0;
-    box-sizing: border-box;
+}
+.search-result-toolbar-component {
+    padding-right: 10px;
+    padding-left: 10px;
 }
 .search-result-tree-panel {
     background-color: #fafaff;

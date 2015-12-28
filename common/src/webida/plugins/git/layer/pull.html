@@ -1,54 +1,36 @@
-<div style="padding: 7px">
-<div style="width: 450px;padding-bottom: 5px;">
-    <div style="width: 120px; display:inline-block;">
-        <strong>Current branch:</strong>
+<form class="git-dialog-form">
+    <div class="git-dialog-component">
+        <div class="git-dialog-label git-dialog-em">Current branch:</div>
+        <div class="git-dialog-value" id="GitPullBranchInfo"></div>
     </div>
-    <div style="display:inline-block;" id="GitPullBranchInfo"></div>
-</div>
-<div style="padding-bottom: 5px;">
-    <div style="width:120px;display:inline-block;">
-        <strong>
-            <label for="GitPullRemoteRepoSelect">Remote repository:</label>
-        </strong>
+    <div class="git-dialog-component">
+        <label for="GitPullRemoteRepoSelect" class="git-dialog-label git-dialog-em">Remote repository:</label>
+        <select id="GitPullRemoteRepoSelect" class="git-dialog-value" data-dojo-type="dijit/form/Select"></select>
     </div>
-    <select id="GitPullRemoteRepoSelect" style="width:359px" data-dojo-type="dijit/form/Select"></select>
-</div>
-<div style="padding-bottom:5px;">
-    <fieldset style="padding:5px;border:1px solid gray;">
-        <legend>
-            <strong>Refspec</strong>
-        </legend>
-        <div style="padding-bottom: 5px;">
-            <div style="width:135px;display:inline-block;">
-                <label for="GitPullSourceRefSelect">Source ref:</label>
-            </div>
-            <select id="GitPullSourceRefSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox"></select>
+    <fieldset>
+        <legend>Refspec</legend>
+        <div class="git-dialog-component">
+            <label for="GitPullSourceRefSelect" class="git-dialog-label">Source ref:</label>
+            <select id="GitPullSourceRefSelect" class="git-dialog-value" data-dojo-type="dijit/form/ComboBox"></select>
         </div>
-        <div style="width:135px;display:inline-block;">
-            <label for="GitPullDestinationRefSelect">Destination ref:</label>
-        </div>
-        <select id="GitPullDestinationRefSelect" style="width:330px" data-dojo-type="dijit/form/ComboBox"></select>
-    </fieldset>
-</div>
-<div>
-    <fieldset style="padding: 5px; border: 1px solid gray">
-        <legend>
-            <strong>Options (related to merging)</strong>
-        </legend>
-        <div>
-            <div style="width:160px;display:inline-block;">
-                <input id="GitPullNoCommitCheckbox" data-dojo-type="dijit/form/CheckBox"/>
-                <label for="GitPullNoCommitCheckbox">No commit</label>
-            </div>
-            <div style="width:180px;display:inline-block;">
-                <input id="GitPullSquashCheckbox" data-dojo-type="dijit/form/CheckBox"/>
-                <label for="GitPullSquashCheckbox">Squash commit</label>
-            </div>
-            <div style="display:inline-block;">
-                <input id="GitPullNoFFCheckbox" data-dojo-type="dijit/form/CheckBox"/>
-                <label for="GitPullNoFFCheckbox">No fast forward</label>
-            </div>
+        <div class="git-dialog-component">
+            <label for="GitPullDestinationRefSelect" class="git-dialog-label">Destination ref:</label>
+            <select id="GitPullDestinationRefSelect" class="git-dialog-value" data-dojo-type="dijit/form/ComboBox"></select>
         </div>
     </fieldset>
-</div>
-</div>
+    <fieldset>
+        <legend>Options (related to merging)</legend>
+        <div class="git-dialog-component">
+            <input id="GitPullNoCommitCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitPullNoCommitCheckbox">No commit</label>
+        </div>
+        <div class="git-dialog-component">
+            <input id="GitPullSquashCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitPullSquashCheckbox">Squash commit</label>
+        </div>
+        <div class="git-dialog-component">
+            <input id="GitPullNoFFCheckbox" data-dojo-type="dijit/form/CheckBox"/>
+            <label for="GitPullNoFFCheckbox">No fast forward</label>
+        </div>
+    </fieldset>
+</form>
