@@ -84,7 +84,7 @@ define(['external/lodash/lodash.min',
 
         var result = {};
 
-        if (body.query.type === 'completions') {
+        if (body.query && body.query.type === 'completions') {
             result = findCompletions(body);
         }
 

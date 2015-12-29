@@ -91,17 +91,21 @@ define([
 
                 // Rename async
                 if (editor._contentAssistDelegator) {
-                    editor._contentAssistDelegator.execCommand(
-                        'request', editor,
-                        {type: 'rename', newName: 'someName', fullDocs: true},
-                        function (error/*, data*/) {
-                            if (!error) {
-                                items['&Source']['&Rename Variables'] =
-                                    menuItems.editMenuItems['&Source']['&Rename Variables'];
+                    if (editor._contentAssistDelegator.canExecute('request')) {
+                        editor._contentAssistDelegator.execCommand(
+                            'request', editor,
+                            {type: 'rename', newName: 'someName', fullDocs: true},
+                            function (error/*, data*/) {
+                                if (!error) {
+                                    items['&Source']['&Rename Variables'] =
+                                        menuItems.editMenuItems['&Source']['&Rename Variables'];
+                                }
+                                deferred.resolve(items);
                             }
-                            deferred.resolve(items);
-                        }
-                    );
+                        );
+                    } else {
+                        deferred.resolve(items);                    
+                    }
                 } else {
                     deferred.resolve(items);
                 }
