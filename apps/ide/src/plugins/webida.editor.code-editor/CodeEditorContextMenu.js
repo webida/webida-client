@@ -123,16 +123,22 @@ define([
                 //TODO: widget._contentAssistDelegator -> viewer.getPlugin('tern-js')
                 
                 if (widget._contentAssistDelegator) {
-                    widget._contentAssistDelegator.execCommand('request', widget, {
-                        type: 'rename',
-                        newName: 'merong',
-                        fullDocs: true
-                    }, function (error) {
-                        if (!error) {
-                            sourceItems['&Rename Variables'] = allItems.editMenuItems['&Source']['&Rename Variables'];
-                        }
+                    if (widget._contentAssistDelegator.canExecute('request')) {
+                        widget._contentAssistDelegator.execCommand('request', widget, {
+                            type: 'rename',
+                            newName: 'merong',
+                            fullDocs: true
+                        }, function (error) {
+                            if (!error) {
+                                sourceItems['&Rename Variables'] = 
+                                    allItems.editMenuItems['&Source']['&Rename Variables'];
+                            }
+                            deferred.resolve(items);
+                        });
+                    } else {
                         deferred.resolve(items);
-                    });
+                    }
+                  
                 } else {
                     deferred.resolve(items);
                 }                                                  
