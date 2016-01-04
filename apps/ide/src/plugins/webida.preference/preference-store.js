@@ -234,6 +234,13 @@ define([
         },
 
         /**
+         * Undo changes from the last appliedValues
+         */
+        undoChanges: function () {
+            this.initialValues(this.defaultValues, this.appliedValues);
+        },
+
+        /**
          * set override option
          * @param {boolean} override - override set or not
          */

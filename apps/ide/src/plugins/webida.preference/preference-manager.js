@@ -272,6 +272,13 @@ define([
             });
         },
 
+        undoAllChanges: function (scope, scopeInfo) {
+            var storesByScope = this.getStoresByScope(scope, scopeInfo);
+            _.forEach(storesByScope, function (store) {
+                store.undoChanges();
+            });
+        },
+
         /**
          * Get all preference file list
          * @return {Promise}

@@ -231,6 +231,7 @@ define([
                             notify.error(err);
                         }
                         module.isOpened = false;
+                        preferenceManager.undoAllChanges(scope, scopeInfo);
                     });
                 }
             });
