@@ -251,7 +251,7 @@ define([
                 }
             },
             runConf: function () {
-                delegator.saveConf(current.runConf, function (err, runConf) {
+                function _run(err, runConf) {
                     if (!err) {
                         switch (mode) {
                             case runConfManager.MODE.RUN_MODE:
@@ -263,7 +263,12 @@ define([
                         }
                         ui.dialog.hide();
                     }
-                });
+                }
+                if (current.runConf._dirty) {
+                    delegator.saveConf(current.runConf, _run);
+                } else {
+                    _run(null, current.runConf);
+                }
             },
             refocus: false,
             title: title,
