@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file This file is rendering the different view in the commit of git.
+ * @since 1.0.0
+ * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ */
 define([
     'dojo/Deferred',
     'dojo/i18n!./nls/resource',
@@ -51,16 +56,26 @@ define([
 
     var fsCache = ide.getFSCache();
     var preferences = PreferenceFactory.get('WORKSPACE');
-    // constructor
+    /**
+     * constructor
+     * @type {Object}
+     */
     var GitDiff = function () {
     };
-
+    /**
+     * Get preference value for lines of context.
+     */
     GitDiff.prototype._getLinesOfContext = function () {
         var linesOfContext = preferences.getValue(GitPreferences.PREFIX,
                 GitPreferences.getKey(GitPreferences.LINES_OF_CONTEXT));
         return linesOfContext || 10;
     };
-
+    /**
+     * Execute diffenence view in the commit of git
+     * @param {string} gitRootPath
+     * @param {string} file
+     * @param {string} commitID
+     */
     GitDiff.prototype.execute = function (gitRootPath, file, commitId) {
         var self = this;
         var ARG_LEN = arguments.length;
@@ -272,3 +287,4 @@ define([
 
     return GitDiff;
 });
+

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file This file set up git icons
+ * @since 1.0.0
+ * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ */
 define([
     './git-core',
     'dojo/i18n!./nls/resource',
@@ -81,7 +86,7 @@ define([
                     return 'gitRemoved';
                 case 'A' :
                     return 'gitAdded';
-                default:	// M, R, C
+                default:    // M, R, C
                     return 'gitChanged';
                 }
             }
@@ -251,10 +256,8 @@ define([
     }
 
     function throttleIconInfoSetting(repoPath, initiator, pathToCode) {
-        //console.log('hina temp: entering throttleIconInfoSetting(), initiator = ' + initiator);
         var pendingUpdate = pendingIconUpdates[repoPath];
         if (pendingUpdate) {
-            //console.log('hina temp: returning in throttleIconInfoSetting()');
             if (!pendingUpdate.pathToCode && pathToCode) {
                 console.warn('note: pathToCode is set later.');
             }
@@ -265,7 +268,10 @@ define([
             setTimeout(callSetIconInfo.bind(null, repoPath), THROTTLE_DELAY);
         }
     }
-
+    /**
+     * Detect repository of git
+     * @param {string} path
+     */
     function detectGitRepo(path) {
         if (pathUtil.getName(path) === '.git') {
             var parentPath = pathUtil.getParentPath(path);
@@ -341,8 +347,6 @@ define([
                                 } else {
                                     var repoTopPath = getRepoTopPath(content);
                                     if (repoTopPath) {
-                                        //console.log('hina temp: found a git repo top: ' +
-                                        //            repoTopNode.getPath());
                                         git.recordGitRepoPath(
                                             parentPath, repoTopPath);
                                         setGitOverlayIconState(parentPath, 'gitSubmodule');
@@ -365,9 +369,11 @@ define([
             });
         }
     }
-
+    /**
+     * Delete git repository when the node was detached from the tree.
+     * @param {string} path
+     */
     function detectGitRepoDeletion(path) {
-        // CAUTION: node was detached from the tree
         var repoPath;
         var isDir = pathUtil.isDirPath(path);
         if (pathUtil.getName(path) === '.git' &&
@@ -393,8 +399,11 @@ define([
             git.unrecordGitRepoPathsUnder(path);
         }
     }
-
-    // mainly for the case when a directory node is expanded and its subentries appear.
+    /**
+     * mainly for the case when a directory node is expanded and its subentries appear.
+     * @param {string} path
+     * @param {boolean} maybeCreated
+     */
     function detectNodeWithoutIcon(path, maybeCreated) {
         var repoPath = git.findGitRootPath(path);
         if (repoPath && !git.isInDotGitDir(path) && !wv.getNodeOverlayIconInfo(path, GIT_OVERLAY_ICON_STATE_MAP_KEY)) {
@@ -402,27 +411,53 @@ define([
                                     maybeCreated ? undefined : lastGitStatusResults[repoPath]);
         }
     }
-
+    /**
+     * Refresh the icons of git when file is added.
+     * @param {string} fsURL
+     * @param {string} targetDir
+     * @param {string} name
+     * @param {string} type
+     * @param {boolean} maybeCreated
+     */
     function handleNodeAddEventInGitRepo(fsURL, targetDir, name, type, maybeCreated) {
         if (maybeCreated) {
             refreshGitIconsInRepoOf(targetDir + name);
         }
     }
-
+    /**
+     * Refresh the icons of git when file is deleted.
+     * @param {string} fsURL
+     * @param {string} targetDir
+     * @param {string} name
+     */
     function handleNodeDelEventInGitRepo(fsURL, targetDir, name/*, type*/) {
         refreshGitIconsInRepoOf(targetDir + name);
     }
-
+    /**
+     * Refresh the icons of git when file is changed.
+     * @param {string} fsURL
+     * @param {string} targetDir
+     */
     function handleNodeChangesEventInGitRepo(fsURL, targetDir) {
         refreshGitIconsInRepoOf(targetDir);
     }
-
+    /**
+     * Refresh the icons of git when file is modified.
+     * @param {string} fsURL
+     * @param {string} target
+     * @param {string} case_
+     * @param {boolean} maybeModified
+     */
     function handleFileSetEventInGitRepo(fsURL, target, case_, maybeModified) {
         if (maybeModified) {
             refreshGitIconsInRepoOf(target);
         }
     }
-
+    /**
+     * Refresh the icons of git in the input path.
+     * @param {string} path
+     * @param {boolean} mayConvertUntrackedToTracked
+     */
     function refreshGitIconsInRepoOf(path, mayConvertUntrackedToTracked) {
         var repoPath = git.findGitRootPath(path);
         if (repoPath && !git.isInDotGitDir(path)) {
@@ -446,7 +481,7 @@ define([
         handleNodeDelEventInGitRepo: handleNodeDelEventInGitRepo,
         handleNodeChangesEventInGitRepo: handleNodeChangesEventInGitRepo,
         handleFileSetEventInGitRepo: handleFileSetEventInGitRepo,
-
         refreshGitIconsInRepoOf: refreshGitIconsInRepoOf
     };
 });
+

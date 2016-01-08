@@ -15,19 +15,28 @@
  */
 
 /**
- * webida - git handle plugin
- *
+ * @file This file could get command that is attached to the menu.
+ * @see support top menu and context menu
+ * @since 1.0.0
+ * @author hyunik.na@samsung.com, minsung.jin@samsung.com
  */
-
 define([
     'webida-lib/util/path',
     'webida-lib/plugins/workspace/plugin',
     './git-core'
-], function (pathUtil, wv, git) {
-
+], function (
+    pathUtil,
+    wv,
+    git
+) {
     'use strict';
 
+    /**
+     * Get command of git in top menu.
+     * @return {Object} - command for git
+     */
     function gitTopLevelMenuItems() {
+
         var commands;
         var path = wv.getSelectedPath() || wv.getRootPath();
 
@@ -79,7 +88,10 @@ define([
             return null;
         }
     }
-
+    /**
+     * Get command of git in conetxt menu.
+     * @return {Object} - command for git
+     */
     function gitContextMenuItems() {
 
         var commands;
@@ -140,3 +152,4 @@ define([
         gitContextMenuItems: gitContextMenuItems,
     };
 });
+

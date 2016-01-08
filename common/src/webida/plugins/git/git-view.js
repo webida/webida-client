@@ -15,10 +15,10 @@
  */
 
 /**
- * webida - git handle plugin
- *
+ * @file This file shows up the tab for git menu and git log
+ * @since 1.0.0
+ * @author hyunik.na@samsung.com, minsung.jin@samsung.com
  */
-
 define([
     './git-core',
     './gitview-log',
@@ -75,7 +75,6 @@ define([
                     $(item).addClass('disabled');
                 }
             });
-
             return;
         }
 
@@ -90,14 +89,14 @@ define([
                 }
             });
 
-            // 선택된 node가 디렉터리일 경우 blame / compare 기능 disable
+            // If the selected node was directory it to disable comprare, blame.
             if (pathUtil.isDirPath(path)) {
                 blameNode.addClass('disabled');
                 compareNode.addClass('disabled');
                 cloneNode.removeClass('disabled');
                 createRespoNode.removeClass('disabled');
             } else {
-                // 기존에 등록되어 있던 click 이벤트 제거
+                // remove click event that was registered in the existing.
                 blameNode.removeClass('disabled');
                 compareNode.removeClass('disabled');
                 cloneNode.addClass('disabled');
@@ -162,6 +161,9 @@ define([
     }
 
     var gitView;
+    /**
+     * Get restricted git view
+     */
     function getView() {
         var view = new View('gitviewTab', i18n.git);
         view.setContent('<div id="gitViewTab" style="width:100%; height:100%">');
@@ -169,9 +171,12 @@ define([
 
         return view;
     }
-
+    /**
+     * Called when view is appended
+     */
     function onViewAppended() {
 
+        var GIT_TOOLBAR_MENU_WIDTH = 672;
         var view = gitView;
         if (view) {
             var opt = {};
@@ -179,10 +184,6 @@ define([
             opt.key = 'G';
             workbench.registToViewFocusList(view, opt);
         }
-
-        var GIT_TOOLBAR_MENU_WIDTH = 672;
-
-
         require(['text!./layer/gitview.html'], function (gitView) {
             gitView = gitView.replace('%WEBIDA-LIB%', require.toUrl('webida-lib'));
             $('#gitViewTab').append(gitView);
@@ -308,3 +309,4 @@ define([
         onViewAppended: onViewAppended
     };
 });
+

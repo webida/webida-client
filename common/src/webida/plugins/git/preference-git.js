@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-define([],
-function () {
+/**
+ * @file This file could get value for git preference
+ * @since 1.0.0
+ * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ */
+define([
+], function (
+) {
     'use strict';
 
     var GitPreferences = function () {
@@ -23,9 +29,17 @@ function () {
 
     GitPreferences.PREFIX = 'git';
     GitPreferences.LINES_OF_CONTEXT = 'linesOfContext';
+    /**
+     * Get value of key in preference for git
+     * @param {string} key
+     */
     GitPreferences.getKey = function (key) {
         return GitPreferences.PREFIX + ':' + key;
     };
+    /**
+     * Set field of git for preference.
+     * @param {Object} fieldCreator - field of git for preference.
+     */
     GitPreferences.view = function (fieldCreator) {
         fieldCreator.addField(GitPreferences.getKey(GitPreferences.LINES_OF_CONTEXT), 'text', {
             title: 'Git',
@@ -33,11 +47,19 @@ function () {
             'default': 10
         });
     };
+    /**
+     * Get default value of git.
+     * @return {Object} - default value of git.
+     */
     GitPreferences.getDefault = function () {
         return {
             'git:linesOfContext': 10
         };
     };
+    /**
+     * Get schema of git for preference.
+     * @return {Array} - schema of git for preference.
+     */
     GitPreferences.getSchema = function () {
         return [
             {
@@ -49,3 +71,4 @@ function () {
     };
     return GitPreferences;
 });
+
