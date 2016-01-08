@@ -15,9 +15,11 @@
  */
 
 /**
- * webida - git handle plugin
- *
+ * @file This module is a handler for command of git
+ * @since 1.0.0
+ * @author hyunik.na@samsung.com, minsung.jin@samsung.com
  */
+
 /* jshint ignore:start */
 define([
     'dijit/DropDownMenu',
@@ -109,7 +111,7 @@ define([
 
     'use strict';
 
-    var fsCache = ide.getFSCache();   // ide.getMount();
+    var fsCache = ide.getFSCache();
     var globalStatus = ide.registerStatusContributorAndGetLastStatus('git-commands', function () {
         return globalStatus;
     }) || {
@@ -129,11 +131,12 @@ define([
 
         }
     });
-
     var HELP_KEY_SETTING = 'Verify your \'Public SSH Key\' setting in Development Center.';
     var COMMIT_TEMPLATE_PATH = '/.userinfo/.gitmessage';
-
-    // css load routine
+    /**
+     * load CSS style.
+     * @inner
+     */
     function _loadCss(url) {
         var link = document.createElement('link');
         link.type = 'text/css';
@@ -141,16 +144,19 @@ define([
         link.href = url;
         document.getElementsByTagName('head')[0].appendChild(link);
     }
-
-    // Auto detecting mode
+    /**
+     * Auto detecting mode.
+     * @inner
+     */
     function _looksLikeScheme(code) {
         return !/^\s*\(\s*function\b/.test(code) && /^\s*[;\(]/.test(code);
     }
 
-    /*
-    * - load the specified css stylesheet.
-    * - check git user.name, user.email infomation,
-    * - then if git infomation is not setting, set the user.name, user.email.
+    /**
+    * load the specified css stylesheet.
+    * check git user.name, user.email infomation,
+    * then if git infomation is not setting, set the user.name, user.email.
+    * @inner
     */
     function _init() {
         // loading css stylesheet, using diff mode
@@ -255,28 +261,34 @@ define([
         });
     }
 
-    // do initilize
     _init();
-
-    // make a gerrit change-id
+    /**
+     * make a gerrit change-id
+     */
     function _makeChangeId() {
         var arr = 'a,b,c,d,e,f,0,1,2,3,4,5,6,7,8,9'.split(',');
         var rnd = '';
         for (var i = 0; i < 40; i++) {
             rnd += arr[Math.floor(Math.random() * arr.length)];
         }
-
         return rnd;
     }
-
-    // refresh the specified node in workspace
+    /**
+     * Refresh the specified node in workspace
+     * @param {String} path
+     * @param {boolean} mayConvertUntrackedToTracked
+     */
     function refresh(path, mayConvertUntrackedToTracked) {
         fsCache.refresh(path, { level: -1 }, function () {
             gitIcon.refreshGitIconsInRepoOf(path, mayConvertUntrackedToTracked);
         });
     }
-
-    function currentBranch(path, elementId) {
+    /**
+     * Get current branch of git
+     * @param {String} path
+     * @param {String} elementId
+     */
+    function _currentBranch(path, elementId) {
         git.exec(path, ['branch', '-l'], function (err, branchResult) {
             if (err) {
                 gitviewlog.error(path, 'branch', err);
@@ -291,12 +303,14 @@ define([
                         }
                     }
                 }
-
                 $(elementId).text(curBranch);
             }
         });
     }
-
+    /**
+     * This activates recording of all changes made to the branch ref.
+     * @param {String} path
+     */
     function _selectedGitInfo(path) {
         var statusbar = $('.gv-toolbar-statusbar .gv-selectedpath');
         var gitroot = git.findGitRootPath(path);
@@ -316,7 +330,6 @@ define([
                             }
                         }
                     }
-
                     var msg = 'Selected Git project: ' + GIT_DIR + ' [' + curBranch + ']';
                     statusbar.text(msg);
                 }
@@ -326,10 +339,10 @@ define([
         }
     }
 
-    //
     // Git Commands
-    //
-
+    /**
+     * Stash the changes in a dirty working directory away.
+     */
     function _stash(gitRootPath) {
         require(['text!./layer/stash.html'], function (stashView) {
 
@@ -401,7 +414,7 @@ define([
             stashCheckBox = registry.byId('GitStashKeepCheckbox');
             stashButton = registry.byId('GitStashBtn');
 
-            currentBranch(GIT_DIR, '#GitStashBranchInfo');
+            _currentBranch(GIT_DIR, '#GitStashBranchInfo');
             stashDialog.show();
 
             dojo.connect(stashMsgInput, 'onKeyUp', function (event) {
@@ -418,7 +431,9 @@ define([
             });
         });
     }
-
+    /**
+     * Remove a single stashed state from the stash list and apply it on top of the current working tree state
+     */
     function _unstash(gitRootPath) {
         require(['text!./layer/unstash.html'], function (unstashView) {
             var unstashDialog = new ButtonedDialog({
@@ -577,7 +592,7 @@ define([
 
             async.waterfall([
                 function (next) {
-                    currentBranch(GIT_DIR, '#GitUnStashBranchInfo');
+                    _currentBranch(GIT_DIR, '#GitUnStashBranchInfo');
                     next();
                 },
                 function (next) {
@@ -659,7 +674,9 @@ define([
             });
         });
     }
-
+    /**
+     * Revert some existing commits
+     */
     function _revert(gitRootPath) {
         require(['text!./layer/revert.html'], function (revertView) {
             var GIT_DIR = gitRootPath;
@@ -838,7 +855,9 @@ define([
             });
         });
     }
-
+    /**
+     * Show only commits that are enough to explain how the files that match the specified paths came to be.
+     */
     function _history(gitRootPath, relPath) {
         require(['text!./layer/history.html', './lib/md5'], function (historyView) {
             var title;
@@ -1090,7 +1109,9 @@ define([
             });
         });
     }
-
+    /**
+     * Clone a repository into a new directory
+     */
     function _clone(selectedPath) {
         require(['text!./layer/clone.html'], function (cloneView) {
             function fetchGitHubURL() {
@@ -1305,14 +1326,13 @@ define([
 
                             fsCache.refreshHierarchy(selectedPath, { level: 1 });
                             notify.error(i18n.forMoreDetails, i18n.gitCloneError);
-
                             /*
                             if (data.match(/correct access rights/)) {
                                 gitviewlog.error(target, 'clone', HELP_KEY_SETTING);
                             } else {
                                 gitviewlog.error(target, 'clone', data);
                             }
-                             */
+                            */
                             gitviewlog.error(target, 'clone', data);
                         } else {
                             workbench.removeJob(jobId);
@@ -1380,7 +1400,9 @@ define([
             cloneDialog.show();
         });
     }
-
+    /**
+     * Update remote refs along with associated objects
+     */
     function _push(gitRootPath) {
         require(['text!./layer/push.html'], function (pushView) {
             var GIT_DIR = gitRootPath;
@@ -1447,14 +1469,13 @@ define([
                             var data = stdout + stderr;
                             if (data.match(/(fatal|error): .*/)) {
                                 notify.error(i18n.forMoreDetails, i18n.gitPushError);
-
                                 /*
                                 if (data.match(/correct access rights/)) {
                                     gitviewlog.error(path, 'push', HELP_KEY_SETTING);
                                 } else {
                                     gitviewlog.error(path, 'push', data);
                                 }
-                                 */
+                                */
                                 gitviewlog.error(path, 'push', data);
                             } else {
                                 if (data.match('Everything up-to-date')) {
@@ -1464,7 +1485,7 @@ define([
                                     notify.success(i18n.forMoreDetails, i18n.gitPushSuccess);
                                     gitviewlog.success(path, 'push', data + '\nSuccessfully pushed.');
 
-                                    refresh(gitRootPath);		// is this necessary?
+                                    refresh(gitRootPath);       // is this necessary?
                                 }
                             }
 
@@ -1479,7 +1500,7 @@ define([
 
             async.waterfall([
                 function (next) {
-                    currentBranch(GIT_DIR, '#GitPushBranchInfo');
+                    _currentBranch(GIT_DIR, '#GitPushBranchInfo');
                     next();
                 },
                 function (next) {
@@ -1690,7 +1711,9 @@ define([
             });
         });
     }
-
+    /**
+     * Fetch from and integrate with another repository or a local branch
+     */
     function _pull(gitRootPath) {
         require([
             'text!./layer/pull.html',
@@ -1776,14 +1799,13 @@ define([
                         var data = stdout + stderr;
                         if (data.match(/(fatal|error): .*/)) {
                             notify.error(i18n.forMoreDetails, i18n.gitPullError);
-
                             /*
                             if (data.match(/correct access rights/)) {
                                 gitviewlog.error(GIT_DIR, 'pull', HELP_KEY_SETTING);
                             } else {
                                 gitviewlog.error(GIT_DIR, 'pull', data);
                             }
-                             */
+                            */
                             gitviewlog.error(GIT_DIR, 'pull', data);
                         } else if (data.match(/You asked to pull from the remote '.*'/)) {
                             notify.warning(i18n.forMoreDetails, i18n.gitPullWarning);
@@ -1975,7 +1997,9 @@ define([
             });
         });
     }
-
+    /**
+     * Join two or more development histories together
+     */
     function _merge(gitRootPath) {
         var branchSelect, noCommitCheckBox, squashCheckBox, noFastFowardCheckBox,
             mergeMsgInput, mergeButton;
@@ -2093,7 +2117,7 @@ define([
 
                 async.waterfall([
                     function (next) {
-                        currentBranch(GIT_DIR, '#GitMergeBranchInfo');
+                        _currentBranch(GIT_DIR, '#GitMergeBranchInfo');
                         next();
                     },
                     function (next) {
@@ -2224,7 +2248,9 @@ define([
             }
         });
     }
-
+    /**
+     * Download objects and refs from another repository
+     */
     function _fetch(gitRootPath) {
         require([
             'text!./layer/fetch.html',
@@ -2497,7 +2523,9 @@ define([
             });
         });
     }
-
+    /**
+     * Forward-port local commits to the updated upstream head
+     */
     function _rebase(gitRootPath) {
         var GIT_DIR = gitRootPath;
 
@@ -2563,7 +2591,7 @@ define([
         function completeRebaseDlg() {
             async.waterfall([
                 function (next) {
-                    currentBranch(GIT_DIR, '#GitRebaseBranchInfo');
+                    _currentBranch(GIT_DIR, '#GitRebaseBranchInfo');
                     next();
                 },
                 function (next) {
@@ -2783,7 +2811,10 @@ define([
             }
         });
     }
-
+    /**
+     * Add file contents to the index
+     * @inner
+     */
     function _add(gitRootPath) {
         require(['text!./layer/addtostage.html'], function (addToStageView) {
 
@@ -3008,7 +3039,10 @@ define([
             });
         });
     }
-
+    /**
+     * Remove files from the working tree and from the index.
+     * @inner
+     */
     function _untrack(gitRootPath, relPath) {
         var GIT_DIR = gitRootPath;
 
@@ -3116,10 +3150,11 @@ define([
                 }
             });
         }
-
-
     }
-
+    /**
+     * Reset current HEAD to the specified state
+     * @inner
+     */
     function _remove(gitRootPath) {
         require(['text!./layer/removefromstage.html'], function (removeFromStageView) {
 
@@ -3334,7 +3369,10 @@ define([
             });
         });
     }
-
+    /**
+     * Reset current commit to the specified state
+     * @inner
+     */
     function _resetToCommit(gitRootPath) {
         require(['text!./layer/reset.html'], function (resetView) {
             function resetCommitEvent(path) {
@@ -3426,7 +3464,7 @@ define([
             var GIT_DIR = gitRootPath;
             var grid = null;
 
-            currentBranch(GIT_DIR, '#GitResetBranchInfo');
+            _currentBranch(GIT_DIR, '#GitResetBranchInfo');
 
             async.waterfall([
                 function (next) {
@@ -3545,7 +3583,10 @@ define([
             });
         });
     }
-
+    /**
+     * Record changes to the repository
+     * @inner
+     */
     function _commit(gitRootPath) {
         require(['text!./layer/commit.html'], function (commitView) {
             var commitDialog = new ButtonedDialog({
@@ -3595,7 +3636,7 @@ define([
 
             async.parallel([
                 function (next) {
-                    currentBranch(GIT_DIR, '#GitCommitBranchInfo');
+                    _currentBranch(GIT_DIR, '#GitCommitBranchInfo');
                     next();
                 },
                 function (next) {
@@ -3890,7 +3931,7 @@ define([
                             next();
                         }
                     },
-                     */
+                    */
                     function (next) {
                         if (addlist.length) {
                             git.exec(path, ['add'].concat(addlist), function (err, data) {
@@ -3991,7 +4032,10 @@ define([
             });
         });
     }
-
+    /**
+     * Compares files in the working tree and the index.
+     * @inner
+     */
     function _compare(gitRootPath, filepath) {
         require(['text!./layer/compare.html',
                  'external/codemirror/lib/codemirror',
@@ -4132,7 +4176,10 @@ define([
             });
         });
     }
-
+    /**
+     * Create a repository into a new directory.
+     * @inner
+     */
     function _createRepo(selectedPath) {
         require(['text!./layer/createrepo.html',
                  'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'], function (createRepoView, FileDialog) {
@@ -4476,7 +4523,10 @@ define([
             createDialog.show();
         });
     }
-
+    /**
+     * Show what revision and author last modified each line of a file.
+     * @inner
+     */
     function _blame(gitRootPath, relPath) {
         require(['text!./layer/blame.html',
                  'external/codemirror/lib/codemirror',
@@ -4574,7 +4624,10 @@ define([
             blameNode.height(blameNode.height() + 15);
         });
     }
-
+    /**
+     * Manage set of tracked repositories
+     * @inner
+     */
     function _remote(gitRootPath) {
         require(['text!./layer/remote.html', 'text!./layer/remoteadd.html'], function (remoteView, remoteAddView) {
             var GIT_DIR = gitRootPath;
@@ -4819,7 +4872,10 @@ define([
             });
         });
     }
-
+    /**
+     * Get and set repository or global options
+     * @inner
+     */
     function _preference(gitRootPath) {
         require(['text!./layer/configure.html'], function (configureView) {
             var configDialog = new ButtonedDialog({
@@ -5008,7 +5064,10 @@ define([
             });
         });
     }
-
+    /**
+     * List, create, or delete branches
+     * @inner
+     */
     function _branch(gitRootPath) {
         var GIT_DIR = gitRootPath;
         var tree, grid, gridStore;
@@ -5231,9 +5290,7 @@ define([
                                         gitviewlog.success(GIT_DIR, cmd[0],
                                                            'Sucessfully ' + '\'' + target + '\' taged.');
                                     }
-
                                     notify.success(i18n.forMoreDetails, i18n.gitCreageSuccess);
-
                                 }
                             }
                         });
@@ -5639,14 +5696,20 @@ define([
             });
         });
     }
-
+    /**
+     * Execute diffenence view in the commit of git
+     * @inner
+     */
     function _diff(gitRootPath, file, commitId) {
         require(['./git-commands-diff'], function (GitDiff) {
             var diff = new GitDiff();
             diff.execute(gitRootPath, file, commitId);
         });
     }
-
+    /**
+     * Show the working tree status.
+     * @inner
+     */
     function _status(gitRootPath) {
         var GIT_DIR = gitRootPath;
 
@@ -5658,7 +5721,10 @@ define([
             }
         });
     }
-
+    /**
+     * Initialize, update or inspect submodules.
+     * @inner
+     */
     function _submodule(gitRootPath) {
         var GIT_DIR = gitRootPath;
 
@@ -5684,7 +5750,10 @@ define([
             }
         });
     }
-
+    /**
+     * This method is ran that user input command.
+     * @inner
+     */
     function _runCommand(selectedPath, gitRootPath) {
         require(['text!./layer/runcommand.html'], function (runCommandView) {
             var button, commandInput;
@@ -5784,10 +5853,8 @@ define([
             });
         });
     }
-
     // end of Git commands
 
-    //
     // Git Extension
     //
 
@@ -5881,6 +5948,9 @@ define([
             _branch(gitRootPath);
         }
     }
+    /**
+     * Show only commits that are enough to explain how the files that match the specified paths came to be.
+     */
     function historyFile() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5898,6 +5968,9 @@ define([
             _history(gitRootPath, relPath);
         }
     }
+    /**
+     * Show only commits that are enough to explain how the files that match the specified paths came to be.
+     */
     function historyRepo() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5905,6 +5978,9 @@ define([
             _history(gitRootPath, '.');
         }
     }
+    /**
+     * Get and set repository or global options
+     */
     function preference() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5912,6 +5988,9 @@ define([
             _preference(gitRootPath);
         }
     }
+    /**
+     * Update remote refs along with associated objects
+     */
     function push() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5919,6 +5998,9 @@ define([
             _push(gitRootPath);
         }
     }
+    /**
+     * Download objects and refs from another repository
+     */
     function fetch() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5926,6 +6008,9 @@ define([
             _fetch(gitRootPath);
         }
     }
+    /**
+     * Fetch from and integrate with another repository or a local branch
+     */
     function pull() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5933,6 +6018,9 @@ define([
             _pull(gitRootPath);
         }
     }
+    /**
+     * Manage set of tracked repositories
+     */
     function remote() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5940,6 +6028,9 @@ define([
             _remote(gitRootPath);
         }
     }
+    /**
+     * Clone a repository into a new directory
+     */
     function clone() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5948,6 +6039,9 @@ define([
             _clone(wv.getRootPath());
         }
     }
+    /**
+     * Create a repository into a new directory.
+     */
     function createRepo() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5956,6 +6050,9 @@ define([
             _createRepo(wv.getRootPath());
         }
     }
+    /**
+     * Show what revision and author last modified each line of a file.
+     */
     function blame() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5964,6 +6061,9 @@ define([
             _blame(gitRootPath, relPath);
         }
     }
+    /**
+     * Compares files in the working tree and the index.
+     */
     function compare() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5971,6 +6071,9 @@ define([
             _compare(gitRootPath, false);
         }
     }
+    /**
+     * Show the working tree status.
+     */
     function status() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5978,7 +6081,9 @@ define([
             _status(gitRootPath);
         }
     }
-
+    /**
+     * Initialize, update or inspect submodules.
+     */
     function submodule() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -5986,6 +6091,9 @@ define([
             _submodule(gitRootPath);
         }
     }
+    /**
+     * This method is ran that user input command.
+     */
     function runCommand() {
         var selectedPath = wv.getSelectedPath();
         if (selectedPath) {
@@ -6023,3 +6131,4 @@ define([
         runCommand: runCommand
     };
 });
+

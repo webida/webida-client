@@ -14,34 +14,37 @@
  * limitations under the License.
  */
 
+/**
+ * @file This file is added the log on view of the git
+ * @since 1.0.0
+ * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ */
 define([
+    'dojo/topic',
     'external/lodash/lodash.min',
     'external/moment/min/moment.min',
     'external/URIjs/src/URI',
-    'dojo/topic',
     'webida-lib/widgets/views/viewmanager'
-], function (_, moment, URI, topic, viewmanager) {
+], function (
+   topic,
+   _,
+   moment,
+   URI,
+   viewmanager
+) {
     'use strict';
+
+    var _logdb = [];
 
     function _getCurrentTime() {
         return moment(new Date()).format('YYYY/MM/DD hh:mm:ss A');
     }
 
-    var _logdb = [];
-
-    var GitView = function (gitroot, command, message, type) {
-        this.gitroot = gitroot;
-        this.title = _getCurrentTime() + ' - ' + gitroot + ' - git ' + command;
-        this.log = message;
-        this.id = _.uniqueId();
-        this.type = type;
-    };
-
-    function escape(str) {
+    function _escape(str) {
         return _.escape(str).replace(/ /g, '&nbsp;');
     }
     /* jshint ignore:start */
-    function hidePassword(url) {
+    function _hidePassword(url) {
         var uri = new URI(url);
         if (uri.password()) {
             return uri.password('****').toString();
@@ -50,19 +53,18 @@ define([
         }
     }
     /* jshint ignore:end */
-
     function _messageParse(gitroot, msg, id) {
         var parseLog = msg.split(/\r*\n/).map(function (line) {
             if (line.match(/(modified:|new file:|added:|CONFLICT)\w*/)) {
                 return '<div class="gv-contentbody-issue gv-issue' + id +
-                    '" data-gitroot="' + gitroot + '">' + escape(line) + '</div>';
+                    '" data-gitroot="' + gitroot + '">' + _escape(line) + '</div>';
             } else if (line.match(/Patch failed at \d* init\w*/)) {
-                return '<div class="gv-contentbody-message">' + escape(line) + '</div>';
+                return '<div class="gv-contentbody-message">' + _escape(line) + '</div>';
             } else {
                 var result = URI.withinString(line, function (url) {
                     var uri = new URI(url);
                     uri.normalize().userinfo('');
-                    return '<a href="' + uri.toString() + '" target="_blank">' + escape(uri.readable()) + '</a>';
+                    return '<a href="' + uri.toString() + '" target="_blank">' + _escape(uri.readable()) + '</a>';
                 });
                 return result;
             }
@@ -74,7 +76,24 @@ define([
     function _openEditor(path) {
         topic.publish('editor/open', path);
     }
-
+    /**
+     * @constructor
+     * @param {string} gitroot - path for directory of root
+     * @param {string} command
+     * @param {string} message
+     * @param {string} type
+     */
+    var GitView = function (gitroot, command, message, type) {
+        this.gitroot = gitroot;
+        this.title = _getCurrentTime() + ' - ' + gitroot + ' - git ' + command;
+        this.log = message;
+        this.id = _.uniqueId();
+        this.type = type;
+    };
+    /**
+     * Append log on view in the git.
+     * @method appendLog
+     */
     GitView.prototype.appendLog = function () {
         var title = '<div class="gv-title gv-' + this.type + '">' + this.title + '</div>';
         var msg = '<div class="gv-contentbody">' + _messageParse(this.gitroot, this.log, this.id) + '</div>';
@@ -85,7 +104,7 @@ define([
 
         var selector = '.gv-contentbody-issue.gv-issue' + this.id;
 
-        // 새로 추가된 log에 이벤트 등록
+        // register event in the newly added log
         $(selector).click(function () {
             var self = $(this);
             var GIT_DIR = self.attr('data-gitroot');
@@ -152,3 +171,4 @@ define([
 
     return gitView;
 });
+

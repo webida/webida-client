@@ -14,19 +14,44 @@
  * limitations under the License.
  */
 
+/**
+ * @file This file is managing for module of git.
+ * @since 1.0.0
+ * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ */
 define([
-    'webida-lib/app',
-    'webida-lib/plugins/workspace/plugin',
     'external/lodash/lodash.min',
     'external/moment/min/moment.min',
+    'webida-lib/app',
+    'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/arrays/SortedArray'
-], function (ide, wv, _, moment, SortedArray) {
+], function (
+    _,
+    moment,
+    ide,
+    wv,
+    SortedArray
+) {
     'use strict';
-
+    /**
+     * file system
+     * @type {Object}
+     */
     var FS = ide.getMount();
+    /**
+     * path for repository of git
+     * @type {Array}
+     */
     var gitRepoPaths = new SortedArray();
+    /**
+     * submodule of git
+     * @type {Object}
+     */
     var mapToSubmodules = {};
-
+    /**
+     * module object
+     * @type {Object}
+     */
     var git = {
         exec: function (gitRoot, args, callback) {
             var info = {
@@ -439,8 +464,6 @@ define([
             }
         },
 
-
-
         getSubmodules: function (repoPath) {
             return mapToSubmodules[repoPath];
         },
@@ -462,7 +485,7 @@ define([
             });
             var len = repoPaths.length;
             if (len) {
-                return repoPaths[len - 1];	// return the most nested one
+                return repoPaths[len - 1];  // return the most nested one
             } else {
                 return null;
             }
@@ -485,3 +508,4 @@ define([
 
     return git;
 });
+
