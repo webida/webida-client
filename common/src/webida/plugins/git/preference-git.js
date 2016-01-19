@@ -17,7 +17,8 @@
 /**
  * @file This file could get value for git preference
  * @since 1.0.0
- * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ * @author hyunik.na@samsung.com
+ * @aurhor minsung.jin@samsung.com
  */
 define([
 ], function (

@@ -17,7 +17,8 @@
 /**
  * @file This file shows up the tab for git menu and git log
  * @since 1.0.0
- * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ * @author hyunik.na@samsung.com
+ * @author minsung.jin@samsung.com
  */
 define([
     './git-core',
