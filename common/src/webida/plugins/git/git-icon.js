@@ -17,7 +17,8 @@
 /**
  * @file This file set up git icons
  * @since 1.0.0
- * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ * @author hyunik.na@samsung.com
+ * @author minsung.jin@samsung.com
  */
 define([
     './git-core',

@@ -17,7 +17,8 @@
 /**
  * @file This module is a handler for command of git
  * @since 1.0.0
- * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ * @author hyunik.na@samsung.com
+ * @author minsung.jin@samsung.com
  */
 
 /* jshint ignore:start */

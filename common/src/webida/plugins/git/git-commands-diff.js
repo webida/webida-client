@@ -17,7 +17,8 @@
 /**
  * @file This file is rendering the different view in the commit of git.
  * @since 1.0.0
- * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ * @author hyunik.na@samsung.com
+ * @author minsung.jin@samsung.com
  */
 define([
     'dojo/Deferred',

@@ -18,7 +18,8 @@
  * @file This file could get command that is attached to the menu.
  * @see support top menu and context menu
  * @since 1.0.0
- * @author hyunik.na@samsung.com, minsung.jin@samsung.com
+ * @author hyunik.na@samsung.com
+ * @author minsung.jin@samsung.com
  */
 define([
     'webida-lib/util/path',
