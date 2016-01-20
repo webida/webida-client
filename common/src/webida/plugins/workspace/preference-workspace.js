@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/**
+ * @fileoverview This file could get value for workspace preference
+ * @version: 0.1.0
+ * @since: 2014.01.22
+ * @author minsung.jin@samsung.com
+ */
+
 define([
     'dojo/i18n!./nls/resource'
 ], function (
@@ -21,12 +28,20 @@ define([
 ) {
     'use strict';
     return {
+        /**
+         * Get default value of workspace.
+         * @return {Object} - default value of workspace.
+         */
         getDefault: function () {
             return {
                 'workspace:filter:.*': false,
                 'workspace:filter:.w.p': true
             };
         },
+        /**
+         * Get schema of workspace for preference.
+         * @return {Array} - schema of workspace for preference.
+         */
         getSchema: function () {
             return [
                 {
@@ -49,6 +64,10 @@ define([
                 }
             ];
         },
+        /**
+         * Set field of workspace for preference.
+         * @param {Object} fieldCreator - field of workspace for preference.
+         */
         view: function (fieldCreator) {
             fieldCreator.addField('workspace:filter:.*', 'checkbox', {
                 title: 'Filter',

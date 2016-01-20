@@ -15,80 +15,110 @@
  */
 
 /**
- * @fileoverview webida - workspace tree node
- *
+ * @fileoverview workspace tree node
  * @version: 0.1.0
  * @since: 2014.01.22
- *
+ * @author minsung.jin@samsung.com
+ * @author joogwan.kim@samsung.com
  */
 
 /* global File: true */
-
-define(['require',
-        'external/lodash/lodash.min',
-        'dijit/registry',
-        'webida-lib/app',
-        'webida-lib/FSCache-0.1',
-        'dojo/dom',
-        'dojo/dom-attr',
-        'dojo/dom-style',
-        'dojo/dom-class',
-        'dojo/dom-geometry',
-        'dojo/i18n!./nls/resource',
-        'dojo/on',
-        'dojo/string',
-        'dojo/topic',
-        'dojo/Deferred',
-        'dojo/promise/all',
-        'dojo/keys',
-        'webida-lib/plugins/workbench/plugin',
-        'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
-        'webida-lib/util/path',
-        'webida-lib/util/notify',
-], function (require, _, registry, ide, FSCache, dom, domAttr, domStyle, domClass,
-              domGeom, i18n, on, string, topic, Deferred, all, keys, workbench, ButtonedDialog,
-              pathUtil, notify) {
+define([
+    'require',
+    'external/lodash/lodash.min',
+    'dijit/registry',
+    'webida-lib/app',
+    'webida-lib/FSCache-0.1',
+    'dojo/dom',
+    'dojo/dom-attr',
+    'dojo/dom-style',
+    'dojo/dom-class',
+    'dojo/dom-geometry',
+    'dojo/i18n!./nls/resource',
+    'dojo/on',
+    'dojo/string',
+    'dojo/topic',
+    'dojo/Deferred',
+    'dojo/promise/all',
+    'dojo/keys',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'webida-lib/util/path',
+    'webida-lib/util/notify',
+], function (
+    require,
+    _,
+    registry,
+    ide,
+    FSCache,
+    dom,
+    domAttr,
+    domStyle,
+    domClass,
+    domGeom,
+    i18n,
+    on,
+    string,
+    topic,
+    Deferred,
+    all,
+    keys,
+    workbench,
+    ButtonedDialog,
+    pathUtil,
+    notify
+) {
     'use strict';
 
-    //var lastRenamedNodeId;
-    //var movedNodes = [];
     var creationDialog;
-
     var tr;
+    /**
+     * get tree of node
+     * @inner
+     */
     function tree() {
         if (!tr) {
             tr = registry.byId('wv-tree');
         }
         return tr;
     }
-
     var st;
+    /**
+     * get model of tree
+     * @inner
+     */
     function store() {
         if (!st) {
             st = tree().model.store;
         }
         return st;
     }
-
+    /**
+     * detach the trailing slash if any
+     * @inner
+     */
     function pathToId(path) {
         return pathUtil.detachSlash(path);
     }
-
     var fsCache = ide.getFSCache();
-
-    // TODO:
+    /**
+     * module object
+     * @type {Object}
+     */
     function Node(path, isInternal) {
 
         var id = pathToId(path);
         var pair = pathUtil.dividePath(id); // divide into parentPath and name
-
         this.id = id;
         this.parent = pathToId(pair[0]);
         this.name = decodeURI(pair[1]).replace(/ /g, '&nbsp;');
         this.isInternal = isInternal;
         this.overlayIconInfo = {};
     }
-
+    /**
+     * This method delete node recursively
+     * @method
+     */
     Node.prototype.deleteRecursively = function () {
         var subnodes = this.getSubnodes();
         if (subnodes) {
@@ -98,11 +128,17 @@ define(['require',
         }
         store().remove(this.id);
     };
-
+    /**
+     * Get node of parent
+     * @method
+     */
     Node.prototype.getParentNode = function () {
         return store().get(this.parent);
     };
-
+    /**
+     * Get level of parent
+     * @method
+     */
     Node.prototype.getLevel = function () {
         if (this.isRoot()) {
             return 0;
@@ -115,21 +151,36 @@ define(['require',
             }
         }
     };
-
+    /**
+     * Verify that the node is a directory
+     * @method
+     */
     Node.prototype.isDirectory = function () {
         return this.isInternal;
     };
-
+    /**
+     * Add a subnode
+     * @param newNode
+     * @param maybeCreated
+     * @method
+     */
     Node.prototype.addSubnode = function (newNode, maybeCreated) {
         store().put(newNode);
         topic.publish('workspace/node/added', newNode.getPath(), maybeCreated);
     };
-
+    /**
+     * Get a subnodes
+     * @method
+     */
     Node.prototype.getSubnodes = function () {
         var queryResult = store().query({ parent: this.id });
         return queryResult;
     };
-
+    /**
+     * Get a subnode
+     * @param path
+     * @method
+     */
     Node.prototype.getSubnode = function (path) {
         if (path === '') {
             return this;
@@ -158,7 +209,11 @@ define(['require',
         }
         return null;
     };
-
+    /**
+     * Get a subnode for using path
+     * @param path
+     * @method
+     */
     Node.prototype.getSubnodeUsingPath = function (path) {
         if (!path) {
             return null;
@@ -171,7 +226,10 @@ define(['require',
         }
         return null;
     };
-
+    /**
+     * Verify that the node is expanded
+     * @method
+     */
     Node.prototype.isExpanded = function () {
         if (this.isInternal) {
             var nodes = tree().getNodesByItem(this);
@@ -181,7 +239,10 @@ define(['require',
             return false;
         }
     };
-
+    /**
+     * The node expand in tree
+     * @method
+     */
     Node.prototype.expandItem = function () {
         var self = this;
         var nodes = tree().getNodesByItem(this);
@@ -203,12 +264,18 @@ define(['require',
             }
         });
     };
-
+    /**
+     * The node collpase in tree
+     * @method
+     */
     Node.prototype.collapseItem = function () {
         var nodes = tree().getNodesByItem(this);
         tree()._collapseNode(nodes[0]);
     };
-
+    /**
+     * The node refresh in tree
+     * @method
+     */
     Node.prototype.refresh = function (blink) {
         function setToRefresh(node) {
             if (node.isInternal) {
@@ -258,7 +325,11 @@ define(['require',
         });
 
     };
-
+    /**
+     * Verify that the ancestor of node
+     * @param other - other node
+     * @method
+     */
     Node.prototype.isAncestorOf = function (other) {
         function isAncestorOf(n1, n2) {
             var n2Parent = n2.getParentNode();
@@ -271,15 +342,24 @@ define(['require',
             return false;
         }
     };
-
+    /**
+     * Verify that the node is root
+     * @method
+     */
     Node.prototype.isRoot = function () {
         return this.parent === '';
     };
-
+    /**
+     * Verify that the node is in tree.
+     * @method
+     */
     Node.prototype.isInTree = function () {
         return !!store().get(this.id);
     };
-
+    /**
+     * Verify that the node has subnode.
+     * @method
+     */
     Node.prototype.hasSubnode = function (path) {
         // if path param is null, then hasSunode method check Node's subnode exist
         if (!path) {
@@ -287,7 +367,10 @@ define(['require',
         }
         return !!this.getSubnode(path);
     };
-
+    /**
+     * Get path of node
+     * @method
+     */
     Node.prototype.getPath = function () {
         var path = this.id;
         if (this.isInternal) {
@@ -295,7 +378,13 @@ define(['require',
         }
         return path;
     };
-
+    /**
+     * Get name of file in the path.
+     * @param node
+     * @param relPath
+     * @param oriName
+     * @inner
+     */
     function getConflictFreeName(node, relPath, origName) {
 
         if (!node.hasSubnode(relPath + origName)) {
@@ -319,9 +408,11 @@ define(['require',
 
             return ret;
         }
-
     }
-
+    /**
+     * Duplicate file in the same path
+     * @method
+     */
     Node.prototype.duplicate = function () {
         var parentNode = this.getParentNode();
         if (parentNode) {
@@ -330,7 +421,14 @@ define(['require',
             throw new Error('assertion fail: duplicate was called on the root node');
         }
     };
-
+    /**
+     * Ask policy for file name
+     * @param targetPath
+     * @param name
+     * @param isFile
+     * @param moving
+     * @param cb
+     */
     function askPolicyToUser(targetPath, name, isFile, moving, cb) {
         var buttonSpec = [
             { caption: i18n.askPolicyDialogSkip, methodOnClick: 'skip' },
@@ -398,13 +496,16 @@ define(['require',
         dialog.setContentArea(markup);
         dialog.show();
     }
-
+    /**
+     * Paste file in the selected path
+     * @param srcNodes
+     * @param action
+     * @method
+     */
     Node.prototype.paste = function (srcNodes, action) {
 
         var policyForAllFiles, policyForAllDirs;
         var nodeToSelectSet = false;
-
-        //var dirsSkipped, dirsMerged, dirsRenamed, dirsNoConflict;
 
         function printResult(completed, errMsg) {
             var cap;
@@ -525,25 +626,19 @@ define(['require',
                     var anotherName;
                     switch (policy) {
                     case 'skip':
-                        //console.log('skipping ' + entryPath);
                         handleEntry(entries.shift());
                         return;
                     case 'overwrite': // only for files
-                        //console.log('overwriting ' + entryPath);
                         break;
                     case 'merge': // only for directories
-                        //console.log('merging ' + entryPath);
                         break;
                     case 'rename':
                         anotherName = getConflictFreeName(target, '', entry.name);
-                        //console.log('creating ' + targetPath + anotherName +
                         // (entry.isDirectory ? '/' : '') + '   (renamed)');
                         break;
                     case 'none':
-                        //console.log('creating ' + entryPath);
                         break;
                     case 'abort':
-                        //console.log('aborting');
                         printResult(false);
                         return;
                     default:
@@ -552,7 +647,6 @@ define(['require',
                     }
 
                     // Now, policy is overwrite, merge, rename, or none.
-
                     finalName = anotherName || entry.name;
 
                     if (entry.isFile) {
@@ -658,14 +752,17 @@ define(['require',
             handleEntries(this, entries, printResult.bind(null, true));
         }
     };
-
+    /**
+     * Upload file in the selected items
+     * @param items
+     * @method
+     */
     Node.prototype.upload = function (items) {
 
         var policyForAllFiles, policyForAllDirs;
         var filesSkipped, filesOverwritten, filesRenamed, filesNoConflict;
         var dirsSkipped, dirsMerged, dirsRenamed, dirsNoConflict;
         var nodeToSelectSet = false;
-
         var deferred = new Deferred();
         
         function printResults(completed) {
@@ -728,7 +825,6 @@ define(['require',
                 function uploadFileWithConflictPolicy(policy) {
 
                     // Now, policy is overwrite, merge, rename, or none.
-
                     var finalName;
                     if (fileName === '') {
                         // File names are absent when clipboard images are uploaded.
@@ -1009,7 +1105,6 @@ define(['require',
                     }
 
                     // Now, policy is overwrite, merge, rename, or none.
-
                     finalName = anotherName || entryName;
 
                     if (entry.isFile) {
@@ -1054,7 +1149,6 @@ define(['require',
                                               existing.id + '" with a ' + entryType + ' of the same name');
                                 printResults(false);
                             }
-
                         } else {
                             uploadEntryWithConflictPolicy('none');
                         }
@@ -1104,8 +1198,11 @@ define(['require',
         
         return deferred;
     };
-
-
+    /**
+     * Set focus in the selected node
+     * @param node
+     * @inner
+     */
     function setFocus(node) { // TODO: why not a method?
         var nodes = tree().getNodesByItem(node);
         if (nodes && nodes[0]) {
@@ -1113,7 +1210,12 @@ define(['require',
         }
         $('#wv-tree').focus();
     }
-
+    /**
+     * Compare a node
+     * @param a
+     * @param b
+     * @function
+     */
     Node.compare = function nodeCompare(a, b) {
         var loweredA;
         var loweredB;
@@ -1141,6 +1243,12 @@ define(['require',
     };
 
     var validRE = /^[^\\/:\*\?"<>\|]+$/;
+    /**
+     * Verify new name
+     * @param dirNode
+     * @param newName
+     * @inner
+     */
     function validateNewName(dirNode, newName) {
         function getByteLength(str) {
             var b, i, c;
@@ -1179,7 +1287,11 @@ define(['require',
             return true;
         }
     }
-
+    /**
+     * Create multiple directory
+     * @param paths
+     * @method
+     */
     Node.prototype.createMultipleDirectory = function (paths) {
         var deferred = new Deferred();
         var self = this;
@@ -1204,7 +1316,11 @@ define(['require',
 
         return deferred.promise;
     };
-
+    /**
+     * Create directory
+     * @param path
+     * @method
+     */
     Node.prototype.createDirectory = function (path) {
         var deferred = new Deferred();
         var newPath = this.getPath() + path;
@@ -1233,7 +1349,11 @@ define(['require',
 
         return deferred.promise;
     };
-
+    /**
+     * Create a node on the input path
+     * @param kind
+     * @method
+     */
     Node.prototype.createInteractively = function (kind) {
         if (!this.isInternal) {
             console.assert(false);
@@ -1252,14 +1372,12 @@ define(['require',
                                                        {newName: newName}));
                     }
                 }
-
                 var newPath = self.getPath() + newName;
                 if (kind === 'file') {
                     fsCache.writeFile(newPath, '', callback);
                 } else {
                     fsCache.createDirectory(newPath, callback);
                 }
-
                 creationDialog.hide();
             }
 
@@ -1309,7 +1427,10 @@ define(['require',
             }
         });
     };
-
+    /**
+     * Rename a node
+     * @method
+     */
     Node.prototype.renameInteractively = function () {
         var self = this;
         var box;
@@ -1343,24 +1464,19 @@ define(['require',
             $input.remove();
         }).on('click', function (evt) {
             evt.stopPropagation();
-
             return true;
         }).on('mousedown', function (evt) {
             evt.stopPropagation();
-
             return true;
         }).on('mouseup', function (evt) {
             evt.stopPropagation();
-
             return true;
         }).on('dblclick', function (evt) {
             evt.stopPropagation();
-
             return true;
         }).on('contextmenu', function (evt) {
             evt.preventDefault();
             evt.stopPropagation();
-
             return true;
         }).on('keypress', function (evt) {
             evt.stopPropagation();
@@ -1374,7 +1490,6 @@ define(['require',
                 $input.remove();
                 setFocus(self);
             }
-
             evt.stopPropagation();
             return true;
         }).on('copy', function (evt) {
@@ -1405,8 +1520,6 @@ define(['require',
             newName = sliceDotString(newName);
 
             if (self.name !== newName && validateNewName(parentNode, newName)) {
-                //lastRenamedNodeId = self.id;
-
                 var newPath = self.parent + '/' + newName;
                 fsCache.move(self.id, newPath, function (err) {
                     if (err) {
@@ -1423,7 +1536,11 @@ define(['require',
             }
         }
     };
-
+    /**
+     * Create a node by a subnode
+     * @param cb
+     * @method
+     */
     Node.prototype.fetchChildren = function (cb) {
         var self = this;
         if (self.isFetched) {
@@ -1444,7 +1561,6 @@ define(['require',
                         cb(2); // case 2
                     }
                 } else {
-
                     if (err) {
                         notify.error('Failed to list ' + myId + ' (' + err + ')');
                     } else {
@@ -1476,7 +1592,10 @@ define(['require',
             });
         }
     };
-
+    /**
+     * Hide a node
+     * @method
+     */
     Node.prototype.hide = function () {
         var nodes = tree().getNodesByItem(this);
         var node = nodes[0];
@@ -1484,7 +1603,10 @@ define(['require',
             domStyle.set(node.domNode, 'display', 'none');
         }
     };
-
+    /**
+     * Display a node
+     * @method
+     */
     Node.prototype.show = function () {
         var nodes = tree().getNodesByItem(this);
         var node = nodes[0];
@@ -1492,7 +1614,10 @@ define(['require',
             domStyle.set(node.domNode, 'display', 'inline');
         }
     };
-
+    /**
+     * Subscribe to the event for file system
+     * @function
+     */
     Node.subscribeToFSEvents = function () {
         topic.subscribe('fs/cache/node/added', function (fsURL, targetDir, name, type, maybeCreated) {
             var id = targetDir + name;
@@ -1543,7 +1668,10 @@ define(['require',
             }
         });
     };
-
+    /**
+     * Verify the shown a node
+     * @method
+     */
     Node.prototype.isShown = function () {
         if (this.isRoot()) {
             return true;
@@ -1552,7 +1680,12 @@ define(['require',
             return parentNode.isExpanded() && parentNode.isShown();
         }
     };
-
+    /**
+     * Set state for overlay icon
+     * @param stateSet
+     * @param state
+     * @method
+     */
     Node.prototype.setOverlayIconInfo = function (stateSet, state) {
         if (!this.overlayIconInfo.hasOwnProperty(stateSet)) {
             this.overlayIconInfo[stateSet] = undefined;
@@ -1563,7 +1696,10 @@ define(['require',
             this.updateOverlayIcon();
         }
     };
-
+    /**
+     * Upate overlay icon
+     * @method
+     */
     Node.prototype.updateOverlayIcon = function () {
         var nodes = tree().getNodesByItem(this);
         var node = nodes && nodes[0];
@@ -1587,14 +1723,21 @@ define(['require',
     };
 
     var nodeToSelect;
-
+    /**
+     * Select a node
+     * @inner
+     */
     function selectNode(node) {
         require(['./plugin'], function (wv) {
             wv.selectNode(node);
             setFocus(node);
         });
     }
-
+    /**
+     * Select a new node
+     * @param nodeId
+     * @inner
+     */
     function selectNewNode(nodeId) {
         var node = store().get(nodeId);
         if (node) {
@@ -1603,7 +1746,10 @@ define(['require',
             setNodeToSelect(nodeId);
         }
     }
-
+    /**
+     * Select a node after the work
+     * @method
+     */
     function selectAfterWork() {
         if (nodeToSelect) {
             var node = store().get(nodeToSelect);
@@ -1613,21 +1759,21 @@ define(['require',
                     var nodes = tree().getNodesByItem(parentNode);
                     tree()._expandNode(nodes[0]).then(function () {
                         selectNode(node);
-                        //console.log('hina temp: nullifying nodeToSelect - A');
                         nodeToSelect = null;
                     });
                 } else {
                     selectNode(node);
-                    //console.log('hina temp: nullifying nodeToSelect - B');
                     nodeToSelect = null;
                 }
             }
         }
     }
-
+    /**
+     * Set a node to selected
+     * @param nodeId
+     * @inner
+     */
     function setNodeToSelect(nodeId) {
-        //console.log('hina temp: entering setNodeToSelect with nodeToSelect = ' + nodeToSelect);
-        //console.log('hina temp: entering setNodeToSelect with nodeId = ' + nodeId);
         if (nodeToSelect && nodeId) {
             console.warn('Unexpected: trying to set node "' + nodeId +
                          '" to select next while previous one "' + nodeToSelect +
@@ -1640,3 +1786,4 @@ define(['require',
 
     return Node;
 });
+
