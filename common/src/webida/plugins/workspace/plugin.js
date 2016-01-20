@@ -15,11 +15,10 @@
 */
 
 /**
- * @fileoverview webida - workspace view
- *
- * @version: 0.1.0
- * @since: 2013.09.23
- *
+ * @file Workspace is an individual tree for each user in which you can access personal of information.
+ * @since 1.0.0
+ * @author minsung.jin@samsung.com
+ * @author joogwan.kim@samsung.com
  */
 
 /* jshint unused:false */
@@ -70,45 +69,45 @@ define([
     'require',
     'webida-lib/util/logger/logger-client'
 ], function (
-    ide, 
-    pluginManager, 
+    ide,
+    pluginManager,
     PreferenceFactory,
-    workbench, 
-    webida, 
-    dijit, 
-    registry, 
+    workbench,
+    webida,
+    dijit,
+    registry,
     Tree,
-    ObjectStoreModel, 
-    aspect, 
-    array, 
-    connect, 
-    lang, 
-    declare, 
-    Deferred, 
+    ObjectStoreModel,
+    aspect,
+    array,
+    connect,
+    lang,
+    declare,
+    Deferred,
     dom,
-    domAttr, 
-    domClass, 
-    domConstruct, 
-    domGeom, 
-    domStyle, 
+    domAttr,
+    domClass,
+    domConstruct,
+    domGeom,
+    domStyle,
     i18n,
-    on, 
+    on,
     all,
-    Memory, 
-    Observable, 
+    Memory,
+    Observable,
     string,
-    topic, 
-    win, 
-    Node, 
-    markup, 
-    View, 
-    pathUtil, 
+    topic,
+    win,
+    Node,
+    markup,
+    View,
+    pathUtil,
     loadCSSList,
-    PopupDialog, 
+    PopupDialog,
     notify,
-    projectInfo, 
-    _, 
-    async, 
+    projectInfo,
+    _,
+    async,
     URI,
     require,
     Logger
@@ -120,7 +119,6 @@ define([
     //var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
-
     singleLogger.log('loaded modules required by workspace. initializing workspace plugin\'s module');
 
     var view, tree;
@@ -134,35 +132,35 @@ define([
     var wvfilterFuncs = [];
     var isTimerInstalled = false;
     var editorsSelection;
-
     var preferences = PreferenceFactory.get('WORKSPACE');
-
     var MIME_TYPE_WEBIDA_RESOURCE_PATH = 'text/x-webida-resource-path';
-
     var extensionPoints = {
         WORKSPACE_NODE_ICONS: 'webida.common.workspace:icons',
         WORKSPACE_NODE_OVERLAY_ICONS: 'webida.common.workspace:overlayIcons'
     };
-
     var iconsExtensions = pluginManager.getExtensions(extensionPoints.WORKSPACE_NODE_ICONS);
     var overlayIconsExtensions = pluginManager.getExtensions(extensionPoints.WORKSPACE_NODE_OVERLAY_ICONS);
     var defaultFileExtensionIconClassMap = {};
     var defaultFileNameIconClassMap = {};
     var projectTypeFileExtensionIconClassMap = {};
     var projectTypeFileNameIconClassMap = {};
-
     var stateSetIconClassMap = {};
     var cssFilePathList = [];
-
     /**
-     * Compatibility
+     * Get registry for current page
+     * @inner
      */
     function _getPartRegistry() {
         var page = workbench.getCurrentPage();
         return page.getPartRegistry();
     }
-
-    function extractCssFilePathList(ext, cssFilePathList) {
+    /**
+     * Extract path of file for css
+     * @param ext
+     * @param cssFilePathList
+     * @inner
+     */
+    function _extractCssFilePathList(ext, cssFilePathList) {
         if (typeof ext.iconCssFilePath === 'string') {
             if (ext.iconCssFilePath !== '') {
                 var cssPath = URI(ext.iconCssFilePath).absoluteTo(ext.__plugin__.loc + '/').toString();
@@ -173,7 +171,11 @@ define([
             console.error('Type of iconCssFilePath should be string.');
         }
     }
-    
+    /**
+     * Get icon class of item
+     * @param item
+     * @inner
+     */
     function getItemIconClass(item) {        
         var fileExtensionIconClassMap = defaultFileExtensionIconClassMap;
         var fileNameIconClassMap = defaultFileNameIconClassMap;
@@ -200,10 +202,13 @@ define([
             }           
         }
     }
-    
-    iconsExtensions.forEach(function (ext) {        
+    /**
+     * Extract path of file for css
+     * @param ext
+     */
+    iconsExtensions.forEach(function (ext) {
         var projectType = ext.projectType;
-        
+
         if (typeof projectType === 'string') {
             
             var targetFileExtensionIconClassMap = null;
@@ -231,25 +236,35 @@ define([
                     targetFileNameIconClassMap[fileName] = ext.specificFileName[fileName];
                 }
             }
-            extractCssFilePathList(ext, cssFilePathList);
+            _extractCssFilePathList(ext, cssFilePathList);
         } else {
             console.error('Type of projectType should be string.');
         }
     });
-
+    /**
+     * Extract path of file for css
+     * @param ext
+     */
     overlayIconsExtensions.forEach(function (ext) {
         for (var stateSet in ext.stateMap) {
             if (typeof stateSet === 'string') {
                 stateSetIconClassMap[stateSet] = ext.stateMap[stateSet];
             }
         }        
-        
-        extractCssFilePathList(ext, cssFilePathList); 
+        _extractCssFilePathList(ext, cssFilePathList); 
     });
-
+    /**
+     * Manage a CSS and a module
+     * @member
+     */
     loadCSSList(cssFilePathList, function () {
     });
-
+    /**
+     * Select a node
+     * @param node
+     * @param blockTopic
+     * @inner
+     */
     function selectNode(node, blockTopic) {
         singleLogger.info('selectNode(node)');
         singleLogger.trace();
@@ -269,7 +284,10 @@ define([
             }
         }
     }
-
+    /**
+     * Get a nodes is expanded
+     * @inner
+     */
     function getExpandedNodes() {
         var data = tree.model.store.data;
         var expandedNodes = [];
@@ -284,13 +302,14 @@ define([
         }
         return expandedNodes;
     }
-
+    /**
+     * initialize the tree
+     * @inner
+     */
     function initializeTree() {
-        //console.log('hina temp: entered initializeTree()');
 
         var lastSelected;
         var lastExpanded;
-
         workspacePath = ide.getPath();
 
         // get last status
@@ -310,8 +329,6 @@ define([
 
             return ret;
         });
-        //console.log('hina temp: lastStatus of workspace is ' + (lastStatus ?
-        // 'truthy' : 'falsy'));
 
         if (lastStatus) {
             lastExpanded = lastStatus.expanded;
@@ -770,12 +787,16 @@ define([
         rootNode.expandItem();
         Node.subscribeToFSEvents();
     }
-
+    /**
+     * initialize a drag and a drop
+     * @inner
+     */
     function initializeDnd() {
+
         function onDragOver(event) {
-            //console.log('hina temp: onDragOver');
 
             function getDnDCase(types) {
+
                 if (types && types.length) {
                     for (var i = 0; i < types.length; i++) {
                         if (types[i] === MIME_TYPE_WEBIDA_RESOURCE_PATH) {
@@ -854,7 +875,6 @@ define([
         }
 
         function onDragLeave(event) {
-            //console.log('hina temp: onDragLeave');
 
             var treeNode = dijit.getEnclosingWidget(event.target);
             if (treeNode && treeNode.item) {
@@ -876,8 +896,9 @@ define([
         }
 
         function onDragDrop(event) {
-            //console.log('hina temp: onDragDrop');
+
             function uploadContentsOfDataTransfer(targetNode, dt) {
+
                 function paste(str) {
                     if (type.indexOf(MIME_TYPE_WEBIDA_RESOURCE_PATH) === 0) {
                         var mode = (dt.dropEffect !== 'move') ? 'copy' : 'move';
@@ -937,7 +958,6 @@ define([
                         if (dt.items && dt.items[0] && dt.items[0].webkitGetAsEntry && dt.items[0].kind === 'file') {
 
                             // Chrome or future Firefox
-
                             for (i = 0; i < dt.items.length; i++) {
                                 selected.push(dt.items[i].webkitGetAsEntry());
                             }
@@ -945,7 +965,6 @@ define([
                         } else {
 
                             // Firefox 31.x
-
                             for (i = 0; i < dt.files.length; i++) {
                                 selected.push(dt.files[i]);
                             }
@@ -985,7 +1004,6 @@ define([
         }
 
         function onDragStart(event) {
-            //console.log('hina temp: onDragStart');
 
             function getDragImageElem(/*nodes*/) {
                 var elem = document.createElement('img');
@@ -1060,7 +1078,10 @@ define([
         wvTree.addEventListener('dragleave', onDragLeave, false);
         wvTree.addEventListener('dragstart', onDragStart, false);
     }
-
+    /**
+     * Remove a node interactively
+     * @method
+     */
     function removeInteractively() {
         var nodes = getSelectedNodes();
         if (!nodes || !nodes.length) {
@@ -1111,7 +1132,10 @@ define([
             workbench.focusLastWidget();
         });
     }
-
+    /**
+     * Copy a node is selected
+     * @method
+     */
     function copySelected() {
         var targetNodes = getSelectedNodes();
         if (targetNodes && targetNodes.length > 0 && targetNodes.every(function (node) {
@@ -1121,7 +1145,10 @@ define([
             cut = null;
         }
     }
-
+    /**
+     * Cut a node is selected
+     * @method
+     */
     function cutSelected() {
         var targetNodes = getSelectedNodes();
         if (targetNodes && targetNodes.length > 0 && targetNodes.every(function (node) {
@@ -1131,7 +1158,10 @@ define([
             cut = targetNodes;
         }
     }
-
+    /**
+     * Paste a node is selected
+     * @method
+     */
     function pasteToSelected() {
         var targetNodes = getSelectedNodes();
         if (targetNodes && targetNodes.length === 1) {// TODO: remove length 1
@@ -1159,42 +1189,64 @@ define([
             }
         }
     }
-
+    /**
+     * Get the path of selected node
+     * @method
+     */
     function getSelectedPath() {
         return getSelectedPaths()[0] || null;
     }
-
+    /**
+     * Get paths of selected node
+     * @method
+     */
     function getSelectedPaths() {
         var arr = tree ? (tree.selectedItems || []) : [];
         return arr.map(function (i) {
             return i.getPath();
         });
     }
-
+    /**
+     * Verify that the node is exist
+     * @method
+     */
     function exists(path) {
         var relPath = path.substr(rootNode.getPath().length);
         return !!rootNode.getSubnode(relPath);
     }
-
+    /**
+     * Get a root path
+     * @method
+     */
     function getRootPath() {
         return rootNode.getPath();
     }
-
-    // TODO: remove the following and its uses in the IDE
-    function getSelectedNodes() {
+    /**
+     * Get a selected node
+     * @method
+     */
+    function getSelectedNodes() { // TODO: remove the following and its uses in the IDE
         return tree ? (tree.selectedItems || []) : [];
     }
-
+    /**
+     * Get a node
+     * @param path
+     * @method
+     */
     function getNode(path) {
         var relPath = path.substr(rootNode.getPath().length);
         return rootNode.getSubnode(relPath);
     }
-
+    /**
+     * Expand ancestors
+     * @param path
+     * @method
+     */
     function expandAncestors(path) {
 
         function expandAncestorInner(node, segments) {
-            var deferred = new Deferred();
 
+            var deferred = new Deferred();
             node.expandItem().then(function (result) {
                 if (result === true) {
                     if (segments.length > 0) {
@@ -1226,12 +1278,20 @@ define([
             return expandAncestorInner(rootNode, segments);
         }
     }
-
+    /**
+     * Upload a files
+     * @param path
+     * @param files
+     * @method
+     */
     function upload(path, files) {
         var targetNode = getNode(path);
         return targetNode.upload(files);
     }
-
+    /**
+     * Initialize a editor for focus
+     * @method
+     */
     function initializeSyncEditorFocus() {
         topic.subscribe('part/editor/selected', function (oldPart, newPart) {
             if (!newPart) {
@@ -1288,7 +1348,11 @@ define([
             }
         });
     }
-
+    /**
+     * Create a item
+     * @param options
+     * @inner
+     */
     function createItem(options) {
         var toolbar = dom.byId('wv-toolbar');
         var item = domConstruct.create('div');
@@ -1383,7 +1447,10 @@ define([
 
         toolbar.appendChild(item);
     }
-
+    /**
+     * Initialize the toolbar
+     * @inner
+     */
     function initializeToolbar() {
 
         var lastStatus = ide.registerStatusContributorAndGetLastStatus('workspace:Toolbar', function () {
@@ -1442,7 +1509,10 @@ define([
             }
         });
     }
-
+    /**
+     * Initialize the focus
+     * @inner
+     */
     function initializeFocus() {
         topic.subscribe('workspace/node/selected', function () {
             var nodes = getSelectedNodes();
@@ -1455,7 +1525,10 @@ define([
             }
         });
     }
-
+    /**
+     * Initialize the filtering
+     * @inner
+     */
     function initializeFiltering() {
         function hideNodes(filterFunc, bHide) {
             var data = tree.model.store.data;
@@ -1597,7 +1670,10 @@ define([
         //});
         topic.subscribe('workspace/node/shown', filter);
     }
-
+    /**
+     * Create a node interactively
+     * @method
+     */
     function createNodeInteractively(path, kind) {
         var node = getNode(path);
         if (node) {
@@ -1606,7 +1682,11 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * Duplicate a node
+     * @param path
+     * @method
+     */
     function duplicateNode(path) {
         var node = getNode(path);
         if (node) {
@@ -1615,7 +1695,11 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * Verify that a node is expanded
+     * @param path
+     * @method
+     */
     function isExpandedNode(path) {
         var node = getNode(path);
         if (node) {
@@ -1624,7 +1708,11 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * Collpase a node
+     * @param path
+     * @method
+     */
     function collapseNode(path) {
         var node = getNode(path);
         if (node) {
@@ -1633,7 +1721,11 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * Expand a node
+     * @param path
+     * @method
+     */
     function expandNode(path) {
         var node = getNode(path);
         if (node) {
@@ -1642,7 +1734,11 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * Refresh a node recursively
+     * @param path
+     * @param blink
+     */
     function refreshRecursively(path, blink) {
         var node = getNode(path);
         if (node) {
@@ -1651,7 +1747,12 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * Rename a node interactively
+     * @param path
+     * @param kind
+     * @method
+     */
     function renameNodeInteractively(path, kind) {
         var node = getNode(path);
         if (node) {
@@ -1660,7 +1761,13 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * Set a node for overlay icon
+     * @param path
+     * @param stateSet
+     * @param state
+     * @method
+     */
     function setNodeOverlayIconInfo(path, stateSet, state) {
         var node = getNode(path);
         if (node) {
@@ -1669,7 +1776,12 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * Get a node for overlay icon
+     * @param path
+     * @param stateSet
+     * @method
+     */
     function getNodeOverlayIconInfo(path, stateSet) {
         var node = getNode(path);
         if (node) {
@@ -1682,9 +1794,12 @@ define([
         } else {
             throw new Error('assertion fail: unreachable');
         }
-        // TODO
     }
-
+    /**
+     * Get the path of children
+     * @param path
+     * @method
+     */
     function getChildrenPaths(path) {
         var node = getNode(path);
         if (node) {
@@ -1695,7 +1810,9 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-
+    /**
+     * @module workspaceView
+     */
     var workspaceView = {
         // for webida.common.workbench:views extension point
         getView: function () {
@@ -1746,7 +1863,6 @@ define([
             topic.subscribe('workspace/node/status/changed', function (path, stateSet, state) {
                 setNodeOverlayIconInfo(path, stateSet, state);
             });
-            //});
         },
 
         // copy, cut, and paste
@@ -1756,7 +1872,6 @@ define([
         isCopiedOrCut: function () {
             return copied || cut;
         },
-
         getSelectedPath: getSelectedPath,
         getSelectedPaths: getSelectedPaths,
         getRootPath: getRootPath,
@@ -1769,15 +1884,11 @@ define([
         refreshRecursively: refreshRecursively,
         getNodeOverlayIconInfo: getNodeOverlayIconInfo,
         getChildrenPaths: getChildrenPaths,
-
         removeInteractively: removeInteractively,
         renameNodeInteractively: renameNodeInteractively,
-
         selectNode: selectNode,
-
         expandAncestors: expandAncestors,
         upload: upload,
-
         getStateSetIconClassMap: function () {
             return stateSetIconClassMap;
         }
@@ -1787,3 +1898,4 @@ define([
 
     return workspaceView;
 });
+
