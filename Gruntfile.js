@@ -40,12 +40,13 @@ module.exports = function (grunt) {
                 src: SOURCES
             }
         },
-        bower: {
-            install: {
-                // just run grunt bower install
-            },
+        auto_install: {
+            local:{},
             options: {
-                copy: false
+                recursive:true,
+                exclude: ['.git', 'node_modules', 'bower_components', 'ProjectWizard-templates'],
+                npm: false,
+                bower: '--allow-root'
             }
         },
         copy: {
@@ -202,7 +203,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.loadNpmTasks('grunt-bower-task');
+    grunt.loadNpmTasks('grunt-auto-install');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-dojo');
     grunt.loadNpmTasks('grunt-contrib-rename');
@@ -257,7 +258,7 @@ module.exports = function (grunt) {
         grunt.task.run(addedTasks);
     });
 
-    grunt.registerTask('dev', [/* mandatory */'bower', /* optional */'theme']);
+    grunt.registerTask('dev', [/* mandatory */'auto_install', /* optional */'theme']);
     grunt.registerTask('distDojo', ['dojo', 'clean:dojoSource', 'rename:dojoBuilt']);
     grunt.registerTask('default', ['clean:all', 'dev', 'copy:all', 'distDojo'/*, 'uglify:debug', 'fixSourceMaps'*/]);
     grunt.registerTask('release', ['clean:all', 'dev', 'copy:all', 'distDojo', 'uglify:release']);
