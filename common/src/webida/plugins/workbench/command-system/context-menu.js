@@ -37,7 +37,6 @@ define(['external/lodash/lodash.min',                 // _
 function (_, on, Menu, MenuItem, CheckedMenuItem, RadioMenuItem,
            PopupMenuItem, DropDownMenu, MenuSeparator) {
     'use strict';
-    //console.log('mira: context menu module loaded...');
 
     var EMPTY_OBJ = {};
 
@@ -47,21 +46,34 @@ function (_, on, Menu, MenuItem, CheckedMenuItem, RadioMenuItem,
         evt.stopPropagation();
     });
 
-    // context menu's open area handle
-    var built = false;
-    document.getElementsByTagName('body')[0].addEventListener('contextmenu', function (event) {
-        //console.log('in contextmenu event handler on body: built = ', built);
-        if (!built) {
-            event.preventDefault();
-            event.stopPropagation();
+    var bodyElement = document.getElementsByTagName('body')[0];
+    var contextEvent = {
+        /*
+        * preventDefault and stopPropagation is fixed the
+        * Context menu bug on dialog's text input with keyboard's popup key
+        */
+        stop : function (e) {
+            if (!contextMenu.isBuilt) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
         }
+    };
+    // context menu's open area handle
+    bodyElement.addEventListener('contextmenu', function (event) {
+        contextEvent.stop(event);
+    });
+    // context menu's open area handle
+    on(bodyElement, 'keydown', function (event) {
+        contextEvent.stop(event);
     });
 
     // context menu is singleton object
     var contextMenu = new Menu({
         id: 'webidaContextMenuDa',
+        isBuilt : false,
         onBlur: function () {
-            built = false;
+            this.isBuilt = false;
         },
         style: 'width: 250px',
         contextMenuForWindow: true,
@@ -254,7 +266,7 @@ function (_, on, Menu, MenuItem, CheckedMenuItem, RadioMenuItem,
             // context menu item check
             var child = contextMenu.getChildren();
             if (child && child.length > 0) {
-                built = true;
+                contextMenu.isBuilt = true;
 
                 // context event info copy and re-trigger
                 var element = document.getElementById('app-workbench');
@@ -272,3 +284,4 @@ function (_, on, Menu, MenuItem, CheckedMenuItem, RadioMenuItem,
         rebuild: rebuild
     };
 });
+
