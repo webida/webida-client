@@ -57,6 +57,13 @@ function (_, on, Menu, MenuItem, CheckedMenuItem, RadioMenuItem,
         }
     });
 
+    on(document.getElementsByTagName('body')[0], 'keydown', function (event) {
+        if (!built) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+
     // context menu is singleton object
     var contextMenu = new Menu({
         id: 'webidaContextMenuDa',
