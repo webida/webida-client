@@ -14,12 +14,26 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * Code edtor main preferences
+ *
+ * @since 1.2.0
+ * @author hw.shim@samsung.com
+ * @author kyungmi.k@samsung.com
+ *
+ */
+
 /* jshint unused:false */
 
 define([], function () {
     'use strict';
 
     return {
+        /**
+         * Implements getDefault of webida.preference:pages extension point.
+         * @return {Object} - Object containing deault prefernce setting.
+         */ 
         getDefault: function () {
             return {};
         }

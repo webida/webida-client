@@ -1,3 +1,11 @@
+/**
+ * @file
+ * Unit test for CodeEditorPart
+ * 
+ * @since 1.3.0
+ * @author hw.shim@samsung.com
+ */
+
 /* global QUnit */
 /* jshint unused:false */
 

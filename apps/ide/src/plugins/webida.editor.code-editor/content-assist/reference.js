@@ -14,27 +14,50 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * Reference managing module
+ *
+ * @since 1.0.0
+ * @author changhun.lim@samsung.com
+ * @author hyunik.na@samsung.com
+ */
+
 define(['external/lodash/lodash.min'],
 function (_) {
 
     'use strict';
 
-    var _referTos = {}; // A refer B
+    var _referTos = {}; // A refers to B
     var _referFroms = {}; // B referred from A
 
 
     var reference = {};
-
+    
+    /**
+     * Adds a reference relation
+     * @param {string} from - 'from' refers to 'to'
+     * @param {string} to - 'from' refers to 'to'
+     */
     reference.addReference = function (from, to) {
         _referTos[from] = _.union(_referTos[from], [to]);
         _referFroms[to] = _.union(_referFroms[to], [from]);
     };
 
+    /**
+     * Removes a reference relation
+     * @param {string} from - 'from' refers to 'to'
+     * @param {string} to - 'from' refers to 'to'
+     */
     reference.removeReference = function (from, to) {
         _referTos[from] = _.without(_referTos[from], to);
         _referFroms[to] = _.without(_referFroms[to], from);
     };
 
+    /**
+     * Removes reference relations from 'from'
+     * @param {string} from 
+     */
     reference.removeReferences = function (from) {
         var tos = _referTos[from];
         _referTos[from] = [];
@@ -43,10 +66,18 @@ function (_) {
         });
     };
 
+    /**
+     * Reterns an object containing keys which refer to 'to'
+     * @param {string} from 
+     */
     reference.getReferenceFroms = function (to) {
         return _referFroms[to];
     };
 
+    /**
+     * Reterns an object containing keys which are referred by 'from'
+     * @param {string} from 
+     */
     reference.getReferenceTos = function (from) {
         return _referTos[from];
     };

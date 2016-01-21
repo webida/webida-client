@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * Module for emmet (http://emmet.io/)
+ *
+ * @since 1.0.0
+ * @author hw.shim@samsung.com
+ * @author sewon326.kim@samsung.com  
+ * @author hyunik.na@samsung.com
+ */
+
 define(['./lib/emmet/emmet-full.min',
         'external/codemirror/lib/codemirror'],
 function (emmet, CodeMirror) {
@@ -173,7 +183,7 @@ function (emmet, CodeMirror) {
 
                 /**
                  * Ask user to enter something
-                 * @param {String} title Dialog title
+                 * @param {String} title - Dialog title
                  * @return {String} Entered data
                  * @since 0.65
                  */
