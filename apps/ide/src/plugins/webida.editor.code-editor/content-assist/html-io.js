@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * HTML parsing module which provides parse() method
+ * In this module, DomHandler is defined. 
+ * DomHandler defines callbacks for htmlparser2 and is passed to htmlparser2 constructor.
+ * htmlparser2 (https://github.com/fb55/htmlparser2)
+ *
+ * @constructor
+ * @since 1.0.0
+ * @author changhun.lim@samsung.com
+ * @author hyunik.na@samsung.com
+ */
+
 define(['external/lodash/lodash.min',
         './html-dom',
         '../lib/htmlparser2/htmlparser2/lib/Parser'],
@@ -123,7 +136,10 @@ function (_, dom, Parser) {
 
     return {
         /**
-         * parse html text into DOM Document object
+         * Parse html text into DOM Document object.
+         *
+         * @param {string} htmltext - HTML text string.
+         * @return {Object} DOM Document object.
          **/
         parse : function (htmltext) {
             var handler = new DomHandler();

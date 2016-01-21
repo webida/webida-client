@@ -15,15 +15,16 @@
 */
 
 /**
- * Constructor function
+ * @file
  * CodeEditorPart implementation of EditorPart
  * This should be an ancestor of all programming language based editors.
  *
  * @constructor
  * @see TextEditorPart, EditorPart
- * @since: 2015.06.11
- * @author: hw.shim
- *
+ * @since: 1.2.0
+ * @author hw.shim@samsung.com
+ * @author kyungmi.k@samsung.com
+ * @author h.m.kwon@samsung.com
  */
 
 // @formatter:off
@@ -61,6 +62,14 @@ define([
     var logger = new Logger();
     logger.off();
 
+    /**
+     * Constructor for code editor part
+     * @constructor
+     * @extends TextEditorPart
+     * 
+     * @param {PartContainer} container
+    */
+    
     function CodeEditorPart(container) {
         logger.info('new CodeEditorPart(' + container + ')');
         //super constructor
@@ -77,6 +86,10 @@ define([
             TextEditorPart.prototype.initialize.call(this);
         },
 
+        /**
+         * Initialize preferences
+         * @override
+         */
         initializePreferences: function () {
             logger.info('initializePreferences()');
             TextEditorPart.prototype.initializePreferences.call(this);
@@ -97,7 +110,7 @@ define([
         },
 
         /**
-         * @returns CodeEditorViewer
+         * @return {CodeEditorViewer}
          * @override
          */
         getViewerClass: function () {
@@ -105,13 +118,17 @@ define([
         },
 
         /**
-         * @returns preferenceConfig for CodeEditor
+         * @return {Object} PreferenceConfig for CodeEditor.
          * @override
          */
         getPreferencesConfig: function () {
             return preferenceConfig.getConfig(this);
         },
 
+        /**
+         * Set mode of the code editor with lowercased file extension string
+         * @param {string} mode - Lowercased file extension string.
+         */
         setMode: function (mode) {
             var viewer = this.getViewer();
             if (!viewer) {
@@ -160,7 +177,7 @@ define([
         /**
          * Set linter from jshintrc file
          * @see preference-watch-config, EditorPreference
-         * @param {boolean} value - whether use .editorconfig or not
+         * @param {boolean} value - Whether use .editorconfig or not.
          */
         setJshint: function (value) {
             if (value) {

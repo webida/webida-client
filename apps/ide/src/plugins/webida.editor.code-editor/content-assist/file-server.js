@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * File-server module for assist-worker. Manages files by dependencies.
+ *
+ * @constructor
+ * @since 1.0.0
+ * @author changhun.lim@samsung.com
+ * @author hyunik.na@samsung.com
+ */
+
 define(['external/lodash/lodash.min',
         'webida-lib/util/path',
         './reference',
@@ -23,6 +33,14 @@ define(['external/lodash/lodash.min',
 function (_, pathUtil, reference, htmlio, cssParse) {
     'use strict';
 
+    /**
+     * Get remoteFile in UI thread. 
+     * This should be called in UI thread.
+     * In WebWorker, this must not be called.
+     * @callback getRemoteFileCallback
+     * @param {string} path - File path string.
+     * @param {getRemoteFileCallback} c
+     */
     function getRemoteFile(path, c) {
         require(['webida-lib/app'], function (ide) {
             //ide.getMount().readFile(path, function (error, content) {
@@ -43,7 +61,7 @@ function (_, pathUtil, reference, htmlio, cssParse) {
 
     /**
      * @contructor
-     * @param {string} path the file path of this text
+     * @param {string} path - The file path of this text
      */
     function FileModel(path) {
         this.path = path;
@@ -387,18 +405,31 @@ function (_, pathUtil, reference, htmlio, cssParse) {
 
 
     /**
-     @param {function} getRemoteFileCallback callback function for get remote file
+     * Initializes FileServer module.
+     * @callback getRemoteFileCallback
+     * @param {getRemoteFileCallback} getRemoteFileCallback - Callback function to get remote file
      */
     FileServer.init = function (getRemoteFileCallback) {
         FileServer.getRemoteFileCallback = getRemoteFileCallback;
     };
 
+    /**
+     * Creates a new FileModel for given path and stores it.
+     * @param {string} path - File path.
+     * @return {Object} Created FileModel.
+     */
     FileServer._newFile = function (path) {
         var file = new FileModel(path);
         FileServer.files[path] = file;
         return file;
     };
 
+    /**
+     * Set text of FileModel for given path and updates its reference informations.
+     * @param {string} path - File path.
+     * @param {string} text - File contents.
+     * @return {Object} FileModel for the path.
+     */
     FileServer.setText = function (path, text) {
         var file = this.getLocalFile(path);
         if (!file) {
@@ -419,6 +450,11 @@ function (_, pathUtil, reference, htmlio, cssParse) {
         return file;
     };
 
+    /**
+     * Set version for given path to be current time.
+     * @param {string} path - File path.
+     * @return {Object} FileModel for the path.
+     */
     FileServer.setUpdated = function (path) {
         var file = this.getLocalFile(path);
         if (file) {
@@ -458,17 +494,30 @@ function (_, pathUtil, reference, htmlio, cssParse) {
         }
     };
 
+    /**
+     * Add reference update listener.
+     * @callback ReferenceUpdateListener
+     * @param {ReferenceUpdateListener} c - ReferenceUpdateListener .
+     */
     FileServer.addReferenceUpdateListener = function (c) {
         FileServer.listenersForReferencesUpdate.push(c);
     };
 
+    /**
+     * Remove reference update listener.
+     * @callback ReferenceUpdateListener
+     * @param {ReferenceUpdateListener} c - ReferenceUpdateListener .
+     */
     FileServer.removeReferenceUpdateListener = function (c) {
         FileServer.listenersForReferencesUpdate = _.without(FileServer.listenersForReferencesUpdate, c);
     };
 
     /**
-     @param {Fn(error,file)} c
-     **/
+     * Get remote file content.
+     * @callback getFileCallback
+     * @param {string} path - File path.
+     * @param {getFileCallback} c - getFileCallback .
+     */
     FileServer.getFile = function (path, c) {
         var file = FileServer.files[path];
         if (!file) {
@@ -496,10 +545,21 @@ function (_, pathUtil, reference, htmlio, cssParse) {
         }
     };
 
+    /**
+     * Get local file model.
+     * @param {string} path - File path.
+     * @return {Object} FileModel.
+     */
     FileServer.getLocalFile = function (path) {
         return FileServer.files[path];
     };
 
+    /**
+     * Get updated file model. 
+     * @param {string} path - File path.
+     * @param {number} version - Version number.
+     * @return {Object} FileModel.
+     */
     FileServer.getUpdatedFile = function (path, version) {
         var file = this.getLocalFile(path);
         if (file) {

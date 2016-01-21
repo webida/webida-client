@@ -15,11 +15,12 @@
  */
 
 /**
+ * @file
  * This plug-in manages life-cycle of the CodeEditor
  * 
  * @see CodeEditorPart
- * @since: 2015.06.11
- * @author: hw.shim
+ * @since 1.0.0
+ * @author hw.shim@samsung.com
  */
 define([], function () {
     'use strict';

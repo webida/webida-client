@@ -14,11 +14,31 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * Config loader for jshintrc
+ *
+ * @since 1.0.0
+ * @author hw.shim@samsung.com
+ * @author sewon326.kim@samsung.com  
+ * @author kyungmi.k@samsung.com
+ * @author changhun.lim@samsung.com
+ * @author hyunik.na@samsung.com
+ * @author wy1.cho@samsung.com 
+ */
+
 define(['webida-lib/app',
         'external/lodash/lodash.min'],
 function (ide, _) {
     'use strict';
 
+    /**
+     * Load .jshintrc file for given file
+     * 
+     * @callback jshintrcCallback
+     * @param {Object} file - Object containing file information.
+     * @param {jshintrcCallback} cb - Callback function which receives parsed JSON object.
+    */
     function loadJsHintRc(file, callback) {
         var bind = ide.getFSCache();    // ide.getMount();
         var path = (file.path).split('/');

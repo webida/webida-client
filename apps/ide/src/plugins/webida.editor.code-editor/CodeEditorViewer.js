@@ -15,13 +15,19 @@
  */
 
 /**
+ * @file
  * CodeEditorViewer for code-base EditorParts
  *
  * Still needs refactoring (2015.06.25, hw.shim)
  *
  * @constructor
  * @see CodeEditorPart
- * @refactor: hw.shim (2015.06.25)
+ * @since 1.3.0
+ * @author hw.shim@samsung.com
+ * @author sewon326.kim@samsung.com 
+ * @author kyungmi.k@samsung.com
+ * @author cg25.woo@samsung.com
+ * @author h.m.kwon@samsung.com
  */
 
 /*jshint unused:false*/

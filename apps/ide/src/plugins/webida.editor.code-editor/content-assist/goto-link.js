@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * Goto-link support module.
+ *
+ * @constructor
+ * @since 1.0.0
+ * @author changhun.lim@samsung.com
+ * @author hyunik.na@samsung.com
+ */
+
 /* jshint unused:false */
 // @formatter:off
 define([
@@ -33,8 +43,8 @@ define([
     /**
      * Key down event handler for goto link
      *
-     * @param {CodeMirror} cm
-     * @param {KeyboardEvent} e
+     * @param {object} cm - Codemirror instance
+     * @param {object} e - KeyboardEvent object
      */
     function onKeyDown(cm, e) {
         if (e.altKey && !_gotoLinkActivated) {
@@ -57,8 +67,8 @@ define([
     /**
      * Mouse down event handler for goto link
      *
-     * @param {CodeMirror} cm
-     * @param {MouseEvent} e
+     * @param {object} cm - Codemirror instance
+     * @param {object} e - MouseEvent object
      */
     function onMouseDown(cm, e) {
         if (e.altKey && _gotoLinkActivated) {

@@ -15,13 +15,14 @@
  */
 
 /**
+ * @file
  * CodeEditor adapter interface
  *
  * @constructor
  * @see CodeEditorViewer, EngineAdapterFactory
  * @constructor
- * @since: 2015.07.11
- * @author: h.m.kwon
+ * @since 1.3.0
+ * @author h.m.kwon@samsung.com
  * 
  */
 

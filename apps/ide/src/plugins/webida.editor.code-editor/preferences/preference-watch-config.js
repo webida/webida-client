@@ -15,12 +15,13 @@
  */
 
 /**
+ * @file
  * This is the preference watcher configurations
  * that include what method called with the modified values when preferences are changed.
  *
  * @see EditorPreference, CodeEditorPart
- * @since: 2015.12.10
- * @author: Koong Kyungmi (kyungmi.k@samsung.com)
+ * @since 1.6.0
+ * @author kyungmi.k@samsung.com
  */
 
 define([], function () {
@@ -33,7 +34,7 @@ define([], function () {
          * TODO If there are more memory-wise way than this, It's better to change this method.
          *
          * @param {CodeEditorPart} editorPart - This is an EditorPart instance related with this configuration.
-         * @returns {object} - Watch configuration per editorPart instance
+         * @return {Object} - Watch configuration per editorPart instance
          */
         getConfig: function (editorPart) {
             var viewer = editorPart.getViewer();

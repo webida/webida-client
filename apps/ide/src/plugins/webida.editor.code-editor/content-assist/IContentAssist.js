@@ -15,14 +15,13 @@
 */
 
 /**
- * Constructor function
+ * @file
  * IContentAssist interface
- * This should be an ancestor of all content assist control modules.
+ * This should be an ancestor of all code assist control modules.
  *
  * @constructor
- * @see TernControl
- * @since: 2015.09.18
- * @author: h.m.kwom
+ * @since 1.4.1
+ * @author h.m.kwon@samsung.com
  *
  */
 
@@ -53,7 +52,6 @@ define([
          * Returns whether the command is supported
          *
          * @param {string} command
-         *
          * @return {boolean}
          * @abstract
          */
@@ -65,7 +63,7 @@ define([
          * Execute the command
          *
          * @param {string} command
-         *
+         * @return {*}
          * @abstract
          */
         execCommand: function (command) {
