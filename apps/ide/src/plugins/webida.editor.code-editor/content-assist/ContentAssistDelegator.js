@@ -15,13 +15,12 @@
 */
 
 /**
- * Constructor function
- * ContentAssistDelegator  class
- * Content assist delegator module.
+ * @file
+ * Code assist delegator module constructor.
  *
  * @constructor
- * @since: 2015.10.11
- * @author: h.m.kwon
+ * @since 1.5.0
+ * @author h.m.kwon@samsung.com
  *
  */
 
@@ -185,13 +184,11 @@ define([
         },
 
         /**
-         * Execute the command
+         * Execute the command. 
+         * This passes variable argument.
          *
          * @param {string} command
-         *
-         * @param {[args]} arguments
-         *
-         * @return {all}
+         * @return {*}
          */
         execCommand: function (command) {
             var slice = Array.prototype.slice;
@@ -207,12 +204,10 @@ define([
         },
         /**
          * Execute the command for every supporting controls
+         * This passes variable argument.
          *
          * @param {string} command
-         *
-         * @param {[args]} arguments
-         *
-         * @return {all}
+         * @return {*}
          */
         execCommandForAll: function (command) {
             var slice = Array.prototype.slice;

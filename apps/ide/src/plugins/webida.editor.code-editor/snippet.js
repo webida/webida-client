@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * Module for snippet support
+ * 
+ * @since 1.0.0
+ * @author hw.shim@samsung.com
+ * @author hyunik.na@samsung.com
+ */
+
 define(['external/lodash/lodash.min'],
 function (_) {
     'use strict';
@@ -310,6 +319,11 @@ function (_) {
             return cands;
         }
     }
+
+    /**
+     * Expands snippet
+     * @param {Object} cm - CodeMirror instance.
+     */
     function expandSnippet(cm) {
         if (cm.__snippetCancelled) {
             cm.__snippetCancelled = false;
@@ -535,6 +549,10 @@ function (_) {
             }
         }
     }
+    /**
+     * Clears snippets
+     * @param {Object} cm - CodeMirror instance.
+     */
     function clearSnippets(cm) {
         if (cm.__snippetNavigation) {
             _.each(cm.__snippetNavigation, function (navs) {
@@ -546,6 +564,12 @@ function (_) {
             cm.__snippetCurrent = -1;
         }
     }
+    /**
+     * Clears snippets
+     * @param {Object} cm - CodeMirror instance.
+     * @param {boolean} isBackward - Backward option.
+     * @return {boolean}
+     */
     function navigateSnippet(cm, isBackward) {
         var navigations, current;
         if (!isBackward) {
@@ -575,6 +599,10 @@ function (_) {
         }
     }
 
+    /**
+     * Initialize snippet
+     * @param {Object} cm - CodeMirror instance.
+     */
     function init(cm) {
         cm.on('beforeChange', function (cm, e) {
             if (cm.__snippetNavigation && e.origin !== 'snippet') {

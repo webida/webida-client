@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file An Webworker for code assist 
+ *
+ * @since 1.0.0
+ * @author changhun.lim@samsung.com
+ * @author hyunik.na@samsung.com
+ */
+
 'use strict';
 /* global postMessage: true */
 /* global importScripts: true */

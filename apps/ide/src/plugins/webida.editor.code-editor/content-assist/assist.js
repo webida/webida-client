@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+/**
+ * @file Assist module which communicates with assist worker
+ *
+ * @since 1.0.0
+ * @author changhun.lim@samsung.com
+ * @author hyunik.na@samsung.com
+ */
+
 define([
     'require',
     'webida-lib/app',
@@ -78,6 +86,12 @@ define([
              });
     }
 
+    /**
+     * Sends data to assist worker and register msg callback function
+     * @callback msgCallback
+     * @param {*} data - Data to send.
+     * @param {msgCallback} c - Callback function which is called as response from assist worker.
+     */
     function send(data, c) {
         if (!worker) {
             init();

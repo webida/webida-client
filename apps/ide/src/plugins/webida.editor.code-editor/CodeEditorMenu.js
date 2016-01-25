@@ -15,12 +15,13 @@
 */
 
 /**
- * Constructor
+ * @file
  * CodeEditorMenu
  *
  * @see
- * @since: 2015.07.15
- * @author: hw.shim
+ * @since 1.3.0
+ * @author hw.shim@samsung.com
+ * @author h.m.kwon@samsung.com
  */
 
 // @formatter:off
@@ -46,6 +47,15 @@ define([
     //logger.setConfig('level', Logger.LEVELS.log);
     logger.off();
 
+    /**
+     * Creates main menus for code editor
+     * @constructor
+     * @extends TextEditorMenu
+     * 
+     * @param {Object} allItems - Object containing all menu items
+     * @param {Part} part
+    */
+
     function CodeEditorMenu(allItems, part) {
         logger.info('new CodeEditorMenu(' + allItems + ', ' + part + ')');
         TextEditorMenu.apply(this, arguments);
@@ -54,6 +64,10 @@ define([
 
     genetic.inherits(CodeEditorMenu, TextEditorMenu, {
 
+        /**
+         * Creates Available Edit Menu Items then return Thenable
+         * @return {Thenable}
+         */
         _getAvailableEditItems: function () {
             logger.info('_getAvailableEditItems()');
             var items = TextEditorMenu.prototype._getAvailableEditItems.call(this);
@@ -113,6 +127,10 @@ define([
             return deferred;
         },
 
+        /**
+         * Creates Available Navigate Items then return Thenable
+         * @return {Thenable}
+         */
         _getAvailableNavigateItems: function () {
             var items = TextEditorMenu.prototype._getAvailableNavigateItems.call(this);
             var menuItems = this.getAllItems();

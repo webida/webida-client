@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
+/**
+ * @file
+ * Content assists related preferences
+ *
+ * @since 1.2.0
+ * @author hw.shim@samsung.com
+ * @author kyungmi.k@samsung.com
+ * @author h.m.kwon@samsung.com
+ *
+ */
+
 define([
     'dojo/i18n!../nls/resource'
 ], function (
@@ -22,6 +33,10 @@ define([
     'use strict';
 
     return {
+        /**
+         * Implements getDefault of webida.preference:pages extension point.
+         * @return {Object} - Object containing deault prefernce setting.
+         */
         getDefault: function () {
             return {
                 'webida.editor.text-editor:autoCompletion': true,
@@ -33,6 +48,11 @@ define([
                 'webida.editor.text-editor:anywordHint': false
             };
         },
+
+        /**
+         * Implements pageData of webida.preference:pages extension point.
+         * @return {Object} - Object containing prefernce configurations.
+         */
         getSchema: function () {
             return [
                 {

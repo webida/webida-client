@@ -15,12 +15,13 @@
 */
 
 /**
- * Constructor
+ * @file
  * CodeEditorContextMenu
  *
  * @see
- * @since: 2015.07.15
- * @author: hw.shim
+ * @since 1.3.0
+ * @author hw.shim@samsung.com
+ * @author h.m.kwon@samsung.com
  */
 
 /* jshint unused:false */
@@ -51,6 +52,15 @@ define([
     var logger = new Logger();
     //logger.setConfig('level', Logger.LEVELS.log);
     //logger.off();
+
+    /**
+     * ContextMenu for code editor
+     * @constructor
+     * @extends TextEditorContextMenu
+     * 
+     * @param {Object} allItems - Object containing all menu items
+     * @param {Part} part
+    */
 
     function CodeEditorContextMenu(allItems, part) {
         logger.info('new CodeEditorContextMenu(allItems, part)');

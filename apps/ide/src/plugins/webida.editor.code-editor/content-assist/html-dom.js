@@ -18,6 +18,18 @@
  * http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html
  */
 
+/**
+ * @file
+ * HTML DOM implementation module
+ * http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html
+ *
+ * @constructor
+ * @since 1.0.0
+ * @author changhun.lim@samsung.com
+ * @author hyunik.na@samsung.com
+ *
+ */
+
 define([], function () {
     'use strict';
 
@@ -373,7 +385,7 @@ define([], function () {
 
     /**
      * Walk element in pre-order traversal
-     * @param {Element|NodeList} parent element or node list
+     * @param {Element|NodeList} elem - Parent element or node list
      **/
     function walkElements(elem, c) {
         if (!elem) {
@@ -397,7 +409,7 @@ define([], function () {
      * Returns a NodeList of all descendant elements with a given tag name
      * , in the order in which they would be encountered in a preorder traversal of the Element tree.
      *
-     * @param {string} name The name of the tag to match on. The special value "*" matches all tags
+     * @param {string} name - The name of the tag to match on. The special value "*" matches all tags
      * @return {NodeList} A list of matching Element nodes
      **/
     Element.prototype.getElementsByTagName = function (name) {
@@ -616,7 +628,7 @@ define([], function () {
      * Returns a NodeList of all the Elements with a given tag name
      * in the order in which they would be encountered in a preorder traversal of the Document tree
      *
-     * @param {string} name The name of the tag to match on. The special value "*" matches all tags
+     * @param {string} name - The name of the tag to match on. The special value "*" matches all tags
      * @return {NodeList} A new NodeList object containing all the matched elements
      **/
     Document.prototype.getElementsByTagName = function (name) {
