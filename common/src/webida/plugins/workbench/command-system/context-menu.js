@@ -24,18 +24,29 @@
  *   context-menu.js
  */
 
-define(['external/lodash/lodash.min',                 // _
-        'dojo/on',                    // on
-        'dijit/Menu',                 // Menu
-        'dijit/MenuItem',             // MenuItem
-        'dijit/CheckedMenuItem',      // CheckedMenuItem
-        'dijit/RadioMenuItem',        // RadioMenuItem
-        'dijit/PopupMenuItem',        // PopupMenuItem
-        'dijit/DropDownMenu',         // DropDownMenu
-        'dijit/MenuSeparator',        // MenuSeparator
-       ],
-function (_, on, Menu, MenuItem, CheckedMenuItem, RadioMenuItem,
-           PopupMenuItem, DropDownMenu, MenuSeparator) {
+define([
+    'external/lodash/lodash.min',                 // _
+    'dojo/keys'                   // keys
+    'dojo/on',                    // on
+    'dijit/Menu',                 // Menu
+    'dijit/MenuItem',             // MenuItem
+    'dijit/CheckedMenuItem',      // CheckedMenuItem
+    'dijit/RadioMenuItem',        // RadioMenuItem
+    'dijit/PopupMenuItem',        // PopupMenuItem
+    'dijit/DropDownMenu',         // DropDownMenu
+    'dijit/MenuSeparator',        // MenuSeparator
+], function (
+    _,
+    keys,
+    on,
+    Menu,
+    MenuItem,
+    CheckedMenuItem,
+    RadioMenuItem,
+    PopupMenuItem,
+    DropDownMenu,
+    MenuSeparator
+) {
     'use strict';
 
     var EMPTY_OBJ = {};
@@ -53,7 +64,9 @@ function (_, on, Menu, MenuItem, CheckedMenuItem, RadioMenuItem,
     });
     // context menu's open area handle
     on(bodyElement, 'keydown', function (event) {
-        contextMenu.stopEvent(event);
+        if (event.keyCode === keys.SELECT) {
+            contextMenu.stopEvent(event);
+        }
     });
 
     // context menu is singleton object
