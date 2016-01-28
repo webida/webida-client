@@ -26,7 +26,7 @@
 
 define([
     'external/lodash/lodash.min',                 // _
-    'dojo/keys'                   // keys
+    'dojo/keys',                  // keys
     'dojo/on',                    // on
     'dijit/Menu',                 // Menu
     'dijit/MenuItem',             // MenuItem
