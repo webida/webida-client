@@ -71,7 +71,7 @@ function initServers(caExtensionInfos) {
         baseUrl: './../',
         paths: {
             'webida-lib': '../../../../../common/src/webida',
-            text: 'lib/text',
+            text: 'bower_components/text/text',
             acorn: 'lib/acorn',
             plugins: '..',
             'external': '../../../../../bower_components'

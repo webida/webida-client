@@ -64,7 +64,7 @@ define([
         this.linterOption = option;        
         
         if (option) {
-            require(['./lib/lints/jsonlint'], function () {
+            require(['./bower_components/jsonlint/lib/jsonlint'], function () {
                 loadCSSList([
                     require.toUrl('external/codemirror/addon/lint/lint.css')
                 ], function () {

@@ -1,0 +1,10 @@
+{
+  "name": "webida.editor.code-editor.ca.js.lint",
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jshint": "git://github.com/jshint/jshint#693dd40a25165a596f79bcec187b40c6a2beaa0b"    
+  }
+}

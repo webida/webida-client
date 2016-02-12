@@ -613,7 +613,7 @@ define([
                     if (!monitor[profileName]) { // added profile by user
                         monitor[profileName] = self._createMonitor();
                     }
-                    require(['lib/test/ladda.min'], function (ProgressButton) {
+                    require(['external/ladda/dist/ladda.min'], function (ProgressButton) {
                         var progressButton = ProgressButton.create(progress);
                         monitor[profileName].progressButton = progressButton;
                     });

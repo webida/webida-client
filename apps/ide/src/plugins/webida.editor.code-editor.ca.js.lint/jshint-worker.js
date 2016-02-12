@@ -20,7 +20,7 @@
 /* global postMessage: true */
 /* global JSHINT: true */
 
-importScripts('./lib/lints/jshint.js');
+importScripts('./bower_components/jshint/dist/jshint.js');
 
 var bogus = [ 'Dangerous comment' ];
 

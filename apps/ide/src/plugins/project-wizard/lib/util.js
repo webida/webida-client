@@ -213,8 +213,9 @@ define([
      * @private
      */
     Util._doTour = function (cb) {
-        require(['lib/tour/jquery.cookie', 'lib/tour/bootstrap-tooltip'], function () {
-            require(['lib/tour/bootstrap-popover'], function () {
+        require(['external/jquery-cookie/jquery.cookie',
+                 'external/bootstrap-tooltip-popover/js/bootstrap-tooltip'], function () {
+            require(['external/bootstrap-tooltip-popover/js/bootstrap-popover'], function () {
                 require(['lib/tour/bootstrap-tour.wrapper'], function (Tour) {
                     cb(new Tour());
                 });
