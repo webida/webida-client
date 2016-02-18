@@ -1,0 +1,10 @@
+{
+  "name": "webida.editor.code-editor.ca.json.lint",
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jsonlint": "git://github.com/zaach/jsonlint#14a108f3a41d47fe5a50ec4c22e5608f512a9686"
+  }
+}

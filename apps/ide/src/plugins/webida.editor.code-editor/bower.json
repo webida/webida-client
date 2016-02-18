@@ -1,0 +1,10 @@
+{
+  "name": "webida.editor.code-editor",
+  "ignore": [
+    "**/.*",
+    "bower_components"
+  ],
+  "dependencies": {
+      "text": "git://github.com/requirejs/text#35c3ead097a9ede09469172666cc96349d2ce3e4"    
+  }
+}
