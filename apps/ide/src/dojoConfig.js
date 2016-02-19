@@ -39,7 +39,8 @@
             'webida-lib': '../common/src/webida',
             lib: '../apps/ide/src/lib',
             plugins: '../apps/ide/src/plugins',
-            external: '.'
+            external: '.',
+            top: '..'
         },
         aliases: [
             ['text', 'dojo/text'],

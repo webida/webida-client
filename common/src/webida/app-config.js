@@ -15,19 +15,21 @@
  */
 
 define([
-    'webida-lib/config-loader!'
+    'text!top/site-config.json'
 ], function (
-    serverConf
+    siteConfigText
 ) {
     'use strict';
-    var APP_ID = 'webida-client';
+    var siteConfig = JSON.parse(siteConfigText);
 
     return {
-        appId: APP_ID,
-        clientId: 'IDE_CLIENT_ID',
-        redirectUrl: serverConf.systemApps[APP_ID].baseUrl + '/auth.html',
-        baseUrl: serverConf.systemApps[APP_ID].baseUrl,
-        dashboardBaseUrl: serverConf.systemApps['app-dashboard'].baseUrl,
+        appId:  siteConfig.app.appId || 'unknown-ide',
+        clientId: siteConfig.app.oauth.clientId,
+        redirectUrl: siteConfig.app.oauth.redirectUrl,
+        baseUrl: siteConfig.app.baseUrl,
+        dashboardBaseUrl: siteConfig.app.dashboardBaseUrl,
+        apiDocBaseUrl : siteConfig.app.apidocBaseUrl,
+        googleAnalytics : siteConfig.googleAnalytics,
         meta: {
             user: {
                 dir: '.userInfo',

@@ -27,18 +27,16 @@
 define(['require'], function (require) {
     'use strict';
 
-    var version = '1.5.0';
-
     function showHelpDocument() {
         var helpURL = 'https://github.com/webida/webida-client/wiki';
         window.open(helpURL);
     }
 
     function showAPIDocument() {
-        require(['webida-lib/webida-0.3'], function (webida) {
-            var appid = 'apidoc';
-            var win = webida.app.launchApp(appid, true);
-
+        require(['webida-lib/app-config'], function (config) {
+            if (config.apiDocBaseUrl) {
+                var win = window.open(config.apiDocBaseUrl);
+            }
             win.focus();
         });
     }
@@ -46,7 +44,7 @@ define(['require'], function (require) {
     function showAbout() {
         require([
             'text!./about.html',
-            'text!/package.json',
+            'text!top/site-config.json',
             'dojo/i18n!./nls/resource',
             'webida-lib/plugins/workbench/plugin',
             'webida-lib/util/locale',
@@ -54,7 +52,7 @@ define(['require'], function (require) {
             'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog'
         ], function (
             aboutHtml,
-            text,
+            siteConfig,
             i18n,
             workbench,
             Locale,
@@ -73,23 +71,13 @@ define(['require'], function (require) {
                 }
             });
 
-            var parseBuildTime = function (buildId) {
-                if (!buildId) {
-                    return 'Unknown';
-                }
-                var arr = buildId.split('_');
-                return arr[0] + ' ' + arr[1].replace(/-/g , ':');
+            var data = siteConfig ? JSON.parse(siteConfig) : {};
+            var versionInfo = data.build || {
+                version : 'x.y.z',
+                buildNumber:  '',
+                buildTime: '????-??-??',
+                commitId: ''
             };
-
-            // TODO : fix package.json properties to buidInfo format
-            var data = text ? JSON.parse(text) : {};
-            var versionInfo = {
-                version : data.version || version,
-                buildNumber: data.buildnumber || 'Prebuild',
-                buildTime: parseBuildTime(data.buildid),
-                commitId: data.buildcommitid || 'Unknown'
-            };
-
 
             pane.setContentArea(theme.apply(aboutHtml));
 
