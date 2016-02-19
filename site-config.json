@@ -1,0 +1,34 @@
+{
+  "app": {
+    "appId" : "webida-ide-local-5000",
+    "baseUrl": "http://localhost:5000/webida-client",
+    "dashboardBaseUrl" : "http://localhost:5000/webida-dashboard",
+    "apidocBaseUrl" : "https://apidoc.webida.org",
+    "oauth": {
+      "clientId": "webida-ide-local-5000",
+      "redirectUrl": "http://localhost:5000/webida-client/auth.html"
+    },
+    "build" : {
+      "version" : "1.7.0",
+      "buildNumber": 127,
+      "buildTime": "1970 01 01 00 00 00",
+      "commitId": ""
+    },
+    "googleAnalytics" : "UA-68503782-1"
+  },
+  "server": {
+    "appServer": "https://app.webida.org",
+    "authServer": "https://auth.webida.org",
+    "fsServer": "https://fs.webida.org",
+    "buildServer": "https://build.webida.org",
+    "ntfServer": "https://ntf.webida.org",
+    "connServer": "https://build.webida.org",
+    "corsServer": "https://cors.webida.org",
+    "deploy": {
+      "type": "domain",
+      "pathPrefix": "-"
+    },
+    "signUpEnable": false,
+    "guestMode": true
+  }
+}
