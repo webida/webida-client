@@ -36,8 +36,8 @@ define(['require'], function (require) {
         require(['webida-lib/app-config'], function (config) {
             if (config.apiDocBaseUrl) {
                 var win = window.open(config.apiDocBaseUrl);
+                win.focus();
             }
-            win.focus();
         });
     }
 
