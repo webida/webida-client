@@ -89,6 +89,7 @@ define([
         _viewMap : [],
         lastStatus : null,
         isFullScreen : false,
+        currentPerspectiveID : null,
 
         createWorkbenchTopMenus : function () {
             // close top level menu
@@ -663,8 +664,59 @@ define([
                     dom.byId('dropDownUserinfo').appendChild(button.domNode);
                 }
             });
+            
+            (function () {                
+                var menu = new DropDownMenu({ style: 'display: none;' });                       
+                var exts = pm.getExtensions('webida.common.workbench:perspective') || [];
+                var button;
+                var defaultPerspectiveName = 'Default';
+                var perspectiveNamePrefix = 'Perspective: ';
+                var initialPerspectiveButtonLabel = perspectiveNamePrefix + defaultPerspectiveName; 
+                
+                function getPerspectiveNameById(perspectiveId) {
+                    var name = defaultPerspectiveName;
+                    if (perspectiveId) {
+                        exts.forEach(function (ext) {                
+                            if (ext.id === perspectiveId) {
+                                name = ext.name;
+                            }
+                        });                        
+                    } 
+                    return name;                    
+                }
 
-        },
+                if (exts.length > 0) {
+                    menu.addChild(new MenuItem({
+                        label: defaultPerspectiveName,
+                        onClick: function () {
+                            button.set('label', initialPerspectiveButtonLabel); 
+                            _self.currentPerspectiveID = null;
+                        }
+                    }));
+
+                    exts.forEach(function (ext) {
+                        var menuItem = new MenuItem({
+                            label: ext.name,
+                            onClick: function () {
+                                button.set('label', perspectiveNamePrefix + ext.name);
+                                _self.currentPerspectiveID = ext.id;
+                            }
+                        });
+                        menu.addChild(menuItem);
+                    });
+
+                    menu.startup();
+
+                    button = new DropDownButton({
+                        label: perspectiveNamePrefix + getPerspectiveNameById(_self.currentPerspectiveID),
+                        name: 'perspectiveInfo',
+                        dropDown: menu,
+                        id: 'PerspectiveButton'
+                    });
+                    dom.byId('dropDownPerspectiveinfo').appendChild(button.domNode);
+                }
+            })();
+        }, 
 
         getActivatedPanel : function () {
             var _self = this;

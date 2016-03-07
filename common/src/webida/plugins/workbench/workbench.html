@@ -13,6 +13,20 @@
         color: #f3b353;
         font-weight: bold;
     }
+    .perspectiveInfo__menu .dijitDropDownButton {
+        margin: 0px;
+    }
+    .perspectiveInfo__menu .dijitDropDownButton .dijitButtonNode {
+        background-color: transparent;
+        background-image: none;
+        border: none;
+        border-radius: 0px;
+        box-shadow: none;
+    }
+    .perspectiveInfo__menu span {
+        color: #f3b353;
+        font-weight: bold;
+    }
 </style>
 
 <div id="app-workbench" class='' tabindex="0" style="position:absolute; top:0px; left:0px; right:0px; bottom:0px; border:0px; ">
@@ -20,6 +34,7 @@
         <div id="app-workbench-menubar" class="app-workbench-menubar app-workbench-menubarhided" style="position:relative; height:30px; width:100%; top:0px">
             <div id="app-workbench-top-logo" class="app-workbench-top-logo"></div>
             <div id="app-workbench-top-userinfo" class="app-workbench-top-userinfo">
+                <span id="dropDownPerspectiveinfo" class="perspectiveInfo__menu"></span>
                 <span id="dropDownUserinfo" class="userinfo__menu"></span>
             </div>
         </div>
