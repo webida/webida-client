@@ -36,6 +36,13 @@
              "desc": "Label for the menu item" },
             { "name" : "handler", "type" : "function",
              "desc": "Name of the handler function" }
+        ],
+        
+        "webida.common.workbench:perspective" : [
+            { "name" : "name", "type" : "string", "desc": "Name appearing in perspective selection UI" },
+            { "name" : "iconPath", "type" : "string", "desc": "Path to the perspective icon image file"},
+            { "name" : "id", "type" : "string", "desc": "Unique ID of the perspective" },
+            { "name" : "items", "type" : "array", "desc": "Array of items such as layout of views"}
         ]
     },
     "extensions": {

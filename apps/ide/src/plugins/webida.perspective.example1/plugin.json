@@ -1,0 +1,24 @@
+{
+    "name": "webida.perspective.example1",
+    "description": "Example perspective plugin",
+    "version": "0.1.0",
+    "requirement": "webida.common.workbench",    
+    "extensions" : {        
+        "webida.common.workbench:perspective" : [
+            { 
+                "name" : "Example1", 
+                "iconPath" : "",
+                "id" : "webida.perspective.example1",
+                "items" : [
+                    {
+                        "itemType": "ViewLayout",
+                        "viewID": "",
+                        "targetID": "",
+                        "relation": "LEFT",
+                        "ratio": "0.5"                        
+                    }                    
+                ]
+            }
+        ]
+    }
+}
