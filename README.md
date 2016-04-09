@@ -1,10 +1,14 @@
 # webida-client
 
-A plug-in based web application platform
+### Webida IDE Screen Shot
+
 ![image](https://cloud.githubusercontent.com/assets/7447396/11450399/15612d02-95e2-11e5-8887-6035671f740e.png)
 
+### Webida Video Tutorial
 
-## Installation Guide
+[![webida video tutorial](https://img.youtube.com/vi/qvEEzuJ5kO4/0.jpg)](https://www.youtube.com/watch?v=qvEEzuJ5kO4)
+
+### Installation Guide
 
 Checkout and install [webida-server](https://github.com/webida/webida-server).
 
