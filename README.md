@@ -1,5 +1,11 @@
 # webida-client
 
+**Webida** is an web-based Rich Client Platform. Based on plugin-system,
+you can add your own feature by building your plugin. Also you can easily extend
+new features just installing new plugins from third party. Since 2012 Webida has been used in many projects such as 
+JavaScript IDE, Graphic Editing Tool, Performance Monitoring Tool, IoT SDK and ETC.
+You can try webida demo as guest mode **[https://webida.org](https://webida.org/pages/index.html#guest)**.
+
 ### Webida IDE Screen Shot
 
 ![image](https://cloud.githubusercontent.com/assets/7447396/11450399/15612d02-95e2-11e5-8887-6035671f740e.png)
@@ -7,6 +13,10 @@
 ### Webida Video Tutorial
 
 [![webida video tutorial](https://img.youtube.com/vi/qvEEzuJ5kO4/0.jpg)](https://www.youtube.com/watch?v=qvEEzuJ5kO4)
+
+### Webida Architecture Stack
+
+![image2015-11-6 18-12-47](https://cloud.githubusercontent.com/assets/7447396/14353386/cb383c68-fd13-11e5-863d-f36735aad2b5.png)
 
 ### Installation Guide
 
