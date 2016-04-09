@@ -2,7 +2,7 @@
 
 **Webida** is an web-based Rich Client Platform. Based on plugin-system,
 you can add your own feature by building your plugin. Also you can easily extend
-new features just installing new plugins from third party. Since 2012 Webida has been used in many projects such as 
+new features just installing new plugins from others. Since 2012 Webida has been used in many projects such as 
 JavaScript IDE, Graphic Editing Tool, Performance Monitoring Tool, IoT SDK and ETC.
 You can try webida demo as guest mode **[https://webida.org](https://webida.org/pages/index.html#guest)**.
 
