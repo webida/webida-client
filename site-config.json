@@ -14,7 +14,7 @@
       "buildTime": "1970 01 01 00 00 00",
       "commitId": ""
     },
-    "googleAnalytics" : "UA-68503782-1"
+    "googleAnalyics" : false
   },
   "server": {
     "appServer": "https://app.webida.org",
@@ -22,13 +22,13 @@
     "fsServer": "https://fs.webida.org",
     "buildServer": "https://build.webida.org",
     "ntfServer": "https://ntf.webida.org",
-    "connServer": "https://build.webida.org",
+    "connServer": "https://conn.webida.org",
     "corsServer": "https://cors.webida.org",
     "deploy": {
-      "type": "domain",
+      "type": "path",
       "pathPrefix": "-"
     },
     "signUpEnable": false,
-    "guestMode": true
+    "guestMode": false
   }
 }

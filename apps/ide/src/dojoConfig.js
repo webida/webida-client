@@ -16,6 +16,19 @@
 
 (function (global) {
     'use strict';
+
+    // in electron, we should remove global.require & global.module
+    // to make dojo & other amd module work
+    // how can we detect that we're working in electron?
+    if (typeof(global.process) === 'object' &&
+         typeof(global.require) === 'function' &&
+         typeof(global.module) === 'object') {
+        global.nrequire = global.require;
+        global.nmodule = global.module;
+        delete global.require;
+        delete global.module;
+    }
+
     var webidaLocale = decodeURIComponent(
         document.cookie.replace(/(?:(?:^|.*;\s*)webida\.locale\s*\=\s*([^;]*).*$)|^.*$/, '$1')
     );
@@ -52,6 +65,15 @@
             ['msg', 'webida-lib/msg.js'],
             // diff_match_patch is used in codemirror
             ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']
-        ]
+        ],
     };
+
+    // dojo may understand cjs require() by building option
+    // but some bower modules works under amd system only
+    // we don't allow to mix amd/cjs modules with same require function
+    if (global.nrequire) {
+        global.dojoConfig.has = {
+            'host-node': false // Prevent dojo from being fooled by Electron
+        }
+    }
 })(window);
