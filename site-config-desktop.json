@@ -1,0 +1,23 @@
+{
+  "app": {
+    "appId" : "webida-ide-desktop",
+    "baseUrl": false,
+    "dashboardBaseUrl" : "unused",
+    "apidocBaseUrl" : "will be generated automatically",
+    "oauth": {
+      "clientId": "webida-ide-desktop",
+      "redirectUrl": false
+    }
+  },
+
+  "// server" : " data will be filled from local storage, (webida-destktop-config item)",
+  "server": { },
+
+  "// build" : "will be re-written while packaging webida desktop with electron-packager",
+  "build" : {
+    "version" : "0.0.0",
+    "buildNumber": 0,
+    "buildTime": "1970-01-01 00:00:00",
+    "commitId": "unknown"
+  }
+}

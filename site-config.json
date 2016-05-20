@@ -8,12 +8,6 @@
       "clientId": "webida-ide-local-5000",
       "redirectUrl": "http://localhost:5000/webida-client/auth.html"
     },
-    "build" : {
-      "version" : "1.7.0",
-      "buildNumber": 127,
-      "buildTime": "1970 01 01 00 00 00",
-      "commitId": ""
-    },
     "googleAnalyics" : false
   },
   "server": {
@@ -27,6 +21,12 @@
     "deploy": {
       "type": "path",
       "pathPrefix": "-"
+    },
+    "build" : {
+      "version" : "1.7.0",
+      "buildNumber": 127,
+      "buildTime": "1970 01 01 00 00 00",
+      "commitId": ""
     },
     "signUpEnable": false,
     "guestMode": false
