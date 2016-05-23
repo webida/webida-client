@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['webida-lib/webida-0.3',
+define(['webida-lib/server-api',
         'webida-lib/util/arrays/SortedArray',
         'webida-lib/util/path',
         'external/lodash/lodash.min',
@@ -96,7 +96,8 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 fsURLParsed = parseWFSURL(fsURL);
                 dirsToCache = dirsToCacheArg;
                 publishing = false;
-                mount = webida.fs.mount(fsURL);
+                mount = webida.fs.mountByFSID(fsURLParsed.fsid);
+
                 root = new Directory(null, '');     // no parent, empty name
                 root.getByAbsPath = function (absPath) {
                     //console.log('hina temp: absPath = ' + absPath);

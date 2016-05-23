@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-(function (global) {
+(function (globalObject) {
     'use strict';
 
     // in electron, we should remove global.require & global.module
     // to make dojo & other amd module work
     // how can we detect that we're working in electron?
-    if (typeof(global.process) === 'object' &&
-         typeof(global.require) === 'function' &&
-         typeof(global.module) === 'object') {
-        global.nrequire = global.require;
-        global.nmodule = global.module;
-        delete global.require;
-        delete global.module;
+    if (typeof(globalObject.process) === 'object' &&
+         typeof(globalObject.require) === 'function' &&
+         typeof(globalObject.module) === 'object') {
+        globalObject.nrequire = globalObject.require;
+        globalObject.nmodule = globalObject.module;
+        delete globalObject.require;
+        delete globalObject.module;
     }
 
     var webidaLocale = decodeURIComponent(
         document.cookie.replace(/(?:(?:^|.*;\s*)webida\.locale\s*\=\s*([^;]*).*$)|^.*$/, '$1')
     );
-    global.dojoConfig = {
+    globalObject.dojoConfig = {
         async: true,
         baseUrl: '../../../bower_components',
         parseOnLoad: false,
@@ -59,21 +59,41 @@
             ['text', 'dojo/text'],
             ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
             // TODO should use these below aliases for versioned resources
-            ['webida', 'webida-lib/webida-0.3'],
             ['FSCache', 'webida-lib/FSCache-0.1'],
             ['plugin-manager', 'webida-lib/plugin-manager-0.1'],
-            ['msg', 'webida-lib/msg.js'],
             // diff_match_patch is used in codemirror
-            ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js']
-        ],
+            ['diff_match_patch', '//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js'],
+
+            // following server api will be removed when window.nrequire is true
+            // so, put these always at the end of aliases array
+            ['webida-lib/server-api', 'webida-lib/webida-0.3'],
+            ['webida-lib/server-pubsub', 'webida-lib/msg']
+        ]
     };
 
-    // dojo may understand cjs require() by building option
-    // but some bower modules works under amd system only
-    // we don't allow to mix amd/cjs modules with same require function
-    if (global.nrequire) {
-        global.dojoConfig.has = {
+    // default.html (new index.html for new server) should set
+    //  session storage variable 'webida-workspace-type'
+    //  to 'legacy' for 1.x clients who uses webida-0.4 API as default
+    if (globalObject.nrequire) {
+
+        // dojo may understand cjs require() by building option
+        // but some bower modules works under amd system only
+        // we don't allow to mix amd/cjs modules with same require function
+        globalObject.dojoConfig.has = {
             'host-node': false // Prevent dojo from being fooled by Electron
+        };
+        // twick requirejs alias to use new server-api
+        //  when using legacy server
+
+        if (window.location.href.indexOf('legacy=') < 0 ) {
+            globalObject.dojoConfig.aliases.pop();
+            globalObject.dojoConfig.aliases.pop();
+            globalObject.dojoConfig.aliases.push(['webida-lib/server-api' , 'webida-lib/server-api-0.1']);
+            globalObject.dojoConfig.aliases.push(['webida-lib/server-pubsub' , 'webida-lib/server-pubsub-0.1']);
+            globalObject.dojoConfig.aliases.push(['top/site-config.json' , 'top/site-config-desktop.json']);
+            console.log('under electrion re-wrote some requirejs aliases');
         }
+        globalObject.__ELECTRON_BROWSER__ = true;
+        console.log("ready for electron");
     }
 })(window);

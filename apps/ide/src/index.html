@@ -19,12 +19,14 @@
             'webida-lib/app',
             'webida-lib/app-config',
             'webida-lib/theme',
-            'webida-lib/util/load-polyfills'
+            'webida-lib/util/load-polyfills',
+            'external/URIjs/src/URI'
         ], function (
             ide,
             config,
             theme,
-            loader
+            loader,
+            URI
         ) {
             'use strict';
             theme.loadTheme();
@@ -36,6 +38,44 @@
                 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
                 ga('create',config.googleAnalytics, 'auto');
                 ga('send', 'pageview');
+            }
+
+            // dojoConfig.js has handled some tricks for window.nrequire and set __ELECTRON_BROWSER__ already
+            // so, within electron, there's always a window.nrequire for node.js
+            if (window.__ELECTRON_BROWSER__) {
+                var uri = new URI(window.location.href);
+                var bootArgs = uri.query(true);
+                var desktopConfig = window.localStorage.getItem('webida-desktop-config');
+                if (desktopConfig) {
+                    console.log('loaded desktop config ' + desktopConfig);
+                    desktopConfig = JSON.parse(desktopConfig);
+                }
+                var browserWindowStatusStorageKey = 'webida-desktop-window-status-' + bootArgs.workspace;
+                var browserWindowStatus = window.localStorage.getItem(browserWindowStatusStorageKey);
+                var browserWindowStatus = browserWindowStatus ? JSON.parse(browserWindowStatus)
+                        : desktopConfig.ideWindowDefaults;
+                var browserWindow = window.nrequire('electron').remote.getCurrentWindow();
+                if(browserWindowStatus.x) {
+                    browserWindow.setBounds(browserWindowStatus);
+                } else {
+                    browserWindow.setSize(browserWindowStatus.width, browserWindowStatus.height);
+                }
+                if (browserWindowStatus.maximized) {
+                    browserWindow.maximze();
+                }
+                if (bootArgs.legacy) {
+                    window.legacySiteServerConfig = desktopConfig.legacySiteConfigs[bootArgs.legacy];
+                    if (!window.legacySiteServerConfig) {
+                        alert('cannot read site configuration for legacy remote server');
+                    }
+                }
+                browserWindow.on('close', function(event) {
+                    var newStatus = browserWindow.getBounds();
+                    newStatus.maximized = browserWindow.isMaximized();
+                    newStatus = JSON.stringify(newStatus);
+                    console.log("saving browser window status for closing " + newStatus);
+                    window.localStorage.setItem(browserWindowStatusStorageKey, newStatus);
+                });
             }
         });
     </script>

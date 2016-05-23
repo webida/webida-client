@@ -36,7 +36,7 @@ define([
     'dojo/topic',
     'lib/image-slide/sly.wrapper',
     'showdown',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/app',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',

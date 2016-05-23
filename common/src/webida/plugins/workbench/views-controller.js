@@ -29,7 +29,7 @@ define([
     'require',
     'webida-lib/plugin-manager-0.1',
     'dojox/layout/ToggleSplitter',            // ToggleSplitter
-    'webida-lib/webida-0.3',                  // webida
+    'webida-lib/server-api',                  // webida
     'webida-lib/app',                               // app
     'webida-lib/widgets/views/viewmanager',         // vm
     'webida-lib/widgets/views/viewFocusController', // ViewFocusController

@@ -31,7 +31,7 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     'webida-lib/util/path',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     './content-view-controller',
     './workspace-view-controller',
     'text!./layout/deploy-layout.html',

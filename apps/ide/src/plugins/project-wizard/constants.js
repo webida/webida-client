@@ -19,7 +19,7 @@
  * @author kh5325.kim@samsung.com
  */
 define([
-    'webida-lib/webida-0.3'
+    'webida-lib/server-api'
 ], function (
     webida
 ) {

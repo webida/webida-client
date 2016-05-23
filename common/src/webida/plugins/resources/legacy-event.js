@@ -29,7 +29,7 @@ define([
     'dojo/topic',
     'external/URIjs/src/URI',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/webida-0.3'
+    'webida-lib/server-api'
 ], function (
     topic,
     URI,

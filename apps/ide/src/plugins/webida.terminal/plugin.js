@@ -41,7 +41,7 @@ define([
     'webida-lib/plugins/workbench/plugin',  // workbench
     'webida-lib/util/locale',
     'webida-lib/util/logger/logger-client', // Logger
-    'webida-lib/webida-0.3',                // webida
+    'webida-lib/server-api',                // webida
     'webida-lib/widgets/views/view',        // View
     'dojo/text!./layout/terminal.html',     // terminalHtml
     'xstyle/css!./style/terminal.css'

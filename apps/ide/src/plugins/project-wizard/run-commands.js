@@ -30,7 +30,7 @@ define([
     'dojox/grid/EnhancedGrid',
     'dojox/grid/enhanced/plugins/IndirectSelection',
     'webida-lib/app',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/util/path',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     'webida-lib/plugins/workspace/plugin',

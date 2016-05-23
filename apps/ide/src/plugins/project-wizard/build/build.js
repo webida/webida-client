@@ -29,7 +29,7 @@ define([
     'webida-lib/app',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/path',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     './buildProfile',
     '../constants',

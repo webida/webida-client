@@ -29,7 +29,7 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/path',
     'webida-lib/plugins/workspace/plugin',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/views/view',
     'webida-lib/widgets/views/viewmanager',
     'text!./layer/test-layout.html',

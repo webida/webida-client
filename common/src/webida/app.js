@@ -21,13 +21,13 @@ define([
     'dojo/topic',
     'webida-lib/app-config',
     'webida-lib/FSCache-0.1',
-    'webida-lib/msg',
+    'webida-lib/server-pubsub',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/util/browserInfo',
     'webida-lib/util/loading-screen',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/dialogs/popup-dialog/PopupDialog',
     'dojo/domReady!'
 ], function (

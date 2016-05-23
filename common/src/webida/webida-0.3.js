@@ -29,8 +29,9 @@
 /* global io: true */
 
 define([
+    'external/URIjs/src/URI',
     'text!top/site-config.json'
-],  function (siteConfigText) {
+],  function (URI, siteConfigText) {
     'use strict';
 
     var XHR = XMLHttpRequest || require('xmlhttprequest').XMLHttpRequest;
@@ -2298,7 +2299,13 @@ define([
     * @memberOf module:webida.FSService
     */
     mod.FSService.prototype.mountByFSID = function (fsid) {
-        return new mod.FSService.FileSystem('wfs://webida/' + fsid);
+        var fsServerUri = new URI(mod.conf.fsServer);
+        var newWfsUri = fsServerUri
+            .protocol('wfs')
+            .path('/' + fsid)
+            .search('')
+            .toString();
+        return new mod.FSService.FileSystem(newWfsUri);
     };
 
     /**
@@ -4237,7 +4244,7 @@ define([
             token.issueTime = Date.now();
             token.data = href.substring(startIndex, endIndex);
             mod.tokenGenerator.validateToken = function (/*token*/) { return true; };
-            console.log(token.data, token.issueTime);
+            console.log("webida.js set personal token " + token.data, + " at " + token.issueTime);
         }
     }
 

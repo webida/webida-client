@@ -27,7 +27,7 @@ define([
     'dijit/registry',
     'dojo/Deferred',
     'webida-lib/util/path',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     'text!plugins/project-wizard/layer/export-signing-new.html',
     './buildProfile',

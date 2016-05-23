@@ -57,7 +57,7 @@ define([
     'webida-lib/util/arrays/BubblingArray',
     'webida-lib/util/notify',
     'webida-lib/util/path',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     './git-core',
     './git-icon',

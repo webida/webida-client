@@ -25,7 +25,7 @@ define([
     'webida-lib/plugins/workbench/plugin',
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/locale',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     './lib/util'
 ], function (
     i18n,

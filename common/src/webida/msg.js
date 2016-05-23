@@ -33,7 +33,7 @@
 * @module msg
 */
 define([
-	'./webida-0.3', 
+	'webida-lib/server-api',
 	'external/socket.io-client/socket.io',
 	'webida-lib/util/logger/logger-client'
 ], function (

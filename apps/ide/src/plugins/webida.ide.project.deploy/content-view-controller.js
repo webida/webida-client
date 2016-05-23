@@ -39,7 +39,7 @@ define([
     'webida-lib/util/locale',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/dialogs/file-selection/FileSelDlg3States', // FileDialog
     'text!./layout/app-information.html'
 ], function (
