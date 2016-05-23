@@ -104,6 +104,159 @@
                 "getViableItems" : "getBogusItems"
             }
         ],
+        "webida.common.command-system:commands": {
+            "commands": [
+                {
+                    "id": "switch-workspace"
+                },
+                {
+                    "id": "save-status"
+                },
+                {
+                    "id": "quit",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+W"
+                    }
+                },
+                {
+                    "id": "select-view-from-list",
+                    "shortcut": {
+                        "defaultKey": "Alt+Shift+A"
+                    }
+                },
+                {
+                    "id": "toggle-menu",
+                    "shortcut": {
+                        "defaultKey": "Alt+Shift+M"
+                    }
+                },
+                {
+                    "id": "toggle-toolbar",
+                    "shortcut": {
+                        "defaultKey": "Alt+Shift+T"
+                    }
+                },
+                {
+                    "id": "toggle-full-screen",
+                    "shortcut": {
+                        "defaultKey": "Alt+F11"
+                    }
+                },
+                {
+                    "id": "shortcut-list",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Shift+L"
+                    }
+                },
+                {
+                    "id": "command-list",
+                    "shortcut": {
+                        "defaultKey": "Alt+C"
+                    }
+                },
+                {
+                    "id": "focus-menu-bar",
+                    "shortcut" : {
+                        "defaultKey": "F10"
+                    }
+                }
+            ]
+        },
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "file",
+                    "name": "&File",
+                    "location": "/",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "switch-workspace",
+                            "name": "Swit&ch Workspace",
+                            "commandId": "switch-workspace"
+                        },
+                        {
+                            "id": "save-status",
+                            "name": "Save Status",
+                            "commandId": "save-status"
+                        },
+                        {
+                            "id": "quit",
+                            "name": "&Quit",
+                            "commandId": "quit"
+                        }
+                    ]
+                },
+                {
+                    "id": "view",
+                    "name": "&View",
+                    "location": "/help?before",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "select-view-from-list",
+                            "name": "Select View from &List",
+                            "commandId": "select-view-from-list"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "toggle-menu",
+                            "name": "Toggle &Menu",
+                            "commandId": "toggle-menu"
+                        },
+                        {
+                            "id": "toggle-toolbar",
+                            "name": "Toggle &Toolbar",
+                            "commandId": "toggle-toolbar"
+                        },
+                        {
+                            "id": "toggle-full-screen",
+                            "name": "Toggle &Full-Screen",
+                            "commandId": "toggle-full-screen"
+                        }
+                    ]
+                },
+                {
+                    "id": "help",
+                    "name": "&Help",
+                    "location": "/",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "shortcut-list",
+                            "name": "&Shortcut List",
+                            "commandId": "shortcut-list",
+                            "toolbar": {
+                                "icons" : "<%= themePath %>/images/icons/toolbar_shortcuts.png",
+                                "tooltip" : "Shortcut list"
+                            },
+                            "invisible": "true"
+                        },
+                        {
+                            "id": "command-list",
+                            "name": "&Command List",
+                            "commandId": "command-list",
+                            "toolbar": {
+                                "icons" : "<%= themePath %>/images/icons/toolbar_command.png",
+                                "tooltip" : "Command list"
+                            },
+                            "invisible": "true"
+                        }
+                    ]
+                }
+            ]
+        },
         "webida.preference:pages" : [
             {
                 "id": "shortcut",

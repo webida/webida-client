@@ -6,6 +6,39 @@
         "webida.common.workbench:uidMenu" : [
             { "label": "Dashboard", "handler" : "openDashboard" },
             { "label": "Sign Out", "handler" : "signOut" }
-        ]
+        ],
+        "webida.common.command-system:commands" : {
+            "commands" : [
+                {
+                    "id" : "dashboard-user-id"
+                },
+                {
+                    "id" : "sign-out-user-id"
+                }
+            ]
+        },
+        "webida.common.command-system:menus" : {
+            "items" : [
+                {
+                    "id" : "user-id",
+                    "name" : "",
+                    "commandId" : "user-id",
+                    "location" : "/",
+                    "type" : "user-id-menu",
+                    "items" : [
+                        {
+                            "id" : "dashboard-user-id",
+                            "name" : "Dashboard",
+                            "commandId" : "dashboard-user-id"
+                        },
+                        {
+                            "id" : "sign-out-user-id",
+                            "name" : "Sign Out",
+                            "commandId" : "sign-out-user-id"
+                        }
+                    ]
+                }
+            ]
+        }
     }
 }

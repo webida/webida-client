@@ -34,6 +34,60 @@
                 ]
             },
             "getViableItems": "getViableItemsForWorkspace"
+        },
+
+        "webida.common.command-system:commands": {
+            "commands": [
+                {
+                    "id": "deploy",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+D"
+                    }
+                }
+            ]
+        },
+
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "project",
+                    "name": "&Project",
+                    "location": "/",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "deploy-delimiter",
+                            "name": "---",
+                            "update": "true"
+                        },
+                        {
+                            "id": "deploy",
+                            "name": "Deplo&y",
+                            "commandId": "deploy",
+                            "update": "true",
+                            "toolbar": {
+                                "icons" : "<%= themePath %>/images/icons/toolbar_deployhistory.png",
+                                "tooltip" : "Deploy"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "deploy-delimiter",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "deploy",
+                    "name": "Deplo&y",
+                    "commandId": "deploy",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                }
+            ]
         }
     },
     "subscriptions": {

@@ -32,7 +32,6 @@
                 "getViableItems": "getViableItemsForWorkbenchAtFile"
             }
         ],
-
         "webida.common.workspace:menu": [
             {
                 "location": "/New/",
@@ -45,7 +44,52 @@
                 "getViableItems": "getViableItemsForWorkspaceView"
             }
         ],
-
+        "webida.common.command-system:commands": {
+            "commands": [
+                {
+                    "id": "new-project",
+                    "shortcut": {
+                        "defaultKey": "Alt+N"
+                    }
+                }
+            ]
+        },
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "file",
+                    "name": "File",
+                    "location": "/",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "new",
+                            "name": "New",
+                            "items": [
+                                {
+                                    "id": "new-project",
+                                    "name": "Project",
+                                    "commandId": "new-project"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "new",
+                    "name": "New",
+                    "location": "/",
+                    "type": "context-menu",
+                    "items": [
+                        {
+                            "id": "new-project",
+                            "name": "Project",
+                            "commandId": "new-project"
+                        }
+                    ]
+                }
+            ]
+        },
         "webida.ide.project-management.run:type": [{
             "id": "org.webida.run.mobile",
             "name": "Run As Mobile Application",
@@ -60,3 +104,4 @@
         }]
     }
 }
+

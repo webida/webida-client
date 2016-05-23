@@ -15,16 +15,19 @@
  */
 
 /**
- * Actions for deploy
+ * @file Manage actions for deploy commands
  * @since 1.6.0
  * @author kyungmi.k@samsung.com
  * @module Deploy/command
  */
+
 define([
     'dijit/Dialog',
     'dojo/i18n!./nls/resource',
     'webida-lib/app',
+    'webida-lib/plugins/command-system/command/Command',
     'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/genetic',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
     'webida-lib/util/path',
@@ -32,12 +35,14 @@ define([
     './content-view-controller',
     './workspace-view-controller',
     'text!./layout/deploy-layout.html',
-    'xstyle/css!./style/style.css'
+    'xstyle/css!./style/style.css',
 ], function (
     Dialog,
     i18n,
     ide,
+    Command,
     wv,
+    genetic,
     Logger,
     notify,
     pathUtil,
@@ -47,6 +52,7 @@ define([
     layoutTemplate
 ) {
     'use strict';
+
     /**
      * @type {Logger}
      */
@@ -54,24 +60,12 @@ define([
     logger.off();
 
     /**
-     * This module object
-     * @type {Object}
-     */
-    var module = {};
-
-    /**
-     * @callback deployContextCallback
-     * @param {(Error|string)} error
-     * @param {module:Deploy.context} [context]
-     */
-
-    /**
      * Get context object for deployment
      * @param projectPath
      * @param {deployContextCallback} callback
      * @private
      */
-    function _getContext(projectPath, callback) {
+    function getContext(projectPath, callback) {
         var context = {};
         projectPath = (projectPath.charAt(0) === '/') ? projectPath.substring(1) : projectPath;
         var splits = projectPath.split('/');
@@ -105,8 +99,8 @@ define([
     /**
      * Open deploy dialog with the context
      */
-    module.openDialog = function () {
-        _getContext(ide.getFsid() + pathUtil.detachSlash(wv.getSelectedPath()), function (err, context) {
+    function openDialog() {
+        getContext(ide.getFsid() + pathUtil.detachSlash(wv.getSelectedPath()), function (err, context) {
             if (err) {
                 return notify.error(i18n.messageFailGetContext);
             }
@@ -126,7 +120,21 @@ define([
             dialog.setContent(layoutTemplate);
             dialog.show();
         });
-    };
+    }
 
-    return module;
+    function DeployCommand(id) {
+        DeployCommand.id = id;
+    }
+    genetic.inherits(DeployCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                openDialog();
+                resolve();
+            });
+        }
+    });
+
+    return {
+        DeployCommand: DeployCommand
+    };
 });

@@ -11,6 +11,25 @@
                 "Plugin Setting" : [ "cmnd"]
             },
             "getViableItems" : "getViableItems"
+        },
+        "webida.common.command-system:commands": {
+            "commands": [
+                {
+                    "id": "plugin-setting"
+                }
+            ]
+        },
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "plugin-setting",
+                    "name": "Plugin Setting",
+                    "commandId": "plugin-setting",
+                    "location": "/help/preferences?after",
+                    "type": "top-menu",
+                    "update": "ture"
+                }
+            ]
         }
     }
 }

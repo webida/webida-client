@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,134 +15,71 @@
  */
 
 /**
- * webida - file handle plugin
- *
+ * @file Manage actions for file handling commands
+ * @since 1.6.0
+ * @author minsung.jin@samsung.com
  */
 
 define([
-    'require',
-    './plugin',                                 //fh
-    'external/lodash/lodash.min',               // _
-    'webida-lib/app',                           // ide
-    'webida-lib/util/path',                     // pathUtil
-    'external/async/dist/async.min',            // async
-    'webida-lib/util/arrays/BubblingArray',     // BubblingArray
-    'webida-lib/plugins/workspace/plugin',      // wv
-    'webida-lib/plugins/workbench/plugin',      // workbench
-    'webida-lib/widgets/checkbox-tree/CheckBoxTree',
-    'text!./layer/searchFilesForm.html',        // sFilesForm
-    'text!./layer/filesSelectForm.html',        // fSelectForm
-    'text!./layer/goToFile.html',               // goToFileForm
-    'dojo',                                     // dojo
-    'dojo/dom',                                 // dom
-    'dojo/dom-class',                           // domClass
-    'dojo/aspect',                              // aspect
-    'dojo/i18n!./nls/resource',                 // i18n resource
-    'dojo/string',                              // string
-    'dojo/topic',                               // topic
-    'dojo/Deferred',                            // Deferred
-    'dojo/store/Memory',                        // Memory
-    'dojo/store/Observable',                    // Observable
+    'external/lodash/lodash.min',
     'dijit/form/Button',
     'dijit/form/CheckBox',
     'dijit/form/ComboBox',
-    'dijit/tree/ObjectStoreModel',              // ObjectStoreModel
-    'dijit/Tree',                               // Tree
-    'dijit/registry',                           // reg
-    'dijit/Tooltip',                            // Tooltip
-    'webida-lib/util/locale',                   // locale
-    'webida-lib/util/notify',                   // notify
-    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',   // ButtonedDialog
-    'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'  // FileDialog
+    'dijit/registry',
+    'dijit/Tooltip',
+    'dojo/aspect',
+    'dojo/Deferred',
+    'dojo/i18n!./nls/resource',
+    'dojo/string',
+    'dojo/store/Memory',
+    'dojo/topic',
+    'text!./layer/goToFile.html',
+    'text!./layer/searchFilesForm.html',
+    'webida-lib/app',
+    'webida-lib/plugins/command-system/system/command-system',
+    'webida-lib/plugins/editors/ExtensionManager',
+    'webida-lib/plugins/workbench/plugin',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/arrays/BubblingArray',
+    'webida-lib/util/genetic',
+    'webida-lib/util/locale',
+    'webida-lib/util/notify',
+    'webida-lib/util/path',
+    'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
+    'webida-lib/widgets/dialogs/file-selection/FileSelDlg2States'
 ], function (
-    require,
-    fh,
     _,
-    ide,
-    pathUtil,
-    async,
-    BubblingArray,
-    wv,
-    workbench,
-    CheckBoxTree,
-    sFilesForm,
-    fSelectForm,
-    goToFileForm,
-    dojo,
-    dom,
-    domClass,
-    aspect,
-    i18n,
-    string,
-    topic,
-    Deferred,
-    Memory,
-    Observable,
     Button,
     CheckBox,
     ComboBox,
-    ObjectStoreModel,
-    Tree,
     reg,
     Tooltip,
+    aspect,
+    Deferred,
+    i18n,
+    string,
+    Memory,
+    topic,
+    goToFileForm,
+    sFilesForm,
+    ide,
+    commandSystem,
+    ExtensionManager,
+    workbench,
+    wv,
+    BubblingArray,
+    genetic,
     locale,
     notify,
+    pathUtil,
     ButtonedDialog,
     FileDialog
 ) {
     'use strict';
 
-    //console.log('hina: Loading fs-commands module');
+    var Command = commandSystem.Command;
 
     var fsMount = ide.getFSCache();
-
-    //
-    // handlers for folder commands
-    //
-
-    function handleCopy() {
-        wv.copySelected();
-    }
-
-    function handleCut() {
-        wv.cutSelected();
-    }
-
-    function handlePaste() {
-        wv.pasteToSelected();
-    }
-
-    function handleNewFile() {
-        var path = wv.getSelectedPath();
-        if (path) {
-            wv.createNodeInteractively(path, 'file');
-        }
-    }
-
-    function handleNewFolder() {
-        var path = wv.getSelectedPath();
-        if (path) {
-            wv.createNodeInteractively(path, 'directory');
-        }
-    }
-
-    function handleRename() { // also for files
-        var path = wv.getSelectedPath();
-        if (path) {
-            wv.renameNodeInteractively(path);
-        }
-    }
-
-    function handleRefresh() {
-        var path = wv.getSelectedPath();
-        if (path) {
-            wv.refreshRecursively(path, true);
-        }
-    }
-
-    /**
-     * Definitions relating to 'Find in Files' command
-     */
 
     var fiFData = {
         patterns : new BubblingArray(11),
@@ -154,6 +91,10 @@ define([
         exFoldersAsRegEx : false,
         includedFiles : new BubblingArray(11),
         inFilesAsRegEx : false
+    };
+
+    var gotoFileData = {
+        lastDir: ide.getPath() + '/'
     };
 
     function findInCurDir() {
@@ -265,7 +206,7 @@ define([
                     }
 
                     var jobId = workbench.addJob(i18n.findInFiles + ' : ' +
-                            encloser + origPattern + encloser);
+                                                 encloser + origPattern + encloser);
                     var options = {};
 
                     if (exFolders) {
@@ -290,7 +231,7 @@ define([
                             console.log('Failed to search files (' + err + ')');
                         } else {
                             topic.publish('#REQUEST.log',
-                                    string.substitute(i18n.resultOfFindingPattern,
+                                  string.substitute(i18n.resultOfFindingPattern,
                                             { pattern: encloser + origPattern + encloser, path: path }));
                             console.log('hina: result.length = ' + results.length);
                             if (results.length > 0) {
@@ -513,105 +454,6 @@ define([
 
     } // handleFindInFiles
 
-    //
-    // handlers for file commands
-    //
-
-    function handleEdit() {
-        var paths = wv.getSelectedPaths();
-        if (paths && paths.length > 0) {
-            paths.forEach(function (path) {
-                topic.publish('editor/open', path);
-            });
-        }
-    }
-
-    function handleOpen() {
-        var paths = wv.getSelectedPaths();
-        if (paths && paths.length > 0) {
-            if (pathUtil.isDirPath(paths[0])) {
-                paths.forEach(function (path) {
-                    if (!pathUtil.isDirPath(path)) {
-                        console.error('assertion fail: "' + path + '" must be a directory');
-                    } else {
-                        if (wv.isExpandedNode(path)) {
-                            wv.collapseNode(path);
-                        } else {
-                            wv.expandNode(path);
-                        }
-                    }
-                });
-            } else {
-                paths.forEach(function (path) {
-                    if (pathUtil.isDirPath(path)) {
-                        console.error('assertion fail: "' + path + '" must be a file');
-                    } else {
-                        topic.publish('editor/open', path);
-                    }
-                });
-            }
-        }
-    }
-    
-    function handleOpenWith(selectionIndex) {
-        var paths = wv.getSelectedPaths();
-        if (paths && paths.length > 0) {
-            if (!pathUtil.isDirPath(paths[0])) {
-                paths.forEach(function (path) {
-                    if (pathUtil.isDirPath(path)) {
-                        console.error('assertion fail: "' + path + '" must be a file');
-                    } else {
-                        var editorParts = fh.getOpenWithParts(); 
-                        var options = {openWithPart: editorParts[selectionIndex]};
-                        topic.publish('editor/open', path, options);
-                    }
-                });
-            }
-        }
-    }
-
-    function handleDelete() {
-        wv.removeInteractively();
-    }
-
-    function handleDuplicate() {
-        var path = wv.getSelectedPath();
-        if (path) {
-            wv.duplicateNode(path);
-        }
-    }
-
-    function handleDownloadZip() {
-        var paths = wv.getSelectedPaths();
-        if (paths && paths.length > 0) {
-            paths = paths.map(function (p) { return pathUtil.detachSlash(p); });
-
-            var exportName;
-            if (paths.length > 1) {
-                //exportName = paths[0].getParentNode().name + '.zip';
-                exportName = pathUtil.getName(pathUtil.getParentPath(paths[0])) + '.zip';
-            } else {
-                exportName = pathUtil.getName(paths[0]) + '.zip';
-            }
-            exportName = encodeURI(exportName); // match decodeURI at Node constructor for server
-            fsMount.exportZip(paths, exportName);
-        }
-    }
-
-    var gotoFileData = {
-        lastDir: ide.getPath() + '/'
-    };
-
-    function gotoFileInCurDir() {
-        var selected = wv.getSelectedPaths();
-        if (selected.length === 1) {
-            gotoFileData.lastDir = selected[0];
-            handleGotoFile();
-        } else {
-            throw new Error('assertion fail: unreachable');
-        }
-    }
-
     function handleGotoFile() {
         var gotoFileDlg = new ButtonedDialog({
             buttons: [
@@ -639,7 +481,7 @@ define([
                         notify.error(i18n.noSuchFile);
                     } else {
                         notify.error(
-                                string.substitute(i18n.noSuchFileAs, {filename: text}));
+                            string.substitute(i18n.noSuchFileAs, {filename: text}));
                     }
                 }
             },
@@ -804,8 +646,7 @@ define([
                 gotoFileDlg.inputStore = null;
                 gotoFileDlg.hide();
                 workbench.focusLastWidget();
-            },
-             */
+            }, */
             onHide: function () {
                 var gotoFileInput = reg.byId('FsCommandFileToGoInput');
                 gotoFileInput.closeDropDown();
@@ -921,36 +762,342 @@ define([
         gotoFileDlg.setContentArea(goToFileForm);
         locale.convertMessage(i18n, 'data-message');
         gotoFileDlg.show();
+    } // handleGotoFile
+
+    function getOpenWithParts() {
+        var paths = wv.getSelectedPaths();
+        var i = 0;
+        var ext;
+
+        // processing for open with
+        var openWithEditorNames = [];
+        var openWithParts = [];
+        if (paths && paths.length > 0 && paths.every(function (n) {
+            return !pathUtil.isDirPath(n);
+        })) {
+            var availableExtensions =
+                ExtensionManager.getInstance().getExtensionsForType(pathUtil.getFileExt(paths[0]));
+            for (i = 0; i < paths.length; i++) {
+                if (i > 0) {
+                    if (availableExtensions) {
+                        var availableExtensions2 =
+                            ExtensionManager.getInstance().getExtensionsForType(pathUtil.getFileExt(paths[i]));
+                        if (availableExtensions2) {
+                            availableExtensions = _.intersection(availableExtensions, availableExtensions2);
+                        } else {
+                            availableExtensions = null;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            if (availableExtensions) {
+                for (i = 0; i < availableExtensions.length; i++) {
+                    ext = availableExtensions[i];
+                    openWithEditorNames.push(ext.name);
+                    openWithParts.push(ext.__plugin__.loc + '/' + ext.editorPart);
+                }
+            }
+        }
+        return openWithParts;
+    } // handleOpenWith
+
+    function RefreshCommand(id) {
+        RefreshCommand.id = id;
     }
+    genetic.inherits(RefreshCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var path = wv.getSelectedPath();
+                if (path) {
+                    wv.refreshRecursively(path, true);
+                }
+                resolve();
+            });
+        }
+    });
 
-    function handleFileProperties(paths, selectedNode) {
-        require(['webida-lib/plugins/fs-commands/fs-commands-prop'], function (FileProp) {
-            var fileProp = new FileProp();
-            fileProp.execute(paths, selectedNode);
-        });
-    } /* handleFileProperties close */
+    function OpenFileCommand(id) {
+        OpenFileCommand.id = id;
+    }
+    genetic.inherits(OpenFileCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var paths = wv.getSelectedPath();
+                if (paths && paths.length > 0) {
+                    paths.forEach(function (path) {
+                        topic.publish('editor/open', path);
+                    });
+                }
+                resolve();
+            });
+        }
+    });
 
-    var module = {
-        handleCopy: handleCopy,
-        handleCut: handleCut,
-        handleDelete: handleDelete,
-        handleDownloadZip: handleDownloadZip,
-        handleDuplicate: handleDuplicate,
-        handleFindInFiles: handleFindInFiles,
-        findInCurDir: findInCurDir,
-        handleEdit: handleEdit,
-        handleOpen: handleOpen,
-        handleOpenWith: handleOpenWith,
-        handleNewFile: handleNewFile,
-        handleNewFolder: handleNewFolder,
-        handlePaste: handlePaste,
-        handleRefresh: handleRefresh,
-        handleRename: handleRename,
+    function NewFileCommand(id) {
+        NewFileCommand.id = id;
+    }
+    genetic.inherits(NewFileCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var path = wv.getSelectedPath();
+                if (path) {
+                    wv.createNodeInteractively(path, 'file');
+                }
+                resolve();
+            });
+        }
+    });
 
-        gotoFileInCurDir: gotoFileInCurDir,
-        handleGotoFile: handleGotoFile,
-        handleFileProperties: handleFileProperties
+    function NewDirectoryCommand(id) {
+        NewDirectoryCommand.id = id;
+    }
+    genetic.inherits(NewDirectoryCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var path = wv.getSelectedPath();
+                if (path) {
+                    wv.createNodeInteractively(path, 'directory');
+                }
+                resolve();
+            });
+        }
+    });
+
+    function DuplicateCommand(id) {
+        DuplicateCommand.id = id;
+    }
+    genetic.inherits(DuplicateCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var path = wv.getSelectedPath();
+                if (path) {
+                    wv.duplicateNode(path);
+                }
+                resolve();
+            });
+        }
+    });
+
+    function RenameCommand(id) {
+        RenameCommand.id = id;
+    }
+    genetic.inherits(RenameCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var path = wv.getSelectedPath();
+                if (path) {
+                    wv.renameNodeInteractively(path);
+                }
+                resolve();
+            });
+        }
+    });
+
+    function UploadFilesCommand(id) {
+        UploadFilesCommand.id = id;
+    }
+    genetic.inherits(UploadFilesCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                resolve();
+            });
+        }
+    });
+
+    function DownloadFilesCommand(id) {
+        DownloadFilesCommand.id = id;
+    }
+    genetic.inherits(DownloadFilesCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var paths = wv.getSelectedPaths();
+                if (paths && paths.length > 0) {
+                    paths = paths.map(function (p) { return pathUtil.detachSlash(p); });
+
+                    var exportName;
+                    if (paths.length > 1) {
+                        //exportName = paths[0].getParentNode().name + '.zip';
+                        exportName = pathUtil.getName(pathUtil.getParentPath(paths[0])) + '.zip';
+                    } else {
+                        exportName = pathUtil.getName(paths[0]) + '.zip';
+                    }
+                    exportName = encodeURI(exportName); // match decodeURI at Node constructor for server
+                    fsMount.exportZip(paths, exportName);
+                }
+                resolve();
+            });
+        }
+    });
+
+    function FindInFilesCommand(id) {
+        FindInFilesCommand.id = id;
+    }
+    genetic.inherits(FindInFilesCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                findInCurDir();
+                resolve();
+            });
+        }
+    });
+
+    function GoToFileCommand(id) {
+        GoToFileCommand.id = id;
+    }
+    genetic.inherits(GoToFileCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var selected = wv.getSelectedPaths();
+                if (selected.length === 1) {
+                    gotoFileData.lastDir = selected[0];
+                    handleGotoFile();
+                } else {
+                    throw new Error('assertion fail: unreachable');
+                }
+                resolve();
+            });
+        }
+    });
+
+    function PropertiesCommand(id) {
+        PropertiesCommand.id = id;
+    }
+    genetic.inherits(PropertiesCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                resolve();
+            });
+        }
+    });
+
+    function OpenCommand(id) {
+        OpenCommand.id = id;
+    }
+    genetic.inherits(OpenCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var paths = wv.getSelectedPaths();
+                if (paths && paths.length > 0) {
+                    if (pathUtil.isDirPath(paths[0])) {
+                        paths.forEach(function (path) {
+                            if (!pathUtil.isDirPath(path)) {
+                                console.error('assertion fail: "' + path + '" must be a directory');
+                            } else {
+                                if (wv.isExpandedNode(path)) {
+                                    wv.collapseNode(path);
+                                } else {
+                                    wv.expandNode(path);
+                                }
+                            }
+                        });
+                    } else {
+                        paths.forEach(function (path) {
+                            if (pathUtil.isDirPath(path)) {
+                                console.error('assertion fail: "' + path + '" must be a file');
+                            } else {
+                                topic.publish('editor/open', path);
+                            }
+                        });
+                    }
+                }
+                resolve();
+            });
+        }
+    });
+
+    function OpenWithEditorCommand(id) {
+        OpenWithEditorCommand.id = id;
+    }
+    genetic.inherits(OpenWithEditorCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                var paths = wv.getSelectedPaths();
+                if (paths && paths.length > 0) {
+                    if (!pathUtil.isDirPath(paths[0])) {
+                        paths.forEach(function (path) {
+                            if (pathUtil.isDirPath(path)) {
+                                console.error('assertion fail: "' + path + '" must be a file');
+                            } else {
+                                var editorParts = getOpenWithParts();
+                                var options = {openWithPart: editorParts[0]};
+                                topic.publish('editor/open', path, options);
+                            }
+                        });
+                    }
+                }
+                resolve();
+            });
+        }
+    });
+
+    function CopyCommand(id) {
+        CopyCommand.id = id;
+    }
+    genetic.inherits(CopyCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                wv.copySelected();
+                resolve();
+            });
+        }
+    });
+
+    function CutCommand(id) {
+        CutCommand.id = id;
+    }
+    genetic.inherits(CutCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                wv.cutSelected();
+                resolve();
+            });
+        }
+    });
+
+    function PasteCommand(id) {
+        PasteCommand.id = id;
+    }
+    genetic.inherits(PasteCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                wv.pasteToSelected();
+                resolve();
+            });
+        }
+    });
+
+    function DeleteCommand(id) {
+        DeleteCommand.id = id;
+    }
+    genetic.inherits(DeleteCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                wv.removeInteractively();
+                resolve();
+            });
+        }
+    });
+
+    return {
+        RefreshCommand: RefreshCommand,
+        OpenFileCommand: OpenFileCommand,
+        NewFileCommand: NewFileCommand,
+        NewDirectoryCommand: NewDirectoryCommand,
+        DuplicateCommand: DuplicateCommand,
+        RenameCommand: RenameCommand,
+        UploadFilesCommand: UploadFilesCommand,
+        DownloadFilesCommand: DownloadFilesCommand,
+        FindInFilesCommand: FindInFilesCommand,
+        GoToFileCommand: GoToFileCommand,
+        PropertiesCommand: PropertiesCommand,
+        OpenCommand: OpenCommand,
+        OpenWithEditorCommand: OpenWithEditorCommand,
+        CopyCommand: CopyCommand,
+        CutCommand: CutCommand,
+        PasteCommand: PasteCommand,
+        DeleteCommand: DeleteCommand
     };
-
-    return module;
 });

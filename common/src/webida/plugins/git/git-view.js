@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -219,80 +219,82 @@ define([
                     return;
                 }
 
-                require(['./git-commands'], function (gitCmds) {
+                require(['webida-lib/plugins/command-system/system/command-system'],
+                        function (commandSystem) {
                     var command = $(self).attr('data-command');
+                    var commandService = commandSystem.service;
                     switch (command) {
                     case 'add':
-                        gitCmds.add();
+                        commandService.requestExecution('git-add');
                         break;
                     case 'remove':
-                        gitCmds.remove();
+                        commandService.requestExecution('git-remove');
                         break;
                     case 'untrack':
-                        gitCmds.untrack();
+                        commandService.requestExecution('git-untrack');
                         break;
                     case 'commit':
-                        gitCmds.commit();
+                        commandService.requestExecution('git-commit');
                         break;
                     case 'resetToCommit' :
-                        gitCmds.resetToCommit();
+                        commandService.requestExecution('git-reset-to-commit');
                         break;
                     case 'stash':
-                        gitCmds.stash();
+                        commandService.requestExecution('git-stash');
                         break;
                     case 'unstash':
-                        gitCmds.unstash();
+                        commandService.requestExecution('git-unstash');
                         break;
                     case 'revert':
-                        gitCmds.revert();
+                        commandService.requestExecution('git-checkout');
                         break;
                     case 'rebase':
-                        gitCmds.rebase();
+                        commandService.requestExecution('git-rebase');
                         break;
                     case 'merge':
-                        gitCmds.merge();
+                        commandService.requestExecution('git-merge');
                         break;
                     case 'branch':
-                        gitCmds.branch();
+                        commandService.requestExecution('git-branch');
                         break;
                     case 'status':
-                        gitCmds.status();
+                        commandService.requestExecution('git-status');
                         break;
                     case 'historyFile':
-                        gitCmds.historyFile();
+                        commandService.requestExecution('git-file-history');
                         break;
                     case 'historyRepo':
-                        gitCmds.historyRepo();
+                        commandService.requestExecution('git-repository-history');
                         break;
                     case 'preference':
-                        gitCmds.preference();
+                        commandService.requestExecution('git-configure');
                         break;
                     case 'push':
-                        gitCmds.push();
+                        commandService.requestExecution('git-push');
                         break;
                     case 'fetch':
-                        gitCmds.fetch();
+                        commandService.requestExecution('git-fetch');
                         break;
                     case 'pull':
-                        gitCmds.pull();
+                        commandService.requestExecution('git-pull');
                         break;
                     case 'remote':
-                        gitCmds.remote();
+                        commandService.requestExecution('git-remote');
                         break;
                     case 'clone':
-                        gitCmds.clone();
+                        commandService.requestExecution('git-clone');
                         break;
                     case 'createRepo':
-                        gitCmds.createRepo();
+                        commandService.requestExecution('git-create-repository');
                         break;
                     case 'blame':
-                        gitCmds.blame();
+                        commandService.requestExecution('git-blame');
                         break;
                     case 'compare':
-                        gitCmds.compare();
+                        commandService.requestExecution('git-compare');
                         break;
                     case 'submodule':
-                        gitCmds.submodule();
+                        commandService.requestExecution('git-update-submodule');
                         break;
                     }
                 });

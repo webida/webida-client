@@ -1,0 +1,13 @@
+{
+    "name": "webida.common.command-system",
+    "description": "This plug-in manages commands of webida",
+    "version": "0.1.0",
+    "extensionPoints": {
+        "webida.common.command-system:commands": [
+            { "name" : "commands", "type" : "object", "desc" : "The object of propertys of the command list." }
+        ],
+        "webida.common.command-system:menus": [
+            { "name" : "items", "type" : "object", "desc": "The object of the menu containing the items." }
+        ]
+    }
+}

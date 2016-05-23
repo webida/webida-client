@@ -29,6 +29,28 @@
                 "Preview" : [ "cmnd" ]
             },
             "getViableItems" : "getViableItemsForWorkspaceView"
+        },
+
+        "webida.common.command-system:commands": {
+            "commands": [
+                {
+                    "id": "preview"
+                }
+            ]
+        },
+
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "preview",
+                    "name": "Preview",
+                    "commandId": "preview",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                }
+            ]
         }
     }
 }
+

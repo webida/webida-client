@@ -7,9 +7,9 @@
         "webida.common.editors:editor" : [
             { "name" : "name", "type" : "string" },
             { 
-                "name" : "editorPart", 
-                "type" : "string", 
-                "desc" : "A module returns descendants of EditorPart interface" 
+                "name" : "editorPart",
+                "type" : "string",
+                "desc" : "A module returns descendants of EditorPart interface"
             },
             { "name" : "fileValueRequired", "type" : "bool" },
             { "name" : "handledFileExt", "type" : "array" },
@@ -214,6 +214,776 @@
                 "Go to &Matching Brace" : [ "cmnd", { "shortcut": { "keys": { "default" : "Ctrl+Shift+B" }, "desc": "Go to the matching brace" } } ]
             },
             "getViableItems" : "getContextMenuItems"
+        },
+        "webida.common.command-system:commands" : {
+            "commands": [
+                {
+                    "id": "close-current"
+                },
+                {
+                    "id": "close-others"
+                },
+                {
+                    "id": "close-all"
+                },
+                {
+                    "id": "undo",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Z"
+                    }
+                },
+                {
+                    "id": "redo",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Y"
+                    }
+                },
+                {
+                    "id": "save-file",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+S"
+                    }
+                },
+                {
+                    "id": "save-all",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Shift+S"
+                    }
+                },
+                {
+                    "id": "delete"
+                },
+                {
+                    "id": "select-all",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+A"
+                    }
+                },
+                {
+                    "id": "select-line",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+L"
+                    }
+                },
+                {
+                    "id": "line-indent",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+]"
+                    }
+                },
+                {
+                    "id": "line-dedent",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+["
+                    }
+                },
+                {
+                    "id": "line-move-up",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+Up"
+                    }
+                },
+                {
+                    "id": "line-move-down",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+Down"
+                    }
+                },
+                {
+                    "id": "line-delete",
+                    "shortcut": {
+                        "defaultKey": "Alt+L"
+                    }
+                },
+                {
+                    "id": "cursor-line-to-middle",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Alt+M"
+                    }
+                },
+                {
+                    "id": "cursor-line-to-top",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Alt+T"
+                    }
+                },
+                {
+                    "id": "cursor-line-to-bottom",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Alt+B"
+                    }
+                },
+                {
+                    "id": "line-comment",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+/"
+                    }
+                },
+                {
+                    "id": "block-comment",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Shift+/"
+                    }
+                },
+                {
+                    "id": "comment-out-selection",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Alt+/"
+                    }
+                },
+                {
+                    "id": "fold-code"
+                },
+                {
+                    "id": "beautify-code",
+                    "shortcut": {
+                        "defaultKey": "Alt+B"
+                    }
+                },
+                {
+                    "id": "beautify-all-code",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+B"
+                    }
+                },
+                {
+                    "id": "rename-variables",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Q"
+                    }
+                },
+               {
+                    "id": "replace",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Shift+F"
+                    }
+                },
+                {
+                    "id": "find",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+F"
+                    }
+                },
+                {
+                    "id": "highlight-to-find",
+                    "shortcut": {
+                        "defalutKey": "Ctrl+H"
+                    }
+                },
+                {
+                    "id": "find-next",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+."
+                    }
+                },
+                {
+                    "id": "find-previous",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+,"
+                    }
+                },
+                {
+                    "id": "go-to-definition",
+                    "shortcut": {
+                        "defaultKey": "Alt+."
+                    }
+                },
+                {
+                    "id": "go-to-line",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+D"
+                    }
+                },
+                {
+                    "id": "go-to-matching-brace",
+                    "shortcutKey": {
+                        "defaultKey": "Ctrl+Shift+B"
+                    }
+                },
+                {
+                    "id": "ex-selected-tab",
+                    "shortcut": {
+                        "defaultKey": "Alt+`"
+                    }
+                },
+                {
+                    "id": "go-previous-tab",
+                    "shortcut": {
+                        "defaultKey": "Alt+Shift+["
+                    }
+                },
+                {
+                    "id": "go-next-tab",
+                    "shortcut": {
+                        "defaultKey": "Alt+Shift+]"
+                    }
+                },
+                {
+                    "id": "switch-editor-tab",
+                    "shortcut": {
+                        "defaultKey": "Alt+A"
+                    }
+                },
+                {
+                    "id": "switch-next-tab-container",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+`"
+                    }
+                },
+                {
+                    "id": "move-tab-container",
+                    "shortcut": {
+                        "defaultKey": "Alt+Shift+,"
+                        }
+                },
+                {
+                    "id": "split-vertical",
+                    "shortcut": {
+                        "defaultKey": "Alt+Shift+V"
+                    }
+                },
+                {
+                    "id": "split-horizontal",
+                    "shortcut": {
+                        "defaultKey": "Alt+Shift+H"
+                    }
+                }
+            ]
+        },
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "file",
+                    "name": "File",
+                    "location": "/",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "save-file",
+                            "name": "&Save",
+                            "commandId": "save-file",
+                            "toolbar": {
+                                "icons": "<%= themePath %>/images/icons/toolbar_save.png",
+                                "tooltip" : "Save"
+                            }
+                        },
+                        {
+                            "id": "save-all",
+                            "name": "Sav&e All",
+                            "commandId": "save-all",
+                            "toolbar": {
+                                "icons" : "<%= themePath %>/images/icons/toolbar_saveall.png",
+                                "tooltip" : "Save all"
+                            }
+                        },
+                        {
+                            "id": "close-current",
+                            "name": "&Close",
+                            "commandId": "close-current",
+                            "update": "true"
+                        },
+                        {
+                            "id": "close-others",
+                            "name": "Cl&ose Others",
+                            "commandId": "close-others",
+                            "update": "true"
+                        },
+                        {
+                            "id": "close-all",
+                            "name": "C&lose All",
+                            "commandId": "close-all",
+                            "update": "true"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "recent-files",
+                            "name": "Recent Files",
+                            "commandId": "recent-files"
+                        }
+                    ]
+                },
+                {
+                    "id": "edit",
+                    "name": "&Edit",
+                    "location": "/file?after",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "undo",
+                            "name": "&Undo",
+                            "commandId": "undo",
+                            "update": "true"
+                        },
+                        {
+                            "id": "redo",
+                            "name": "&Redo",
+                            "commandId": "redo"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "delete",
+                            "name": "&Delete",
+                            "commandId": "delete"
+                        },
+                        {
+                            "id": "select-all",
+                            "name": "Select &All",
+                            "commandId": "select-all"
+                        },
+                        {
+                            "id": "select-line",
+                            "name": "Select L&ine",
+                            "commandId": "select-line"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "line",
+                            "name": "&Line",
+                            "items": [
+                                {
+                                    "id": "line-indent",
+                                    "name": "&Indent",
+                                    "commandId": "line-indent"
+                                },
+                                {
+                                    "id": "line-dedent",
+                                    "name": "&Dedent",
+                                    "commandId": "line-dedent"
+                                },
+                                {
+                                    "id": "line-move-up",
+                                    "name": "Move Line U&p",
+                                    "commandId": "line-move-up"
+                                },
+                                {
+                                    "id": "line-move-down",
+                                    "name": "Move Line Dow&n",
+                                    "commandId": "line-move-down"
+                                },
+                                {
+                                    "id": "line-delete",
+                                    "name": "D&elete Lines",
+                                    "commandId": "line-delete"
+                                },
+                                {
+                                    "id": "cursor-line-to-middle",
+                                    "name": "Move Cursor Line to Middle",
+                                    "commandId": "cursor-line-to-middle"
+                                },
+                                {
+                                    "id": "cursor-line-to-top",
+                                    "name": "Move Cursor Line to Top",
+                                    "commandId": "cursor-line-to-top"
+                                },
+                                {
+                                    "id": "cursor-line-to-bottom",
+                                    "name": "Move Cursro Line to Bottom",
+                                    "commandId": "cursor-line-to-bottom"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "source",
+                            "name": "&Source",
+                            "items": [
+                                {
+                                    "id": "fold-code",
+                                    "name": "&Fold",
+                                    "commandId": "fold-code"
+                                },
+                                {
+                                    "id": "delimiter",
+                                    "name": "---"
+                                },
+                                {
+                                    "id": "beautify-code",
+                                    "name": "&Beautify",
+                                    "commandId": "beautify-code"
+                                },
+                                {
+                                    "id": "beautify-all-code",
+                                    "name": "B&eautify All",
+                                    "commandId": "beautify-all-code"
+                                },
+                                {
+                                    "id": "delimiter",
+                                    "name": "---"
+                                },
+                                {
+                                    "id": "line-comment",
+                                    "name": "&Toggle Line Comment",
+                                    "commandId": "line-comment"
+                                },
+                                {
+                                    "id": "block-comment",
+                                    "name": "Toggle Block Comments",
+                                    "commandId": "block-comment"
+                                },
+                                {
+                                    "id": "delimiter",
+                                    "name": "---"
+                                },
+                                {
+                                    "id": "comment-out-selection",
+                                    "name": "Comment Out Selection",
+                                    "commandId": "comment-out-selection"
+                                },
+                                {
+                                    "id": "rename-variables",
+                                    "name": "&Rename Variables",
+                                    "commandId": "rename-variables"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "find",
+                    "name": "F&ind",
+                    "location": "/edit?after",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "replace",
+                            "name": "&Replace",
+                            "commandId": "replace"
+                        },
+                        {
+                            "id": "find-in-file",
+                            "name": "Find",
+                            "commandId": "find"
+                        },
+                        {
+                            "id": "highlight-to-find",
+                            "name": "&Highlight to Find",
+                            "commandId": "highlight-to-find"
+                        },
+                        {
+                            "id": "find-next",
+                            "name": "Find &Next",
+                            "commandId": "find-next"
+                        },
+                        {
+                            "id": "find-previous",
+                            "name": "Find &Previous",
+                            "commandId": "find-previous"
+                        }
+                    ]
+                },
+                {
+                    "id": "navigate",
+                    "name": "&Navigate",
+                    "location": "/find?after",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "go-to-definition",
+                            "name": "&Go to Definition",
+                            "commandId": "go-to-definition"
+                        },
+                        {
+                            "id": "go-to-line",
+                            "name": "G&o to Line",
+                            "commandId": "go-to-line"
+                        },
+                        {
+                            "id": "go-to-matching-brace",
+                            "name": "Go to &Matching Brace",
+                            "commandId": "go-to-matching-brace"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "navigate-editors",
+                            "name": "&Navigate Editors",
+                            "items": [
+                                {
+                                    "id": "ex-selected-tab",
+                                    "name": "&Ex-Selected Tab",
+                                    "commandId": "ex-selected-tab"
+                                },
+                                {
+                                    "id": "go-previous-tab",
+                                    "name": "&Previous Tab",
+                                    "commandId": "go-previous-tab"
+                                },
+                                {
+                                    "id": "go-next-tab",
+                                    "name": "&Next Tab",
+                                    "commandId": "go-next-tab"
+                                },
+                                {
+                                    "id": "switch-editor-tab",
+                                    "name": "&Select Tab from List",
+                                    "commandId": "switch-editor-tab"
+                                },
+                                {
+                                    "id": "switch-next-tab-container",
+                                    "name": "Switch &Tab Container",
+                                    "commandId": "switch-next-tab-container"
+                                },
+                                {
+                                    "id": "move-tab-container",
+                                    "name": "Move Tab to &Other Container",
+                                    "commandId": "move-tab-container"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "view",
+                    "name": "&View",
+                    "location": "/help?before",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "split-editors",
+                            "name": "Spl&it Editors",
+                            "items": [
+                                {
+                                    "id": "split-vertical",
+                                    "name": "&Vertical",
+                                    "commandId": "split-vertical"
+                                },
+                                {
+                                    "id": "split-horizontal",
+                                    "name": "&Horizontal",
+                                    "commandId": "split-horizontal"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "close-others",
+                    "name": "Close O&thers",
+                    "commandId" : "close-others",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "close-all",
+                    "name": "&Close All",
+                    "commandId" : "close-all",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "delimiter-close-all",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "undo",
+                    "name": "U&ndo",
+                    "commandId": "undo",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "redo",
+                    "name": "&Redo",
+                    "commandId": "redo",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "save-file",
+                    "name": "&Save",
+                    "commandId": "save-file",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "delimiter-redo",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "delete",
+                    "name": "&Delete",
+                    "commandId": "delete",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "select-all",
+                    "name": "Select &All",
+                    "commandId": "select-all",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "select-line",
+                    "name": "Select L&ine",
+                    "commandId": "select-line",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "delimiter-select",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "line",
+                    "name": "&Line",
+                    "location": "/",
+                    "type": "context-menu",
+                    "items": [
+                        {
+                            "id": "line-indent",
+                            "name": "&Indent",
+                            "commandId": "line-indent"
+                        },
+                        {
+                            "id": "line-dedent",
+                            "name": "&Dedent",
+                            "commandId": "line-dedent"
+                        },
+                        {
+                            "id": "line-move-up",
+                            "name": "Move Line U&p",
+                            "commandId": "line-move-up"
+                        },
+                        {
+                            "id": "line-move-down",
+                            "name": "Move Line Dow&n",
+                            "commandId": "line-move-down"
+                        },
+                        {
+                            "id": "line-delete",
+                            "name": "D&elete Lines",
+                            "commandId": "line-delete"
+                        },
+                        {
+                            "id": "cursor-line-to-middle",
+                            "name": "Move Cursor Line to Middle",
+                            "commandId": "cursor-line-to-middle"
+                        },
+                        {
+                            "id": "cursor-line-to-top",
+                            "name": "Move Cursor Line to Top",
+                            "commandId": "cursor-line-to-top"
+                        },
+                        {
+                            "id": "cursor-line-to-bottom",
+                            "name": "Move Cursor Line to Bottom",
+                            "commandId": "cursor-line-to-bottom"
+                        }
+                    ],
+                    "update": "true"
+                },
+                {
+                    "id": "source",
+                    "name": "So&urce",
+                    "location": "/",
+                    "type": "context-menu",
+                    "items": [
+                        {
+                            "id": "fold-code",
+                            "name": "&Fold",
+                            "commandId": "fold-code"
+                        },
+                        {
+                            "id": "delimiter-fold",
+                            "name": "---"
+                        },
+                        {
+                            "id": "beautify-code",
+                            "name": "&Beautify",
+                            "commandId": "beautify-code"
+                        },
+                        {
+                            "id": "beautify-all-code",
+                            "name": "B&eautify All",
+                            "commandId": "beautify-all-code"
+                        },
+                        {
+                            "id": "delimiter-beautify",
+                            "name": "---"
+                        },
+                        {
+                            "id": "line-comment",
+                            "name": "&Toggle Line Comments",
+                            "commanndId" : "line-comment"
+                        },
+                        {
+                            "id": "block-comment",
+                            "name": "Toggle Block Comment",
+                            "commandId": "block-comment"
+                        },
+                        {
+                            "id": "delimiter-comment",
+                            "name": "---"
+                        },
+                        {
+                            "id": "comment-out-selection",
+                            "name": "Comment Out Selection",
+                            "commandId": "comment-out-selection"
+                        },
+                        {
+                            "id": "rename-variables",
+                            "name": "&Rename Variables",
+                            "commandId": "rename-variables"
+                        }
+                    ],
+                    "update": "true"
+                },
+                {
+                    "id": "delimiter-go-to",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "go-to-definition",
+                    "name": "&Go to Definition",
+                    "commandId": "go-to-definition",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "go-to-line",
+                    "name": "G&o to Line",
+                    "commandId": "go-to-line",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "go-to-matching-brace",
+                    "name": "Go to &Matching Brace",
+                    "commandId": "go-to-matching-brace",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                }
+            ]
         }
     },
     "subscriptions" : {
