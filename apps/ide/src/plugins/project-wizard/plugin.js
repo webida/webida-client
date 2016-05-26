@@ -100,7 +100,7 @@ define([
          */
         getViableItemsForWorkbenchAtFile : function () {
             var items = {
-                '&Project': [ 'cmnd', 'plugins/project-wizard/pw-commands', 'newProject' ]
+                '&Project': [ 'cmnd', 'plugins/project-wizard/commands', 'newProject' ]
             };
             localizer.convertMenuItem(items, '[menu] ');
             return items;
@@ -114,10 +114,11 @@ define([
          */
         getViableItemsForWorkspaceView : function () {
             var items = {
-                Project: [ 'cmnd', 'plugins/project-wizard/pw-commands', 'newProject' ]
+                Project: [ 'cmnd', 'plugins/project-wizard/commands', 'newProject' ]
             };
             localizer.convertMenuItem(items, '[menu] ');
             return items;
         }
     };
 });
+

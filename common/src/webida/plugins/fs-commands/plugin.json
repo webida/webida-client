@@ -3,7 +3,7 @@
     "description": "commands on files and folders in the workspace",
     "version": "0.1.0",
     "requirement": "webida.common.workspace & webida.common.editors",
-    
+
      "extensions": {
 
         "webida.common.workbench:menu" : [
@@ -124,11 +124,376 @@
                 },
                 "getViableItems" : "getViableItemsForWorkspaceView"
             }
-        ]
-    }, 
+        ],
+
+         "webida.common.command-system:commands": {
+             "commands": [
+                 {
+                     "id": "refresh",
+                     "shortcut": {
+                         "defaultKey": "alt+F5"
+                     }
+                 },
+                 {
+                     "id": "open-file"
+                 },
+                 {
+                     "id": "new-file",
+                     "shortcut": {
+                         "defaultKey": "Insert"
+                     }
+                 },
+                 {
+                     "id": "new-directory",
+                     "shortcut": {
+                         "defaultKey": "shift+Insert"
+                     }
+                 },
+                 {
+                     "id": "duplicate"
+                 },
+                 {
+                     "id": "rename",
+                     "shortcut": {
+                         "defaultKey": "F2"
+                     }
+                 },
+                 {
+                     "id": "upload-files"
+                 },
+                 {
+                     "id": "download-files"
+                 },
+                 {
+                     "id": "find-in-files",
+                     "shortcut": {
+                         "defaultKey": "shift+alt+F"
+                     }
+                 },
+                 {
+                     "id": "go-to-file",
+                     "shortcut": {
+                         "defaultKey": "Alt+G"
+                     }
+                 },
+                 {
+                     "id": "copy",
+                     "shortcut": {
+                         "defaultKey": "Ctrl+C"
+                     }
+                 },
+                 {
+                     "id": "cut",
+                     "shortcut": {
+                         "defaultKey": "Ctrl+X"
+                     }
+                 },
+                 {
+                     "id": "paste",
+                     "shortcut": {
+                         "defaultKey": "Ctrl+V"
+                     }
+                 },
+                 {
+                     "id": "delete-file",
+                     "shortcut": {
+                         "defaultKey": "Delete"
+                     }
+                 },
+                 {
+                     "id": "Properties",
+                     "shortcut": {
+                         "defaultKey": "Alt+Enter"
+                     }
+                 },
+                 {
+                     "id": "open",
+                     "shortcut": {
+                         "defaultKey": "Enter"
+                     }
+                 },
+                 {
+                     "id": "open-with-code-editor"
+                 }
+             ]
+         },
+
+         "webida.common.command-system:menus": {
+             "items": [
+                 {
+                     "id": "file",
+                     "name": "&File",
+                     "location": "/",
+                     "type": "top-menu",
+                     "items": [
+                         {
+                             "id": "refresh",
+                             "name": "&Refresh",
+                             "commandId": "refresh",
+                             "update": "true"
+                         },
+                         {
+                             "id": "open-file",
+                             "name": "Open &File",
+                             "commandId": "open-file",
+                             "update": "true"
+                         },
+                         {
+                             "id": "new",
+                             "name": "&New",
+                             "items": [
+                                 {
+                                     "id": "delimiter",
+                                     "name": "---"
+                                 },
+                                 {
+                                     "id": "new-file",
+                                     "name": "&File",
+                                     "commandId": "new-file",
+                                     "update": "true",
+                                     "toolbar": {
+                                         "icons" : "<%= themePath %>/images/icons/toolbar_file.png",
+                                         "tooltip" : "New File"
+                                     }
+                                 },
+                                 {
+                                     "id": "new-directory",
+                                     "name": "&Directory",
+                                     "commandId": "new-directory",
+                                     "update": "true"
+                                 }
+                             ]
+                         },
+                         {
+                             "id": "duplicate",
+                             "name": "Duplica&te",
+                             "commandId": "duplicate"
+                         },
+                         {
+                             "id": "rename",
+                             "name": "Ren&ame",
+                             "commandId": "rename",
+                             "update": "true"
+                         },
+                         {
+                             "id": "delimiter",
+                             "name": "---"
+                         },
+                         {
+                             "id": "upload-files",
+                             "name": "&Upload Files",
+                             "commandId": "upload-files",
+                             "invisible": "true"
+                         },
+                         {
+                             "id": "download-files",
+                             "name": "&Download Files",
+                             "commandId": "download-files"
+                         }
+                     ]
+                 },
+                 {
+                     "id": "delimiter",
+                     "name": "---",
+                     "location": "/find/",
+                     "type": "top-menu"
+                 },
+                 {
+                     "id": "find-in-files",
+                     "name": "&Find in Files",
+                     "commandId": "find-in-files",
+                     "location": "/find/",
+                     "type": "top-menu",
+                     "update": "true",
+                     "toolbar": {
+                         "icons" : "<%= themePath %>/images/icons/toolbar_findfiles.png",
+                         "tooltip" : "Find in Files"
+                     }
+                 },
+                 {
+                     "id": "go-to-file",
+                     "name": "Go to &File",
+                     "commandId": "go-to-file",
+                     "location": "/navigate/go-to-definition?before",
+                     "type": "top-menu",
+                     "update": "true",
+                     "toolbar": {
+                         "icons" : "<%= themePath %>/images/icons/toolbar_gotofile.png",
+                         "tooltip" : "Go to File"
+                     }
+                 },
+                 {
+                     "id": "refresh",
+                     "name": "Refres&h",
+                     "commandId": "refresh",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "properties",
+                     "name": "Properti&es",
+                     "commandId": "properties",
+                     "location": "/",
+                     "type": "context-menu",
+                     "invisible": "true"
+                 },
+                 {
+                     "id": "delimiter",
+                     "name": "---",
+                     "location": "/",
+                     "type": "context-menu"
+                 },
+                 {
+                     "id": "open",
+                     "name": "Open",
+                     "commandId": "open",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "open-with",
+                     "name": "Open with",
+                     "location": "/",
+                     "type": "context-menu",
+                     "items": [
+                         {
+                             "id": "open-with-code-editor",
+                             "name": "Code Editor",
+                             "commandId": "open-with-code-editor",
+                             "update": "true"
+                         }
+                     ]
+                 },
+                 {
+                     "id": "delimiter",
+                     "name": "---",
+                     "location": "/",
+                     "type": "context-menu"
+                 },
+                 {
+                     "id": "new",
+                     "name": "New",
+                     "location": "/",
+                     "type": "context-menu",
+                     "items": [
+                         {
+                             "id": "delimiter",
+                             "name": "---"
+                         },
+                         {
+                             "id": "new-file",
+                             "name": "&File",
+                             "commandId": "new-file",
+                             "update": "true"
+                         },
+                         {
+                             "id": "new-directory",
+                             "name": "&Directory",
+                             "commandId": "new-directory",
+                             "update": "true"
+                         }
+                     ]
+                 },
+                 {
+                     "id": "duplicate",
+                     "name": "Dup&licate",
+                     "commandId": "duplicate",
+                     "location": "/",
+                     "type": "context-menu"
+                 },
+                 {
+                     "id": "copy",
+                     "name": "&Copy",
+                     "commandId": "copy",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "cut",
+                     "name": "Cu&t",
+                     "commandId": "cut",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "paste",
+                     "name": "&Paste",
+                     "commandId": "paste",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "delete-file",
+                     "name": "&Delete",
+                     "commandId": "delete-file",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "rename",
+                     "name": "Ren&ame",
+                     "commandId": "rename",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "find-in-files-delimiter",
+                     "name": "---",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "find-in-files",
+                     "name": "&Find in Files",
+                     "commandId": "find-in-files",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "go-to-file",
+                     "name": "Go to File",
+                     "commandId": "go-to-file",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "delimiter",
+                     "name": "---",
+                     "location": "/",
+                     "type": "context-menu"
+                 },
+                 {
+                     "id": "upload-files",
+                     "name": "&Upload Files",
+                     "commandId": "upload-files",
+                     "location": "/",
+                     "type": "context-menu",
+                     "invisible": "true"
+                 },
+                 {
+                     "id": "download-files",
+                     "name": "Dow&nload",
+                     "commandId": "download-files",
+                     "location": "/",
+                     "type": "context-menu"
+                 }
+             ]
+         }
+}, 
     "subscriptions" : { 
         "workspace/node/selected" : { 
             "handler": "onNodeSelected"
-        } 
+        }
     }
 }
+

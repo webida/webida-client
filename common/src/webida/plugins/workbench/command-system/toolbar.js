@@ -1,84 +1,60 @@
 /*
- * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *     http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (c) 2012-2015 S-Core Co., Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 /**
- * @fileoverview webida - toolbar
- *
- * @version: 0.1.0
- * @since: 2013.09.25
- *
- * Src:
- *   toolbar.js
+ * @file The toolbar.
+ * @since: 1.7.0
+ * @author: minsung.jin@samsung.com
  */
 
 define([
-    'external/lodash/lodash.min',    // _
-    'dojo',                          // dojo
-    'dojo/on',                       // on
-    'dojo/dom-style',                // domStyle
-    'dojo/dom-class',                // domClass
-    'dojo/dom-attr',                 // domAttr
-    'dojo/html',                     // html
-    'dojo/query',                    // query
-    'dojo/aspect',                   // aspect
-    'dojo/topic',                    // topic
-    'dojo/Deferred',                 // Deferred
-    'dojo/_base/lang',               // lang
-    'dijit/Toolbar',                 // Toolbar
-    'dijit/form/Button',             // Button
-    'dijit/form/DropDownButton',     // DropDownButton
-    'dijit/form/ComboButton',        // ComboButton
-    'dijit/Menu',                    // Menu
-    'dijit/DropDownMenu',            // DropDownMenu
-    'dijit/MenuItem',                // MenuItem
-    'dijit/MenuSeparator',           // MenuSeparator
-    'dijit/ToolbarSeparator',        // ToolbarSeparator
-    'webida-lib/plugin-manager-0.1', // pm
-    'webida-lib/theme',         // theme
-    './MenuItemTree'                 // MenuItemTree
+    'external/lodash/lodash.min',
+    'dijit/form/Button',
+    'dijit/form/ComboButton',
+    'dijit/DropDownMenu',
+    'dijit/Menu',
+    'dijit/MenuItem',
+    'dijit/MenuSeparator',
+    'dijit/PopupMenuItem',
+    'dojo/on',
+    'dojo/dom-attr',
+    'dojo/topic',
+    'dijit/Toolbar',
+    'webida-lib/plugins/command-system/system/command-system',
+    'webida-lib/theme',
 ], function (
     _,
-    dojo,
-    on,
-    domStyle,
-    domClass,
-    domAttr,
-    html,
-    query,
-    aspect,
-    topic,
-    Deferred,
-    lang,
-    Toolbar,
     Button,
-    DropDownButton,
     ComboButton,
-    Menu,
     DropDownMenu,
+    Menu,
     MenuItem,
     MenuSeparator,
-    ToolbarSeparator,
-    pm,
-    theme,
-    MenuItemTree
+    PopupMenuItem,
+    on,
+    domAttr,
+    topic,
+    Toolbar,
+    commandSystem,
+    theme
 ) {
     'use strict';
-    //console.log('mira: toolbar module loaded...');
 
-    var menuItemTree;
+    var toolbar;
+    var commandService = commandSystem.service;
 
     function setItemTooltip(item, tooltip) {
         domAttr.set(item, 'rel', 'tooltip');
@@ -86,8 +62,6 @@ define([
     }
 
     function setItemIcons(item, icons, iconClass) {
-        // normal icon setting
-        //var iconNormal = icons.normal;
         var iconNormal = icons;
         var imgClass;
         var img = '';
@@ -102,17 +76,17 @@ define([
             // convert id to valid class name e.g. /&File/&New/&File -> __File__New__File
             var modifiedIconClass = menuitem.replace(/&/g, '').replace(/\//g, '__').replace(/ /g, '_') + '_wticons';
             img = '<style type="text/css">' +
-                      '.' + modifiedIconClass + ' {' +
-                          'background-image: url("' + theme.apply(iconNormal) + '");' +
-                      '}' +
-                    '</style>';
+                '.' + modifiedIconClass + ' {' +
+                'background-image: url("' + theme.apply(iconNormal) + '");' +
+                '}' +
+                '</style>';
             imgClass = modifiedIconClass;
         }
 
         if (imgClass) {
             imgClass += ' webida-tool-bar-icon webida-tool-bar-icon-normal';
             img = img + '<img class="' + imgClass + '"' +
-                             'src="<%=themePath%>/images/icons/transparent.png" draggable="false" />';
+                'src="<%=themePath%>/images/icons/transparent.png" draggable="false" />';
             item.attr('label', theme.apply(img));
 
             // icon changed setting
@@ -122,10 +96,10 @@ define([
                 }
 
                 $(this.containerNode).find('.webida-tool-bar-icon')
-                .addClass('webida-tool-bar-icon-hover')
-                .removeClass('webida-tool-bar-icon-normal')
-                .removeClass('webida-tool-bar-icon-disabled')
-                .removeClass('webida-tool-bar-icon-clicked');
+                    .addClass('webida-tool-bar-icon-hover')
+                    .removeClass('webida-tool-bar-icon-normal')
+                    .removeClass('webida-tool-bar-icon-disabled')
+                    .removeClass('webida-tool-bar-icon-clicked');
             });
 
             on(item, 'mouseout', function () {
@@ -134,10 +108,10 @@ define([
                 }
 
                 $(this.containerNode).find('.webida-tool-bar-icon')
-                .addClass('webida-tool-bar-icon-normal')
-                .removeClass('webida-tool-bar-icon-hover')
-                .removeClass('webida-tool-bar-icon-disabled')
-                .removeClass('webida-tool-bar-icon-clicked');
+                    .addClass('webida-tool-bar-icon-normal')
+                    .removeClass('webida-tool-bar-icon-hover')
+                    .removeClass('webida-tool-bar-icon-disabled')
+                    .removeClass('webida-tool-bar-icon-clicked');
             });
 
             on(item, 'mousedown', function () {
@@ -146,10 +120,10 @@ define([
                 }
 
                 $(this.containerNode).find('.webida-tool-bar-icon')
-                .addClass('webida-tool-bar-icon-clicked')
-                .removeClass('webida-tool-bar-icon-normal')
-                .removeClass('webida-tool-bar-icon-disabled')
-                .removeClass('webida-tool-bar-icon-hover');
+                    .addClass('webida-tool-bar-icon-clicked')
+                    .removeClass('webida-tool-bar-icon-normal')
+                    .removeClass('webida-tool-bar-icon-disabled')
+                    .removeClass('webida-tool-bar-icon-hover');
             });
 
             on(item, 'mouseup', function () {
@@ -158,10 +132,10 @@ define([
                 }
 
                 $(this.containerNode).find('.webida-tool-bar-icon')
-                .addClass('webida-tool-bar-icon-normal')
-                .removeClass('webida-tool-bar-icon-hover')
-                .removeClass('webida-tool-bar-icon-disabled')
-                .removeClass('webida-tool-bar-icon-clicked');
+                    .addClass('webida-tool-bar-icon-normal')
+                    .removeClass('webida-tool-bar-icon-hover')
+                    .removeClass('webida-tool-bar-icon-disabled')
+                    .removeClass('webida-tool-bar-icon-clicked');
             });
         }
     }
@@ -173,249 +147,142 @@ define([
         });
     }
 
-   
-    function handleTerminalItem(menuItem, loc, bag) { 
-        
-        var item, tooltip;
-        var cmndInfo = menuItem[1];
-        /*jshint validthis:true */
-        function enableToolbarItem() { 
-            //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
-            // enable toolbar item
-            this.set('disabled', false);
+    /*jshint validthis:true */
+    function enableToolbarItem(item) {
+        item.set('disabled', false);
 
-            $(this.containerNode).find('.webida-tool-bar-icon')
+        $(item.containerNode).find('.webida-tool-bar-icon')
             .addClass('webida-tool-bar-icon-normal')
             .removeClass('webida-tool-bar-icon-hover')
             .removeClass('webida-tool-bar-icon-disabled')
-            .removeClass('webida-tool-bar-icon-clicked');        
-        } 
-        
-        function disableToolbarItem() { 
-            //console.log('toolbar event subscribe', cmndInfo.toolbar.enabledOn);
-            // disable toolbar item
-            this.set('disabled', true);
+            .removeClass('webida-tool-bar-icon-clicked');
+    }
 
-            $(this.containerNode).find('.webida-tool-bar-icon')
+    function disableToolbarItem(item) {
+        item.set('disabled', true);
+
+        $(item.containerNode).find('.webida-tool-bar-icon')
             .addClass('webida-tool-bar-icon-disabled')
             .removeClass('webida-tool-bar-icon-normal')
             .removeClass('webida-tool-bar-icon-hover')
-            .removeClass('webida-tool-bar-icon-clicked');        
-        } 
-        /*jshint validthis:false */
-        
-        function doCommonJobsForToolbarItem() { 
-            // set unique identifier for toolbar icon
-            item.attr('data-menuitem', loc);
-
-            // tooltip setting
-            tooltip = cmndInfo.toolbar.tooltip || loc.split('/').pop().replace(/&/gi, '');
-            if (cmndInfo.shortcut && cmndInfo.shortcut.keys) {
-                tooltip += ' (' + cmndInfo.shortcut.keys + ')';
-            }
-            setItemTooltip(item, tooltip);
-
-            // icon setting
-            if (cmndInfo.toolbar.icons) {
-                setItemIcons(item, cmndInfo.toolbar.icons, cmndInfo.toolbar.iconClass);
-            }
-
-            // enable, disable event setting
-            if (cmndInfo.toolbar.enabledOn) {
-                topic.subscribe(cmndInfo.toolbar.enabledOn, enableToolbarItem.bind(item));
-            }
-            if (cmndInfo.toolbar.disabledOn) {
-                topic.subscribe(cmndInfo.toolbar.disabledOn, disableToolbarItem.bind(item));
-            }
-
-            // Events on clicking icon and selecting the first item of dropdown list
-            // should be distinguishable. (index: 0 -> -1).
-            // -1 has no effect when the item is for a 'cmnd'
-            on(item, 'click', menuItemTree.invoke.bind(menuItemTree, loc, -1));
-        }
-
-        console.assert(cmndInfo && cmndInfo.toolbar);
-        switch (menuItem[0]) {
-        case 'cmnd':
-            // create toolbar item
-            item = new Button();
-            doCommonJobsForToolbarItem();     
-            break;
-
-        case 'enum':
-            // create toolbar item
-            item = new ComboButton();
-            doCommonJobsForToolbarItem();
-
-            var locSegments = loc.split('/');
-            locSegments = _.without(locSegments, '');
-
-            var menu = new Menu({ style: 'display: none;' });
-            item.dropDown = menu;
-            aspect.before(item, 'openDropDown', function () {
-                //console.debug('before openDropDown... ok');
-
-                // clear previous list
-                clearMenu(menu);
-                menu.addChild(new MenuItem({
-                    label: 'loading ...',
-                    disabled: true
-                }));
-
-                // create new list
-                // get menu item list (get dynamic enum list)
-                menuItemTree.getViableItems(function (items) {
-
-                    locSegments.forEach(function (key) {
-                        if (items) { 
-                            items = items[key];
-                        } 
-                    });
-                    var foundItem = items;
-
-                    var labels;
-                    if (foundItem && MenuItemTree.isTerminal(foundItem) && 
-                        foundItem[0] === 'enum' && (labels = foundItem[3]) && labels.length > 0) {
-
-                        var disabledIndexes = foundItem[4];
-
-                        clearMenu(menu);
-                        labels.forEach(function (label, index) {
-                            var mItem;
-                            if (label === '---') {
-                                mItem = new MenuSeparator();
-                            } else {
-                                mItem = new MenuItem({ label: label });
-                                mItem.set('onClick', menuItemTree.invoke.bind(menuItemTree, loc, index));
-                            }
-
-                            // disabled
-                            if (disabledIndexes && _.contains(disabledIndexes, index)) {
-                                mItem.set('disabled', true);
-                            }
-
-                            // add new list
-                            menu.addChild(mItem);
-                        });
-                    } else {
-                        clearMenu(menu);
-                        menu.addChild(new MenuItem({
-                            label: '<no items>',
-                            disabled: true
-                        }));
-                    }
-
-                });
-            });
-
-            break;
-                
-        default: 
-            console.assert(false, 'assertion fail: unreachable');
-                
-        }
-
-        console.assert(item); 
-        bag.push(item);
-    } 
-
-    function toPutOnToolbar(menuItem) { 
-        if (MenuItemTree.isTerminal(menuItem)) { 
-            var type = menuItem[0];
-            if (type === 'cmnd' || type === 'enum') { 
-                var cmndInfo = menuItem[1];
-                if (cmndInfo && cmndInfo.toolbar) { 
-                    return true;
-                } 
-            } 
-        }
-        return false;
+            .removeClass('webida-tool-bar-icon-clicked');
     }
-    
-    function init(menuItemTreeArg, predefinedToolbarItems) {
-    
-        var toPutSeparator = false;
-        var warnUnlistedItems = predefinedToolbarItems.list.length > 0;
-        
-        function getItemsInPredefinedOrder(wholeMenuItems, predefinedList, bag) { 
-            predefinedList.forEach(function (item) { 
-                
-                if (item === '---') { 
-                    bag.push(new ToolbarSeparator());
-                    toPutSeparator = false;
-                } else { 
-                    
-                    var segments = item.split('/');
-                    segments.shift();
-                    var menuItem = wholeMenuItems;
-                    segments.forEach(function (seg) { 
-                        if (menuItem) { 
-                            menuItem = menuItem[seg];
-                        } 
-                    });
-                    
-                    if (menuItem) { 
-                        if (toPutOnToolbar(menuItem)) { 
-                            handleTerminalItem(menuItem, item, bag);
-                            toPutSeparator = true;
-                        } else { 
-                            console.warn('A menu item "' + item + '" specified in the predefined order of ' + 
-                                         'toolbar items does not have a configuratoin to be put on the toolbar, ' + 
-                                         'and is ignored');
-                        } 
-                    } else { 
-                        console.warn('A location "' + item + '" in the predefined order of toolbar items ' + 
-                                     'does not have a matching menu item, and is ignored');
-                    } 
-                } 
-            });
-        } 
-        
-        function getRemainingItems(items, ploc, predefinedList, bag) {
-            Object.keys(items).forEach(function (menuItemName) {
-                var menuItem = items[menuItemName]; 
-                var loc = ploc + menuItemName;
+    /*jshint validthis:false */
 
-                if (MenuItemTree.isTerminal(menuItem)) {
-                    if (predefinedList.indexOf(loc) < 0 && toPutOnToolbar(menuItem)) { 
-                        if (toPutSeparator) { 
-                            bag.push(new ToolbarSeparator());
-                            toPutSeparator = false;
-                        } 
-                        handleTerminalItem(menuItem, loc, bag);
-                        if (warnUnlistedItems) { 
-                            console.warn('A menu item at "' + loc + 
-                                         '" adds a toolbar item which is not in the predefined list.');
-                        } 
-                    } 
-                } else if (MenuItemTree.isNonterminal(menuItem)) {
-                    getRemainingItems(menuItem, loc + '/', predefinedList, bag);
-                }
-            });
+    function setToolbarItem(item, model) {
+        item.attr('data-menuitem', model.id);
+        // tooltip setting
+        var tooltip = model.toolbar.tooltip;
+        var command = commandService.getCommandRegistry(model.commandId);
+        if (command.shortcut && command.shortcut.defaultKey) {
+            tooltip += ' (' + command.shortcut.defaultKey + ')';
+        }
+        setItemTooltip(item, tooltip);
+
+        // icon setting
+        if (model.toolbar.icons) {
+            setItemIcons(item, model.toolbar.icons, model.toolbar.iconClass);
         }
 
-        menuItemTree = menuItemTreeArg;
-
-        var toolbar = new Toolbar({
-            style: 'padding-left: 12px', 
-            class: 'app-workbench-toolbar', 
-        }, 'app-workbench-toolbar');
-
-        // append each items
-        var toolbarItems = [];
-        var wholeMenuItems = menuItemTreeArg.getWholeItems();
-        
-        getItemsInPredefinedOrder(wholeMenuItems, predefinedToolbarItems.list, toolbarItems);
-        if (predefinedToolbarItems.options.indexOf('restrictToList') < 0) { 
-            getRemainingItems(wholeMenuItems, '/', predefinedToolbarItems.list, toolbarItems);
+        // enable, disable event setting
+        if (model.disabled) {
+            disableToolbarItem(item);
+        } else {
+            enableToolbarItem(item);
         }
-        toolbarItems.forEach(function (item) {
-            // append items
-            toolbar.addChild(item);
+        on(item, 'click', function () {
+            commandService.requestExecution(model.commandId);
         });
     }
 
+    function selectToolbarItems(items, model) {
+        if (model.toolbar && model.invisible) {
+            items.push(model);
+        } else {
+            if ('items' in model && Array.isArray(model.items)) {
+                model.items.forEach(function (child) {
+                    selectToolbarItems(items, child);
+                });
+            }
+        }
+        return items;
+    }
+
+    function createDropDownButton(item) {
+        var button = new ComboButton();
+        setToolbarItem(button, item);
+        var menu = new Menu({ style: 'display: none;' });
+        button.dropDown = menu;
+        var menuItem;
+        var label;
+        _.each(item.items, function (child) {
+            if (child.invisible) {
+                return;
+            }
+            if (child.name === '---') {
+                menuItem = new MenuSeparator();
+            } else {
+                label = child.name.replace(/&(.)/, '{$1}');
+                menuItem = new MenuItem({ label: label, disabled: child.disabled });
+                menuItem.set('onClick', function () {
+                    commandSystem.service.requestExecution(child.commandId);
+                });
+            }
+            menu.addChild(menuItem);
+        });
+        return button;
+    }
+
+    function createMenuButton(items) {
+        var item;
+        var toolbarItems = [];
+        _.each(items, function (child) {
+            if (child.items.length > 0) {
+                item = createDropDownButton(child);
+            } else {
+                item = new Button();
+            }
+            setToolbarItem(item, child);
+            toolbarItems.push(item);
+        });
+        return toolbarItems;
+    }
+
+    function getToolbarItems() {
+        var items = [];
+        var menuModel = commandService.getTopMenuModel();
+        selectToolbarItems(items, menuModel);
+        return items;
+    }
+
+    function updateToolbar() {
+        clearMenu(toolbar);
+        fillToolbar(toolbar);
+    }
+
+    function fillToolbar(menu) {
+        var modelItems = getToolbarItems();
+        var toolbarItems = createMenuButton(modelItems);
+        toolbarItems.forEach(function (item) {
+            menu.addChild(item);
+        });
+    }
+
+    function createToolbar() {
+
+        toolbar = new Toolbar({
+            style: 'padding-left: 12px',
+            class: 'app-workbench-toolbar',
+        }, 'app-workbench-toolbar');
+        toolbar.startup();
+
+        clearMenu(toolbar);
+        fillToolbar(toolbar);
+        topic.subscribe('command-system/menu/update', updateToolbar);
+    }
+
     return {
-        init: init,
+        create: createToolbar,
+        update: updateToolbar
     };
 });

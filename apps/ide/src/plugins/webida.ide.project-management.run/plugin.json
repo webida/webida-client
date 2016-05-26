@@ -64,6 +64,120 @@
                 "Debug with" : ["enum"]
             },
             "getViableItems" : "getViableItemsForWorkspaceView"
+        },
+        "webida.common.command-system:commands" : {
+            "commands": [
+                {
+                    "id": "run",
+                    "shortcut": {
+                        "defaultKey": "Alt+R"
+                    }
+                },
+                {
+                    "id": "run-with"
+                },
+                {
+                    "id": "debug",
+                    "shortcut": {
+                        "defaultKey": "Alt+D"
+                    }
+                },
+                {
+                    "id": "debug-with"
+                }
+            ]
+        },
+        "webida.common.command-system:menus" : {
+            "items": [
+                {
+                    "id": "project",
+                    "name": "&Project",
+                    "location": "/",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "run",
+                            "name": "&Run",
+                            "commandId": "run",
+                            "update": "true"
+                        },
+                        {
+                            "id": "run-with",
+                            "name": "Run &with",
+                            "commandId": "run-with",
+                            "update": "true",
+                            "toolbar": {
+                                "icons" : "<%= themePath %>/images/icons/toolbar_runhistory.png",
+                                "tooltip" : "Run with"
+                            }
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "debug",
+                            "name": "Debug",
+                            "commandId": "debug",
+                            "update": "true"
+                        },
+                        {
+                            "id": "debug-with",
+                            "name": "Debug with",
+                            "commandId": "debug-with",
+                            "update": "true",
+                            "toolbar": {
+                                "icons" : "<%= themePath %>/images/icons/toolbar_debug.png",
+                                "tooltip" : "Debug with"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "id": "delimiter",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "run",
+                    "name": "&Run",
+                    "commandId": "run",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "run-with",
+                    "name": "Run &with",
+                    "commandId": "run-with",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "delimiter",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "debug",
+                    "name": "Debug",
+                    "commandId": "debug",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "debug-with",
+                    "name": "Debug with",
+                    "commandId": "debug-with",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                }
+            ]
         }
     },
 
@@ -78,3 +192,4 @@
         }
     }
 }
+

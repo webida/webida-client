@@ -15,32 +15,39 @@
  */
 
 /**
- * webida - preview plugin
- *
+ * @file Manage actions for preview commands
+ * @since 1.7.0
+ * @author minsung.jin@samsung.com
  */
 
 define([
-    './preview-view',
-    './preview-pref-values',
+    'dojo/Deferred',
     'dojo/i18n!./nls/resource',
     'dojo/string',
     'dojo/topic',
-    'external/lodash/lodash.min',           // _
-    'webida-lib/util/path',                 // pathUtil
-    'webida-lib/plugins/workspace/plugin',  // ws
-    'dojo/Deferred'                         // Deferred
+    'external/lodash/lodash.min',
+    'webida-lib/plugins/command-system/system/command-system',
+    'webida-lib/plugins/workspace/plugin',
+    'webida-lib/util/genetic',
+    'webida-lib/util/path',
+    './preview-pref-values',
+    './preview-view',
 ], function (
-    view,
-    options,
+    Deferred,
     i18n,
     string,
     topic,
     _,
-    pathUtil,
+    commandSystem,
     ws,
-    Deferred
+    genetic,
+    pathUtil,
+    options,
+    view
 ) {
     'use strict';
+
+    var Command = commandSystem.Command;
 
     var FORMAT_HANDLER_PATH = 'webida-lib/plugins/preview/handler';
     var FORMAT_HANDLERS = {
@@ -60,7 +67,6 @@ define([
             var ext = (/^.+\.([^.]+)$/.exec(name));
             return (ext && _.isArray(ext) && ext.length > 1) ? ext[1] : '';
         }
-
 
         function cleanContents() {
             if (lastHandler && lastHandler.destroy) {
@@ -117,7 +123,6 @@ define([
                 previewView.select();
                 lastHandler = handler;
             }, function () {
-                //console.error('Failed to get a handler', e);
                 showDefaultToolbar(
                     string.substitute(
                         i18n.previewNotSupportedForId, {id : id}));
@@ -155,11 +160,19 @@ define([
     topic.subscribe('workspace/node/selected', respondToSelection);
     topic.subscribe('fs/cache/file/set', updatePreview);
 
-    function showPreview() {
-        displayPreview(ws.getSelectedPath());
+    function PreviewCommand(id) {
+        PreviewCommand.id = id;
     }
+    genetic.inherits(PreviewCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                displayPreview(ws.getSelectedPath());
+                resolve();
+            });
+        }
+    });
 
     return {
-        showPreview: showPreview
+        PreviewCommand: PreviewCommand
     };
 });

@@ -67,6 +67,7 @@ define([
     'external/async/dist/async.min',
     'external/URIjs/src/URI',
     'require',
+    'webida-lib/plugins/command-system/system/command-system',
     'webida-lib/util/logger/logger-client'
 ], function (
     ide,
@@ -110,6 +111,7 @@ define([
     async,
     URI,
     require,
+    commandSystem,
     Logger
 ) {
     'use strict';
@@ -1810,6 +1812,13 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
+    function updateMenu() {
+        var commandService = commandSystem.service;
+        commandService.updateTopMenuModel(function () {
+            var model = commandService.getTopMenuModel();
+            topic.publish('command-system/menu/update', model.items);
+        });
+    }
     /**
      * @module workspaceView
      */
@@ -1863,6 +1872,7 @@ define([
             topic.subscribe('workspace/node/status/changed', function (path, stateSet, state) {
                 setNodeOverlayIconInfo(path, stateSet, state);
             });
+            updateMenu();
         },
 
         // copy, cut, and paste

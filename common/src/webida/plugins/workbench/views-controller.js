@@ -53,7 +53,8 @@ define([
      _,
      topic, geometry, aspect, domClass, domStyle,
      BorderContainer, ContentPane,
-     dom, DropDownButton, DropDownMenu, MenuItem) {
+     dom, DropDownButton, DropDownMenu, MenuItem
+) {
     'use strict';
 
     topic.subscribe('view/unregistered', function (event) {
@@ -639,29 +640,34 @@ define([
                 if (e) {
                     console.error('getMyInfo error: ' + e);
                 } else {
-                    var menu = new DropDownMenu({ style: 'display: none;' });
-                    var exts = pm.getExtensions('webida.common.workbench:uidMenu') || [];
-                    exts.forEach(function (ext) {
-                        var menuItem = new MenuItem({
-                            label: ext.label,
-                            onClick: function () {
-                                require([ext.module], function (mod) {
-                                    mod[ext.handler]();
-                                });
-                            }
+                    if (data.isGuest) {
+                        return;
+                    }
+                    require([
+                        'webida-lib/plugins/command-system/system/command-system'
+                    ], function (
+                        commandSystem
+                    ) {
+                        var menu = new DropDownMenu({style: 'display: none;' });
+                        var model = commandSystem.service.getUserIdMenuModel().items[0];
+                        model.items.forEach(function (item) {
+                            var menuItem = new MenuItem({
+                                label: item.name,
+                                onClick: function () {
+                                    commandSystem.service.requestExecution(item.commandId);
+                                }
+                            });
+                            menu.addChild(menuItem);
                         });
-                        menu.addChild(menuItem);
+                        menu.startup();
+                        var button = new DropDownButton({
+                            label: data.email,
+                            name: 'userinfo',
+                            dropDown: menu,
+                            id: 'userinfoButton'
+                        });
+                        dom.byId('dropDownUserinfo').appendChild(button.domNode);
                     });
-
-                    menu.startup();
-
-                    var button = new DropDownButton({
-                        label: data.email,
-                        name: 'userinfo',
-                        dropDown: menu,
-                        id: 'userinfoButton'
-                    });
-                    dom.byId('dropDownUserinfo').appendChild(button.domNode);
                 }
             });
             

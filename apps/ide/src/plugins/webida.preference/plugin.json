@@ -43,6 +43,46 @@
                 }]
             },
             "getViableItems" : "getViableItemsForWorkspace"
+        },
+        "webida.common.command-system:commands": {
+            "commands": [
+                {
+                    "id": "preferences",
+                    "shortcut": {
+                        "defaultKey": "Alt+P"
+                    }
+                },
+                {
+                    "id": "preferences-context",
+                    "shortcut": {
+                        "defaultKey": "Alt+P"
+                    }
+                }
+            ]
+        },
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "preferences",
+                    "name": "&Preferences",
+                    "commandId": "preferences",
+                    "location": "/help/",
+                    "type": "top-menu",
+                    "update": "true",
+                    "toolbar": {
+                        "icons" : "<%= themePath %>/images/icons/toolbar_preference.png",
+                        "tooltip" : "Preferences"
+                    }
+                },
+                {
+                    "id": "preferences-context",
+                    "name": "&Preferences",
+                    "commandId": "preferences-context",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                }
+            ]
         }
     }
 }

@@ -34,7 +34,9 @@ define([
     'text!./layer/pw-layout.html',
     './main',
     './messages',
-    './lib/util'
+    './lib/util',
+    'webida-lib/plugins/command-system/command/Command',
+    'webida-lib/util/genetic'
 ], function (
     reg,
     Tooltip,
@@ -48,7 +50,9 @@ define([
     tplLayout,
     main,
     Messages,
-    Util
+    Util,
+    Command,
+    genetic
 ) {
     'use strict';
 
@@ -142,7 +146,8 @@ define([
                 /*jshint nonew: false */
                 new Tooltip({
                     connectId: ['pwQuickStartOptCordova', 'pwQuickStartOptCordovaLabel'],
-                    label: Messages.PW_OPTIONS_CORDOVA, position: ['below']
+                    label: Messages.PW_OPTIONS_CORDOVA,
+                    position: ['below']
                 });
                 /*jshint nonew: true */
                 $('#pwQuickStartGuideStart').click(function () {
@@ -232,11 +237,24 @@ define([
         }
     });
 
+    function NewProjectCommand(id) {
+        NewProjectCommand.id = id;
+    }
+    genetic.inherits(NewProjectCommand, Command, {
+        execute : function () {
+            return new Promise(function (resolve) {
+                newProject();
+                resolve();
+            });
+        }
+    });
+
     return {
         'doIt': function () {
             createProject();
         },
-
-        'newProject': newProject
+        'newProject': newProject,
+        NewProjectCommand: NewProjectCommand
     };
 });
+

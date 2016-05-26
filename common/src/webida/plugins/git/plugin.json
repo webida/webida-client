@@ -93,6 +93,453 @@
             "getViableItems" : "gitContextMenuItems"
         },
 
+        "webida.common.command-system:commands": {
+            "commands": [
+                {
+                    "id": "git-status",
+                    "shortcut": {
+                        "defaultKey": "Alt+S"
+                    }
+                },
+                {
+                    "id": "git-file-history"
+                },
+                {
+                    "id": "git-repository-history"
+                },
+                {
+                    "id": "git-blame"
+                },
+                {
+                    "id": "git-compare"
+                },
+                {
+                    "id": "git-commit",
+                    "shortcut": {
+                        "defaultKey": "Alt+M"
+                    }
+                },
+                {
+                    "id": "git-reset-to-commit"
+                },
+                {
+                    "id": "git-rebase"
+                },
+                {
+                    "id": "git-merge"
+                },
+                {
+                    "id": "git-branch"
+                },
+                {
+                    "id": "git-add"
+                },
+                {
+                    "id": "git-remove"
+                },
+                {
+                    "id": "git-checkout"
+                },
+                {
+                    "id": "git-untrack"
+                },
+                {
+                    "id": "git-stash"
+                },
+                {
+                    "id": "git-unstash"
+                },
+                {
+                    "id": "git-push",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+P"
+                    }
+                },
+                {
+                    "id": "git-fetch"
+                },
+                {
+                    "id": "git-pull",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+U"
+                    }
+                },
+                {
+                    "id": "git-update-submodule"
+                },
+                {
+                    "id": "git-remote"
+                },
+                {
+                    "id": "git-clone"
+                },
+                {
+                    "id": "git-create-repository"
+                },
+                {
+                    "id": "git-configure"
+                },
+                {
+                    "id": "git-run",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+R"
+                    }
+                }
+            ]
+        },
+
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "git",
+                    "name": "&Git",
+                    "location": "/project?after",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "git-status",
+                            "name": "&Status",
+                            "commandId": "git-status",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-file-history",
+                            "name": "Show File History",
+                            "commandId": "git-file-history",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-repository-history",
+                            "name": "Show Repository History",
+                            "commandId": "git-repository-history",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-blame",
+                            "name": "Blame",
+                            "commandId": "git-blame",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-compare",
+                            "name": "Compar&e",
+                            "commandId": "git-compare",
+                            "update": "true"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "git-commit",
+                            "name": "&Commit",
+                            "commandId": "git-commit",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-reset-to-commit",
+                            "name": "Reset to Commit",
+                            "commandId": "git-reset-to-commit",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-rebase",
+                            "name": "Re&base",
+                            "commandId": "git-rebase",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-merge",
+                            "name": "&Merge",
+                            "commandId": "git-merge",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-branch",
+                            "name": "B&ranches",
+                            "commandId": "git-branch",
+                            "update": "true"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "git-add",
+                            "name": "&Add to Stage",
+                            "commandId": "git-add",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-remove",
+                            "name": "Remove from Stage",
+                            "commandId": "git-remove",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-checkout",
+                            "name": "Checkout from Stage",
+                            "commandId": "git-checkout",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-untrack",
+                            "name": "Untrack",
+                            "commandId": "git-untrack",
+                            "update": "true"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "git-stash",
+                            "name": "Stash Changes",
+                            "commandId": "git-stash",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-unstash",
+                            "name": "Unstash Changes",
+                            "commandId": "git-unstash",
+                            "update": "true"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "git-push",
+                            "name": "&Push",
+                            "commandId": "git-push",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-fetch",
+                            "name": "&Fetch",
+                            "commandId": "git-fetch",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-pull",
+                            "name": "P&ull",
+                            "commandId": "git-pull",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-update-submodule",
+                            "name": "Update Submodules",
+                            "commandId": "git-update-submodule",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-remote",
+                            "name": "Romotes",
+                            "commandId": "git-remote",
+                            "update": "true"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "git-clone",
+                            "name": "Clone from URL",
+                            "commandId": "git-clone",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-create-repository",
+                            "name": "New Repository",
+                            "commandId": "git-create-repository",
+                            "update": "true"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "git-configure",
+                            "name": "Confi&gure",
+                            "commandId": "git-configure",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-run",
+                            "name": "Run Git Command",
+                            "commandId": "git-run",
+                            "update": "true"
+                        }
+                    ]
+                },
+                {
+                    "id": "git",
+                    "name": "&Git",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true",
+                    "items": [
+                        {
+                            "id": "git-status",
+                            "name": "&Status",
+                            "commandId": "git-status",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-file-history",
+                            "name": "Show File History",
+                            "commandId": "git-file-history"
+                        },
+                        {
+                            "id": "git-repository-history",
+                            "name": "Show Repository History",
+                            "commandId": "git-repository-history"
+                        },
+                        {
+                            "id": "git-blame",
+                            "name": "Blame",
+                            "commandId": "git-blame"
+                        },
+                        {
+                            "id": "git-compare",
+                            "name": "Compar&e",
+                            "commandId": "git-compare"
+                        },
+                        {
+                            "id": "git-commit-delimiter",
+                            "name": "---",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-commit",
+                            "name": "&Commit",
+                            "commandId": "git-commit"
+                        },
+                        {
+                            "id": "git-reset-to-commit",
+                            "name": "Reset to Commit",
+                            "commandId": "git-reset-to-commit"
+                        },
+                        {
+                            "id": "git-rebase",
+                            "name": "Re&base",
+                            "commandId": "git-rebase"
+                        },
+                        {
+                            "id": "git-merge",
+                            "name": "&Merge",
+                            "commandId": "git-merge"
+                        },
+                        {
+                            "id": "git-branch",
+                            "name": "B&ranches",
+                            "commandId": "git-branch"
+                        },
+                        {
+                            "id": "git-add-delimiter",
+                            "name": "---",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-add",
+                            "name": "&Add to Stage",
+                            "commandId": "git-add"
+                        },
+                        {
+                            "id": "git-remove",
+                            "name": "Remove from Stage",
+                            "commandId": "git-remove"
+                        },
+                        {
+                            "id": "git-checkout",
+                            "name": "Checkout from Stage",
+                            "commandId": "git-checkout"
+                        },
+                        {
+                            "id": "git-untrack",
+                            "name": "Untrack",
+                            "commandId": "git-untrack"
+                        },
+                        {
+                            "id": "git-stash-delimiter",
+                            "name": "---",
+                            "upate": "true"
+                        },
+                        {
+                            "id": "git-stash",
+                            "name": "Stash Changes",
+                            "commandId": "git-stash"
+                        },
+                        {
+                            "id": "git-unstash",
+                            "name": "Unstash Changes",
+                            "commandId": "git-unstash"
+                        },
+                        {
+                            "id": "git-push-delimiter",
+                            "name": "---",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-push",
+                            "name": "&Push",
+                            "commandId": "git-push"
+                        },
+                        {
+                            "id": "git-fetch",
+                            "name": "&Fetch",
+                            "commandId": "git-fetch"
+                        },
+                        {
+                            "id": "git-pull",
+                            "name": "P&ull",
+                            "commandId": "git-pull"
+                        },
+                        {
+                            "id": "git-update-submodule",
+                            "name": "Update Submodules",
+                            "commandId": "git-update-submodule"
+                        },
+                        {
+                            "id": "git-remote",
+                            "name": "Romotes",
+                            "commandId": "git-remote"
+                        },
+                        {
+                            "id": "git-clone-delimiter",
+                            "name": "---",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-clone",
+                            "name": "Clone from URL",
+                            "commandId": "git-clone"
+                        },
+                        {
+                            "id": "git-create-repository",
+                            "name": "New Repository",
+                            "commandId": "git-create-repository"
+                        },
+                        {
+                            "id": "git-configure-delimiter",
+                            "name": "---",
+                            "update": "true"
+                        },
+                        {
+                            "id": "git-configure",
+                            "name": "Confi&gure",
+                            "commandId": "git-configure"
+                        },
+                        {
+                            "id": "git-run",
+                            "name": "Run Git Command",
+                            "commandId": "git-run"
+                        }
+                    ]
+                }
+            ]
+        },
+
         "webida.common.workbench:views" : {
             "module" : "webida-lib/plugins/git/git-view",
             "location": "bottom"
