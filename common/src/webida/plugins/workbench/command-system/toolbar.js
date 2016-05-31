@@ -196,7 +196,7 @@ define([
     }
 
     function selectToolbarItems(items, model) {
-        if (model.toolbar && model.invisible) {
+        if (model.toolbar && !model.invisible) {
             items.push(model);
         } else {
             if ('items' in model && Array.isArray(model.items)) {
@@ -255,17 +255,17 @@ define([
         return items;
     }
 
-    function updateToolbar() {
-        clearMenu(toolbar);
-        fillToolbar(toolbar);
-    }
-
     function fillToolbar(menu) {
         var modelItems = getToolbarItems();
         var toolbarItems = createMenuButton(modelItems);
         toolbarItems.forEach(function (item) {
             menu.addChild(item);
         });
+    }
+
+    function updateToolbar() {
+        clearMenu(toolbar);
+        fillToolbar(toolbar);
     }
 
     function createToolbar() {
