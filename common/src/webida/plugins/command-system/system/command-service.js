@@ -146,9 +146,9 @@ define([
             });
         },
         /**
-         * The shortcut event listener.
+         * The shortcut binding
          */
-        shortcutEventListener: shortcutBind.eventListener
+        shortcutBind: shortcutBind
     };
 
     return commandService;

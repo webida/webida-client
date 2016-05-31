@@ -81,7 +81,7 @@ define([
     }
 
     var shortcutBind = {
-        eventListener : function (event) {
+        getKeys: function (event) {
             if (modifierKeyCodes.indexOf(event.keyCode) > -1) {
                 return;
             }
@@ -97,7 +97,11 @@ define([
             keys.push(mainKey);
             keys = keys.join('+');
             console.log('keys: ', keys);
-            keys = normalizeKeysStr(keys);
+            return normalizeKeysStr(keys);
+        },
+
+        eventListener : function (event) {
+            var keys = this.getKeys(event);
             var shortcutItem = shortcutRegistry.getShortcut(keys);
             if (shortcutItem) {
                 if (!shortcutItem.keepDefault) {

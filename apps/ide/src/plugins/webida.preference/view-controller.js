@@ -76,6 +76,9 @@ define([
 
     /* jshint validthis: true */
     function _onStoreStatusChanged(status) {
+        if (!reg.byId('restore-preference')) {  //ToDo fix
+            return;
+        }
         reg.byId('restore-preference').set('disabled', !currentPage.store.status.override);
         if (currentPage.store.status.dirty) {
             reg.byId('apply-preference').set('disabled', !currentPage.store.status.valid);
@@ -98,6 +101,40 @@ define([
                 reg.byId('save-all-preference').set('disabled', invalidStores.length > 0);
             }
         }
+    }
+
+    function _initializeContentArea(node, store) {
+
+        function __dim(override) {
+            if (!$('.preference-override-box').hasClass('hidden')) {
+                if (!override) {
+                    if ($(subContentArea).find('.dim').length === 0) {
+                        $(subContentArea).append($('<div class="dim"></div>'));
+                    }
+                } else {
+                    $(subContentArea).find('.dim').remove();
+                }
+            }
+        }
+
+        var overrideCheckbox = reg.byId('preference-override');
+        $(titleArea).find('h1').text(node.name);
+        if (preferenceManager.getParentStore(store)) {
+            $('.preference-override-box').removeClass('hidden');
+            overrideCheckbox.set('checked', store.status.override, false);
+            __dim(store.status.override);
+        } else {
+            $('.preference-override-box').addClass('hidden');
+        }
+
+        // events
+        preferenceDlg.own(
+            on(overrideCheckbox, 'change', function (checked) {
+                currentPage.store.setOverride(checked);
+                __dim(checked);
+            })
+        );
+
     }
 
     function _onChangeTreeSelection(node) {
@@ -136,40 +173,6 @@ define([
                 treeViewController.blockTreeSelection(false);
             });
         }
-    }
-
-    function _initializeContentArea(node, store) {
-
-        function __dim(override) {
-            if (!$('.preference-override-box').hasClass('hidden')) {
-                if (!override) {
-                    if ($(subContentArea).find('.dim').length === 0) {
-                        $(subContentArea).append($('<div class="dim"></div>'));
-                    }
-                } else {
-                    $(subContentArea).find('.dim').remove();
-                }
-            }
-        }
-
-        var overrideCheckbox = reg.byId('preference-override');
-        $(titleArea).find('h1').text(node.name);
-        if (preferenceManager.getParentStore(store)) {
-            $('.preference-override-box').removeClass('hidden');
-            overrideCheckbox.set('checked', store.status.override, false);
-            __dim(store.status.override);
-        } else {
-            $('.preference-override-box').addClass('hidden');
-        }
-
-        // events
-        preferenceDlg.own(
-            on(overrideCheckbox, 'change', function (checked) {
-                currentPage.store.setOverride(checked);
-                __dim(checked);
-            })
-        );
-
     }
 
     function _initializeLayout() {

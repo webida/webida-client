@@ -49,13 +49,15 @@
                 {
                     "id": "preferences",
                     "shortcut": {
-                        "defaultKey": "Alt+P"
+                        "defaultKey": "Alt+P",
+                        "description": "Workspace Preference"
                     }
                 },
                 {
                     "id": "preferences-context",
                     "shortcut": {
-                        "defaultKey": "Alt+P"
+                        "defaultKey": "Ctrl+Alt+P",
+                        "description": "Project Preference"
                     }
                 }
             ]

@@ -404,6 +404,8 @@ define([
                 } else {
                     saveFileMenuItem.invisible = true;
                 }
+            } else {
+                saveFileMenuItem.invisible = true;
             }
             editorParts = registry.getEditorParts();
             if (editorParts) {
@@ -418,9 +420,7 @@ define([
             }
         }
         if (!registry || !editorParts) {
-            if (!registry) {
-                saveFileMenuItem.invisible = true;
-            }
+            saveFileMenuItem.invisible = true;
             closeAllMenuItem.invisible = true;
             closeOthersMenuItem.invisible = true;
             delimiterCloseAllMenuItem.invisible = true;
@@ -596,7 +596,7 @@ define([
         var goToLineMenuItem = commandService.getContextMenuModel('go-to-line');
         var goToMatchingBraceMenuItem = commandService.getContextMenuModel('go-to-matching-brace');
         if (viewer) {
-            delimiterGoToMenuItem = false;
+            delimiterGoToMenuItem.invisible = false;
             goToDefinitionMenuItem.invisible = false;
             if (viewer.execute('isDefaultKeyMap')) {
                 goToLineMenuItem.invisible = false;
@@ -609,7 +609,7 @@ define([
                 goToMatchingBraceMenuItem.invisible = true;
             }
         } else {
-            delimiterGoToMenuItem = true;
+            delimiterGoToMenuItem.invisible = true;
             goToDefinitionMenuItem.invisible = true;
             goToLineMenuItem.invisible = true;
             goToMatchingBraceMenuItem.invisible = true;

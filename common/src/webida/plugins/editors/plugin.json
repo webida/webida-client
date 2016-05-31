@@ -229,25 +229,29 @@
                 {
                     "id": "undo",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Z"
+                        "defaultKey": "Ctrl+Z",
+                        "description": "Undo"
                     }
                 },
                 {
                     "id": "redo",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Y"
+                        "defaultKey": "Ctrl+Y",
+                        "description": "Redo"
                     }
                 },
                 {
                     "id": "save-file",
                     "shortcut": {
-                        "defaultKey": "Ctrl+S"
+                        "defaultKey": "Ctrl+S",
+                        "description": "Save"
                     }
                 },
                 {
                     "id": "save-all",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Shift+S"
+                        "defaultKey": "Ctrl+Shift+S",
+                        "description": "Save All"
                     }
                 },
                 {
@@ -256,79 +260,92 @@
                 {
                     "id": "select-all",
                     "shortcut": {
-                        "defaultKey": "Ctrl+A"
+                        "defaultKey": "Ctrl+A",
+                        "description": "Select all"
                     }
                 },
                 {
                     "id": "select-line",
                     "shortcut": {
-                        "defaultKey": "Ctrl+L"
+                        "defaultKey": "Ctrl+L",
+                        "description": "Select line"
                     }
                 },
                 {
                     "id": "line-indent",
                     "shortcut": {
-                        "defaultKey": "Ctrl+]"
+                        "defaultKey": "Ctrl+]",
+                        "description": "Indent more"
                     }
                 },
                 {
                     "id": "line-dedent",
                     "shortcut": {
-                        "defaultKey": "Ctrl+["
+                        "defaultKey": "Ctrl+[",
+                        "description": "Indent less"
                     }
                 },
                 {
                     "id": "line-move-up",
                     "shortcut": {
-                        "defaultKey": "Shift+Alt+Up"
+                        "defaultKey": "Shift+Alt+Up",
+                        "description": "Move line up"
                     }
                 },
                 {
                     "id": "line-move-down",
                     "shortcut": {
-                        "defaultKey": "Shift+Alt+Down"
+                        "defaultKey": "Shift+Alt+Down",
+                        "description": "Move line down"
                     }
                 },
                 {
                     "id": "line-delete",
                     "shortcut": {
-                        "defaultKey": "Alt+L"
+                        "defaultKey": "Alt+L",
+                        "description": "Delete the current line"
                     }
                 },
                 {
                     "id": "cursor-line-to-middle",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Alt+M"
+                        "defaultKey": "Ctrl+Alt+M",
+                        "description": "Move cursor line to center"
                     }
                 },
                 {
                     "id": "cursor-line-to-top",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Alt+T"
+                        "defaultKey": "Ctrl+Alt+T",
+                        "description": "Move cursor line to top"
                     }
                 },
                 {
                     "id": "cursor-line-to-bottom",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Alt+B"
+                        "defaultKey": "Ctrl+Alt+B",
+                        "description": "Move cursor line to bottom"
                     }
                 },
                 {
                     "id": "line-comment",
                     "shortcut": {
-                        "defaultKey": "Ctrl+/"
+                        "defaultKey": "Ctrl+/",
+                        "description": "Toggle line comments"
                     }
                 },
                 {
                     "id": "block-comment",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Shift+/"
+                        "defaultKey": "Ctrl+Shift+/",
+                        "description": "Toggle block comment"
                     }
                 },
                 {
                     "id": "comment-out-selection",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Alt+/"
+                        "defaultKey": "Ctrl+Alt+/",
+                        "description": "Comment out selection"
                     }
                 },
                 {
@@ -337,115 +354,134 @@
                 {
                     "id": "beautify-code",
                     "shortcut": {
-                        "defaultKey": "Alt+B"
+                        "defaultKey": "Alt+B",
+                        "description": "Beautify"
                     }
                 },
                 {
                     "id": "beautify-all-code",
                     "shortcut": {
-                        "defaultKey": "Shift+Alt+B"
+                        "defaultKey": "Shift+Alt+B",
+                        "description": "Beautify All"
                     }
                 },
                 {
                     "id": "rename-variables",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Q"
+                        "defaultKey": "Ctrl+Q",
+                        "description": "Rename variables"
                     }
                 },
                {
                     "id": "replace",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Shift+F"
+                        "defaultKey": "Ctrl+Shift+F",
+                        "description": "Open a dialog to replace keywords"
                     }
                 },
                 {
                     "id": "find",
                     "shortcut": {
-                        "defaultKey": "Ctrl+F"
+                        "defaultKey": "Ctrl+F",
+                        "description": "Open a dialog to find keywords"
                     }
                 },
                 {
                     "id": "highlight-to-find",
                     "shortcut": {
-                        "defalutKey": "Ctrl+H"
+                        "defalutKey": "Ctrl+H",
+                        "description": "Highlight the keyword under cursor to find"
                     }
                 },
                 {
                     "id": "find-next",
                     "shortcut": {
-                        "defaultKey": "Ctrl+."
+                        "defaultKey": "Ctrl+.",
+                        "description": "Find the next highlighted keyword"
                     }
                 },
                 {
                     "id": "find-previous",
                     "shortcut": {
-                        "defaultKey": "Ctrl+,"
+                        "defaultKey": "Ctrl+,",
+                        "description": "Find the previous highlighted keyword"
                     }
                 },
                 {
                     "id": "go-to-definition",
                     "shortcut": {
-                        "defaultKey": "Alt+."
+                        "defaultKey": "Alt+.",
+                        "description": "Go to definition"
                     }
                 },
                 {
                     "id": "go-to-line",
                     "shortcut": {
-                        "defaultKey": "Ctrl+D"
+                        "defaultKey": "Ctrl+D",
+                        "description": "Go to line"
                     }
                 },
                 {
                     "id": "go-to-matching-brace",
                     "shortcutKey": {
-                        "defaultKey": "Ctrl+Shift+B"
+                        "defaultKey": "Ctrl+Shift+B",
+                        "description": "Go to matching brace"
                     }
                 },
                 {
                     "id": "ex-selected-tab",
                     "shortcut": {
-                        "defaultKey": "Alt+`"
+                        "defaultKey": "Alt+`",
+                        "description": "Switch to ex-selected editor tab"
                     }
                 },
                 {
                     "id": "go-previous-tab",
                     "shortcut": {
-                        "defaultKey": "Alt+Shift+["
+                        "defaultKey": "Alt+Shift+[",
+                        "description": "Select previous editor tab"
                     }
                 },
                 {
                     "id": "go-next-tab",
                     "shortcut": {
-                        "defaultKey": "Alt+Shift+]"
+                        "defaultKey": "Alt+Shift+]",
+                        "description": "Select next editor tab"
                     }
                 },
                 {
                     "id": "switch-editor-tab",
                     "shortcut": {
-                        "defaultKey": "Alt+A"
+                        "defaultKey": "Alt+A",
+                        "description": "Select editor tab from list"
                     }
                 },
                 {
                     "id": "switch-next-tab-container",
                     "shortcut": {
-                        "defaultKey": "Ctrl+`"
+                        "defaultKey": "Ctrl+`",
+                        "description": "Switch tab container"
                     }
                 },
                 {
                     "id": "move-tab-container",
                     "shortcut": {
-                        "defaultKey": "Alt+Shift+,"
+                        "defaultKey": "Alt+Shift+,",
+                        "description": "Move current editor tab to the other tab container"
                         }
                 },
                 {
                     "id": "split-vertical",
                     "shortcut": {
-                        "defaultKey": "Alt+Shift+V"
+                        "defaultKey": "Alt+Shift+V",
+                        "description": "Rotate editor tab vertically"
                     }
                 },
                 {
                     "id": "split-horizontal",
                     "shortcut": {
-                        "defaultKey": "Alt+Shift+H"
+                        "defaultKey": "Alt+Shift+H",
+                        "description": "Rotate editor tab horizontally"
                     }
                 }
             ]

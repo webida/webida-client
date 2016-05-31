@@ -9,5 +9,19 @@
         "webida.common.command-system:menus": [
             { "name" : "items", "type" : "object", "desc": "The object of the menu containing the items." }
         ]
+    },
+    "extensions": {
+        "webida.preference:pages": [
+            {
+                "module": "webida-lib/plugins/command-system/shortcut/shortcut-preference",
+                "id": "webidaShortcut",
+                "hierarchy": "",
+                "name": "Shortcut",
+                "page": "SimplePage",
+                "pageData": "getSchema",
+                "getDefault": "getDefault",
+                "scope": ["WORKSPACE"]
+            }
+        ]
     }
 }

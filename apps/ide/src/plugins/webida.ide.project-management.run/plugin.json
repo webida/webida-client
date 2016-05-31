@@ -70,7 +70,8 @@
                 {
                     "id": "run",
                     "shortcut": {
-                        "defaultKey": "Alt+R"
+                        "defaultKey": "Alt+R",
+                        "description": "Run current project"
                     }
                 },
                 {
@@ -79,7 +80,8 @@
                 {
                     "id": "debug",
                     "shortcut": {
-                        "defaultKey": "Alt+D"
+                        "defaultKey": "Alt+D",
+                        "description": "Debug current project"
                     }
                 },
                 {

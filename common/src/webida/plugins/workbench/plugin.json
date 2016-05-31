@@ -115,49 +115,50 @@
                 {
                     "id": "quit",
                     "shortcut": {
-                        "defaultKey": "Ctrl+W"
+                        "defaultKey": "Ctrl+W",
+                        "description": "Quit"
                     }
                 },
                 {
                     "id": "select-view-from-list",
                     "shortcut": {
-                        "defaultKey": "Alt+Shift+A"
+                        "defaultKey": "Alt+Shift+A",
+                        "description": "Show view"
                     }
                 },
                 {
                     "id": "toggle-menu",
                     "shortcut": {
-                        "defaultKey": "Alt+Shift+M"
+                        "defaultKey": "Alt+Shift+M",
+                        "description": "Toggle menubar"
                     }
                 },
                 {
                     "id": "toggle-toolbar",
                     "shortcut": {
-                        "defaultKey": "Alt+Shift+T"
+                        "defaultKey": "Alt+Shift+T",
+                        "description": "Toggle toolbar"
                     }
                 },
                 {
                     "id": "toggle-full-screen",
                     "shortcut": {
-                        "defaultKey": "Alt+F11"
+                        "defaultKey": "Alt+F11",
+                        "description": "Toggle full-screen"
                     }
                 },
                 {
                     "id": "shortcut-list",
                     "shortcut": {
-                        "defaultKey": "Ctrl+Shift+L"
-                    }
-                },
-                {
-                    "id": "command-list",
-                    "shortcut": {
-                        "defaultKey": "Alt+C"
+                        "defaultKey": "Ctrl+Shift+L",
+                        "description": "Shortcut keys"
                     }
                 },
                 {
                     "id": "focus-menu-bar",
                     "shortcut" : {
-                        "defaultKey": "F10"
+                        "defaultKey": "F10",
+                        "description": "Move focus to the menu bar"
                     }
                 }
             ]
@@ -240,8 +241,7 @@
                             "toolbar": {
                                 "icons" : "<%= themePath %>/images/icons/toolbar_shortcuts.png",
                                 "tooltip" : "Shortcut list"
-                            },
-                            "invisible": "true"
+                            }
                         },
                         {
                             "id": "command-list",
