@@ -82,7 +82,7 @@ define([
                         parentMenuItems.splice(siblingItemIndex, 0, menu);
                     }
                     break;
-                case 'under':
+                case 'parent':
                     if (!siblingMenuItems) {
                         siblingMenuItems = [];
                     }

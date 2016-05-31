@@ -41,7 +41,8 @@
                 {
                     "id": "deploy",
                     "shortcut": {
-                        "defaultKey": "Shift+Alt+D"
+                        "defaultKey": "Shift+Alt+D",
+                        "description": "Deploy"
                     }
                 }
             ]

@@ -24,11 +24,13 @@ define([
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
     '../command/Command',
+    '../shortcut/shortcut-registry',
     './command-service'
 ], function (
     EventEmitter,
     genetic,
     Command,
+    shortcutRegistry,
     commandService
 ) {
     'use strict';
@@ -51,6 +53,7 @@ define([
                     var menuModel = commandService.getTopMenuModel();
                     self.emit(self.INITIALIZED, menuModel);
                 });
+                shortcutRegistry.setCustomShortcut();
             });
         },
         /**

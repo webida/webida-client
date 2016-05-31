@@ -45,7 +45,7 @@ define([
 ) {
     'use strict';
 
->>>>>>> 0c0f031... [Improvement](#890) Applied to command-system
+    // context menu is singleton object
     var contextMenu = new Menu({
         id: 'commandSystemContextMenu',
         isBuilt : false,
@@ -79,71 +79,72 @@ define([
         }
     });
 
-    function createDropDownMenu(pluginName, item) {
-        var label = item.name.replace(/&(.)/, '{$1}');
-        var popup = new DropDownMenu({ style: 'width: 250px' });
-        var menuItem = new PopupMenuItem({ label: label, disabled: item.disabled });
-        menuItem.set('popup', popup);
-        var children = createMenuItems(pluginName, item.items);
-        _.each(children, function (child) {
-            popup.addChild(child);
-        });
+    var privates = {
+        createDropDownMenu: function createDropDownMenu(pluginName, item) {
+            var label = item.name.replace(/&(.)/, '{$1}');
+            var popup = new DropDownMenu({ style: 'width: 250px' });
+            var menuItem = new PopupMenuItem({ label: label, disabled: item.disabled });
+            menuItem.set('popup', popup);
+            var children = privates.createMenuItems(pluginName, item.items);
+            _.each(children, function (child) {
+                popup.addChild(child);
+            });
+            return menuItem;
+        },
 
-        return menuItem;
-    }
-
-    function invisibleContext(pluginName, item) {
-        var ret = false;
-        if (pluginName === 'webida.common.editors') {
-            if (item.plugin !== 'webida-lib/plugins/editors') {
-                ret = true;
-            }
-        } else {
-            if (item.plugin === 'webida-lib/plugins/editors') {
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
-    function createMenuItems(pluginName, items) {
-        var menuItems = [];
-        var item;
-        var label;
-        _.each(items, function (child) {
-            if (child.invisible || invisibleContext(pluginName, child)) {
-                return;
-            }
-
-            if (child.items.length > 0) {
-                item = createDropDownMenu(pluginName, child);
+        invisibleContext: function invisibleContext(pluginName, item) {
+            var ret = false;
+            if (pluginName === 'webida.common.editors') {
+                if (item.plugin !== 'webida-lib/plugins/editors') {
+                    ret = true;
+                }
             } else {
-                if (child.name === '---') {
-                    item = new MenuSeparator();
-                } else {
-                    label = child.name.replace(/&(.)/, '{$1}');
-                    item = new MenuItem({ label: label, disabled: child.disabled });
-                    item.set('onClick', function () {
-                        commandSystem.service.requestExecution(child.commandId);
-                    });
+                if (item.plugin === 'webida-lib/plugins/editors') {
+                    ret = true;
                 }
             }
-            if (item) {
-                menuItems.push(item);
-            }
-        });
-        return menuItems;
-    }
+            return ret;
+        },
 
-    function fillContextMenu(pluginName) {
-        var model = commandSystem.service.getContextMenuModel();
-        var menuItems = createMenuItems(pluginName, model.items);
-        _.each(menuItems, function (item) {
-            if (item) {
-                contextMenu.addChild(item);
-            }
-        });
-    }
+        createMenuItems: function createMenuItems(pluginName, items) {
+            var menuItems = [];
+            var item;
+            var label;
+            _.each(items, function (child) {
+                if (child.invisible || privates.invisibleContext(pluginName, child)) {
+                    return;
+                }
+
+                if (child.items.length > 0) {
+                    item = privates.createDropDownMenu(pluginName, child);
+                } else {
+                    if (child.name === '---') {
+                        item = new MenuSeparator();
+                    } else {
+                        label = child.name.replace(/&(.)/, '{$1}');
+                        item = new MenuItem({ label: label, disabled: child.disabled });
+                        item.set('onClick', function () {
+                            commandSystem.service.requestExecution(child.commandId);
+                        });
+                    }
+                }
+                if (item) {
+                    menuItems.push(item);
+                }
+            });
+            return menuItems;
+        },
+
+        fillContextMenu: function fillContextMenu(pluginName) {
+            var model = commandSystem.service.getContextMenuModel();
+            var menuItems = privates.createMenuItems(pluginName, model.items);
+            _.each(menuItems, function (item) {
+                if (item) {
+                    contextMenu.addChild(item);
+                }
+            });
+        }
+    };
 
     function createContextMenu(pluginName, event) {
         var children = contextMenu.getChildren();
@@ -152,7 +153,7 @@ define([
                 child.destroyRecursive();
             });
         }
-        fillContextMenu(pluginName);
+        privates.fillContextMenu(pluginName);
         var child = contextMenu.getChildren();
         if (child && child.length > 0) {
             contextMenu.isBuilt = true;
@@ -169,4 +170,3 @@ define([
         create: createContextMenu
     };
 });
-

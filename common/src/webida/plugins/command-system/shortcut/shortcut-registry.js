@@ -21,11 +21,24 @@
  */
 
 define([
+    'external/lodash/lodash.min',
+    'plugins/webida.preference/preference-service-factory',
 ], function (
+    _,
+    preference
 ) {
     'use strict';
 
-    var registry = {};
+    var registry = {
+        default: {},
+        custom: {}
+    };
+
+    var PREFERENCE_ID = 'webidaShortcut';
+    var PREFERENCE_KEY = 'webida.shortcut:type';
+
+    var shortcutType;
+    var isShortcutTypeChanged;
 
     /**
      * A module is shortcut that is meta for the command system.
@@ -35,9 +48,13 @@ define([
          * @param {String} id
          */
         getShortcut: function (id) {
+            var shortcutRegistry;
             if (id) {
-                return registry[id];
+                shortcutRegistry = registry[shortcutType][id];
+            } else {
+                shortcutRegistry = registry[shortcutType];
             }
+            return shortcutRegistry;
         },
         /**
          *
@@ -48,11 +65,31 @@ define([
                 if (item.shortcut.hasOwnProperty('defaultKey')) {
                     var propertys = {
                         commandId: item.id,
+                        description: item.shortcut.description,
                         keepDefault: item.shortcut.keepDefault,
                         propagate: item.shortcut.propagate
                     };
-                    registry[item.shortcut.defaultKey] = propertys;
+                    registry.default[item.shortcut.defaultKey] = propertys;
                 }
+            }
+        },
+        addShortcutChangeListener: function () {
+            var preferenceService = preference.get('WORKSPACE');
+            preferenceService.getValue(
+                PREFERENCE_ID, PREFERENCE_KEY, function (value) {
+                    shortcutType = value;
+                });
+            preferenceService.addFieldChangeListener(
+                PREFERENCE_ID, function (value) {
+                    if (shortcutType !== value[PREFERENCE_KEY]) {
+                        isShortcutTypeChanged = true;
+                        shortcutType = value[PREFERENCE_KEY];
+                    }
+                });
+        },
+        setCustomShortcut: function () {
+            if (registry.default) {
+                registry.custom = _.clone(registry.default);
             }
         }
     };

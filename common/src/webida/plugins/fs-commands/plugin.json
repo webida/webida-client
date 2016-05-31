@@ -131,7 +131,8 @@
                  {
                      "id": "refresh",
                      "shortcut": {
-                         "defaultKey": "alt+F5"
+                         "defaultKey": "Alt+F5",
+                         "description": "Refresh selected files or directories"
                      }
                  },
                  {
@@ -140,13 +141,15 @@
                  {
                      "id": "new-file",
                      "shortcut": {
-                         "defaultKey": "Insert"
+                         "defaultKey": "Insert",
+                         "description": "Create an empty file under the selected directory"
                      }
                  },
                  {
                      "id": "new-directory",
                      "shortcut": {
-                         "defaultKey": "shift+Insert"
+                         "defaultKey": "shift+Insert",
+                         "description": "Create an empty directory under the selected directory"
                      }
                  },
                  {
@@ -155,7 +158,8 @@
                  {
                      "id": "rename",
                      "shortcut": {
-                         "defaultKey": "F2"
+                         "defaultKey": "F2",
+                         "description": "Rename a selected file or directory"
                      }
                  },
                  {
@@ -167,49 +171,57 @@
                  {
                      "id": "find-in-files",
                      "shortcut": {
-                         "defaultKey": "shift+alt+F"
+                         "defaultKey": "Shift+Alt+F",
+                         "description": "Find a keyword in selected directory"
                      }
                  },
                  {
                      "id": "go-to-file",
                      "shortcut": {
-                         "defaultKey": "Alt+G"
+                         "defaultKey": "Alt+G",
+                         "description": "Find and open file in selected directory"
                      }
                  },
                  {
                      "id": "copy",
                      "shortcut": {
-                         "defaultKey": "Ctrl+C"
+                         "defaultKey": "Ctrl+C",
+                         "description": "Copy selected files and directories"
                      }
                  },
                  {
                      "id": "cut",
                      "shortcut": {
-                         "defaultKey": "Ctrl+X"
+                         "defaultKey": "Ctrl+X",
+                         "description": "Cut selected files and directories"
                      }
                  },
                  {
                      "id": "paste",
                      "shortcut": {
-                         "defaultKey": "Ctrl+V"
+                         "defaultKey": "Ctrl+V",
+                         "description": "Paste copied or cut files and directories"
                      }
                  },
                  {
                      "id": "delete-file",
                      "shortcut": {
-                         "defaultKey": "Delete"
+                         "defaultKey": "Delete",
+                         "description": "Delete selected files or directories"
                      }
                  },
                  {
                      "id": "Properties",
                      "shortcut": {
-                         "defaultKey": "Alt+Enter"
+                         "defaultKey": "Alt+Enter",
+                         "description": "Properties"
                      }
                  },
                  {
                      "id": "open",
                      "shortcut": {
-                         "defaultKey": "Enter"
+                         "defaultKey": "Enter",
+                         "description": "Open files or expand/collapse directories"
                      }
                  },
                  {

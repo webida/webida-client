@@ -98,7 +98,8 @@
                 {
                     "id": "git-status",
                     "shortcut": {
-                        "defaultKey": "Alt+S"
+                        "defaultKey": "Alt+S",
+                        "description": "git status"
                     }
                 },
                 {
@@ -116,7 +117,8 @@
                 {
                     "id": "git-commit",
                     "shortcut": {
-                        "defaultKey": "Alt+M"
+                        "defaultKey": "Alt+M",
+                        "description": "git commit"
                     }
                 },
                 {
@@ -152,7 +154,8 @@
                 {
                     "id": "git-push",
                     "shortcut": {
-                        "defaultKey": "Shift+Alt+P"
+                        "defaultKey": "Shift+Alt+P",
+                        "description": "git push"
                     }
                 },
                 {
@@ -161,7 +164,8 @@
                 {
                     "id": "git-pull",
                     "shortcut": {
-                        "defaultKey": "Shift+Alt+U"
+                        "defaultKey": "Shift+Alt+U",
+                        "description": "git pull"
                     }
                 },
                 {
@@ -182,7 +186,8 @@
                 {
                     "id": "git-run",
                     "shortcut": {
-                        "defaultKey": "Shift+Alt+R"
+                        "defaultKey": "Shift+Alt+R",
+                        "description": "Run git commands from the command line"
                     }
                 }
             ]

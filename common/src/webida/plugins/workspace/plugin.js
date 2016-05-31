@@ -178,30 +178,30 @@ define([
      * @param item
      * @inner
      */
-    function getItemIconClass(item) {        
+    function getItemIconClass(item) {
         var fileExtensionIconClassMap = defaultFileExtensionIconClassMap;
         var fileNameIconClassMap = defaultFileNameIconClassMap;
         var projectInfoObj = projectInfo.getByPath(item.getPath());
         var projectType = projectInfoObj ? projectInfoObj.type : '';
-        
+
         if (projectType !== '' && projectTypeFileExtensionIconClassMap.hasOwnProperty(projectType)) {
             fileExtensionIconClassMap = projectTypeFileExtensionIconClassMap[projectType];
-            fileNameIconClassMap = projectTypeFileNameIconClassMap[projectType]; 
-        } 
-        
+            fileNameIconClassMap = projectTypeFileNameIconClassMap[projectType];
+        }
+
         if (fileNameIconClassMap.hasOwnProperty(item.name)) {
             return fileNameIconClassMap[item.name];
         } else if (defaultFileNameIconClassMap.hasOwnProperty(item.name)) {
-            return defaultFileNameIconClassMap[item.name];            
+            return defaultFileNameIconClassMap[item.name];
         } else {
             var fileExt = item.name.indexOf('.') >= 0 ? item.name.split('.').pop() : '';
-            if (fileExtensionIconClassMap.hasOwnProperty(fileExt)) {                
-                return fileExtensionIconClassMap[fileExt];                
+            if (fileExtensionIconClassMap.hasOwnProperty(fileExt)) {
+                return fileExtensionIconClassMap[fileExt];
             } else if (defaultFileExtensionIconClassMap.hasOwnProperty(fileExt)) {
                 return defaultFileExtensionIconClassMap[fileExt];
             } else {
                 return 'wvFile';
-            }           
+            }
         }
     }
     /**
@@ -212,7 +212,7 @@ define([
         var projectType = ext.projectType;
 
         if (typeof projectType === 'string') {
-            
+
             var targetFileExtensionIconClassMap = null;
             var targetFileNameIconClassMap = null;
             if (projectType === '') {
@@ -222,16 +222,16 @@ define([
                 if (!projectTypeFileExtensionIconClassMap.hasOwnProperty(projectType)) {
                     projectTypeFileExtensionIconClassMap[projectType] = {};
                     projectTypeFileNameIconClassMap[projectType] = {};
-                }                 
+                }
                 targetFileExtensionIconClassMap = projectTypeFileExtensionIconClassMap[projectType];
                 targetFileNameIconClassMap = projectTypeFileNameIconClassMap[projectType];
             }
-            
+
             for (var fileExt in ext.fileExtension) {
                 if (typeof fileExt === 'string') {
                     targetFileExtensionIconClassMap[fileExt] = ext.fileExtension[fileExt];
                 }
-            }       
+            }
 
             for (var fileName in ext.specificFileName) {
                 if (typeof fileName === 'string') {
@@ -252,8 +252,8 @@ define([
             if (typeof stateSet === 'string') {
                 stateSetIconClassMap[stateSet] = ext.stateMap[stateSet];
             }
-        }        
-        _extractCssFilePathList(ext, cssFilePathList); 
+        }
+        _extractCssFilePathList(ext, cssFilePathList);
     });
     /**
      * Manage a CSS and a module
@@ -261,6 +261,15 @@ define([
      */
     loadCSSList(cssFilePathList, function () {
     });
+    /**
+     * Get a node
+     * @param path
+     * @method
+     */
+    function getNode(path) {
+        var relPath = path.substr(rootNode.getPath().length);
+        return rootNode.getSubnode(relPath);
+    }
     /**
      * Select a node
      * @param node
@@ -303,6 +312,37 @@ define([
             }
         }
         return expandedNodes;
+    }
+    /**
+     * Get paths of selected node
+     * @method
+     */
+    function getSelectedPaths() {
+        var arr = tree ? (tree.selectedItems || []) : [];
+        return arr.map(function (i) {
+            return i.getPath();
+        });
+    }
+    /**
+     * Get the path of selected node
+     * @method
+     */
+    function getSelectedPath() {
+        return getSelectedPaths()[0] || null;
+    }
+    /**
+     * Get a selected node
+     * @method
+     */
+    function getSelectedNodes() { // TODO: remove the following and its uses in the IDE
+        return tree ? (tree.selectedItems || []) : [];
+    }
+    function updateMenu() {
+        var commandService = commandSystem.service;
+        commandService.updateTopMenuModel(function () {
+            var model = commandService.getTopMenuModel();
+            topic.publish('command-system/menu/update', model.items);
+        });
     }
     /**
      * initialize the tree
@@ -395,11 +435,11 @@ define([
                     // directory
                     return (opened ? 'dijitFolderOpened' : 'dijitFolderClosed');
                 } else {
-                    // file                    
+                    // file
                     return getItemIconClass(item);
                 }
             },
-            
+
             refreshItemClasses: function () {
                 function refreshItemClassesRecursively(treeNode) {
                     treeNode._updateItemClasses(treeNode.item);
@@ -700,6 +740,7 @@ define([
                 }
                 original.apply(this, arguments);
                 topic.publish('workspace/node/selected', node.item.getPath());
+                updateMenu();
             };
         });
 
@@ -901,6 +942,7 @@ define([
 
             function uploadContentsOfDataTransfer(targetNode, dt) {
 
+                var type;
                 function paste(str) {
                     if (type.indexOf(MIME_TYPE_WEBIDA_RESOURCE_PATH) === 0) {
                         var mode = (dt.dropEffect !== 'move') ? 'copy' : 'move';
@@ -923,7 +965,7 @@ define([
                                 srcPath = pathUtil.detachSlash(srcPath);
                                 var srcNode = tree.model.store.query({id: srcPath})[0];
                                 if (srcNode.getParentNode() === targetNode) {
-                                    notify.error(string.substitute(i18n.notifyCannotCopyOrMoveToParentDirectory, 
+                                    notify.error(string.substitute(i18n.notifyCannotCopyOrMoveToParentDirectory,
                                                                    {path: srcNode.getPath()}));
                                     quit = true;
                                 } else {
@@ -948,7 +990,6 @@ define([
                     dt.dropEffect = 'move';
                 }
 
-                var type;
                 if (dt.types.length > 0) {
                     if (dt.types[0].indexOf(MIME_TYPE_WEBIDA_RESOURCE_PATH) === 0) {
                         // DnD from the workspace to worksapce
@@ -1192,23 +1233,6 @@ define([
         }
     }
     /**
-     * Get the path of selected node
-     * @method
-     */
-    function getSelectedPath() {
-        return getSelectedPaths()[0] || null;
-    }
-    /**
-     * Get paths of selected node
-     * @method
-     */
-    function getSelectedPaths() {
-        var arr = tree ? (tree.selectedItems || []) : [];
-        return arr.map(function (i) {
-            return i.getPath();
-        });
-    }
-    /**
      * Verify that the node is exist
      * @method
      */
@@ -1222,22 +1246,6 @@ define([
      */
     function getRootPath() {
         return rootNode.getPath();
-    }
-    /**
-     * Get a selected node
-     * @method
-     */
-    function getSelectedNodes() { // TODO: remove the following and its uses in the IDE
-        return tree ? (tree.selectedItems || []) : [];
-    }
-    /**
-     * Get a node
-     * @param path
-     * @method
-     */
-    function getNode(path) {
-        var relPath = path.substr(rootNode.getPath().length);
-        return rootNode.getSubnode(relPath);
     }
     /**
      * Expand ancestors
@@ -1587,6 +1595,29 @@ define([
             }
         }
 
+        function applyPreferences(values, contextInfo) {
+            function addFilterFunc(func) {
+                wvfilterFuncs.push(func);
+                hideNodes(func, true);
+            }
+
+            function removeFilterFunc(func) {
+                var i = wvfilterFuncs.indexOf(func);
+                wvfilterFuncs.splice(i, 1);
+                hideNodes(func, false);
+            }
+
+            for (var key in values) {
+                if (key.indexOf('workspace:filter:') === 0) {
+                    if (values[key]) {
+                        addFilterFunc(filters.filterFuncs[key]);
+                    } else {
+                        removeFilterFunc(filters.filterFuncs[key]);
+                    }
+                }
+            }
+        }
+
         function initPreferences() {
             preferences.getValues('workspace.preference', function (values) {
                 var isHidden = values['workspace:filter:.*'];
@@ -1618,30 +1649,6 @@ define([
                 }
             });*/
         }
-
-        function applyPreferences(values, contextInfo) {
-            function addFilterFunc(func) {
-                wvfilterFuncs.push(func);
-                hideNodes(func, true);
-            }
-
-            function removeFilterFunc(func) {
-                var i = wvfilterFuncs.indexOf(func);
-                wvfilterFuncs.splice(i, 1);
-                hideNodes(func, false);
-            }
-
-            for (var key in values) {
-                if (key.indexOf('workspace:filter:') === 0) {
-                    if (values[key]) {
-                        addFilterFunc(filters.filterFuncs[key]);
-                    } else {
-                        removeFilterFunc(filters.filterFuncs[key]);
-                    }
-                }
-            }
-        }
-
         /*function applyPreferences(value, id) {
             function addFilterFunc(func) {
                 wvfilterFuncs.push(func);
@@ -1812,13 +1819,6 @@ define([
             throw new Error('assertion fail: unreachable');
         }
     }
-    function updateMenu() {
-        var commandService = commandSystem.service;
-        commandService.updateTopMenuModel(function () {
-            var model = commandService.getTopMenuModel();
-            topic.publish('command-system/menu/update', model.items);
-        });
-    }
     /**
      * @module workspaceView
      */
@@ -1908,4 +1908,3 @@ define([
 
     return workspaceView;
 });
-

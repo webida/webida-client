@@ -230,7 +230,6 @@ define([
                 gitBlame.invisible = true;
                 gitCompare.invisible = true;
             }
-        } else {
             if (pathUtil.isDirPath(path)) {
                 gitRoot.invisible = false;
                 gitRun.invisible = false;

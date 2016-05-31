@@ -42,9 +42,7 @@ define([
     'dijit/focus',
     'dojo/topic',
     'dojo/dom',
-    'dojo/dom-class',                         // domClass
-    'dojo/i18n!./nls/resource',
-    'dojo/string'
+    'dojo/dom-class'
 ], function (
     require,
     _,
@@ -64,9 +62,7 @@ define([
     focus,
     topic,
     dom,
-    domClass,
-    i18n,
-    string
+    domClass
 ) {
     'use strict';
 
@@ -100,7 +96,7 @@ define([
     singleLogger.log('(c) in initialization of workbench module');
 
     topElem.addEventListener('keydown', function (e) {
-        commandSystem.service.shortcutEventListener(e);
+        commandSystem.service.shortcutBind.eventListener(e);
     });
     // extensions of webida.common.workbench:menu
     /*
@@ -149,6 +145,19 @@ define([
     var panels = pm.getExtensions('webida.common.workbench:panels');
     var views = pm.getExtensions('webida.common.workbench:views');
     regionsToInitialize = panels.length + views.length;
+
+    function addContextMenuHandler(pluginName, menuExtPoint, elem) {
+        if (pluginName === 'webida.common.editors' ||
+            pluginName === 'webida.common.workspace') {
+            elem.addEventListener('contextmenu', function (evt) {
+                commandSystem.service.updateContextMenuModel(function () {
+                    contextMenu.create(pluginName, evt);
+                });
+                evt.preventDefault();
+                evt.stopPropagation();
+            });
+        }
+    }
 
     var locations0 = ['top', 'center'];
     //console.log('panels', panels);
@@ -356,18 +365,12 @@ define([
 
     singleLogger.log('(i) in initialization of workbench module');
 
-    function addContextMenuHandler(pluginName, menuExtPoint, elem) {
-        if (pluginName === 'webida.common.editors' ||
-            pluginName === 'webida.common.workspace') {
-            elem.addEventListener('contextmenu', function (evt) {
-                commandSystem.service.updateContextMenuModel(function () {
-                    contextMenu.create(pluginName, evt);
-                });
-                evt.preventDefault();
-                evt.stopPropagation();
-            });
-        }
-    }
+    var context = {
+        lastFocusedWidget : null,
+        paths : null,
+        projectPath : null,
+        etc : null
+    };
 
     function updateStatusbar() {
         var statusInfos = [];
@@ -396,13 +399,6 @@ define([
 
         viewsController.setStatusbarInfos(statusInfos);
     }
-
-    var context = {
-        lastFocusedWidget : null,
-        paths : null,
-        projectPath : null,
-        etc : null
-    };
 
     focus.watch('activeStack', function (name, oldValue, newValue) {
         if (newValue.length > 0 && newValue[0] === 'app-workbench-border-container') {

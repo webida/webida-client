@@ -43,8 +43,8 @@
         "webida-lib/plugins/resources"
     ],
     "start-plugins" : [
-        "webida-lib/plugins/workbench",
         "webida-lib/plugins/command-system",
+        "webida-lib/plugins/workbench",
         "plugins/webida.ide.notification.toast"
     ]
 }
