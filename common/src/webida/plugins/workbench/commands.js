@@ -46,13 +46,9 @@ define([
     var Command = commandSystem.Command;
 
     function showViableShortcutKeys() {
-        /*
-        if (document.activeElement) {
-            $(document.activeElement).trigger('bubble');
-        } else {
-            alert(i18n.alertNoFocusedElementToReceiveKeyboardInput);
-        }*/
-        alert('need dialog for shocut-list');
+        require(['./command-system/shortcut-list'], function (shortcutList) {
+            shortcutList.show();
+        });
     }
 
     function showCmdList() {

@@ -21,11 +21,15 @@
  */
 
 define([
+    'external/lodash/lodash.min',
     'webida-lib/plugins/command-system/system/command-system',
+    'webida-lib/plugins/editors/ExtensionManager',
     'webida-lib/plugins/workspace/plugin',
     'webida-lib/util/path'
 ], function (
+    _,
     commandSystem,
+    ExtensionManager,
     workspace,
     pathUtil
 ) {
@@ -48,6 +52,63 @@ define([
     function getLevel(selPath) {
         return selPath.every(function (path) {
             return pathUtil.getLevel(path) !== 1;
+        });
+    }
+
+    function getEditorNames() {
+        var extensionManager = ExtensionManager.getInstance();
+        var paths = workspace.getSelectedPaths();
+        var i = 0;
+        var ext;
+        var openWithEditorNames = [];
+        var openWithParts = [];
+        if (paths && paths.length > 0 &&
+            paths.every(function (n) {
+                return !pathUtil.isDirPath(n);
+            })) {
+            var availableExtensions =
+                extensionManager.getExtensionsForType(pathUtil.getFileExt(paths[0]));
+            for (i = 0; i < paths.length; i++) {
+                if (availableExtensions) {
+                    var availableExtensions2 =
+                        extensionManager.getExtensionsForType(pathUtil.getFileExt(paths[i]));
+                    if (availableExtensions2) {
+                        availableExtensions =
+                            _.intersection(availableExtensions, availableExtensions2);
+                    } else {
+                        availableExtensions = null;
+                    }
+                }
+            }
+            if (availableExtensions) {
+                for (i = 0; i < availableExtensions.length; i++) {
+                    ext = availableExtensions[i];
+                    openWithEditorNames.push(ext.name);
+                    openWithParts.push(ext.__plugin__.loc + '/' + ext.editorPart);
+                }
+            }
+        }
+        return openWithEditorNames;
+    }
+
+    function updateOpenWithContextMenuItem() {
+        var menuItem = {};
+        var commandItem = {};
+        var id;
+        var names = getEditorNames();
+        var plugin = 'webida-lib/plugins/fs-commands';
+        var openWithMenuItem = commandService.getContextMenuModel('open-with-editor');
+        openWithMenuItem.items = [];
+        _.each(names, function (item, index) {
+            id = openWithMenuItem.id + ':' + index;
+            menuItem.plugin = plugin;
+            menuItem.id = id;
+            menuItem.name = item;
+            menuItem.commandId = id;
+            commandService.addMenuModel(menuItem, openWithMenuItem);
+            commandItem.id = id;
+            commandItem.plugin = plugin;
+            commandService.setCommandRegistry(commandItem);
         });
     }
 
@@ -97,7 +158,6 @@ define([
 
     function updateContextMenu() {
         var openMenuItem = commandService.getContextMenuModel('open');
-        var openWithCodeEditor = commandService.getContextMenuModel('open-with-code-editor');
         var newFileMenuItem = commandService.getContextMenuModel('new-file');
         var newDirectoryMenuItem = commandService.getContextMenuModel('new-directory');
         var copyMenuItem = commandService.getContextMenuModel('copy');
@@ -132,7 +192,6 @@ define([
                 } else {
                     newFileMenuItem.disabled = true;
                     newDirectoryMenuItem.disabled = true;
-                    renameMenuItem.invisible = true;
                     findInFilesDelimiterMenuItem.invisible = true;
                     findInFilesMenuItem.invisible = true;
                     goToFileMenuItem.invisible = true;
@@ -142,24 +201,25 @@ define([
                     newFileMenuItem.disabled = false;
                     newDirectoryMenuItem.disabled = false;
                     openMenuItem.invisible = true;
-                    openWithCodeEditor.disabled = true;
                 } else {
                     newFileMenuItem.disabled = true;
                     newDirectoryMenuItem.disabled = true;
                     openMenuItem.invisible = false;
-                    openWithCodeEditor.disabled = false;
                 }
                 if (getLevel(selPaths)) {
                     copyMenuItem.invisible = false;
                     cutMenuItem.invisible = false;
                     deleteMenuItem.invisible = false;
+                    renameMenuItem.invisible = false;
                 } else {
                     copyMenuItem.invisible = true;
                     cutMenuItem.invisible = true;
                     deleteMenuItem.invisible = true;
+                    renameMenuItem.invisible = false;
                 }
             }
         }
+        updateOpenWithContextMenuItem();
     }
 
     return {

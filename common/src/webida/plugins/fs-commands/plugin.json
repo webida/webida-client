@@ -225,7 +225,7 @@
                      }
                  },
                  {
-                     "id": "open-with-code-editor"
+                     "id": "open-with-editor"
                  }
              ]
          },
@@ -335,6 +335,27 @@
                      }
                  },
                  {
+                     "id": "open",
+                     "name": "Open",
+                     "commandId": "open",
+                     "location": "/",
+                     "type": "context-menu",
+                     "update": "true"
+                 },
+                 {
+                     "id": "open-with-editor",
+                     "name": "Open with",
+                     "location": "/",
+                     "type": "context-menu",
+                     "items": []
+                 },
+                 {
+                     "id": "delimiter",
+                     "name": "---",
+                     "location": "/",
+                     "type": "context-menu"
+                 },
+                 {
                      "id": "refresh",
                      "name": "Refres&h",
                      "commandId": "refresh",
@@ -349,40 +370,6 @@
                      "location": "/",
                      "type": "context-menu",
                      "invisible": "true"
-                 },
-                 {
-                     "id": "delimiter",
-                     "name": "---",
-                     "location": "/",
-                     "type": "context-menu"
-                 },
-                 {
-                     "id": "open",
-                     "name": "Open",
-                     "commandId": "open",
-                     "location": "/",
-                     "type": "context-menu",
-                     "update": "true"
-                 },
-                 {
-                     "id": "open-with",
-                     "name": "Open with",
-                     "location": "/",
-                     "type": "context-menu",
-                     "items": [
-                         {
-                             "id": "open-with-code-editor",
-                             "name": "Code Editor",
-                             "commandId": "open-with-code-editor",
-                             "update": "true"
-                         }
-                     ]
-                 },
-                 {
-                     "id": "delimiter",
-                     "name": "---",
-                     "location": "/",
-                     "type": "context-menu"
                  },
                  {
                      "id": "new",

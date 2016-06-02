@@ -68,7 +68,6 @@ define([
         var menuItems = [];
         var menuItem = {};
         var commandItem = {};
-        var itemIndex;
         var runWithItem;
         var debugWithItem;
         var selectedPaths;
@@ -76,6 +75,7 @@ define([
         var projectName;
         var runConfigurations;
         var id;
+        var plugin;
         selectedPaths = workspace.getSelectedPaths();
         if (!selectedPaths || selectedPaths.length !== 1) {
             return;
@@ -104,42 +104,41 @@ define([
             disableList.push(0);
         }
         menuItems.push('---');
-        itemIndex = 0;
         runWithItem = commandService.getTopMenuModel('run-with');
         runWithItem.items = [];
         debugWithItem = commandService.getTopMenuModel('debug-with');
         debugWithItem.items = [];
-        _.each(menuItems, function (item) {
-            id = runWithItem.id + ':' + itemIndex;
-            menuItem.name = item;
+        plugin = 'plugins/webida.ide.project-management.run';
+        _.each(menuItems, function (item, index) {
+            id = runWithItem.id + ':' + index;
+            menuItem.plugin = plugin;
             menuItem.id = id;
+            menuItem.name = item;
             menuItem.commandId = id;
             commandService.addMenuModel(menuItem, runWithItem);
+            commandItem.plugin = plugin;
             commandItem.id = id;
-            commandItem.plugin = 'plugins/webida.ide.project-management.run';
             commandService.setCommandRegistry(commandItem);
-            id = debugWithItem.id + ':' + itemIndex;
+            id = debugWithItem.id + ':' + index;
             menuItem.id = id;
             menuItem.commandId = id;
             commandService.addMenuModel(menuItem, debugWithItem);
             commandItem.id = id;
-            commandItem.plugin = 'plugins/webida.ide.project-management.run';
             commandService.setCommandRegistry(commandItem);
-            itemIndex++;
         });
+        menuItem.plugin = plugin;
         menuItem.id = 'run-configuration';
         menuItem.name = i18n.labelMoreRunConfigurations;
         menuItem.commandId = 'run-configuration';
         commandService.addMenuModel(menuItem, runWithItem);
+        commandItem.plugin = plugin;
         commandItem.id = 'run-configuration';
-        commandItem.plugin = 'plugins/webida.ide.project-management.run';
         commandService.setCommandRegistry(commandItem);
         menuItem.id = 'debug-configuration';
         menuItem.name = i18n.labelMoreDebugConfigurations;
         menuItem.commandId = 'debug-configuration';
         commandService.addMenuModel(menuItem, debugWithItem);
         commandItem.id = 'debug-configuration';
-        commandItem.plugin = 'plugins/webida.ide.project-management.run';
         commandService.setCommandRegistry(commandItem);
     }
 
@@ -148,7 +147,6 @@ define([
         var menuItems = [];
         var menuItem = {};
         var commandItem = {};
-        var itemIndex;
         var runWithItem;
         var debugWithItem;
         var selectedPaths;
@@ -156,6 +154,7 @@ define([
         var projectName;
         var runConfigurations;
         var id;
+        var plugin;
         selectedPaths = workspace.getSelectedPaths();
         if (!selectedPaths || selectedPaths.length !== 1) {
             return;
@@ -184,42 +183,41 @@ define([
             disableList.push(0);
         }
         menuItems.push('---');
-        itemIndex = 0;
         runWithItem = commandService.getContextMenuModel('run-with');
         runWithItem.items = [];
         debugWithItem = commandService.getContextMenuModel('debug-with');
         debugWithItem.items = [];
-        _.each(menuItems, function (item) {
-            id = runWithItem.id + ':' + itemIndex;
-            menuItem.name = item;
+        plugin = 'plugins/webida.ide.project-management.run';
+        _.each(menuItems, function (item, index) {
+            id = runWithItem.id + ':' + index;
+            menuItem.plugin = plugin;
             menuItem.id = id;
+            menuItem.name = item;
             menuItem.commandId = id;
             commandService.addMenuModel(menuItem, runWithItem);
             commandItem.id = id;
-            commandItem.plugin = 'plugins/webida.ide.project-management.run';
+            commandItem.plugin = plugin;
             commandService.setCommandRegistry(commandItem);
-            id = debugWithItem.id + ':' + itemIndex;
+            id = debugWithItem.id + ':' + index;
             menuItem.id = id;
             menuItem.commandId = id;
             commandService.addMenuModel(menuItem, debugWithItem);
             commandItem.id = id;
-            commandItem.plugin = 'plugins/webida.ide.project-management.run';
             commandService.setCommandRegistry(commandItem);
-            itemIndex++;
         });
+        menuItem.plugin = plugin;
         menuItem.id = 'run-configuration';
         menuItem.name = i18n.labelMoreRunConfigurations;
         menuItem.commandId = 'run-configuration';
         commandService.addMenuModel(menuItem, runWithItem);
+        commandItem.plugin = plugin;
         commandItem.id = 'run-configuration';
-        commandItem.plugin = 'plugins/webida.ide.project-management.run';
         commandService.setCommandRegistry(commandItem);
         menuItem.id = 'debug-configuration';
         menuItem.name = i18n.labelMoreDebugConfigurations;
         menuItem.commandId = 'debug-configuration';
         commandService.addMenuModel(menuItem, debugWithItem);
         commandItem.id = 'debug-configuration';
-        commandItem.plugin = 'plugins/webida.ide.project-management.run';
         commandService.setCommandRegistry(commandItem);
     }
 

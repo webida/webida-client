@@ -65,6 +65,246 @@
                 },
                 "iconCssFilePath" : "./icons.css"
             }
-        ]
+        ],
+
+        "webida.common.command-system:commands" : {
+            "commands": [
+                {
+                    "id": "fold-code"
+                },
+                {
+                    "id": "beautify-code",
+                    "shortcut": {
+                        "defaultKey": "Alt+B",
+                        "description": "Beautify"
+                    }
+                },
+                {
+                    "id": "beautify-all-code",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+B",
+                        "description": "Beautify All"
+                    }
+                },
+                {
+                    "id": "line-comment",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+/",
+                        "description": "Toggle line comments"
+                    }
+                },
+                {
+                    "id": "block-comment",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Shift+/",
+                        "description": "Toggle block comment"
+                    }
+                },
+                {
+                    "id": "comment-out-selection",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Alt+/",
+                        "description": "Comment out selection"
+                    }
+                },
+                {
+                    "id": "rename-variables",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Q",
+                        "description": "Rename variables"
+                    }
+                },
+                {
+                    "id": "go-to-definition",
+                    "shortcut": {
+                        "defaultKey": "Alt+.",
+                        "description": "Go to definition"
+                    }
+                },
+                {
+                    "id": "go-to-line",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+D",
+                        "description": "Go to line"
+                    }
+                },
+                {
+                    "id": "go-to-matching-brace",
+                    "shortcutKey": {
+                        "defaultKey": "Ctrl+Shift+B",
+                        "description": "Go to matching brace"
+                    }
+                }
+            ]
+        },
+
+        "webida.common.command-system:menus" : {
+            "items": [
+                {
+                    "id": "source",
+                    "name": "&Source",
+                    "location": "/edit/",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "fold-code",
+                            "name": "&Fold",
+                            "commandId": "fold-code"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "beautify-code",
+                            "name": "&Beautify",
+                            "commandId": "beautify-code"
+                        },
+                        {
+                            "id": "beautify-all-code",
+                            "name": "B&eautify All",
+                            "commandId": "beautify-all-code"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "line-comment",
+                            "name": "&Toggle Line Comment",
+                            "commandId": "line-comment"
+                        },
+                        {
+                            "id": "block-comment",
+                            "name": "Toggle Block Comments",
+                            "commandId": "block-comment"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "comment-out-selection",
+                            "name": "Comment Out Selection",
+                            "commandId": "comment-out-selection"
+                        },
+                        {
+                            "id": "rename-variables",
+                            "name": "&Rename Variables",
+                            "commandId": "rename-variables"
+                        }
+                    ]
+                },
+                {
+                    "id": "navigate",
+                    "name": "&Navigate",
+                    "location": "/find?after",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "go-to-definition",
+                            "name": "&Go to Definition",
+                            "commandId": "go-to-definition"
+                        },
+                        {
+                            "id": "go-to-line",
+                            "name": "G&o to Line",
+                            "commandId": "go-to-line"
+                        },
+                        {
+                            "id": "go-to-matching-brace",
+                            "name": "Go to &Matching Brace",
+                            "commandId": "go-to-matching-brace"
+                        }
+                    ]
+                },
+                {
+                    "id": "source",
+                    "name": "So&urce",
+                    "location": "/line?after",
+                    "type": "context-menu",
+                    "items": [
+                        {
+                            "id": "fold-code",
+                            "name": "&Fold",
+                            "commandId": "fold-code"
+                        },
+                        {
+                            "id": "delimiter-beautify",
+                            "name": "---"
+                        },
+                        {
+                            "id": "beautify-code",
+                            "name": "&Beautify",
+                            "commandId": "beautify-code"
+                        },
+                        {
+                            "id": "beautify-all-code",
+                            "name": "B&eautify All",
+                            "commandId": "beautify-all-code"
+                        },
+                        {
+                            "id": "delimiter-comment",
+                            "name": "---"
+                        },
+                        {
+                            "id": "line-comment",
+                            "name": "&Toggle Line Comments",
+                            "commanndId" : "line-comment"
+                        },
+                        {
+                            "id": "block-comment",
+                            "name": "Toggle Block Comment",
+                            "commandId": "block-comment"
+                        },
+                        {
+                            "id": "delimiter-selection",
+                            "name": "---"
+                        },
+                        {
+                            "id": "comment-out-selection",
+                            "name": "Comment Out Selection",
+                            "commandId": "comment-out-selection"
+                        },
+                        {
+                            "id": "rename-variables",
+                            "name": "&Rename Variables",
+                            "commandId": "rename-variables"
+                        }
+                    ],
+                    "update": "true"
+                },
+                {
+                    "id": "delimiter-go-to",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "go-to-definition",
+                    "name": "&Go to Definition",
+                    "commandId": "go-to-definition",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "go-to-line",
+                    "name": "G&o to Line",
+                    "commandId": "go-to-line",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "go-to-matching-brace",
+                    "name": "Go to &Matching Brace",
+                    "commandId": "go-to-matching-brace",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                }
+            ]
+        }
     }
 }
