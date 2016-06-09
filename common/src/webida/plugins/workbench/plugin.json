@@ -229,31 +229,27 @@
                     ]
                 },
                 {
-                    "id": "help",
-                    "name": "&Help",
-                    "location": "/",
+                    "id": "shortcut-list",
+                    "name": "&Shortcut List",
+                    "commandId": "shortcut-list",
+                    "location": "/help/preferences?before",
                     "type": "top-menu",
-                    "items": [
-                        {
-                            "id": "shortcut-list",
-                            "name": "&Shortcut List",
-                            "commandId": "shortcut-list",
-                            "toolbar": {
-                                "icons" : "<%= themePath %>/images/icons/toolbar_shortcuts.png",
-                                "tooltip" : "Shortcut list"
-                            }
-                        },
-                        {
-                            "id": "command-list",
-                            "name": "&Command List",
-                            "commandId": "command-list",
-                            "toolbar": {
-                                "icons" : "<%= themePath %>/images/icons/toolbar_command.png",
-                                "tooltip" : "Command list"
-                            },
-                            "invisible": "true"
-                        }
-                    ]
+                    "toolbar": {
+                        "icons" : "<%= themePath %>/images/icons/toolbar_shortcuts.png",
+                        "tooltip" : "Shortcut list"
+                    }
+                },
+                {
+                    "id": "command-list",
+                    "name": "&Command List",
+                    "commandId": "command-list",
+                    "location": "/help/shortcut-list?after",
+                    "type": "top-menu",
+                    "toolbar": {
+                        "icons" : "<%= themePath %>/images/icons/toolbar_command.png",
+                        "tooltip" : "Command list"
+                    },
+                    "invisible": "true"
                 }
             ]
         },

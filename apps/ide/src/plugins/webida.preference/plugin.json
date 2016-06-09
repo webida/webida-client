@@ -68,7 +68,7 @@
                     "id": "preferences",
                     "name": "&Preferences",
                     "commandId": "preferences",
-                    "location": "/help/",
+                    "location": "/help/about-help?before",
                     "type": "top-menu",
                     "update": "true",
                     "toolbar": {

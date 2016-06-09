@@ -60,7 +60,7 @@
                 {
                     "id": "file",
                     "name": "File",
-                    "location": "/",
+                    "location": "/edit?before",
                     "type": "top-menu",
                     "items": [
                         {
@@ -79,7 +79,7 @@
                 {
                     "id": "new",
                     "name": "New",
-                    "location": "/",
+                    "location": "/undo?before",
                     "type": "context-menu",
                     "items": [
                         {

@@ -97,15 +97,6 @@ define([
         lastDir: ide.getPath() + '/'
     };
 
-    function findInCurDir() {
-        var selected = wv.getSelectedPaths();
-        if (selected.length === 1) {
-            handleFindInFiles(selected[0]);
-        } else {
-            throw new Error('assertion fail: unreachable');
-        }
-    }
-
     function handleFindInFiles(rootPath) {
         function restoreCombobox(combobox, data) {
             var storeData = [];
@@ -453,6 +444,15 @@ define([
         patternComboElem.focusNode.select();
 
     } // handleFindInFiles
+
+    function findInCurDir() {
+        var selected = wv.getSelectedPaths();
+        if (selected.length === 1) {
+            handleFindInFiles(selected[0]);
+        } else {
+            throw new Error('assertion fail: unreachable');
+        }
+    }
 
     function handleGotoFile() {
         var gotoFileDlg = new ButtonedDialog({
@@ -1008,8 +1008,9 @@ define([
         }
     });
 
-    function OpenWithEditorCommand(id) {
+    function OpenWithEditorCommand(id, option) {
         OpenWithEditorCommand.id = id;
+        OpenWithEditorCommand.option = option;
     }
     genetic.inherits(OpenWithEditorCommand, Command, {
         execute : function () {
@@ -1022,7 +1023,7 @@ define([
                                 console.error('assertion fail: "' + path + '" must be a file');
                             } else {
                                 var editorParts = getOpenWithParts();
-                                var options = {openWithPart: editorParts[0]};
+                                var options = {openWithPart: editorParts[OpenWithEditorCommand.option]};
                                 topic.publish('editor/open', path, options);
                             }
                         });

@@ -94,12 +94,13 @@ define([
 
         invisibleContext: function invisibleContext(pluginName, item) {
             var ret = false;
-            if (pluginName === 'webida.common.editors') {
-                if (item.plugin !== 'webida-lib/plugins/editors') {
+            var subString = 'editor';
+            if (pluginName.indexOf(subString) > -1) {
+                if (item.plugin.indexOf(subString) < 0) {
                     ret = true;
                 }
             } else {
-                if (item.plugin === 'webida-lib/plugins/editors') {
+                if (item.plugin.indexOf(subString) > -1) {
                     ret = true;
                 }
             }

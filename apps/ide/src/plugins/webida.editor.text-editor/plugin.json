@@ -57,6 +57,359 @@
                 "getDefault": "getDefault",
                 "scope": ["WORKSPACE"]
             }
-        ]
+        ],
+
+        "webida.common.command-system:commands" : {
+            "commands": [
+                {
+                    "id": "undo",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Z",
+                        "description": "Undo"
+                    }
+                },
+                {
+                    "id": "redo",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Y",
+                        "description": "Redo"
+                    }
+                },
+                {
+                    "id": "delete"
+                },
+                {
+                    "id": "select-all",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+A",
+                        "description": "Select all"
+                    }
+                },
+                {
+                    "id": "select-line",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+L",
+                        "description": "Select line"
+                    }
+                },
+                {
+                    "id": "line-indent",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+]",
+                        "description": "Indent more"
+                    }
+                },
+                {
+                    "id": "line-dedent",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+[",
+                        "description": "Indent less"
+                    }
+                },
+                {
+                    "id": "line-move-up",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+Up",
+                        "description": "Move line up"
+                    }
+                },
+                {
+                    "id": "line-move-down",
+                    "shortcut": {
+                        "defaultKey": "Shift+Alt+Down",
+                        "description": "Move line down"
+                    }
+                },
+                {
+                    "id": "line-delete",
+                    "shortcut": {
+                        "defaultKey": "Alt+L",
+                        "description": "Delete the current line"
+                    }
+                },
+                {
+                    "id": "cursor-line-to-middle",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Alt+M",
+                        "description": "Move cursor line to center"
+                    }
+                },
+                {
+                    "id": "cursor-line-to-top",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Alt+T",
+                        "description": "Move cursor line to top"
+                    }
+                },
+                {
+                    "id": "cursor-line-to-bottom",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Alt+B",
+                        "description": "Move cursor line to bottom"
+                    }
+                },
+                {
+                    "id": "replace",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+Shift+F",
+                        "description": "Open a dialog to replace keywords"
+                    }
+                },
+                {
+                    "id": "find-in-file",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+F",
+                        "description": "Open a dialog to find keywords"
+                    }
+                },
+                {
+                    "id": "highlight-to-find",
+                    "shortcut": {
+                        "defalutKey": "Ctrl+H",
+                        "description": "Highlight the keyword under cursor to find"
+                    }
+                },
+                {
+                    "id": "find-next",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+.",
+                        "description": "Find the next highlighted keyword"
+                    }
+                },
+                {
+                    "id": "find-previous",
+                    "shortcut": {
+                        "defaultKey": "Ctrl+,",
+                        "description": "Find the previous highlighted keyword"
+                    }
+                }
+            ]
+        },
+
+        "webida.common.command-system:menus": {
+            "items": [
+                {
+                    "id": "edit",
+                    "name": "&Edit",
+                    "location": "/",
+                    "type": "top-menu",
+                    "update": "true",
+                    "items": [
+                        {
+                            "id": "undo",
+                            "name": "&Undo",
+                            "commandId": "undo"
+                        },
+                        {
+                            "id": "redo",
+                            "name": "&Redo",
+                            "commandId": "redo"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "delete",
+                            "name": "&Delete",
+                            "commandId": "delete"
+                        },
+                        {
+                            "id": "select-all",
+                            "name": "Select &All",
+                            "commandId": "select-all"
+                        },
+                        {
+                            "id": "select-line",
+                            "name": "Select L&ine",
+                            "commandId": "select-line"
+                        },
+                        {
+                            "id": "delimiter",
+                            "name": "---"
+                        },
+                        {
+                            "id": "line",
+                            "name": "&Line",
+                            "items": [
+                                {
+                                    "id": "line-indent",
+                                    "name": "&Indent",
+                                    "commandId": "line-indent"
+                                },
+                                {
+                                    "id": "line-dedent",
+                                    "name": "&Dedent",
+                                    "commandId": "line-dedent"
+                                },
+                                {
+                                    "id": "line-move-up",
+                                    "name": "Move Line U&p",
+                                    "commandId": "line-move-up"
+                                },
+                                {
+                                    "id": "line-move-down",
+                                    "name": "Move Line Dow&n",
+                                    "commandId": "line-move-down"
+                                },
+                                {
+                                    "id": "line-delete",
+                                    "name": "D&elete Lines",
+                                    "commandId": "line-delete"
+                                },
+                                {
+                                    "id": "cursor-line-to-middle",
+                                    "name": "Move Cursor Line to Middle",
+                                    "commandId": "cursor-line-to-middle"
+                                },
+                                {
+                                    "id": "cursor-line-to-top",
+                                    "name": "Move Cursor Line to Top",
+                                    "commandId": "cursor-line-to-top"
+                                },
+                                {
+                                    "id": "cursor-line-to-bottom",
+                                    "name": "Move Cursro Line to Bottom",
+                                    "commandId": "cursor-line-to-bottom"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "find",
+                    "name": "F&ind",
+                    "location": "/edit?after",
+                    "type": "top-menu",
+                    "items": [
+                        {
+                            "id": "replace",
+                            "name": "&Replace",
+                            "commandId": "replace"
+                        },
+                        {
+                            "id": "find-in-file",
+                            "name": "Find",
+                            "commandId": "find-in-file"
+                        },
+                        {
+                            "id": "highlight-to-find",
+                            "name": "&Highlight to Find",
+                            "commandId": "highlight-to-find"
+                        },
+                        {
+                            "id": "find-next",
+                            "name": "Find &Next",
+                            "commandId": "find-next"
+                        },
+                        {
+                            "id": "find-previous",
+                            "name": "Find &Previous",
+                            "commandId": "find-previous"
+                        }
+                    ]
+                },
+                {
+                    "id": "undo",
+                    "name": "U&ndo",
+                    "commandId": "undo",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "redo",
+                    "name": "&Redo",
+                    "commandId": "redo",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "delimiter-redo",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "delete",
+                    "name": "&Delete",
+                    "commandId": "delete",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "select-all",
+                    "name": "Select &All",
+                    "commandId": "select-all",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "select-line",
+                    "name": "Select L&ine",
+                    "commandId": "select-line",
+                    "location": "/",
+                    "type": "context-menu",
+                    "update": "true"
+                },
+                {
+                    "id": "delimiter-select",
+                    "name": "---",
+                    "location": "/",
+                    "type": "context-menu"
+                },
+                {
+                    "id": "line",
+                    "name": "&Line",
+                    "location": "/",
+                    "type": "context-menu",
+                    "items": [
+                        {
+                            "id": "line-indent",
+                            "name": "&Indent",
+                            "commandId": "line-indent"
+                        },
+                        {
+                            "id": "line-dedent",
+                            "name": "&Dedent",
+                            "commandId": "line-dedent"
+                        },
+                        {
+                            "id": "line-move-up",
+                            "name": "Move Line U&p",
+                            "commandId": "line-move-up"
+                        },
+                        {
+                            "id": "line-move-down",
+                            "name": "Move Line Dow&n",
+                            "commandId": "line-move-down"
+                        },
+                        {
+                            "id": "line-delete",
+                            "name": "D&elete Lines",
+                            "commandId": "line-delete"
+                        },
+                        {
+                            "id": "cursor-line-to-middle",
+                            "name": "Move Cursor Line to Middle",
+                            "commandId": "cursor-line-to-middle"
+                        },
+                        {
+                            "id": "cursor-line-to-top",
+                            "name": "Move Cursor Line to Top",
+                            "commandId": "cursor-line-to-top"
+                        },
+                        {
+                            "id": "cursor-line-to-bottom",
+                            "name": "Move Cursor Line to Bottom",
+                            "commandId": "cursor-line-to-bottom"
+                        }
+                    ]
+                }
+            ]
+        }
     }
 }
