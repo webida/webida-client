@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -497,6 +497,77 @@ define([
         dialog.show();
     }
     /**
+     * Set focus in the selected node
+     * @param node
+     * @inner
+     */
+    function setFocus(node) { // TODO: why not a method?
+        var nodes = tree().getNodesByItem(node);
+        if (nodes && nodes[0]) {
+            tree().focusNode(nodes[0]);
+        }
+        $('#wv-tree').focus();
+    }
+    var nodeToSelect;
+    /**
+     * Select a node
+     * @inner
+     */
+    function selectNode(node) {
+        require(['./plugin'], function (wv) {
+            wv.selectNode(node);
+            setFocus(node);
+        });
+    }
+    /**
+     * Set a node to selected
+     * @param nodeId
+     * @inner
+     */
+    function setNodeToSelect(nodeId) {
+        if (nodeToSelect && nodeId) {
+            console.warn('Unexpected: trying to set node "' + nodeId +
+                         '" to select next while previous one "' + nodeToSelect +
+                         '" is not handled');
+        }
+        nodeToSelect = nodeId;
+    }
+    /**
+     * Select a new node
+     * @param nodeId
+     * @inner
+     */
+    function selectNewNode(nodeId) {
+        var node = store().get(nodeId);
+        if (node) {
+            selectNode(node);
+        } else {
+            setNodeToSelect(nodeId);
+        }
+    }
+    /**
+     * Select a node after the work
+     * @method
+     */
+    function selectAfterWork() {
+        if (nodeToSelect) {
+            var node = store().get(nodeToSelect);
+            if (node) {
+                var parentNode = node.getParentNode();
+                if (parentNode && !parentNode.isExpanded()) {
+                    var nodes = tree().getNodesByItem(parentNode);
+                    tree()._expandNode(nodes[0]).then(function () {
+                        selectNode(node);
+                        nodeToSelect = null;
+                    });
+                } else {
+                    selectNode(node);
+                    nodeToSelect = null;
+                }
+            }
+        }
+    }
+    /**
      * Paste file in the selected path
      * @param srcNodes
      * @param action
@@ -543,7 +614,7 @@ define([
                                     selectNewNode(newFile);
                                     nodeToSelectSet = true;
                                 }
-                                
+
                                 switch (policy) {
                                 case 'overwrite':
                                     selectAfterWork();
@@ -685,9 +756,9 @@ define([
                                         handleEntryWithConflictPolicy(policy, forAll);
                                     });
                                 }
-                            } else {                               
+                            } else {
                                 printResult(false,  string.substitute(i18n.printResultCannotOveriteWithSameName, {
-                                    type1: existingType, 
+                                    type1: existingType,
                                     id: existing.id,
                                     type2: entryType
                                 }));
@@ -712,7 +783,7 @@ define([
         }
 
         if (!this.isInternal) {
-            notify.error(string.substitute(i18n.notifyCannotActionToNonDirectory, 
+            notify.error(string.substitute(i18n.notifyCannotActionToNonDirectory,
                                            {action: action, path: this.getPath()}));
             return;
         }
@@ -764,7 +835,7 @@ define([
         var dirsSkipped, dirsMerged, dirsRenamed, dirsNoConflict;
         var nodeToSelectSet = false;
         var deferred = new Deferred();
-        
+
         function printResults(completed) {
             function printInner(type, skipped, overwritten, merged, renamed, noConflict) {
                 topic.publish('#REQUEST.log', '	' + type + ' created' +
@@ -792,7 +863,7 @@ define([
             printInner('files', filesSkipped, filesOverwritten, 0, filesRenamed, filesNoConflict);
             topic.publish('#REQUEST.log', '	--------------------------------------------------');
             topic.publish('#REQUEST.log', '');
-            
+
             deferred.resolve(completed);
         }
 
@@ -818,10 +889,10 @@ define([
 
         function uploadFiles(target, files, nextJob) {
 
+            var targetPath;
             function uploadFile(file) {
 
                 var fileName;
-
                 function uploadFileWithConflictPolicy(policy) {
 
                     // Now, policy is overwrite, merge, rename, or none.
@@ -939,7 +1010,7 @@ define([
                 throw new Error('assertion fail: unreachable');
             }
 
-            var targetPath = target.getPath();
+            targetPath = target.getPath();
             target.fetchChildren(uploadFile.bind(null, files.shift()));
         }
 
@@ -949,6 +1020,7 @@ define([
             function uploadEntry(entry) {
 
                 var entryPath, existing;
+                var entryName;
                 function uploadEntryWithConflictPolicy(policy) {
 
                     var finalName;
@@ -1120,7 +1192,7 @@ define([
                 if (!entry) {
                     nextJob();
                 } else {
-                    var entryName = entry.name || '';
+                    entryName = entry.name || '';
                     if (entry.isDirectory || entry.isFile) {
                         entryPath = targetPath + entryName + (entry.isDirectory ? '/' : '');
                         existing = target.getSubnode(entryName);
@@ -1192,24 +1264,12 @@ define([
                 notify.error(i18n.notifyCannotUploadSomethingThatIsNeitherDirNorFile);
                 deferred.resolve(false);
             }
-        } else { 
+        } else {
             deferred.resolve(false);
-        } 
-        
+        }
+
         return deferred;
     };
-    /**
-     * Set focus in the selected node
-     * @param node
-     * @inner
-     */
-    function setFocus(node) { // TODO: why not a method?
-        var nodes = tree().getNodesByItem(node);
-        if (nodes && nodes[0]) {
-            tree().focusNode(nodes[0]);
-        }
-        $('#wv-tree').focus();
-    }
     /**
      * Compare a node
      * @param a
@@ -1272,7 +1332,7 @@ define([
             notify.warning(string.substitute(i18n.notifyNewNameIsNotAllowedAsFileOrDirName,
                                            {newName: newName}));
         } else if (dirNode && dirNode.hasSubnode(newName)) {
-            notify.error(string.substitute(i18n.notifyFileOrDirWithTheNameAlreadyExists, 
+            notify.error(string.substitute(i18n.notifyFileOrDirWithTheNameAlreadyExists,
                                            {newName: newName}));
             return false;
         } else if (getByteLength(newName) > 255) {
@@ -1362,6 +1422,7 @@ define([
         var self = this;
         require(['text!./layer/new-node.html'], function (markup) {
             function doCreation(newName) {
+                var newPath;
                 function callback(err) {
                     if (err) {
                         notify.error(string.substitute(i18n.notifyFailedToCreateFileOrDir,
@@ -1372,7 +1433,7 @@ define([
                                                        {newName: newName}));
                     }
                 }
-                var newPath = self.getPath() + newName;
+                newPath = self.getPath() + newName;
                 if (kind === 'file') {
                     fsCache.writeFile(newPath, '', callback);
                 } else {
@@ -1431,7 +1492,7 @@ define([
      * Rename a node
      * @method
      */
-    Node.prototype.renameInteractively = function () {
+    Node.prototype.renameInteractively = function (newName) {
         var self = this;
         var box;
         var parentNode = store().get(self.parent);
@@ -1440,6 +1501,45 @@ define([
             box = domGeom.position(nodes[0].labelNode, true);
         }
 
+        function checkAndRename(newName, reselect) {
+            function sliceDotString(name) {
+                var newName = name;
+                var extLength = newName.lastIndexOf('.');
+                while (extLength === (newName.length - 1)) {
+                    newName = newName.slice(0, extLength);
+                    extLength = newName.lastIndexOf('.');
+                }
+                return newName;
+            }
+
+            newName = (newName || '').trim();
+            if (!newName || newName.length === 0) {
+                return;
+            }
+
+            newName = sliceDotString(newName);
+
+            if (self.name !== newName && validateNewName(parentNode, newName)) {
+                var newPath = self.parent + '/' + newName;
+                fsCache.move(self.id, newPath, function (err) {
+                    if (err) {
+                        console.log('Failed to rename (' + err + ')');
+                        notify.error('Failed to rename');
+                        notify.error(i18n.notifyFailedToRename);
+                    } else {
+                        if (reselect) {
+                            selectNewNode(newPath);
+                        }
+                        topic.publish('fs/cache/node/rename', newPath);
+                    }
+                });
+            }
+        }
+
+        if (newName) {
+            checkAndRename(newName, true);
+            return;
+        }
         self.name = self.name.replace(/&nbsp;/g, ' ');
         var $input = $('<input id="renameInputTemp" type="text" style="position: absolute"></input>')
                         .css('left', 0)
@@ -1501,40 +1601,6 @@ define([
         });
 
         self.name = self.name.replace(/ /g, '&nbsp;');
-        function checkAndRename(newName, /* boolean */ reselect) {
-            function sliceDotString(name) {
-                var newName = name;
-                var extLength = newName.lastIndexOf('.');
-                while (extLength === (newName.length - 1)) {
-                    newName = newName.slice(0, extLength);
-                    extLength = newName.lastIndexOf('.');
-                }
-                return newName;
-            }
-
-            newName = (newName || '').trim();
-            if (!newName || newName.length === 0) {
-                return;
-            }
-
-            newName = sliceDotString(newName);
-
-            if (self.name !== newName && validateNewName(parentNode, newName)) {
-                var newPath = self.parent + '/' + newName;
-                fsCache.move(self.id, newPath, function (err) {
-                    if (err) {
-                        console.log('Failed to rename (' + err + ')');
-                        notify.error('Failed to rename');
-                        notify.error(i18n.notifyFailedToRename);
-                    } else {
-                        if (reselect) {
-                            selectNewNode(newPath);
-                        }
-                        notify.success(i18n.notifyRenamedSuccessfully);
-                    }
-                });
-            }
-        }
     };
     /**
      * Create a node by a subnode
@@ -1722,68 +1788,7 @@ define([
         }
     };
 
-    var nodeToSelect;
-    /**
-     * Select a node
-     * @inner
-     */
-    function selectNode(node) {
-        require(['./plugin'], function (wv) {
-            wv.selectNode(node);
-            setFocus(node);
-        });
-    }
-    /**
-     * Select a new node
-     * @param nodeId
-     * @inner
-     */
-    function selectNewNode(nodeId) {
-        var node = store().get(nodeId);
-        if (node) {
-            selectNode(node);
-        } else {
-            setNodeToSelect(nodeId);
-        }
-    }
-    /**
-     * Select a node after the work
-     * @method
-     */
-    function selectAfterWork() {
-        if (nodeToSelect) {
-            var node = store().get(nodeToSelect);
-            if (node) {
-                var parentNode = node.getParentNode();
-                if (parentNode && !parentNode.isExpanded()) {
-                    var nodes = tree().getNodesByItem(parentNode);
-                    tree()._expandNode(nodes[0]).then(function () {
-                        selectNode(node);
-                        nodeToSelect = null;
-                    });
-                } else {
-                    selectNode(node);
-                    nodeToSelect = null;
-                }
-            }
-        }
-    }
-    /**
-     * Set a node to selected
-     * @param nodeId
-     * @inner
-     */
-    function setNodeToSelect(nodeId) {
-        if (nodeToSelect && nodeId) {
-            console.warn('Unexpected: trying to set node "' + nodeId +
-                         '" to select next while previous one "' + nodeToSelect +
-                         '" is not handled');
-        }
-        nodeToSelect = nodeId;
-    }
-
     topic.subscribe('workspace/node/added', selectAfterWork);
 
     return Node;
 });
-

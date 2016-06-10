@@ -38,8 +38,9 @@ define([
     var keyToCodeMap = keyCode.keyToCodeMap;
     var codeToKeyMap = keyCode.codeToKeyMap;
     var modifierKeyCodes = [ keyToCodeMap.Shift, keyToCodeMap.Ctrl, keyToCodeMap.Alt ];
-
     var modKeyStr = ['SHIFT', 'META', 'CTRL', 'ALT'];
+    var UNDO_KEYS = 'Ctrl+Z';
+    var REDO_KEYS = 'Ctrl+Y';
     function normalizeKeysStr(str) {
         if (!str) {
             return null;
@@ -100,22 +101,29 @@ define([
             return normalizeKeysStr(keys);
         },
 
-        eventListener : function (event) {
+        eventListener : function (event, widget) {
             var keys = this.getKeys(event);
-            var shortcutItem = shortcutRegistry.getShortcut(keys);
-            if (shortcutItem) {
-                if (!shortcutItem.keepDefault) {
-                    event.preventDefault();
-                }
-                if (!shortcutItem.propagate) {
-                    event.stopPropagation();
-                }
-                var promise = commandFactory.createCommand(shortcutItem.commandId);
-                promise.then(function (Command) {
-                    if (Command && Command.canExecute()) {
-                        commandStack.execute(Command);
+            var editor = widget.id.indexOf('view_');
+            if (keys === UNDO_KEYS && editor === -1) {
+                commandStack.undo();
+            } else if (keys === REDO_KEYS && editor === -1) {
+                commandStack.redo();
+            } else if (editor === -1) {
+                var shortcutItem = shortcutRegistry.getShortcut(keys);
+                if (shortcutItem && keys) {
+                    if (!shortcutItem.keepDefault) {
+                        event.preventDefault();
                     }
-                });
+                    if (!shortcutItem.propagate) {
+                        event.stopPropagation();
+                    }
+                    var promise = commandFactory.createCommand(shortcutItem.commandId);
+                    promise.then(function (Command) {
+                        if (Command && Command.canExecute()) {
+                            commandStack.execute(Command);
+                        }
+                    });
+                }
             }
         }
     };

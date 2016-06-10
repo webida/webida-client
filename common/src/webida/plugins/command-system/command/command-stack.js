@@ -28,32 +28,36 @@ define([
     'use strict';
 
     function Stack() {
-        Stack.dataStore = [];
-        Stack.top = 0;
+        this.dataStore = [];
+        this.top = 0;
     }
 
     genetic.inherits(Stack, Object, {
         push : function (data) {
-            Stack.dataStore[this.top++] = data;
+            this.dataStore[this.top++] = data;
         },
         pop : function () {
-            return Stack.dataStore[--this.top];
+            return this.dataStore[--this.top];
         },
         peek : function () {
-            return Stack.dataStore[this.top - 1];
+            return this.dataStore[this.top - 1];
         },
         clear : function () {
-            Stack.top = 0;
+            this.top = 0;
         },
         length : function () {
-            return Stack.top;
+            return this.top;
         },
         shift : function () {
-            Stack.dataStore.shift();
+            this.dataStore.shift();
+        },
+        get: function (index) {
+            return this.dataStore[index];
         }
     });
 
     var MAX_SIZE = 10;
+    var index = 0;
     var stack = new Stack();
 
     var commandStack = {
@@ -63,11 +67,52 @@ define([
                 if (stack.length() >= MAX_SIZE) {
                     stack.shift();
                 }
-                stack.push(Command);
+                var data = {
+                    command: Command,
+                    option: option
+                };
+                stack.push(data);
+                index = 0;
                 console.log(Command + ' execution success: ' + value);
             }).catch(function (reason) {
                 console.warn(Command + ' execution failed: ' + reason);
             });
+        },
+        undo: function () {
+            if (stack.length() === 0) {
+                return;
+            }
+            if (index <= 0) {
+                index = stack.length();
+            }
+            var data = stack.get(--index);
+            var Command = data.command;
+            var result = Command.undo(data.option);
+            if (result) {
+                result.then(function (value) {
+                    console.log(Command + ' undo success: ' + value);
+                }).catch(function (reason) {
+                    console.warn(Command + ' undo failed: ' + reason);
+                });
+            }
+        },
+        redo: function () {
+            if (stack.length() === 0) {
+                return;
+            }
+            if (index >= stack.length()) {
+                index = stack.length() - 1;
+            }
+            var data = stack.get(index++);
+            var Command = data.command;
+            var result = Command.redo(data.option);
+            if (result) {
+                result.then(function (value) {
+                    console.log(Command + ' redo success: ' + value);
+                }).catch(function (reason) {
+                    console.warn(Command + ' redo failed: ' + reason);
+                });
+            }
         }
     };
 

@@ -77,6 +77,13 @@ define([
 
     var topElem, elem, elemTopPanel, elemCenterPanel;
 
+    var context = {
+        lastFocusedWidget : null,
+        paths : null,
+        projectPath : null,
+        etc : null
+    };
+
     $(document.body).append(markup);
     topElem = document.getElementById('app-workbench');
     topElem.focus();  // to enable global shortcut keys at any time
@@ -96,7 +103,7 @@ define([
     singleLogger.log('(c) in initialization of workbench module');
 
     topElem.addEventListener('keydown', function (e) {
-        commandSystem.service.shortcutBind.eventListener(e);
+        commandSystem.service.shortcutBind.eventListener(e, context.lastFocusedWidget);
     });
     // extensions of webida.common.workbench:menu
     /*
@@ -364,13 +371,6 @@ define([
     }); */
 
     singleLogger.log('(i) in initialization of workbench module');
-
-    var context = {
-        lastFocusedWidget : null,
-        paths : null,
-        projectPath : null,
-        etc : null
-    };
 
     function updateStatusbar() {
         var statusInfos = [];
