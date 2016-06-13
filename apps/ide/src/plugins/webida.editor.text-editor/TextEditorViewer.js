@@ -64,13 +64,13 @@ define([
 
     function foldCode(cm, start, end) {
         var myWidget = $('<span class="CodeMirror-foldmarker">').text('\u2194')[0];
-        codemirror.on(myWidget, 'mousedown', function () {
-            myRange.clear();
-        });
         var myRange = cm.markText(start, end, {
             replacedWith: myWidget,
             clearOnEnter: true,
             __isFold: true
+        });
+        codemirror.on(myWidget, 'mousedown', function () {
+            myRange.clear();
         });
     }
 
@@ -108,14 +108,14 @@ define([
     // Manage available themes and modes
     var availables = ['mode::text/plain'];
 
+    function isAvailable(type, name) {
+        return _.contains(availables, type + '::' + name);
+    }
+
     function addAvailable(type, name) {
         if (!isAvailable(type, name)) {
             availables.push(type + '::' + name);
         }
-    }
-
-    function isAvailable(type, name) {
-        return _.contains(availables, type + '::' + name);
     }
 
     var eventTransformers = {
@@ -239,9 +239,10 @@ define([
         createWidget: function (parentNode) {
             logger.info('createWidget(' + parentNode + ')');
             this.options.extraKeys = {
-                'Tab': 'handleTab',
+                'Tab': 'defaultTab',
                 'Ctrl--': 'foldselection',
-                'Ctrl-D': 'gotoLine',
+                'Ctrl-D': 'deleteLine',
+                'Ctrl-L': 'gotoLine'
             };
             this.prepareCreate();
         },
@@ -319,7 +320,7 @@ define([
                         cm.indentLine(e.from.line + i);
                     }
                 }
-            });            
+            });
         },
 
         synchronizeWidgetModel: function (recentViewer) {
@@ -471,7 +472,7 @@ define([
         setSelection: function (anchor, head) {
             this.cursor = head;
             this.addDeferredAction(function (self) {
-                self.editor.getDoc().setSelection(eventTransformers.wrapperLoc2cmLoc(anchor), 
+                self.editor.getDoc().setSelection(eventTransformers.wrapperLoc2cmLoc(anchor),
                                                   eventTransformers.wrapperLoc2cmLoc(head));
             });
             if (!this.editor) {
@@ -526,7 +527,7 @@ define([
                 }
             });
         },
-        
+
         /**
          * Highlights strings matching given query with query options
          * Example: viewer.setHighlight('string',{caseSensitive: false, regexp: false, wholeWord: false});
@@ -552,7 +553,7 @@ define([
             }
             this.theme = theme;
             if (theme === 'codemirror-default') {
-                theme = this.theme = 'default';                
+                theme = this.theme = 'default';
                 this.addDeferredAction(function (self) {
                     self.editor.setOption('theme', self.theme);
                 });
@@ -572,7 +573,7 @@ define([
                         break;
                 }
                 loadCSSList([require.toUrl(csspath)], function () {
-                    addAvailable('theme', theme);                   
+                    addAvailable('theme', theme);
                     self.addDeferredAction(function (self) {
                         self.editor.setOption('theme', self.theme);
                     });
@@ -806,7 +807,7 @@ define([
             if (codeFolding) {
                 var self = this;
                 loadCSSList([require.toUrl('./css/codefolding.css')], function () {
-                    require(['external/codemirror/addon/fold/foldcode', 'external/codemirror/addon/fold/foldgutter', 
+                    require(['external/codemirror/addon/fold/foldcode', 'external/codemirror/addon/fold/foldgutter',
                              'external/codemirror/addon/fold/brace-fold'], function () {
                         self.addDeferredAction(function (self) {
                             self._gutterOn('CodeMirror-foldgutter');
@@ -1320,14 +1321,14 @@ define([
 
         replace: function () {
             this.addDeferredAction(function (self) {
-                var editor = self.editor;                
+                var editor = self.editor;
                 editor.execCommand('replace');
             });
         },
 
         find: function () {
             this.addDeferredAction(function (self) {
-                var editor = self.editor;                
+                var editor = self.editor;
                 editor.execCommand('find');
             });
         },
