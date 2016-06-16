@@ -57,6 +57,8 @@ define([
 
     var init = function (uid, token, host, callbackFunctions, cb) {
         var user  = new User('nick', 'email', uid, token);
+        logger('pubsub init - new user', user);
+
         // dummy stuffs
         systemNotificationCallback = callbackFunctions.topicsysnotify_callback;
         window.setTimeout( function() {

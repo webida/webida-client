@@ -29,31 +29,22 @@ define([
     './server-api-0.1-lib/auth',
     './server-api-0.1-lib/fs'
 ],  function (
-    URI,
     common,
-    auth, 
+    auth,
     fs
 ) {
     'use strict';
 
-    
-    // do we need some values from local storage, especially workspace-specific ones? 
-    
-    // auth & fs uses swagger client
-    //  common will create the swagger client object in initialize() function
-    //  other modueles (auth, fs) will get the client from commmon module
-    
-    common.initSwaggerClient();
-
+    var serverUrl = common.bootArgs.serverUrl;
     var mod = {
         auth : auth,
         fs : fs,
 
         // for compatibility with plugisn who are dependent to webida-0.3.js conf object
         conf : {
-            fsServer : bootArgs.server,
-            connServer: bootArgs.server,
-            fsApiBaseUrl: fsServer + '/api/fs',
+            fsServer : serverUrl,
+            connServer: serverUrl,
+            fsApiBaseUrl: serverUrl + '/vfs'
         },
 
         // for compatibility with current plugin manager
@@ -63,25 +54,23 @@ define([
         //  - PM should not load .user_info/plugin-settings.json file directly while initializing
         //    and may use local storage instead of using server api
         getPluginSettingsPath : function(callback) {
-            // for desktop mode, check legacy or not
-            if (window.__ELECTRON_BROWSER__) {
-                if(bootArgs.legacy) {
-                    return 'plugins/plugin-settings-desktop.json'
-                } else {
-                    return 'plugins/plugin-setting.json'
-                }
+            // plugin-settings-desktop.json : to connect embedded server from desktop  (0.1)
+            //                              : to connect server from desktop (0.2)
+            // plugin-settings.json : to connect legacy server from desktop/browser (0.1)
+            //                      : to connect server from browser (0.2)
+
+            // this is version 0.1. (simple but enough, for we don't access legacy server as guest) 
+            if(common.bootArgs.legacy) {
+                return callback('plugins/plugin-setting.json')
             } else {
-                // keep same behavior to webida 0.3
-                mod.auth.getMyInfo(function (err, myInfo) {
-                    if (err) {
-                        callback(defaultPath);
-                    } else {
-                        callback(myInfo.isGuest ? 'plugins/plugin-settings-guest.json' : defaultPath);
-                    }
-                });
+                return callback('plugins/plugin-settings-desktop.json')
             }
         }
     };
+    
+    // for debugging purpose only in debugger js console
+    window.__webida = mod;
+    mod.common = common;
 
     return mod;
 });

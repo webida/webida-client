@@ -37,13 +37,16 @@
         baseUrl: '../../../bower_components',
         parseOnLoad: false,
         packages: [
-            {name: 'xstyle', location: './xstyle'},
-            {name: 'put-selector', location: './put-selector'},
-            {name: 'jquery', location: './jquery/dist', main: 'jquery.min'},
-            {name: 'showdown', location: './showdown/dist', main: 'showdown.min'},
-            {name: 'dojo', location: './dojo'},
             {name: 'dijit', location: './dijit'},
-            {name: 'dojox', location: './dojox'}
+            {name: 'dojo', location: './dojo'},
+            {name: 'dojox', location: './dojox'},
+            {name: 'jquery', location: './jquery/dist', main: 'jquery.min'},
+            {name: 'put-selector', location: './put-selector'},
+            {name: 'showdown', location: './showdown/dist', main: 'showdown.min'},
+            {name: 'superagent', location: './superagent/lib', main: 'client'},
+
+            {name: 'URIjs', location:'./URIjs/src', main:'URI'},
+            {name: 'xstyle', location: './xstyle'}
         ],
         locale: ((webidaLocale === 'default') || (webidaLocale === '')) ?
             (location.search.match(/locale=([\w\-]+)/) ? RegExp.$1 : 'en-us') : webidaLocale,
