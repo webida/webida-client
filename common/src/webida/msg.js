@@ -139,6 +139,26 @@ define([
         }
     };
 
+    var connMap = new HashMap();
+
+    var TaskMgr = function () {
+        var taskMap = new HashMap();
+        this.pushTask = function (cb) {
+            var taskid = guid();
+            taskMap.put(taskid, cb);
+            return taskid;
+        };
+
+        this.popTask = function (id, err, msg) {
+            var func = taskMap.get(id);
+            if (func) {
+                func(err, msg);
+            }
+            taskMap.remove(id);
+        };
+    };
+
+    var taskMgr = new TaskMgr();
 
     /**
      * In order to receive messages, you need to define callback functons as follow
@@ -246,25 +266,6 @@ define([
     })();
 
 
-    var TaskMgr = function () {
-        var taskMap = new HashMap();
-        this.pushTask = function (cb) {
-            var taskid = guid();
-            taskMap.put(taskid, cb);
-            return taskid;
-        };
-
-        this.popTask = function (id, err, msg) {
-            var func = taskMap.get(id);
-            if (func) {
-                func(err, msg);
-            }
-            taskMap.remove(id);
-        };
-    };
-
-    var taskMgr = new TaskMgr();
-    var connMap = new HashMap();
 
 
     /**

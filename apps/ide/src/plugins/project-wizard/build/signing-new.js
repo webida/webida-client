@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2012-2015 S-Core Co., Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -93,6 +93,42 @@ define([
         var self = this;
         var data = null;
 
+        var dlg = new ButtonedDialog({
+            buttons: [
+                { id: 'signingCreate',
+                    caption: 'OK',
+                    methodOnClick: 'checkAndCreate'
+                },
+                { id: 'signingCancel',
+                    caption: 'Cancel',
+                    methodOnClick: 'hide'
+                }
+            ],
+            methodOnEnter: 'checkAndCreate',
+            title: Messages.GEN_SIGNED_WIZARD_NEW_KEY_STORE,
+            refocus: false,
+
+            onHide: function () {
+                dlg.destroyRecursive();
+                return deferred.resolve(data);
+            },
+
+            onLoad: function () {
+            },
+
+            checkAndCreate: function () {
+                _super.setMessage('');
+                var newName = reg.byId('alias').get('value');
+                try {
+                    if (self.validate()) {
+                        doCreation(newName);
+                    }
+                } catch (err) {
+                    _super.setError(err);
+                }
+            }
+        });
+
         function doCreation(newName) {
             var alias = newName;
             var keyPassword = reg.byId('keyPassword').get('value');
@@ -126,41 +162,7 @@ define([
         }
 
         var deferred = new Deferred();
-        var dlg = new ButtonedDialog({
-            buttons: [
-                { id: 'signingCreate',
-                 caption: 'OK',
-                 methodOnClick: 'checkAndCreate'
-                },
-                { id: 'signingCancel',
-                 caption: 'Cancel',
-                 methodOnClick: 'hide'
-                }
-            ],
-            methodOnEnter: 'checkAndCreate',
-            title: Messages.GEN_SIGNED_WIZARD_NEW_KEY_STORE,
-            refocus: false,
-            
-            onHide: function () {
-                dlg.destroyRecursive();
-                return deferred.resolve(data);
-            },
 
-            onLoad: function () {
-            },
-
-            checkAndCreate: function () {
-                _super.setMessage('');
-                var newName = reg.byId('alias').get('value');
-                try {
-                    if (self.validate()) {
-                        doCreation(newName);
-                    }
-                } catch (err) {
-                    _super.setError(err);
-                }
-            }
-        });
         _super.setId(dlg.id);
         dlg.set('doLayout', false);
         dlg.setContentArea(tplLayout);

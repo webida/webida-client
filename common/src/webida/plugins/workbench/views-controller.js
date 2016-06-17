@@ -57,15 +57,9 @@ define([
 ) {
     'use strict';
 
-    topic.subscribe('view/unregistered', function (event) {
-        viewsController.focusController.unregisterView(event.view);
-    });
-    topic.subscribe('view/maximize', function (event) {
-        viewsController.toggleFullScreen(event.location);
-    });
-
     var GROUPNAME = 'COMMON-VIEW';
     var statusbarText;
+
     var viewsController = {
         _leftSplitViewContainer : null,
         _rightSplitViewContainer : null,
@@ -562,7 +556,7 @@ define([
 
             aspect.before(leftSplitter, '_startDrag', function () {
                 topic.publish('layout/pane/resized');
-            });            
+            });
 
             aspect.before(rightSplitter, '_handleOnChange', function () {
                 topic.publish('layout/pane/resized');
@@ -570,7 +564,7 @@ define([
 
             aspect.before(rightSplitter, '_startDrag', function () {
                 topic.publish('layout/pane/resized');
-            });           
+            });
 
             aspect.before(bottomSplitter, '_handleOnChange', function () {
                 topic.publish('layout/pane/resized');
@@ -578,7 +572,7 @@ define([
 
             aspect.before(bottomSplitter, '_startDrag', function () {
                 topic.publish('layout/pane/resized');
-            });         
+            });
 
             var vcList;
 
@@ -670,32 +664,32 @@ define([
                     });
                 }
             });
-            
-            (function () {                
-                var menu = new DropDownMenu({ style: 'display: none;' });                       
+
+            (function () {
+                var menu = new DropDownMenu({ style: 'display: none;' });
                 var exts = pm.getExtensions('webida.common.workbench:perspective') || [];
                 var button;
                 var defaultPerspectiveName = 'Default';
                 var perspectiveNamePrefix = 'Perspective: ';
-                var initialPerspectiveButtonLabel = perspectiveNamePrefix + defaultPerspectiveName; 
-                
+                var initialPerspectiveButtonLabel = perspectiveNamePrefix + defaultPerspectiveName;
+
                 function getPerspectiveNameById(perspectiveId) {
                     var name = defaultPerspectiveName;
                     if (perspectiveId) {
-                        exts.forEach(function (ext) {                
+                        exts.forEach(function (ext) {
                             if (ext.id === perspectiveId) {
                                 name = ext.name;
                             }
-                        });                        
-                    } 
-                    return name;                    
+                        });
+                    }
+                    return name;
                 }
 
                 if (exts.length > 0) {
                     menu.addChild(new MenuItem({
                         label: defaultPerspectiveName,
                         onClick: function () {
-                            button.set('label', initialPerspectiveButtonLabel); 
+                            button.set('label', initialPerspectiveButtonLabel);
                             _self.currentPerspectiveID = null;
                         }
                     }));
@@ -722,7 +716,7 @@ define([
                     dom.byId('dropDownPerspectiveinfo').appendChild(button.domNode);
                 }
             })();
-        }, 
+        },
 
         getActivatedPanel : function () {
             var _self = this;
@@ -1073,15 +1067,15 @@ define([
             if (panel) {
                 _self.expandPanel(location);
                 switch (location) {
-                case 'bottom' :
-                    _self.lastPanelState.height = domStyle.get(panel.domNode, 'height');
-                    domStyle.set(panel.domNode, 'height', '100%');
-                    break;
-                case 'left' :
-                case 'right' :
-                    _self.lastPanelState.width = domStyle.get(panel.domNode, 'width');
-                    domStyle.set(panel.domNode, 'width', '100%');
-                    break;
+                    case 'bottom' :
+                        _self.lastPanelState.height = domStyle.get(panel.domNode, 'height');
+                        domStyle.set(panel.domNode, 'height', '100%');
+                        break;
+                    case 'left' :
+                    case 'right' :
+                        _self.lastPanelState.width = domStyle.get(panel.domNode, 'width');
+                        domStyle.set(panel.domNode, 'width', '100%');
+                        break;
                 }
             }
         },
@@ -1091,13 +1085,13 @@ define([
             var panel = _self._getPanel(location);
             if (panel) {
                 switch (location) {
-                case 'bottom' :
-                    domStyle.set(panel.domNode, 'height', _self.lastPanelState.height + 'px');
-                    break;
-                case 'left' :
-                case 'right' :
-                    domStyle.set(panel.domNode, 'width', _self.lastPanelState.width + 'px');
-                    break;
+                    case 'bottom' :
+                        domStyle.set(panel.domNode, 'height', _self.lastPanelState.height + 'px');
+                        break;
+                    case 'left' :
+                    case 'right' :
+                        domStyle.set(panel.domNode, 'width', _self.lastPanelState.width + 'px');
+                        break;
                 }
             }
         },
@@ -1284,7 +1278,14 @@ define([
             });
         }
 
-    };
+    }; // end of viewsController
+
+    topic.subscribe('view/unregistered', function (event) {
+        viewsController.focusController.unregisterView(event.view);
+    });
+    topic.subscribe('view/maximize', function (event) {
+        viewsController.toggleFullScreen(event.location);
+    });
 
     return viewsController;
 });
