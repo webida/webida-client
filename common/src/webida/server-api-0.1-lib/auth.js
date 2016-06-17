@@ -31,7 +31,6 @@ define([
 
         authApi.login(loginRequest, function (error, data, response) {
             if (!error) {
-                logger.debug('login response', data, response);
                 common.setLoginResponse(data);
                 // Oddly, there's no error-fist-callback for initAuth
                 callback(data.sessionId);
@@ -46,7 +45,6 @@ define([
 
         authApi.getInfo(function (error, data, response) {
             if (!error) {
-                logger.debug('info response', data, response);
                 // TODO : add common.userInfo and check it before sending request
                 // don't forget to invoke callback with setTimeout(0)
                 callback(null, data);

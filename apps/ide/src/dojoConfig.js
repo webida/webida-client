@@ -27,6 +27,7 @@
         globalObject.nmodule = globalObject.module;
         delete globalObject.require;
         delete globalObject.module;
+        globalObject.__ELECTRON_BROWSER__ = true;
     }
 
     var webidaLocale = decodeURIComponent(
@@ -96,7 +97,6 @@
             globalObject.dojoConfig.aliases.push(['top/site-config.json' , 'top/site-config-desktop.json']);
             console.log('under electrion re-wrote some requirejs aliases');
         }
-        globalObject.__ELECTRON_BROWSER__ = true;
-        console.log("ready for electron");
+        console.log('dojoConfig is now ready for electron');
     }
 })(window);

@@ -363,6 +363,7 @@ define([
         }
 
         function connectToConnServer() {
+
             webida.auth.getMyInfo(function (e, data) {
                 if (e) {
                     logger.error('getMyInfo error: ' + e);
@@ -374,6 +375,17 @@ define([
                             logger.log('connected to conn server');
 
                             // sys.fs.change notification subscribe
+                            
+                            // note from webida-desktop
+                            //  new server-api-*.js has no acl service and does not require 
+                            //  explicit subscription for default server events fs.change 
+                            //  And, since 
+
+                            if (typeof webida.acl !== 'object') {
+                                logger.log('no need to subscribe and topic relay with new api ');
+                                return; 
+                            }
+                            
                             webida.acl.getAuthorizedRsc('fs:readFile', function (err, topics) {
                                 if (err) {
                                     logger.error('getAuthorizedRsc: ', err);

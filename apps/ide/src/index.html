@@ -73,7 +73,7 @@
                     var newStatus = browserWindow.getBounds();
                     newStatus.maximized = browserWindow.isMaximized();
                     newStatus = JSON.stringify(newStatus);
-                    console.log("saving browser window status for closing " + newStatus);
+                    console.log('saving browser window status for closing ' + newStatus);
                     window.localStorage.setItem(browserWindowStatusStorageKey, newStatus);
                 });
             }
