@@ -50,6 +50,8 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
     var TYPE_DIRECTORY  = 'dir';
     var TYPE_UNKNOWN    = 'unknown';
 
+    // due to cyclc dependencies among FSNode/File/Directory class
+    /*jshint latedef: false */
     function FSCache(fsURLArg, dirsToCacheArg) {
 
         //*******************************
@@ -688,7 +690,6 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
             }
         });
-
 
         var FSCacheInner = declare(null, {
 
