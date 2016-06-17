@@ -1264,6 +1264,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
             }
         });
+        var fsCache;
 
         //*******************************
         // inner class of FSCacheInner: FSNode
@@ -1884,6 +1885,341 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 }
             }
         });
+
+
+        //---------------------------
+        //---------------------------
+        // private methods of FSCacheInner
+        //---------------------------
+        //---------------------------
+
+        //---------------------------
+        // utility functions
+        //---------------------------
+
+        function parseWFSURL(fsURL) {
+            var uri = new URI(fsURL);
+            var ret = {
+                fsServer: uri.host(),
+                fsid: uri.segment(0)
+            };
+            uri.segment(0, '');	// drop the fsid
+            ret.path = uri.path(true);
+
+            return ret;
+        }
+        function subscribeToNotificationsOnFS(fsCache) {
+            function isIgnoredNotification(data, checkedURLs) {
+                // ignore changed caused by myself
+                var mySessionID = webida.auth.getSessionID();
+                if (!data.sid) {
+                    console.error('The session id of a notification is unknown');
+                    return true;
+                }
+
+                if (mySessionID === data.sid) {
+                    console.log('notification ignored: changes by the current app');
+                    return true;
+                }
+
+                if (checkedURLs.every(function (url) { return !withinCache(data[url]); })) {
+                    console.log('notification ignored: changes outside cache');
+                    return true;
+                }
+
+                return false;
+            }
+
+            topic.subscribe('sys.fs.file.written', function (data) {
+                if (isIgnoredNotification(data, ['url'])) {
+                    return;
+                }
+
+                var urlParsed = parseWFSURL(data.url);
+                var existing = root.getByAbsPath(urlParsed.path);
+                if (!existing) {
+                    // file created
+                    if (existing === null) {
+                        root.putByAbsPath(urlParsed.path, 'file-written');
+                        topic.publish('#REQUEST.log',
+                                      'Handled a notification [sys.fs.file.written] for "' +
+                                      urlParsed.path + '" (as a file creation)');
+                        topic.publish('#REQUEST.log', '');
+                    }
+                } else if (existing.getType() === TYPE_FILE) {
+                    // file written
+                    existing.invalidateFileContents();
+                    topic.publish('#REQUEST.log',
+                                  'Handled a notification [sys.fs.file.written] for "' +
+                                  urlParsed.path + '" (as a file cache invalidation)');
+                    topic.publish('#REQUEST.log', '');
+                } else {
+                    console.error('sys.fs.file.written arrived for a non-file "' +
+                                 urlParsed.path + '"');
+                }
+
+            });
+            topic.subscribe('sys.fs.file.deleted', function (data) {
+                if (isIgnoredNotification(data, ['url'])) {
+                    return;
+                }
+
+                var urlParsed = parseWFSURL(data.url);
+                var existing = root.getByAbsPath(urlParsed.path);
+                if (!existing) {
+                    if (existing === null) {
+                        console.error('sys.fs.file.deleted arrived for an absent file "' +
+                                     urlParsed.path + '"');
+                    }
+                } else if (existing.getType() === TYPE_FILE) {
+                    existing.detach();
+                    topic.publish('#REQUEST.log',
+                                  'Handled a notification [sys.fs.file.deleted] for "' +
+                                  urlParsed.path + '"');
+                    topic.publish('#REQUEST.log', '');
+                } else {
+                    console.error('sys.fs.file.deleted arrived for a non-file "' +
+                                 urlParsed.path + '"');
+                }
+
+            });
+            topic.subscribe('sys.fs.dir.created', function (data) {
+                if (isIgnoredNotification(data, ['url'])) {
+                    return;
+                }
+
+                var urlParsed = parseWFSURL(data.url);
+                var existing = root.getByAbsPath(urlParsed.path);
+                if (!existing) {
+                    if (existing === null) {
+                        root.putByAbsPath(pathUtil.attachSlash(urlParsed.path), 'dir-created');
+                        topic.publish('#REQUEST.log',
+                                      'Handled a notification [sys.fs.dir.created] for "' +
+                                      urlParsed.path + '"');
+                        topic.publish('#REQUEST.log', '');
+                    }
+                } else if (existing.getType() === TYPE_DIRECTORY) {
+                    console.error('sys.fs.dir.created arrived for an existing directory "' +
+                                 urlParsed.path + '"');
+                } else {
+                    console.error('sys.fs.dir.created arrived for a non-directory "' +
+                                 urlParsed.path + '"');
+                }
+            });
+            topic.subscribe('sys.fs.dir.deleted', function (data) {
+                if (isIgnoredNotification(data, ['url'])) {
+                    return;
+                }
+
+                var urlParsed = parseWFSURL(data.url);
+                var existing = root.getByAbsPath(urlParsed.path);
+                if (!existing) {
+                    if (existing === null) {
+                        console.error('sys.fs.dir.deleted arrived for an absent directory "' +
+                                     urlParsed.path + '"');
+                    }
+                } else if (existing.getType() === TYPE_DIRECTORY) {
+                    existing.detach();
+                    topic.publish('#REQUEST.log',
+                                  'Handled a notification [sys.fs.dir.deleted] for "' +
+                                  urlParsed.path + '"');
+                    topic.publish('#REQUEST.log', '');
+                } else {
+                    console.error('sys.fs.dir.deleted arrived for a non-directory "' +
+                                 urlParsed.path + '"');
+                }
+            });
+            topic.subscribe('sys.fs.node.intractableChanges', function (data) {
+                if (isIgnoredNotification(data, ['url'])) {
+                    return;
+                }
+
+                var urlParsed = parseWFSURL(data.url);
+                var existing = root.getByAbsPath(urlParsed.path);
+                if (!existing) {
+                    if (existing === null) {
+                        console.error('sys.fs.dir.intractableChanges arrived for an absent directory "' +
+                                     urlParsed.path + '"');
+                    }
+                } else if (existing.getType() === TYPE_DIRECTORY) {
+                    fsCache.refresh(urlParsed.path, { level: -1 }, function () {
+                        topic.publish('#REQUEST.log',
+                                      'Handled a notification [sys.fs.node.intractableChanges] for "' +
+                                      urlParsed.path + '"');
+                        topic.publish('#REQUEST.log', '');
+
+                        onNodeChanges(urlParsed.path);
+                    });
+                } else {
+                    console.error('sys.fs.dir.intractable-changes arrived for a non-directory "' +
+                                 urlParsed.path + '"');
+                }
+
+            });
+            topic.subscribe('sys.fs.node.moved', function (data) {
+                if (isIgnoredNotification(data, ['srcURL', 'dstURL'])) {
+                    return;
+                }
+
+                var dstURLParsed;
+                if (withinCache(data.dstURL)) {
+                    dstURLParsed = parseWFSURL(data.dstURL);
+                    mount.isDirectory(dstURLParsed.path, function (err, isDir) {
+                        if (err) {
+                            console.log('Cannot figure out whether the destination "' + dstURLParsed.path +
+                                        '" of a notification sys.fs.node.moved is a directory or not: ' + err);
+                            console.log('The notification is ignored.');
+                        } else {
+                            var existing = root.getByAbsPath(dstURLParsed.path);
+                            if (existing) {
+                                if ((existing.getType() === TYPE_DIRECTORY) === isDir) {
+                                    if (isDir) {
+                                        console.error('sys.fs.node.moved arraived for an existing "' +
+                                                      dstURLParsed.path + '" as its destination');
+                                    } else {
+                                        existing.invalidateFileContents();
+                                        topic.publish('#REQUEST.log',
+                                                      'Handled a notification [sys.fs.node.moved] ' +
+                                                      'for its overwritten target file "' + dstURLParsed.path + '"');
+                                        topic.publish('#REQUEST.log', '');
+                                    }
+                                } else {
+                                    console.error('The type of the destination of a notification sys.fs.node.moved ' +
+                                        'does not match that of the corresponding node in the fs-cache for "' +
+                                        dstURLParsed.path + '"');
+                                }
+                            } else {
+                                if (existing === null) {
+                                    root.putByAbsPath((isDir ?
+                                                        pathUtil.attachSlash :
+                                                        pathUtil.detachSlash)(dstURLParsed.path),
+                                                      'moved');
+                                    topic.publish('#REQUEST.log',
+                                                  'Handled a notification [sys.fs.node.moved] for its target "' +
+                                                  dstURLParsed.path + '"');
+                                    topic.publish('#REQUEST.log', '');
+                                }
+                            }
+                        }
+                    });
+                }
+
+                if (withinCache(data.srcURL)) {
+                    var srcURLParsed = parseWFSURL(data.srcURL);
+                    var existing = root.getByAbsPath(srcURLParsed.path);
+                    if (!existing) {
+                        if (existing === null) {
+                            console.error('sys.fs.node.moved arrived for an absent "' +
+                                          srcURLParsed.path + '" as its source');
+                        }
+                    } else {
+                        existing.detach(withinCache(data.dstURL) ? dstURLParsed.path : undefined);
+                        topic.publish('#REQUEST.log',
+                                      'Handled a notification [sys.fs.node.moved] for its source "' +
+                                      srcURLParsed.path + '"');
+                        topic.publish('#REQUEST.log', '');
+                    }
+                }
+
+                // TODO: need to publish fs.cache.node.moved?
+                // But the topic does not support the case when the source is out of the current file system.
+            });
+            topic.subscribe('sys.fs.node.copied', function (data) {
+                if (isIgnoredNotification(data, ['dstURL'])) {
+                    return;
+                }
+
+                var existing;
+                var dstURLParsed = parseWFSURL(data.dstURL);
+                if (withinCache(dstURLParsed.path)) {
+                    mount.isDirectory(dstURLParsed.path, function (err, isDir) {
+                        if (err) {
+                            console.log('Cannot figure out whether the destination "' + dstURLParsed.path +
+                                        '" of a notification sys.fs.node.copied is a directory or not: ' + err);
+                            console.log('The notification is ignored.');
+                        } else {
+                            existing = root.getByAbsPath(dstURLParsed.path);
+                            if (existing) {
+                                if ((existing.getType() === TYPE_DIRECTORY) === isDir) {
+                                    if (isDir) {
+                                        fsCache.refresh(dstURLParsed.path, { level: -1 });
+                                        topic.publish('#REQUEST.log',
+                                                      'Handled a notification [sys.fs.node.copied] ' +
+                                                      'for its merged target directory "' + dstURLParsed.path + '"');
+                                        topic.publish('#REQUEST.log', '');
+                                    } else {
+                                        existing.invalidateFileContents();
+                                        topic.publish('#REQUEST.log',
+                                                      'Handled a notification [sys.fs.node.copied] ' +
+                                                      'for its overwritten target file "' + dstURLParsed.path + '"');
+                                        topic.publish('#REQUEST.log', '');
+                                    }
+                                } else {
+                                    console.error('The type of the destination of a notification sys.fs.node.copied ' +
+                                        'does not match that of the corresponding node in the fs-cache for "' +
+                                        dstURLParsed.path + '"');
+                                }
+                            } else {
+                                if (existing === null) {
+                                    root.putByAbsPath((isDir ?
+                                                        pathUtil.attachSlash :
+                                                        pathUtil.detachSlash)(dstURLParsed.path),
+                                                      'copied');
+                                    topic.publish('#REQUEST.log',
+                                                  'Handled a notification [sys.fs.node.copied] ' +
+                                                  'for its target "' + dstURLParsed.path + '"');
+                                    topic.publish('#REQUEST.log', '');
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // TODO: need to publish fs.cache.node.copied?
+                // But the topic does not support the case when the source is out of the current file system.
+            });
+        }
+
+        function withinCache(path) {
+            if (path.indexOf('wfs://') === 0) {
+                // path is given in Webida File System URL
+                var pathParsed = parseWFSURL(path);
+                if (fsURLParsed.fsServer !== pathParsed.fsServer ||
+                    fsURLParsed.fsid !== pathParsed.fsid) {
+                    return false;
+                }
+                path = pathParsed.path;
+            }
+            return dirsToCache.some(function (cached) { return path.indexOf(cached) === 0; });
+        }
+        function getName(obj) { return obj.name; }
+        function isDir(stat) { return stat.isDirectory; }
+        function isFile(stat) { return stat.isFile; }
+        function checkTargetPath(path, exists, allowsDirPath) {
+            if (!isValidAbsPath(path)) {
+                return 'The path "' + path + '" is not a valid absolute path';
+            }
+
+            var node = root.getByAbsPath(path);
+            if (typeof exists === 'boolean') {
+                if ((exists && node === null) || (!exists && node)) {
+                    return 'The path "' + path + '" must be ' + (exists ? 'present' : 'absent');
+                }
+            }
+
+            if (!allowsDirPath && pathUtil.isDirPath(path)) {
+                return 'The path "' + path + '" ends with a slash, which is disallowed';
+            }
+
+            return node;
+        }
+
+        //---------------------------
+        //---------------------------
+        // end of private methods of FSCacheInner
+        //---------------------------
+        //---------------------------
+
 
         //---------------------------
         //---------------------------

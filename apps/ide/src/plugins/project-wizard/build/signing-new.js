@@ -92,6 +92,7 @@ define([
     NewSigning.prototype.openDialog = function () {
         var self = this;
         var data = null;
+        var deferred = new Deferred();
 
         var dlg = new ButtonedDialog({
             buttons: [
@@ -160,8 +161,6 @@ define([
                 }
             });
         }
-
-        var deferred = new Deferred();
 
         _super.setId(dlg.id);
         dlg.set('doLayout', false);
