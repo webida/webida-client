@@ -34,7 +34,7 @@
     "noempty": true,
     "nonew": true,
     "plusplus": false,
-    "undef": "nofunc",
+    "undef": true,
     "unused": true,
     "strict": true,
     "trailing": false,
