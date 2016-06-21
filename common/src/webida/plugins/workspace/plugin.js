@@ -1759,13 +1759,13 @@ define([
     /**
      * Rename a node interactively
      * @param path
-     * @param kind
+     * @param newName
      * @method
      */
-    function renameNodeInteractively(path, kind) {
+    function renameNodeInteractively(path, newName) {
         var node = getNode(path);
         if (node) {
-            node.renameInteractively(kind);
+            node.renameInteractively(newName);
         } else {
             throw new Error('assertion fail: unreachable');
         }

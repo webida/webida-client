@@ -24,7 +24,7 @@
  * @see CodeEditorPart
  * @since 1.3.0
  * @author hw.shim@samsung.com
- * @author sewon326.kim@samsung.com 
+ * @author sewon326.kim@samsung.com
  * @author kyungmi.k@samsung.com
  * @author cg25.woo@samsung.com
  * @author h.m.kwon@samsung.com
@@ -239,17 +239,16 @@ define([
 
     function foldCode(cm, start, end) {
         var myWidget = $('<span class="CodeMirror-foldmarker">').text('\u2194')[0];
-        codemirror.on(myWidget, 'mousedown', function () { myRange.clear(); });
         var myRange = cm.markText(start, end, {
             replacedWith: myWidget,
             clearOnEnter: true,
             __isFold: true
         });
+        codemirror.on(myWidget, 'mousedown', function () { myRange.clear(); });
     }
     codemirror.commands.foldselection = function (cm) {
         foldCode(cm, cm.getCursor('start'), cm.getCursor('end'));
     };
-
     codemirror.commands.gotoLine = function (cm) {
         if (cm.getOption('keyMap') === 'default') {
             var dialog = 'Go to line: <input type="text" style="width: 10em"/> <span style="color: #888"></span>';
@@ -285,13 +284,13 @@ define([
 
     // Manage available themes and modes
     var availables = ['mode::text/plain'];
+    function isAvailable(type, name) {
+        return _.contains(availables, type + '::' + name);
+    }
     function addAvailable(type, name) {
         if (!isAvailable(type, name)) {
             availables.push(type + '::' + name);
         }
-    }
-    function isAvailable(type, name) {
-        return _.contains(availables, type + '::' + name);
     }
 
     function cursorAtAutoHint(cm, modeName, cursor, rightToken) {
@@ -330,41 +329,6 @@ define([
         return false;
     }
 
-    codemirror.commands.autocomplete = function (cm, options) {
-        if (options === undefined) {
-            // call by explicit key (ctrl+space)
-            if (cm.state.completionActive) {
-                cm.state.completionActive.close();
-                return;
-            }
-        }
-
-        options = options || {};
-        options.path = cm.__instance.file.path;
-        options.async = true;
-        options.useWorker = cm.__instance.settings.useWorker;
-
-        var modeAt = cm.getModeAt(cm.getCursor());
-        var modeName = modeAt && modeAt.name;
-
-        if (modeName === undefined || modeName === null) {
-            return;
-        }
-        cm._hintModeName = modeName;
-
-        if (cm.state.completionActive && cm.state.completionActive.widget) {
-            return;
-        } else if (options.autoHint && !cursorAtAutoHint(cm, modeName, cm.getCursor())) {
-            return;
-        }
-
-        codemirror.showHint(cm, hint, options);
-    };
-
-    codemirror.commands.save = function(cm) {
-        topic.publish('editor/save/current');
-    };
-
     function mergeResult(resultAll, resultThis) {
         if (resultThis && resultThis.list) {
             if (!resultAll.from) {
@@ -387,38 +351,6 @@ define([
             resultAll.hintContinue = resultAll.hintContinue || resultThis.hintContinue;
         }
     }
-
-    function setHinterSchemes() {
-        var extInfos = ContentAssistDelegator.getCaExtensionInfos();
-
-        loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
-            require(['external/codemirror/addon/hint/show-hint'], function () {
-                _.each(extInfos, function (extInfo) {
-                    if (extInfo.hinterModes) {
-                        _.each(extInfo.hinterModes, function (hinterMode) {
-                            if (extInfo.hinterNames) {
-                                _.each(extInfo.hinterNames, function (hinterName) {
-                                    if (_localHinterSchemes[hinterMode]) {
-                                        _localHinterSchemes[hinterMode].push({name: hinterName});
-                                    } else {
-                                        _localHinterSchemes[hinterMode] = [{name: hinterName}];
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        if (extInfo.hinterNames) {
-                            _.each(extInfo.hinterNames, function (hinterName) {
-                                _globalHinterSchemes.push({name: hinterName});
-                            });
-                        }
-                    }
-                });
-            });
-        });
-    }
-
-    setHinterSchemes();
 
     function hint(cm, callback, options) {
         var modeName = cm.getModeAt(cm.getCursor()).name;
@@ -481,6 +413,73 @@ define([
         return localResult;
     }
 
+    codemirror.commands.autocomplete = function (cm, options) {
+        if (options === undefined) {
+            // call by explicit key (ctrl+space)
+            if (cm.state.completionActive) {
+                cm.state.completionActive.close();
+                return;
+            }
+        }
+
+        options = options || {};
+        options.path = cm.__instance.file.path;
+        options.async = true;
+        options.useWorker = cm.__instance.settings.useWorker;
+
+        var modeAt = cm.getModeAt(cm.getCursor());
+        var modeName = modeAt && modeAt.name;
+
+        if (modeName === undefined || modeName === null) {
+            return;
+        }
+        cm._hintModeName = modeName;
+
+        if (cm.state.completionActive && cm.state.completionActive.widget) {
+            return;
+        } else if (options.autoHint && !cursorAtAutoHint(cm, modeName, cm.getCursor())) {
+            return;
+        }
+
+        codemirror.showHint(cm, hint, options);
+    };
+
+    codemirror.commands.save = function (cm) {
+        topic.publish('editor/save/current');
+    };
+
+    function setHinterSchemes() {
+        var extInfos = ContentAssistDelegator.getCaExtensionInfos();
+
+        loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
+            require(['external/codemirror/addon/hint/show-hint'], function () {
+                _.each(extInfos, function (extInfo) {
+                    if (extInfo.hinterModes) {
+                        _.each(extInfo.hinterModes, function (hinterMode) {
+                            if (extInfo.hinterNames) {
+                                _.each(extInfo.hinterNames, function (hinterName) {
+                                    if (_localHinterSchemes[hinterMode]) {
+                                        _localHinterSchemes[hinterMode].push({name: hinterName});
+                                    } else {
+                                        _localHinterSchemes[hinterMode] = [{name: hinterName}];
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        if (extInfo.hinterNames) {
+                            _.each(extInfo.hinterNames, function (hinterName) {
+                                _globalHinterSchemes.push({name: hinterName});
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    }
+
+    setHinterSchemes();
+
     function startContentAssist(editor, cm, c) {
         var options = {};
         options.useWorker = settings.useWorker;
@@ -489,11 +488,12 @@ define([
         return new ContentAssistDelegator(editor, cm, options, c);
     }
 
+    var onChangeForAutoHintDebounced;
     function setChangeForAutoHintDebounced() {
         onChangeForAutoHintDebounced = _.debounce(function (cm, changeObj, lastCursor) {
             // TODO - limch - minimize addFile() call to WebWorker
             var editor = cm.__instance;
-            
+
             if (editor._contentAssistDelegator) {
                 var options = {};
                 options.async = true;
@@ -514,7 +514,6 @@ define([
         }, settings.autoHintDelay);
     }
 
-    var onChangeForAutoHintDebounced;
     setChangeForAutoHintDebounced();
 
     function onChangeForAutoHint(cm, changeObj) {
@@ -550,9 +549,9 @@ define([
     }
 
     function CodeEditorViewer(elem, file, startedListener) {
-    	logger.info('new CodeEditorViewer()');
-    	this.settings = settings;
-    	TextEditorViewer.apply(this, arguments);
+        logger.info('new CodeEditorViewer()');
+        this.settings = settings;
+        TextEditorViewer.apply(this, arguments);
     }
 
     genetic.inherits(CodeEditorViewer, TextEditorViewer, {
@@ -560,15 +559,16 @@ define([
 		/**
 		 * @override
 		 */
-        createWidget: function(parentNode) {
-        	logger.info('createWidget(' + parentNode + ')');
+        createWidget: function (parentNode) {
+            logger.info('createWidget(' + parentNode + ')');
             this.options.extraKeys = {
                 'Ctrl-Space': 'autocomplete',
                 'Ctrl-/': 'linecomment',
-                'Tab': 'handleTab',
+                'Tab': 'defaultTab',
                 'Shift-Tab': 'navigateSnippetBackward',
                 'Ctrl--': 'foldselection',
-                'Ctrl-D': 'gotoLine',
+                'Ctrl-D': 'deleteLine',
+                'Ctrl-L': 'gotoLine'
             };
 			this.prepareCreate();
         },
@@ -576,7 +576,7 @@ define([
         /**
 		 * @override
 		 */
-        prepareCreate: function() {
+        prepareCreate: function () {
             logger.info('prepareCreate()');
             var self = this;
             // @formatter:off
@@ -584,7 +584,7 @@ define([
                 require.toUrl('plugins/webida.editor.text-editor/css/webida.css'),
                 require.toUrl('external/codemirror/lib/codemirror.css'),
                 require.toUrl('external/codemirror/addon/dialog/dialog.css')
-            ], function() {
+            ], function () {
                 logger.info('*require*');
                 require([
                     'external/codemirror/addon/dialog/dialog',
@@ -593,7 +593,7 @@ define([
                     'external/codemirror/addon/edit/closebrackets',
                     'external/codemirror/addon/edit/closetag',
                     'external/codemirror/addon/edit/matchbrackets'
-                ], function() {
+                ], function () {
                     logger.info('%cLoad CSS complete', 'color:orange');
                     self.createEditorWidget(self.getParentNode());
                 });
@@ -608,16 +608,16 @@ define([
             logger.info('createEditorWidget(' + parentNode + ')');
             TextEditorViewer.prototype.createEditorWidget.call(this, parentNode);
 
-            this.editor.on('mousedown', function(cm, e) {
+            this.editor.on('mousedown', function (cm, e) {
                 if (settings.gotoLinkEnabled) {
-                    require(['./content-assist/goto-link'], function(gotolink) {
+                    require(['./content-assist/goto-link'], function (gotolink) {
                         gotolink.onMouseDown(cm, e);
                     });
                 }
             });
-            this.editor.on('keydown', function(cm, e) {
+            this.editor.on('keydown', function (cm, e) {
                 if (settings.gotoLinkEnabled) {
-                    require(['./content-assist/goto-link'], function(gotolink) {
+                    require(['./content-assist/goto-link'], function (gotolink) {
                         gotolink.onKeyDown(cm, e);
                     });
                 }
@@ -628,14 +628,14 @@ define([
 		/**
 		 * @override
 		 */
-        addOptions: function() {
+        addOptions: function () {
             TextEditorViewer.prototype.addOptions.call(this);
             this.setOption('mode', this.mappedMode, isAvailable('mode', this.mode), 'text/plain');
         },
 
-	    setMode : function (mode) {
+        setMode : function (mode) {
             var that = this;
-            var assistDelegator = null;            
+            var assistDelegator = null;
             that.promiseForSetMode = new Promise(function (resolve, reject) {
                 if (mode === undefined || that.mode === mode) {
                     resolve('no change');
@@ -688,187 +688,187 @@ define([
                 that.emitLater(PartViewer.READY, that);
                 that._contentAssistDelegator = assistDelegator;
             });
-	    },
+        },
 
-	    //TODO : inherit from TextEditorViewer
-	    /**
-	     * @override
-	     */
-	    setTheme : function (theme) {
-	        if (theme === undefined) {
-	            return;
-	        }
-	        if (theme === 'webida') {
-	            theme = 'webida-light';
-	        }
-	        this.theme = theme;
+        //TODO : inherit from TextEditorViewer
+        /**
+         * @override
+         */
+        setTheme : function (theme) {
+            if (theme === undefined) {
+                return;
+            }
+            if (theme === 'webida') {
+                theme = 'webida-light';
+            }
+            this.theme = theme;
             if (theme === 'codemirror-default') {
                 theme = this.theme = 'default';
                 this.addDeferredAction(function (self) {
                     self.editor.setOption('theme', self.theme);
                 });
             } else {
-	            var self = this;
-	            var csspath = 'external/codemirror/theme/' + theme + '.css';
-	            switch (theme) {
-	            case 'webida-dark':
-	                csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
-	                break;
-	            case 'webida-light':
-	                csspath = 'webida-lib/plugins/editors/themes/webida-light.css';
-	                break;
-	            case 'solarized dark':
-	            case 'solarized light':
-	                csspath = 'external/codemirror/theme/solarized.css';
-	                break;
-	            }
-	            loadCSSList([require.toUrl(csspath)], function () {
-	                addAvailable('theme', theme);
+                var self = this;
+                var csspath = 'external/codemirror/theme/' + theme + '.css';
+                switch (theme) {
+                    case 'webida-dark':
+                        csspath = 'webida-lib/plugins/editors/themes/webida-dark.css';
+                        break;
+                    case 'webida-light':
+                        csspath = 'webida-lib/plugins/editors/themes/webida-light.css';
+                        break;
+                    case 'solarized dark':
+                    case 'solarized light':
+                        csspath = 'external/codemirror/theme/solarized.css';
+                        break;
+                }
+                loadCSSList([require.toUrl(csspath)], function () {
+                    addAvailable('theme', theme);
                     self.addDeferredAction(function (self) {
                         self.editor.setOption('theme', self.theme);
                     });
                 });
-	        }
-	    },
+            }
+        },
 
-	    setLinter : function (type, option) {
-	        if (type === undefined || option === undefined) {
-	            return;
-	        }
-	        if (! this.linters) {
-	            this.linters = {};
-	        }
+        setLinter : function (type, option) {
+            if (type === undefined || option === undefined) {
+                return;
+            }
+            if (! this.linters) {
+                this.linters = {};
+            }
             this.linters[type] = option;
-            
-	        var that = this;
+
+            var that = this;
             that.promiseForSetMode.then(function(){
                 var editor = that.editor;
-                if (editor._contentAssistDelegator) {                    
+                if (editor._contentAssistDelegator) {
                     editor._contentAssistDelegator.execCommandForAll(
                         'setLinter',
                         that,
                         type,
                         option);
                 }
-            });           
-	    },
-	    __applyLinter : function () {
-	        if (this.editor && this.linters && _.contains(['js', 'json', 'css', 'html'], this.mode)) {
-	            if (this.linters[this.mode]) {
-	                this._gutterOn('CodeMirror-lint-markers');
-                    
+            });
+        },
+        __applyLinter : function () {
+            if (this.editor && this.linters && _.contains(['js', 'json', 'css', 'html'], this.mode)) {
+                if (this.linters[this.mode]) {
+                    this._gutterOn('CodeMirror-lint-markers');
+
                     var that = this;
                     that.promiseForSetMode.then(function(){
                         var editor = that.editor;
-                        if (editor._contentAssistDelegator) {                    
+                        if (editor._contentAssistDelegator) {
                             editor._contentAssistDelegator.execCommandForAll(
                                 'applyLinter',
-                                that.editor, 
+                                that.editor,
                                 that.mode);
                         }
                     });
-	            } else {
-	                this.editor.setOption('lint', false);
-	                this._gutterOff('CodeMirror-lint-markers');
-	            }
-	        }
-	    },
+                } else {
+                    this.editor.setOption('lint', false);
+                    this._gutterOff('CodeMirror-lint-markers');
+                }
+            }
+        },
 
         setHinters : function (mode, hinterNames) {
-	        if (mode && hinterNames) {
-	            var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
-	            var paths = ['external/codemirror/addon/hint/show-hint'];
-	            _.each(hinterSchms, function (x) {
-	                paths = _.union(paths, x.requires);
-	            });
-	            loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
-	                require(paths, function () {
+            if (mode && hinterNames) {
+                var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
+                var paths = ['external/codemirror/addon/hint/show-hint'];
+                _.each(hinterSchms, function (x) {
+                    paths = _.union(paths, x.requires);
+                });
+                loadCSSList([require.toUrl('external/codemirror/addon/hint/show-hint.css')], function () {
+                    require(paths, function () {
                         if (hinterSchms.length > 0) {
-	                        _localHinterSchemes[mode] = hinterSchms;
+                            _localHinterSchemes[mode] = hinterSchms;
                         }
-	                });
-	            });
-	        }
-	    },
+                    });
+                });
+            }
+        },
 
-	    setGlobalHinters : function (hinterNames) {
-	        _globalHinterSchemes = [];
-	        if (hinterNames) {
-	            var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
-	            var paths = [];
-	            _.each(hinterSchms, function (x) {
-	                paths = _.union(paths, x.requires);
-	            });
-	            require(paths, function () {
-	                _globalHinterSchemes = hinterSchms;
-	            });
-	        }
-	    },
+        setGlobalHinters : function (hinterNames) {
+            _globalHinterSchemes = [];
+            if (hinterNames) {
+                var hinterSchms = _.filter(_.map(hinterNames, hinterMapper), _.identity);
+                var paths = [];
+                _.each(hinterSchms, function (x) {
+                    paths = _.union(paths, x.requires);
+                });
+                require(paths, function () {
+                    _globalHinterSchemes = hinterSchms;
+                });
+            }
+        },
 
-	    setAnywordHint : function (anywordHint) {
-	        if (anywordHint) {
-	            this.setGlobalHinters(['word']);
-	        } else {
-	            this.setGlobalHinters([]);
-	        }
-	    },
+        setAnywordHint : function (anywordHint) {
+            if (anywordHint) {
+                this.setGlobalHinters(['word']);
+            } else {
+                this.setGlobalHinters([]);
+            }
+        },
 
 		/**
 		 * @override
 		 */
-	    setCodeFolding : function (codeFolding) {
-	        this.options.setCodeFolding = codeFolding;
-	        if (codeFolding) {
-	            var self = this;
-	            loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/codefolding.css')], function () {
-	                require(['external/codemirror/addon/fold/foldcode',
-	                         'external/codemirror/addon/fold/foldgutter',
-	                         'external/codemirror/addon/fold/brace-fold',
-	                         'external/codemirror/addon/fold/xml-fold',
-	                         'external/codemirror/addon/fold/comment-fold'], function () {
-	                    self.addDeferredAction(function (self) {
-	                        self._gutterOn('CodeMirror-foldgutter');
-	                        var rf = new codemirror.fold.combine(codemirror.fold.brace, codemirror.fold.comment,
-	                                                             codemirror.fold.xml);
-	                        self.editor.setOption('foldGutter', {
-	                            rangeFinder: rf
-	                        });
-	                    });
-	                });
-	            });
-	        } else {
-	            this.addDeferredAction(function (self) {
-	                self.editor.setOption('foldGutter', false);
-	                self._gutterOff('CodeMirror-foldgutter');
-	            });
-	        }
-	    },
-	    setSnippetEnabled : function (enabled) {
-	        this.options.setSnippetEnabled = enabled;
-	        if (!enabled) {
-	            this.addDeferredAction(function (self) {
-	                Snippet.clearSnippets(self.editor);
-	            });
-	        }
-	    },
+        setCodeFolding : function (codeFolding) {
+            this.options.setCodeFolding = codeFolding;
+            if (codeFolding) {
+                var self = this;
+                loadCSSList([require.toUrl('plugins/webida.editor.text-editor/css/codefolding.css')], function () {
+                    require(['external/codemirror/addon/fold/foldcode',
+                             'external/codemirror/addon/fold/foldgutter',
+                             'external/codemirror/addon/fold/brace-fold',
+                             'external/codemirror/addon/fold/xml-fold',
+                             'external/codemirror/addon/fold/comment-fold'], function () {
+                        self.addDeferredAction(function (self) {
+                            self._gutterOn('CodeMirror-foldgutter');
+                            var rf = new codemirror.fold.combine(codemirror.fold.brace, codemirror.fold.comment,
+                                                                 codemirror.fold.xml);
+                            self.editor.setOption('foldGutter', {
+                                rangeFinder: rf
+                            });
+                        });
+                    });
+                });
+            } else {
+                this.addDeferredAction(function (self) {
+                    self.editor.setOption('foldGutter', false);
+                    self._gutterOff('CodeMirror-foldgutter');
+                });
+            }
+        },
+        setSnippetEnabled : function (enabled) {
+            this.options.setSnippetEnabled = enabled;
+            if (!enabled) {
+                this.addDeferredAction(function (self) {
+                    Snippet.clearSnippets(self.editor);
+                });
+            }
+        },
 
-	    setAutoCompletion : function (autoCompletion) {
-	        settings.autoHint = autoCompletion;
-	    },
+        setAutoCompletion : function (autoCompletion) {
+            settings.autoHint = autoCompletion;
+        },
 
-	    setAutoCompletionDelay : function (delay) {
-	        var num = typeof delay === 'string' ? parseFloat(delay, 10) : delay;
-	        num *= 1000;
-	        settings.autoHintDelay = num;
+        setAutoCompletionDelay : function (delay) {
+            var num = typeof delay === 'string' ? parseFloat(delay, 10) : delay;
+            num *= 1000;
+            settings.autoHintDelay = num;
 
-	        setChangeForAutoHintDebounced();
-	    },
+            setChangeForAutoHintDebounced();
+        },
 
         lineComment: function () {
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-                self.promiseForSetMode.then(function(){
+                self.promiseForSetMode.then(function () {
                     if (editor._contentAssistDelegator) {
                         editor._contentAssistDelegator.execCommand('lineComment', editor);
                     }
@@ -880,7 +880,7 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-                self.promiseForSetMode.then(function(){
+                self.promiseForSetMode.then(function () {
                     if (editor._contentAssistDelegator) {
                         editor._contentAssistDelegator.execCommand('blockComment', editor);
                     }
@@ -892,7 +892,7 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-                self.promiseForSetMode.then(function(){
+                self.promiseForSetMode.then(function () {
                     if (editor._contentAssistDelegator) {
                         editor._contentAssistDelegator.execCommand('commentOutSelection', editor);
                     }
@@ -904,8 +904,8 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-                self.promiseForSetMode.then(function(){
-                    if (editor._contentAssistDelegator) {                    
+                self.promiseForSetMode.then(function () {
+                    if (editor._contentAssistDelegator) {
                         editor._contentAssistDelegator.execCommand('beautifyCode', editor);
                     }
                 });
@@ -916,7 +916,7 @@ define([
             this.addDeferredAction(function (self) {
                 var editor = self.editor;
                 self.focus();
-                self.promiseForSetMode.then(function(){
+                self.promiseForSetMode.then(function () {
                     if (editor._contentAssistDelegator) {
                         editor._contentAssistDelegator.execCommand('beautifyAllCode', editor);
                     }
@@ -986,8 +986,8 @@ define([
         return ['default', 'vim', 'emacs'];
     };
 
-    CodeEditorViewer.addAvailable= addAvailable;
-    CodeEditorViewer.isAvailable= isAvailable;
+    CodeEditorViewer.addAvailable = addAvailable;
+    CodeEditorViewer.isAvailable = isAvailable;
 
     return CodeEditorViewer;
 });

@@ -882,14 +882,43 @@ define([
     });
 
     function RenameCommand(id) {
-        RenameCommand.id = id;
+        this.id = id;
+        this.path = '';
+        this.newPath = '';
     }
     genetic.inherits(RenameCommand, Command, {
         execute : function () {
+            var self = this;
             return new Promise(function (resolve) {
-                var path = wv.getSelectedPath();
-                if (path) {
-                    wv.renameNodeInteractively(path);
+                self.path = wv.getSelectedPath();
+                if (self.path) {
+                    var listen = topic.subscribe('fs/cache/node/rename', function (newPath) {
+                        self.newPath = newPath;
+                        listen.remove();
+                    });
+                    wv.renameNodeInteractively(self.path);
+                }
+                resolve();
+            });
+        },
+        undo: function () {
+            var self = this;
+            return new Promise(function (resolve) {
+                var subString = self.path.split('/');
+                var name = subString[subString.length - 1];
+                if (name && self.newPath) {
+                    wv.renameNodeInteractively(self.newPath, name);
+                }
+                resolve();
+            });
+        },
+        redo: function () {
+            var self = this;
+            return new Promise(function (resolve) {
+                var subString = self.newPath.split('/');
+                var name = subString[subString.length - 1];
+                if (name && self.path) {
+                    wv.renameNodeInteractively(self.path, name);
                 }
                 resolve();
             });
@@ -1070,10 +1099,10 @@ define([
         }
     });
 
-    function DeleteCommand(id) {
-        DeleteCommand.id = id;
+    function DeleteFileCommand(id) {
+        DeleteFileCommand.id = id;
     }
-    genetic.inherits(DeleteCommand, Command, {
+    genetic.inherits(DeleteFileCommand, Command, {
         execute : function () {
             return new Promise(function (resolve) {
                 wv.removeInteractively();
@@ -1099,6 +1128,6 @@ define([
         CopyCommand: CopyCommand,
         CutCommand: CutCommand,
         PasteCommand: PasteCommand,
-        DeleteCommand: DeleteCommand
+        DeleteFileCommand: DeleteFileCommand
     };
 });

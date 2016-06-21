@@ -15,14 +15,14 @@
  */
 
 /**
- * CodeMirror adapter for TextEditor 
+ * CodeMirror adapter for TextEditor
  *
  * @constructor
  * @see TextEditorViewer, EngineAdapterFactory
  * @constructor
  * @since: 2015.07.10
  * @author: h.m.kwon
- * 
+ *
  */
 
 define([
@@ -48,13 +48,13 @@ define([
 
     function foldCode(cm, start, end) {
         var myWidget = $('<span class="CodeMirror-foldmarker">').text('\u2194')[0];
-        codemirror.on(myWidget, 'mousedown', function () {
-            myRange.clear();
-        });
         var myRange = cm.markText(start, end, {
             replacedWith: myWidget,
             clearOnEnter: true,
             __isFold: true
+        });
+        codemirror.on(myWidget, 'mousedown', function () {
+            myRange.clear();
         });
     }
     codemirror.commands.foldselection = function (cm) {
@@ -92,14 +92,14 @@ define([
     // Manage available themes and modes
     var availables = ['mode::text/plain'];
 
+    function isAvailable(type, name) {
+        return _.contains(availables, type + '::' + name);
+    }
+
     function addAvailable(type, name) {
         if (!isAvailable(type, name)) {
             availables.push(type + '::' + name);
         }
-    }
-
-    function isAvailable(type, name) {
-        return _.contains(availables, type + '::' + name);
     }
 
     var eventTransformers = {
@@ -178,9 +178,10 @@ define([
         this.file = file;
         this.options = {};
         this.options.extraKeys = {
-            'Tab': 'handleTab',
+            'Tab': 'defaultTab',
             'Ctrl--': 'foldselection',
-            'Ctrl-D': 'gotoLine',
+            'Ctrl-D': 'deleteLine',
+            'Ctrl-L': 'gotoLine'
         };
         this.cursorListeners = [];
         this.focusListeners = [];
@@ -290,8 +291,8 @@ define([
                     action(self);
                 });
                 delete this.deferredActions;
-            }           
-            
+            }
+
             topic.subscribe('layout/pane/resized-finished', function () {
                 self.__checkSizeChange();
             });
@@ -332,7 +333,7 @@ define([
         },
 
         destroy: function () {
-            $(this.elem).html('');            
+            $(this.elem).html('');
         },
 
         addCursorListener: function (listener) {
@@ -802,7 +803,7 @@ define([
             }
         },
 
-        refresh: function () {            
+        refresh: function () {
             if (this.getContents()) {
                 this.refresh(this.getContents().getContents());
             }
@@ -812,7 +813,7 @@ define([
                     self.__checkSizeChange();
                 }, 0, this);
             }
-        },        
+        },
 
         //methods from editors-commands
         undo: function () {
@@ -1204,7 +1205,7 @@ define([
                     ch: 0
                 });
             });
-        },        
+        },
 
         foldCode: function () {
             this.addDeferredAction(function (self) {
@@ -1328,7 +1329,7 @@ define([
                 var editor = this.editor;
                 editor.scrollTo(scrollInfo.left, scrollInfo.top);
             }
-        },       
+        },
 
         getWorkbenchShortcuts: function (desc) {
             if (this.editor) {
@@ -1378,7 +1379,7 @@ define([
 
         existSearchQuery: function () {
             if (this.editor) {
-                var editor = this.editor;    
+                var editor = this.editor;
                 var query = editor && editor.state && editor.state.search && editor.state.search.query;
                 if (query) {
                     return true;
@@ -1435,7 +1436,7 @@ define([
                 var sourceItems = {};
 
                 // Code Folding
-                sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];               
+                sourceItems['&Fold'] = menuItems.editMenuItems['&Source']['&Fold'];
 
 
                 items['&Source'] = sourceItems;
@@ -1446,7 +1447,7 @@ define([
                 deferred.resolve(items);
             }
         },
-        getContextMenuItems: function (opened, items, menuItems, deferred) {         
+        getContextMenuItems: function (opened, items, menuItems, deferred) {
 
             var editor = this.editor;
             var part = editors.getCurrentPart();
@@ -1497,12 +1498,12 @@ define([
                 }
                 //lineItems['&Copy Line'] = menuItems.editMenuItems['&Line']['&Copy Line'];
                 lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
-                lineItems['Move Cursor Line to Middle'] = 
+                lineItems['Move Cursor Line to Middle'] =
                     menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
-                
+
                 lineItems['Move Cursor Line to Top'] = menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
-                
-                lineItems['Move Cursor Line to Bottom'] = 
+
+                lineItems['Move Cursor Line to Bottom'] =
                     menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
 
                 if (_.values(lineItems).length > 0) {
@@ -1520,20 +1521,20 @@ define([
                     items['&Source'] = sourceItems;
                 }
 
-                // Go to                
+                // Go to
 
                 if (this.isDefaultKeyMap()) {
-                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];               
-                }            
+                    items['G&o to Line'] = menuItems.navMenuItems['G&o to Line'];
+                }
 
                 if (this.isThereMatchingBracket()) {
                     items['Go to &Matching Brace'] = menuItems.navMenuItems['Go to &Matching Brace'];
-                }               
+                }
             } else {
                 // FIXME: this is temp code, must fix this coe when editor plugin refactoring
                 if (part.isDirty()) {
                     items['&Save'] = menuItems.fileMenuItems['&Save'];
-                }               
+                }
             }
             deferred.resolve(items);
         }

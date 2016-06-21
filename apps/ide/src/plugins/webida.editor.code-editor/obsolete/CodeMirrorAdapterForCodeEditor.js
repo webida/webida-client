@@ -269,6 +269,113 @@ define([
             return codemirror.Pass;
         }
     };
+
+    function getEnclosingBlockComments(mode, editor, from, to) {
+        var startStr = mode.blockCommentStart;
+        var endStr = mode.blockCommentEnd;
+        var doc = editor.getDoc();
+        var endStrLen = endStr.length;
+        var state = 'closed';
+        var comments = [];
+        var openingPos;
+        var lineComment = mode.lineComment;
+        var done = false;
+        function comparePos(p1, p2) {
+            if (p1.line < p2.line) {
+                return -1;
+            } else if (p1.line > p2.line) {
+                return 1;
+            } else {
+                return p1.ch - p2.ch;
+            }
+        }
+
+        // collect block comments in the code
+        doc.eachLine(function (h) {
+
+            var lineNo, text;
+            var privates = {
+                findCommentStart: function findCommentStart(i) {
+                    if (state !== 'closed') {
+                        throw new Error('assertion fail: unrechable');
+                    }
+
+                    if (comparePos({ line: lineNo, ch: i }, to) >= 0) {
+                        done = true;
+                        return;
+                    }
+
+                    var j = text.indexOf(startStr, i);
+                    if (j >= i) {
+                        var pos = { line: lineNo, ch: j + 1 };
+                        var token = editor.getTokenAt(pos, true);
+                        if (token && token.string.indexOf(startStr) === 0) {
+                            if (comparePos({ line: lineNo, ch: j }, to) < 0) {
+                                // found an opening of a block comment
+                                state = 'opened';
+                                openingPos = { line: lineNo, ch: j };
+                                privates.findCommentEnd(j + startStr.length);
+                            } else {
+                                done = true;
+                                return;
+                            }
+                        }
+                    }
+                },
+                findCommentEnd: function findCommentEnd(i) {
+                    if (state !== 'opened') {
+                        throw new Error('assertion fail: unrechable');
+                    }
+                    var j = text.indexOf(endStr, i);
+                    if (j >= i) {
+                        var pos = { line: lineNo, ch: j + 1 };
+                        var token = editor.getTokenAt(pos, true);
+                        if (token && token.string.substr(-endStrLen) === endStr &&
+                            (!lineComment || token.string.indexOf(lineComment) !== 0)) {
+                            // found an closing of a block comment
+                            state = 'closed';
+                            var closingPos;
+                            if (comparePos(from, (closingPos = { line: lineNo, ch: j + endStrLen })) < 0) {
+                                comments.push([openingPos, closingPos]);
+                            }
+                            openingPos = null;
+                            privates.findCommentStart(j + endStrLen);
+                        }
+                    }
+                }
+            };
+            if (!done) {
+                lineNo = h.lineNo();
+                text = h.text;
+                if (state === 'closed') {
+                    privates.findCommentStart(0);
+                } else if (state === 'opened') {
+                    privates.findCommentEnd(0);
+                } else {
+                    throw new Error('assertion fail: unreachable');
+                }
+            }
+        });
+
+        //console.log('hina temp: overlapping block comments: ');
+        //console.debug(comments);
+
+        // check if from-to overlaps any block comments
+        // without being included or including the comments.
+        var commentsLen = comments.length;
+        if (commentsLen === 0) {
+            return [];
+        } else if (commentsLen === 1) {
+            if (comparePos(comments[0][0], from) <= 0 && comparePos(to, comments[0][1]) <= 0) {
+                return comments;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     codemirror.commands.blockcomment = function (cm) {
         if (cm.__instance) {
             var doc = cm.getDoc();
@@ -314,12 +421,12 @@ define([
     };
     function foldCode(cm, start, end) {
         var myWidget = $('<span class="CodeMirror-foldmarker">').text('\u2194')[0];
-        codemirror.on(myWidget, 'mousedown', function () { myRange.clear(); });
         var myRange = cm.markText(start, end, {
             replacedWith: myWidget,
             clearOnEnter: true,
             __isFold: true
         });
+        codemirror.on(myWidget, 'mousedown', function () { myRange.clear(); });
     }
     codemirror.commands.foldselection = function (cm) {
         foldCode(cm, cm.getCursor('start'), cm.getCursor('end'));
@@ -401,13 +508,13 @@ define([
 
     // Manage available themes and modes
     var availables = ['mode::text/plain'];
+    function isAvailable(type, name) {
+        return _.contains(availables, type + '::' + name);
+    }
     function addAvailable(type, name) {
         if (!isAvailable(type, name)) {
             availables.push(type + '::' + name);
         }
-    }
-    function isAvailable(type, name) {
-        return _.contains(availables, type + '::' + name);
     }
 
     function cursorAtAutoHint(cm, modeName, cursor, rightToken) {
@@ -451,55 +558,6 @@ define([
             cm._ternAddon.closeArgHints(cm);
         }
     }
-
-    codemirror.commands.autocomplete = function (cm, options) {
-        if (options === undefined) {
-            // call by explicit key (ctrl+space)
-            if (cm.state.completionActive) {
-                cm.state.completionActive.close();
-                return;
-            }
-        }
-
-        options = options || {};
-        options.path = cm.__instance.file.path;
-        options.async = true;
-        options.useWorker = cm.__instance.settings.useWorker;
-        options.beforeShowHints = onBeforeShowHints;
-
-        var modeAt = cm.getModeAt(cm.getCursor());
-        var modeName = modeAt && modeAt.name;
-
-        if (modeName === undefined || modeName === null) {
-            return;
-        }
-        cm._hintModeName = modeName;
-
-        if (cm.state.completionActive && cm.state.completionActive.widget) {
-            return;
-        } else if (options.autoHint && !cursorAtAutoHint(cm, modeName, cm.getCursor())) {
-            return;
-        }
-
-        codemirror.showHint(cm, hint, options);
-    };
-
-    codemirror.commands.save = function (cm) {
-        cm.__instance.triggerEvent('save');
-    };
-
-    function jshint(cm, callback) {
-        if (cm._ternAddon) {
-            cm._ternAddon.getHint(cm, callback);
-        } else {
-            startJavaScriptAssist(cm.__instance, cm, function () {
-                cm._ternAddon.getHint(cm, callback);
-            });
-        }
-    }
-
-    codemirror.registerHelper('hint', 'javascript', jshint);
-
     function mergeResult(resultAll, resultThis) {
         if (resultThis && resultThis.list) {
             if (!resultAll.from) {
@@ -522,7 +580,6 @@ define([
             resultAll.hintContinue = resultAll.hintContinue || resultThis.hintContinue;
         }
     }
-
     function hint(cm, callback, options) {
         var modeName = cm.getModeAt(cm.getCursor()).name;
         if (modeName === 'javascript' && cm.__instance.getMode() === 'json') {
@@ -584,6 +641,38 @@ define([
         return localResult;
     }
 
+    codemirror.commands.autocomplete = function (cm, options) {
+        if (options === undefined) {
+            // call by explicit key (ctrl+space)
+            if (cm.state.completionActive) {
+                cm.state.completionActive.close();
+                return;
+            }
+        }
+
+        options = options || {};
+        options.path = cm.__instance.file.path;
+        options.async = true;
+        options.useWorker = cm.__instance.settings.useWorker;
+        options.beforeShowHints = onBeforeShowHints;
+
+        var modeAt = cm.getModeAt(cm.getCursor());
+        var modeName = modeAt && modeAt.name;
+
+        if (modeName === undefined || modeName === null) {
+            return;
+        }
+        cm._hintModeName = modeName;
+
+        if (cm.state.completionActive && cm.state.completionActive.widget) {
+            return;
+        } else if (options.autoHint && !cursorAtAutoHint(cm, modeName, cm.getCursor())) {
+            return;
+        }
+
+        codemirror.showHint(cm, hint, options);
+    };
+
     function startJavaScriptAssist(editor, cm, c) {
         if (cm._ternAddon) {
             if (c) {
@@ -611,6 +700,23 @@ define([
         });
     }
 
+    codemirror.commands.save = function (cm) {
+        cm.__instance.triggerEvent('save');
+    };
+
+    function jshint(cm, callback) {
+        if (cm._ternAddon) {
+            cm._ternAddon.getHint(cm, callback);
+        } else {
+            startJavaScriptAssist(cm.__instance, cm, function () {
+                cm._ternAddon.getHint(cm, callback);
+            });
+        }
+    }
+
+    codemirror.registerHelper('hint', 'javascript', jshint);
+
+    var onChangeForAutoHintDebounced;
     function setChangeForAutoHintDebounced() {
         onChangeForAutoHintDebounced = _.debounce(function (cm, changeObj, lastCursor) {
             // TODO - limch - minimize addFile() call to WebWorker
@@ -631,7 +737,6 @@ define([
         }, settings.autoHintDelay);
     }
 
-    var onChangeForAutoHintDebounced;
     setChangeForAutoHintDebounced();
 
     function onChangeForAutoHint(cm, changeObj) {
@@ -676,10 +781,11 @@ define([
         this.options.extraKeys = {
             'Ctrl-Space': 'autocomplete',
             'Ctrl-/': 'linecomment',
-            'Tab': 'handleTab',
+            'Tab': 'defaultTab',
             'Shift-Tab': 'navigateSnippetBackward',
             'Ctrl--': 'foldselection',
-            'Ctrl-D': 'gotoLine',
+            'Ctrl-D': 'deleteLine',
+            'Ctrl-L': 'gotoLine'
         };
         this.cursorListeners = [];
         this.focusListeners = [];
@@ -717,114 +823,6 @@ define([
         var mode2 = editor.getModeAt(to);
         return mode1.name === mode2.name && mode1.lineComment &&
             mode1.lineComment === mode2.lineComment;
-    }
-
-    function getEnclosingBlockComments(mode, editor, from, to) {
-        var startStr = mode.blockCommentStart;
-        var endStr = mode.blockCommentEnd;
-        var doc = editor.getDoc();
-        var endStrLen = endStr.length;
-        var state = 'closed';
-        var comments = [];
-        var openingPos;
-        var lineComment = mode.lineComment;
-        var done = false;
-        function comparePos(p1, p2) {
-            if (p1.line < p2.line) {
-                return -1;
-            } else if (p1.line > p2.line) {
-                return 1;
-            } else {
-                return p1.ch - p2.ch;
-            }
-        }
-
-        // collect block comments in the code
-        doc.eachLine(function (h) {
-
-            var lineNo, text;
-
-            function findCommentStart(i) {
-                if (state !== 'closed') {
-                    throw new Error('assertion fail: unrechable');
-                }
-
-                if (comparePos({ line: lineNo, ch: i }, to) >= 0) {
-                    done = true;
-                    return;
-                }
-
-                var j = text.indexOf(startStr, i);
-                if (j >= i) {
-                    var pos = { line: lineNo, ch: j + 1 };
-                    var token = editor.getTokenAt(pos, true);
-                    if (token && token.string.indexOf(startStr) === 0) {
-                        if (comparePos({ line: lineNo, ch: j }, to) < 0) {
-                            // found an opening of a block comment
-                            state = 'opened';
-                            openingPos = { line: lineNo, ch: j };
-                            findCommentEnd(j + startStr.length);
-                        } else {
-                            done = true;
-                            return;
-                        }
-                    }
-                }
-            }
-
-            function findCommentEnd(i) {
-                if (state !== 'opened') {
-                    throw new Error('assertion fail: unrechable');
-                }
-                var j = text.indexOf(endStr, i);
-                if (j >= i) {
-                    var pos = { line: lineNo, ch: j + 1 };
-                    var token = editor.getTokenAt(pos, true);
-                    if (token && token.string.substr(-endStrLen) === endStr &&
-                        (!lineComment || token.string.indexOf(lineComment) !== 0)) {
-                        // found an closing of a block comment
-                        state = 'closed';
-                        var closingPos;
-                        if (comparePos(from, (closingPos = { line: lineNo, ch: j + endStrLen })) < 0) {
-                            comments.push([openingPos, closingPos]);
-                        }
-                        openingPos = null;
-
-                        findCommentStart(j + endStrLen);
-                    }
-                }
-            }
-
-            if (!done) {
-                lineNo = h.lineNo();
-                text = h.text;
-                if (state === 'closed') {
-                    findCommentStart(0);
-                } else if (state === 'opened') {
-                    findCommentEnd(0);
-                } else {
-                    throw new Error('assertion fail: unreachable');
-                }
-            }
-        });
-
-        //console.log('hina temp: overlapping block comments: ');
-        //console.debug(comments);
-
-        // check if from-to overlaps any block comments
-        // without being included or including the comments.
-        var commentsLen = comments.length;
-        if (commentsLen === 0) {
-            return [];
-        } else if (commentsLen === 1) {
-            if (comparePos(comments[0][0], from) <= 0 && comparePos(to, comments[0][1]) <= 0) {
-                return comments;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 
     function isBlockCommentable(editor) {
@@ -1597,13 +1595,13 @@ define([
                 }
                 //lineItems['&Copy Line'] = menuItems.editMenuItems['&Line']['&Copy Line'];
                 lineItems['D&elete Lines'] = menuItems.editMenuItems['&Line']['D&elete Lines'];
-                lineItems['Move Cursor Line to Middle'] = 
+                lineItems['Move Cursor Line to Middle'] =
                     menuItems.editMenuItems['&Line']['Move Cursor Line to Middle'];
-                
-                lineItems['Move Cursor Line to Top'] = 
+
+                lineItems['Move Cursor Line to Top'] =
                     menuItems.editMenuItems['&Line']['Move Cursor Line to Top'];
-                
-                lineItems['Move Cursor Line to Bottom'] = 
+
+                lineItems['Move Cursor Line to Bottom'] =
                     menuItems.editMenuItems['&Line']['Move Cursor Line to Bottom'];
 
                 if (_.values(lineItems).length > 0) {
@@ -1725,8 +1723,8 @@ define([
     };
     CodeMirrorAdapterForCodeEditor.getAvailableThemes = function () {
         return [
-            'codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse', 
-            'elegant', 'erlang-dark', 'lesser-dark', 'midnight', 'monokai', 'neat', 'night', 
+            'codemirror-default', 'ambiance', 'aptana', 'blackboard', 'cobalt', 'eclipse',
+            'elegant', 'erlang-dark', 'lesser-dark', 'midnight', 'monokai', 'neat', 'night',
             'rubyblue', 'solarized dark', 'solarized light', 'twilight',
             'vibrant-ink', 'xq-dark', 'xq-light', 'webida-dark', 'webida-light'
         ];
