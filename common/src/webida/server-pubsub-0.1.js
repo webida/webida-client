@@ -22,15 +22,6 @@
  * @version: 0.1
  */
 
-
-
-/**
-* messaging api for Javascript module.
-*
-* This module provides JavaScript API's for message service.
-* It depends on socket.io in external/socket.io-client/
-* @module msg
-*/
 define([
 	'./server-api-0.1',
 	'external/socket.io-client/socket.io',

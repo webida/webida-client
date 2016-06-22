@@ -19,7 +19,7 @@ Method | HTTP request | Description
 
 
 
-cancels a async execution
+cancels an execution, if possible. Killing process may not be graceful.
 
 ### Example
 ```javascript
@@ -36,7 +36,7 @@ var apiInstance = new WebidaServiceApi.WorkspaceApi();
 
 var workspaceId = "workspaceId_example"; // String | webida workspace id (usually same to file system id, wfsId)
 
-var execId = "execId_example"; // String | the execId property in ExecResponse  
+var execId = "execId_example"; // String | the execId property in ExecRequest 
 
 
 var callback = function(error, data, response) {
@@ -54,7 +54,7 @@ apiInstance.cancel(workspaceId, execId, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **workspaceId** | **String**| webida workspace id (usually same to file system id, wfsId) | 
- **execId** | **String**| the execId property in ExecResponse   | 
+ **execId** | **String**| the execId property in ExecRequest  | 
 
 ### Return type
 
@@ -90,7 +90,7 @@ webida-simple-auth.apiKey = 'YOUR API KEY';
 
 var apiInstance = new WebidaServiceApi.WorkspaceApi();
 
-var workspacePath = "workspacePath_example"; // String | a real path of the system or relative path to workspace cellar
+var workspacePath = "workspacePath_example"; // String | a real/local path of the system
 
 
 var callback = function(error, data, response) {
@@ -107,7 +107,7 @@ apiInstance.createWorkspace(workspacePath, callback);
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **workspacePath** | **String**| a real path of the system or relative path to workspace cellar | 
+ **workspacePath** | **String**| a real/local path of the system | 
 
 ### Return type
 
@@ -148,8 +148,7 @@ var workspaceId = "workspaceId_example"; // String | webida workspace id (usuall
 var body = new WebidaServiceApi.ExecRequest(); // ExecRequest | 
 
 var opts = { 
-  'async': false, // Boolean | Execute a command and returns a dummy response immediatlely, and send actual output (stream of message) with web socket channel of current session. At the end of execution, ExecResponse object with empty stdout/stderr will be delivered at the channel.  
-  'execId': "execId_example" // String | mandatory for async execution. the result stream will be identified with this id
+  'async': false // Boolean | Spawn a child process for given command and returns a dummy response immediatlely, Actual output (stream of message) will be pasted to web socket channel of current session. 
 };
 
 var callback = function(error, data, response) {
@@ -168,8 +167,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **workspaceId** | **String**| webida workspace id (usually same to file system id, wfsId) | 
  **body** | [**ExecRequest**](ExecRequest.md)|  | 
- **async** | **Boolean**| Execute a command and returns a dummy response immediatlely, and send actual output (stream of message) with web socket channel of current session. At the end of execution, ExecResponse object with empty stdout/stderr will be delivered at the channel.   | [optional] [default to false]
- **execId** | **String**| mandatory for async execution. the result stream will be identified with this id | [optional] 
+ **async** | **Boolean**| Spawn a child process for given command and returns a dummy response immediatlely, Actual output (stream of message) will be pasted to web socket channel of current session.  | [optional] [default to false]
 
 ### Return type
 
@@ -190,7 +188,7 @@ Name | Type | Description  | Notes
 
 
 
-get all registerd (non-disposable) workspaces in the server. since webida is not designed to  host so many workspaces, there&#39;s no good &#39;find&#39; or &#39;query&#39; API. Service/product implementations may create a better opeation. 
+get all registerd (non-disposable) workspaces in the server. since webida is not designed to host so many workspaces, there&#39;s no good &#39;find&#39; or &#39;query&#39; API. Service/product implementations may create a better opeation. 
 
 ### Example
 ```javascript

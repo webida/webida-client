@@ -1,18 +1,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient', '../model/RestError', '../model/Session'], factory);
+    define(['../ApiClient', '../model/RestOK', '../model/RestError', '../model/Session'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/RestError'), require('../model/Session'));
+    module.exports = factory(require('../ApiClient'), require('../model/RestOK'), require('../model/RestError'), require('../model/Session'));
   } else {
     // Browser globals (root is window)
     if (!root.WebidaServiceApi) {
       root.WebidaServiceApi = {};
     }
-    root.WebidaServiceApi.SessionApi = factory(root.WebidaServiceApi.ApiClient, root.WebidaServiceApi.RestError, root.WebidaServiceApi.Session);
+    root.WebidaServiceApi.SessionApi = factory(root.WebidaServiceApi.ApiClient, root.WebidaServiceApi.RestOK, root.WebidaServiceApi.RestError, root.WebidaServiceApi.Session);
   }
-}(this, function(ApiClient, RestError, Session) {
+}(this, function(ApiClient, RestOK, RestError, Session) {
   'use strict';
 
   /**
@@ -36,17 +36,18 @@
      * Callback function to receive the result of the deleteSession operation.
      * @callback module:api/SessionApi~deleteSessionCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/Session>} data The data returned by the service call.
+     * @param {module:model/RestOK} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
      * close session with timeout
      * @param {String} sessionId webida session id (usually different from socket id from sock.io)
+     * @param {Integer} closeAfter waiting time before actual closing, to let client save files and prevent reconnect
      * @param {module:api/SessionApi~deleteSessionCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {Array.<module:model/Session>}
+     * data is of type: {module:model/RestOK}
      */
-    this.deleteSession = function(sessionId, callback) {
+    this.deleteSession = function(sessionId, closeAfter, callback) {
       var postBody = null;
 
       // verify the required parameter 'sessionId' is set
@@ -54,11 +55,17 @@
         throw "Missing the required parameter 'sessionId' when calling deleteSession";
       }
 
+      // verify the required parameter 'closeAfter' is set
+      if (closeAfter == undefined || closeAfter == null) {
+        throw "Missing the required parameter 'closeAfter' when calling deleteSession";
+      }
+
 
       var pathParams = {
         'sessionId': sessionId
       };
       var queryParams = {
+        'closeAfter': closeAfter
       };
       var headerParams = {
       };
@@ -68,7 +75,7 @@
       var authNames = ['webida-simple-auth'];
       var contentTypes = ['application/json'];
       var accepts = ['application/json', 'application/octet-stream'];
-      var returnType = [Session];
+      var returnType = RestOK;
 
       return this.apiClient.callApi(
         '/sessions/{sessionId}', 'DELETE',
@@ -81,7 +88,7 @@
      * Callback function to receive the result of the getSession operation.
      * @callback module:api/SessionApi~getSessionCallback
      * @param {String} error Error message, if any.
-     * @param {Array.<module:model/Session>} data The data returned by the service call.
+     * @param {module:model/Session} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
@@ -89,7 +96,7 @@
      * get a session object by id
      * @param {String} sessionId webida session id (usually different from socket id from sock.io)
      * @param {module:api/SessionApi~getSessionCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {Array.<module:model/Session>}
+     * data is of type: {module:model/Session}
      */
     this.getSession = function(sessionId, callback) {
       var postBody = null;
@@ -113,7 +120,7 @@
       var authNames = ['webida-simple-auth'];
       var contentTypes = ['application/json'];
       var accepts = ['application/json', 'application/octet-stream'];
-      var returnType = [Session];
+      var returnType = Session;
 
       return this.apiClient.callApi(
         '/sessions/{sessionId}', 'GET',

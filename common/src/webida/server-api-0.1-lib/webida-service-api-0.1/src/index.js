@@ -1,12 +1,12 @@
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['./ApiClient', './model/AccessToken', './model/DirEntry', './model/ExecAsyncResponse', './model/ExecRequest', './model/ExecResponse', './model/LoginRequest', './model/LoginResponse', './model/MasterToken', './model/Match', './model/RestError', './model/RestOK', './model/Session', './model/Stats', './model/Token', './model/User', './model/Workspace', './api/AuthApi', './api/DefaultApi', './api/OpsApi', './api/SessionApi', './api/WfsApi', './api/WorkspaceApi'], factory);
+    define(['./ApiClient', './model/Credential', './model/DirEntry', './model/ExecRequest', './model/ExecResponse', './model/Match', './model/RestError', './model/RestOK', './model/Session', './model/Stats', './model/Token', './model/User', './model/Workspace', './api/AuthApi', './api/DefaultApi', './api/OpsApi', './api/SessionApi', './api/WfsApi', './api/WorkspaceApi'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('./ApiClient'), require('./model/AccessToken'), require('./model/DirEntry'), require('./model/ExecAsyncResponse'), require('./model/ExecRequest'), require('./model/ExecResponse'), require('./model/LoginRequest'), require('./model/LoginResponse'), require('./model/MasterToken'), require('./model/Match'), require('./model/RestError'), require('./model/RestOK'), require('./model/Session'), require('./model/Stats'), require('./model/Token'), require('./model/User'), require('./model/Workspace'), require('./api/AuthApi'), require('./api/DefaultApi'), require('./api/OpsApi'), require('./api/SessionApi'), require('./api/WfsApi'), require('./api/WorkspaceApi'));
+    module.exports = factory(require('./ApiClient'), require('./model/Credential'), require('./model/DirEntry'), require('./model/ExecRequest'), require('./model/ExecResponse'), require('./model/Match'), require('./model/RestError'), require('./model/RestOK'), require('./model/Session'), require('./model/Stats'), require('./model/Token'), require('./model/User'), require('./model/Workspace'), require('./api/AuthApi'), require('./api/DefaultApi'), require('./api/OpsApi'), require('./api/SessionApi'), require('./api/WfsApi'), require('./api/WorkspaceApi'));
   }
-}(function(ApiClient, AccessToken, DirEntry, ExecAsyncResponse, ExecRequest, ExecResponse, LoginRequest, LoginResponse, MasterToken, Match, RestError, RestOK, Session, Stats, Token, User, Workspace, AuthApi, DefaultApi, OpsApi, SessionApi, WfsApi, WorkspaceApi) {
+}(function(ApiClient, Credential, DirEntry, ExecRequest, ExecResponse, Match, RestError, RestOK, Session, Stats, Token, User, Workspace, AuthApi, DefaultApi, OpsApi, SessionApi, WfsApi, WorkspaceApi) {
   'use strict';
 
   /**
@@ -47,20 +47,15 @@
      */
     ApiClient: ApiClient,
     /**
-     * The AccessToken model constructor.
-     * @property {module:model/AccessToken}
+     * The Credential model constructor.
+     * @property {module:model/Credential}
      */
-    AccessToken: AccessToken,
+    Credential: Credential,
     /**
      * The DirEntry model constructor.
      * @property {module:model/DirEntry}
      */
     DirEntry: DirEntry,
-    /**
-     * The ExecAsyncResponse model constructor.
-     * @property {module:model/ExecAsyncResponse}
-     */
-    ExecAsyncResponse: ExecAsyncResponse,
     /**
      * The ExecRequest model constructor.
      * @property {module:model/ExecRequest}
@@ -71,21 +66,6 @@
      * @property {module:model/ExecResponse}
      */
     ExecResponse: ExecResponse,
-    /**
-     * The LoginRequest model constructor.
-     * @property {module:model/LoginRequest}
-     */
-    LoginRequest: LoginRequest,
-    /**
-     * The LoginResponse model constructor.
-     * @property {module:model/LoginResponse}
-     */
-    LoginResponse: LoginResponse,
-    /**
-     * The MasterToken model constructor.
-     * @property {module:model/MasterToken}
-     */
-    MasterToken: MasterToken,
     /**
      * The Match model constructor.
      * @property {module:model/Match}

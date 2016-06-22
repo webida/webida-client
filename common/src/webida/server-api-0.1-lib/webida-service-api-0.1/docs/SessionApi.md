@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 <a name="deleteSession"></a>
 # **deleteSession**
-> [Session] deleteSession(sessionId)
+> RestOK deleteSession(sessionId, closeAfter)
 
 
 
@@ -32,6 +32,8 @@ var apiInstance = new WebidaServiceApi.SessionApi();
 
 var sessionId = "sessionId_example"; // String | webida session id (usually different from socket id from sock.io)
 
+var closeAfter = 56; // Integer | waiting time before actual closing, to let client save files and prevent reconnect
+
 
 var callback = function(error, data, response) {
   if (error) {
@@ -40,7 +42,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.deleteSession(sessionId, callback);
+apiInstance.deleteSession(sessionId, closeAfter, callback);
 ```
 
 ### Parameters
@@ -48,10 +50,11 @@ apiInstance.deleteSession(sessionId, callback);
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **sessionId** | **String**| webida session id (usually different from socket id from sock.io) | 
+ **closeAfter** | **Integer**| waiting time before actual closing, to let client save files and prevent reconnect | 
 
 ### Return type
 
-[**[Session]**](Session.md)
+[**RestOK**](RestOK.md)
 
 ### Authorization
 
@@ -64,7 +67,7 @@ Name | Type | Description  | Notes
 
 <a name="getSession"></a>
 # **getSession**
-> [Session] getSession(sessionId)
+> Session getSession(sessionId, )
 
 
 
@@ -93,7 +96,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-apiInstance.getSession(sessionId, callback);
+apiInstance.getSession(sessionId, , callback);
 ```
 
 ### Parameters
@@ -104,7 +107,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**[Session]**](Session.md)
+[**Session**](Session.md)
 
 ### Authorization
 

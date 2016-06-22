@@ -1,18 +1,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient', '../model/RestOK', '../model/RestError', '../model/Workspace', '../model/ExecRequest', '../model/ExecResponse', '../model/ExecAsyncResponse'], factory);
+    define(['../ApiClient', '../model/RestOK', '../model/RestError', '../model/Workspace', '../model/ExecRequest', '../model/ExecResponse'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/RestOK'), require('../model/RestError'), require('../model/Workspace'), require('../model/ExecRequest'), require('../model/ExecResponse'), require('../model/ExecAsyncResponse'));
+    module.exports = factory(require('../ApiClient'), require('../model/RestOK'), require('../model/RestError'), require('../model/Workspace'), require('../model/ExecRequest'), require('../model/ExecResponse'));
   } else {
     // Browser globals (root is window)
     if (!root.WebidaServiceApi) {
       root.WebidaServiceApi = {};
     }
-    root.WebidaServiceApi.WorkspaceApi = factory(root.WebidaServiceApi.ApiClient, root.WebidaServiceApi.RestOK, root.WebidaServiceApi.RestError, root.WebidaServiceApi.Workspace, root.WebidaServiceApi.ExecRequest, root.WebidaServiceApi.ExecResponse, root.WebidaServiceApi.ExecAsyncResponse);
+    root.WebidaServiceApi.WorkspaceApi = factory(root.WebidaServiceApi.ApiClient, root.WebidaServiceApi.RestOK, root.WebidaServiceApi.RestError, root.WebidaServiceApi.Workspace, root.WebidaServiceApi.ExecRequest, root.WebidaServiceApi.ExecResponse);
   }
-}(this, function(ApiClient, RestOK, RestError, Workspace, ExecRequest, ExecResponse, ExecAsyncResponse) {
+}(this, function(ApiClient, RestOK, RestError, Workspace, ExecRequest, ExecResponse) {
   'use strict';
 
   /**
@@ -41,9 +41,9 @@
      */
 
     /**
-     * cancels a async execution
+     * cancels an execution, if possible. Killing process may not be graceful.
      * @param {String} workspaceId webida workspace id (usually same to file system id, wfsId)
-     * @param {String} execId the execId property in ExecResponse  
+     * @param {String} execId the execId property in ExecRequest 
      * @param {module:api/WorkspaceApi~cancelCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {module:model/RestOK}
      */
@@ -94,7 +94,7 @@
 
     /**
      * create a new workspace at given path
-     * @param {String} workspacePath a real path of the system or relative path to workspace cellar
+     * @param {String} workspacePath a real/local path of the system
      * @param {module:api/WorkspaceApi~createWorkspaceCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {module:model/Workspace}
      */
@@ -142,8 +142,7 @@
      * @param {String} workspaceId webida workspace id (usually same to file system id, wfsId)
      * @param {module:model/ExecRequest} body 
      * @param {Object} opts Optional parameters
-     * @param {Boolean} opts.async Execute a command and returns a dummy response immediatlely, and send actual output (stream of message) with web socket channel of current session. At the end of execution, ExecResponse object with empty stdout/stderr will be delivered at the channel.   (default to false)
-     * @param {String} opts.execId mandatory for async execution. the result stream will be identified with this id
+     * @param {Boolean} opts.async Spawn a child process for given command and returns a dummy response immediatlely, Actual output (stream of message) will be pasted to web socket channel of current session.  (default to false)
      * @param {module:api/WorkspaceApi~execCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {module:model/ExecResponse}
      */
@@ -166,8 +165,7 @@
         'workspaceId': workspaceId
       };
       var queryParams = {
-        'async': opts['async'],
-        'execId': opts['execId']
+        'async': opts['async']
       };
       var headerParams = {
       };
@@ -195,7 +193,7 @@
      */
 
     /**
-     * get all registerd (non-disposable) workspaces in the server. since webida is not designed to  host so many workspaces, there&#39;s no good &#39;find&#39; or &#39;query&#39; API. Service/product implementations may create a better opeation. 
+     * get all registerd (non-disposable) workspaces in the server. since webida is not designed to host so many workspaces, there&#39;s no good &#39;find&#39; or &#39;query&#39; API. Service/product implementations may create a better opeation. 
      * @param {Object} opts Optional parameters
      * @param {Boolean} opts.disposable include disposable workspaces in response (default to false)
      * @param {module:api/WorkspaceApi~getAllWorkspacesCallback} callback The callback function, accepting three arguments: error, data, response

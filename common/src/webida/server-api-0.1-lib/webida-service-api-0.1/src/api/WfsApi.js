@@ -41,7 +41,7 @@
      */
 
     /**
-     * Copy to given path. works like cp -r command, with some funny options Copying a dir on to existing file will return error Copying from sockets, fifo, .. and any other type of file system object is not supported. 
+     * Copy to given path. works like cp -r command, with some funny options Copying a dir on to existing file will return error if removeExisting is false Copying from sockets, fifo, .. and any other type of file system object is not supported. 
      * @param {String} wfsId webida file system id (same to workspace id) to access.
      * @param {String} wfsPath webida file system path to access. without heading /. should be placed at the end of path arguments 
      * @param {String} srcPath source data path of some operations, with have heading /

@@ -26,7 +26,7 @@
 
   /**
    * Constructs a new <code>User</code>.
-   * Any services/products should define some admin apis to manage users in the system and expose what should be exposed to client app. So, no properties are mandatory.  Current properties are defined for compatiblity with legacy clients. Access token data can be decoded with another operations.          
+   * Any services/products should define some admin apis to manage users in the system and expose what should be exposed to client app. So, no properties are mandatory. Currently, properties are defined for compatiblity with legacy clients. 
    * @alias module:model/User
    * @class
    */

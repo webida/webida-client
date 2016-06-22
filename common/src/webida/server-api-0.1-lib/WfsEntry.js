@@ -1,9 +1,30 @@
-"use strict"
+/*
+ * Copyright (c) 2012-2016 S-Core Co., Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * @file WfsEntry.js
+ * @since 1.7.0
+ * @author jh1977.kim@samsung.com
+ */
 
 define([
 ], function(
 ) {
-    
+    'use strict';
+
     function WfsEntry (stats, name, parent) {
 
         // currently hidden stats property that controls everthing
@@ -46,16 +67,17 @@ define([
         },
 
         get basepath() {
-            if (this._basepath) {
-                return this._basepath;
-            } else {
-                return this.parent ? this.parent.basepath() : null;
-            }
-
+            return this.parent ? null : this._basepath;
         },
 
+        // basepath should be set to root of tree, only
         set basepath(value) {
-            this._basepath = value;
+            if (!this.parent) {
+                // when tree is /some/path/dir
+                // this.name = dir
+                // basepath = /some/path
+                this._basepath = value.split('/');
+            }
         },
 
         get isFile() { return !this.isDirectory; },
@@ -74,6 +96,12 @@ define([
             return childEntry;
         });
         return entry;
+    };
+
+    WfsEntry.getBasePathOf = function getBasePathOf(path) {
+        var segments = path.split('/');
+        segments.pop();
+        return segments.join('/');
     };
 
     // later, we should extend this class to WfsFile & WfsDirectory

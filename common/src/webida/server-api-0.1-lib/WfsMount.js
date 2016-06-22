@@ -1,29 +1,50 @@
-"use strict"
+/*
+ * Copyright (c) 2012-2016 S-Core Co., Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+/**
+ * @file WfsEntry.js
+ * @since 1.7.0
+ * @author jh1977.kim@samsung.com
+ */
 
 define([
     './common',
+    './Stats',
     './WfsEntry',
     './wfs-utils'
 ], function (
     common,
+    Stats,
     WfsEntry,
     wfsUtils
 ) {
+    'use strict';
 
-    //
     // provides subset of legacy FileSystem object
     // some methods are not supported, completely
     // we should create better interface in next api 0.2 with cleaner spec and Promise
-    //
+    
     var logger = common.logger;
     var wfsApi = new common.api.WfsApi();
 
     function abstractify(name) {
         return function abstractMethod() {
-            var methodName = name || 'method'
+            var methodName = name || 'method';
             throw new Error(methodName + ' is abstract');
-        }
+        };
     }
     
     function WfsMount(fsid) {
@@ -38,7 +59,7 @@ define([
         // result handler is (result, xhr) => desired (processed) result
         // usually, some json object will be transformed into a class instance
 
-        _createApiCallback(apiName, resultHandler, callback) {
+        _createApiCallback: function (apiName, resultHandler, callback) {
             function echo(x) {
                 return x;
             }
@@ -76,7 +97,7 @@ define([
             var callable = wfsApi[apiName];
             var wfsPath = this._fromLegacyPath(path);
             var args = [ this.wfsId, wfsPath ];
-            for (let i = 2; i < arguments.length; i++) {
+            for (var i = 2; i < arguments.length; i++) {
                 args.push(arguments[i]);
             }
             var callback = args.pop();
@@ -120,13 +141,14 @@ define([
                 recursive = false;
             }
             this.dirTree(path, (recursive ? -1 : 1) , function (err, tree) {
+                if (!err) {
+                    console.log('wfsList final result', tree.children);
+                }
                 callback(err, tree.children);
             }); 
         },
 
         dirTree: function wfsDirTree(path, maxDepth, callback) {
-            var self = this;
-
             // TODO: 'full recursive' seems to be dangerous
             //   server might suffer from stack overflow or starvation with disk i/o
             //   so, server may response with incomplete tree
@@ -137,10 +159,10 @@ define([
             this._callSimpleApi('dirTree', path, maxDepth,
                 function (result) {
                     // re-constructing a very large tree in a single tick looks dangerous
-                    // we need a fromServerResultAsync, which checks height of tree and take some
-                    // reasonable delays while converting response DirEntry object to WfsEntry 
-                    // or, introduce som 'builder' class to handle large tree
-                    return WfsEntry.fromJson(result);
+                    // we need a fromServerResultAsync, who injects some reasonable delays 
+                    // while building tree from json 
+                    var ret = WfsEntry.fromJson(result);
+                    ret.basepath = WfsEntry.getBasePathOf(path);
                 },
                 callback
             );
@@ -174,11 +196,7 @@ define([
             );
         },
 
-        writeFile : function wfsWriteFile(path, data, ensure, callback) {
-            if (!callback) {
-                callback = ensure;
-                ensure = true; // in next relase, default value for ensure will be changed to false
-            }
+        writeFile : function wfsWriteFile(path, data, callback) {
             var dataType = typeof(data);
 
             // TODO : support plain object serialization, using AsyncApi class from swagger
@@ -194,7 +212,7 @@ define([
                 default:
                     throw new Error('invalid data type - should be string or Blob');
             }
-
+            // TODO: change 'ensure' default value to false, adding ensure parameter
             this._callSimpleApi('writeFile', path, data, { ensure: true }, null, callback);
         },
 
@@ -220,7 +238,7 @@ define([
 
         // deprecated. use dirTree or never call this method
         isEmpty: function wfsIsEmpty(path, callback) {
-            this._callSimpleApi('listDir', path, {recursive: true},
+            this._callSimpleApi('dirTree', path, {recursive: true},
                 function (result) {
                     return result.children && result.children.length > 0;
                 },

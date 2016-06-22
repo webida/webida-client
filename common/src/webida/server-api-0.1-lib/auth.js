@@ -1,5 +1,23 @@
+/*
+ * Copyright (c) 2012-2016 S-Core Co., Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
- * Created by lunaris on 2016-05-23.
+ * @file auth.js
+ * @since 1.7.0
+ * @author jh1977.kim@samsung.com
  */
 
 define([
@@ -7,50 +25,62 @@ define([
 ],  function (
     common
 ) {
-    "use strict";
+    'use strict';
     var logger = common.logger;
     var AuthApi = common.api.AuthApi;
     var authApi = new AuthApi();
+    
+    // TODO : introduce webida.initializeAsync() that handles all init things, 
+    //        with credential provider that interacts with UI, 
+    //        and remove initAuth or make it a legacy-compatibility helper 
+    //  - ALL webida.*** should be accessible during initialization, without NPE. 
+    //  - SOME webida.***.****() functions may throw error during initialization, 
+    //  - We should have no no 'pending' operation due to auth. 
+
+
+    // we may need to move this to common or somewhere else
+    common.tokenManager.on('lost', function(error) {
+        alert('TOKEN LOST. LOGIN AGAIN \n ' + error.toString() );
+    });
+
+    common.tokenManager.on('updated', function(token) {
+        console.log('updated token', token);
+    });
 
     // initAuth is called by app.js at first, before loading any other plugins
-    // it's good place to initialize swagger client
     function initAuth(clientId, redirectUrl, tokenGenerator, callback) {
         var masterToken = common.bootArgs.masterToken;
 
+        logger.log('initAuth starts');
+
         if (!masterToken) {
             throw new Error('in-app login is not implemented yet');
-            // TODO : respect webida-0.3.js TokenGenerator class
         }
 
-        console.log("webida auth service api", authApi);
-        var loginRequest = common.api.LoginRequest.constructFromObject({
-            loginId: 'bogus',
-            loginPassword: 'bogus',
+        authApi.login( {
+            loginId:'bogus',
+            loginPassword:'bogus',
             masterToken: masterToken
-        });
-
-        authApi.login(loginRequest, function (error, data, response) {
-            if (!error) {
-                common.setLoginResponse(data);
-                // Oddly, there's no error-fist-callback for initAuth
-                callback(data.sessionId);
-            } else {
-                logger.error('initAuth failed', error);
-                callback(error)
+        }, function(err, data) {
+            if (err) {
+                // given callback is NOT a  error-first-callback function
+                logger.error('auth error', err);
+                throw(err);
             }
-        });
+            common.tokenManager.updateAccessToken(data);
+            // Oddly, there's no error-fist-callback for initAuth
+            logger.log('initAuth registered access token', data);
+            callback(data.sessionId);
+        }); 
     }
 
     function getMyInfo(callback) {
-
-        authApi.getInfo(function (error, data, response) {
+        authApi.getInfo(function (error, data) {
             if (!error) {
-                // TODO : add common.userInfo and check it before sending request
-                // don't forget to invoke callback with setTimeout(0)
                 callback(null, data);
             } else {
                 logger.debug('getMyInfo failed', error);
-                callback(error)
+                callback(error);
             }
         });
     }
@@ -59,23 +89,29 @@ define([
         initAuth : initAuth,
         getMyInfo : getMyInfo,
 
-        // for compatiblity
-        getTokenObj : function getTokenObject() {
-            let token = common.loginResponse.accessToken;
+        // for compatiblity with legacies
+        getTokenObj : function getTokenObj() {
+            var token = common.accessToken;
             if (token) {
                 return {
-                    issueTime : common.loginResponse.decodedAccessToken.issuedAt,
-                    data : common.loginResponse.accessToken
-                }
+                    issueTime : token.issuedAt,
+                    data : token.text
+                };
             }
         },
 
         getToken : function getToken() {
-            return  common.loginResponse.accessToken;
+            var token = common.accessToken;
+            if (token) {
+                return token.text;
+            }
         },
 
         getSessionID : function getSessionID() {
-            return common.loginResponse.decodedAccessToken.sessionId; 
+            var token = common.accessToken;
+            if (token) {
+                return token.sessionId;
+            }
         }
     };
 });

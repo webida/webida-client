@@ -3,8 +3,8 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**exitCode** | **Integer** | exit code of child process. for async operation, it&#39;s always 0 | 
-**stdout** | **String** | standard out of child process | 
-**stderr** | **String** | standard error of child process | 
+**exitCode** | **Integer** | exit code of child process. always 0 for async exec | 
+**stdout** | **String** | standard out of child process. empty for async exec | 
+**stderr** | **String** | standard error of child process. empty for async exec | 
 
 

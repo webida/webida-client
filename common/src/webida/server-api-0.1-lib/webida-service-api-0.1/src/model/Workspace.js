@@ -26,23 +26,24 @@
 
   /**
    * Constructs a new <code>Workspace</code>.
-   * Users&#39; workspace in server
+   * A workspace in server
    * @alias module:model/Workspace
    * @class
    * @param id
    * @param name
-   * @param workspacePath
+   * @param description
    * @param createdAt
    * @param accessedAt
    */
-  var exports = function(id, name, workspacePath, createdAt, accessedAt) {
+  var exports = function(id, name, description, createdAt, accessedAt) {
     var _this = this;
 
     _this['id'] = id;
     _this['name'] = name;
-    _this['workspacePath'] = workspacePath;
+    _this['description'] = description;
     _this['createdAt'] = createdAt;
     _this['accessedAt'] = accessedAt;
+
   };
 
   /**
@@ -62,14 +63,17 @@
       if (data.hasOwnProperty('name')) {
         obj['name'] = ApiClient.convertToType(data['name'], 'String');
       }
-      if (data.hasOwnProperty('workspacePath')) {
-        obj['workspacePath'] = ApiClient.convertToType(data['workspacePath'], 'String');
+      if (data.hasOwnProperty('description')) {
+        obj['description'] = ApiClient.convertToType(data['description'], 'String');
       }
       if (data.hasOwnProperty('createdAt')) {
         obj['createdAt'] = ApiClient.convertToType(data['createdAt'], 'Date');
       }
       if (data.hasOwnProperty('accessedAt')) {
         obj['accessedAt'] = ApiClient.convertToType(data['accessedAt'], 'Date');
+      }
+      if (data.hasOwnProperty('workspacePath')) {
+        obj['workspacePath'] = ApiClient.convertToType(data['workspacePath'], 'String');
       }
     }
     return obj;
@@ -81,15 +85,15 @@
    */
   exports.prototype['id'] = undefined;
   /**
-   * display text of this workspace. should not conflit to other workspaces
+   * display text of this workspace for UI
    * @member {String} name
    */
   exports.prototype['name'] = undefined;
   /**
-   * absolute path of this workspace in server
-   * @member {String} workspacePath
+   * human readable description on this workspace
+   * @member {String} description
    */
-  exports.prototype['workspacePath'] = undefined;
+  exports.prototype['description'] = undefined;
   /**
    * the time when this workspace is created (registered from local file system)
    * @member {Date} createdAt
@@ -100,6 +104,11 @@
    * @member {Date} accessedAt
    */
   exports.prototype['accessedAt'] = undefined;
+  /**
+   * absolute path of this workspace in server. not always available
+   * @member {String} workspacePath
+   */
+  exports.prototype['workspacePath'] = undefined;
 
 
 

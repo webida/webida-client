@@ -10,7 +10,7 @@
     if (!root.WebidaServiceApi) {
       root.WebidaServiceApi = {};
     }
-    root.WebidaServiceApi.LoginRequest = factory(root.WebidaServiceApi.ApiClient);
+    root.WebidaServiceApi.Credential = factory(root.WebidaServiceApi.ApiClient);
   }
 }(this, function(ApiClient) {
   'use strict';
@@ -19,14 +19,15 @@
 
 
   /**
-   * The LoginRequest model module.
-   * @module model/LoginRequest
+   * The Credential model module.
+   * @module model/Credential
    * @version 0.1
    */
 
   /**
-   * Constructs a new <code>LoginRequest</code>.
-   * @alias module:model/LoginRequest
+   * Constructs a new <code>Credential</code>.
+   * user credential to login. Use https to protect credential.
+   * @alias module:model/Credential
    * @class
    * @param loginId
    * @param loginPassword
@@ -40,11 +41,11 @@
   };
 
   /**
-   * Constructs a <code>LoginRequest</code> from a plain JavaScript object, optionally creating a new instance.
+   * Constructs a <code>Credential</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
-   * @param {module:model/LoginRequest} obj Optional instance to populate.
-   * @return {module:model/LoginRequest} The populated <code>LoginRequest</code> instance.
+   * @param {module:model/Credential} obj Optional instance to populate.
+   * @return {module:model/Credential} The populated <code>Credential</code> instance.
    */
   exports.constructFromObject = function(data, obj) {
     if (data) {
@@ -72,7 +73,7 @@
    */
   exports.prototype['loginPassword'] = undefined;
   /**
-   * If master token is set and valid, login Id / Password will be ignored but still required.  Put some bogus values to pass argument validation. Bogus master token in request will not make server issue a new master token.  
+   * a master token is issued when user wants to access webida api without id/password from remote or local desktop app. When masterToken is set, client should put some bogus id/password, non-empty. (The values can be used to identify client type) 
    * @member {String} masterToken
    */
   exports.prototype['masterToken'] = undefined;

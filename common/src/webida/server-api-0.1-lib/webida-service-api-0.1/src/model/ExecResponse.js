@@ -26,7 +26,7 @@
 
   /**
    * Constructs a new <code>ExecResponse</code>.
-   * execution response with output and exit code 
+   * execution response
    * @alias module:model/ExecResponse
    * @class
    * @param exitCode
@@ -66,17 +66,17 @@
   }
 
   /**
-   * exit code of child process. for async operation, it's always 0
+   * exit code of child process. always 0 for async exec
    * @member {Integer} exitCode
    */
   exports.prototype['exitCode'] = undefined;
   /**
-   * standard out of child process
+   * standard out of child process. empty for async exec
    * @member {String} stdout
    */
   exports.prototype['stdout'] = undefined;
   /**
-   * standard error of child process
+   * standard error of child process. empty for async exec
    * @member {String} stderr
    */
   exports.prototype['stderr'] = undefined;

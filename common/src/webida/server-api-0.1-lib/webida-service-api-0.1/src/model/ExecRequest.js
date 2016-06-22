@@ -26,16 +26,19 @@
 
   /**
    * Constructs a new <code>ExecRequest</code>.
-   * execution request, simlilar to node.js child_proc.exec / spawn see node.js documentation for details of each properties. some properties are not configurable for portability    - encoding : fixed to utf-8    - shell : fixed to system default. Using shell env variables in command is not recommended.    - killSignal : fixed to default (SIGTERM)    - uid, gid : will not be set    - stdio : does not support &#39;ignore&#39; and &#39;inherit&#39;. all streams are handled by server. 
+   * execution request, simlilar to node.js spawn(). see node.js documentation for details of each properties. some properties are not configurable for portability    - encoding : fixed to utf-8    - shell : fixed to system default. Using shell variables in command may not work.    - killSignal : fixed to SIGTERM. If process does not die, server can send SIGKILL or                   invoke taskkill to ensure chlid process is killed.    - uid &amp; gid : will not be set    - stdio : all streams are handled by server. no options are avaliable to client.    - shell : always false.    - detached : always false 
    * @alias module:model/ExecRequest
    * @class
+   * @param id
    * @param command
+   * @param args
    */
-  var exports = function(command) {
+  var exports = function(id, command, args) {
     var _this = this;
 
+    _this['id'] = id;
     _this['command'] = command;
-
+    _this['args'] = args;
 
 
 
@@ -52,6 +55,9 @@
     if (data) {
       obj = obj || new exports();
 
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
       if (data.hasOwnProperty('command')) {
         obj['command'] = ApiClient.convertToType(data['command'], 'String');
       }
@@ -64,38 +70,43 @@
       if (data.hasOwnProperty('input')) {
         obj['input'] = ApiClient.convertToType(data['input'], 'String');
       }
-      if (data.hasOwnProperty('maxBuffer')) {
-        obj['maxBuffer'] = ApiClient.convertToType(data['maxBuffer'], 'String');
+      if (data.hasOwnProperty('timeout')) {
+        obj['timeout'] = ApiClient.convertToType(data['timeout'], 'Integer');
       }
     }
     return obj;
   }
 
   /**
-   * name or path of executable file to run. should not contain any arguments. 
+   * unique identifier of execution, to demux response stream or cancel request
+   * @member {String} id
+   */
+  exports.prototype['id'] = undefined;
+  /**
+   * command to run. should not contain any arguments, pipes, redirections 
    * @member {String} command
    */
   exports.prototype['command'] = undefined;
   /**
-   * the command line arguments for the command. if 'shell' property is true, this args will be joined with ' ' and appended to command string 
+   * the arguments array
    * @member {Array.<String>} args
    */
   exports.prototype['args'] = undefined;
   /**
-   * Current working directory of child process, relative to workspace root. If abscent, CWD will be the workspace root directory. Does not accept shell-variable form like $HOME, %USERPROFILE% 
+   * Current working directory of child process, relative to workspace root. If abscent, CWD will be the workspace root directory. Does not accept any evaluatable form like $HOME, %USERPROFILE%. If absolute, heading / will be discarded. should be unixified. 
    * @member {String} cwd
    */
   exports.prototype['cwd'] = undefined;
   /**
-   * The value which will be passed as stdin to the spawned process. If abscent, server will not write to input anything 
+   * input string for child process. if falsy in async execution, async input messages will be pasted into the child's stdin. since we don't use tty, it's recommended to use input string anyway. 
    * @member {String} input
    */
   exports.prototype['input'] = undefined;
   /**
-   * largest amount of data (in bytes) allowed on stdout or stderr. if exceeded child process is killed by server. if async is true, this arguments will be ignored by spawn() 
-   * @member {String} maxBuffer
+   * The value which In 'milliseconds' the maximum amount of time the child is allowed to run. (not idle time of stdout / stderr stream) if undefined, server will not kill the child process until receiving cancel request  if it doesn't exit by self. 
+   * @member {Integer} timeout
    */
-  exports.prototype['maxBuffer'] = undefined;
+  exports.prototype['timeout'] = undefined;
 
 
 

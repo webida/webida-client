@@ -21,7 +21,7 @@ Method | HTTP request | Description
 
 
 
-Copy to given path. works like cp -r command, with some funny options Copying a dir on to existing file will return error Copying from sockets, fifo, .. and any other type of file system object is not supported. 
+Copy to given path. works like cp -r command, with some funny options Copying a dir on to existing file will return error if removeExisting is false Copying from sockets, fifo, .. and any other type of file system object is not supported. 
 
 ### Example
 ```javascript

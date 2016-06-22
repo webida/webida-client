@@ -26,19 +26,23 @@
 
   /**
    * Constructs a new <code>Token</code>.
-   * Decoded token&#39;s data accessible to client apps
+   * a json webtoken and accessible data
    * @alias module:model/Token
    * @class
+   * @param text
    * @param tokenType
    * @param expiresAt
    * @param issuedAt
    */
-  var exports = function(tokenType, expiresAt, issuedAt) {
+  var exports = function(text, tokenType, expiresAt, issuedAt) {
     var _this = this;
 
+    _this['text'] = text;
     _this['tokenType'] = tokenType;
     _this['expiresAt'] = expiresAt;
     _this['issuedAt'] = issuedAt;
+
+
   };
 
   /**
@@ -52,6 +56,9 @@
     if (data) {
       obj = obj || new exports();
 
+      if (data.hasOwnProperty('text')) {
+        obj['text'] = ApiClient.convertToType(data['text'], 'String');
+      }
       if (data.hasOwnProperty('tokenType')) {
         obj['tokenType'] = ApiClient.convertToType(data['tokenType'], 'String');
       }
@@ -61,12 +68,23 @@
       if (data.hasOwnProperty('issuedAt')) {
         obj['issuedAt'] = ApiClient.convertToType(data['issuedAt'], 'Date');
       }
+      if (data.hasOwnProperty('sessionId')) {
+        obj['sessionId'] = ApiClient.convertToType(data['sessionId'], 'String');
+      }
+      if (data.hasOwnProperty('workspaceId')) {
+        obj['workspaceId'] = ApiClient.convertToType(data['workspaceId'], 'String');
+      }
     }
     return obj;
   }
 
   /**
-   * MASTER : used to create an access token from clients, without login credential ACCESS : protects api access. should be unique for each ide session ADMIN  : unrestriced access token for hub/admin service who controls server.          there's no way to create admin token with API.           Note that here's no REFRESH token, nor LOGIN token. The login api will create  unrestricted access token & master token pair. Desktop app has a 'side-way' to  create an 'unrestricted' master token before starting IDE instances.  So, every ide client has a master token.   If client want to access remote workspace directly, it should call login api  with given master token which is generated from the remote login credential  when adding remote workspace in main ui. Switching from a remote workspace  to local one requires a local master token. It's not desirable to mix local and remote tokens in a single client instance in the view point of security.  So, it's recommended to save local master token in session storage.  
+   * actual token text that should be shipped in header or query
+   * @member {String} text
+   */
+  exports.prototype['text'] = undefined;
+  /**
+   * MASTER : used to create an access token from clients, without login credential ACCESS : protects api access. should be unique for each ide session ADMIN  : unrestriced access token for hub/admin service who controls server.          there's no way to create admin token with API.  Note that here's no REFRESH token, nor LOGIN token. The login api will create unrestricted access token & master token pair. Desktop app has a side-way to create an unrestricted master token before starting IDE instances. 
    * @member {module:model/Token.TokenTypeEnum} tokenType
    */
   exports.prototype['tokenType'] = undefined;
@@ -78,6 +96,16 @@
    * @member {Date} issuedAt
    */
   exports.prototype['issuedAt'] = undefined;
+  /**
+   * mandatory for ACCESS token, identifying client instance
+   * @member {String} sessionId
+   */
+  exports.prototype['sessionId'] = undefined;
+  /**
+   * If truthy, access rights are restricted to specified workspace only.
+   * @member {String} workspaceId
+   */
+  exports.prototype['workspaceId'] = undefined;
 
 
   /**

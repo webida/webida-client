@@ -1,18 +1,18 @@
 (function(root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(['../ApiClient', '../model/RestError', '../model/Token', '../model/User', '../model/LoginResponse', '../model/LoginRequest'], factory);
+    define(['../ApiClient', '../model/User', '../model/RestError', '../model/Token', '../model/Credential'], factory);
   } else if (typeof module === 'object' && module.exports) {
     // CommonJS-like environments that support module.exports, like Node.
-    module.exports = factory(require('../ApiClient'), require('../model/RestError'), require('../model/Token'), require('../model/User'), require('../model/LoginResponse'), require('../model/LoginRequest'));
+    module.exports = factory(require('../ApiClient'), require('../model/User'), require('../model/RestError'), require('../model/Token'), require('../model/Credential'));
   } else {
     // Browser globals (root is window)
     if (!root.WebidaServiceApi) {
       root.WebidaServiceApi = {};
     }
-    root.WebidaServiceApi.AuthApi = factory(root.WebidaServiceApi.ApiClient, root.WebidaServiceApi.RestError, root.WebidaServiceApi.Token, root.WebidaServiceApi.User, root.WebidaServiceApi.LoginResponse, root.WebidaServiceApi.LoginRequest);
+    root.WebidaServiceApi.AuthApi = factory(root.WebidaServiceApi.ApiClient, root.WebidaServiceApi.User, root.WebidaServiceApi.RestError, root.WebidaServiceApi.Token, root.WebidaServiceApi.Credential);
   }
-}(this, function(ApiClient, RestError, Token, User, LoginResponse, LoginRequest) {
+}(this, function(ApiClient, User, RestError, Token, Credential) {
   'use strict';
 
   /**
@@ -31,48 +31,6 @@
   var exports = function(apiClient) {
     this.apiClient = apiClient || ApiClient.instance;
 
-
-    /**
-     * Callback function to receive the result of the decodeToken operation.
-     * @callback module:api/AuthApi~decodeTokenCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/Token} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * decode token to get data.
-     * @param {Object} opts Optional parameters
-     * @param {String} opts.tokenText token text to decode. if not given, access token in request will be used
-     * @param {module:api/AuthApi~decodeTokenCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {module:model/Token}
-     */
-    this.decodeToken = function(opts, callback) {
-      opts = opts || {};
-      var postBody = null;
-
-
-      var pathParams = {
-      };
-      var queryParams = {
-        'tokenText': opts['tokenText']
-      };
-      var headerParams = {
-      };
-      var formParams = {
-      };
-
-      var authNames = ['webida-simple-auth'];
-      var contentTypes = ['application/json'];
-      var accepts = ['application/json', 'application/octet-stream'];
-      var returnType = Token;
-
-      return this.apiClient.callApi(
-        '/auth/token', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, callback
-      );
-    }
 
     /**
      * Callback function to receive the result of the getInfo operation.
@@ -121,27 +79,27 @@
      */
 
     /**
-     * Creates new token - Any restrictions are inherited Clients cannot create new access token from exiting one via this operation.  Call login with master token.  When user logs in without master token, login api response alwyas contains master token 
-     * @param {module:model/String} tokenType &#39;MASTER&#39; type requires workspaceId parameter  &#39;ACCESS&#39; type will return inherited access token with all same property except  issuedAt &amp; expiredAt.  
+     * Creates new token from current access token, inheriting workspace id &amp; session id Duration of generated token is not (and should be) parameterizable. 
+     * @param {module:model/String} type 
      * @param {Object} opts Optional parameters
-     * @param {String} opts.workspaceId mandatory to issue a &#39;MASTER&#39; type token, restricted to some workspace
+     * @param {String} opts.workspaceId mandatory to issue a MASTER type token
      * @param {module:api/AuthApi~issueTokenCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {module:model/Token}
      */
-    this.issueToken = function(tokenType, opts, callback) {
+    this.issueToken = function(type, opts, callback) {
       opts = opts || {};
       var postBody = null;
 
-      // verify the required parameter 'tokenType' is set
-      if (tokenType == undefined || tokenType == null) {
-        throw "Missing the required parameter 'tokenType' when calling issueToken";
+      // verify the required parameter 'type' is set
+      if (type == undefined || type == null) {
+        throw "Missing the required parameter 'type' when calling issueToken";
       }
 
 
       var pathParams = {
       };
       var queryParams = {
-        'tokenType': tokenType,
+        'type': type,
         'workspaceId': opts['workspaceId']
       };
       var headerParams = {
@@ -165,15 +123,15 @@
      * Callback function to receive the result of the login operation.
      * @callback module:api/AuthApi~loginCallback
      * @param {String} error Error message, if any.
-     * @param {module:model/LoginResponse} data The data returned by the service call.
+     * @param {module:model/Token} data The data returned by the service call.
      * @param {String} response The complete HTTP response.
      */
 
     /**
-     * Basic authentication to support webida-simple-auth security scheme defined in this spec. Service / Product implementations who need better security, should override this operation or add their own login api and security definitions. see webida devloper guide to read details about webida-simpe-auth security sceheme. 
-     * @param {module:model/LoginRequest} body 
+     * A &#39;VERY&#39; basic authentication, required to use webida-simple-auth security scheme.  Service / Product implementations who need better security, should override this operation or add their own login api or some other specs like OAuth2. Simple auth is not suitable for large-sacle, multi-tennant service.  Generated accss token inherits all restriction from master token. In normal login, unrestricted access token will be granted with reasonably short expiration time. Every client should respawn another access token with issueToken API before current access token expires. 
+     * @param {module:model/Credential} body 
      * @param {module:api/AuthApi~loginCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {module:model/LoginResponse}
+     * data is of type: {module:model/Token}
      */
     this.login = function(body, callback) {
       var postBody = body;
@@ -196,7 +154,7 @@
       var authNames = [];
       var contentTypes = ['application/json'];
       var accepts = ['application/json', 'application/octet-stream'];
-      var returnType = LoginResponse;
+      var returnType = Token;
 
       return this.apiClient.callApi(
         '/auth/login', 'POST',

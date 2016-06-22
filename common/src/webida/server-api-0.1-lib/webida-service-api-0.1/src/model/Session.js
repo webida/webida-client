@@ -94,7 +94,7 @@
   }
 
   /**
-   * the id of a session. usually same to socket id
+   * the id of a session. usually same to socket id.
    * @member {String} id
    */
   exports.prototype['id'] = undefined;
@@ -104,7 +104,7 @@
    */
   exports.prototype['name'] = undefined;
   /**
-   * state of this session NORMAL = connected, normally working LOSING = disconnected, waiting reconnection. still accessible with api CLOSING = socket connection will close connection by server (clinet will be notified)  there's no 'CLOSED' / 'LOST' state, for server will remove session object in registry  when the server closes connection or stops waiting for reconnection for timeout.   
+   * state of this session NORMAL = connected, normally working LOSING = disconnected, waiting reconnection. still accessible with api CLOSING = socket connection will close connection by server (clinet will be notified)  there's no 'CLOSED' / 'LOST' state, for server will remove session object in registry when the server closes connection or stops waiting for reconnection for timeout. 
    * @member {module:model/Session.StateEnum} state
    */
   exports.prototype['state'] = undefined;
@@ -114,7 +114,7 @@
    */
   exports.prototype['workspaceId'] = undefined;
   /**
-   * absolute path of this workspace in server
+   * the peer address of session connection. not always
    * @member {String} clientAddress
    */
   exports.prototype['clientAddress'] = undefined;

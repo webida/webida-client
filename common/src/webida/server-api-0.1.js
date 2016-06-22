@@ -18,8 +18,7 @@
 /**
 * @fileOverview Webida Server API binding library for Webida 1.x client
 *  
-* This module should not be used in Webida 2.x
-* This module implements some sub-set of webida-0.3.js
+* This module implements some sub-set of webida-0.3.js with new webida service api spec. 
 * @module server-api
 * @version 0.1
 */
@@ -53,6 +52,7 @@ define([
         //    via window.__ELECTRON_BROWSER__ variable
         //  - PM should not load .user_info/plugin-settings.json file directly while initializing
         //    and may use local storage instead of using server api
+        
         getPluginSettingsPath : function(callback) {
             // plugin-settings-desktop.json : to connect embedded server from desktop  (0.1)
             //                              : to connect server from desktop (0.2)
@@ -61,9 +61,9 @@ define([
 
             // this is version 0.1. (simple but enough, for we don't access legacy server as guest) 
             if(common.bootArgs.legacy) {
-                return callback('plugins/plugin-setting.json')
+                return callback('plugins/plugin-setting.json');
             } else {
-                return callback('plugins/plugin-settings-desktop.json')
+                return callback('plugins/plugin-settings-desktop.json');
             }
         }
     };
