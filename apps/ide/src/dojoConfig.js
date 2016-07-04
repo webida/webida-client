@@ -21,8 +21,8 @@
     // to make dojo & other amd module work
     // how can we detect that we're working in electron?
     if (typeof(globalObject.process) === 'object' &&
-         typeof(globalObject.require) === 'function' &&
-         typeof(globalObject.module) === 'object') {
+        typeof(globalObject.require) === 'function' &&
+        typeof(globalObject.module) === 'object') {
         globalObject.nrequire = globalObject.require;
         globalObject.nmodule = globalObject.module;
         delete globalObject.require;
@@ -44,8 +44,6 @@
             {name: 'jquery', location: './jquery/dist', main: 'jquery.min'},
             {name: 'put-selector', location: './put-selector'},
             {name: 'showdown', location: './showdown/dist', main: 'showdown.min'},
-            {name: 'superagent', location: './superagent/lib', main: 'client'},
-
             {name: 'URIjs', location:'./URIjs/src', main:'URI'},
             {name: 'xstyle', location: './xstyle'}
         ],
@@ -75,28 +73,21 @@
         ]
     };
 
-    // default.html (new index.html for new server) should set
-    //  session storage variable 'webida-workspace-type'
-    //  to 'legacy' for 1.x clients who uses webida-0.4 API as default
-    if (globalObject.nrequire) {
+    // twick requirejs alias to use new server-api when not using using legacy server
+    if (window.location.href.indexOf('legacy=') < 0 ) {
+        globalObject.dojoConfig.aliases.pop();
+        globalObject.dojoConfig.aliases.pop();
+        globalObject.dojoConfig.aliases.push(['webida-lib/server-api' , 'webida-lib/server-api-0.1']);
+        globalObject.dojoConfig.aliases.push(['webida-lib/server-pubsub' , 'webida-lib/server-pubsub-0.1']);
+        globalObject.dojoConfig.aliases.push(['top/site-config.json' , 'top/site-config-desktop.json']);
+    }
 
-        // dojo may understand cjs require() by building option
-        // but some bower modules works under amd system only
-        // we don't allow to mix amd/cjs modules with same require function
+    if (globalObject.__ELECTRON_BROWSER__) {
+        // Although dojo may understand cjs require() by building option,
+        //   some bower modules works under amd system only.
+        //   So, we don't allow to mix amd/cjs modules with same require function
         globalObject.dojoConfig.has = {
             'host-node': false // Prevent dojo from being fooled by Electron
         };
-        // twick requirejs alias to use new server-api
-        //  when using legacy server
-
-        if (window.location.href.indexOf('legacy=') < 0 ) {
-            globalObject.dojoConfig.aliases.pop();
-            globalObject.dojoConfig.aliases.pop();
-            globalObject.dojoConfig.aliases.push(['webida-lib/server-api' , 'webida-lib/server-api-0.1']);
-            globalObject.dojoConfig.aliases.push(['webida-lib/server-pubsub' , 'webida-lib/server-pubsub-0.1']);
-            globalObject.dojoConfig.aliases.push(['top/site-config.json' , 'top/site-config-desktop.json']);
-            console.log('under electrion re-wrote some requirejs aliases');
-        }
-        console.log('dojoConfig is now ready for electron');
     }
 })(window);

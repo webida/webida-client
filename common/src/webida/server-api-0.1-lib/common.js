@@ -21,11 +21,13 @@
  */
 define([
     'URIjs',
+    'external/eventEmitter/EventEmitter',
     'webida-lib/util/logger/logger-client',
     './webida-service-api-0.1/src/index',
     './TokenManager'
 ],  function (
     URI,
+    EventEmitter, 
     Logger,
     WebidaServiceApi,
     TokenManager
@@ -39,11 +41,9 @@ define([
 
     var privates = {
         bootArgs : null,
-        // comes from boot args. need public accessor
         serverUri : null,
         serverUrl : null,
-
-        // comes from login response. no need of public accessor
+        session: null,
         tokenManager : TokenManager.instance
     };
 
@@ -51,7 +51,11 @@ define([
         // accessors to privates. getters only, no setters
         get logger() { return logger; },
         get bootArgs() { return privates.bootArgs; },
+        get serverUri() { return privates.serverUri; },
+        get serverUrl() { return privates.serverUrl; },
+        get session() { return privates.session; },
         get tokenManager() { return privates.tokenManager;},
+        get accessToken() { return privates.tokenManager.accessToken; }, 
         get api() {
             return WebidaServiceApi;
         }
@@ -87,11 +91,12 @@ define([
                 }
             }
         });
-        console.log('swagger api default client', defaultClient);
+        logger.debug('swagger api default client', defaultClient);
     }
 
     /* module main script */
     initializeThisModule();
+
     return publics;
 
 });

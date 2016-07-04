@@ -16,19 +16,15 @@
 
 /**
  * @module server-pubsub
- * @fileoverview messaging pub/sub library for webida 1.x client
+ * @fileoverview dummy api for legacy client using webida-0.3.js 
  *
- * Ths module provides some sub-set of msgs.js
+ * This module provides some sub-set of msgs.js, doing nothing 
  * @version: 0.1
  */
 
 define([
-	'./server-api-0.1',
-	'external/socket.io-client/socket.io',
 	'webida-lib/util/logger/logger-client'
 ], function (
-	serverApi,
-	sio,
 	Logger
 ) {
     'use strict';
@@ -43,20 +39,19 @@ define([
         this.uid = uid;
         this.token = token;
     };
-    var systemNotificationCallback;
-
-    var init = function (uid, token, host, callbackFunctions, cb) {
+    
+    var init = function messagingInit(uid, token, host, callbackFunctions, cb) {
+       
         var user  = new User('nick', 'email', uid, token);
-        logger.log('pubsub init - new user', user);
+        logger.log('pubsub init#- new user', user);
 
         // dummy stuffs
-        systemNotificationCallback = callbackFunctions.topicsysnotify_callback;
         window.setTimeout( function() {
-            cb(user);
+            cb(null, user);
         }, 0);
     };
 
-    var sub2 = function (user, topics, cb) {
+    var sub2 = function messagingSubscribe(user, topics, cb) {
         // dummy stuffs
         var subscriptionResult = {
             'topics': topics
@@ -70,5 +65,4 @@ define([
         init: init,
         sub2: sub2
     };
-
 });

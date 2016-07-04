@@ -109,7 +109,7 @@
    */
   exports.prototype['state'] = undefined;
   /**
-   * the id of workspace that this sessions is working on.
+   * the id of workspace that this workspaces is working on.
    * @member {String} workspaceId
    */
   exports.prototype['workspaceId'] = undefined;

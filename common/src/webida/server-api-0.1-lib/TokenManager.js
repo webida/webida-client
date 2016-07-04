@@ -29,7 +29,7 @@ define([
     'webida-lib/util/logger/logger-client',
     './webida-service-api-0.1/src/index'
 ],  function (
-    EventEmitter, 
+    EventEmitter,
     genetic,
     Logger,
     WebidaServiceApi
@@ -46,12 +46,13 @@ define([
 
     var MARGIN_TO_EXPIRE = WebidaServiceApi.ApiClient.instance.timeout + (30 * 1000);
     var RETRY_AFTER = 5 * 1000;
-    var authApi = new WebidaServiceApi.AuthApi(); 
+    var authApi = new WebidaServiceApi.AuthApi();
     
     // IDE does not use master token except login with master token
     // so, TokenManager handles access token only
 
     function TokenManager(accessToken) {
+        EventEmitter.call(this);
         this._updateTimer = null;
         if (accessToken) {
             this.updateAccessToken(accessToken);
@@ -138,7 +139,6 @@ define([
             }); 
         },
 
-        //
         getRemainingTTL : function() {
             var expireTime = this.accessToken.expiresAt.getTime();
             var currentTime = new Date().getTime();
@@ -155,5 +155,4 @@ define([
 
     TokenManager.instance = new TokenManager();
     return TokenManager;
-
 });

@@ -61,7 +61,7 @@ define([
             
             function getWfsUri(path) {
                 if (typeof path === 'string') {
-                    return 'wfs:/' + path;
+                    return 'wfs:' + path;
                 } else {
                     return null;  
                 }

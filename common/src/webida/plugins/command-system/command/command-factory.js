@@ -52,7 +52,10 @@ define([
             return new Promise(function (resolve) {
                 var registry = commandRegistry.getCommand(id);
                 if (registry) {
-                    require([registry.plugin + '/commands'], function (extension) { 
+                    console.warn('create command from ' + registry.plugin + '/commands');
+                    console.warn('create command id ' + id , option);
+                    require([registry.plugin + '/commands'], function (extension) {
+                        console.warn('create command with extension ', extension);
                         var Constructor = extension[toPascalCase(id) + 'Command'];
                         if (!Constructor) {
                             var changedId = id.split(':')[0];

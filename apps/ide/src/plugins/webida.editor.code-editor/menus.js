@@ -73,7 +73,7 @@ define([
                     blockCommentMenuItem.disabled = true;
                 }
                 if (delegator.canExecute('request')) {
-                    delegator.exeCommand('request', widget,
+                    delegator.execCommand('request', widget,
                                          { type: 'rename', newName: 'someName', fullDocs: true },
                                          function (error) {
                         if (!error) {
@@ -198,7 +198,7 @@ define([
                     commentOutSelectionMenuItem.invisible = true;
                 }
                 if (delegator.canExecute('request')) {
-                    delegator.exeCommand('request', widget,
+                    delegator.execCommand('request', widget,
                                          { type: 'rename', newName: 'someName', fullDocs: true },
                                          function (error) {
                         if (!error) {

@@ -21,15 +21,17 @@
  */
 
 define([
-    './common'
+    './common', 
+    './session'
 ],  function (
-    common
+    common,
+    session
 ) {
     'use strict';
     var logger = common.logger;
     var AuthApi = common.api.AuthApi;
     var authApi = new AuthApi();
-    
+
     // TODO : introduce webida.initializeAsync() that handles all init things, 
     //        with credential provider that interacts with UI, 
     //        and remove initAuth or make it a legacy-compatibility helper 
@@ -44,7 +46,7 @@ define([
     });
 
     common.tokenManager.on('updated', function(token) {
-        console.log('updated token', token);
+        logger.debug('updated token', token);
     });
 
     // initAuth is called by app.js at first, before loading any other plugins
@@ -68,6 +70,7 @@ define([
                 throw(err);
             }
             common.tokenManager.updateAccessToken(data);
+            session.connect();
             // Oddly, there's no error-fist-callback for initAuth
             logger.log('initAuth registered access token', data);
             callback(data.sessionId);
@@ -88,7 +91,7 @@ define([
     return {
         initAuth : initAuth,
         getMyInfo : getMyInfo,
-
+        
         // for compatiblity with legacies
         getTokenObj : function getTokenObj() {
             var token = common.accessToken;

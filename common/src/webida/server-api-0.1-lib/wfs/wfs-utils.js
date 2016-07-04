@@ -78,33 +78,52 @@ define([
         return ret; 
     }
 
-    function devideArrayWithFilter (array, propertyNameToFilter) {
-        var ret = {
-            truthy:[],
-            falsy:[]
-        };
+    // expected examples)
+    // '/' || '' => []  (has no ancestors)
+    // 'aaa' => ['']    (has no ancestors in relative form)
+    // 'aaa/bbb' => ['aaa']
+    // 'aaa/bbb/ccc' || 'aaa/bbb/ccc/' => ['aaa/bbb', 'aaa']
+    // '/aaa/bbb/ccc' || '/aaa/bbb/ccc/' => [ '/aaa/bbb', '/aaa', '/' ]
+    // options {
+    //   includeSelf: true to include path itself
+    //   includeRoot: true to include '/' or '' in result
+    function getAncestors(path, opts) {
+        var options = opts || {includeSelf:true};
 
-        array.forEach( function (item) {
-            var property;
-            if (!propertyNameToFilter) {
-                property = item;
-            } else {
-                property = item ? item[propertyNameToFilter] : undefined;
-            }
-            if (property) {
-                ret.truthy.push(item);
-            } else {
-                if (item) {
-                    ret.falsy.push(item);
-                }
-            }
-        });
+        if (path === '/' || path === '' ) {
+            return options.includeSelf? [path] : [];
+        }
 
+        var isAbsolute = path[0] === '/';
+        var ret = [];
+        var segments = path.split('/');
+        var p = '';
+
+        // removes tailing / side effects
+        if (segments.length > 1 && segments[segments.length-1] === '') {
+            segments.pop();
+        }
+
+        while(segments.length >= 1) {
+            if (options.includeSelf) {
+                p = segments.join('/');
+                segments.pop();
+            } else {
+                segments.pop();
+                p = segments.join('/');
+            }
+            if (p) {
+                ret.push(p);
+            }
+        }
+        if (options.includeRoot) {
+            ret.push(isAbsolute? '/' : '');
+        }
         return ret;
     }
 
     return {
         fromLegacyPath : fromLegacyPath,
-        devideArrayWithFilter : devideArrayWithFilter
+        getAncestors : getAncestors
     };
 });

@@ -122,7 +122,11 @@ define([
     }
 
     function saveStatusSync() {
-        logger.info('saveStatusSync()');
+        if (webida.VERSION && webida.VERSION === '0.1') {
+            logger.info('current server api does not support synchronous file writing');
+            return;
+        }
+
         var statusString = getStatusStringToSave();
         if (statusString) {
             var formData = new FormData();
@@ -373,13 +377,12 @@ define([
                             logger.error('failed to connect to conn server');
                         } else {
                             logger.log('connected to conn server');
-
-                            // sys.fs.change notification subscribe
                             
                             // note from webida-desktop
                             //  new server-api-*.js has no acl service and does not require 
-                            //  explicit subscription for default server events fs.change 
-                            //  And, since 
+                            //  explicit subscription for default server events like fs.change 
+                            //  So, msgAgent.init() actually do nothing but returns some dummy
+                            //  stuffs & real event processing will be handled without app.js
 
                             if (typeof webida.acl !== 'object') {
                                 logger.log('no need to subscribe and topic relay with new api ');

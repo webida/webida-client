@@ -34,12 +34,9 @@ define([
             enumerable : false,
             configurable : false
         });
-
         this.children = [];
-
         this.name = name;
-
-        this._basepath = null; // will be filled later
+        this._path = null; // will be filled later
 
         // when building tree with entries
         // parent property will be set later and initially undefined
@@ -58,25 +55,19 @@ define([
         // for compatiblity with webida 1.x client
         // (will be replaced to function as node.js does, later )
         get path() {
-            if (this.parent) {
-                return this.parent.path + '/' + this.name;
+            if (this.isRoot()) {
+                return this._path || '/';
             } else {
-                var basePath = this.basePath || '/';
-                return basePath + this.name;
+                return this.parent._path + this.name;
             }
         },
 
-        get basepath() {
-            return this.parent ? null : this._basepath;
-        },
-
-        // basepath should be set to root of tree, only
-        set basepath(value) {
-            if (!this.parent) {
-                // when tree is /some/path/dir
-                // this.name = dir
-                // basepath = /some/path
-                this._basepath = value.split('/');
+        set path(value) {
+            if (this.isRoot()) {
+                if (value.length > 1 && value[value.length-1] !== '/') {
+                    value += '/';
+                }
+                this._path = value;
             }
         },
 
@@ -96,12 +87,6 @@ define([
             return childEntry;
         });
         return entry;
-    };
-
-    WfsEntry.getBasePathOf = function getBasePathOf(path) {
-        var segments = path.split('/');
-        segments.pop();
-        return segments.join('/');
     };
 
     // later, we should extend this class to WfsFile & WfsDirectory

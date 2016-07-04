@@ -22,7 +22,7 @@
 
 define([
     './common',
-    './WfsMount'
+    './wfs/WfsMount'
 ], function (
     common,
     WfsMount
@@ -56,5 +56,4 @@ define([
     return {
         mountByFSID : mountByFSID
     };
-    
 });

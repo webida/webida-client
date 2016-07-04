@@ -26,40 +26,59 @@
 define([
     './server-api-0.1-lib/common',
     './server-api-0.1-lib/auth',
-    './server-api-0.1-lib/fs'
+    './server-api-0.1-lib/fs',
+    './server-api-0.1-lib/messaging',
+    './server-api-0.1-lib/session',
 ],  function (
     common,
     auth,
-    fs
+    fs,
+    messaging, 
+    session
 ) {
     'use strict';
 
-    var serverUrl = common.bootArgs.serverUrl;
     var mod = {
+        VERSION: '0.1', 
         auth : auth,
         fs : fs,
 
-        // for compatibility with plugisn who are dependent to webida-0.3.js conf object
+        // incompatible properties, which webida-0.3.js does not have
+        messaging: messaging,
+        info : {
+            serverUrl : common.serverUrl,
+            serverUri : common.serverUri, 
+            get accessToken() {
+                return common.tokenManager.accessToken;
+            },
+            get sessionId() {
+                if (common.tokenManager.accessToken) {
+                    return common.tokenManager.accessToken.sessionId;
+                }
+            }
+        },
+        session : session,
+
+        // for compatibility with plugin who are dependent to webida-0.3.js conf object
         conf : {
-            fsServer : serverUrl,
-            connServer: serverUrl,
-            fsApiBaseUrl: serverUrl + '/vfs'
+            fsServer : common.serverUrl,
+            connServer: common.serverUrl,
+            fsApiBaseUrl: common.serverUrl + '/api/wfs'
         },
 
         // for compatibility with current plugin manager
-        //  - should be removed in next version
+        //  - should be removed in next version (0.2 and later)
         //  - PM should should decide which plugin catalog to load by itself
         //    via window.__ELECTRON_BROWSER__ variable
         //  - PM should not load .user_info/plugin-settings.json file directly while initializing
         //    and may use local storage instead of using server api
         
         getPluginSettingsPath : function(callback) {
-            // plugin-settings-desktop.json : to connect embedded server from desktop  (0.1)
-            //                              : to connect server from desktop (0.2)
-            // plugin-settings.json : to connect legacy server from desktop/browser (0.1)
-            //                      : to connect server from browser (0.2)
+            // plugin-settings-desktop.json : to use embedded server from desktop
+            // plugin-settings.json : to use legacy server from desktop/browser (0.1)
+            //                        to connect remote server from desktop/browser (0.2~)
+            // plugin-settings-legacy: to connect legacy server from desktop/browser (0.2~)
 
-            // this is version 0.1. (simple but enough, for we don't access legacy server as guest) 
             if(common.bootArgs.legacy) {
                 return callback('plugins/plugin-setting.json');
             } else {
@@ -67,8 +86,15 @@ define([
             }
         }
     };
-    
-    // for debugging purpose only in debugger js console
+
+    // for debugging purpose only, in debugger js console.
+
+    // TODO : add bootArgs.debug
+    //  - debugging mode should be customizable in runtime, not build time.
+    //  - debugging mode will change Logger's singleton logger debugging level, too.
+    //    in production mode, log level of logger should adjusted to 'error' or 'off'
+    //    every new Logger() instance will respect global log level.
+
     window.__webida = mod;
     mod.common = common;
 

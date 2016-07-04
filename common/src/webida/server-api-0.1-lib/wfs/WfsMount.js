@@ -21,14 +21,18 @@
  */
 
 define([
-    './common',
-    './Stats',
+    '../common',
+    '../session',
+    './WfsStats',
     './WfsEntry',
+    './WfsEventGate',
     './wfs-utils'
 ], function (
     common,
-    Stats,
+    session,
+    WfsStats,
     WfsEntry,
+    WfsEventGate,
     wfsUtils
 ) {
     'use strict';
@@ -43,78 +47,107 @@ define([
     function abstractify(name) {
         return function abstractMethod() {
             var methodName = name || 'method';
-            throw new Error(methodName + ' is abstract');
+            var callback = arguments[arguments.length-1];
+            var err = new Error(methodName + ' is abstract');
+            if (typeof(callback) === 'function') {
+                return callback(err);
+            } else {
+                throw err;
+            }
         };
     }
     
     function WfsMount(fsid) {
         this.wfsId = fsid;
-    }
+        this.eventGate = new WfsEventGate(session, fsid);
+        var myself = this; 
+
+        // if watcher has already started by other client
+        // wfsWatcher#start event will never be delivered to session socket
+        session.on('wfsWatcher', function(wfsId, event) {
+            if (myself.eventGate && myself.wfsId === wfsId && event === 'stop') {
+                myself.eventGate.stopListening();
+                myself.eventGate = null;
+            }
+        });
+     }
 
     WfsMount.prototype = {
         _fromLegacyPath: function _fromLegacyPath(legacyPath, allowUrl) {
-            return wfsUtils.fromLegacyPath(legacyPath, allowUrl ? this.wfsId : undefined);
+            try {
+                return wfsUtils.fromLegacyPath(legacyPath, allowUrl ? this.wfsId : undefined);
+            } catch (e) {
+                console.error('legacy path seems to be invalid : ' + legacyPath);
+            }
         },
 
         // result handler is (result, xhr) => desired (processed) result
         // usually, some json object will be transformed into a class instance
-
-        _createApiCallback: function (apiName, resultHandler, callback) {
-            function echo(x) {
-                return x;
-            }
+        _createApiCallback: function (apiName, resultHandler, callback, maskingPath) {
+            var myself = this; 
+            function echo(x) { return x; }
             function invokeCallback(callback, err, result) {
                 try {
                     callback(err, result);
                 } catch(e) {
-                    logger.debug('app layer callback for ' + apiName + '() had error', e);
+                    logger.warn('app layer callback for ' + apiName + '() threw error', e);
                 }
             }
-            return function (err, result, response) {
+            return function generatedCallback(err, result, response) {
                 if (err) {
                     logger.debug('wfsapi.' + apiName + '() error', err);
-                    callback(err);
+                    if (maskingPath && myself.eventGate) {
+                        myself.eventGate.unmaskEvents(maskingPath, false);
+                    }
+                    invokeCallback(callback, err);
                 } else {
-                    // if no handler is given, we use incoming result, unmodified
-                    resultHandler = resultHandler || echo;
-                    // some error handler will takes somewhat long gime
-                    // we should accept promise as result of the handler
-                    Promise.resolve( resultHandler(result, response.xhr) )
-                        .then( function(finalResult) {
-                            // if callback throws some unexpected error,
-                            // following catch function will catch it and some bad logs will be left.
-                            invokeCallback(callback, null, finalResult);
-                        })
-                        .catch( function (err) {
-                            logger.debug('result handler for ' + apiName + '() had error', err);
-                            invokeCallback(callback, err);
-                        });
+                    if (maskingPath && myself.eventGate) {
+                        myself.eventGate.unmaskEvents(maskingPath, true, false);
+                    }
+                    var handler = resultHandler || echo; // echo is default result hander
+                    try {
+                        var handled = handler(result, response.xhr);
+                        invokeCallback(callback, null, handled);
+                    } catch (err) {
+                        logger.warn('result handler for ' + apiName + '() error', err);
+                        invokeCallback(callback, err);
+                    }
                 }
             };
         },
 
-        _callSimpleApi : function (apiName, path /*, .... , result handler, callback */ ) {
+        _callRestApi : function (apiName, path /*, .... , result handler, callback */ ) {
             var callable = wfsApi[apiName];
+
             var wfsPath = this._fromLegacyPath(path);
             var args = [ this.wfsId, wfsPath ];
             for (var i = 2; i < arguments.length; i++) {
                 args.push(arguments[i]);
             }
+
             var callback = args.pop();
             var resultHandler = args.pop();
-            var apiCallback = this._createApiCallback(apiName, resultHandler, callback);
+            var apiCallback = null; 
+            if (callback.useEventMasking && this.eventGate) {
+                this.eventGate.maskEvents(wfsPath, apiName);
+                apiCallback = this._createApiCallback(apiName, resultHandler, callback, wfsPath);
+                delete callback.useEventMasking; 
+            } else {
+                apiCallback = this._createApiCallback(apiName, resultHandler, callback);
+            }
             args.push(apiCallback);
-
-            logger.log('call WfsApi.' + apiName + '()' , args);
             return callable.apply(wfsApi, args);
         },
 
+        // do we need to set mask on path? 
+        // this simple operation may not cause any harmful effect, probably 
         createDirectory: function wfsCreateDir(path, recursive, callback) {
-            this._callSimpleApi('createDir', path, {ensure : recursive}, null, callback);
+            callback.useEventMasking = true; 
+            this._callRestApi('createDir', path, {ensure:recursive}, null, callback);
         },
 
         exists: function wfsExists(path, callback) {
-            this._callSimpleApi('stat', path, {ignoreError: true},
+            this._callRestApi('stat', path, {ignoreError: true},
                 function(result) {
                     return (result.type !== 'DUMMY');
                 },
@@ -125,14 +158,13 @@ define([
         // legacy stat is renamed to mstat
         // TODO : change operation id of stats to stat, in swagger spec
         stat: function wfsStat(path, callback) {
-            this._callSimpleApi('stat', path, { /* no option */ },
+            this._callRestApi('stat', path, { /* no option */ },
                 function (result) {
-                    return new Stats(result);
+                    return new WfsStats(result);
                 },
                 callback
             );
         },
-
 
         // prefer dirTree
         list : function wfsList(path, recursive, callback) {
@@ -141,9 +173,6 @@ define([
                 recursive = false;
             }
             this.dirTree(path, (recursive ? -1 : 1) , function (err, tree) {
-                if (!err) {
-                    console.log('wfsList final result', tree.children);
-                }
                 callback(err, tree.children);
             }); 
         },
@@ -156,13 +185,15 @@ define([
             //   2) add timeout parameter in spec
             //   3) in server, find a way to limit concurrency
 
-            this._callSimpleApi('dirTree', path, maxDepth,
+            this._callRestApi('dirTree', path, maxDepth,
                 function (result) {
                     // re-constructing a very large tree in a single tick looks dangerous
                     // we need a fromServerResultAsync, who injects some reasonable delays 
                     // while building tree from json 
                     var ret = WfsEntry.fromJson(result);
-                    ret.basepath = WfsEntry.getBasePathOf(path);
+                    ret.path = path;
+                    // logger.debug('wfsDirTree got dir tree on path ', result, ret);
+                    return ret;
                 },
                 callback
             );
@@ -170,7 +201,8 @@ define([
 
 
         remove : function wfsRemove(path, recursive, callback ) {
-            this._callSimpleApi('remove', path, {recursive : recursive}, null, callback);
+            callback.useEventMasking = true;
+            this._callRestApi('remove', path, {recursive : recursive}, null, callback);
         } ,
 
         readFile :  function wfsReadFile(path, responseType, callback) {
@@ -184,7 +216,7 @@ define([
                 responseType = 'text';
             }
 
-            this._callSimpleApi('readFile', path,
+            this._callRestApi('readFile', path,
                 function (noUseResult, xhr) {
                     if (responseType === '' || responseType === 'text') {
                         return xhr.responseText;
@@ -213,12 +245,13 @@ define([
                     throw new Error('invalid data type - should be string or Blob');
             }
             // TODO: change 'ensure' default value to false, adding ensure parameter
-            this._callSimpleApi('writeFile', path, data, { ensure: true }, null, callback);
+            callback.useEventMasking = true;
+            this._callRestApi('writeFile', path, data, { ensure: true }, null, callback);
         },
 
         // deprecated. use stat, instead
         isDirectory: function wfsIsDirectory(path, callback) {
-            this._callSimpleApi('stat', path, {/* no option */},
+            this._callRestApi('stat', path, {/* no option */},
                 function (result) {
                     return result.type === 'DIRECTORY';
                 },
@@ -228,7 +261,7 @@ define([
 
         // deprecated. use stat, instead
         isFile: function wfsIsFile(path, callback) {
-            this._callSimpleApi('stat', path, {/* no option */},
+            this._callRestApi('stat', path, {/* no option */},
                 function (result) {
                     return result.type !== 'DIRECTORY';
                 },
@@ -238,14 +271,13 @@ define([
 
         // deprecated. use dirTree or never call this method
         isEmpty: function wfsIsEmpty(path, callback) {
-            this._callSimpleApi('dirTree', path, {recursive: true},
+            this._callRestApi('dirTree', path, {recursive: true},
                 function (result) {
                     return result.children && result.children.length > 0;
                 },
                 callback
             );
         },
-
 
         // deprecated. use 'remove' 
         'delete' : function wfsDelete(path, recursive, callback ) {

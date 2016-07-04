@@ -1070,10 +1070,10 @@ define([
         }
     });
 
-    function DeleteCommand(id) {
-        DeleteCommand.id = id;
+    function DeleteFileCommand(id) {
+        DeleteFileCommand.id = id;
     }
-    genetic.inherits(DeleteCommand, Command, {
+    genetic.inherits(DeleteFileCommand, Command, {
         execute : function () {
             return new Promise(function (resolve) {
                 wv.removeInteractively();
@@ -1099,6 +1099,6 @@ define([
         CopyCommand: CopyCommand,
         CutCommand: CutCommand,
         PasteCommand: PasteCommand,
-        DeleteCommand: DeleteCommand
+        DeleteFileCommand: DeleteFileCommand
     };
 });

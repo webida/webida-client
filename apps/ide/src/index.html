@@ -40,41 +40,44 @@
                 ga('send', 'pageview');
             }
 
-            // dojoConfig.js has handled some tricks for window.nrequire and set __ELECTRON_BROWSER__ already
-            // so, within electron, there's always a window.nrequire for node.js
+            var uri = new URI(window.location.href);
+            var bootArgs = uri.query(true);
+
+            if (bootArgs.legacy) {
+                window.legacySiteServerConfig = desktopConfig.legacySiteConfigs[bootArgs.legacy];
+                if (!window.legacySiteServerConfig) {
+                    alert('cannot read site configuration for legacy remote server');
+                }
+            }
+
             if (window.__ELECTRON_BROWSER__) {
-                var uri = new URI(window.location.href);
-                var bootArgs = uri.query(true);
-                var desktopConfig = window.localStorage.getItem('webida-desktop-config');
-                if (desktopConfig) {
-                    console.log('loaded desktop config ' + desktopConfig);
-                    desktopConfig = JSON.parse(desktopConfig);
-                }
-                var browserWindowStatusStorageKey = 'webida-desktop-window-status-' + bootArgs.workspace;
-                var browserWindowStatus = window.localStorage.getItem(browserWindowStatusStorageKey);
-                var browserWindowStatus = browserWindowStatus ? JSON.parse(browserWindowStatus)
-                        : desktopConfig.ideWindowDefaults;
                 var browserWindow = window.nrequire('electron').remote.getCurrentWindow();
-                if(browserWindowStatus.x) {
-                    browserWindow.setBounds(browserWindowStatus);
+                var storageKey = 'webida-desktop-window-status-' + bootArgs.workspace;
+                var winStatus = localStorage.getItem(storageKey);
+                if (!winStatus) {
+                    console.log('unable to load window status - fallback to config defaults ');
+                    var desktopConfig = localStorage.getItem('webida-desktop-config');
+                    if (desktopConfig) {
+                        desktopConfig = JSON.parse(desktopConfig);
+                    }
+                    winStatus = desktopConfig.ideWindowDefaults;
                 } else {
-                    browserWindow.setSize(browserWindowStatus.width, browserWindowStatus.height);
+                    winStatus =  JSON.parse(winStatus);
                 }
-                if (browserWindowStatus.maximized) {
+
+                if (winStatus.x) {
+                    browserWindow.setBounds(winStatus);
+                } else {
+                    browserWindow.setSize(winStatus.width, winStatus.height);
+                }
+                if (winStatus.isMaximized) {
                     browserWindow.maximze();
                 }
-                if (bootArgs.legacy) {
-                    window.legacySiteServerConfig = desktopConfig.legacySiteConfigs[bootArgs.legacy];
-                    if (!window.legacySiteServerConfig) {
-                        alert('cannot read site configuration for legacy remote server');
-                    }
-                }
+
                 browserWindow.on('close', function(event) {
                     var newStatus = browserWindow.getBounds();
-                    newStatus.maximized = browserWindow.isMaximized();
-                    newStatus = JSON.stringify(newStatus);
-                    console.log('saving browser window status for closing ' + newStatus);
-                    window.localStorage.setItem(browserWindowStatusStorageKey, newStatus);
+                    newStatus.isMaximized = browserWindow.isMaximized();
+                    localStorage.setItem(storageKey, JSON.stringify(newStatus));
                 });
             }
         });
