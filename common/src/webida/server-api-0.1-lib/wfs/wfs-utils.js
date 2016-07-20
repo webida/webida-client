@@ -55,15 +55,15 @@ define([
         }
     };
 
-    function fromLegacyPath(legacyPath, wfsId) {
+    function normalizePath(legacyPath, wfsId) {
         if (typeof(legacyPath) !== 'string' || legacyPath.constructor.name !== 'String' || !legacyPath) {
             throw new Error('wfs url must a truthy string');
         }
-        let ret = '';
+        var ret = '';
         if (legacyPath.indexOf('wfs://') !== 0 ) {
             // looks very heavy but normalizing path is not a simple job. believe me.
             var tmpUri = new URI('file:///' + legacyPath);
-            ret = tmpUri.normalize().path(true).slice(1); // should start with /, always
+            ret = tmpUri.normalize().path(true).slice(1);
         } else {
             var parsed = internals.parseLegacyUrl(legacyPath);
             if (parsed.wfsId !== wfsId) {
@@ -123,7 +123,7 @@ define([
     }
 
     return {
-        fromLegacyPath : fromLegacyPath,
+        normalizePath : normalizePath,
         getAncestors : getAncestors
     };
 });

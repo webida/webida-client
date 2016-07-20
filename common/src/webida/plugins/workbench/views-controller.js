@@ -630,6 +630,12 @@ define([
                 this.collapsePanel('bottom');
             }
 
+            // FIXME : workbench should not depend on auth api.
+            //  need refactoring to move api-centric jobs to model or separated controller
+            //  let menu view have more flexible layout, including 'filler',
+            //   and make uid plugin contribute to workbench in the usual way.
+            //   current work-around is just skipping create uid-menu.
+
             Webida.auth.getMyInfo(function (e, data) {
                 if (e) {
                     console.error('getMyInfo error: ' + e);
@@ -642,25 +648,29 @@ define([
                     ], function (
                         commandSystem
                     ) {
-                        var menu = new DropDownMenu({style: 'display: none;' });
-                        var model = commandSystem.service.getUserIdMenuModel().items[0];
-                        model.items.forEach(function (item) {
-                            var menuItem = new MenuItem({
-                                label: item.name,
-                                onClick: function () {
-                                    commandSystem.service.requestExecution(item.commandId);
-                                }
+                        var parentModel = commandSystem.service.getUserIdMenuModel();
+                        // TODO : service should provide a 'clean' way to check menu model exists
+                        if (parentModel && parentModel.id !== 'root') {
+                            var menu = new DropDownMenu({style: 'display: none;' });
+                            var model = parentModel.items[0];
+                            model.items.forEach(function (item) {
+                                var menuItem = new MenuItem({
+                                    label: item.name,
+                                    onClick: function () {
+                                        commandSystem.service.requestExecution(item.commandId);
+                                    }
+                                });
+                                menu.addChild(menuItem);
                             });
-                            menu.addChild(menuItem);
-                        });
-                        menu.startup();
-                        var button = new DropDownButton({
-                            label: data.email,
-                            name: 'userinfo',
-                            dropDown: menu,
-                            id: 'userinfoButton'
-                        });
-                        dom.byId('dropDownUserinfo').appendChild(button.domNode);
+                            menu.startup();
+                            var button = new DropDownButton({
+                                label: data.email,
+                                name: 'userinfo',
+                                dropDown: menu,
+                                id: 'userinfoButton'
+                            });
+                            dom.byId('dropDownUserinfo').appendChild(button.domNode);
+                        }
                     });
                 }
             });

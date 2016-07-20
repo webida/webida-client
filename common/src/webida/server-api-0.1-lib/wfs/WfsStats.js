@@ -23,18 +23,21 @@
 define([ ], function() {
     'use strict';
 
-    function WfsStats (serverStats) {
+    function WfsStats (apiModelStats, path) {
         // all other properties are inherited from server stats object
-        this.size = serverStats.size;
-        this.mtime = serverStats.mtime;
-        this.birthtime = serverStats.birthtime;
-        this.mode = serverStats.mode;
-        this.nlink = serverStats.nlink;
-        this.type = serverStats.type;
+        this.size = apiModelStats.size;
+        this.mtime = apiModelStats.mtime;
+        this.birthtime = apiModelStats.birthtime;
+        this.mode = apiModelStats.mode;
+        this.nlink = apiModelStats.nlink;
+        this.type = apiModelStats.type;
+        if (path) {
+            this.setPath(path);
+        }
     }
 
     WfsStats.prorotype = {
-        get isFile() { return (this.type !== 'DIRECTORY'); },
+        get isFile() { return (this.type === 'FILE'); },
         get isDirectory() { return (this.type === 'DIRECTORY'); },
         get isBlockDevice() { return (this.type === 'BLOCK_DEVICE'); },
         get isCharacterDevice() { return (this.type === 'CHARACTER_DEVICE'); },
@@ -48,6 +51,17 @@ define([ ], function() {
         }
     };
 
+    WfsStats.createFakeStats = function createFakeStats(timestamp, data) {
+        var ret = new WfsStats({
+            size : data.size || data.length || -1,
+            mtime : timestamp,
+            birthtime : timestamp,
+            mode: '',
+            nlink : 0,
+            type: 'FILE'
+        });
+        return ret;
+    };
 
     return WfsStats;
 });

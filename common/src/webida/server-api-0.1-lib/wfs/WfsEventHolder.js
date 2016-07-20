@@ -15,7 +15,7 @@
  */
 
 /**
- * @file MutatingEvent.js
+ * @file WfsEventHolder.js
  * @since 1.7.0
  * @author jh1977.kim@samsung.com
  */
@@ -38,7 +38,6 @@ define([
         this.shouldFlipEventType = false;
         this.maskedBy = maskedBy;
         this.missingEventsBefore = 0;
-        // when counter is negative, poll() should not increase counter
         this.pollCounter = 0;
     }
 

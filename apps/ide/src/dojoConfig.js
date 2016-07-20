@@ -74,12 +74,19 @@
     };
 
     // twick requirejs alias to use new server-api when not using using legacy server
+    // &, for new server api, additional package 'webida-restful-api' is required.
     if (window.location.href.indexOf('legacy=') < 0 ) {
-        globalObject.dojoConfig.aliases.pop();
-        globalObject.dojoConfig.aliases.pop();
-        globalObject.dojoConfig.aliases.push(['webida-lib/server-api' , 'webida-lib/server-api-0.1']);
-        globalObject.dojoConfig.aliases.push(['webida-lib/server-pubsub' , 'webida-lib/server-pubsub-0.1']);
-        globalObject.dojoConfig.aliases.push(['top/site-config.json' , 'top/site-config-desktop.json']);
+        var dojoConfig = globalObject.dojoConfig;
+        dojoConfig.aliases.pop();
+        dojoConfig.aliases.pop();
+        dojoConfig.aliases.push(['webida-lib/server-api', 'webida-lib/server-api-0.1']);
+        dojoConfig.aliases.push(['webida-lib/server-pubsub', 'webida-lib/server-pubsub-0.1']);
+        dojoConfig.aliases.push(['top/site-config.json', 'top/site-config-desktop.json']);
+        dojoConfig.packages.push( {
+            name: 'webida-restful-api',
+            location: './webida-restful-api',
+            main: 'api-bundle'
+        });
     }
 
     if (globalObject.__ELECTRON_BROWSER__) {
@@ -90,4 +97,5 @@
             'host-node': false // Prevent dojo from being fooled by Electron
         };
     }
+
 })(window);

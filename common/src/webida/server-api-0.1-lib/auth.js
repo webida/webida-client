@@ -73,12 +73,17 @@ define([
             session.connect();
             // Oddly, there's no error-fist-callback for initAuth
             logger.log('initAuth registered access token', data);
-            callback(data.sessionId);
-        }); 
+            try {
+                callback(data.sessionId);
+            } catch (e) {
+                logger.error('initAuth callback had error', e);
+            }
+        });
     }
 
     function getMyInfo(callback) {
         authApi.getInfo(function (error, data) {
+            logger.debug('AuthApi.getInfo callback with ', error, data);
             if (!error) {
                 callback(null, data);
             } else {

@@ -71,8 +71,8 @@ define([
 
         connect: function connect() {
             // connect options cannot be changed after socket object is made
-            // even if we put a getter for this._connectOptions.query, socket.io will not
-            // read the query string again.
+            // even if we put a getter for this._connectOptions.query,
+            // socket.io will not read the query string again.
             this._connectOptions.query = this._buildConnectQueryString();
             var connectUrl = common.serverUrl + '/' + this._namespace;
             logger.debug(this.constructor.name + ' connecting to ' + connectUrl,
@@ -92,28 +92,28 @@ define([
             return {};
         },
 
-        // should return true to emit event
         _onConnect : function onConnect(error, isTimeout) {
             var info = {
                 isTimeout : isTimeout,
                 took : (new Date().getTime() - this.disconnectedWhen) + 'msec'
             };
-            var ret = false;
+            var shouldEmitEvent = false;
             if (error) {
                 // ignores reconnecting error for it will be handled in onReconnect
                 if (this.reconnectingCount === 0) {
                     logger.error(this.constructor.name + ' connect error ', error, info);
-                    ret = true;
+                    shouldEmitEvent = true;
                 }
             } else {
                 logger.debug(this.constructor.name + ' connected to server', info);
-                ret = true;
+                shouldEmitEvent = true;
             }
-            return ret;
+            return shouldEmitEvent; 
         },
 
         _onDisconnect : function onDisconnect() {
             logger.debug(this.constructor.name + ' disconnected from server');
+            this.isConnected = false; 
             return true;
         },
 
@@ -127,12 +127,12 @@ define([
                 reconnectingCount : this.reconnectingCount,
                 reconnectingFor : reconnectingFor + ' msec'
             };
-            var ret = false;
+            var shouldEmitEvent = false;
             var name = this.constructor.name; 
             if (error) {
                 if (done) {
                     logger.error(name + ' LOST CONNECTION', error, reconnectingInfo);
-                    ret = true;
+                    shouldEmitEvent = true;
                     this.reconnectingCount = 0;
                 } else {
                     logger.warn(name + ' reconnecting attempt failed', error, reconnectingInfo);
@@ -140,12 +140,12 @@ define([
             } else {
                 if (done) {
                     logger.debug(name + ' recovered connection ', reconnectingInfo);
-                    ret = true;
+                    shouldEmitEvent = true;
                 } else {
                     logger.debug(name + ' is trying to recover connection', reconnectingInfo);
                 }
             }
-            return ret;
+            return shouldEmitEvent;
         },
 
         // calculating recovery time (without max delay)

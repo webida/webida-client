@@ -28,13 +28,15 @@ define([
     './server-api-0.1-lib/auth',
     './server-api-0.1-lib/fs',
     './server-api-0.1-lib/messaging',
-    './server-api-0.1-lib/session',
+    './server-api-0.1-lib/session', 
+    './server-api-0.1-lib/workspace-service'
 ],  function (
     common,
     auth,
     fs,
     messaging, 
-    session
+    session, 
+    workspaceService
 ) {
     'use strict';
 
@@ -58,7 +60,9 @@ define([
             }
         },
         session : session,
-
+        // TODO: impl sessionService
+        workspaceService: workspaceService, 
+        
         // for compatibility with plugin who are dependent to webida-0.3.js conf object
         conf : {
             fsServer : common.serverUrl,
@@ -70,8 +74,11 @@ define([
         //  - should be removed in next version (0.2 and later)
         //  - PM should should decide which plugin catalog to load by itself
         //    via window.__ELECTRON_BROWSER__ variable
-        //  - PM should not load .user_info/plugin-settings.json file directly while initializing
-        //    and may use local storage instead of using server api
+        //  - PM should not load .user_info/plugin-settings.json file directly
+        //    while initializing
+        //  - PM should use not use per-user or per-workspace setting to know
+        //    disabled plugins, for the plugin structure is fixed per apps. 
+        //  - there should be way to hook catalog data for ide & plugin developers 
         
         getPluginSettingsPath : function(callback) {
             // plugin-settings-desktop.json : to use embedded server from desktop

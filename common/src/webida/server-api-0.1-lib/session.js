@@ -15,7 +15,7 @@
  */
 
 /**
- * @file TokenManager.js
+ * @file session.js
  * @since 1.7.0
  * @author jh1977.kim@samsung.com
  */

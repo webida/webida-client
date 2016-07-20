@@ -34,6 +34,7 @@
     "tern": "webida/tern#ab9f92a23d9f8d09071c3549b33ff40dcfb27ed3",
     "toastr": "~2.1.1",
     "URIjs": "~1.15.2",
+    "webida-restful-api": "webida/webida-restful-api#~0.6.0",
     "xstyle": "~0.3.1"
   }
 }

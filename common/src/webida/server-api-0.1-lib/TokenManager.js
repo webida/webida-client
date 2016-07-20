@@ -24,15 +24,15 @@
 //  so, instead of requiring just ./common, we require all dependencies directly
 //  the only instance of TokenManager is saved in common
 define([
+    'webida-restful-api',
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/genetic',
-    'webida-lib/util/logger/logger-client',
-    './webida-service-api-0.1/src/index'
+    'webida-lib/util/logger/logger-client'
 ],  function (
+    WebidaRestfulApi,
     EventEmitter,
     genetic,
-    Logger,
-    WebidaServiceApi
+    Logger
 ) {
     'use strict';
 
@@ -44,9 +44,9 @@ define([
     // issueToken() can take 'timeout' msec
     //  so, we should begin calling issueToken(), at least 30 secs
 
-    var MARGIN_TO_EXPIRE = WebidaServiceApi.ApiClient.instance.timeout + (30 * 1000);
+    var MARGIN_TO_EXPIRE = WebidaRestfulApi.ApiClient.instance.timeout + (30 * 1000);
     var RETRY_AFTER = 5 * 1000;
-    var authApi = new WebidaServiceApi.AuthApi();
+    var authApi = new WebidaRestfulApi.AuthApi();
     
     // IDE does not use master token except login with master token
     // so, TokenManager handles access token only
@@ -84,22 +84,23 @@ define([
                 window.clearTimeout(this._updateTimer);
                 this._updateTimer = null; 
             }
-
+            var expiresAt =  this.accessToken.expiresAt;
             var ttl = this.getRemainingTTL();
+            logger.debug('token expires at '  + expiresAt + ' , ttl = ' + ttl);
             if (ttl < after) {
                 var nextUpdateTime = new Date().getTime() + after;
                 nextUpdateTime = new Date(nextUpdateTime);
                 var updateError = new Error(
                     'cannot schedule next update time - time over :' +
-                    ' next update time = ' + nextUpdateTime  +
-                    ' expiration time = ' + this.accessToken.expiresAt
+                    ' requested update time = ' + nextUpdateTime  +
+                    ' , expiration time = ' + expiresAt
                 );
                 logger.log(updateError);
                 this.emit('lost', updateError);
                 return;
             }
-
-            logger.log('next update will start after ' + after + ' msec');
+            var willUpdateAt = new Date( new Date().getTime() + after );
+            logger.debug('next update will start after ' + after + ' msec ', willUpdateAt);
             this._updateTimer = window.setTimeout(this._doUpdate.bind(this), after);
         },
 

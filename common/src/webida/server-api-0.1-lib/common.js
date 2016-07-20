@@ -21,15 +21,15 @@
  */
 define([
     'URIjs',
+    'webida-restful-api',
     'external/eventEmitter/EventEmitter',
     'webida-lib/util/logger/logger-client',
-    './webida-service-api-0.1/src/index',
     './TokenManager'
 ],  function (
     URI,
-    EventEmitter, 
+    WebidaRestfulApi,
+    EventEmitter,
     Logger,
-    WebidaServiceApi,
     TokenManager
 ) {
     'use strict';
@@ -44,7 +44,7 @@ define([
         serverUri : null,
         serverUrl : null,
         session: null,
-        tokenManager : TokenManager.instance
+        tokenManager : TokenManager.instance,
     };
 
     var publics = {
@@ -53,11 +53,10 @@ define([
         get bootArgs() { return privates.bootArgs; },
         get serverUri() { return privates.serverUri; },
         get serverUrl() { return privates.serverUrl; },
-        get session() { return privates.session; },
         get tokenManager() { return privates.tokenManager;},
         get accessToken() { return privates.tokenManager.accessToken; }, 
         get api() {
-            return WebidaServiceApi;
+            return WebidaRestfulApi;
         }
     };
 
@@ -74,7 +73,7 @@ define([
         // by default, generated js client uses 'http://localhost/api' as base url
         //  we should replace it to real server url
 
-        var defaultClient = WebidaServiceApi.ApiClient.instance;
+        var defaultClient = WebidaRestfulApi.ApiClient.instance;
         defaultClient.basePath = privates.serverUrl + '/api';
 
         // webidaSimpleAuth.apiKey is not a 'fixed' value.

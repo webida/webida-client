@@ -15,7 +15,7 @@
  */
 
 /**
- * @file WfsEntry.js
+ * @file WfsEventGate.js
  * @since 1.7.0
  * @author jh1977.kim@samsung.com
  */
@@ -77,9 +77,9 @@ define([
             var holder = this.holders[path];
             if (holder) {
                 if (holder.maskedBy) {
-                    throw new Error(path + 'is locked by other api call ' + holder.maskedBy);
+                    throw new Error(path + ' is locked by other api call ' + holder.maskedBy);
                 } else {
-                    throw new Error(path + 'is locked by other processes in server');
+                    throw new Error(path + ' is locked by other processes in server');
                 }
             }
             // If there's no holder but a mask exists - events are not arrived for the path.
@@ -93,7 +93,6 @@ define([
                     apiName : apiName,
                     holders: []
                 };
-                logger.debug('added event mask for path ' + path);
             }
         },
 
@@ -119,8 +118,8 @@ define([
                 };
                 // if we have no holders in the mask object yet, that means 
                 //  api calls unmask too fast, while no events has been arrived yet.
-                if (mask.holders.length === 0 ) {
-                    logger.debug('postponed unmasking for no events has arrived yet');
+                if (!this.holders[path]) {
+                    logger.debug('postponed unmasking for final events has arrived yet');
                     setTimeout(unhold, POLLING_PERIOD);
                 } else {
                     unhold();
@@ -156,7 +155,6 @@ define([
             if (wfsId !== this.wfsId) {
                 return;
             }
-            logger.debug('event gate got wfsRaw event', arguments);
             var holder = this.holders[path];
             if (!holder) {
                 holder = this._addNewHolder(path);
@@ -167,7 +165,6 @@ define([
             if (!this.pollTimer) {
                 this.eventSequence = 0;
                 this.pollTimer = setInterval(this._pollEventsBound, POLLING_PERIOD);
-                logger.debug('polling holded events - started');
             }
         },
 
@@ -175,7 +172,7 @@ define([
             var myself = this; 
             events.forEach(function(event) {
                 var wstats = event.stats ? new WfsStats(event.stats) : undefined;
-                logger.debug('fire wfs event', event);
+                //logger.debug('fire wfs event', event);
                 myself.session.emit('wfs', myself.wfsId, event.type, event.path, wstats);
             });
             var elapsedTime = new Date().getTime() - startedAt;
@@ -228,7 +225,6 @@ define([
             if (allPaths.length <= 0) {
                 clearInterval(this.pollTimer);
                 this.pollTimer = null;
-                logger.debug('no more pollable holders - stopped timer');
             }
         }
     };

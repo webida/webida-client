@@ -59,7 +59,7 @@ define([
     'webida-lib/util/genetic',
     'webida-lib/util/notify',
     'webida-lib/util/path',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     './git-core',
     './git-icon',
@@ -6307,7 +6307,7 @@ define([
     }
     genetic.inherits(GitRunCommand, Command, {
         execute: function (resolve) {
-            return new Promise(function () {
+            return new Promise(function (resolve) {
                 var selectedPath = workspace.getSelectedPath();
                 if (selectedPath) {
                     var gitRootPath = git.findGitRootPath(selectedPath);

@@ -110,6 +110,8 @@ define([
                         if (err) {
                             next(err);
                         } else if (!exist) {
+                            runConfigurationFileCache = '{}';
+                            runConfigurations = [];
                             next(locale.formatMessage('messageNotExist', {target: PATH_RUN_CONFIG}));
                         } else {
                             next();
