@@ -25,7 +25,7 @@
 define([
     'dojo/topic',
     'webida-lib/util/logger/logger-client',
-    'webida-lib/webida-0.3'
+    'webida-lib/server-api'
 ], function (
     topic,
     Logger,
@@ -61,7 +61,7 @@ define([
             
             function getWfsUri(path) {
                 if (typeof path === 'string') {
-                    return 'wfs:/' + path;
+                    return 'wfs:' + path;
                 } else {
                     return null;  
                 }

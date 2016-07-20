@@ -19,12 +19,14 @@
             'webida-lib/app',
             'webida-lib/app-config',
             'webida-lib/theme',
-            'webida-lib/util/load-polyfills'
+            'webida-lib/util/load-polyfills',
+            'external/URIjs/src/URI'
         ], function (
             ide,
             config,
             theme,
-            loader
+            loader,
+            URI
         ) {
             'use strict';
             theme.loadTheme();
@@ -36,6 +38,47 @@
                 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
                 ga('create',config.googleAnalytics, 'auto');
                 ga('send', 'pageview');
+            }
+
+            var uri = new URI(window.location.href);
+            var bootArgs = uri.query(true);
+
+            if (bootArgs.legacy) {
+                window.legacySiteServerConfig = desktopConfig.legacySiteConfigs[bootArgs.legacy];
+                if (!window.legacySiteServerConfig) {
+                    alert('cannot read site configuration for legacy remote server');
+                }
+            }
+
+            if (window.__ELECTRON_BROWSER__) {
+                var browserWindow = window.nrequire('electron').remote.getCurrentWindow();
+                var storageKey = 'webida-desktop-window-status-' + bootArgs.workspace;
+                var winStatus = localStorage.getItem(storageKey);
+                if (!winStatus) {
+                    console.log('unable to load window status - fallback to config defaults ');
+                    var desktopConfig = localStorage.getItem('webida-desktop-config');
+                    if (desktopConfig) {
+                        desktopConfig = JSON.parse(desktopConfig);
+                    }
+                    winStatus = desktopConfig.ideWindowDefaults;
+                } else {
+                    winStatus =  JSON.parse(winStatus);
+                }
+
+                if (winStatus.x) {
+                    browserWindow.setBounds(winStatus);
+                } else {
+                    browserWindow.setSize(winStatus.width, winStatus.height);
+                }
+                if (winStatus.isMaximized) {
+                    browserWindow.maximze();
+                }
+
+                browserWindow.on('close', function(event) {
+                    var newStatus = browserWindow.getBounds();
+                    newStatus.isMaximized = browserWindow.isMaximized();
+                    localStorage.setItem(storageKey, JSON.stringify(newStatus));
+                });
             }
         });
     </script>

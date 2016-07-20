@@ -8,12 +8,6 @@
       "clientId": "webida-ide-local-5000",
       "redirectUrl": "http://localhost:5000/webida-client/auth.html"
     },
-    "build" : {
-      "version" : "0.0.0",
-      "buildNumber": 0,
-      "buildTime": "1970-01-01 00:00:00",
-      "commitId": "unknown"
-    },
     "googleAnalytics" : false
   },
   "server": {
@@ -22,7 +16,7 @@
     "fsServer": "http://fs.webida.net",
     "buildServer": "http://build.webida.net",
     "ntfServer": "http://ntf.webida.net",
-    "connServer": "http://build.webida.net",
+    "connServer": "http://conn.webida.net",
     "corsServer": "http://cors.webida.net",
     "deploy": {
       "type": "domain",
@@ -30,5 +24,11 @@
     },
     "signUpEnable": false,
     "guestMode": true
+  },
+  "build" : {
+    "version" : "0.0.0",
+    "buildNumber": 0,
+    "buildTime": "1970-01-01 00:00:00",
+    "commitId": "unknown"
   }
 }

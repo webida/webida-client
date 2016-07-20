@@ -29,7 +29,7 @@ define([
     'require',
     'webida-lib/plugin-manager-0.1',
     'dojox/layout/ToggleSplitter',            // ToggleSplitter
-    'webida-lib/webida-0.3',                  // webida
+    'webida-lib/server-api',                  // webida
     'webida-lib/app',                               // app
     'webida-lib/widgets/views/viewmanager',         // vm
     'webida-lib/widgets/views/viewFocusController', // ViewFocusController
@@ -57,15 +57,9 @@ define([
 ) {
     'use strict';
 
-    topic.subscribe('view/unregistered', function (event) {
-        viewsController.focusController.unregisterView(event.view);
-    });
-    topic.subscribe('view/maximize', function (event) {
-        viewsController.toggleFullScreen(event.location);
-    });
-
     var GROUPNAME = 'COMMON-VIEW';
     var statusbarText;
+
     var viewsController = {
         _leftSplitViewContainer : null,
         _rightSplitViewContainer : null,
@@ -562,7 +556,7 @@ define([
 
             aspect.before(leftSplitter, '_startDrag', function () {
                 topic.publish('layout/pane/resized');
-            });            
+            });
 
             aspect.before(rightSplitter, '_handleOnChange', function () {
                 topic.publish('layout/pane/resized');
@@ -570,7 +564,7 @@ define([
 
             aspect.before(rightSplitter, '_startDrag', function () {
                 topic.publish('layout/pane/resized');
-            });           
+            });
 
             aspect.before(bottomSplitter, '_handleOnChange', function () {
                 topic.publish('layout/pane/resized');
@@ -578,7 +572,7 @@ define([
 
             aspect.before(bottomSplitter, '_startDrag', function () {
                 topic.publish('layout/pane/resized');
-            });         
+            });
 
             var vcList;
 
@@ -636,6 +630,12 @@ define([
                 this.collapsePanel('bottom');
             }
 
+            // FIXME : workbench should not depend on auth api.
+            //  need refactoring to move api-centric jobs to model or separated controller
+            //  let menu view have more flexible layout, including 'filler',
+            //   and make uid plugin contribute to workbench in the usual way.
+            //   current work-around is just skipping create uid-menu.
+
             Webida.auth.getMyInfo(function (e, data) {
                 if (e) {
                     console.error('getMyInfo error: ' + e);
@@ -648,54 +648,58 @@ define([
                     ], function (
                         commandSystem
                     ) {
-                        var menu = new DropDownMenu({style: 'display: none;' });
-                        var model = commandSystem.service.getUserIdMenuModel().items[0];
-                        model.items.forEach(function (item) {
-                            var menuItem = new MenuItem({
-                                label: item.name,
-                                onClick: function () {
-                                    commandSystem.service.requestExecution(item.commandId);
-                                }
+                        var parentModel = commandSystem.service.getUserIdMenuModel();
+                        // TODO : service should provide a 'clean' way to check menu model exists
+                        if (parentModel && parentModel.id !== 'root') {
+                            var menu = new DropDownMenu({style: 'display: none;' });
+                            var model = parentModel.items[0];
+                            model.items.forEach(function (item) {
+                                var menuItem = new MenuItem({
+                                    label: item.name,
+                                    onClick: function () {
+                                        commandSystem.service.requestExecution(item.commandId);
+                                    }
+                                });
+                                menu.addChild(menuItem);
                             });
-                            menu.addChild(menuItem);
-                        });
-                        menu.startup();
-                        var button = new DropDownButton({
-                            label: data.email,
-                            name: 'userinfo',
-                            dropDown: menu,
-                            id: 'userinfoButton'
-                        });
-                        dom.byId('dropDownUserinfo').appendChild(button.domNode);
+                            menu.startup();
+                            var button = new DropDownButton({
+                                label: data.email,
+                                name: 'userinfo',
+                                dropDown: menu,
+                                id: 'userinfoButton'
+                            });
+                            dom.byId('dropDownUserinfo').appendChild(button.domNode);
+                        }
                     });
                 }
             });
-            
-            (function () {                
-                var menu = new DropDownMenu({ style: 'display: none;' });                       
+
+            (function () {
+                var menu = new DropDownMenu({ style: 'display: none;' });
                 var exts = pm.getExtensions('webida.common.workbench:perspective') || [];
                 var button;
                 var defaultPerspectiveName = 'Default';
                 var perspectiveNamePrefix = 'Perspective: ';
-                var initialPerspectiveButtonLabel = perspectiveNamePrefix + defaultPerspectiveName; 
-                
+                var initialPerspectiveButtonLabel = perspectiveNamePrefix + defaultPerspectiveName;
+
                 function getPerspectiveNameById(perspectiveId) {
                     var name = defaultPerspectiveName;
                     if (perspectiveId) {
-                        exts.forEach(function (ext) {                
+                        exts.forEach(function (ext) {
                             if (ext.id === perspectiveId) {
                                 name = ext.name;
                             }
-                        });                        
-                    } 
-                    return name;                    
+                        });
+                    }
+                    return name;
                 }
 
                 if (exts.length > 0) {
                     menu.addChild(new MenuItem({
                         label: defaultPerspectiveName,
                         onClick: function () {
-                            button.set('label', initialPerspectiveButtonLabel); 
+                            button.set('label', initialPerspectiveButtonLabel);
                             _self.currentPerspectiveID = null;
                         }
                     }));
@@ -722,7 +726,7 @@ define([
                     dom.byId('dropDownPerspectiveinfo').appendChild(button.domNode);
                 }
             })();
-        }, 
+        },
 
         getActivatedPanel : function () {
             var _self = this;
@@ -1073,15 +1077,15 @@ define([
             if (panel) {
                 _self.expandPanel(location);
                 switch (location) {
-                case 'bottom' :
-                    _self.lastPanelState.height = domStyle.get(panel.domNode, 'height');
-                    domStyle.set(panel.domNode, 'height', '100%');
-                    break;
-                case 'left' :
-                case 'right' :
-                    _self.lastPanelState.width = domStyle.get(panel.domNode, 'width');
-                    domStyle.set(panel.domNode, 'width', '100%');
-                    break;
+                    case 'bottom' :
+                        _self.lastPanelState.height = domStyle.get(panel.domNode, 'height');
+                        domStyle.set(panel.domNode, 'height', '100%');
+                        break;
+                    case 'left' :
+                    case 'right' :
+                        _self.lastPanelState.width = domStyle.get(panel.domNode, 'width');
+                        domStyle.set(panel.domNode, 'width', '100%');
+                        break;
                 }
             }
         },
@@ -1091,13 +1095,13 @@ define([
             var panel = _self._getPanel(location);
             if (panel) {
                 switch (location) {
-                case 'bottom' :
-                    domStyle.set(panel.domNode, 'height', _self.lastPanelState.height + 'px');
-                    break;
-                case 'left' :
-                case 'right' :
-                    domStyle.set(panel.domNode, 'width', _self.lastPanelState.width + 'px');
-                    break;
+                    case 'bottom' :
+                        domStyle.set(panel.domNode, 'height', _self.lastPanelState.height + 'px');
+                        break;
+                    case 'left' :
+                    case 'right' :
+                        domStyle.set(panel.domNode, 'width', _self.lastPanelState.width + 'px');
+                        break;
                 }
             }
         },
@@ -1284,7 +1288,14 @@ define([
             });
         }
 
-    };
+    }; // end of viewsController
+
+    topic.subscribe('view/unregistered', function (event) {
+        viewsController.focusController.unregisterView(event.view);
+    });
+    topic.subscribe('view/maximize', function (event) {
+        viewsController.toggleFullScreen(event.location);
+    });
 
     return viewsController;
 });

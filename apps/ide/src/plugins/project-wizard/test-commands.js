@@ -29,7 +29,7 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/path',
     'webida-lib/plugins/workspace/plugin',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/views/view',
     'webida-lib/widgets/views/viewmanager',
     'text!./layer/test-layout.html',
@@ -69,7 +69,6 @@ define([
     var FRAMES = JSON.parse(frames).frames;
 
     function TestViewCommand() {
-        _self = this;
         this.$resolutions = null;
         this.url = null;
     }
@@ -78,7 +77,6 @@ define([
     var _super = TestViewCommand.prototype = new ViewCommand(VIEW_ID);
     // correct the constructor pointer because it points to ViewCommand
     TestViewCommand.prototype.constructor = TestViewCommand;
-    var _self = null;
 
     TestViewCommand.prototype.doTest = function () {
         var curDir = wv.getSelectedPath();
@@ -90,23 +88,24 @@ define([
     }; // doTest
 
     TestViewCommand.prototype.onViewAppended = function () {
+        var self = this;
         _super.initView(tplToolbar, function (selectedProjectPath) {
-            if (_self.getProjectPath() === selectedProjectPath) {
+            if (self.getProjectPath() === selectedProjectPath) {
                 return;
             }
-            _self.refreshView();
+            self.refreshView();
             // FIXME use directly `reg.byId('testTab').selectChild()` method
             Util.selectTab('testTab', 'testPreview');
         });
 
-        _self.$resolutions = $('#testResolutions');
-        _self.$resolutions.multiselect({
+        self.$resolutions = $('#testResolutions');
+        self.$resolutions.multiselect({
             includeSelectAllOption: false,
             enableCaseInsensitiveFiltering: false
         });
 
-        _self.init(); // Event listeners should be attached once
-        _self.refreshView();
+        self.init(); // Event listeners should be attached once
+        self.refreshView();
         _super.getView().select();
     };
 

@@ -23,7 +23,7 @@ define([
     'dojo/i18n!./nls/resource',
     'webida-lib/app-config',
     'webida-lib/util/notify',
-    'webida-lib/webida-0.3'
+    'webida-lib/server-api'
 ], function (
     i18n,
     appConfig,

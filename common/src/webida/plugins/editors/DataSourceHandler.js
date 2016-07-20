@@ -54,7 +54,7 @@ define([
         logger.info('new DataSourceHandler()');
 
         /** @type {Object} */
-        this.subscribed = [];
+        this.subscriptionHandles = [];
         /** @type {Array.<Array>} */
         this.deletedNodesSet = [];
         this._subscribe();
@@ -78,11 +78,14 @@ define([
          */
         _subscribe: function () {
             //on deleted
-            this.subscribed.push(topic.subscribe('workspace/nodes/deleting', this._onNodesDeleted.bind(this)));
-            this.subscribed.push(topic.subscribe('fs/cache/node/deleted', this._checkCase.bind(this)));
+            this.subscriptionHandles.push(topic.subscribe('workspace/nodes/deleting',
+                this._onNodesDeleted.bind(this)));
+            this.subscriptionHandles.push(topic.subscribe('fs/cache/node/deleted',
+                this._checkCase.bind(this)));
 
             //on content changed
-            this.subscribed.push(topic.subscribe('remote/persistence/updated', this._onContentChange.bind(this)));
+            this.subscriptionHandles.push(topic.subscribe('remote/persistence/updated',
+                this._onContentChange.bind(this)));
         },
 
         /**
@@ -90,8 +93,8 @@ define([
          * @protected
          */
         _unsubscribe: function () {
-            this.subscribed.forEach(function (subscribed) {
-                subscribed.remove();
+            this.subscriptionHandles.forEach(function (handle) {
+                handle.remove();
             });
         },
 
@@ -232,8 +235,11 @@ define([
             //https://github.com/webida/webida-client/issues/670
             //Changing dataSourceId as URI format
             var dsRegistry = _getWorkbench().getDataSourceRegistry();
-            var dataSource = dsRegistry.getDataSourceById(dataSourceId.replace('wfs:/', ''));
-            _askReload(dataSource);
+            var dsid = dataSourceId.replace('wfs:', '');
+            var dataSource = dsRegistry.getDataSourceById(dsid);
+            if (dataSource) {
+                _askReload(dataSource);
+            }
         },
 
         /**

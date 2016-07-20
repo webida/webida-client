@@ -36,7 +36,7 @@ define([
     'dojo/topic',
     'lib/image-slide/sly.wrapper',
     'showdown',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/app',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
@@ -72,7 +72,7 @@ define([
 
     var logger = new Logger();
     logger.off();
-    
+
     var PW_MSG = {
         ERROR : 'Error',
         FAIL : 'Fail',
@@ -643,6 +643,18 @@ define([
     }
 
     function onCreateProject(event, prjName, selectedTemplate, options) {
+        
+        var item = selectedTemplate ? selectedTemplate : getSelectedTemplate();
+        logger.log('onCreateProject', options);
+        var projectName = prjName;
+        var destSelect = targetPath;
+
+        var srcFSPath = '/' + (item && item.template && item.template.path ? item.template.path : '');
+        var srcFSPrjPath = srcFSPath + '/project';
+        //logger.log('destFSPath', destSelect, projectName);
+        var destFSPath = Util.concatWFSPath([destSelect, projectName]);
+        var destFSCopyPath = Util.concatWFSPath(['wfs://', destFS, destSelect, projectName]);
+
         function createProject() {
             function createDefaultProjectConf() {
                 var name = projectName ? projectName : item.name;
@@ -790,17 +802,6 @@ define([
                 }
             });
         }
-
-        var item = selectedTemplate ? selectedTemplate : getSelectedTemplate();
-        logger.log('onCreateProject', options);
-        var projectName = prjName;
-        var destSelect = targetPath;
-
-        var srcFSPath = '/' + (item && item.template && item.template.path ? item.template.path : '');
-        var srcFSPrjPath = srcFSPath + '/project';
-        //logger.log('destFSPath', destSelect, projectName);
-        var destFSPath = Util.concatWFSPath([destSelect, projectName]);
-        var destFSCopyPath = Util.concatWFSPath(['wfs://', destFS, destSelect, projectName]);
 
         if (!isValidInfo()) {
             return;

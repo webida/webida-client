@@ -1,0 +1,6 @@
+{
+    "name": "webida.common.session-event-dispatcher",
+    "description": "Plugin that handles server/service level events to publish plugin topics",
+    "version": "0.1.0",
+    "requirement": ""
+}

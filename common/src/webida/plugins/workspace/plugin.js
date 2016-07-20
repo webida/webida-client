@@ -30,7 +30,7 @@ define([
     //'webida-lib/plugins/workbench/preference-system/store',    // TODO: issue #12055
     'plugins/webida.preference/preference-service-factory',
     'webida-lib/plugins/workbench/plugin',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'dijit',
     'dijit/registry',
     'dijit/Tree',

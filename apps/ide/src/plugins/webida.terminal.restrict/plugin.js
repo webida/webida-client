@@ -33,7 +33,7 @@ define([
     'dojo/i18n!./nls/resource',
     'webida-lib/app',                   // ide
     'webida-lib/util/locale',
-    'webida-lib/webida-0.3',            // webida
+    'webida-lib/server-api',            // webida
     'webida-lib/widgets/views/view',    // View
     'dojo/text!./layout/terminal.html'
 ], function (

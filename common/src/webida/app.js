@@ -21,13 +21,13 @@ define([
     'dojo/topic',
     'webida-lib/app-config',
     'webida-lib/FSCache-0.1',
-    'webida-lib/msg',
+    'webida-lib/server-pubsub',
     'webida-lib/plugin-manager-0.1',
     'webida-lib/util/browserInfo',
     'webida-lib/util/loading-screen',
     'webida-lib/util/logger/logger-client',
     'webida-lib/util/notify',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/widgets/dialogs/popup-dialog/PopupDialog',
     'dojo/domReady!'
 ], function (
@@ -122,7 +122,11 @@ define([
     }
 
     function saveStatusSync() {
-        logger.info('saveStatusSync()');
+        if (webida.VERSION && webida.VERSION === '0.1') {
+            logger.info('current server api does not support synchronous file writing');
+            return;
+        }
+
         var statusString = getStatusStringToSave();
         if (statusString) {
             var formData = new FormData();
@@ -363,6 +367,7 @@ define([
         }
 
         function connectToConnServer() {
+
             webida.auth.getMyInfo(function (e, data) {
                 if (e) {
                     logger.error('getMyInfo error: ' + e);
@@ -372,8 +377,18 @@ define([
                             logger.error('failed to connect to conn server');
                         } else {
                             logger.log('connected to conn server');
+                            
+                            // note from webida-desktop
+                            //  new server-api-*.js has no acl service and does not require 
+                            //  explicit subscription for default server events like fs.change 
+                            //  So, msgAgent.init() actually do nothing but returns some dummy
+                            //  stuffs & real event processing will be handled without app.js
 
-                            // sys.fs.change notification subscribe
+                            if (typeof webida.acl !== 'object') {
+                                logger.log('no need to subscribe and topic relay with new api ');
+                                return; 
+                            }
+                            
                             webida.acl.getAuthorizedRsc('fs:readFile', function (err, topics) {
                                 if (err) {
                                     logger.error('getAuthorizedRsc: ', err);

@@ -28,7 +28,7 @@ define([
     'dojo/topic',
     'lib/test/bootstrap/bootstrap.custom',
     'webida-lib/app',
-    'webida-lib/webida-0.3',
+    'webida-lib/server-api',
     'webida-lib/util/locale',
     'webida-lib/widgets/dialogs/buttoned-dialog/ButtonedDialog',
     'text!./layer/pw-layout.html',

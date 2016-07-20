@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-define(['webida-lib/webida-0.3',
+define(['webida-lib/server-api',
         'webida-lib/util/arrays/SortedArray',
         'webida-lib/util/path',
         'external/lodash/lodash.min',
@@ -50,11 +50,15 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
     var TYPE_DIRECTORY  = 'dir';
     var TYPE_UNKNOWN    = 'unknown';
 
+    // due to cyclc dependencies among FSNode/File/Directory class
+    /*jshint latedef: false */
     function FSCache(fsURLArg, dirsToCacheArg) {
 
         //*******************************
         // class FSCacheInner
         //*******************************
+
+        var fsCache;
 
         //--------------------------
         // private fields of FSCacheInner
@@ -65,6 +69,627 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
         var publishing;
         var mount;
         var root;
+
+
+        //*******************************
+        // inner class of FSCacheInner: FSNode
+        //*******************************
+
+        var FSNode = declare(null, {
+
+            constructor : function (parent, name) {
+                this.parent = parent;       // null iff this is the root node
+                this.name = name;
+                this.metadata = {};
+                this.metadataInvalidated = {};
+            },
+
+            setMetadata: function (key, value, caseStr) {
+                var origValue = this.metadata[key];
+                this.metadata[key] = value;
+                this.metadataInvalidated[key] = false;
+
+                var path = this.getPath();
+                switch (caseStr) {
+                    case 'fetched':
+                        onMetadataFetched(path, key);
+                        break;
+                    case 'written':
+                        onMetadataSet(path, key, value !== origValue);
+                        break;
+                    case 'refreshed':
+                        onMetadataRefreshed(path, key);
+                        break;
+                    default:
+                        console.assert(false, 'Unreachable');
+                }
+            },
+
+            refreshMetadata: function (key) {
+                var self = this;
+                Object.keys(this.metadata).forEach(function (k) {
+                    if (key === undefined || key === k) {
+                        var origVal = self.metadata[k];
+                        var path = self.getPath();
+                        mount.getMeta(path, k, function (err, newVal) {
+                            if (err) {
+                                console.error('Cannot get metadata ' + k + ' of ' + path +
+                                    ' from server: ' + err);
+                            } else {
+                                if (origVal !== newVal) {
+                                    this.setMetadata(k, newVal, 'refreshed');
+                                }
+                            }
+                        });
+                    }
+                });
+            },
+
+            getParentPath : function () {
+                return this.parent ? this.parent.getPath() : EMPTY_PATH;
+            },
+
+            getPath : function () {
+                if (!this._path) {
+                    // memoize
+                    this._path = this.computePath();
+                }
+                return this._path;
+            },
+
+            computePath : function () {
+                return this.getParentPath() + this.name;
+            },
+
+            getType : function () {
+                return TYPE_UNKNOWN;
+            },
+
+            detach : function (movedTo) {
+                if (this.parent) {
+                    var detached = this.parent.removeSubnode(this.name, movedTo);
+                    if (this !== detached) {
+                        throw new Error('Detached node is wrong.');
+                    }
+                } else {
+                    throw new Error('Cannot detach the root node');
+                }
+            },
+
+            satisfyingCond : function (cond) {
+
+                if (cond.types) {
+                    if (cond.types.indexOf(this.getType()) < 0) {
+                        return false;
+                    }
+                }
+
+                return true;
+            },
+
+            collectNodes : function (arr, cond) {
+                if (this.satisfyingCond(cond)) {
+                    arr.push(this);
+                }
+            },
+
+            getListInfo : function () {
+                return {
+                    name : this.name,
+                    isDirectory : this instanceof Directory,
+                    isFile : this instanceof File
+                };
+            },
+
+            show : function (level) {   // for debugging
+                var arr = [];
+                for (var i = 0; i < level; i++) {
+                    arr.push('| ');
+                }
+
+                arr.push(this.name);
+                console.log(arr.join(''));
+            },
+
+            invalidateFileContents: function () {
+                console.error('assertion fail: unreachable');
+            },
+
+            invalidateMetadata: function (key) {
+                var keys = Object.keys(this.metadataInvalidated);
+                var path = this.getPath();
+                if (key === undefined) {
+                    keys.forEach(function (k) {
+                        if (this.metadata[k] !== undefined &&
+                            !this.metadataInvalidated[k]) {
+                            this.metadataInvalidated[k] = true;
+                            onMetadataInvalidated(path, k);
+                        }
+                    });
+                } else if (keys.indexOf(key) >= 0) {
+                    if (this.metadata[key] !== undefined &&
+                        !this.metadataInvalidated[key]) {
+                        this.metadataInvalidated[key] = true;
+                        onMetadataInvalidated(path, key);
+                    }
+                } else {
+                    throw new Error('Metadata ' + key + ' is not set for "' +
+                        this.getPath() +  '"');
+                }
+            }
+
+        });
+
+        //*******************************
+        // inner class of FSCacheInner: File
+        //*******************************
+
+        var File = declare(FSNode, {
+            constructor : function (/*parent, name*/) {
+                this.contentInvalidated = false;
+            },
+
+            invalidateFileContents: function () {
+                if (this.content !== undefined && !this.contentInvalidated) {
+                    this.contentInvalidated = true;
+                    onFileInvalidated(this.getPath());
+                }
+            },
+
+            refreshFileContents : function () {
+
+                // NOTE: refreshing contents is possible for invalidated contents too
+
+                var origContent = this.content;
+                if (origContent !== undefined) {
+                    var path = this.getPath();
+                    var self = this;
+                    mount.readFile(path, function (err, newContent) {
+                        if (err) {
+                            console.log('Cannot get content of ' + path +
+                                ' from server. cannot refresh the file content (' +
+                                err + ')');
+                        } else {
+                            if (origContent !== newContent) {
+                                self.setContent(newContent, 'refreshed');
+                            }
+                        }
+                    });
+                }
+            },
+
+            setContent : function (content, caseStr) {
+                var origContent = this.content;
+                this.content = content;
+                this.contentInvalidated = false;
+
+                var path = this.getPath();
+                switch (caseStr) {
+                    case 'fetched':
+                        onFileFetched(path);
+                        break;
+                    case 'written':
+                        onFileWritten(path, content === undefined || content !== origContent);
+                        break;
+                    case 'refreshed':
+                        onFileRefreshed(path);
+                        break;
+                    default:
+                        console.assert(false, 'Unreachable');
+                }
+            },
+
+            getType : function () {
+                return TYPE_FILE;
+            },
+
+            getSummary : function () {
+                return this.name;
+            }
+        });
+
+        //*******************************
+        // inner class of FSCacheInner: Directory
+        //*******************************
+
+        var Directory = declare(FSNode, {
+            constructor : function (/*parent, name*/) {
+                this.dirs = new SortedArray('name');
+                this.files = new SortedArray('name');
+            },
+
+            invalidateFileContents: function () {
+                this.dirs.forEach(function (dir) {
+                    dir.invalidateFileContents();
+                });
+                this.files.forEach(function (file) {
+                    file.invalidateFileContents();
+                });
+            },
+
+            invalidateMetadata: function (key) {
+                FSNode.prototype.invalidateMetadata.call(this, key);
+                this.dirs.forEach(function (dir) {
+                    dir.invalidateMetadata(key);
+                });
+                this.files.forEach(function (file) {
+                    file.invalidateMetadata(key);
+                });
+            },
+
+            refreshFileContents : function (level) {
+                if (typeof level !== 'number') {		// TODO: remove this check when stabilized
+                    throw new Error('assertion fail: unrechable');
+                }
+
+                if (level) {
+                    this.dirs.forEach(function (dir) {
+                        dir.refreshFileContents(level - 1);
+                    });
+                    this.files.forEach(function (file) {
+                        file.refreshFileContents();
+                    });
+                }
+            },
+
+            refreshMetadata: function (level, key) {
+                if (typeof level !== 'number') {		// TODO: remove this check when stabilized
+                    throw new Error('assertion fail: unrechable');
+                }
+
+                FSNode.prototype.refreshMetadata.call(this, key);
+                if (level) {
+                    this.dirs.forEach(function (dir) {
+                        dir.refreshMetadata(level - 1, key);
+                    });
+                    this.files.forEach(function (file) {
+                        file.refreshMetadata(key);
+                    });
+                }
+            },
+
+            computePath : function () {
+                return this.getParentPath() + this.name + '/';
+            },
+
+            putByRelPath : function (relPath, caseStr) {
+                console.assert(relPath,
+                    'Directory.putByRelPath() was called with a falsy argument');
+
+                var i = relPath.indexOf('/');
+                if (i < 0) {
+                    // base case
+                    var file = this.putSubnode(relPath, false, caseStr);
+                    return (file ? [file] : null);
+                } else   {
+                    console.assert(i > 0, 'i must be a positive integer');
+                    var subdirName = relPath.substring(0, i);
+                    var subdir = this.putSubnode(subdirName, true, caseStr);
+                    var nextPath = relPath.substr(i + 1);
+                    if (nextPath) {
+                        if (subdir) {
+                            // newly added
+                            var addedArr = subdir.putByRelPath(nextPath, caseStr);
+                            addedArr.unshift(subdir);
+                            return addedArr;
+                        } else {
+                            // already there
+                            subdir = this.getSubnode(subdirName);
+                            return subdir.putByRelPath(nextPath, caseStr);
+                        }
+                    } else {
+                        // base case
+                        return (subdir ? [subdir] : null);
+                    }
+                }
+            },
+
+            // If a subnode exists with that name and type, then do nothing and return null.
+            // Otherwise, create the subnode, add it, and return the added subnode.
+            putSubnode : function (name, isDir, caseStr) {
+                console.assert(name);
+                console.assert(name.indexOf('/') === -1);
+
+                var subnode = this.getSubnode(name);
+                if (subnode && (subnode.isInstanceOf(Directory) === isDir)) {
+                    return null;
+                } else {
+                    if (subnode) {
+                        console.warn('A subnode with the same name "' + name +
+                            '" but with different type was detected while putting a ' +
+                            (isDir ? 'directory' : 'file') + ' to "' +
+                            this.getPath() + '"');
+                        return null;
+                    } else {
+                        var added = this.addSubnode(name, isDir, caseStr);
+                        return added;
+                    }
+                }
+            },
+
+            addSubnode : function (name, isDir, caseStr) {
+                if (this.getSubnode(name)) {  // TODO: remove this check if code is stabilized
+                    console.error('Unreachable: Cannot overwrite existing subnode ' + name +
+                        ' of ' + this.getPath() + ' by addSubnode()');
+                    throw new Error('Unreachable: Cannot overwrite existing subnode ' + name +
+                        ' of ' + this.getPath() + ' by addSubnode()');
+                } else {
+                    var C = isDir ? Directory : File;
+                    var subnode = new C(this, name);
+                    if (isDir) {
+                        this.dirs.add(subnode);
+                    } else {
+                        this.files.add(subnode);
+                    }
+
+                    var maybeCreated;
+                    switch (caseStr) {
+                        case 'cache-root':
+                        case 'inferred':
+                        case 'fetched':
+                        case 'restored':
+                            maybeCreated = false;
+                            break;
+                        case 'copied':
+                        case 'moved':
+                        case 'dir-created':
+                        case 'zip-created':
+                        case 'zip-extracted':
+                        case 'file-written':
+                        case 'refreshed':
+                            maybeCreated = true;
+                            break;
+                        default:
+                            console.assert(false, 'Unreachable');
+                    }
+
+                    onNodeAdded(this.getPath(), name, subnode.getType(), maybeCreated, caseStr === 'moved');
+
+                    return subnode;
+                }
+            },
+
+            getByRelPath: function (relPath) {
+                //console.log('hina temp: relPath = ' + relPath);
+                console.assert(relPath,
+                    'Directory.getByRelPath() was called ' +
+                    'with falsy argument');
+
+                var i = relPath.indexOf('/');
+                if (i < 0) {
+                    return this.getSubnode(relPath);
+                } else {
+                    console.assert(i > 0,
+                        'Directory.getByRelPath() was called ' +
+                        'with an absolute path: ' + relPath);
+                    var nextPath;
+                    var subnodeName = relPath.substring(0, i);
+                    var subnode = this.getSubnode(subnodeName);
+                    if (subnode) {
+                        nextPath = relPath.substr(i + 1);
+                        if (nextPath) {
+                            if (subnode instanceof Directory) {
+                                return subnode.getByRelPath(nextPath);
+                            } else {
+                                return null;
+                            }
+                        } else {
+                            return subnode;
+                        }
+                    } else {
+                        return subnode;
+                    }
+                }
+            },
+
+            getSubnode : function (name) {
+                var queried = { name: name };
+                var ret = this.dirs.query(queried) || this.files.query(queried);
+                if (ret) {
+                    return ret;
+                } else {
+                    return this.fetchedSubnodes ? null : undefined;
+                }
+            },
+
+            removeSubnode : function (name, movedTo) {
+                var ret = this.getSubnode(name);
+                if (ret) {
+                    var isDir = ret instanceof Directory;
+                    var arr = isDir ? this.dirs : this.files;
+                    var i = arr.indexOf(ret);
+                    Array.prototype.splice.call(arr, i, 1);
+
+                    onNodeDeleted(this.getPath(), name, ret.getType(), movedTo);
+                }
+                return ret;
+            },
+
+            getType : function () {
+                return TYPE_DIRECTORY;
+            },
+
+            isEmpty : function () {
+                return (this.dirs.length === 0) && (this.files.length === 0);
+            },
+
+            updateSubnodes : function (stats, isDir, caseStr) {
+                var subnodes = isDir ? this.dirs : this.files;
+                var names = subnodes.map(getName);
+                var newNames = stats.map(getName);
+
+                //console.log('hina temp: names = ' + names);
+                //console.log('hina temp: newNames = ' + newNames);
+                var toAdd = _.difference(newNames, names);
+                var toDel = _.difference(names, newNames);
+                //console.log('hina temp: toAdd = ' + toAdd);
+                //console.log('hina temp: toDel = ' + toDel);
+                var self = this;
+                toDel.forEach(function (name) {
+                    self.removeSubnode(name);
+                });
+                toAdd.forEach(function (name) {
+                    self.addSubnode(name, isDir, caseStr);
+                });
+            },
+
+            // refresh hierarchy level by level
+            refreshHierarchy : function (level, doWhenAllDone) {
+                //console.log('hina temp: entering refreshHierarchy dirPath = ' + this.getPath());
+
+                // NOTE: getByAbsPath() must be invoked on the root.
+                // Nodes (except for the root) can be detached at any time during an
+                // asynchronous method call.
+
+                if (level && this.fetchedSubnodes) {
+                    var dirPath = this.getPath();
+                    var self = this;
+                    mount.list(dirPath, false, function (err, stats) {
+
+                        var subnodeTypesDone = 0;
+                        function oneTypeDone() {
+                            subnodeTypesDone++;
+                            //console.log('hina temp: oneTypeDone for ' + dirPath + ' ' +  subnodeTypesDone + ' time ');
+                            if (subnodeTypesDone === 2) {  // two types (dirs and files)
+                                //console.log('hina temp: ' + dirPath + ' is done');
+                                doWhenAllDone();
+                            }
+                        }
+
+                        if (err) {
+                            console.warn('Error: FileSystem.list failed while refreshing "' +
+                                dirPath + '" (' + err + ')');
+                            doWhenAllDone();
+                        } else {
+                            var newDirs = stats.filter(isDir);
+                            self.updateSubnodes(newDirs, true, 'refreshed');
+
+                            var subdirsToRefresh = self.dirs.length;
+                            var subdirsRefreshed = 0;
+                            if (subdirsToRefresh) {
+                                self.dirs.forEach(function (dir) {
+                                    dir.refreshHierarchy(level - 1, function () {
+                                        subdirsRefreshed++;
+                                        if (subdirsRefreshed === subdirsToRefresh) {
+                                            //console.log('hina temp: subdirs of ' + dirPath + ' are done');
+                                            oneTypeDone();
+                                        }
+                                    });
+                                });
+                            } else {
+                                oneTypeDone();
+                            }
+
+                            var newFiles = stats.filter(isFile);
+                            self.updateSubnodes(newFiles, false, 'refreshed');
+                            oneTypeDone();
+                        }
+                    });
+                } else {
+                    doWhenAllDone();
+                }
+
+
+            },
+
+            collectNodes : function (arr, cond) {
+                FSNode.prototype.collectNodes.call(this, arr, cond);    // super call
+                this.dirs.forEach(function (dir) {
+                    dir.collectNodes(arr, cond);
+                });
+                this.files.forEach(function (file) {
+                    file.collectNodes(arr, cond);
+                });
+            },
+
+            list : function () {
+                if (this.fetchedSubnodes) {
+                    var arr = [];
+
+                    this.dirs.forEach(function (subnode) {
+                        arr.push(subnode.getListInfo());
+                    });
+
+                    this.files.forEach(function (subnode) {
+                        arr.push(subnode.getListInfo());
+                    });
+
+                    return arr;
+                } else {
+                    console.error('Unreachable: list should not be called on ' +
+                        'a node which has never fetched subnodes: ' + this.getPath());
+                    throw new Error('Unreachable: list should not be called on ' +
+                        'a node which has never fetched subnodes: ' + this.getPath());
+                }
+            },
+
+            show : function (level) {   // for debugging
+                var arr = [];
+                for (var i = 0; i < level; i++) {
+                    arr.push('| ');
+                }
+                arr.push(this.name + '/');
+                console.log(arr.join(''));
+
+                this.dirs.forEach(function (subdir) {
+                    subdir.show(level + 1);
+                });
+
+                this.files.forEach(function (subdir) {
+                    subdir.show(level + 1);
+                });
+            },
+
+            getSummary : function () {
+                var subSummaries;
+                if (this.listed || !withinCache(this.getPath())) {
+                    subSummaries = [];
+                    this.dirs.forEach(function (dir) {
+                        var val = dir.getSummary();
+                        console.assert(typeof val === 'object',
+                            'Summary of a subdir must be an object');
+                        subSummaries.push(val);
+                    });
+                    this.files.forEach(function (file) {
+                        var val = file.getSummary();
+                        console.assert(typeof val === 'string',
+                            'Summary of a file must be a string');
+                        subSummaries.push(val);
+                    });
+                } else {
+                    subSummaries = null;
+                }
+
+                if (this.name) {
+                    return { n: this.name, s: subSummaries };
+                } else {
+                    // only root can reach here
+                    return subSummaries;
+                }
+            },
+
+            restoreFromSummary : function (subSummaries) {
+                if (subSummaries) {
+                    console.assert(subSummaries instanceof Array,
+                        'SubSummaries must be an array');
+
+                    var self = this;
+                    subSummaries.forEach(function (summary) {
+                        var type = typeof summary;
+                        if (type === 'object') {
+                            var added = self.addSubnode(summary.n, true, 'restored');
+                            added.restoreFromSummary(summary.s);
+                        } else if (type === 'string') {
+                            self.addSubnode(summary, false, 'restored');
+                        } else {
+                            console.assert(false,
+                                'Summary must be an object or string');
+                        }
+                    });
+                    this.fetchedSubnodes = true;
+                }
+            }
+        });
 
         var FSCacheInner = declare(null, {
 
@@ -96,7 +721,8 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
                 fsURLParsed = parseWFSURL(fsURL);
                 dirsToCache = dirsToCacheArg;
                 publishing = false;
-                mount = webida.fs.mount(fsURL);
+                mount = webida.fs.mountByFSID(fsURLParsed.fsid);
+
                 root = new Directory(null, '');     // no parent, empty name
                 root.getByAbsPath = function (absPath) {
                     //console.log('hina temp: absPath = ' + absPath);
@@ -1595,625 +2221,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
         //---------------------------
         //---------------------------
 
-        //*******************************
-        // inner class of FSCacheInner: FSNode
-        //*******************************
 
-        var FSNode = declare(null, {
-
-            constructor : function (parent, name) {
-                this.parent = parent;       // null iff this is the root node
-                this.name = name;
-                this.metadata = {};
-                this.metadataInvalidated = {};
-            },
-
-            setMetadata: function (key, value, caseStr) {
-                var origValue = this.metadata[key];
-                this.metadata[key] = value;
-                this.metadataInvalidated[key] = false;
-
-                var path = this.getPath();
-                switch (caseStr) {
-                case 'fetched':
-                    onMetadataFetched(path, key);
-                    break;
-                case 'written':
-                    onMetadataSet(path, key, value !== origValue);
-                    break;
-                case 'refreshed':
-                    onMetadataRefreshed(path, key);
-                    break;
-                default:
-                    console.assert(false, 'Unreachable');
-                }
-            },
-
-            refreshMetadata: function (key) {
-                var self = this;
-                Object.keys(this.metadata).forEach(function (k) {
-                    if (key === undefined || key === k) {
-                        var origVal = self.metadata[k];
-                        var path = self.getPath();
-                        mount.getMeta(path, k, function (err, newVal) {
-                            if (err) {
-                                console.error('Cannot get metadata ' + k + ' of ' + path +
-                                            ' from server: ' + err);
-                            } else {
-                                if (origVal !== newVal) {
-                                    this.setMetadata(k, newVal, 'refreshed');
-                                }
-                            }
-                        });
-                    }
-                });
-            },
-
-            getParentPath : function () {
-                return this.parent ? this.parent.getPath() : EMPTY_PATH;
-            },
-
-            getPath : function () {
-                if (!this._path) {
-                    // memoize
-                    this._path = this.computePath();
-                }
-                return this._path;
-            },
-
-            computePath : function () {
-                return this.getParentPath() + this.name;
-            },
-
-            getType : function () {
-                return TYPE_UNKNOWN;
-            },
-
-            detach : function (movedTo) {
-                if (this.parent) {
-                    var detached = this.parent.removeSubnode(this.name, movedTo);
-                    if (this !== detached) {
-                        throw new Error('Detached node is wrong.');
-                    }
-                } else {
-                    throw new Error('Cannot detach the root node');
-                }
-            },
-
-            satisfyingCond : function (cond) {
-
-                if (cond.types) {
-                    if (cond.types.indexOf(this.getType()) < 0) {
-                        return false;
-                    }
-                }
-
-                return true;
-            },
-
-            collectNodes : function (arr, cond) {
-                if (this.satisfyingCond(cond)) {
-                    arr.push(this);
-                }
-            },
-
-            getListInfo : function () {
-                return {
-                    name : this.name,
-                    isDirectory : this instanceof Directory,
-                    isFile : this instanceof File
-                };
-            },
-
-            show : function (level) {   // for debugging
-                var arr = [];
-                for (var i = 0; i < level; i++) {
-                    arr.push('| ');
-                }
-
-                arr.push(this.name);
-                console.log(arr.join(''));
-            },
-
-            invalidateFileContents: function () {
-                console.error('assertion fail: unreachable');
-            },
-
-            invalidateMetadata: function (key) {
-                var keys = Object.keys(this.metadataInvalidated);
-                var path = this.getPath();
-                if (key === undefined) {
-                    keys.forEach(function (k) {
-                        if (this.metadata[k] !== undefined &&
-                            !this.metadataInvalidated[k]) {
-                            this.metadataInvalidated[k] = true;
-                            onMetadataInvalidated(path, k);
-                        }
-                    });
-                } else if (keys.indexOf(key) >= 0) {
-                    if (this.metadata[key] !== undefined &&
-                        !this.metadataInvalidated[key]) {
-                        this.metadataInvalidated[key] = true;
-                        onMetadataInvalidated(path, key);
-                    }
-                } else {
-                    throw new Error('Metadata ' + key + ' is not set for "' +
-                                    this.getPath() +  '"');
-                }
-            }
-
-        });
-
-        //*******************************
-        // inner class of FSCacheInner: File
-        //*******************************
-
-        var File = declare(FSNode, {
-            constructor : function (/*parent, name*/) {
-                this.contentInvalidated = false;
-            },
-
-            invalidateFileContents: function () {
-                if (this.content !== undefined && !this.contentInvalidated) {
-                    this.contentInvalidated = true;
-                    onFileInvalidated(this.getPath());
-                }
-            },
-
-            refreshFileContents : function () {
-
-                // NOTE: refreshing contents is possible for invalidated contents too
-
-                var origContent = this.content;
-                if (origContent !== undefined) {
-                    var path = this.getPath();
-                    var self = this;
-                    mount.readFile(path, function (err, newContent) {
-                        if (err) {
-                            console.log('Cannot get content of ' + path +
-                                        ' from server. cannot refresh the file content (' +
-                                        err + ')');
-                        } else {
-                            if (origContent !== newContent) {
-                                self.setContent(newContent, 'refreshed');
-                            }
-                        }
-                    });
-                }
-            },
-
-            setContent : function (content, caseStr) {
-                var origContent = this.content;
-                this.content = content;
-                this.contentInvalidated = false;
-
-                var path = this.getPath();
-                switch (caseStr) {
-                case 'fetched':
-                    onFileFetched(path);
-                    break;
-                case 'written':
-                    onFileWritten(path, content === undefined || content !== origContent);
-                    break;
-                case 'refreshed':
-                    onFileRefreshed(path);
-                    break;
-                default:
-                    console.assert(false, 'Unreachable');
-                }
-            },
-
-            getType : function () {
-                return TYPE_FILE;
-            },
-
-            getSummary : function () {
-                return this.name;
-            }
-        });
-
-        //*******************************
-        // inner class of FSCacheInner: Directory
-        //*******************************
-
-        var Directory = declare(FSNode, {
-            constructor : function (/*parent, name*/) {
-                this.dirs = new SortedArray('name');
-                this.files = new SortedArray('name');
-            },
-
-            invalidateFileContents: function () {
-                this.dirs.forEach(function (dir) {
-                    dir.invalidateFileContents();
-                });
-                this.files.forEach(function (file) {
-                    file.invalidateFileContents();
-                });
-            },
-
-            invalidateMetadata: function (key) {
-                FSNode.prototype.invalidateMetadata.call(this, key);
-                this.dirs.forEach(function (dir) {
-                    dir.invalidateMetadata(key);
-                });
-                this.files.forEach(function (file) {
-                    file.invalidateMetadata(key);
-                });
-            },
-
-            refreshFileContents : function (level) {
-                if (typeof level !== 'number') {		// TODO: remove this check when stabilized
-                    throw new Error('assertion fail: unrechable');
-                }
-
-                if (level) {
-                    this.dirs.forEach(function (dir) {
-                        dir.refreshFileContents(level - 1);
-                    });
-                    this.files.forEach(function (file) {
-                        file.refreshFileContents();
-                    });
-                }
-            },
-
-            refreshMetadata: function (level, key) {
-                if (typeof level !== 'number') {		// TODO: remove this check when stabilized
-                    throw new Error('assertion fail: unrechable');
-                }
-
-                FSNode.prototype.refreshMetadata.call(this, key);
-                if (level) {
-                    this.dirs.forEach(function (dir) {
-                        dir.refreshMetadata(level - 1, key);
-                    });
-                    this.files.forEach(function (file) {
-                        file.refreshMetadata(key);
-                    });
-                }
-            },
-
-            computePath : function () {
-                return this.getParentPath() + this.name + '/';
-            },
-
-            putByRelPath : function (relPath, caseStr) {
-                console.assert(relPath,
-                               'Directory.putByRelPath() was called with a falsy argument');
-
-                var i = relPath.indexOf('/');
-                if (i < 0) {
-                    // base case
-                    var file = this.putSubnode(relPath, false, caseStr);
-                    return (file ? [file] : null);
-                } else   {
-                    console.assert(i > 0, 'i must be a positive integer');
-                    var subdirName = relPath.substring(0, i);
-                    var subdir = this.putSubnode(subdirName, true, caseStr);
-                    var nextPath = relPath.substr(i + 1);
-                    if (nextPath) {
-                        if (subdir) {
-                            // newly added
-                            var addedArr = subdir.putByRelPath(nextPath, caseStr);
-                            addedArr.unshift(subdir);
-                            return addedArr;
-                        } else {
-                            // already there
-                            subdir = this.getSubnode(subdirName);
-                            return subdir.putByRelPath(nextPath, caseStr);
-                        }
-                    } else {
-                        // base case
-                        return (subdir ? [subdir] : null);
-                    }
-                }
-            },
-
-            // If a subnode exists with that name and type, then do nothing and return null.
-            // Otherwise, create the subnode, add it, and return the added subnode.
-            putSubnode : function (name, isDir, caseStr) {
-                console.assert(name);
-                console.assert(name.indexOf('/') === -1);
-
-                var subnode = this.getSubnode(name);
-                if (subnode && (subnode.isInstanceOf(Directory) === isDir)) {
-                    return null;
-                } else {
-                    if (subnode) {
-                        console.warn('A subnode with the same name "' + name +
-                                     '" but with different type was detected while putting a ' +
-                                     (isDir ? 'directory' : 'file') + ' to "' +
-                                     this.getPath() + '"');
-                        return null;
-                    } else {
-                        var added = this.addSubnode(name, isDir, caseStr);
-                        return added;
-                    }
-                }
-            },
-
-            addSubnode : function (name, isDir, caseStr) {
-                if (this.getSubnode(name)) {  // TODO: remove this check if code is stabilized
-                    console.error('Unreachable: Cannot overwrite existing subnode ' + name +
-                                  ' of ' + this.getPath() + ' by addSubnode()');
-                    throw new Error('Unreachable: Cannot overwrite existing subnode ' + name +
-                                    ' of ' + this.getPath() + ' by addSubnode()');
-                } else {
-                    var C = isDir ? Directory : File;
-                    var subnode = new C(this, name);
-                    if (isDir) {
-                        this.dirs.add(subnode);
-                    } else {
-                        this.files.add(subnode);
-                    }
-
-                    var maybeCreated;
-                    switch (caseStr) {
-                    case 'cache-root':
-                    case 'inferred':
-                    case 'fetched':
-                    case 'restored':
-                        maybeCreated = false;
-                        break;
-                    case 'copied':
-                    case 'moved':
-                    case 'dir-created':
-                    case 'zip-created':
-                    case 'zip-extracted':
-                    case 'file-written':
-                    case 'refreshed':
-                        maybeCreated = true;
-                        break;
-                    default:
-                        console.assert(false, 'Unreachable');
-                    }
-
-                    onNodeAdded(this.getPath(), name, subnode.getType(), maybeCreated, caseStr === 'moved');
-
-                    return subnode;
-                }
-            },
-
-            getByRelPath: function (relPath) {
-                //console.log('hina temp: relPath = ' + relPath);
-                console.assert(relPath,
-                               'Directory.getByRelPath() was called ' +
-                               'with falsy argument');
-
-                var i = relPath.indexOf('/');
-                if (i < 0) {
-                    return this.getSubnode(relPath);
-                } else {
-                    console.assert(i > 0,
-                                   'Directory.getByRelPath() was called ' +
-                                   'with an absolute path: ' + relPath);
-                    var nextPath;
-                    var subnodeName = relPath.substring(0, i);
-                    var subnode = this.getSubnode(subnodeName);
-                    if (subnode) {
-                        nextPath = relPath.substr(i + 1);
-                        if (nextPath) {
-                            if (subnode instanceof Directory) {
-                                return subnode.getByRelPath(nextPath);
-                            } else {
-                                return null;
-                            }
-                        } else {
-                            return subnode;
-                        }
-                    } else {
-                        return subnode;
-                    }
-                }
-            },
-
-            getSubnode : function (name) {
-                var queried = { name: name };
-                var ret = this.dirs.query(queried) || this.files.query(queried);
-                if (ret) {
-                    return ret;
-                } else {
-                    return this.fetchedSubnodes ? null : undefined;
-                }
-            },
-
-            removeSubnode : function (name, movedTo) {
-                var ret = this.getSubnode(name);
-                if (ret) {
-                    var isDir = ret instanceof Directory;
-                    var arr = isDir ? this.dirs : this.files;
-                    var i = arr.indexOf(ret);
-                    Array.prototype.splice.call(arr, i, 1);
-
-                    onNodeDeleted(this.getPath(), name, ret.getType(), movedTo);
-                }
-                return ret;
-            },
-
-            getType : function () {
-                return TYPE_DIRECTORY;
-            },
-
-            isEmpty : function () {
-                return (this.dirs.length === 0) && (this.files.length === 0);
-            },
-
-            updateSubnodes : function (stats, isDir, caseStr) {
-                var subnodes = isDir ? this.dirs : this.files;
-                var names = subnodes.map(getName);
-                var newNames = stats.map(getName);
-
-                //console.log('hina temp: names = ' + names);
-                //console.log('hina temp: newNames = ' + newNames);
-                var toAdd = _.difference(newNames, names);
-                var toDel = _.difference(names, newNames);
-                //console.log('hina temp: toAdd = ' + toAdd);
-                //console.log('hina temp: toDel = ' + toDel);
-                var self = this;
-                toDel.forEach(function (name) {
-                    self.removeSubnode(name);
-                });
-                toAdd.forEach(function (name) {
-                    self.addSubnode(name, isDir, caseStr);
-                });
-            },
-
-            // refresh hierarchy level by level
-            refreshHierarchy : function (level, doWhenAllDone) {
-                //console.log('hina temp: entering refreshHierarchy dirPath = ' + this.getPath());
-
-                // NOTE: getByAbsPath() must be invoked on the root.
-                // Nodes (except for the root) can be detached at any time during an
-                // asynchronous method call.
-
-                if (level && this.fetchedSubnodes) {
-                    var dirPath = this.getPath();
-                    var self = this;
-                    mount.list(dirPath, false, function (err, stats) {
-
-                        var subnodeTypesDone = 0;
-                        function oneTypeDone() {
-                            subnodeTypesDone++;
-                            //console.log('hina temp: oneTypeDone for ' + dirPath + ' ' +  subnodeTypesDone + ' time ');
-                            if (subnodeTypesDone === 2) {  // two types (dirs and files)
-                                //console.log('hina temp: ' + dirPath + ' is done');
-                                doWhenAllDone();
-                            }
-                        }
-
-                        if (err) {
-                            console.warn('Error: FileSystem.list failed while refreshing "' +
-                                        dirPath + '" (' + err + ')');
-                            doWhenAllDone();
-                        } else {
-                            var newDirs = stats.filter(isDir);
-                            self.updateSubnodes(newDirs, true, 'refreshed');
-
-                            var subdirsToRefresh = self.dirs.length;
-                            var subdirsRefreshed = 0;
-                            if (subdirsToRefresh) {
-                                self.dirs.forEach(function (dir) {
-                                    dir.refreshHierarchy(level - 1, function () {
-                                        subdirsRefreshed++;
-                                        if (subdirsRefreshed === subdirsToRefresh) {
-                                            //console.log('hina temp: subdirs of ' + dirPath + ' are done');
-                                            oneTypeDone();
-                                        }
-                                    });
-                                });
-                            } else {
-                                oneTypeDone();
-                            }
-
-                            var newFiles = stats.filter(isFile);
-                            self.updateSubnodes(newFiles, false, 'refreshed');
-                            oneTypeDone();
-                        }
-                    });
-                } else {
-                    doWhenAllDone();
-                }
-
-
-            },
-
-            collectNodes : function (arr, cond) {
-                FSNode.prototype.collectNodes.call(this, arr, cond);    // super call
-                this.dirs.forEach(function (dir) {
-                    dir.collectNodes(arr, cond);
-                });
-                this.files.forEach(function (file) {
-                    file.collectNodes(arr, cond);
-                });
-            },
-
-            list : function () {
-                if (this.fetchedSubnodes) {
-                    var arr = [];
-
-                    this.dirs.forEach(function (subnode) {
-                        arr.push(subnode.getListInfo());
-                    });
-
-                    this.files.forEach(function (subnode) {
-                        arr.push(subnode.getListInfo());
-                    });
-
-                    return arr;
-                } else {
-                    console.error('Unreachable: list should not be called on ' +
-                                  'a node which has never fetched subnodes: ' + this.getPath());
-                    throw new Error('Unreachable: list should not be called on ' +
-                                    'a node which has never fetched subnodes: ' + this.getPath());
-                }
-            },
-
-            show : function (level) {   // for debugging
-                var arr = [];
-                for (var i = 0; i < level; i++) {
-                    arr.push('| ');
-                }
-                arr.push(this.name + '/');
-                console.log(arr.join(''));
-
-                this.dirs.forEach(function (subdir) {
-                    subdir.show(level + 1);
-                });
-
-                this.files.forEach(function (subdir) {
-                    subdir.show(level + 1);
-                });
-            },
-
-            getSummary : function () {
-                var subSummaries;
-                if (this.listed || !withinCache(this.getPath())) {
-                    subSummaries = [];
-                    this.dirs.forEach(function (dir) {
-                        var val = dir.getSummary();
-                        console.assert(typeof val === 'object',
-                                       'Summary of a subdir must be an object');
-                        subSummaries.push(val);
-                    });
-                    this.files.forEach(function (file) {
-                        var val = file.getSummary();
-                        console.assert(typeof val === 'string',
-                                       'Summary of a file must be a string');
-                        subSummaries.push(val);
-                    });
-                } else {
-                    subSummaries = null;
-                }
-
-                if (this.name) {
-                    return { n: this.name, s: subSummaries };
-                } else {
-                    // only root can reach here
-                    return subSummaries;
-                }
-            },
-
-            restoreFromSummary : function (subSummaries) {
-                if (subSummaries) {
-                    console.assert(subSummaries instanceof Array,
-                                   'SubSummaries must be an array');
-
-                    var self = this;
-                    subSummaries.forEach(function (summary) {
-                        var type = typeof summary;
-                        if (type === 'object') {
-                            var added = self.addSubnode(summary.n, true, 'restored');
-                            added.restoreFromSummary(summary.s);
-                        } else if (type === 'string') {
-                            self.addSubnode(summary, false, 'restored');
-                        } else {
-                            console.assert(false,
-                                           'Summary must be an object or string');
-                        }
-                    });
-                    this.fetchedSubnodes = true;
-                }
-            }
-        });
 
         //---------------------------
         // event handlers
@@ -2286,7 +2294,7 @@ function (webida, SortedArray, pathUtil, _, URI, declare, topic) {
         }
 
         // finally, the object
-        var fsCache = new FSCacheInner();
+        fsCache = new FSCacheInner();
         return fsCache;         // NOTE: 'this' is ignored for the constructor FSCache.
     }
 

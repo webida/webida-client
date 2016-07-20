@@ -33,7 +33,7 @@
 * @module msg
 */
 define([
-	'./webida-0.3', 
+	'webida-lib/server-api',
 	'external/socket.io-client/socket.io',
 	'webida-lib/util/logger/logger-client'
 ], function (
@@ -139,6 +139,26 @@ define([
         }
     };
 
+    var connMap = new HashMap();
+
+    var TaskMgr = function () {
+        var taskMap = new HashMap();
+        this.pushTask = function (cb) {
+            var taskid = guid();
+            taskMap.put(taskid, cb);
+            return taskid;
+        };
+
+        this.popTask = function (id, err, msg) {
+            var func = taskMap.get(id);
+            if (func) {
+                func(err, msg);
+            }
+            taskMap.remove(id);
+        };
+    };
+
+    var taskMgr = new TaskMgr();
 
     /**
      * In order to receive messages, you need to define callback functons as follow
@@ -233,38 +253,16 @@ define([
     ];
     /* jshint camelcase: true */
 
-    var guid = (function () {
+    function guid () {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16)
                 .substring(1);
         }
-        return function () {
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
                 s4() + '-' + s4() + s4() + s4();
-        };
-    })();
+    }
 
-
-    var TaskMgr = function () {
-        var taskMap = new HashMap();
-        this.pushTask = function (cb) {
-            var taskid = guid();
-            taskMap.put(taskid, cb);
-            return taskid;
-        };
-
-        this.popTask = function (id, err, msg) {
-            var func = taskMap.get(id);
-            if (func) {
-                func(err, msg);
-            }
-            taskMap.remove(id);
-        };
-    };
-
-    var taskMgr = new TaskMgr();
-    var connMap = new HashMap();
 
 
     /**

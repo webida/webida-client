@@ -23,7 +23,7 @@
  *
  */
 
-define(['webida-lib/webida-0.3',
+define(['webida-lib/server-api',
         'external/lodash/lodash.min',
         'external/URIjs/src/URI',
         'dojo/promise/all',
