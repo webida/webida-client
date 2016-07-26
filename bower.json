@@ -19,7 +19,7 @@
     "jquery": "~2.1.4",
     "jquery-cookie" : "carhartl/jquery-cookie#faa09dc38bd3c791212e8fca67ee661af55fa530",
     "js-beautify": "~1.5.10",
-    "lodash": "~3.10.0",
+    "lodash": "~4.14.0",
     "moment": "~2.10.3",
     "put-selector": "~0.3.6",
     "qunit": "~1.18.0",
@@ -27,14 +27,12 @@
     "requirejs": "~2.1.18",
     "showdown": "~1.1.0",
     "smalot-bootstrap-datetimepicker": "~2.3.4",
-    "socket.io-client": "socket.io-client#~1.4.5",
-    "superagent" : "~2.0.0",
     "ladda": "hakimel/Ladda#ec575edabd0602ed303978148df7d5e731014010",
     "term.js": "chjj/term.js#~v0.0.7",
     "tern": "webida/tern#ab9f92a23d9f8d09071c3549b33ff40dcfb27ed3",
     "toastr": "~2.1.1",
-    "URIjs": "~1.15.2",
-    "webida-restful-api": "webida/webida-restful-api#~0.6.0",
+    "URIjs": "~1.18.1",
+    "webida-service-client": "webida/webida-service-client#~0.7.1",
     "xstyle": "~0.3.1"
   }
 }

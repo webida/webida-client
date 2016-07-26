@@ -20,12 +20,12 @@
     // in electron, we should remove global.require & global.module
     // to make dojo & other amd module work
     // how can we detect that we're working in electron?
-    if (typeof(globalObject.process) === 'object' &&
-        typeof(globalObject.require) === 'function' &&
-        typeof(globalObject.module) === 'object') {
+    if (typeof(globalObject.process) === 'object' && typeof(globalObject.require) === 'function' &&
+            typeof(globalObject.module) === 'object') {
         globalObject.nrequire = globalObject.require;
         globalObject.nmodule = globalObject.module;
         delete globalObject.require;
+        //noinspection JSAnnotator
         delete globalObject.module;
         globalObject.__ELECTRON_BROWSER__ = true;
     }
@@ -44,7 +44,7 @@
             {name: 'jquery', location: './jquery/dist', main: 'jquery.min'},
             {name: 'put-selector', location: './put-selector'},
             {name: 'showdown', location: './showdown/dist', main: 'showdown.min'},
-            {name: 'URIjs', location:'./URIjs/src', main:'URI'},
+            {name: 'URIjs', location:'./URIjs/src', main:'URI.min'},
             {name: 'xstyle', location: './xstyle'}
         ],
         locale: ((webidaLocale === 'default') || (webidaLocale === '')) ?
@@ -59,6 +59,7 @@
         },
         aliases: [
             ['text', 'dojo/text'],
+            ['external/lodash/lodash.min', 'external/lodash/dist/lodash.min'],    // new 4.x lodash changed bundle path.
             ['popup-dialog', 'webida-lib/widgets/dialogs/popup-dialog/PopupDialog'],
             // TODO should use these below aliases for versioned resources
             ['FSCache', 'webida-lib/FSCache-0.1'],
@@ -77,16 +78,17 @@
     // &, for new server api, additional package 'webida-restful-api' is required.
     if (window.location.href.indexOf('legacy=') < 0 ) {
         var dojoConfig = globalObject.dojoConfig;
-        dojoConfig.aliases.pop();
-        dojoConfig.aliases.pop();
-        dojoConfig.aliases.push(['webida-lib/server-api', 'webida-lib/server-api-0.1']);
-        dojoConfig.aliases.push(['webida-lib/server-pubsub', 'webida-lib/server-pubsub-0.1']);
-        dojoConfig.aliases.push(['top/site-config.json', 'top/site-config-desktop.json']);
         dojoConfig.packages.push( {
-            name: 'webida-restful-api',
-            location: './webida-restful-api',
-            main: 'api-bundle'
+            name: 'webida-service-client',
+            location: './webida-service-client',
+            main: 'webida-service-client-bundle'
         });
+        dojoConfig.aliases.pop();
+        dojoConfig.aliases.pop();
+        dojoConfig.aliases.push(['webida-lib/server-api', 'webida-service-client']);
+        dojoConfig.aliases.push(['webida-lib/server-pubsub', 'webida-lib/server-pubsub-compat']);
+        dojoConfig.aliases.push(['top/site-config.json', 'top/site-config-desktop.json']);
+        dojoConfig.aliases.push(['urijs', 'URIjs']);
     }
 
     if (globalObject.__ELECTRON_BROWSER__) {

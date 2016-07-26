@@ -37,7 +37,7 @@ define([
 
     var logger = Logger.getSingleton();
     logger.debug = logger.log; 
-    var sessionClient = webida.session;
+    var sessionEventSource = webida.sessionService.getEventSource();
 
     function dispatchTopic(topicName) {
         return function __reflectingTopicDispatcher(eventName) {
@@ -51,16 +51,16 @@ define([
         };
     }
     
-    sessionClient.on('announcement', dispatchTopic('server/session/announcement'));
-    sessionClient.on('closing', dispatchTopic('server/session/closing'));
-    sessionClient.on('connect', dispatchTopic('server/session/'));
-    sessionClient.on('disconnect', dispatchTopic('server/session/disconnect'));
-    sessionClient.on('reconnect', dispatchTopic('server/session/reconnect'));
-    sessionClient.on('connect_error', dispatchTopic('server/session/connect/error'));
-    sessionClient.on('connect_timeout', dispatchTopic('server/session/connect/timeout'));
-    sessionClient.on('reconnect_failed', dispatchTopic('server/session/reconnect/failed'));
+    sessionEventSource.on('announcement', dispatchTopic('server/session/announcement'));
+    sessionEventSource.on('closing', dispatchTopic('server/session/closing'));
+    sessionEventSource.on('connect', dispatchTopic('server/session/'));
+    sessionEventSource.on('disconnect', dispatchTopic('server/session/disconnect'));
+    sessionEventSource.on('reconnect', dispatchTopic('server/session/reconnect'));
+    sessionEventSource.on('connect_error', dispatchTopic('server/session/connect/error'));
+    sessionEventSource.on('connect_timeout', dispatchTopic('server/session/connect/timeout'));
+    sessionEventSource.on('reconnect_failed', dispatchTopic('server/session/reconnect/failed'));
     
-    sessionClient.on('wfs', dispatchLegacyResourceTopics);
+    sessionEventSource.on('wfs', dispatchLegacyResourceTopics);
 
     // need some 'toasting' plugin for basic session events, but not here.
     // for this plugins should work without toaster.

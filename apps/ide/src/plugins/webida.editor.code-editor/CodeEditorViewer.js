@@ -24,7 +24,7 @@
  * @see CodeEditorPart
  * @since 1.3.0
  * @author hw.shim@samsung.com
- * @author sewon326.kim@samsung.com 
+ * @author sewon326.kim@samsung.com
  * @author kyungmi.k@samsung.com
  * @author cg25.woo@samsung.com
  * @author h.m.kwon@samsung.com
@@ -226,13 +226,13 @@ define([
         {
             mode: ['html', 'xml'],
             checkToken: function (token) {
-                return _.contains(['tag', 'attribute', 'link'], token.type);
+                return _.includes(['tag', 'attribute', 'link'], token.type);
             }
         },
         {
             mode: ['css'],
             checkToken: function (token) {
-                return _.contains(['tag', 'builtin', 'qualifier', 'property error', 'property'], token.type);
+                return _.includes(['tag', 'builtin', 'qualifier', 'property error', 'property'], token.type);
             }
         }
     ];
@@ -291,14 +291,14 @@ define([
         }
     }
     function isAvailable(type, name) {
-        return _.contains(availables, type + '::' + name);
+        return _.includes(availables, type + '::' + name);
     }
 
     function cursorAtAutoHint(cm, modeName, cursor, rightToken) {
         var token = cm.getTokenAt(cursor);
 
         if (_.find(cursorAtAutoHintTokens, function (obj) {
-            return _.contains(obj.mode, modeName) && obj.checkToken(token);
+            return _.includes(obj.mode, modeName) && obj.checkToken(token);
         })) {
             return true;
         }
@@ -493,7 +493,7 @@ define([
         onChangeForAutoHintDebounced = _.debounce(function (cm, changeObj, lastCursor) {
             // TODO - limch - minimize addFile() call to WebWorker
             var editor = cm.__instance;
-            
+
             if (editor._contentAssistDelegator) {
                 var options = {};
                 options.async = true;
@@ -635,7 +635,7 @@ define([
 
 	    setMode : function (mode) {
             var that = this;
-            var assistDelegator = null;            
+            var assistDelegator = null;
             that.promiseForSetMode = new Promise(function (resolve, reject) {
                 if (mode === undefined || that.mode === mode) {
                     resolve('no change');
@@ -739,31 +739,31 @@ define([
 	            this.linters = {};
 	        }
             this.linters[type] = option;
-            
+
 	        var that = this;
             that.promiseForSetMode.then(function(){
                 var editor = that.editor;
-                if (editor._contentAssistDelegator) {                    
+                if (editor._contentAssistDelegator) {
                     editor._contentAssistDelegator.execCommandForAll(
                         'setLinter',
                         that,
                         type,
                         option);
                 }
-            });           
+            });
 	    },
 	    __applyLinter : function () {
-	        if (this.editor && this.linters && _.contains(['js', 'json', 'css', 'html'], this.mode)) {
+	        if (this.editor && this.linters && _.includes(['js', 'json', 'css', 'html'], this.mode)) {
 	            if (this.linters[this.mode]) {
 	                this._gutterOn('CodeMirror-lint-markers');
-                    
+
                     var that = this;
                     that.promiseForSetMode.then(function(){
                         var editor = that.editor;
-                        if (editor._contentAssistDelegator) {                    
+                        if (editor._contentAssistDelegator) {
                             editor._contentAssistDelegator.execCommandForAll(
                                 'applyLinter',
-                                that.editor, 
+                                that.editor,
                                 that.mode);
                         }
                     });
@@ -905,7 +905,7 @@ define([
                 var editor = self.editor;
                 self.focus();
                 self.promiseForSetMode.then(function(){
-                    if (editor._contentAssistDelegator) {                    
+                    if (editor._contentAssistDelegator) {
                         editor._contentAssistDelegator.execCommand('beautifyCode', editor);
                     }
                 });

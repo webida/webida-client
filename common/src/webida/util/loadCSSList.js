@@ -39,7 +39,7 @@ define([
         function checkDone(doneItems) {
             return function () {
                 _.each(doneItems, function (newDone) {
-                    if (_.contains(loadedItems, newDone)) {
+                    if (_.includes(loadedItems, newDone)) {
                         notify.error('Not good ' + newDone + ' in ' + loadedItems);
                     } else {
                         loadedItems.push(newDone);
@@ -47,9 +47,9 @@ define([
                 });
                 _.each(doneItems, function (newDone) {
                     _.each(deferredDones[newDone], function (listener) {
-                        if (!_.contains(processedDones, listener.id)) {
+                        if (!_.includes(processedDones, listener.id)) {
                             var containsAll = _.every(listener.neededs, function (x) {
-                                return _.contains(loadedItems, x);
+                                return _.includes(loadedItems, x);
                             });
                             if (containsAll) {
                                 processedDones.push(listener.id);
@@ -111,7 +111,7 @@ define([
         });
 
         var toLoad = _.filter(items, function (x) {
-            return !_.contains(loadedItems, x) && !_.contains(loadingItems, x);
+            return !_.includes(loadedItems, x) && !_.includes(loadingItems, x);
         });
         if (toLoad.length > 0) {
             loadingItems = loadingItems.concat(toLoad);

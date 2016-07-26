@@ -122,9 +122,9 @@ define([
     }
 
     function saveStatusSync() {
-        if (webida.VERSION && webida.VERSION === '0.1') {
+        if (webida.VERSION) {
             logger.info('current server api does not support synchronous file writing');
-            return;
+            return null;
         }
 
         var statusString = getStatusStringToSave();
@@ -311,7 +311,7 @@ define([
             mount.readFile(path + lastStatusFile, function (err, content) {
                 //logger.info('content = ', content);
                 if (err) {
-                    singleLogger.log('(C) not read last status file (' + err + ')');
+                    singleLogger.error('(C) could not read last status file', err);
                 } else {
                     try {
                         appLastStatus = JSON.parse(content);

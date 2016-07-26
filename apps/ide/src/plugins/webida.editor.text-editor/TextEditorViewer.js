@@ -115,7 +115,7 @@ define([
     }
 
     function isAvailable(type, name) {
-        return _.contains(availables, type + '::' + name);
+        return _.includes(availables, type + '::' + name);
     }
 
     var eventTransformers = {
@@ -319,7 +319,7 @@ define([
                         cm.indentLine(e.from.line + i);
                     }
                 }
-            });            
+            });
         },
 
         synchronizeWidgetModel: function (recentViewer) {
@@ -471,7 +471,7 @@ define([
         setSelection: function (anchor, head) {
             this.cursor = head;
             this.addDeferredAction(function (self) {
-                self.editor.getDoc().setSelection(eventTransformers.wrapperLoc2cmLoc(anchor), 
+                self.editor.getDoc().setSelection(eventTransformers.wrapperLoc2cmLoc(anchor),
                                                   eventTransformers.wrapperLoc2cmLoc(head));
             });
             if (!this.editor) {
@@ -526,7 +526,7 @@ define([
                 }
             });
         },
-        
+
         /**
          * Highlights strings matching given query with query options
          * Example: viewer.setHighlight('string',{caseSensitive: false, regexp: false, wholeWord: false});
@@ -552,7 +552,7 @@ define([
             }
             this.theme = theme;
             if (theme === 'codemirror-default') {
-                theme = this.theme = 'default';                
+                theme = this.theme = 'default';
                 this.addDeferredAction(function (self) {
                     self.editor.setOption('theme', self.theme);
                 });
@@ -572,7 +572,7 @@ define([
                         break;
                 }
                 loadCSSList([require.toUrl(csspath)], function () {
-                    addAvailable('theme', theme);                   
+                    addAvailable('theme', theme);
                     self.addDeferredAction(function (self) {
                         self.editor.setOption('theme', self.theme);
                     });
@@ -644,16 +644,16 @@ define([
         _gutterOn: function (gutterName) {
             if (this.editor) {
                 var gutters = this.editor.getOption('gutters');
-                if (!_.contains(gutters, gutterName)) {
+                if (!_.includes(gutters, gutterName)) {
                     var i, newgutters = [];
                     var order = ['CodeMirror-linenumbers', 'CodeMirror-lint-markers', 'CodeMirror-foldgutter'];
                     for (i = 0; i < order.length; i++) {
-                        if (_.contains(gutters, order[i]) || order[i] === gutterName) {
+                        if (_.includes(gutters, order[i]) || order[i] === gutterName) {
                             newgutters.push(order[i]);
                         }
                     }
                     for (i = 0; i < gutters.length; i++) {
-                        if (!_.contains(order, gutters[i])) {
+                        if (!_.includes(order, gutters[i])) {
                             newgutters.push(gutters[i]);
                         }
                     }
@@ -806,7 +806,7 @@ define([
             if (codeFolding) {
                 var self = this;
                 loadCSSList([require.toUrl('./css/codefolding.css')], function () {
-                    require(['external/codemirror/addon/fold/foldcode', 'external/codemirror/addon/fold/foldgutter', 
+                    require(['external/codemirror/addon/fold/foldcode', 'external/codemirror/addon/fold/foldgutter',
                              'external/codemirror/addon/fold/brace-fold'], function () {
                         self.addDeferredAction(function (self) {
                             self._gutterOn('CodeMirror-foldgutter');
@@ -1320,14 +1320,14 @@ define([
 
         replace: function () {
             this.addDeferredAction(function (self) {
-                var editor = self.editor;                
+                var editor = self.editor;
                 editor.execCommand('replace');
             });
         },
 
         find: function () {
             this.addDeferredAction(function (self) {
-                var editor = self.editor;                
+                var editor = self.editor;
                 editor.execCommand('find');
             });
         },
@@ -1428,7 +1428,7 @@ define([
                 var merge = function (current, processed, keymap) {
                     var curKeyMap = codemirror.keyMap[current];
                     keymap = _.extend(keymap, curKeyMap);
-                    if (curKeyMap.fallthrough && !_.contains(processed, curKeyMap.fallthrough)) {
+                    if (curKeyMap.fallthrough && !_.includes(processed, curKeyMap.fallthrough)) {
                         processed.push(curKeyMap.fallthrough);
                         return merge(curKeyMap.fallthrough, processed, keymap);
                     } else {
