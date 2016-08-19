@@ -51,16 +51,20 @@ define([
         };
     }
     
-    sessionEventSource.on('announcement', dispatchTopic('server/session/announcement'));
-    sessionEventSource.on('closing', dispatchTopic('server/session/closing'));
-    sessionEventSource.on('connect', dispatchTopic('server/session/'));
+    sessionEventSource.on('session.announcement', dispatchTopic('server/session/announcement'));
+    sessionEventSource.on('session.closing', dispatchTopic('server/session/closing'));
+
+    // following events are defined via socket.io & webida service client api does not change
+    // the event names for readability & simplicity.
+    sessionEventSource.on('connect', dispatchTopic('server/session/connect'));
     sessionEventSource.on('disconnect', dispatchTopic('server/session/disconnect'));
     sessionEventSource.on('reconnect', dispatchTopic('server/session/reconnect'));
     sessionEventSource.on('connect_error', dispatchTopic('server/session/connect/error'));
     sessionEventSource.on('connect_timeout', dispatchTopic('server/session/connect/timeout'));
     sessionEventSource.on('reconnect_failed', dispatchTopic('server/session/reconnect/failed'));
-    
-    sessionEventSource.on('wfs', dispatchLegacyResourceTopics);
+
+    // workspace.wfs events come from WfsEventGate, not from server.
+    sessionEventSource.on('workspace.wfs', dispatchLegacyResourceTopics);
 
     // need some 'toasting' plugin for basic session events, but not here.
     // for this plugins should work without toaster.

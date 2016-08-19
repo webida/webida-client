@@ -194,7 +194,7 @@ define([
                     });
 
                     var currentId = value;
-                    var currentValue = _.findWhere(dataSource, {id: currentId});
+                    var currentValue = _.find(dataSource, {id: currentId});
                     if (currentValue) {
                         currentValue = currentValue.name;
                     } else {
@@ -210,7 +210,7 @@ define([
                         maxHeight: 300,
                         style: 'margin-top: 5px; margin-bottom: 5px; margin-left: 5px;',
                         onChange: function (value) {
-                            var item = _.findWhere(dataSource, {name: value});
+                            var item = _.find(dataSource, {name: value});
                             if (item) {
                                 self.store.setValue(key, item.id);
                             }
