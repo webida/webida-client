@@ -13,7 +13,7 @@
 }
 
 .cm-s-webida-light div.CodeMirror-selected {background: #94bbeb !important;}
-.cm-s-webida-light .CodeMirror-gutters {background: #dedede; border-right: 0px;}
+.cm-s-webida-light .CodeMirror-gutters {background: #dedede; border-right: 0px; left: 0px !important;}
 .cm-s-webida-light .CodeMirror-linenumber {color: #495d65;}
 .cm-s-webida-light .CodeMirror-cursor {border-left: 1px solid #000000 !important;}
 

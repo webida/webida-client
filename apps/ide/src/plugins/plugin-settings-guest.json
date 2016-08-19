@@ -32,7 +32,6 @@
         "plugins/webida.terminal.restrict",
         "plugins/webida.ide.notification.view",
         "plugins/webida.ide.notification.toast",
-        "webida-lib/plugins/command-system",
         "webida-lib/plugins/editors",
         "webida-lib/plugins/fs-commands",
         "webida-lib/plugins/git",
@@ -40,6 +39,7 @@
         "webida-lib/plugins/preview",
         "webida-lib/plugins/workspace",
         "webida-lib/plugins/workbench",
+        "webida-lib/plugins/command-system",
         "webida-lib/plugins/resources"
     ],
     "start-plugins" : [

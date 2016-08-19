@@ -102,42 +102,13 @@ define([
 
     singleLogger.log('(c) in initialization of workbench module');
 
-    topElem.addEventListener('keydown', function (e) {
-        commandSystem.service.shortcutBind.eventListener(e, context.lastFocusedWidget);
-    });
-    // extensions of webida.common.workbench:menu
-    /*
-    var exts = pm.getExtensions('webida.common.workbench:menu');
-    var menuConfig = pm.getAppConfig('webida.common.workbench')['webida.common.workbench:menu'];
-    var predefinedHierarchy = (menuConfig && menuConfig.hierarchy) || {};
-    var predefinedToolbarItems = (menuConfig && menuConfig['toolbar-items']) || { options: [], list: [] };
-    var menuItemTree = new MenuItemTree(predefinedHierarchy, exts, topElem, 'workbench',
-                                       pm.getAppConfig('webida.common.workbench').menuSystem);
-
-    singleLogger.log('(d) in initialization of workbench module');
-
-    if (menuItemTree instanceof Error) {
-        alert(string.substitute(i18n.alertFailedToInitTopLevelMenu, {
-            msg: menuItemTree.message
-        }));
-    } else {
-        menuItemTrees.workbench = menuItemTree;
-
-        //menubar.init(menuItemTree);
-        topMenu.create();
-        toolbar.init(menuItemTree, predefinedToolbarItems);
-
-        topic.subscribe('workbench/loading/started', function () {
-            menuItemTree.getViableItems(function () {
-                singleLogger.log('(Y) loading modules contributing to the top-level menu done');
-                singleLogger.log('%c*** Loading Time = ' + singleLogger.getDuration() +
-                                 ' ***', 'color:green');
-            });
+    commandSystem.on('commandSystemInitialized', function () {
+        topElem.addEventListener('keydown', function (e) {
+            commandSystem.service.shortcutBind.eventListener(e, context.lastFocusedWidget);
         });
-    }*/
-    topMenu.create();
-    toolbar.create();
-
+        topMenu.create();
+        toolbar.create();
+    });
 
     singleLogger.log('(e) in initialization of workbench module');
 
@@ -174,7 +145,6 @@ define([
             return;
         }
 
-        //console.log('hina temp: ext.module in workbench.js = ' + ext.module);
         require([ext.module], function (mod) {
             var panel = mod[ext.getPanel]();
             var panelTopElem;
@@ -260,117 +230,6 @@ define([
     }
 
     $(document.body).focus();
-    /*
-    $(document.body).bind('bubble', function (evt) {
-        function collectViableItems(menuHolders, i, accum) {
-            if (i === menuHolders.length) {
-                require(['./command-system/shortcutKeysDlg'], function (dlg) {
-                    var exts;
-                    function collectAdditionalShortcuts(i) {
-                        if (i === exts.length) {
-                            dlg.open(accum, wholeAccum,
-                                     additionalShortcuts, evt.shortcutHolders || [],
-                                     _.uniq(evt.bubbleTouchers), false);
-                        } else {
-                            var ext = exts[i];
-                            require([ext.module], function (mod) {
-                                var plugin = ext.__plugin__.manifest.name;
-                                if (!additionalShortcuts[plugin]) {
-                                    additionalShortcuts[plugin] = [];
-                                }
-                                if (typeof mod[ext.getShortcuts] === 'function') {
-                                    var shortcutsOfPlugin = additionalShortcuts[plugin];
-                                    var shortcuts = mod[ext.getShortcuts]();
-                                    var len = shortcuts.length;
-                                    for (var j = 0; j < len; j++) {
-
-                                        var shortcut = shortcuts[j];
-                                        var normalizedKeys = MenuItemTree.normalizeKeysStr(shortcut.keys);
-                                        if (normalizedKeys) {
-                                            var item = {
-                                                keys: normalizedKeys,
-                                                title: shortcut.title,
-                                                desc: shortcut.desc,
-                                                viable: shortcut.viable
-                                            };
-                                            shortcutsOfPlugin.push(item);
-                                        } else {
-                                            alert(string.substitute(i18n.alertInvalidShortcutKeyString, {
-                                                keys: shortcut.keys,
-                                                plugin: plugin
-                                            }));
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                collectAdditionalShortcuts(i + 1);
-                            });
-                        }
-                    }
-
-                    var wholeAccum = {};
-                    Object.keys(menuItemTrees).forEach(function (pluginName) {
-                        wholeAccum[pluginName] = menuItemTrees[pluginName].getWholeItems();
-                    });
-
-                    // collect shortcuts registered via webida.common.workbench:shortcutList
-                    exts = pm.getExtensions('webida.common.workbench:shortcutList');
-                    var additionalShortcuts = {};
-                    collectAdditionalShortcuts(0);
-
-                    //dlg.open(accum, wholeAccum, false);
-                });
-            } else {
-                var menuHolder = menuHolders[i];
-                var menuItemTree = menuItemTrees[menuHolder];
-                menuItemTree.getViableItems(function (items) {
-                    if (items) {
-                        accum[menuHolder] = items;
-                        //accum[menuHolder + '@whole'] = menuItemTree.getWholeItems();
-                    }
-                    collectViableItems(menuHolders, i + 1, accum);
-                });
-            }
-
-        }
-
-        if (evt.bubbleTouchers) {
-            //console.log('hina temp: evt.menuHolders = ' + evt.menuHolders);
-            collectViableItems(_.uniq(evt.menuHolders || []), 0, {});
-        } else {
-            alert(i18n.alertKeyboardInputFocusIsOutOfWorkbench);
-        }
-    }); */
-
-    singleLogger.log('(h) in initialization of workbench module');
-
-    // add bubble event handler to the extensions of webida.common.workbench:shortcutList
-    /*
-    exts = pm.getExtensions('webida.common.workbench:shortcutList');
-    exts.forEach(function (ext) {
-        require([ext.module], function (mod) {
-            if (typeof mod[ext.getEnclosingDOMElem] === 'function') {
-                var elem = mod[ext.getEnclosingDOMElem]();
-                if (elem) {
-                    $(elem).bind('bubble', function (evt) {
-                        //console.log('hina temp: bubble event reached to ' + pluginName);
-                        if (!evt.shortcutHolders) {
-                            evt.shortcutHolders = [];
-                        }
-                        if (!evt.bubbleTouchers) {
-                            evt.bubbleTouchers = [];
-                        }
-                        var holder = ext.__plugin__.manifest.name;
-                        evt.shortcutHolders.push(holder);
-                        evt.bubbleTouchers.push(holder);
-                    });
-                }
-            }
-        });
-    }); */
-
-    singleLogger.log('(i) in initialization of workbench module');
 
     function updateStatusbar() {
         var statusInfos = [];

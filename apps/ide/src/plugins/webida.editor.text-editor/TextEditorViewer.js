@@ -40,7 +40,11 @@ define([
     'webida-lib/util/logger/logger-client',
     'webida-lib/plugins/workbench/ui/EditorViewer',
     'webida-lib/plugins/workbench/ui/PartViewer',
-    './TextChangeRequest'
+    './TextChangeRequest',
+    'external/codemirror/addon/fold/foldcode', 
+    'external/codemirror/addon/fold/foldgutter', 
+    'external/codemirror/addon/fold/brace-fold',
+    'xstyle/css!./css/codefolding.css'
 ], function (
     i18n,
     topic,
@@ -359,7 +363,6 @@ define([
             this.setOption('autoCloseTags', true);
             this.setOption('theme', this.theme, isAvailable('theme', this.theme), 'default');
             this.setOption('keyMap', this.keymap, isAvailable('keymap', this.keymap), 'default');
-            this.setOption('lineNumbers', this.options.lineNumbers, true);
             this.setOption('tabSize', this.options.tabSize);
             this.setOption('indentUnit', this.options.indentUnit);
             this.setOption('indentWithTabs', this.options.indentWithTabs);
@@ -381,13 +384,10 @@ define([
                     var parentElem = wrapper.parentNode;
                     var boundingClientRect = wrapper.getBoundingClientRect();
                     var parentBoundingClientRect = parentElem.getBoundingClientRect();
-
                     var width = parentElem.offsetWidth;
                     var height = parentElem.offsetHeight - (boundingClientRect.top - parentBoundingClientRect.top);
                     if (this.__width !== width || this.__height !== height || this.__visible !== visible) {
-
                         this.setSize(width, height);
-
                         this.__visible = visible;
                     }
                 }
@@ -518,7 +518,6 @@ define([
             this.addDeferredAction(function (self) {
                 if (typeof height === 'number') {//applying border correction
                     var wrapper = self.editor.getWrapperElement();
-
                     self.editor.setSize(width, height);
                     var borderCorrection = wrapper.offsetHeight - wrapper.clientHeight;
                     self.editor.setSize(wrapper.clientWidth, wrapper.clientHeight - borderCorrection);
@@ -647,7 +646,7 @@ define([
                 var gutters = this.editor.getOption('gutters');
                 if (!_.contains(gutters, gutterName)) {
                     var i, newgutters = [];
-                    var order = ['CodeMirror-linenumbers', 'CodeMirror-lint-markers', 'CodeMirror-foldgutter'];
+                    var order = ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers'];
                     for (i = 0; i < order.length; i++) {
                         if (_.contains(gutters, order[i]) || order[i] === gutterName) {
                             newgutters.push(order[i]);
@@ -805,18 +804,10 @@ define([
         setCodeFolding: function (codeFolding) {
             this.options.setCodeFolding = codeFolding;
             if (codeFolding) {
-                var self = this;
-                loadCSSList([require.toUrl('./css/codefolding.css')], function () {
-                    require(['external/codemirror/addon/fold/foldcode', 'external/codemirror/addon/fold/foldgutter',
-                             'external/codemirror/addon/fold/brace-fold'], function () {
-                        self.addDeferredAction(function (self) {
-                            self._gutterOn('CodeMirror-foldgutter');
-                            var rf = new codemirror.fold.combine(codemirror.fold.brace);
-                            self.editor.setOption('foldGutter', {
-                                rangeFinder: rf
-                            });
-                        });
-                    });
+                this.addDeferredAction(function (self) {
+                    self._gutterOn('CodeMirror-foldgutter');
+                    var rf = new codemirror.fold.combine(codemirror.fold.brace);
+                    self.editor.setOption('foldGutter', { rangeFinder: rf });
                 });
             } else {
                 this.addDeferredAction(function (self) {
@@ -829,6 +820,11 @@ define([
         setShowLineNumbers: function (showLineNumbers) {
             this.options.setShowLineNumbers = showLineNumbers;
             this.addDeferredAction(function (self) {
+                if (showLineNumbers) {
+                    self._gutterOn('CodeMirror-lineNumbers');
+                } else {
+                    self._gutterOff('CodeMirror-lineNumbers');
+                }
                 self.editor.setOption('lineNumbers', showLineNumbers);
             });
         },

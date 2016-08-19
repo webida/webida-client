@@ -31,6 +31,7 @@ define([
         'Ctrl+D': 'deleteLine',
         'Ctrl+L': 'gotoLine',
         'Ctrl+Z': 'undo',
+        'Ctrl+X': 'cut',
         'Ctrl+Y': 'redo',
         'Ctrl+U': 'undoSelection',
         'Alt+U': 'redoSelection',
